@@ -518,10 +518,28 @@ definition:
               type:
                 type: named
                 name: userProfiles_identification
+            memberID:
+              type:
+                type: named
+                name: String
+            notes:
+              type:
+                type: named
+                name: String
             preferences:
               type:
                 type: named
                 name: userProfiles_preferences
+            supportHistory:
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: userProfiles_supportHistory
+            usageStats:
+              type:
+                type: named
+                name: userProfiles_usageStats
         userProfiles_accountDetails:
           description: generated from MongoDB validation schema
           fields:
@@ -559,77 +577,98 @@ definition:
               type:
                 type: named
                 name: userProfiles_preferences_communication
-            memberID:
+            privacySettings:
               type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: String
-            notes:
+                type: named
+                name: userProfiles_preferences_privacySettings
+            servicePreferences:
               type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: String
-            supportHistory:
-              type:
-                type: nullable
-                underlying_type:
-                  type: array
-                  element_type:
-                    type: named
-                    name: userProfiles_preferences_supportHistory
+                type: named
+                name: userProfiles_preferences_servicePreferences
         userProfiles_preferences_communication:
           description: generated from MongoDB validation schema
           fields:
-            appUsage:
+            appNotifications:
+              type:
+                type: named
+                name: userProfiles_preferences_communication_appNotifications
+            emailUpdates:
+              type:
+                type: named
+                name: Boolean
+            smsNotifications:
+              type:
+                type: named
+                name: Boolean
+        userProfiles_preferences_communication_appNotifications:
+          description: generated from MongoDB validation schema
+          fields:
+            enabled:
+              type:
+                type: named
+                name: Boolean
+            frequency:
+              type:
+                type: named
+                name: String
+        userProfiles_preferences_privacySettings:
+          description: generated from MongoDB validation schema
+          fields:
+            adPersonalization:
+              type:
+                type: named
+                name: Boolean
+            shareDataForImprovements:
+              type:
+                type: named
+                name: Boolean
+        userProfiles_preferences_servicePreferences:
+          description: generated from MongoDB validation schema
+          fields:
+            favoriteLocations:
               type:
                 type: array
                 element_type:
                   type: named
-                  name: userProfiles_preferences_communication_appUsage
-            callStats:
+                  name: userProfiles_preferences_servicePreferences_favoriteLocations
+            networkSettings:
               type:
                 type: named
-                name: userProfiles_preferences_communication_callStats
-            dataUsage:
-              type:
-                type: named
-                name: userProfiles_preferences_communication_dataUsage
-        userProfiles_preferences_communication_appUsage:
+                name: userProfiles_preferences_servicePreferences_networkSettings
+        userProfiles_preferences_servicePreferences_favoriteLocations:
           description: generated from MongoDB validation schema
           fields:
+            coordinates:
+              type:
+                type: named
+                name: userProfiles_preferences_servicePreferences_favoriteLocations_coordinates
             name:
               type:
                 type: named
                 name: String
-            usage:
-              type:
-                type: named
-                name: String
-        userProfiles_preferences_communication_callStats:
+        userProfiles_preferences_servicePreferences_favoriteLocations_coordinates:
           description: generated from MongoDB validation schema
           fields:
-            internationalMinutes:
+            lat:
               type:
                 type: named
-                name: Int
-            totalMinutes:
+                name: String
+            long:
               type:
                 type: named
-                name: Int
-        userProfiles_preferences_communication_dataUsage:
+                name: String
+        userProfiles_preferences_servicePreferences_networkSettings:
           description: generated from MongoDB validation schema
           fields:
-            currentMonth:
+            dataSaverMode:
+              type:
+                type: named
+                name: Boolean
+            preferredNetworkType:
               type:
                 type: named
                 name: String
-            total:
-              type:
-                type: named
-                name: String
-        userProfiles_preferences_supportHistory:
+        userProfiles_supportHistory:
           description: generated from MongoDB validation schema
           fields:
             date:
@@ -649,6 +688,56 @@ definition:
                 type: named
                 name: String
             ticketId:
+              type:
+                type: named
+                name: String
+        userProfiles_usageStats:
+          description: generated from MongoDB validation schema
+          fields:
+            appUsage:
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: userProfiles_usageStats_appUsage
+            callStats:
+              type:
+                type: named
+                name: userProfiles_usageStats_callStats
+            dataUsage:
+              type:
+                type: named
+                name: userProfiles_usageStats_dataUsage
+        userProfiles_usageStats_appUsage:
+          description: generated from MongoDB validation schema
+          fields:
+            name:
+              type:
+                type: named
+                name: String
+            usage:
+              type:
+                type: named
+                name: String
+        userProfiles_usageStats_callStats:
+          description: generated from MongoDB validation schema
+          fields:
+            internationalMinutes:
+              type:
+                type: named
+                name: Int
+            totalMinutes:
+              type:
+                type: named
+                name: Int
+        userProfiles_usageStats_dataUsage:
+          description: generated from MongoDB validation schema
+          fields:
+            currentMonth:
+              type:
+                type: named
+                name: String
+            total:
               type:
                 type: named
                 name: String

@@ -68,91 +68,31 @@ definition:
 kind: ObjectType
 version: v1
 definition:
-  name: UserProfilesPreferencesCommunicationAppUsage
+  name: UserProfilesPreferencesCommunicationAppNotifications
   description: generated from MongoDB validation schema
   fields:
-    - name: name
-      type: String!
-    - name: usage
+    - name: enabled
+      type: Boolean!
+    - name: frequency
       type: String!
   graphql:
-    typeName: Support_UserProfilesPreferencesCommunicationAppUsage
-    inputTypeName: Support_UserProfilesPreferencesCommunicationAppUsageInput
+    typeName: Support_UserProfilesPreferencesCommunicationAppNotifications
+    inputTypeName: Support_UserProfilesPreferencesCommunicationAppNotificationsInput
   dataConnectorTypeMapping:
     - dataConnectorName: mongo
-      dataConnectorObjectType: userProfiles_preferences_communication_appUsage
+      dataConnectorObjectType: userProfiles_preferences_communication_appNotifications
 
 ---
 kind: TypePermissions
 version: v1
 definition:
-  typeName: UserProfilesPreferencesCommunicationAppUsage
+  typeName: UserProfilesPreferencesCommunicationAppNotifications
   permissions:
     - role: admin
       output:
         allowedFields:
-          - name
-          - usage
-
----
-kind: ObjectType
-version: v1
-definition:
-  name: UserProfilesPreferencesCommunicationCallStats
-  description: generated from MongoDB validation schema
-  fields:
-    - name: internationalMinutes
-      type: Int!
-    - name: totalMinutes
-      type: Int!
-  graphql:
-    typeName: Support_UserProfilesPreferencesCommunicationCallStats
-    inputTypeName: Support_UserProfilesPreferencesCommunicationCallStatsInput
-  dataConnectorTypeMapping:
-    - dataConnectorName: mongo
-      dataConnectorObjectType: userProfiles_preferences_communication_callStats
-
----
-kind: TypePermissions
-version: v1
-definition:
-  typeName: UserProfilesPreferencesCommunicationCallStats
-  permissions:
-    - role: admin
-      output:
-        allowedFields:
-          - internationalMinutes
-          - totalMinutes
-
----
-kind: ObjectType
-version: v1
-definition:
-  name: UserProfilesPreferencesCommunicationDataUsage
-  description: generated from MongoDB validation schema
-  fields:
-    - name: currentMonth
-      type: String!
-    - name: total
-      type: String!
-  graphql:
-    typeName: Support_UserProfilesPreferencesCommunicationDataUsage
-    inputTypeName: Support_UserProfilesPreferencesCommunicationDataUsageInput
-  dataConnectorTypeMapping:
-    - dataConnectorName: mongo
-      dataConnectorObjectType: userProfiles_preferences_communication_dataUsage
-
----
-kind: TypePermissions
-version: v1
-definition:
-  typeName: UserProfilesPreferencesCommunicationDataUsage
-  permissions:
-    - role: admin
-      output:
-        allowedFields:
-          - currentMonth
-          - total
+          - enabled
+          - frequency
 
 ---
 kind: ObjectType
@@ -161,12 +101,12 @@ definition:
   name: UserProfilesPreferencesCommunication
   description: generated from MongoDB validation schema
   fields:
-    - name: appUsage
-      type: "[UserProfilesPreferencesCommunicationAppUsage!]!"
-    - name: callStats
-      type: UserProfilesPreferencesCommunicationCallStats!
-    - name: dataUsage
-      type: UserProfilesPreferencesCommunicationDataUsage!
+    - name: appNotifications
+      type: UserProfilesPreferencesCommunicationAppNotifications!
+    - name: emailUpdates
+      type: Boolean!
+    - name: smsNotifications
+      type: Boolean!
   graphql:
     typeName: Support_UserProfilesPreferencesCommunication
     inputTypeName: Support_UserProfilesPreferencesCommunicationInput
@@ -183,15 +123,198 @@ definition:
     - role: admin
       output:
         allowedFields:
-          - appUsage
-          - callStats
-          - dataUsage
+          - appNotifications
+          - emailUpdates
+          - smsNotifications
 
 ---
 kind: ObjectType
 version: v1
 definition:
-  name: UserProfilesPreferencesSupportHistory
+  name: UserProfilesPreferencesPrivacySettings
+  description: generated from MongoDB validation schema
+  fields:
+    - name: adPersonalization
+      type: Boolean!
+    - name: shareDataForImprovements
+      type: Boolean!
+  graphql:
+    typeName: Support_UserProfilesPreferencesPrivacySettings
+    inputTypeName: Support_UserProfilesPreferencesPrivacySettingsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: mongo
+      dataConnectorObjectType: userProfiles_preferences_privacySettings
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UserProfilesPreferencesPrivacySettings
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - adPersonalization
+          - shareDataForImprovements
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UserProfilesPreferencesServicePreferencesFavoriteLocationsCoordinates
+  description: generated from MongoDB validation schema
+  fields:
+    - name: lat
+      type: String!
+    - name: long
+      type: String!
+  graphql:
+    typeName: Support_UserProfilesPreferencesServicePreferencesFavoriteLocationsCoordinates
+    inputTypeName: Support_UserProfilesPreferencesServicePreferencesFavoriteLocationsCoordinatesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: mongo
+      dataConnectorObjectType: userProfiles_preferences_servicePreferences_favoriteLocations_coordinates
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UserProfilesPreferencesServicePreferencesFavoriteLocationsCoordinates
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - lat
+          - long
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UserProfilesPreferencesServicePreferencesFavoriteLocations
+  description: generated from MongoDB validation schema
+  fields:
+    - name: coordinates
+      type: UserProfilesPreferencesServicePreferencesFavoriteLocationsCoordinates!
+    - name: name
+      type: String!
+  graphql:
+    typeName: Support_UserProfilesPreferencesServicePreferencesFavoriteLocations
+    inputTypeName: Support_UserProfilesPreferencesServicePreferencesFavoriteLocationsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: mongo
+      dataConnectorObjectType: userProfiles_preferences_servicePreferences_favoriteLocations
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UserProfilesPreferencesServicePreferencesFavoriteLocations
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - coordinates
+          - name
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UserProfilesPreferencesServicePreferencesNetworkSettings
+  description: generated from MongoDB validation schema
+  fields:
+    - name: dataSaverMode
+      type: Boolean!
+    - name: preferredNetworkType
+      type: String!
+  graphql:
+    typeName: Support_UserProfilesPreferencesServicePreferencesNetworkSettings
+    inputTypeName: Support_UserProfilesPreferencesServicePreferencesNetworkSettingsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: mongo
+      dataConnectorObjectType: userProfiles_preferences_servicePreferences_networkSettings
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UserProfilesPreferencesServicePreferencesNetworkSettings
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - dataSaverMode
+          - preferredNetworkType
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UserProfilesPreferencesServicePreferences
+  description: generated from MongoDB validation schema
+  fields:
+    - name: favoriteLocations
+      type: "[UserProfilesPreferencesServicePreferencesFavoriteLocations!]!"
+    - name: networkSettings
+      type: UserProfilesPreferencesServicePreferencesNetworkSettings!
+  graphql:
+    typeName: Support_UserProfilesPreferencesServicePreferences
+    inputTypeName: Support_UserProfilesPreferencesServicePreferencesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: mongo
+      dataConnectorObjectType: userProfiles_preferences_servicePreferences
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UserProfilesPreferencesServicePreferences
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - favoriteLocations
+          - networkSettings
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UserProfilesPreferences
+  description: generated from MongoDB validation schema
+  fields:
+    - name: communication
+      type: UserProfilesPreferencesCommunication!
+    - name: privacySettings
+      type: UserProfilesPreferencesPrivacySettings!
+    - name: servicePreferences
+      type: UserProfilesPreferencesServicePreferences!
+  graphql:
+    typeName: Support_UserProfilesPreferences
+    inputTypeName: Support_UserProfilesPreferencesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: mongo
+      dataConnectorObjectType: userProfiles_preferences
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UserProfilesPreferences
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - communication
+          - privacySettings
+          - servicePreferences
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UserProfilesSupportHistory
   description: generated from MongoDB validation schema
   fields:
     - name: date
@@ -205,17 +328,17 @@ definition:
     - name: ticketId
       type: String!
   graphql:
-    typeName: Support_UserProfilesPreferencesSupportHistory
-    inputTypeName: Support_UserProfilesPreferencesSupportHistoryInput
+    typeName: Support_UserProfilesSupportHistory
+    inputTypeName: Support_UserProfilesSupportHistoryInput
   dataConnectorTypeMapping:
     - dataConnectorName: mongo
-      dataConnectorObjectType: userProfiles_preferences_supportHistory
+      dataConnectorObjectType: userProfiles_supportHistory
 
 ---
 kind: TypePermissions
 version: v1
 definition:
-  typeName: UserProfilesPreferencesSupportHistory
+  typeName: UserProfilesSupportHistory
   permissions:
     - role: admin
       output:
@@ -230,50 +353,124 @@ definition:
 kind: ObjectType
 version: v1
 definition:
-  name: UserProfilesPreferences
+  name: UserProfilesUsageStatsAppUsage
   description: generated from MongoDB validation schema
   fields:
-    - name: communication
-      type: UserProfilesPreferencesCommunication!
-    - name: memberId
-      type: String
-    - name: notes
-      type: String
-    - name: supportHistory
-      type: "[UserProfilesPreferencesSupportHistory!]"
+    - name: name
+      type: String!
+    - name: usage
+      type: String!
   graphql:
-    typeName: Support_UserProfilesPreferences
-    inputTypeName: Support_UserProfilesPreferencesInput
+    typeName: Support_UserProfilesUsageStatsAppUsage
+    inputTypeName: Support_UserProfilesUsageStatsAppUsageInput
   dataConnectorTypeMapping:
     - dataConnectorName: mongo
-      dataConnectorObjectType: userProfiles_preferences
-      fieldMapping:
-        communication:
-          column:
-            name: communication
-        memberId:
-          column:
-            name: memberID
-        notes:
-          column:
-            name: notes
-        supportHistory:
-          column:
-            name: supportHistory
+      dataConnectorObjectType: userProfiles_usageStats_appUsage
 
 ---
 kind: TypePermissions
 version: v1
 definition:
-  typeName: UserProfilesPreferences
+  typeName: UserProfilesUsageStatsAppUsage
   permissions:
     - role: admin
       output:
         allowedFields:
-          - communication
-          - memberId
-          - notes
-          - supportHistory
+          - name
+          - usage
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UserProfilesUsageStatsCallStats
+  description: generated from MongoDB validation schema
+  fields:
+    - name: internationalMinutes
+      type: Int!
+    - name: totalMinutes
+      type: Int!
+  graphql:
+    typeName: Support_UserProfilesUsageStatsCallStats
+    inputTypeName: Support_UserProfilesUsageStatsCallStatsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: mongo
+      dataConnectorObjectType: userProfiles_usageStats_callStats
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UserProfilesUsageStatsCallStats
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - internationalMinutes
+          - totalMinutes
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UserProfilesUsageStatsDataUsage
+  description: generated from MongoDB validation schema
+  fields:
+    - name: currentMonth
+      type: String!
+    - name: total
+      type: String!
+  graphql:
+    typeName: Support_UserProfilesUsageStatsDataUsage
+    inputTypeName: Support_UserProfilesUsageStatsDataUsageInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: mongo
+      dataConnectorObjectType: userProfiles_usageStats_dataUsage
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UserProfilesUsageStatsDataUsage
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - currentMonth
+          - total
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UserProfilesUsageStats
+  description: generated from MongoDB validation schema
+  fields:
+    - name: appUsage
+      type: "[UserProfilesUsageStatsAppUsage!]!"
+    - name: callStats
+      type: UserProfilesUsageStatsCallStats!
+    - name: dataUsage
+      type: UserProfilesUsageStatsDataUsage!
+  graphql:
+    typeName: Support_UserProfilesUsageStats
+    inputTypeName: Support_UserProfilesUsageStatsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: mongo
+      dataConnectorObjectType: userProfiles_usageStats
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UserProfilesUsageStats
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - appUsage
+          - callStats
+          - dataUsage
 
 ---
 kind: ObjectType
@@ -288,8 +485,16 @@ definition:
       type: UserProfilesAccountDetails!
     - name: identification
       type: UserProfilesIdentification!
+    - name: memberId
+      type: String!
+    - name: notes
+      type: String!
     - name: preferences
       type: UserProfilesPreferences!
+    - name: supportHistory
+      type: "[UserProfilesSupportHistory!]!"
+    - name: usageStats
+      type: UserProfilesUsageStats!
   graphql:
     typeName: Support_UserProfiles
     inputTypeName: Support_UserProfilesInput
@@ -306,9 +511,21 @@ definition:
         identification:
           column:
             name: identification
+        memberId:
+          column:
+            name: memberID
+        notes:
+          column:
+            name: notes
         preferences:
           column:
             name: preferences
+        supportHistory:
+          column:
+            name: supportHistory
+        usageStats:
+          column:
+            name: usageStats
 
 ---
 kind: TypePermissions
@@ -322,7 +539,11 @@ definition:
           - id
           - accountDetails
           - identification
+          - memberId
+          - notes
           - preferences
+          - supportHistory
+          - usageStats
 
 ---
 kind: ObjectBooleanExpressionType
@@ -342,7 +563,19 @@ definition:
     - fieldName: identification
       operators:
         enableAll: true
+    - fieldName: memberId
+      operators:
+        enableAll: true
+    - fieldName: notes
+      operators:
+        enableAll: true
     - fieldName: preferences
+      operators:
+        enableAll: true
+    - fieldName: supportHistory
+      operators:
+        enableAll: true
+    - fieldName: usageStats
       operators:
         enableAll: true
   graphql:
@@ -368,7 +601,19 @@ definition:
     - fieldName: identification
       orderByDirections:
         enableAll: true
+    - fieldName: memberId
+      orderByDirections:
+        enableAll: true
+    - fieldName: notes
+      orderByDirections:
+        enableAll: true
     - fieldName: preferences
+      orderByDirections:
+        enableAll: true
+    - fieldName: supportHistory
+      orderByDirections:
+        enableAll: true
+    - fieldName: usageStats
       orderByDirections:
         enableAll: true
   graphql:
@@ -387,21 +632,3 @@ definition:
       select:
         filter: null
 
----
-kind: Relationship
-version: v1
-definition:
-  name: customer
-  source: UserProfiles
-  target:
-    model:
-      subgraph: customer
-      name: CustomerLink
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: id
-      target:
-        modelField:
-          - fieldName: customerGuid
