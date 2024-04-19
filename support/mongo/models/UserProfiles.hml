@@ -1,0 +1,407 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UserProfilesAccountDetails
+  description: generated from MongoDB validation schema
+  fields:
+    - name: accountNumber
+      type: String!
+    - name: registrationDate
+      type: String!
+  graphql:
+    typeName: Support_UserProfilesAccountDetails
+    inputTypeName: Support_UserProfilesAccountDetailsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: mongo
+      dataConnectorObjectType: userProfiles_accountDetails
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UserProfilesAccountDetails
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - accountNumber
+          - registrationDate
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UserProfilesIdentification
+  description: generated from MongoDB validation schema
+  fields:
+    - name: expiryDate
+      type: String!
+    - name: issuedBy
+      type: String!
+    - name: number
+      type: String!
+    - name: type
+      type: String!
+  graphql:
+    typeName: Support_UserProfilesIdentification
+    inputTypeName: Support_UserProfilesIdentificationInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: mongo
+      dataConnectorObjectType: userProfiles_identification
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UserProfilesIdentification
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - expiryDate
+          - issuedBy
+          - number
+          - type
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UserProfilesPreferencesCommunicationAppUsage
+  description: generated from MongoDB validation schema
+  fields:
+    - name: name
+      type: String!
+    - name: usage
+      type: String!
+  graphql:
+    typeName: Support_UserProfilesPreferencesCommunicationAppUsage
+    inputTypeName: Support_UserProfilesPreferencesCommunicationAppUsageInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: mongo
+      dataConnectorObjectType: userProfiles_preferences_communication_appUsage
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UserProfilesPreferencesCommunicationAppUsage
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - name
+          - usage
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UserProfilesPreferencesCommunicationCallStats
+  description: generated from MongoDB validation schema
+  fields:
+    - name: internationalMinutes
+      type: Int!
+    - name: totalMinutes
+      type: Int!
+  graphql:
+    typeName: Support_UserProfilesPreferencesCommunicationCallStats
+    inputTypeName: Support_UserProfilesPreferencesCommunicationCallStatsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: mongo
+      dataConnectorObjectType: userProfiles_preferences_communication_callStats
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UserProfilesPreferencesCommunicationCallStats
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - internationalMinutes
+          - totalMinutes
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UserProfilesPreferencesCommunicationDataUsage
+  description: generated from MongoDB validation schema
+  fields:
+    - name: currentMonth
+      type: String!
+    - name: total
+      type: String!
+  graphql:
+    typeName: Support_UserProfilesPreferencesCommunicationDataUsage
+    inputTypeName: Support_UserProfilesPreferencesCommunicationDataUsageInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: mongo
+      dataConnectorObjectType: userProfiles_preferences_communication_dataUsage
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UserProfilesPreferencesCommunicationDataUsage
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - currentMonth
+          - total
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UserProfilesPreferencesCommunication
+  description: generated from MongoDB validation schema
+  fields:
+    - name: appUsage
+      type: "[UserProfilesPreferencesCommunicationAppUsage!]!"
+    - name: callStats
+      type: UserProfilesPreferencesCommunicationCallStats!
+    - name: dataUsage
+      type: UserProfilesPreferencesCommunicationDataUsage!
+  graphql:
+    typeName: Support_UserProfilesPreferencesCommunication
+    inputTypeName: Support_UserProfilesPreferencesCommunicationInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: mongo
+      dataConnectorObjectType: userProfiles_preferences_communication
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UserProfilesPreferencesCommunication
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - appUsage
+          - callStats
+          - dataUsage
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UserProfilesPreferencesSupportHistory
+  description: generated from MongoDB validation schema
+  fields:
+    - name: date
+      type: String!
+    - name: issue
+      type: String!
+    - name: resolutionNotes
+      type: String!
+    - name: status
+      type: String!
+    - name: ticketId
+      type: String!
+  graphql:
+    typeName: Support_UserProfilesPreferencesSupportHistory
+    inputTypeName: Support_UserProfilesPreferencesSupportHistoryInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: mongo
+      dataConnectorObjectType: userProfiles_preferences_supportHistory
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UserProfilesPreferencesSupportHistory
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - date
+          - issue
+          - resolutionNotes
+          - status
+          - ticketId
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UserProfilesPreferences
+  description: generated from MongoDB validation schema
+  fields:
+    - name: communication
+      type: UserProfilesPreferencesCommunication!
+    - name: memberId
+      type: String
+    - name: notes
+      type: String
+    - name: supportHistory
+      type: "[UserProfilesPreferencesSupportHistory!]"
+  graphql:
+    typeName: Support_UserProfilesPreferences
+    inputTypeName: Support_UserProfilesPreferencesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: mongo
+      dataConnectorObjectType: userProfiles_preferences
+      fieldMapping:
+        communication:
+          column:
+            name: communication
+        memberId:
+          column:
+            name: memberID
+        notes:
+          column:
+            name: notes
+        supportHistory:
+          column:
+            name: supportHistory
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UserProfilesPreferences
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - communication
+          - memberId
+          - notes
+          - supportHistory
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UserProfiles
+  description: Object type for collection userProfiles
+  fields:
+    - name: id
+      type: String!
+    - name: accountDetails
+      type: UserProfilesAccountDetails!
+    - name: identification
+      type: UserProfilesIdentification!
+    - name: preferences
+      type: UserProfilesPreferences!
+  graphql:
+    typeName: Support_UserProfiles
+    inputTypeName: Support_UserProfilesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: mongo
+      dataConnectorObjectType: userProfiles
+      fieldMapping:
+        id:
+          column:
+            name: _id
+        accountDetails:
+          column:
+            name: accountDetails
+        identification:
+          column:
+            name: identification
+        preferences:
+          column:
+            name: preferences
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UserProfiles
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - id
+          - accountDetails
+          - identification
+          - preferences
+
+---
+kind: ObjectBooleanExpressionType
+version: v1
+definition:
+  name: UserProfilesBoolExp
+  objectType: UserProfiles
+  dataConnectorName: mongo
+  dataConnectorObjectType: userProfiles
+  comparableFields:
+    - fieldName: id
+      operators:
+        enableAll: true
+    - fieldName: accountDetails
+      operators:
+        enableAll: true
+    - fieldName: identification
+      operators:
+        enableAll: true
+    - fieldName: preferences
+      operators:
+        enableAll: true
+  graphql:
+    typeName: Support_UserProfilesBoolExp
+
+---
+kind: Model
+version: v1
+definition:
+  name: UserProfiles
+  objectType: UserProfiles
+  source:
+    dataConnectorName: mongo
+    collection: userProfiles
+  filterExpressionType: UserProfilesBoolExp
+  orderableFields:
+    - fieldName: id
+      orderByDirections:
+        enableAll: true
+    - fieldName: accountDetails
+      orderByDirections:
+        enableAll: true
+    - fieldName: identification
+      orderByDirections:
+        enableAll: true
+    - fieldName: preferences
+      orderByDirections:
+        enableAll: true
+  graphql:
+    selectMany:
+      queryRootField: support_userProfiles
+    selectUniques: []
+    orderByExpressionType: Support_UserProfilesOrderBy
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: UserProfiles
+  permissions:
+    - role: admin
+      select:
+        filter: null
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer
+  source: UserProfiles
+  target:
+    model:
+      subgraph: customer
+      name: CustomerLink
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: id
+      target:
+        modelField:
+          - fieldName: customerGuid

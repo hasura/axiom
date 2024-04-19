@@ -1,0 +1,360 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: Customers
+  fields:
+    - name: address
+      type: Varchar
+    - name: city
+      type: Varchar
+    - name: country
+      type: Varchar
+    - name: customerId
+      type: Int4!
+    - name: email
+      type: Varchar
+    - name: firstName
+      type: Varchar
+    - name: image
+      type: Varchar
+    - name: lastName
+      type: Varchar
+    - name: phoneNumber
+      type: Varchar
+    - name: postcode
+      type: Varchar
+    - name: segment
+      type: Varchar
+    - name: state
+      type: Varchar
+  graphql:
+    typeName: Customer_Customers
+    inputTypeName: Customer_CustomersInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: customers
+      fieldMapping:
+        address:
+          column:
+            name: address
+        city:
+          column:
+            name: city
+        country:
+          column:
+            name: country
+        customerId:
+          column:
+            name: customer_id
+        email:
+          column:
+            name: email
+        firstName:
+          column:
+            name: first_name
+        image:
+          column:
+            name: image
+        lastName:
+          column:
+            name: last_name
+        phoneNumber:
+          column:
+            name: phone_number
+        postcode:
+          column:
+            name: postcode
+        segment:
+          column:
+            name: segment
+        state:
+          column:
+            name: state
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: Customers
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - address
+          - city
+          - country
+          - customerId
+          - email
+          - firstName
+          - image
+          - lastName
+          - phoneNumber
+          - postcode
+          - segment
+          - state
+
+---
+kind: ObjectBooleanExpressionType
+version: v1
+definition:
+  name: CustomersBoolExp
+  objectType: Customers
+  dataConnectorName: aurora
+  dataConnectorObjectType: customers
+  comparableFields:
+    - fieldName: address
+      operators:
+        enableAll: true
+    - fieldName: city
+      operators:
+        enableAll: true
+    - fieldName: country
+      operators:
+        enableAll: true
+    - fieldName: customerId
+      operators:
+        enableAll: true
+    - fieldName: email
+      operators:
+        enableAll: true
+    - fieldName: firstName
+      operators:
+        enableAll: true
+    - fieldName: image
+      operators:
+        enableAll: true
+    - fieldName: lastName
+      operators:
+        enableAll: true
+    - fieldName: phoneNumber
+      operators:
+        enableAll: true
+    - fieldName: postcode
+      operators:
+        enableAll: true
+    - fieldName: segment
+      operators:
+        enableAll: true
+    - fieldName: state
+      operators:
+        enableAll: true
+  graphql:
+    typeName: Customer_CustomersBoolExp
+
+---
+kind: Model
+version: v1
+definition:
+  name: Customers
+  objectType: Customers
+  source:
+    dataConnectorName: aurora
+    collection: customers
+  filterExpressionType: CustomersBoolExp
+  orderableFields:
+    - fieldName: address
+      orderByDirections:
+        enableAll: true
+    - fieldName: city
+      orderByDirections:
+        enableAll: true
+    - fieldName: country
+      orderByDirections:
+        enableAll: true
+    - fieldName: customerId
+      orderByDirections:
+        enableAll: true
+    - fieldName: email
+      orderByDirections:
+        enableAll: true
+    - fieldName: firstName
+      orderByDirections:
+        enableAll: true
+    - fieldName: image
+      orderByDirections:
+        enableAll: true
+    - fieldName: lastName
+      orderByDirections:
+        enableAll: true
+    - fieldName: phoneNumber
+      orderByDirections:
+        enableAll: true
+    - fieldName: postcode
+      orderByDirections:
+        enableAll: true
+    - fieldName: segment
+      orderByDirections:
+        enableAll: true
+    - fieldName: state
+      orderByDirections:
+        enableAll: true
+  graphql:
+    selectMany:
+      queryRootField: customer_customers
+    selectUniques:
+      - queryRootField: customer_customersByPhoneNumber
+        uniqueIdentifier:
+          - phoneNumber
+      - queryRootField: customer_customersByCustomerId
+        uniqueIdentifier:
+          - customerId
+    orderByExpressionType: Customer_CustomersOrderBy
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: Customers
+  permissions:
+    - role: admin
+      select:
+        filter: null
+
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: billings
+  source: Customers
+  target:
+    model:
+      name: Billing
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: credit_cards
+  source: Customers
+  target:
+    model:
+      name: CreditCards
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId
+
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer_networks
+  source: Customers
+  target:
+    model:
+      name: CustomerNetwork
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer_plans
+  source: Customers
+  target:
+    model:
+      name: CustomerPlans
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer_deals
+  source: Customers
+  target:
+    model:
+      name: Deals
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: segment
+      target:
+        modelField:
+          - fieldName: customerSegment
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer_links
+  source: Customers
+  target:
+    model:
+      name: CustomerLink
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: texts
+  source: Customers
+  target:
+    model:
+      subgraph: network
+      name: Texts
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerid
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: calls
+  source: Customers
+  target:
+    model:
+      subgraph: network
+      name: Calls
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerid

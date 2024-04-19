@@ -1,0 +1,121 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: DataUsage
+  fields:
+    - name: dataUsage
+      type: Float32!
+    - name: guid
+      type: String!
+    - name: timestamp
+      type: DateTime!
+  graphql:
+    typeName: Network_DataUsage
+    inputTypeName: Network_DataUsageInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: clickhouse
+      dataConnectorObjectType: data_usage
+      fieldMapping:
+        dataUsage:
+          column:
+            name: Data_Usage
+        guid:
+          column:
+            name: GUID
+        timestamp:
+          column:
+            name: Timestamp
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: DataUsage
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - dataUsage
+          - guid
+          - timestamp
+
+---
+kind: ObjectBooleanExpressionType
+version: v1
+definition:
+  name: DataUsageBoolExp
+  objectType: DataUsage
+  dataConnectorName: clickhouse
+  dataConnectorObjectType: data_usage
+  comparableFields:
+    - fieldName: dataUsage
+      operators:
+        enableAll: true
+    - fieldName: guid
+      operators:
+        enableAll: true
+    - fieldName: timestamp
+      operators:
+        enableAll: true
+  graphql:
+    typeName: Network_DataUsageBoolExp
+
+---
+kind: Model
+version: v1
+definition:
+  name: DataUsage
+  objectType: DataUsage
+  source:
+    dataConnectorName: clickhouse
+    collection: data_usage
+  filterExpressionType: DataUsageBoolExp
+  orderableFields:
+    - fieldName: dataUsage
+      orderByDirections:
+        enableAll: true
+    - fieldName: guid
+      orderByDirections:
+        enableAll: true
+    - fieldName: timestamp
+      orderByDirections:
+        enableAll: true
+  graphql:
+    selectMany:
+      queryRootField: network_dataUsage
+    selectUniques:
+      - queryRootField: network_dataUsageByTimestampGuid
+        uniqueIdentifier:
+          - guid
+          - timestamp
+    orderByExpressionType: Network_DataUsageOrderBy
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: DataUsage
+  permissions:
+    - role: admin
+      select:
+        filter: null
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer
+  source: DataUsage
+  target:
+    model:
+      subgraph: customer
+      name: CustomerLink
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: guid
+      target:
+        modelField:
+          - fieldName: customerGuid

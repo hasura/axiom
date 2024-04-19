@@ -1,0 +1,203 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: Documents
+  fields:
+    - name: body
+      type: Text
+    - name: createdAt
+      type: Timestamptz
+    - name: language
+      type: Text
+    - name: rating
+      type: Int4
+    - name: status
+      type: Text
+    - name: tags
+      type: Text
+    - name: title
+      type: Text
+    - name: updatedAt
+      type: Timestamptz
+    - name: uuid
+      type: Uuid!
+    - name: viewCount
+      type: Int4
+  graphql:
+    typeName: Support_Documents
+    inputTypeName: Support_DocumentsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: pgvector
+      dataConnectorObjectType: documents
+      fieldMapping:
+        body:
+          column:
+            name: body
+        createdAt:
+          column:
+            name: created_at
+        language:
+          column:
+            name: language
+        rating:
+          column:
+            name: rating
+        status:
+          column:
+            name: status
+        tags:
+          column:
+            name: tags
+        title:
+          column:
+            name: title
+        updatedAt:
+          column:
+            name: updated_at
+        uuid:
+          column:
+            name: uuid
+        viewCount:
+          column:
+            name: view_count
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: Documents
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - body
+          - createdAt
+          - language
+          - rating
+          - status
+          - tags
+          - title
+          - updatedAt
+          - uuid
+          - viewCount
+
+---
+kind: ObjectBooleanExpressionType
+version: v1
+definition:
+  name: DocumentsBoolExp
+  objectType: Documents
+  dataConnectorName: pgvector
+  dataConnectorObjectType: documents
+  comparableFields:
+    - fieldName: body
+      operators:
+        enableAll: true
+    - fieldName: createdAt
+      operators:
+        enableAll: true
+    - fieldName: language
+      operators:
+        enableAll: true
+    - fieldName: rating
+      operators:
+        enableAll: true
+    - fieldName: status
+      operators:
+        enableAll: true
+    - fieldName: tags
+      operators:
+        enableAll: true
+    - fieldName: title
+      operators:
+        enableAll: true
+    - fieldName: updatedAt
+      operators:
+        enableAll: true
+    - fieldName: uuid
+      operators:
+        enableAll: true
+    - fieldName: viewCount
+      operators:
+        enableAll: true
+  graphql:
+    typeName: Support_DocumentsBoolExp
+
+---
+kind: Model
+version: v1
+definition:
+  name: Documents
+  objectType: Documents
+  source:
+    dataConnectorName: pgvector
+    collection: documents
+  filterExpressionType: DocumentsBoolExp
+  orderableFields:
+    - fieldName: body
+      orderByDirections:
+        enableAll: true
+    - fieldName: createdAt
+      orderByDirections:
+        enableAll: true
+    - fieldName: language
+      orderByDirections:
+        enableAll: true
+    - fieldName: rating
+      orderByDirections:
+        enableAll: true
+    - fieldName: status
+      orderByDirections:
+        enableAll: true
+    - fieldName: tags
+      orderByDirections:
+        enableAll: true
+    - fieldName: title
+      orderByDirections:
+        enableAll: true
+    - fieldName: updatedAt
+      orderByDirections:
+        enableAll: true
+    - fieldName: uuid
+      orderByDirections:
+        enableAll: true
+    - fieldName: viewCount
+      orderByDirections:
+        enableAll: true
+  graphql:
+    selectMany:
+      queryRootField: support_documents
+    selectUniques:
+      - queryRootField: support_documentsByUuid
+        uniqueIdentifier:
+          - uuid
+    orderByExpressionType: Support_DocumentsOrderBy
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: Documents
+  permissions:
+    - role: admin
+      select:
+        filter: null
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: embeddings
+  source: Documents
+  target:
+    model:
+      name: DocumentEmbeddings
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: uuid
+      target:
+        modelField:
+          - fieldName: documentUuid

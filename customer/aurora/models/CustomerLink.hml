@@ -1,0 +1,198 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: CustomerLink
+  fields:
+    - name: customerGuid
+      type: Uuid!
+    - name: customerId
+      type: Int4
+    - name: id
+      type: Int4!
+  graphql:
+    typeName: Customer_CustomerLink
+    inputTypeName: Customer_CustomerLinkInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: customer_link
+      fieldMapping:
+        customerGuid:
+          column:
+            name: customer_guid
+        customerId:
+          column:
+            name: customer_id
+        id:
+          column:
+            name: id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: CustomerLink
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - customerGuid
+          - customerId
+          - id
+
+---
+kind: ObjectBooleanExpressionType
+version: v1
+definition:
+  name: CustomerLinkBoolExp
+  objectType: CustomerLink
+  dataConnectorName: aurora
+  dataConnectorObjectType: customer_link
+  comparableFields:
+    - fieldName: customerGuid
+      operators:
+        enableAll: true
+    - fieldName: customerId
+      operators:
+        enableAll: true
+    - fieldName: id
+      operators:
+        enableAll: true
+  graphql:
+    typeName: Customer_CustomerLinkBoolExp
+
+---
+kind: Model
+version: v1
+definition:
+  name: CustomerLink
+  objectType: CustomerLink
+  source:
+    dataConnectorName: aurora
+    collection: customer_link
+  filterExpressionType: CustomerLinkBoolExp
+  orderableFields:
+    - fieldName: customerGuid
+      orderByDirections:
+        enableAll: true
+    - fieldName: customerId
+      orderByDirections:
+        enableAll: true
+    - fieldName: id
+      orderByDirections:
+        enableAll: true
+  graphql:
+    selectMany:
+      queryRootField: customer_customerLink
+    selectUniques:
+      - queryRootField: customer_customerLinkByCustomerId
+        uniqueIdentifier:
+          - customerId
+      - queryRootField: customer_customerLinkById
+        uniqueIdentifier:
+          - id
+    orderByExpressionType: Customer_CustomerLinkOrderBy
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: CustomerLink
+  permissions:
+    - role: admin
+      select:
+        filter: null
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer_cdr
+  source: CustomerLink
+  target:
+    model:
+      subgraph: network
+      name: Cdr
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerGuid
+      target:
+        modelField:
+          - fieldName: guid
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer_data_usage
+  source: CustomerLink
+  target:
+    model:
+      subgraph: network
+      name: DataUsage
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerGuid
+      target:
+        modelField:
+          - fieldName: guid
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer_network_performance
+  source: CustomerLink
+  target:
+    model:
+      subgraph: network
+      name: NetworkPerformance
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerGuid
+      target:
+        modelField:
+          - fieldName: guid
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: support_database
+  source: CustomerLink
+  target:
+    model:
+      subgraph: support
+      name: UserProfiles
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerGuid
+      target:
+        modelField:
+          - fieldName: id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer
+  source: CustomerLink
+  target:
+    model:
+      name: Customers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId

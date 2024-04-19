@@ -1,0 +1,241 @@
+kind: DataConnectorLink
+version: v1
+definition:
+  name: authdb
+  url:
+    Fn::ManifestRef: authdb
+  schema:
+    version: v0.1
+    schema:
+      scalar_types:
+        int4:
+          aggregate_functions:
+            bit_and:
+              result_type:
+                type: named
+                name: int4
+            bit_or:
+              result_type:
+                type: named
+                name: int4
+            bit_xor:
+              result_type:
+                type: named
+                name: int4
+            max:
+              result_type:
+                type: named
+                name: int4
+            min:
+              result_type:
+                type: named
+                name: int4
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                type: named
+                name: int4
+            _gte:
+              type: custom
+              argument_type:
+                type: named
+                name: int4
+            _in:
+              type: in
+            _lt:
+              type: custom
+              argument_type:
+                type: named
+                name: int4
+            _lte:
+              type: custom
+              argument_type:
+                type: named
+                name: int4
+            _neq:
+              type: custom
+              argument_type:
+                type: named
+                name: int4
+        timestamptz:
+          aggregate_functions:
+            max:
+              result_type:
+                type: named
+                name: timestamptz
+            min:
+              result_type:
+                type: named
+                name: timestamptz
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                type: named
+                name: timestamptz
+            _gte:
+              type: custom
+              argument_type:
+                type: named
+                name: timestamptz
+            _in:
+              type: in
+            _lt:
+              type: custom
+              argument_type:
+                type: named
+                name: timestamptz
+            _lte:
+              type: custom
+              argument_type:
+                type: named
+                name: timestamptz
+            _neq:
+              type: custom
+              argument_type:
+                type: named
+                name: timestamptz
+        varchar:
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _gte:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _ilike:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _in:
+              type: in
+            _iregex:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _like:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _lt:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _lte:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _neq:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _nilike:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _niregex:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _nlike:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _nregex:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _regex:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            starts_with:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            ts_match_tt:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+      object_types:
+        users:
+          fields:
+            created_at:
+              type:
+                type: named
+                name: timestamptz
+            email:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            id:
+              type:
+                type: named
+                name: int4
+            password:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            roles:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            updated_at:
+              type:
+                type: named
+                name: timestamptz
+      collections:
+        - name: users
+          arguments: {}
+          type: users
+          uniqueness_constraints:
+            users_pkey:
+              unique_columns:
+                - id
+          foreign_keys: {}
+      functions: []
+      procedures: []
+    capabilities:
+      version: 0.1.2
+      capabilities:
+        query:
+          aggregates: {}
+          variables: {}
+          explain: {}
+        mutation:
+          transactional: {}
+          explain: {}
+        relationships:
+          relation_comparisons: {}
+          order_by_aggregate: {}

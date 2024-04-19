@@ -1,0 +1,976 @@
+kind: DataConnectorLink
+version: v1
+definition:
+  name: aurora
+  url:
+    Fn::ManifestRef: aurora
+  schema:
+    version: v0.1
+    schema:
+      scalar_types:
+        date:
+          aggregate_functions:
+            max:
+              result_type:
+                type: named
+                name: date
+            min:
+              result_type:
+                type: named
+                name: date
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                type: named
+                name: date
+            _gte:
+              type: custom
+              argument_type:
+                type: named
+                name: date
+            _in:
+              type: in
+            _lt:
+              type: custom
+              argument_type:
+                type: named
+                name: date
+            _lte:
+              type: custom
+              argument_type:
+                type: named
+                name: date
+            _neq:
+              type: custom
+              argument_type:
+                type: named
+                name: date
+        int4:
+          aggregate_functions:
+            avg:
+              result_type:
+                type: named
+                name: numeric
+            bit_and:
+              result_type:
+                type: named
+                name: int4
+            bit_or:
+              result_type:
+                type: named
+                name: int4
+            bit_xor:
+              result_type:
+                type: named
+                name: int4
+            max:
+              result_type:
+                type: named
+                name: int4
+            min:
+              result_type:
+                type: named
+                name: int4
+            stddev:
+              result_type:
+                type: named
+                name: numeric
+            stddev_pop:
+              result_type:
+                type: named
+                name: numeric
+            stddev_samp:
+              result_type:
+                type: named
+                name: numeric
+            var_pop:
+              result_type:
+                type: named
+                name: numeric
+            var_samp:
+              result_type:
+                type: named
+                name: numeric
+            variance:
+              result_type:
+                type: named
+                name: numeric
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                type: named
+                name: int4
+            _gte:
+              type: custom
+              argument_type:
+                type: named
+                name: int4
+            _in:
+              type: in
+            _lt:
+              type: custom
+              argument_type:
+                type: named
+                name: int4
+            _lte:
+              type: custom
+              argument_type:
+                type: named
+                name: int4
+            _neq:
+              type: custom
+              argument_type:
+                type: named
+                name: int4
+        numeric:
+          aggregate_functions:
+            avg:
+              result_type:
+                type: named
+                name: numeric
+            max:
+              result_type:
+                type: named
+                name: numeric
+            min:
+              result_type:
+                type: named
+                name: numeric
+            stddev:
+              result_type:
+                type: named
+                name: numeric
+            stddev_pop:
+              result_type:
+                type: named
+                name: numeric
+            stddev_samp:
+              result_type:
+                type: named
+                name: numeric
+            sum:
+              result_type:
+                type: named
+                name: numeric
+            var_pop:
+              result_type:
+                type: named
+                name: numeric
+            var_samp:
+              result_type:
+                type: named
+                name: numeric
+            variance:
+              result_type:
+                type: named
+                name: numeric
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                type: named
+                name: numeric
+            _gte:
+              type: custom
+              argument_type:
+                type: named
+                name: numeric
+            _in:
+              type: in
+            _lt:
+              type: custom
+              argument_type:
+                type: named
+                name: numeric
+            _lte:
+              type: custom
+              argument_type:
+                type: named
+                name: numeric
+            _neq:
+              type: custom
+              argument_type:
+                type: named
+                name: numeric
+        text:
+          aggregate_functions:
+            max:
+              result_type:
+                type: named
+                name: text
+            min:
+              result_type:
+                type: named
+                name: text
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _gte:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _ilike:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _in:
+              type: in
+            _iregex:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _like:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _lt:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _lte:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _neq:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _nilike:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _niregex:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _nlike:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _nregex:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _regex:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            starts_with:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            ts_match_tt:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+        timestamptz:
+          aggregate_functions:
+            max:
+              result_type:
+                type: named
+                name: timestamptz
+            min:
+              result_type:
+                type: named
+                name: timestamptz
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                type: named
+                name: timestamptz
+            _gte:
+              type: custom
+              argument_type:
+                type: named
+                name: timestamptz
+            _in:
+              type: in
+            _lt:
+              type: custom
+              argument_type:
+                type: named
+                name: timestamptz
+            _lte:
+              type: custom
+              argument_type:
+                type: named
+                name: timestamptz
+            _neq:
+              type: custom
+              argument_type:
+                type: named
+                name: timestamptz
+        uuid:
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                type: named
+                name: uuid
+            _gte:
+              type: custom
+              argument_type:
+                type: named
+                name: uuid
+            _in:
+              type: in
+            _lt:
+              type: custom
+              argument_type:
+                type: named
+                name: uuid
+            _lte:
+              type: custom
+              argument_type:
+                type: named
+                name: uuid
+            _neq:
+              type: custom
+              argument_type:
+                type: named
+                name: uuid
+        varchar:
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _gte:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _ilike:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _in:
+              type: in
+            _iregex:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _like:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _lt:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _lte:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _neq:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _nilike:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _niregex:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _nlike:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _nregex:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _regex:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            starts_with:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            ts_match_tt:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+      object_types:
+        billing:
+          fields:
+            billing_date:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: date
+            billing_id:
+              type:
+                type: named
+                name: int4
+            customer_id:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            payment_status:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            total_amount:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+        credit_cards:
+          fields:
+            created_at:
+              type:
+                type: named
+                name: timestamptz
+            credit_card_id:
+              type:
+                type: named
+                name: int4
+            customer_id:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            cvv:
+              type:
+                type: named
+                name: int4
+            expiry:
+              type:
+                type: named
+                name: date
+            number:
+              type:
+                type: named
+                name: text
+            updated_at:
+              type:
+                type: named
+                name: timestamptz
+        customer_link:
+          fields:
+            customer_guid:
+              type:
+                type: named
+                name: uuid
+            customer_id:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            id:
+              type:
+                type: named
+                name: int4
+        customer_network:
+          fields:
+            customer_id:
+              type:
+                type: named
+                name: int4
+            node_id:
+              type:
+                type: named
+                name: int4
+        customer_plan_devices:
+          fields:
+            customer_plan_id:
+              type:
+                type: named
+                name: int4
+            device_id:
+              type:
+                type: named
+                name: int4
+        customer_plans:
+          fields:
+            cell_number:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            customer_id:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            customer_plan_id:
+              type:
+                type: named
+                name: int4
+            end_date:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: date
+            plan_id:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            start_date:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: date
+            status:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        customers:
+          fields:
+            address:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            city:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            country:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            customer_id:
+              type:
+                type: named
+                name: int4
+            email:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            first_name:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            image:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            last_name:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            phone_number:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            postcode:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            segment:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            state:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        deals:
+          fields:
+            additional_benefits:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: text
+            customer_segment:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            deal_id:
+              type:
+                type: named
+                name: int4
+            deal_name:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            description:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: text
+            end_date:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: date
+            max_monthly_spend:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            min_monthly_spend:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            start_date:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: date
+            terms_conditions:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: text
+        devices:
+          fields:
+            brand:
+              type:
+                type: named
+                name: varchar
+            created_at:
+              type:
+                type: named
+                name: timestamptz
+            device_id:
+              type:
+                type: named
+                name: int4
+            image:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            model:
+              type:
+                type: named
+                name: varchar
+            sf_record:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            updated_at:
+              type:
+                type: named
+                name: timestamptz
+        network:
+          fields:
+            capacity:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            latitude:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            longitude:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            node_id:
+              type:
+                type: named
+                name: int4
+            node_name:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            status:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        plans:
+          fields:
+            description:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: text
+            monthly_fee:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            plan_id:
+              type:
+                type: named
+                name: int4
+            plan_name:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            sf_record:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            type:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: text
+      collections:
+        - name: billing
+          arguments: {}
+          type: billing
+          uniqueness_constraints:
+            billing_pkey:
+              unique_columns:
+                - billing_id
+          foreign_keys:
+            billing_customer_id_fkey:
+              column_mapping:
+                customer_id: customer_id
+              foreign_collection: customers
+        - name: credit_cards
+          arguments: {}
+          type: credit_cards
+          uniqueness_constraints:
+            credit_cards_pkey:
+              unique_columns:
+                - credit_card_id
+          foreign_keys:
+            credit_cards_customer_id_fkey:
+              column_mapping:
+                customer_id: customer_id
+              foreign_collection: customers
+        - name: customer_link
+          arguments: {}
+          type: customer_link
+          uniqueness_constraints:
+            customer_link_customer_id_key:
+              unique_columns:
+                - customer_id
+            customer_link_pkey:
+              unique_columns:
+                - id
+          foreign_keys:
+            customer_link_customer_id_fkey:
+              column_mapping:
+                customer_id: customer_id
+              foreign_collection: customers
+        - name: customer_network
+          arguments: {}
+          type: customer_network
+          uniqueness_constraints:
+            customer_network_pkey:
+              unique_columns:
+                - customer_id
+                - node_id
+          foreign_keys:
+            customer_network_customer_id_fkey:
+              column_mapping:
+                customer_id: customer_id
+              foreign_collection: customers
+            customer_network_node_id_fkey:
+              column_mapping:
+                node_id: node_id
+              foreign_collection: network
+        - name: customer_plan_devices
+          arguments: {}
+          type: customer_plan_devices
+          uniqueness_constraints:
+            customer_plan_devices_pkey:
+              unique_columns:
+                - customer_plan_id
+                - device_id
+          foreign_keys:
+            customer_plan_devices_customer_plan_id_fkey:
+              column_mapping:
+                customer_plan_id: customer_plan_id
+              foreign_collection: customer_plans
+            customer_plan_devices_device_id_fkey:
+              column_mapping:
+                device_id: device_id
+              foreign_collection: devices
+        - name: customer_plans
+          arguments: {}
+          type: customer_plans
+          uniqueness_constraints:
+            customer_plans_pkey:
+              unique_columns:
+                - customer_plan_id
+          foreign_keys:
+            customer_plans_customer_id_fkey:
+              column_mapping:
+                customer_id: customer_id
+              foreign_collection: customers
+            customer_plans_plan_id_fkey:
+              column_mapping:
+                plan_id: plan_id
+              foreign_collection: plans
+        - name: customers
+          arguments: {}
+          type: customers
+          uniqueness_constraints:
+            customers_phone_number_key:
+              unique_columns:
+                - phone_number
+            customers_pkey:
+              unique_columns:
+                - customer_id
+          foreign_keys: {}
+        - name: deals
+          arguments: {}
+          type: deals
+          uniqueness_constraints:
+            deals_pkey:
+              unique_columns:
+                - deal_id
+          foreign_keys: {}
+        - name: devices
+          arguments: {}
+          type: devices
+          uniqueness_constraints:
+            devices_pkey:
+              unique_columns:
+                - device_id
+          foreign_keys: {}
+        - name: network
+          arguments: {}
+          type: network
+          uniqueness_constraints:
+            network_pkey:
+              unique_columns:
+                - node_id
+          foreign_keys: {}
+        - name: plans
+          arguments: {}
+          type: plans
+          uniqueness_constraints:
+            plans_pkey:
+              unique_columns:
+                - plan_id
+            plans_plan_name_key:
+              unique_columns:
+                - plan_name
+          foreign_keys: {}
+      functions: []
+      procedures: []
+    capabilities:
+      version: 0.1.2
+      capabilities:
+        query:
+          aggregates: {}
+          variables: {}
+          explain: {}
+        mutation:
+          transactional: {}
+          explain: {}
+        relationships:
+          relation_comparisons: {}
+          order_by_aggregate: {}
