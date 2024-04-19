@@ -23,9 +23,31 @@
             "object": "userProfiles_identification"
           }
         },
+        "memberID": {
+          "type": {
+            "scalar": "string"
+          }
+        },
+        "notes": {
+          "type": {
+            "scalar": "string"
+          }
+        },
         "preferences": {
           "type": {
             "object": "userProfiles_preferences"
+          }
+        },
+        "supportHistory": {
+          "type": {
+            "arrayOf": {
+              "object": "userProfiles_supportHistory"
+            }
+          }
+        },
+        "usageStats": {
+          "type": {
+            "object": "userProfiles_usageStats"
           }
         }
       },
@@ -78,27 +100,14 @@
             "object": "userProfiles_preferences_communication"
           }
         },
-        "memberID": {
+        "privacySettings": {
           "type": {
-            "nullable": {
-              "scalar": "string"
-            }
+            "object": "userProfiles_preferences_privacySettings"
           }
         },
-        "notes": {
+        "servicePreferences": {
           "type": {
-            "nullable": {
-              "scalar": "string"
-            }
-          }
-        },
-        "supportHistory": {
-          "type": {
-            "nullable": {
-              "arrayOf": {
-                "object": "userProfiles_preferences_supportHistory"
-              }
-            }
+            "object": "userProfiles_preferences_servicePreferences"
           }
         }
       },
@@ -106,64 +115,109 @@
     },
     "userProfiles_preferences_communication": {
       "fields": {
-        "appUsage": {
+        "appNotifications": {
           "type": {
-            "arrayOf": {
-              "object": "userProfiles_preferences_communication_appUsage"
-            }
+            "object": "userProfiles_preferences_communication_appNotifications"
           }
         },
-        "callStats": {
+        "emailUpdates": {
           "type": {
-            "object": "userProfiles_preferences_communication_callStats"
+            "scalar": "bool"
           }
         },
-        "dataUsage": {
+        "smsNotifications": {
           "type": {
-            "object": "userProfiles_preferences_communication_dataUsage"
+            "scalar": "bool"
           }
         }
       },
       "description": "generated from MongoDB validation schema"
     },
-    "userProfiles_preferences_communication_appUsage": {
+    "userProfiles_preferences_communication_appNotifications": {
       "fields": {
+        "enabled": {
+          "type": {
+            "scalar": "bool"
+          }
+        },
+        "frequency": {
+          "type": {
+            "scalar": "string"
+          }
+        }
+      },
+      "description": "generated from MongoDB validation schema"
+    },
+    "userProfiles_preferences_privacySettings": {
+      "fields": {
+        "adPersonalization": {
+          "type": {
+            "scalar": "bool"
+          }
+        },
+        "shareDataForImprovements": {
+          "type": {
+            "scalar": "bool"
+          }
+        }
+      },
+      "description": "generated from MongoDB validation schema"
+    },
+    "userProfiles_preferences_servicePreferences": {
+      "fields": {
+        "favoriteLocations": {
+          "type": {
+            "arrayOf": {
+              "object": "userProfiles_preferences_servicePreferences_favoriteLocations"
+            }
+          }
+        },
+        "networkSettings": {
+          "type": {
+            "object": "userProfiles_preferences_servicePreferences_networkSettings"
+          }
+        }
+      },
+      "description": "generated from MongoDB validation schema"
+    },
+    "userProfiles_preferences_servicePreferences_favoriteLocations": {
+      "fields": {
+        "coordinates": {
+          "type": {
+            "object": "userProfiles_preferences_servicePreferences_favoriteLocations_coordinates"
+          }
+        },
         "name": {
           "type": {
             "scalar": "string"
           }
-        },
-        "usage": {
-          "type": {
-            "scalar": "string"
-          }
         }
       },
       "description": "generated from MongoDB validation schema"
     },
-    "userProfiles_preferences_communication_callStats": {
+    "userProfiles_preferences_servicePreferences_favoriteLocations_coordinates": {
       "fields": {
-        "internationalMinutes": {
+        "lat": {
           "type": {
-            "scalar": "int"
+            "scalar": "string"
           }
         },
-        "totalMinutes": {
+        "long": {
           "type": {
-            "scalar": "int"
+            "scalar": "string"
           }
         }
       },
       "description": "generated from MongoDB validation schema"
     },
-    "userProfiles_preferences_communication_dataUsage": {
+    "userProfiles_preferences_servicePreferences_networkSettings": {
       "fields": {
-        "currentMonth": {
+        "dataSaverMode": {
           "type": {
-            "scalar": "string"
+            "scalar": "bool"
           }
         },
-        "total": {
+        "preferredNetworkType": {
           "type": {
             "scalar": "string"
           }
@@ -171,7 +225,7 @@
       },
       "description": "generated from MongoDB validation schema"
     },
-    "userProfiles_preferences_supportHistory": {
+    "userProfiles_supportHistory": {
       "fields": {
         "date": {
           "type": {
@@ -194,6 +248,73 @@
           }
         },
         "ticketId": {
+          "type": {
+            "scalar": "string"
+          }
+        }
+      },
+      "description": "generated from MongoDB validation schema"
+    },
+    "userProfiles_usageStats": {
+      "fields": {
+        "appUsage": {
+          "type": {
+            "arrayOf": {
+              "object": "userProfiles_usageStats_appUsage"
+            }
+          }
+        },
+        "callStats": {
+          "type": {
+            "object": "userProfiles_usageStats_callStats"
+          }
+        },
+        "dataUsage": {
+          "type": {
+            "object": "userProfiles_usageStats_dataUsage"
+          }
+        }
+      },
+      "description": "generated from MongoDB validation schema"
+    },
+    "userProfiles_usageStats_appUsage": {
+      "fields": {
+        "name": {
+          "type": {
+            "scalar": "string"
+          }
+        },
+        "usage": {
+          "type": {
+            "scalar": "string"
+          }
+        }
+      },
+      "description": "generated from MongoDB validation schema"
+    },
+    "userProfiles_usageStats_callStats": {
+      "fields": {
+        "internationalMinutes": {
+          "type": {
+            "scalar": "int"
+          }
+        },
+        "totalMinutes": {
+          "type": {
+            "scalar": "int"
+          }
+        }
+      },
+      "description": "generated from MongoDB validation schema"
+    },
+    "userProfiles_usageStats_dataUsage": {
+      "fields": {
+        "currentMonth": {
+          "type": {
+            "scalar": "string"
+          }
+        },
+        "total": {
           "type": {
             "scalar": "string"
           }
