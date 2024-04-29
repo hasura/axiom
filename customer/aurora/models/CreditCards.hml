@@ -63,6 +63,15 @@ definition:
           - expiry
           - number
           - updatedAt
+    - role: user
+      output:
+        allowedFields:
+          - createdAt
+          - creditCardId
+          - customerId
+          - cvv
+          - expiry
+          - updatedAt
 
 ---
 kind: ObjectBooleanExpressionType
@@ -147,6 +156,17 @@ definition:
     - role: admin
       select:
         filter: null
+    - role: user
+      select: 
+        filter: 
+          relationship:
+            name: customer
+            predicate: 
+              fieldComparison:
+                field: customerId
+                operator: _eq
+                value: 
+                  sessionVariable: 'x-hasura-user-id'
 
 ---
 kind: Relationship

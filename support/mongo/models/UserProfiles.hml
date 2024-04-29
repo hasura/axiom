@@ -27,6 +27,11 @@ definition:
         allowedFields:
           - accountNumber
           - registrationDate
+    - role: user
+      output:
+        allowedFields:
+          - accountNumber
+          - registrationDate
 
 ---
 kind: ObjectType
@@ -623,6 +628,25 @@ definition:
     orderByExpressionType: Support_UserProfilesOrderBy
 
 ---
+kind: Relationship
+version: v1
+definition:
+  name: customer
+  source: UserProfiles
+  target:
+    model:
+      subgraph: customer
+      name: CustomerLink
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: memberId
+      target:
+        modelField:
+          - fieldName: customerGuid
+
+---
 kind: ModelPermissions
 version: v1
 definition:
@@ -631,4 +655,15 @@ definition:
     - role: admin
       select:
         filter: null
+    - role: user
+      select: 
+        filter: 
+          relationship:
+            name: customer
+            predicate: 
+              fieldComparison:
+                field: customerId
+                operator: _eq
+                value: 
+                  sessionVariable: x-hasura-user-id
 

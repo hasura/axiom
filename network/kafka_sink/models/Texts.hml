@@ -41,6 +41,16 @@ definition:
           - receivernumber
           - textid
           - timestamp
+    - role: user
+      output:
+        allowedFields:
+          - customerid
+          - deviceid
+          - messagetype
+          - nodeid
+          - receivernumber
+          - textid
+          - timestamp
 
 ---
 kind: ObjectBooleanExpressionType
@@ -125,6 +135,17 @@ definition:
     - role: admin
       select:
         filter: null
+    - role: user
+      select: 
+        filter: 
+          relationship:
+            name: customer
+            predicate: 
+              fieldComparison:
+                field: customerId
+                operator: _eq
+                value: 
+                  sessionVariable: x-hasura-user-id
 
 ---
 kind: Relationship

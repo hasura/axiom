@@ -33,6 +33,11 @@ definition:
         allowedFields:
           - customerId
           - nodeId
+    - role: user
+      output:
+        allowedFields:
+          - customerId
+          - nodeId
 
 ---
 kind: ObjectBooleanExpressionType
@@ -88,6 +93,17 @@ definition:
     - role: admin
       select:
         filter: null
+    - role: user
+      select: 
+        filter: 
+          relationship:
+            name: customer
+            predicate: 
+              fieldComparison:
+                field: customerId
+                operator: _eq
+                value: 
+                  sessionVariable: 'x-hasur-user-id'
 
 ---
 kind: Relationship

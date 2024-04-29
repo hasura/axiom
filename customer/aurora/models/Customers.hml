@@ -93,6 +93,21 @@ definition:
           - postcode
           - segment
           - state
+    - role: user
+      output:
+        allowedFields:
+          - address
+          - city
+          - country
+          - customerId
+          - email
+          - firstName
+          - image
+          - lastName
+          - phoneNumber
+          - postcode
+          - segment
+          - state
 
 ---
 kind: ObjectBooleanExpressionType
@@ -210,6 +225,14 @@ definition:
     - role: admin
       select:
         filter: null
+    - role: user
+      select:
+        filter:
+          fieldComparison:
+            field: customerId
+            operator: _eq
+            value:
+              sessionVariable: x-hasura-user-id
 
 
 ---

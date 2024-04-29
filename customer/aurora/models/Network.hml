@@ -57,6 +57,15 @@ definition:
           - nodeId
           - nodeName
           - status
+    - role: user
+      output:
+        allowedFields:
+          - capacity
+          - latitude
+          - longitude
+          - nodeId
+          - nodeName
+          - status
 
 ---
 kind: ObjectBooleanExpressionType
@@ -135,6 +144,20 @@ definition:
     - role: admin
       select:
         filter: null
+    - role: user
+      select: 
+        filter: 
+          relationship:
+            name: customer_network
+            predicate: 
+              relationship:
+                name: customer
+                predicate: 
+                  fieldComparison:
+                    field: customerId
+                    operator: _eq
+                    value: 
+                      sessionVariable: x-hasura-user-id
 
 ---
 kind: Relationship

@@ -33,6 +33,11 @@ definition:
         allowedFields:
           - customerPlanId
           - deviceId
+    - role: user
+      output:
+        allowedFields:
+          - customerPlanId
+          - deviceId
 
 ---
 kind: ObjectBooleanExpressionType
@@ -88,6 +93,20 @@ definition:
     - role: admin
       select:
         filter: null
+    - role: user
+      select: 
+        filter: 
+          relationship:
+            name: customerPlan
+            predicate: 
+              relationship:
+                name: customer
+                predicate: 
+                  fieldComparison:
+                    field: customerId
+                    operator: _eq
+                    value: 
+                      sessionVariable: x-hasura-user-id
 
 ---
 kind: Relationship

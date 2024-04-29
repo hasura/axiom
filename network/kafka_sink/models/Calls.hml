@@ -44,6 +44,17 @@ definition:
           - nodeid
           - receivernumber
           - timestamp
+    - role: user
+      output:
+        allowedFields:
+          - callid
+          - calltype
+          - customerid
+          - deviceid
+          - duration
+          - nodeid
+          - receivernumber
+          - timestamp
 
 ---
 kind: ObjectBooleanExpressionType
@@ -134,6 +145,17 @@ definition:
     - role: admin
       select:
         filter: null
+    - role: user
+      select: 
+        filter: 
+          relationship:
+            name: customer
+            predicate: 
+              fieldComparison:
+                field: customerId
+                operator: _eq
+                value: 
+                  sessionVariable: x-hasura-user-id
 
 ---
 kind: Relationship

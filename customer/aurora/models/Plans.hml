@@ -57,6 +57,15 @@ definition:
           - planName
           - sfRecord
           - type
+    - role: user
+      output:
+        allowedFields:
+          - description
+          - monthlyFee
+          - planId
+          - planName
+          - sfRecord
+          - type
 
 ---
 kind: ObjectBooleanExpressionType
@@ -138,6 +147,20 @@ definition:
     - role: admin
       select:
         filter: null
+    - role: user
+      select: 
+        filter: 
+          relationship:
+            name: customer_plan
+            predicate: 
+              relationship:
+                name: customer
+                predicate: 
+                  fieldComparison:
+                    field: customerId
+                    operator: _eq
+                    value:
+                      sessionVariable: x-hasura-user-id
 
 ---
 kind: Relationship

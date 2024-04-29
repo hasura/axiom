@@ -63,6 +63,16 @@ definition:
           - model
           - sfRecord
           - updatedAt
+    - role: user
+      output:
+        allowedFields:
+          - brand
+          - createdAt
+          - deviceId
+          - image
+          - model
+          - sfRecord
+          - updatedAt
 
 ---
 kind: ObjectBooleanExpressionType
@@ -147,6 +157,23 @@ definition:
     - role: admin
       select:
         filter: null
+    - role: user
+      select: 
+        filter: 
+          relationship:
+            name: plan
+            predicate: 
+              relationship:
+                name: customerPlan
+                predicate: 
+                  relationship:
+                    name: customer
+                    predicate: 
+                      fieldComparison:
+                        field: customerId
+                        operator: _eq
+                        value:
+                          sessionVariable: x-hasura-user-id
 
 ---
 kind: Relationship

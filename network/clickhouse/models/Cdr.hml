@@ -45,6 +45,13 @@ definition:
           - callType
           - guid
           - timestamp
+    - role: user
+      output:
+        allowedFields:
+          - callDuration
+          - callType
+          - guid
+          - timestamp
 
 ---
 kind: ObjectBooleanExpressionType
@@ -112,6 +119,17 @@ definition:
     - role: admin
       select:
         filter: null
+    - role: user
+      select: 
+        filter: 
+          relationship:
+            name: customer
+            predicate: 
+              fieldComparison:
+                field: customerId
+                operator: _eq
+                value: 
+                  sessionVariable: x-hasura-user-id
 
 ---
 kind: Relationship

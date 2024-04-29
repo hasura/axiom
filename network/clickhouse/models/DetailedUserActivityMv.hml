@@ -93,6 +93,21 @@ definition:
           - npGuid
           - npTimestamp
           - uploadSpeed
+    - role: user
+      output:
+        allowedFields:
+          - cdrGuid
+          - cdrTimestamp
+          - callDuration
+          - callType
+          - duGuid
+          - duTimestamp
+          - dataUsage
+          - downloadSpeed
+          - latency
+          - npGuid
+          - npTimestamp
+          - uploadSpeed
 
 ---
 kind: ObjectBooleanExpressionType
@@ -196,6 +211,25 @@ definition:
     orderByExpressionType: Network_DetailedUserActivityMvOrderBy
 
 ---
+kind: Relationship
+version: v1
+definition:
+  name: customer
+  source: DetailedUserActivityMv
+  target:
+    model:
+      subgraph: customer
+      name: CustomerLink
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: cdrGuid
+      target:
+        modelField:
+          - fieldName: customerGuid
+
+---
 kind: ModelPermissions
 version: v1
 definition:
@@ -204,4 +238,15 @@ definition:
     - role: admin
       select:
         filter: null
+    - role: user
+      select: 
+        filter: 
+          relationship:
+            name: customer
+            predicate: 
+              fieldComparison:
+                field: customerId
+                operator: _eq
+                value: 
+                  sessionVariable: x-hasura-user-id
 
