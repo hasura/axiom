@@ -165,3 +165,21 @@ definition:
       target:
         modelField:
           - fieldName: customerId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: maskCreditCard
+  source: CreditCards
+  target:
+    command:
+      name: MaskCardNumber
+      subgraph: customer
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: number
+      target:
+        argument:
+          argumentName: cardNumber

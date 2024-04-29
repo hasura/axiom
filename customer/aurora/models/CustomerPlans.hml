@@ -201,3 +201,39 @@ definition:
       target:
         modelField:
           - fieldName: customerPlanId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: formatStartDate
+  source: CustomerPlans
+  target:
+    command:
+      name: ToDateString
+      subgraph: null
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: startDate
+      target:
+        argument:
+          argumentName: date
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: formatEndDate
+  source: CustomerPlans
+  target:
+    command:
+      name: ToDateString
+      subgraph: null
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: endDate
+      target:
+        argument:
+          argumentName: date
