@@ -45,5 +45,10 @@ mongosh mongodb+srv://username:password@cluster0.abcdef.mongodb.net < data/mongo
 
 AWS Aurora / GCP Cloud SQL
 -
-Set up your instance,
+Set up your instance, connect to the database (using pgcli preferably) and run all the commands in data/postgres/pg.sql to set up the database.
 
+Configure your access rules, firewalls, network interfaces etc to allow traffic from Hasura.
+
+```
+brew install pgcli
+```
