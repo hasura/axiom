@@ -1,0 +1,54 @@
+version: '3.8'
+name: axiom
+services:
+  postgres:
+    image: ankane/pgvector:latest
+    container_name: axiom-pgvector
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:16432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./data/postgres/:/docker-entrypoint-initdb.d/
+    environment:
+      PGUSER: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespassword
+    healthcheck:
+      test: "pg_isready -q -h postgres"
+      interval: 10s
+      timeout: 5s
+      retries: 30
+
+  mongodb:
+    image: mongo
+    container_name: axiom-mongodb
+    restart: unless-stopped
+    ports:
+      - 127.0.0.1:38017:27017
+    command: mongod --noauth
+    volumes:
+      - mongodb-data:/data/db
+      - ./data/mongo/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js
+    environment:
+      - MONGO_INITDB_DATABASE=holotel
+    mem_limit: 500m
+  
+  clickhouse:
+    image: clickhouse/clickhouse-server
+    container_name: axiom-clickhouse
+    restart: unless-stopped
+    user: "101:101"
+    hostname: clickhouse
+    ports:
+      - "127.0.0.1:9123:8123"
+    volumes:
+      # - ./docker/data/clickhouse/config.d/config.xml:/etc/clickhouse-server/config.d/config.xml
+      # - ./docker/data/clickhouse/users.d/users.xml:/etc/clickhouse-server/users.d/users.xml
+      - clickhouse-data:/var/lib/clickhouse
+      - ./data/clickhouse/:/docker-entrypoint-initdb.d/
+
+volumes:
+  postgres-data:
+  clickhouse-data:
+  mongodb-data:
