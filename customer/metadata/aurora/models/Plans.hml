@@ -1,0 +1,181 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: Plans
+  fields:
+    - name: description
+      type: Text
+    - name: monthlyFee
+      type: Numeric
+    - name: planId
+      type: Int4!
+    - name: planName
+      type: Varchar
+    - name: sfRecord
+      type: Varchar
+    - name: type
+      type: Text
+  graphql:
+    typeName: Customer_Plans
+    inputTypeName: Customer_PlansInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: plans
+      fieldMapping:
+        description:
+          column:
+            name: description
+        monthlyFee:
+          column:
+            name: monthly_fee
+        planId:
+          column:
+            name: plan_id
+        planName:
+          column:
+            name: plan_name
+        sfRecord:
+          column:
+            name: sf_record
+        type:
+          column:
+            name: type
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: Plans
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - description
+          - monthlyFee
+          - planId
+          - planName
+          - sfRecord
+          - type
+    - role: user
+      output:
+        allowedFields:
+          - description
+          - monthlyFee
+          - planId
+          - planName
+          - sfRecord
+          - type
+
+---
+kind: ObjectBooleanExpressionType
+version: v1
+definition:
+  name: PlansBoolExp
+  objectType: Plans
+  dataConnectorName: aurora
+  dataConnectorObjectType: plans
+  comparableFields:
+    - fieldName: description
+      operators:
+        enableAll: true
+    - fieldName: monthlyFee
+      operators:
+        enableAll: true
+    - fieldName: planId
+      operators:
+        enableAll: true
+    - fieldName: planName
+      operators:
+        enableAll: true
+    - fieldName: sfRecord
+      operators:
+        enableAll: true
+    - fieldName: type
+      operators:
+        enableAll: true
+  graphql:
+    typeName: Customer_PlansBoolExp
+
+---
+kind: Model
+version: v1
+definition:
+  name: Plans
+  objectType: Plans
+  source:
+    dataConnectorName: aurora
+    collection: plans
+  filterExpressionType: PlansBoolExp
+  orderableFields:
+    - fieldName: description
+      orderByDirections:
+        enableAll: true
+    - fieldName: monthlyFee
+      orderByDirections:
+        enableAll: true
+    - fieldName: planId
+      orderByDirections:
+        enableAll: true
+    - fieldName: planName
+      orderByDirections:
+        enableAll: true
+    - fieldName: sfRecord
+      orderByDirections:
+        enableAll: true
+    - fieldName: type
+      orderByDirections:
+        enableAll: true
+  graphql:
+    selectMany:
+      queryRootField: customer_plans
+    selectUniques:
+      - queryRootField: customer_plansByPlanId
+        uniqueIdentifier:
+          - planId
+      - queryRootField: customer_plansByPlanName
+        uniqueIdentifier:
+          - planName
+    orderByExpressionType: Customer_PlansOrderBy
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: Plans
+  permissions:
+    - role: admin
+      select:
+        filter: null
+    - role: user
+      select: 
+        filter: 
+          relationship:
+            name: customer_plan
+            predicate: 
+              relationship:
+                name: customer
+                predicate: 
+                  fieldComparison:
+                    field: customerId
+                    operator: _eq
+                    value:
+                      sessionVariable: x-hasura-user-id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer_plan
+  sourceType: Plans
+  target:
+    model:
+      name: CustomerPlans
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: planId
+      target:
+        modelField:
+          - fieldName: planId

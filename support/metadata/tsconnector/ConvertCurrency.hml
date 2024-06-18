@@ -1,0 +1,34 @@
+---
+kind: Command
+version: v1
+definition:
+  name: ConvertCurrency
+  outputType: Float!
+  arguments:
+    - name: amount
+      type: Float!
+      description: The amount to convert.
+    - name: currentCurrency
+      type: String!
+      description: The current currency of the amount.
+    - name: targetCurrency
+      type: String!
+      description: The target currency to convert to.
+  source:
+    dataConnectorName: tsconnector
+    dataConnectorCommand:
+      function: convertCurrency
+  graphql:
+    rootFieldName: support_convertCurrency
+    rootFieldKind: Query
+  description: Converts currency amount to the target currency.
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: ConvertCurrency
+  permissions:
+    - role: admin
+      allowExecution: true
+

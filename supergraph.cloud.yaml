@@ -1,0 +1,36 @@
+kind: Supergraph
+version: v1
+definition:
+  supergraph_globals:
+    generator:
+      rootPath: ./supergraph_globals
+    envFile: ./supergraph_globals/.env.supergraph_globals
+    includePaths:
+      - ./supergraph_globals/auth-config.cloud.hml
+      - ./supergraph_globals/compatibility-config.cloud.hml
+      - ./supergraph_globals/graphql-config.cloud.hml
+  subgraphs:
+    auth:
+      generator:
+        rootPath: auth
+      envFile: auth/.env.cloud.auth
+      includePaths:
+        - auth/metadata
+    customer:
+      generator:
+        rootPath: customer
+      envFile: customer/.env.cloud.customer
+      includePaths:
+        - customer/metadata
+    network:
+      generator:
+        rootPath: network
+      envFile: network/.env.cloud.network
+      includePaths:
+        - network/metadata
+    support:
+      generator:
+        rootPath: support
+      envFile: support/.env.cloud.support
+      includePaths:
+        - support/metadata

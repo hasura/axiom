@@ -1,0 +1,180 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: Billing
+  fields:
+    - name: billingDate
+      type: Date
+    - name: billingId
+      type: Int4!
+    - name: customerId
+      type: Int4
+    - name: paymentStatus
+      type: Varchar
+    - name: totalAmount
+      type: Numeric
+  graphql:
+    typeName: Customer_Billing
+    inputTypeName: Customer_BillingInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: billing
+      fieldMapping:
+        billingDate:
+          column:
+            name: billing_date
+        billingId:
+          column:
+            name: billing_id
+        customerId:
+          column:
+            name: customer_id
+        paymentStatus:
+          column:
+            name: payment_status
+        totalAmount:
+          column:
+            name: total_amount
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: Billing
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - billingDate
+          - billingId
+          - customerId
+          - paymentStatus
+          - totalAmount
+    - role: user
+      output:
+        allowedFields:
+          - billingDate
+          - billingId
+          - customerId
+          - paymentStatus
+          - totalAmount
+
+---
+kind: ObjectBooleanExpressionType
+version: v1
+definition:
+  name: BillingBoolExp
+  objectType: Billing
+  dataConnectorName: aurora
+  dataConnectorObjectType: billing
+  comparableFields:
+    - fieldName: billingDate
+      operators:
+        enableAll: true
+    - fieldName: billingId
+      operators:
+        enableAll: true
+    - fieldName: customerId
+      operators:
+        enableAll: true
+    - fieldName: paymentStatus
+      operators:
+        enableAll: true
+    - fieldName: totalAmount
+      operators:
+        enableAll: true
+  graphql:
+    typeName: Customer_BillingBoolExp
+
+---
+kind: Model
+version: v1
+definition:
+  name: Billing
+  objectType: Billing
+  source:
+    dataConnectorName: aurora
+    collection: billing
+  filterExpressionType: BillingBoolExp
+  orderableFields:
+    - fieldName: billingDate
+      orderByDirections:
+        enableAll: true
+    - fieldName: billingId
+      orderByDirections:
+        enableAll: true
+    - fieldName: customerId
+      orderByDirections:
+        enableAll: true
+    - fieldName: paymentStatus
+      orderByDirections:
+        enableAll: true
+    - fieldName: totalAmount
+      orderByDirections:
+        enableAll: true
+  graphql:
+    selectMany:
+      queryRootField: customer_billing
+    selectUniques:
+      - queryRootField: customer_billingByBillingId
+        uniqueIdentifier:
+          - billingId
+    orderByExpressionType: Customer_BillingOrderBy
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: Billing
+  permissions:
+    - role: admin
+      select:
+        filter: null
+    - role: user
+      select: 
+        filter: 
+          relationship:
+            name: customer
+            predicate: 
+              fieldComparison:
+                field: customerId
+                operator: _eq
+                value: 
+                  sessionVariable: 'x-hasura-user-id'
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer
+  sourceType: Billing
+  target:
+    model:
+      name: Customers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: formatBillingDate
+  sourceType: Billing
+  target:
+    command:
+      name: ToDateString
+      subgraph: null
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: billingDate
+      target:
+        argument:
+          argumentName: date

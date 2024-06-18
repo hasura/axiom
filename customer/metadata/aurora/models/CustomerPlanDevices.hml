@@ -1,0 +1,163 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: CustomerPlanDevices
+  fields:
+    - name: customerPlanId
+      type: Int4!
+    - name: deviceId
+      type: Int4!
+  graphql:
+    typeName: Customer_CustomerPlanDevices
+    inputTypeName: Customer_CustomerPlanDevicesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: customer_plan_devices
+      fieldMapping:
+        customerPlanId:
+          column:
+            name: customer_plan_id
+        deviceId:
+          column:
+            name: device_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: CustomerPlanDevices
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - customerPlanId
+          - deviceId
+    - role: user
+      output:
+        allowedFields:
+          - customerPlanId
+          - deviceId
+
+---
+kind: ObjectBooleanExpressionType
+version: v1
+definition:
+  name: CustomerPlanDevicesBoolExp
+  objectType: CustomerPlanDevices
+  dataConnectorName: aurora
+  dataConnectorObjectType: customer_plan_devices
+  comparableFields:
+    - fieldName: customerPlanId
+      operators:
+        enableAll: true
+    - fieldName: deviceId
+      operators:
+        enableAll: true
+  graphql:
+    typeName: Customer_CustomerPlanDevicesBoolExp
+
+---
+kind: Model
+version: v1
+definition:
+  name: CustomerPlanDevices
+  objectType: CustomerPlanDevices
+  source:
+    dataConnectorName: aurora
+    collection: customer_plan_devices
+  filterExpressionType: CustomerPlanDevicesBoolExp
+  orderableFields:
+    - fieldName: customerPlanId
+      orderByDirections:
+        enableAll: true
+    - fieldName: deviceId
+      orderByDirections:
+        enableAll: true
+  graphql:
+    selectMany:
+      queryRootField: customer_customerPlanDevices
+    selectUniques:
+      - queryRootField: customer_customerPlanDevicesByCustomerPlanDevicesPkey
+        uniqueIdentifier:
+          - customerPlanId
+          - deviceId
+    orderByExpressionType: Customer_CustomerPlanDevicesOrderBy
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: CustomerPlanDevices
+  permissions:
+    - role: admin
+      select:
+        filter: null
+    - role: user
+      select: 
+        filter: 
+          relationship:
+            name: customerPlan
+            predicate: 
+              relationship:
+                name: customer
+                predicate: 
+                  fieldComparison:
+                    field: customerId
+                    operator: _eq
+                    value: 
+                      sessionVariable: x-hasura-user-id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: network
+  sourceType: CustomerPlanDevices
+  target:
+    model:
+      name: CustomerPlans
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerPlanId
+      target:
+        modelField:
+          - fieldName: planId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: devices
+  sourceType: CustomerPlanDevices
+  target:
+    model:
+      name: Devices
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: deviceId
+      target:
+        modelField:
+          - fieldName: deviceId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customerPlan
+  sourceType: CustomerPlanDevices
+  target:
+    model:
+      name: CustomerPlans
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerPlanId
+      target:
+        modelField:
+          - fieldName: customerPlanId
