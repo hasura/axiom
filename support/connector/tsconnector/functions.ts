@@ -70,7 +70,7 @@ type UsageStats = {
  * @paralleldegree 5
  */
 export function calculateSupportScore(supportHistory: SupportTicket[], usageStats: UsageStats): number {
-  let weightedScore = 0;
+  let weightedScore = 1;
 
   // // Calculate support ticket score
   // supportHistory.forEach(ticket => {
