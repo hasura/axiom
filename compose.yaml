@@ -1,3 +1,12 @@
+include:
+  - path: auth/connector/authdb/compose.yaml
+  - path: customer/connector/aurora/compose.yaml
+  - path: customer/connector/nodejs/compose.yaml
+  - path: network/connector/clickhouse/compose.yaml
+  - path: network/connector/kafka_sink/compose.yaml
+  - path: support/connector/mongo/compose.yaml
+  - path: support/connector/pgvector/compose.yaml
+  - path: support/connector/tsconnector/compose.yaml
 services:
   auth_hook:
     image: ghcr.io/hasura/v3-dev-auth-webhook
@@ -29,7 +38,7 @@ services:
     command:
       - --config=/etc/otel-collector-config.yaml
     environment:
-      HASURA_DDN_PAT: ${HASURA_DDN_PAT}
+      HASURA_DDN_PAT: wNoH9RO9YhUcL9ICpry0dgFbAqeTu3dJ6hvGRbyJgqiDIYj4yzIqu6eW78J5N5Gq
     image: otel/opentelemetry-collector
     ports:
       - mode: ingress
