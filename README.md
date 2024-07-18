@@ -7,16 +7,17 @@ Everything related to the demo itself and content/data used within it is in the 
 
 Recreating this project
 -
-ddn create project --no-dir
-
-ddn context set project <project-name>
+ddn project create
 
 PROJECT=\<project name here\>
+
+ddn context set project $PROJECT
 
 ddn project subgraph create support --project $PROJECT
 ddn project subgraph create customer --project $PROJECT
 ddn project subgraph create auth --project $PROJECT
 ddn project subgraph create network --project $PROJECT
+ddn project subgraph create globals --project $PROJECT
 
 // Add your db credentials for postgres, clickhouse, mongo.
 // NB you might have to encode your password per https://github.com/hasura/v3-docs/blob/fcca076d30feb5b5fc527eb568bba88a67072dfa/docs/connectors/postgresql/index.mdx#L141
