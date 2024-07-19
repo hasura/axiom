@@ -1,5 +1,5 @@
 start-ddn:
-    HASURA_DDN_PAT=$(ddn auth print-pat) sudo docker compose up --build --watch
+    HASURA_DDN_PAT=$(ddn auth print-pat) docker compose up --build --watch
 start-connector-nodejs:
     cd ./customer/connector/nodejs && npx dotenv -e .env.local -- npm run watch
 start-connector-ts:
