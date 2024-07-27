@@ -25,7 +25,7 @@ check_ddn_installed() {
 
 # Function to initialize the connector
 initialize_connector() {
-    ddn connector init "$CONNECTOR" --subgraph "$SUBGRAPH" --hub-connector "hasura/$DB_TYPE" || {
+    ddn connector init "$CONNECTOR" --subgraph "$SUBGRAPH/subgraph.yaml" --hub-connector "hasura/$DB_TYPE" || {
         echo "Failed to initialize connector."
         exit 1
     }
@@ -37,19 +37,19 @@ update_env_variables() {
 
     case $DB_TYPE in
         mongodb)
-            echo "\nMONGODB_DATABASE_URI=\"$DB_URI\"" >> "$env_file"
+            echo -e "MONGODB_DATABASE_URI=\"$DB_URI\"" >> "$env_file"
             ;;
         postgres)
-            echo "\nCONNECTION_URI=\"$DB_URI\"" >> "$env_file"
+            echo -e "CONNECTION_URI=\"$DB_URI\"" >> "$env_file"
             ;;
         clickhouse)
             if [[ -z "$CLICKHOUSE_USERNAME" || -z "$CLICKHOUSE_PASSWORD" ]]; then
-                echo "ClickHouse requires both username and password."
+                echo -e "ClickHouse requires both username and password."
                 usage
             fi
-            echo "\nCLICKHOUSE_URL=\"$DB_URI\"" >> "$env_file"
-            echo "CLICKHOUSE_USERNAME=\"$CLICKHOUSE_USERNAME\"" >> "$env_file"
-            echo "CLICKHOUSE_PASSWORD=\"$CLICKHOUSE_PASSWORD\"" >> "$env_file"
+            echo -e "CLICKHOUSE_URL=\"$DB_URI\"" >> "$env_file"
+            echo -e "CLICKHOUSE_USERNAME=\"$CLICKHOUSE_USERNAME\"" >> "$env_file"
+            echo -e "CLICKHOUSE_PASSWORD=\"$CLICKHOUSE_PASSWORD\"" >> "$env_file"
             ;;
         *)
             echo "Unsupported DB_TYPE: $DB_TYPE"
@@ -108,13 +108,13 @@ initialize_connector
 update_env_variables
 
 # Introspect the connector
-ddn connector introspect --connector "$DEMO_DIR/$SUBGRAPH/connector/$CONNECTOR/connector.yaml" || {
+ddn connector introspect --connector "$DEMO_DIR/$SUBGRAPH/connector/$CONNECTOR/connector.local.yaml" || {
     echo "Failed to introspect connector."
     exit 1
 }
 
 # Add the connector link
-ddn connector-link add "$CONNECTOR" || {
+ddn connector-link add "$CONNECTOR" --subgraph "$SUBGRAPH/subgraph.yaml" || {
     echo "Failed to add connector link."
     exit 1
 }
@@ -123,20 +123,20 @@ ddn connector-link add "$CONNECTOR" || {
 manage_docker_configs
 
 # Append URLs to the subgraph's environment file
-echo "${READ_URL}" >> "$DEMO_DIR/$SUBGRAPH/.env.$SUBGRAPH"
-echo "${WRITE_URL}" >> "$DEMO_DIR/$SUBGRAPH/.env.$SUBGRAPH"
+echo "${READ_URL}" >> "$DEMO_DIR/$SUBGRAPH/.env.$SUBGRAPH.local"
+echo "${WRITE_URL}" >> "$DEMO_DIR/$SUBGRAPH/.env.$SUBGRAPH.local"
 
 # Start the Docker Compose watch
 HASURA_DDN_PAT=$(ddn auth print-pat) docker compose -f "$DEMO_DIR/docker-compose.hasura.yaml" watch &
 
 # Uncomment if needed
-# ddn connector-link update "$CONNECTOR" --subgraph "$SUBGRAPH" --add-all-resources
+ddn connector-link update "$CONNECTOR" --subgraph "$SUBGRAPH/subgraph.yaml" --add-all-resources
 
 # Add the model to the connector link
-ddn model add --connector-link "$CONNECTOR" --name transactions || {
-    echo "Failed to add model."
-    exit 1
-}
+# ddn model add --connector-link "$CONNECTOR" --name transactions || {
+#     echo "Failed to add model."
+#     exit 1
+# }
 
 # Build the supergraph
 ddn supergraph build local --output-dir "$DEMO_DIR/engine" || {
