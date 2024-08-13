@@ -28,3 +28,10 @@ ddn update data-connector-link my_ts --subgraph $SUBGRAPH
 
 ddn add command --data-connector-link my_ts --name hello --subgraph $SUBGRAPH
 
+
+## Additional commands
+for i in `find . -type f -name connector.cloud.yaml`; do echo $i; ddn connector build create --connector $i; done
+
+
+ ddn project subgraph create globals
+ ddn supergraph build create --supergraph ./supergraph.cloud.yam
