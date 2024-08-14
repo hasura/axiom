@@ -36,3 +36,5 @@ ddn add connector-manifest tsconnector --type cloud --hub-connector hasura/nodej
 ddn update data-connector-link my_ts --subgraph $SUBGRAPH
 
 ddn add command --data-connector-link my_ts --name hello --subgraph $SUBGRAPH
+
+
