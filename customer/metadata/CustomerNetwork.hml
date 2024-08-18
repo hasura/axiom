@@ -1,0 +1,138 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: CustomerNetwork
+  fields:
+    - name: customerId
+      type: Int4!
+    - name: nodeId
+      type: Int4!
+  graphql:
+    typeName: Customer_CustomerNetwork
+    inputTypeName: Customer_CustomerNetworkInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: customer_network
+      fieldMapping:
+        customerId:
+          column:
+            name: customer_id
+        nodeId:
+          column:
+            name: node_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: CustomerNetwork
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - customerId
+          - nodeId
+
+---
+kind: ObjectBooleanExpressionType
+version: v1
+definition:
+  name: CustomerNetworkBoolExp
+  objectType: CustomerNetwork
+  dataConnectorName: aurora
+  dataConnectorObjectType: customer_network
+  comparableFields:
+    - fieldName: customerId
+      operators:
+        enableAll: true
+    - fieldName: nodeId
+      operators:
+        enableAll: true
+  graphql:
+    typeName: Customer_CustomerNetworkBoolExp
+
+---
+kind: Model
+version: v1
+definition:
+  name: CustomerNetwork
+  objectType: CustomerNetwork
+  source:
+    dataConnectorName: aurora
+    collection: customer_network
+  filterExpressionType: CustomerNetworkBoolExp
+  orderableFields:
+    - fieldName: customerId
+      orderByDirections:
+        enableAll: true
+    - fieldName: nodeId
+      orderByDirections:
+        enableAll: true
+  graphql:
+    selectMany:
+      queryRootField: customer_customerNetwork
+    selectUniques:
+      - queryRootField: customer_customerNetworkByCustomerNetworkPkey
+        uniqueIdentifier:
+          - customerId
+          - nodeId
+    orderByExpressionType: Customer_CustomerNetworkOrderBy
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: CustomerNetwork
+  permissions:
+    - role: admin
+      select:
+        filter: null
+    - role: user
+      select: 
+        filter: 
+          relationship:
+            name: customer
+            predicate: 
+              fieldComparison:
+                field: customerId
+                operator: _eq
+                value: 
+                  sessionVariable: 'x-hasur-user-id'
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer
+  sourceType: CustomerNetwork
+  target:
+    model:
+      name: Customers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: network
+  sourceType: CustomerNetwork
+  target:
+    model:
+      name: Network
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: nodeId
+      target:
+        modelField:
+          - fieldName: nodeId
+

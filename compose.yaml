@@ -1,53 +1,40 @@
 include:
-  - path: auth/connector/authdb/compose.yaml
   - path: customer/connector/aurora/compose.yaml
-  - path: customer/connector/nodejs/compose.yaml
-  - path: network/connector/clickhouse/compose.yaml
-  - path: network/connector/kafka_sink/compose.yaml
-  - path: support/connector/mongo/compose.yaml
-  - path: support/connector/pgvector/compose.yaml
-  - path: support/connector/tsconnector/compose.yaml
 services:
-  auth_hook:
-    image: ghcr.io/hasura/v3-dev-auth-webhook
   engine:
     build:
       context: engine
       dockerfile_inline: |-
         FROM ghcr.io/hasura/v3-engine
-        COPY ./ /md/
+        COPY ./build /md/
     develop:
       watch:
-        - path: engine
-          action: sync+restart
+        - action: sync+restart
+          path: engine/build
           target: /md/
-    depends_on:
-      auth_hook:
-        condition: service_started
-        required: false
     env_file:
       - engine/.env.engine
     extra_hosts:
       - local.hasura.dev=host-gateway
     ports:
       - mode: ingress
-        target: 3000
-        published: "3000"
         protocol: tcp
+        published: "3000"
+        target: 3000
   otel-collector:
     command:
       - --config=/etc/otel-collector-config.yaml
     environment:
-      HASURA_DDN_PAT: wNoH9RO9YhUcL9ICpry0dgFbAqeTu3dJ6hvGRbyJgqiDIYj4yzIqu6eW78J5N5Gq
-    image: otel/opentelemetry-collector
+      HASURA_DDN_PAT: ${HASURA_DDN_PAT}
+    image: otel/opentelemetry-collector:0.104.0
     ports:
       - mode: ingress
-        target: 4317
+        protocol: tcp
         published: "4317"
-        protocol: tcp
+        target: 4317
       - mode: ingress
-        target: 4318
-        published: "4318"
         protocol: tcp
+        published: "4318"
+        target: 4318
     volumes:
       - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml

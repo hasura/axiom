@@ -1,0 +1,235 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: Deals
+  fields:
+    - name: additionalBenefits
+      type: Text
+    - name: customerSegment
+      type: Varchar
+    - name: dealId
+      type: Int4!
+    - name: dealName
+      type: Varchar
+    - name: description
+      type: Text
+    - name: endDate
+      type: Date
+    - name: maxMonthlySpend
+      type: Numeric
+    - name: minMonthlySpend
+      type: Numeric
+    - name: startDate
+      type: Date
+    - name: termsConditions
+      type: Text
+  graphql:
+    typeName: Customer_Deals
+    inputTypeName: Customer_DealsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: deals
+      fieldMapping:
+        additionalBenefits:
+          column:
+            name: additional_benefits
+        customerSegment:
+          column:
+            name: customer_segment
+        dealId:
+          column:
+            name: deal_id
+        dealName:
+          column:
+            name: deal_name
+        description:
+          column:
+            name: description
+        endDate:
+          column:
+            name: end_date
+        maxMonthlySpend:
+          column:
+            name: max_monthly_spend
+        minMonthlySpend:
+          column:
+            name: min_monthly_spend
+        startDate:
+          column:
+            name: start_date
+        termsConditions:
+          column:
+            name: terms_conditions
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: Deals
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - additionalBenefits
+          - customerSegment
+          - dealId
+          - dealName
+          - description
+          - endDate
+          - maxMonthlySpend
+          - minMonthlySpend
+          - startDate
+          - termsConditions
+
+---
+kind: ObjectBooleanExpressionType
+version: v1
+definition:
+  name: DealsBoolExp
+  objectType: Deals
+  dataConnectorName: aurora
+  dataConnectorObjectType: deals
+  comparableFields:
+    - fieldName: additionalBenefits
+      operators:
+        enableAll: true
+    - fieldName: customerSegment
+      operators:
+        enableAll: true
+    - fieldName: dealId
+      operators:
+        enableAll: true
+    - fieldName: dealName
+      operators:
+        enableAll: true
+    - fieldName: description
+      operators:
+        enableAll: true
+    - fieldName: endDate
+      operators:
+        enableAll: true
+    - fieldName: maxMonthlySpend
+      operators:
+        enableAll: true
+    - fieldName: minMonthlySpend
+      operators:
+        enableAll: true
+    - fieldName: startDate
+      operators:
+        enableAll: true
+    - fieldName: termsConditions
+      operators:
+        enableAll: true
+  graphql:
+    typeName: Customer_DealsBoolExp
+
+---
+kind: Model
+version: v1
+definition:
+  name: Deals
+  objectType: Deals
+  source:
+    dataConnectorName: aurora
+    collection: deals
+  filterExpressionType: DealsBoolExp
+  orderableFields:
+    - fieldName: additionalBenefits
+      orderByDirections:
+        enableAll: true
+    - fieldName: customerSegment
+      orderByDirections:
+        enableAll: true
+    - fieldName: dealId
+      orderByDirections:
+        enableAll: true
+    - fieldName: dealName
+      orderByDirections:
+        enableAll: true
+    - fieldName: description
+      orderByDirections:
+        enableAll: true
+    - fieldName: endDate
+      orderByDirections:
+        enableAll: true
+    - fieldName: maxMonthlySpend
+      orderByDirections:
+        enableAll: true
+    - fieldName: minMonthlySpend
+      orderByDirections:
+        enableAll: true
+    - fieldName: startDate
+      orderByDirections:
+        enableAll: true
+    - fieldName: termsConditions
+      orderByDirections:
+        enableAll: true
+  graphql:
+    selectMany:
+      queryRootField: customer_deals
+    selectUniques:
+      - queryRootField: customer_dealsByDealId
+        uniqueIdentifier:
+          - dealId
+    orderByExpressionType: Customer_DealsOrderBy
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: Deals
+  permissions:
+    - role: admin
+      select:
+        filter: null
+    - role: user
+      select: 
+        filter: 
+          and: 
+            - fieldComparison:
+                field: startDate
+                operator: _lte
+                value:
+                  literal: now()
+            - fieldComparison:
+                field: endDate
+                operator: _gte
+                value:
+                  literal: now()
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: formatStartDate
+  sourceType: Deals
+  target:
+    command:
+      name: ToDateString
+      subgraph: null
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: startDate
+      target:
+        argument:
+          argumentName: date
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: formatEndDate
+  sourceType: Deals
+  target:
+    command:
+      name: ToDateString
+      subgraph: customer
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: endDate
+      target:
+        argument:
+          argumentName: date
