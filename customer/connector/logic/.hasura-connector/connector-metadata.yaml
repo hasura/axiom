@@ -1,0 +1,26 @@
+packagingDefinition:
+  type: ManagedDockerBuild
+nativeToolchainDefinition:
+  commands:
+    start:
+      type: ShellScript
+      bash: ./start.sh
+      powershell: ./start.ps1
+    watch:
+      type: ShellScript
+      bash: ./watch.sh
+      powershell: ./watch.ps1
+supportedEnvironmentVariables: []
+commands: {}
+dockerComposeWatch:
+  # Rebuild the container if a new package restore is required because package[-lock].json changed
+  - path: package.json
+    target: /functions/package.json
+    action: rebuild
+  - path: package-lock.json
+    target: /functions/package-lock.json
+    action: rebuild
+  # For any other file change, simply copy it into the existing container and restart it
+  - path: ./
+    target: /functions
+    action: sync+restart
