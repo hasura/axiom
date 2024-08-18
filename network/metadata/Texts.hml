@@ -1,0 +1,138 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: Texts
+  fields:
+    - name: customerid
+      type: Int4!
+    - name: deviceid
+      type: Int4!
+    - name: messagetype
+      type: Varchar
+    - name: nodeid
+      type: Int4
+    - name: receivernumber
+      type: Varchar
+    - name: textid
+      type: Int4!
+    - name: timestamp
+      type: Timestamptz!
+  graphql:
+    typeName: Network_Texts
+    inputTypeName: Network_TextsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: kafka_sink
+      dataConnectorObjectType: texts
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: Texts
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - customerid
+          - deviceid
+          - messagetype
+          - nodeid
+          - receivernumber
+          - textid
+          - timestamp
+    - role: user
+      output:
+        allowedFields:
+          - customerid
+          - deviceid
+          - messagetype
+          - nodeid
+          - receivernumber
+          - textid
+          - timestamp
+
+---
+kind: ObjectBooleanExpressionType
+version: v1
+definition:
+  name: TextsBoolExp
+  objectType: Texts
+  dataConnectorName: kafka_sink
+  dataConnectorObjectType: texts
+  comparableFields:
+    - fieldName: customerid
+      operators:
+        enableAll: true
+    - fieldName: deviceid
+      operators:
+        enableAll: true
+    - fieldName: messagetype
+      operators:
+        enableAll: true
+    - fieldName: nodeid
+      operators:
+        enableAll: true
+    - fieldName: receivernumber
+      operators:
+        enableAll: true
+    - fieldName: textid
+      operators:
+        enableAll: true
+    - fieldName: timestamp
+      operators:
+        enableAll: true
+  graphql:
+    typeName: Network_TextsBoolExp
+
+---
+kind: Model
+version: v1
+definition:
+  name: Texts
+  objectType: Texts
+  source:
+    dataConnectorName: kafka_sink
+    collection: texts
+  filterExpressionType: TextsBoolExp
+  orderableFields:
+    - fieldName: customerid
+      orderByDirections:
+        enableAll: true
+    - fieldName: deviceid
+      orderByDirections:
+        enableAll: true
+    - fieldName: messagetype
+      orderByDirections:
+        enableAll: true
+    - fieldName: nodeid
+      orderByDirections:
+        enableAll: true
+    - fieldName: receivernumber
+      orderByDirections:
+        enableAll: true
+    - fieldName: textid
+      orderByDirections:
+        enableAll: true
+    - fieldName: timestamp
+      orderByDirections:
+        enableAll: true
+  graphql:
+    selectMany:
+      queryRootField: network_texts
+    selectUniques:
+      - queryRootField: network_textsByTextid
+        uniqueIdentifier:
+          - textid
+    orderByExpressionType: Network_TextsOrderBy
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: Texts
+  permissions:
+    - role: admin
+      select:
+        filter: null
+

@@ -1,0 +1,30 @@
+---
+kind: Command
+version: v1
+definition:
+  name: ToDateString
+  outputType: String!
+  arguments:
+    - name: date
+      type: String
+      description: The date string to format.
+  source:
+    dataConnectorName: functions
+    dataConnectorCommand:
+      function: toDateString
+  graphql:
+    rootFieldName: support_toDateString
+    rootFieldKind: Query
+  description: Formats a date string to a human-readable format.
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: ToDateString
+  permissions:
+    - role: admin
+      allowExecution: true
+    - role: user
+      allowExecution: true
+
