@@ -12,6 +12,7 @@
     },
     "$schema": {
       "description": "Jsonschema of the configuration format.",
+      "default": null,
       "type": [
         "string",
         "null"
@@ -23,14 +24,14 @@
         "connectionUri": {
           "variable": "CONNECTION_URI"
         },
-        "isolationLevel": "ReadCommitted",
         "poolSettings": {
-          "checkConnectionAfterIdle": 60,
-          "connectionLifetime": 600,
-          "idleTimeout": 180,
           "maxConnections": 50,
-          "poolTimeout": 30
-        }
+          "poolTimeout": 30,
+          "idleTimeout": 180,
+          "checkConnectionAfterIdle": 60,
+          "connectionLifetime": 600
+        },
+        "isolationLevel": "ReadCommitted"
       },
       "allOf": [
         {
@@ -41,10 +42,15 @@
     "metadata": {
       "description": "Connector metadata.",
       "default": {
-        "compositeTypes": {},
-        "nativeQueries": {},
-        "scalarTypes": {},
-        "tables": {}
+        "tables": {},
+        "types": {
+          "scalar": {},
+          "composite": {}
+        },
+        "nativeOperations": {
+          "queries": {},
+          "mutations": {}
+        }
       },
       "allOf": [
         {
@@ -55,108 +61,6 @@
     "introspectionOptions": {
       "description": "Database introspection options.",
       "default": {
-        "comparisonOperatorMapping": [
-          {
-            "exposedName": "_eq",
-            "operatorKind": "equal",
-            "operatorName": "="
-          },
-          {
-            "exposedName": "_lte",
-            "operatorKind": "custom",
-            "operatorName": "<="
-          },
-          {
-            "exposedName": "_gt",
-            "operatorKind": "custom",
-            "operatorName": ">"
-          },
-          {
-            "exposedName": "_gte",
-            "operatorKind": "custom",
-            "operatorName": ">="
-          },
-          {
-            "exposedName": "_lt",
-            "operatorKind": "custom",
-            "operatorName": "<"
-          },
-          {
-            "exposedName": "_neq",
-            "operatorKind": "custom",
-            "operatorName": "!="
-          },
-          {
-            "exposedName": "_like",
-            "operatorKind": "custom",
-            "operatorName": "LIKE"
-          },
-          {
-            "exposedName": "_nlike",
-            "operatorKind": "custom",
-            "operatorName": "NOT LIKE"
-          },
-          {
-            "exposedName": "_ilike",
-            "operatorKind": "custom",
-            "operatorName": "ILIKE"
-          },
-          {
-            "exposedName": "_nilike",
-            "operatorKind": "custom",
-            "operatorName": "NOT ILIKE"
-          },
-          {
-            "exposedName": "_similar",
-            "operatorKind": "custom",
-            "operatorName": "SIMILAR TO"
-          },
-          {
-            "exposedName": "_nsimilar",
-            "operatorKind": "custom",
-            "operatorName": "NOT SIMILAR TO"
-          },
-          {
-            "exposedName": "_like",
-            "operatorKind": "custom",
-            "operatorName": "~~"
-          },
-          {
-            "exposedName": "_nlike",
-            "operatorKind": "custom",
-            "operatorName": "!~~"
-          },
-          {
-            "exposedName": "_ilike",
-            "operatorKind": "custom",
-            "operatorName": "~~*"
-          },
-          {
-            "exposedName": "_nilike",
-            "operatorKind": "custom",
-            "operatorName": "!~~*"
-          },
-          {
-            "exposedName": "_regex",
-            "operatorKind": "custom",
-            "operatorName": "~"
-          },
-          {
-            "exposedName": "_nregex",
-            "operatorKind": "custom",
-            "operatorName": "!~"
-          },
-          {
-            "exposedName": "_iregex",
-            "operatorKind": "custom",
-            "operatorName": "~*"
-          },
-          {
-            "exposedName": "_niregex",
-            "operatorKind": "custom",
-            "operatorName": "!~*"
-          }
-        ],
         "excludedSchemas": [
           "information_schema",
           "pg_catalog",
@@ -164,6 +68,121 @@
           "crdb_internal",
           "columnar",
           "columnar_internal"
+        ],
+        "unqualifiedSchemasForTables": [
+          "public"
+        ],
+        "unqualifiedSchemasForTypesAndProcedures": [
+          "public",
+          "pg_catalog",
+          "tiger"
+        ],
+        "comparisonOperatorMapping": [
+          {
+            "operatorName": "=",
+            "exposedName": "_eq",
+            "operatorKind": "equal"
+          },
+          {
+            "operatorName": "<=",
+            "exposedName": "_lte",
+            "operatorKind": "custom"
+          },
+          {
+            "operatorName": ">",
+            "exposedName": "_gt",
+            "operatorKind": "custom"
+          },
+          {
+            "operatorName": ">=",
+            "exposedName": "_gte",
+            "operatorKind": "custom"
+          },
+          {
+            "operatorName": "<",
+            "exposedName": "_lt",
+            "operatorKind": "custom"
+          },
+          {
+            "operatorName": "<>",
+            "exposedName": "_neq",
+            "operatorKind": "custom"
+          },
+          {
+            "operatorName": "!=",
+            "exposedName": "_neq",
+            "operatorKind": "custom"
+          },
+          {
+            "operatorName": "LIKE",
+            "exposedName": "_like",
+            "operatorKind": "custom"
+          },
+          {
+            "operatorName": "NOT LIKE",
+            "exposedName": "_nlike",
+            "operatorKind": "custom"
+          },
+          {
+            "operatorName": "ILIKE",
+            "exposedName": "_ilike",
+            "operatorKind": "custom"
+          },
+          {
+            "operatorName": "NOT ILIKE",
+            "exposedName": "_nilike",
+            "operatorKind": "custom"
+          },
+          {
+            "operatorName": "SIMILAR TO",
+            "exposedName": "_similar",
+            "operatorKind": "custom"
+          },
+          {
+            "operatorName": "NOT SIMILAR TO",
+            "exposedName": "_nsimilar",
+            "operatorKind": "custom"
+          },
+          {
+            "operatorName": "~~",
+            "exposedName": "_like",
+            "operatorKind": "custom"
+          },
+          {
+            "operatorName": "!~~",
+            "exposedName": "_nlike",
+            "operatorKind": "custom"
+          },
+          {
+            "operatorName": "~~*",
+            "exposedName": "_ilike",
+            "operatorKind": "custom"
+          },
+          {
+            "operatorName": "!~~*",
+            "exposedName": "_nilike",
+            "operatorKind": "custom"
+          },
+          {
+            "operatorName": "~",
+            "exposedName": "_regex",
+            "operatorKind": "custom"
+          },
+          {
+            "operatorName": "!~",
+            "exposedName": "_nregex",
+            "operatorKind": "custom"
+          },
+          {
+            "operatorName": "~*",
+            "exposedName": "_iregex",
+            "operatorKind": "custom"
+          },
+          {
+            "operatorName": "!~*",
+            "exposedName": "_niregex",
+            "operatorKind": "custom"
+          }
         ],
         "introspectPrefixFunctionComparisonOperators": [
           "box_above",
@@ -237,7 +256,9 @@
           "lseg_perp",
           "network_overlap",
           "network_sub",
+          "network_subeq",
           "network_sup",
+          "network_supeq",
           "on_pb",
           "on_pl",
           "on_ppath",
@@ -312,15 +333,7 @@
           "timetz": "timetz",
           "uuid": "uUID",
           "varchar": "string"
-        },
-        "unqualifiedSchemasForTables": [
-          "public"
-        ],
-        "unqualifiedSchemasForTypesAndProcedures": [
-          "public",
-          "pg_catalog",
-          "tiger"
-        ]
+        }
       },
       "allOf": [
         {
@@ -330,6 +343,7 @@
     },
     "mutationsVersion": {
       "description": "Which version of the generated mutation procedures to include in the schema response",
+      "default": null,
       "anyOf": [
         {
           "$ref": "#/definitions/MutationsVersion"
@@ -344,7 +358,7 @@
     "Version": {
       "type": "string",
       "enum": [
-        "4"
+        "5"
       ]
     },
     "DatabaseConnectionSettings": {
@@ -365,11 +379,11 @@
         "poolSettings": {
           "description": "Connection pool settings.",
           "default": {
-            "checkConnectionAfterIdle": 60,
-            "connectionLifetime": 600,
-            "idleTimeout": 180,
             "maxConnections": 50,
-            "poolTimeout": 30
+            "poolTimeout": 30,
+            "idleTimeout": 180,
+            "checkConnectionAfterIdle": 60,
+            "connectionLifetime": 600
           },
           "allOf": [
             {
@@ -501,27 +515,25 @@
             }
           ]
         },
-        "scalarTypes": {
-          "default": {},
+        "types": {
+          "default": {
+            "scalar": {},
+            "composite": {}
+          },
           "allOf": [
             {
-              "$ref": "#/definitions/ScalarTypes"
+              "$ref": "#/definitions/Types"
             }
           ]
         },
-        "compositeTypes": {
-          "default": {},
+        "nativeOperations": {
+          "default": {
+            "queries": {},
+            "mutations": {}
+          },
           "allOf": [
             {
-              "$ref": "#/definitions/CompositeTypes"
-            }
-          ]
-        },
-        "nativeQueries": {
-          "default": {},
-          "allOf": [
-            {
-              "$ref": "#/definitions/NativeQueries"
+              "$ref": "#/definitions/NativeOperations"
             }
           ]
         }
@@ -572,6 +584,7 @@
           ]
         },
         "description": {
+          "default": null,
           "type": [
             "string",
             "null"
@@ -611,6 +624,7 @@
           "$ref": "#/definitions/IsGenerated"
         },
         "description": {
+          "default": null,
           "type": [
             "string",
             "null"
@@ -628,7 +642,7 @@
           ],
           "properties": {
             "scalarType": {
-              "$ref": "#/definitions/ScalarTypeName"
+              "type": "string"
             }
           },
           "additionalProperties": false
@@ -640,7 +654,7 @@
           ],
           "properties": {
             "compositeType": {
-              "$ref": "#/definitions/CompositeTypeName"
+              "type": "string"
             }
           },
           "additionalProperties": false
@@ -658,14 +672,6 @@
           "additionalProperties": false
         }
       ]
-    },
-    "ScalarTypeName": {
-      "description": "A name of a Scalar Type, as it appears in the NDC scheme.",
-      "type": "string"
-    },
-    "CompositeTypeName": {
-      "description": "The name of a Composite Type, as it appears in the NDC schema",
-      "type": "string"
     },
     "Nullable": {
       "description": "Can this column contain null values",
@@ -708,7 +714,7 @@
       }
     },
     "UniquenessConstraint": {
-      "description": "The set of columns that make up a uniqueness constraint.",
+      "description": "The set of columns that make up a uniqueness constraint. We map each table column to their ndc field names.",
       "type": "array",
       "items": {
         "type": "string"
@@ -744,6 +750,22 @@
           "additionalProperties": {
             "type": "string"
           }
+        }
+      }
+    },
+    "Types": {
+      "description": "Information about types.",
+      "type": "object",
+      "required": [
+        "composite",
+        "scalar"
+      ],
+      "properties": {
+        "scalar": {
+          "$ref": "#/definitions/ScalarTypes"
+        },
+        "composite": {
+          "$ref": "#/definitions/CompositeTypes"
         }
       }
     },
@@ -807,7 +829,7 @@
       ],
       "properties": {
         "returnType": {
-          "$ref": "#/definitions/ScalarTypeName"
+          "type": "string"
         }
       }
     },
@@ -827,7 +849,7 @@
           "$ref": "#/definitions/OperatorKind"
         },
         "argumentType": {
-          "$ref": "#/definitions/ScalarTypeName"
+          "type": "string"
         },
         "isInfix": {
           "default": true,
@@ -1041,6 +1063,7 @@
           }
         },
         "description": {
+          "default": null,
           "type": [
             "string",
             "null"
@@ -1063,6 +1086,7 @@
           "$ref": "#/definitions/Type"
         },
         "description": {
+          "default": null,
           "type": [
             "string",
             "null"
@@ -1070,15 +1094,41 @@
         }
       }
     },
+    "NativeOperations": {
+      "description": "Metadata information of Native Operations.",
+      "type": "object",
+      "required": [
+        "mutations",
+        "queries"
+      ],
+      "properties": {
+        "queries": {
+          "description": "Native Queries.",
+          "allOf": [
+            {
+              "$ref": "#/definitions/NativeQueries"
+            }
+          ]
+        },
+        "mutations": {
+          "description": "Native Mutations.",
+          "allOf": [
+            {
+              "$ref": "#/definitions/NativeMutations"
+            }
+          ]
+        }
+      }
+    },
     "NativeQueries": {
-      "description": "Metadata information of native queries.",
+      "description": "Metadata information of Native Queries.",
       "type": "object",
       "additionalProperties": {
         "$ref": "#/definitions/NativeQueryInfo"
       }
     },
     "NativeQueryInfo": {
-      "description": "Information about a Native Query",
+      "description": "Information about a Native Operation",
       "type": "object",
       "required": [
         "columns",
@@ -1086,7 +1136,7 @@
       ],
       "properties": {
         "sql": {
-          "description": "SQL expression to use for the Native Query. We can interpolate values using `{{variable_name}}` syntax, such as `SELECT * FROM authors WHERE name = {{author_name}}`",
+          "description": "SQL expression to use for the Native Operation. We can interpolate values using `{{variable_name}}` syntax, such as `SELECT * FROM authors WHERE name = {{author_name}}`",
           "allOf": [
             {
               "$ref": "#/definitions/NativeQuerySql"
@@ -1094,14 +1144,14 @@
           ]
         },
         "columns": {
-          "description": "Columns returned by the Native Query",
+          "description": "Columns returned by the Native Operation",
           "type": "object",
           "additionalProperties": {
             "$ref": "#/definitions/ReadOnlyColumnInfo"
           }
         },
         "arguments": {
-          "description": "Names and types of arguments that can be passed to this Native Query",
+          "description": "Names and types of arguments that can be passed to this Native Operation",
           "default": {},
           "type": "object",
           "additionalProperties": {
@@ -1109,22 +1159,19 @@
           }
         },
         "description": {
+          "default": null,
           "type": [
             "string",
             "null"
           ]
-        },
-        "isProcedure": {
-          "description": "True if this native query mutates the database",
-          "type": "boolean"
         }
       }
     },
     "NativeQuerySql": {
-      "description": "Native Query SQL location.",
+      "description": "Native Operation SQL location.",
       "anyOf": [
         {
-          "description": "Refer to an external Native Query SQL file.",
+          "description": "Refer to an external Native Operation SQL file.",
           "type": "object",
           "required": [
             "file"
@@ -1137,14 +1184,14 @@
           }
         },
         {
-          "description": "Inline Native Query SQL string.",
+          "description": "Inline Native Operation SQL string.",
           "type": "object",
           "required": [
             "inline"
           ],
           "properties": {
             "inline": {
-              "description": "An inline Native Query SQL string.",
+              "description": "An inline Native Operation SQL string.",
               "allOf": [
                 {
                   "$ref": "#/definitions/InlineNativeQuerySql"
@@ -1184,11 +1231,19 @@
           ]
         },
         "description": {
+          "default": null,
           "type": [
             "string",
             "null"
           ]
         }
+      }
+    },
+    "NativeMutations": {
+      "description": "Metadata information of Native Mutations.",
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/NativeQueryInfo"
       }
     },
     "IntrospectionOptions": {
@@ -1236,104 +1291,109 @@
           "description": "The mapping of comparison operator names to apply when updating the configuration",
           "default": [
             {
+              "operatorName": "=",
               "exposedName": "_eq",
-              "operatorKind": "equal",
-              "operatorName": "="
+              "operatorKind": "equal"
             },
             {
+              "operatorName": "<=",
               "exposedName": "_lte",
-              "operatorKind": "custom",
-              "operatorName": "<="
+              "operatorKind": "custom"
             },
             {
+              "operatorName": ">",
               "exposedName": "_gt",
-              "operatorKind": "custom",
-              "operatorName": ">"
+              "operatorKind": "custom"
             },
             {
+              "operatorName": ">=",
               "exposedName": "_gte",
-              "operatorKind": "custom",
-              "operatorName": ">="
+              "operatorKind": "custom"
             },
             {
+              "operatorName": "<",
               "exposedName": "_lt",
-              "operatorKind": "custom",
-              "operatorName": "<"
+              "operatorKind": "custom"
             },
             {
+              "operatorName": "<>",
               "exposedName": "_neq",
-              "operatorKind": "custom",
-              "operatorName": "!="
+              "operatorKind": "custom"
             },
             {
+              "operatorName": "!=",
+              "exposedName": "_neq",
+              "operatorKind": "custom"
+            },
+            {
+              "operatorName": "LIKE",
               "exposedName": "_like",
-              "operatorKind": "custom",
-              "operatorName": "LIKE"
+              "operatorKind": "custom"
             },
             {
+              "operatorName": "NOT LIKE",
               "exposedName": "_nlike",
-              "operatorKind": "custom",
-              "operatorName": "NOT LIKE"
+              "operatorKind": "custom"
             },
             {
+              "operatorName": "ILIKE",
               "exposedName": "_ilike",
-              "operatorKind": "custom",
-              "operatorName": "ILIKE"
+              "operatorKind": "custom"
             },
             {
+              "operatorName": "NOT ILIKE",
               "exposedName": "_nilike",
-              "operatorKind": "custom",
-              "operatorName": "NOT ILIKE"
+              "operatorKind": "custom"
             },
             {
+              "operatorName": "SIMILAR TO",
               "exposedName": "_similar",
-              "operatorKind": "custom",
-              "operatorName": "SIMILAR TO"
+              "operatorKind": "custom"
             },
             {
+              "operatorName": "NOT SIMILAR TO",
               "exposedName": "_nsimilar",
-              "operatorKind": "custom",
-              "operatorName": "NOT SIMILAR TO"
+              "operatorKind": "custom"
             },
             {
+              "operatorName": "~~",
               "exposedName": "_like",
-              "operatorKind": "custom",
-              "operatorName": "~~"
+              "operatorKind": "custom"
             },
             {
+              "operatorName": "!~~",
               "exposedName": "_nlike",
-              "operatorKind": "custom",
-              "operatorName": "!~~"
+              "operatorKind": "custom"
             },
             {
+              "operatorName": "~~*",
               "exposedName": "_ilike",
-              "operatorKind": "custom",
-              "operatorName": "~~*"
+              "operatorKind": "custom"
             },
             {
+              "operatorName": "!~~*",
               "exposedName": "_nilike",
-              "operatorKind": "custom",
-              "operatorName": "!~~*"
+              "operatorKind": "custom"
             },
             {
+              "operatorName": "~",
               "exposedName": "_regex",
-              "operatorKind": "custom",
-              "operatorName": "~"
+              "operatorKind": "custom"
             },
             {
+              "operatorName": "!~",
               "exposedName": "_nregex",
-              "operatorKind": "custom",
-              "operatorName": "!~"
+              "operatorKind": "custom"
             },
             {
+              "operatorName": "~*",
               "exposedName": "_iregex",
-              "operatorKind": "custom",
-              "operatorName": "~*"
+              "operatorKind": "custom"
             },
             {
+              "operatorName": "!~*",
               "exposedName": "_niregex",
-              "operatorKind": "custom",
-              "operatorName": "!~*"
+              "operatorKind": "custom"
             }
           ],
           "type": "array",
@@ -1415,7 +1475,9 @@
             "lseg_perp",
             "network_overlap",
             "network_sub",
+            "network_subeq",
             "network_sup",
+            "network_supeq",
             "on_pb",
             "on_pl",
             "on_ppath",
@@ -1545,7 +1607,7 @@
       "type": "string",
       "enum": [
         "v1",
-        "veryExperimentalWip"
+        "v2"
       ]
     }
   }
