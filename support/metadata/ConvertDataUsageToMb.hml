@@ -1,0 +1,32 @@
+---
+kind: Command
+version: v1
+definition:
+  name: ConvertDataUsageToMb
+  outputType: Float!
+  arguments:
+    - name: usageInGb
+      type: Float!
+      description: The data usage in GB.
+  source:
+    dataConnectorName: functions
+    dataConnectorCommand:
+      function: convertDataUsageToMB
+    argumentMapping:
+      usageInGb: usageInGB
+  graphql:
+    rootFieldName: support_convertDataUsageToMb
+    rootFieldKind: Query
+  description: Converts data usage from GB to MB.
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: ConvertDataUsageToMb
+  permissions:
+    - role: admin
+      allowExecution: true
+    - role: user
+      allowExecution: true
+

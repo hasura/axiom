@@ -1,0 +1,108 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: DocumentEmbeddings
+  fields:
+    - name: documentUuid
+      type: Uuid!
+    - name: embeddings
+      type: Vector
+  graphql:
+    typeName: Support_DocumentEmbeddings
+    inputTypeName: Support_DocumentEmbeddingsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: vector
+      dataConnectorObjectType: document_embeddings
+      fieldMapping:
+        documentUuid:
+          column:
+            name: document_uuid
+        embeddings:
+          column:
+            name: embeddings
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: DocumentEmbeddings
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - documentUuid
+          - embeddings
+
+---
+kind: ObjectBooleanExpressionType
+version: v1
+definition:
+  name: DocumentEmbeddingsBoolExp
+  objectType: DocumentEmbeddings
+  dataConnectorName: vector
+  dataConnectorObjectType: document_embeddings
+  comparableFields:
+    - fieldName: documentUuid
+      operators:
+        enableAll: true
+    - fieldName: embeddings
+      operators:
+        enableAll: true
+  graphql:
+    typeName: Support_DocumentEmbeddingsBoolExp
+
+---
+kind: Model
+version: v1
+definition:
+  name: DocumentEmbeddings
+  objectType: DocumentEmbeddings
+  source:
+    dataConnectorName: vector
+    collection: document_embeddings
+  filterExpressionType: DocumentEmbeddingsBoolExp
+  orderableFields:
+    - fieldName: documentUuid
+      orderByDirections:
+        enableAll: true
+    - fieldName: embeddings
+      orderByDirections:
+        enableAll: true
+  graphql:
+    selectMany:
+      queryRootField: support_documentEmbeddings
+    selectUniques:
+      - queryRootField: support_documentEmbeddingsByDocumentUuid
+        uniqueIdentifier:
+          - documentUuid
+    orderByExpressionType: Support_DocumentEmbeddingsOrderBy
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: DocumentEmbeddings
+  permissions:
+    - role: admin
+      select:
+        filter: null
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: document
+  sourceType: DocumentEmbeddings
+  target:
+    model:
+      name: Documents
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: documentUuid
+      target:
+        modelField:
+          - fieldName: uuid
+

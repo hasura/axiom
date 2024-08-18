@@ -1,0 +1,218 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: SupportTicket
+  fields:
+    - name: date
+      type: String!
+    - name: issue
+      type: String!
+    - name: resolutionNotes
+      type: String!
+    - name: status
+      type: String!
+    - name: ticketId
+      type: String!
+  graphql:
+    typeName: Support_SupportTicket
+    inputTypeName: Support_SupportTicketInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: functions
+      dataConnectorObjectType: SupportTicket
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: SupportTicket
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - date
+          - issue
+          - resolutionNotes
+          - status
+          - ticketId
+    - role: user
+      output:
+        allowedFields:
+          - date
+          - issue
+          - resolutionNotes
+          - status
+          - ticketId
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: Array
+  fields:
+    - name: name
+      type: String!
+    - name: usage
+      type: String!
+  graphql:
+    typeName: Support_Array
+    inputTypeName: Support_ArrayInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: functions
+      dataConnectorObjectType: array
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: Array
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - name
+          - usage
+    - role: user
+      output:
+        allowedFields:
+          - name
+          - usage
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UsageStatsCallStats
+  fields:
+    - name: internationalMinutes
+      type: Float!
+    - name: totalMinutes
+      type: Float!
+  graphql:
+    typeName: Support_UsageStatsCallStats
+    inputTypeName: Support_UsageStatsCallStatsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: functions
+      dataConnectorObjectType: UsageStats_callStats
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UsageStatsCallStats
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - internationalMinutes
+          - totalMinutes
+    - role: user
+      output:
+        allowedFields:
+          - internationalMinutes
+          - totalMinutes
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UsageStatsDataUsage
+  fields:
+    - name: currentMonth
+      type: String!
+    - name: total
+      type: String!
+  graphql:
+    typeName: Support_UsageStatsDataUsage
+    inputTypeName: Support_UsageStatsDataUsageInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: functions
+      dataConnectorObjectType: UsageStats_dataUsage
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UsageStatsDataUsage
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - currentMonth
+          - total
+    - role: user
+      output:
+        allowedFields:
+          - currentMonth
+          - total
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UsageStats
+  fields:
+    - name: appUsage
+      type: "[Array!]!"
+    - name: callStats
+      type: UsageStatsCallStats!
+    - name: dataUsage
+      type: UsageStatsDataUsage!
+  graphql:
+    typeName: Support_UsageStats
+    inputTypeName: Support_UsageStatsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: functions
+      dataConnectorObjectType: UsageStats
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UsageStats
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - appUsage
+          - callStats
+          - dataUsage
+    - role: user
+      output:
+        allowedFields:
+          - appUsage
+          - callStats
+          - dataUsage
+
+---
+kind: Command
+version: v1
+definition:
+  name: CalculateSupportScore
+  outputType: Float!
+  arguments:
+    - name: supportHistory
+      type: "[SupportTicket!]!"
+      description: The support history of the user.
+    - name: usageStats
+      type: UsageStats!
+  source:
+    dataConnectorName: functions
+    dataConnectorCommand:
+      function: calculateSupportScore
+  graphql:
+    rootFieldName: support_calculateSupportScore
+    rootFieldKind: Query
+  description: Calculates support score based on support history and open tickets.
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: CalculateSupportScore
+  permissions:
+    - role: admin
+      allowExecution: true
+    - role: user
+      allowExecution: true
+
