@@ -1,0 +1,134 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: Cdr
+  fields:
+    - name: callDuration
+      type: Int32!
+    - name: callType
+      type: String!
+    - name: guid
+      type: String!
+    - name: timestamp
+      type: DateTime!
+  graphql:
+    typeName: Network_Cdr
+    inputTypeName: Network_CdrInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: clickhouse
+      dataConnectorObjectType: cdr
+      fieldMapping:
+        callDuration:
+          column:
+            name: Call_Duration
+        callType:
+          column:
+            name: Call_Type
+        guid:
+          column:
+            name: GUID
+        timestamp:
+          column:
+            name: Timestamp
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: Cdr
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - callDuration
+          - callType
+          - guid
+          - timestamp
+
+---
+kind: ObjectBooleanExpressionType
+version: v1
+definition:
+  name: CdrBoolExp
+  objectType: Cdr
+  dataConnectorName: clickhouse
+  dataConnectorObjectType: cdr
+  comparableFields:
+    - fieldName: callDuration
+      operators:
+        enableAll: true
+    - fieldName: callType
+      operators:
+        enableAll: true
+    - fieldName: guid
+      operators:
+        enableAll: true
+    - fieldName: timestamp
+      operators:
+        enableAll: true
+  graphql:
+    typeName: Network_CdrBoolExp
+
+---
+kind: Model
+version: v1
+definition:
+  name: Cdr
+  objectType: Cdr
+  source:
+    dataConnectorName: clickhouse
+    collection: cdr
+  filterExpressionType: CdrBoolExp
+  orderableFields:
+    - fieldName: callDuration
+      orderByDirections:
+        enableAll: true
+    - fieldName: callType
+      orderByDirections:
+        enableAll: true
+    - fieldName: guid
+      orderByDirections:
+        enableAll: true
+    - fieldName: timestamp
+      orderByDirections:
+        enableAll: true
+  graphql:
+    selectMany:
+      queryRootField: network_cdr
+    selectUniques:
+      - queryRootField: network_cdrByTimestampGuid
+        uniqueIdentifier:
+          - guid
+          - timestamp
+    orderByExpressionType: Network_CdrOrderBy
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: Cdr
+  permissions:
+    - role: admin
+      select:
+        filter: null
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer
+  sourceType: Cdr
+  target:
+    model:
+      subgraph: customer
+      name: CustomerLink
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: guid
+      target:
+        modelField:
+          - fieldName: customerGuid
+

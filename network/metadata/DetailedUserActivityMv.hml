@@ -1,0 +1,225 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: DetailedUserActivityMv
+  fields:
+    - name: cdrGuid
+      type: String!
+    - name: cdrTimestamp
+      type: DateTime!
+    - name: callDuration
+      type: Int32!
+    - name: callType
+      type: String!
+    - name: duGuid
+      type: String!
+    - name: duTimestamp
+      type: DateTime!
+    - name: dataUsage
+      type: Float32!
+    - name: downloadSpeed
+      type: Float32!
+    - name: latency
+      type: Int32!
+    - name: npGuid
+      type: String!
+    - name: npTimestamp
+      type: DateTime!
+    - name: uploadSpeed
+      type: Float32!
+  graphql:
+    typeName: Network_DetailedUserActivityMv
+    inputTypeName: Network_DetailedUserActivityMvInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: clickhouse
+      dataConnectorObjectType: detailed_user_activity_mv
+      fieldMapping:
+        cdrGuid:
+          column:
+            name: CDR_GUID
+        cdrTimestamp:
+          column:
+            name: CDR_Timestamp
+        callDuration:
+          column:
+            name: Call_Duration
+        callType:
+          column:
+            name: Call_Type
+        duGuid:
+          column:
+            name: DU_GUID
+        duTimestamp:
+          column:
+            name: DU_Timestamp
+        dataUsage:
+          column:
+            name: Data_Usage
+        downloadSpeed:
+          column:
+            name: Download_Speed
+        latency:
+          column:
+            name: Latency
+        npGuid:
+          column:
+            name: NP_GUID
+        npTimestamp:
+          column:
+            name: NP_Timestamp
+        uploadSpeed:
+          column:
+            name: Upload_Speed
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: DetailedUserActivityMv
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - cdrGuid
+          - cdrTimestamp
+          - callDuration
+          - callType
+          - duGuid
+          - duTimestamp
+          - dataUsage
+          - downloadSpeed
+          - latency
+          - npGuid
+          - npTimestamp
+          - uploadSpeed
+
+---
+kind: ObjectBooleanExpressionType
+version: v1
+definition:
+  name: DetailedUserActivityMvBoolExp
+  objectType: DetailedUserActivityMv
+  dataConnectorName: clickhouse
+  dataConnectorObjectType: detailed_user_activity_mv
+  comparableFields:
+    - fieldName: cdrGuid
+      operators:
+        enableAll: true
+    - fieldName: cdrTimestamp
+      operators:
+        enableAll: true
+    - fieldName: callDuration
+      operators:
+        enableAll: true
+    - fieldName: callType
+      operators:
+        enableAll: true
+    - fieldName: duGuid
+      operators:
+        enableAll: true
+    - fieldName: duTimestamp
+      operators:
+        enableAll: true
+    - fieldName: dataUsage
+      operators:
+        enableAll: true
+    - fieldName: downloadSpeed
+      operators:
+        enableAll: true
+    - fieldName: latency
+      operators:
+        enableAll: true
+    - fieldName: npGuid
+      operators:
+        enableAll: true
+    - fieldName: npTimestamp
+      operators:
+        enableAll: true
+    - fieldName: uploadSpeed
+      operators:
+        enableAll: true
+  graphql:
+    typeName: Network_DetailedUserActivityMvBoolExp
+
+---
+kind: Model
+version: v1
+definition:
+  name: DetailedUserActivityMv
+  objectType: DetailedUserActivityMv
+  source:
+    dataConnectorName: clickhouse
+    collection: detailed_user_activity_mv
+  filterExpressionType: DetailedUserActivityMvBoolExp
+  orderableFields:
+    - fieldName: cdrGuid
+      orderByDirections:
+        enableAll: true
+    - fieldName: cdrTimestamp
+      orderByDirections:
+        enableAll: true
+    - fieldName: callDuration
+      orderByDirections:
+        enableAll: true
+    - fieldName: callType
+      orderByDirections:
+        enableAll: true
+    - fieldName: duGuid
+      orderByDirections:
+        enableAll: true
+    - fieldName: duTimestamp
+      orderByDirections:
+        enableAll: true
+    - fieldName: dataUsage
+      orderByDirections:
+        enableAll: true
+    - fieldName: downloadSpeed
+      orderByDirections:
+        enableAll: true
+    - fieldName: latency
+      orderByDirections:
+        enableAll: true
+    - fieldName: npGuid
+      orderByDirections:
+        enableAll: true
+    - fieldName: npTimestamp
+      orderByDirections:
+        enableAll: true
+    - fieldName: uploadSpeed
+      orderByDirections:
+        enableAll: true
+  graphql:
+    selectMany:
+      queryRootField: network_detailedUserActivityMv
+    selectUniques: []
+    orderByExpressionType: Network_DetailedUserActivityMvOrderBy
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: DetailedUserActivityMv
+  permissions:
+    - role: admin
+      select:
+        filter: null
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer
+  sourceType: DetailedUserActivityMv
+  target:
+    model:
+      subgraph: customer
+      name: CustomerLink
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: cdrGuid
+      target:
+        modelField:
+          - fieldName: customerGuid
