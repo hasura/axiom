@@ -1,0 +1,18 @@
+kind: Subgraph
+version: v2
+definition:
+  name: auth
+  generator:
+    rootPath: .
+  includePaths:
+    - metadata
+  envMapping:
+    AUTH_AUTH_AUTHORIZATION_HEADER:
+      fromEnv: AUTH_AUTH_AUTHORIZATION_HEADER
+    AUTH_AUTH_READ_URL:
+      fromEnv: AUTH_AUTH_READ_URL
+    AUTH_AUTH_WRITE_URL:
+      fromEnv: AUTH_AUTH_WRITE_URL
+  connectors:
+    - path: connector/auth/connector.yaml
+      connectorLinkName: auth

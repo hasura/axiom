@@ -149,3 +149,79 @@ definition:
       target:
         modelField:
           - fieldName: customerGuid
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: supportDB
+  sourceType: CustomerLink
+  target:
+    model:
+      name: UserProfiles
+      relationshipType: Object
+      subgraph: support
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerGuid
+      target:
+        modelField:
+          - fieldName: memberId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: CDR
+  sourceType: CustomerLink
+  target:
+    model:
+      subgraph: network
+      name: Cdr
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerGuid
+      target:
+        modelField:
+          - fieldName: guid
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: NetworkPerformance
+  sourceType: CustomerLink
+  target:
+    model:
+      subgraph: network
+      name: NetworkPerformance
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerGuid
+      target:
+        modelField:
+          - fieldName: guid
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: DataUsage
+  sourceType: CustomerLink
+  target:
+    model:
+      subgraph: network
+      name: DataUsage
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerGuid
+      target:
+        modelField:
+          - fieldName: guid
