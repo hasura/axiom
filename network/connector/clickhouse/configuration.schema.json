@@ -1,0 +1,208 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ServerConfigFile",
+  "description": "the main configuration file",
+  "type": "object",
+  "required": [
+    "$schema"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "queries": {
+      "description": "Optionally define custom parameterized queries here Note the names must not match table names",
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/ParameterizedQueryConfigFile"
+      }
+    },
+    "tables": {
+      "description": "A list of tables available in this database\n\nThe map key is a unique table alias that defaults to defaults to \"<table_schema>_<table_name>\", except for tables in the \"default\" schema where the table name is used This is the name exposed to the engine, and may be configured by users. When the configuration is updated, the table is identified by name and schema, and changes to the alias are preserved.",
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/TableConfigFile"
+      }
+    }
+  },
+  "definitions": {
+    "ParameterizedQueryConfigFile": {
+      "type": "object",
+      "required": [
+        "exposed_as",
+        "file",
+        "return_type"
+      ],
+      "properties": {
+        "comment": {
+          "description": "A comment that will be exposed in the schema",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "exposed_as": {
+          "description": "Whether this query should be exposed as a procedure (mutating) or collection (non-mutating)",
+          "allOf": [
+            {
+              "$ref": "#/definitions/ParameterizedQueryExposedAs"
+            }
+          ]
+        },
+        "file": {
+          "description": "A relative path to a sql file",
+          "type": "string"
+        },
+        "return_type": {
+          "description": "Either a type definition for the return type for this query, or a reference to another return type: either a table's alias, or another query's alias. If another query, that query must have a return type definition.",
+          "allOf": [
+            {
+              "$ref": "#/definitions/ReturnType"
+            }
+          ]
+        }
+      }
+    },
+    "ParameterizedQueryExposedAs": {
+      "type": "string",
+      "enum": [
+        "collection",
+        "procedure"
+      ]
+    },
+    "PrimaryKey": {
+      "type": "object",
+      "required": [
+        "columns",
+        "name"
+      ],
+      "properties": {
+        "columns": {
+          "description": "The names of columns in this primary key",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "ReturnType": {
+      "oneOf": [
+        {
+          "description": "A custom return type definition The keys are column names, the values are parsable clichouse datatypes",
+          "type": "object",
+          "required": [
+            "columns",
+            "kind"
+          ],
+          "properties": {
+            "columns": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "kind": {
+              "type": "string",
+              "enum": [
+                "definition"
+              ]
+            }
+          }
+        },
+        {
+          "description": "the same as the return type for another table",
+          "type": "object",
+          "required": [
+            "kind",
+            "table_name"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "table_reference"
+              ]
+            },
+            "table_name": {
+              "description": "the table alias must match a key in `tables`, and the query must return the same type as that table alternatively, the alias may reference another parameterized query which has a return type definition,",
+              "type": "string"
+            }
+          }
+        },
+        {
+          "description": "The same as the return type for another query",
+          "type": "object",
+          "required": [
+            "kind",
+            "query_name"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "query_reference"
+              ]
+            },
+            "query_name": {
+              "description": "the table alias must match a key in `tables`, and the query must return the same type as that table alternatively, the alias may reference another parameterized query which has a return type definition,",
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "TableConfigFile": {
+      "type": "object",
+      "required": [
+        "name",
+        "return_type",
+        "schema"
+      ],
+      "properties": {
+        "arguments": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "comment": {
+          "description": "Comments are sourced from the database table comment",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "name": {
+          "description": "The table name",
+          "type": "string"
+        },
+        "primary_key": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/PrimaryKey"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "return_type": {
+          "description": "The map key is a column alias identifying the table and may be customized. It defaults to the table name. When the configuration is updated, the column is identified by name, and changes to the alias are preserved.",
+          "allOf": [
+            {
+              "$ref": "#/definitions/ReturnType"
+            }
+          ]
+        },
+        "schema": {
+          "description": "The table schema",
+          "type": "string"
+        }
+      }
+    }
+  }
+}
