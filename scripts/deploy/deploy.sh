@@ -8,6 +8,10 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
+
+# Determine the directory where the script is located
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 # Log function for consistent logging
 log() {
     local msg="$1"
@@ -21,10 +25,10 @@ handle_error() {
 }
 trap 'handle_error $LINENO' ERR
 
-# Define paths and filenames
-JWT_FILE="jwtauth.hml"
-NOAUTH_FILE="noauth.hml"
-DEST_DIR="../../globals"
+# Define paths and filenames relative to the script's directory
+JWT_FILE="$SCRIPT_DIR/jwtauth.hml"
+NOAUTH_FILE="$SCRIPT_DIR/noauth.hml"
+DEST_DIR="$SCRIPT_DIR/../../globals"
 DEST_FILE="auth-config.hml"
 
 # Define allowed context values
@@ -33,9 +37,21 @@ ALLOWED_CONTEXTS=("default" "au" "eu" "us-east" "us-west")
 # Set context to 'default' if not provided as an argument
 CONTEXT="${1:-default}"
 
+# Define allowed context values
+ALLOWED_LOGLEVEL=("DEBUG" "WARN" "INFO" "ERROR" "FATAL")
+
+# Set log level to 'FATAL' if not provided as an argument
+LOGLEVEL="${2:-FATAL}"
+
 # Validate the context value
 if [[ ! " ${ALLOWED_CONTEXTS[*]} " =~ " ${CONTEXT} " ]]; then
     log "Invalid context: $CONTEXT. Allowed values are: ${ALLOWED_CONTEXTS[*]}."
+    exit 1
+fi
+
+# Validate the log level
+if [[ ! " ${ALLOWED_LOGLEVEL[*]} " =~ " ${LOGLEVEL} " ]]; then
+    log "Invalid log level: $LOGLEVEL. Allowed values are: ${ALLOWED_LOGLEVEL[*]}."
     exit 1
 fi
 
@@ -60,10 +76,10 @@ run_command_with_tag() {
 
     # Run the supergraph build command with the appropriate tag
     local build_version
-    build_version=$(ddn supergraph build create --no-build-connectors -d "$git_log" -c "$CONTEXT" --out json | jq -r '.build_version')
+    build_version=$(ddn supergraph build create --no-build-connectors -d "$git_log" -c "$CONTEXT" --out json --log-level "$LOGLEVEL" | jq -r '.build_version')
 
     log "Running supergraph build apply with build version $build_version"
-    ddn supergraph build apply "$build_version" -c "$CONTEXT"
+    ddn supergraph build apply "$build_version" -c "$CONTEXT" --log-level "$LOGLEVEL"
 }
 
 # Run the command for JWT
@@ -73,4 +89,3 @@ run_command_with_tag "$JWT_FILE" "JWT"
 run_command_with_tag "$NOAUTH_FILE" "NoAuth"
 
 log "Script completed successfully."
-
