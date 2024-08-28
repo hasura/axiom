@@ -8,6 +8,7 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
+
 # Determine the directory where the script is located
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -75,10 +76,10 @@ run_command_with_tag() {
 
     # Run the supergraph build command with the appropriate tag
     local build_version
-    build_version=$(ddn supergraph build create --no-build-connectors -d "$git_log" -c "$CONTEXT" --out json --log-level FATAL | jq -r '.build_version')
+    build_version=$(ddn supergraph build create --no-build-connectors -d "$git_log" -c "$CONTEXT" --out json --log-level "$LOGLEVEL" | jq -r '.build_version')
 
     log "Running supergraph build apply with build version $build_version"
-    ddn supergraph build apply "$build_version" -c "$CONTEXT" --log-level FATAL
+    ddn supergraph build apply "$build_version" -c "$CONTEXT" --log-level "$LOGLEVEL"
 }
 
 # Run the command for JWT
