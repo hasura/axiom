@@ -1,4 +1,4 @@
-FROM ghcr.io/hasura/ndc-nodejs-lambda:v1.5.0
+FROM ghcr.io/hasura/ndc-nodejs-lambda:v1.7.0
 
 COPY package-lock.json package.json /functions/
 

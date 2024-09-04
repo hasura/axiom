@@ -3,7 +3,7 @@ version: v2
 definition:
   name: auth
   subgraph: auth
-  source: hasura/postgres:v1.0.2
+  source: hasura/postgres:v1.1.1
   context: .
   envMapping:
     CONNECTION_URI:
@@ -14,3 +14,6 @@ definition:
       fromEnv: AUTH_AUTH_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
     OTEL_SERVICE_NAME:
       fromEnv: AUTH_AUTH_OTEL_SERVICE_NAME
+  regionConfiguration:
+    - region: gcp-us-west2
+      mode: ReadWrite

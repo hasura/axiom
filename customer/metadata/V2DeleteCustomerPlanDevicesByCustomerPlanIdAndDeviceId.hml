@@ -1,0 +1,78 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: DeleteCustomerPlanDevicesByCustomerPlanIdAndDeviceIdResponse
+  description: Responses from the
+    'delete_customer_plan_devices_by_customer_plan_id_and_device_id'
+    procedure
+  fields:
+    - name: affectedRows
+      type: Int4!
+      description: The number of rows affected by the mutation
+    - name: returning
+      type: "[CustomerPlanDevices!]!"
+      description: Data from rows affected by the mutation
+  graphql:
+    typeName: DeleteCustomerPlanDevicesByCustomerPlanIdAndDeviceIdResponse
+    inputTypeName: DeleteCustomerPlanDevicesByCustomerPlanIdAndDeviceIdResponseInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: delete_customer_plan_devices_by_customer_plan_id_and_device_id_response
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: DeleteCustomerPlanDevicesByCustomerPlanIdAndDeviceIdResponse
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: DeleteCustomerPlanDevicesByCustomerPlanIdAndDeviceId
+  outputType: DeleteCustomerPlanDevicesByCustomerPlanIdAndDeviceIdResponse!
+  arguments:
+    - name: keyCustomerPlanId
+      type: Int4!
+    - name: keyDeviceId
+      type: Int4!
+    - name: preCheck
+      type: CustomerPlanDevicesBoolExp!
+      description: Delete permission predicate over the 'customer_plan_devices' collection
+  source:
+    dataConnectorName: aurora
+    dataConnectorCommand:
+      procedure: delete_customer_plan_devices_by_customer_plan_id_and_device_id
+    argumentMapping:
+      keyCustomerPlanId: key_customer_plan_id
+      keyDeviceId: key_device_id
+      preCheck: pre_check
+  graphql:
+    rootFieldName: DeleteCustomerPlanDevicesByCustomerPlanIdAndDeviceId
+    rootFieldKind: Mutation
+  description: Delete any row on the 'customer_plan_devices' collection using the
+    'customer_plan_id' and 'device_id' keys
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: DeleteCustomerPlanDevicesByCustomerPlanIdAndDeviceId
+  permissions:
+    - role: admin
+      allowExecution: true
+

@@ -1,0 +1,72 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: DeleteCustomersByCustomerIdResponse
+  description: Responses from the 'delete_customers_by_customer_id' procedure
+  fields:
+    - name: affectedRows
+      type: Int4!
+      description: The number of rows affected by the mutation
+    - name: returning
+      type: "[Customers!]!"
+      description: Data from rows affected by the mutation
+  graphql:
+    typeName: DeleteCustomersByCustomerIdResponse
+    inputTypeName: DeleteCustomersByCustomerIdResponseInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: delete_customers_by_customer_id_response
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: DeleteCustomersByCustomerIdResponse
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: DeleteCustomersByCustomerId
+  outputType: DeleteCustomersByCustomerIdResponse!
+  arguments:
+    - name: keyCustomerId
+      type: Int4!
+    - name: preCheck
+      type: CustomersBoolExp!
+      description: Delete permission predicate over the 'customers' collection
+  source:
+    dataConnectorName: aurora
+    dataConnectorCommand:
+      procedure: delete_customers_by_customer_id
+    argumentMapping:
+      keyCustomerId: key_customer_id
+      preCheck: pre_check
+  graphql:
+    rootFieldName: DeleteCustomersByCustomerId
+    rootFieldKind: Mutation
+  description: Delete any row on the 'customers' collection using the 'customer_id' key
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: DeleteCustomersByCustomerId
+  permissions:
+    - role: admin
+      allowExecution: true
+

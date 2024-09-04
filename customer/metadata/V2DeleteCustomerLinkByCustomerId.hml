@@ -1,0 +1,72 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: DeleteCustomerLinkByCustomerIdResponse
+  description: Responses from the 'delete_customer_link_by_customer_id' procedure
+  fields:
+    - name: affectedRows
+      type: Int4!
+      description: The number of rows affected by the mutation
+    - name: returning
+      type: "[CustomerLink!]!"
+      description: Data from rows affected by the mutation
+  graphql:
+    typeName: DeleteCustomerLinkByCustomerIdResponse
+    inputTypeName: DeleteCustomerLinkByCustomerIdResponseInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: delete_customer_link_by_customer_id_response
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: DeleteCustomerLinkByCustomerIdResponse
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: DeleteCustomerLinkByCustomerId
+  outputType: DeleteCustomerLinkByCustomerIdResponse!
+  arguments:
+    - name: keyCustomerId
+      type: Int4
+    - name: preCheck
+      type: CustomerLinkBoolExp!
+      description: Delete permission predicate over the 'customer_link' collection
+  source:
+    dataConnectorName: aurora
+    dataConnectorCommand:
+      procedure: delete_customer_link_by_customer_id
+    argumentMapping:
+      keyCustomerId: key_customer_id
+      preCheck: pre_check
+  graphql:
+    rootFieldName: DeleteCustomerLinkByCustomerId
+    rootFieldKind: Mutation
+  description: Delete any row on the 'customer_link' collection using the 'customer_id' key
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: DeleteCustomerLinkByCustomerId
+  permissions:
+    - role: admin
+      allowExecution: true
+

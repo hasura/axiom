@@ -1,0 +1,72 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: DeleteTextsByTextidResponse
+  description: Responses from the 'delete_texts_by_textid' procedure
+  fields:
+    - name: affectedRows
+      type: Int4!
+      description: The number of rows affected by the mutation
+    - name: returning
+      type: "[Texts!]!"
+      description: Data from rows affected by the mutation
+  graphql:
+    typeName: DeleteTextsByTextidResponse
+    inputTypeName: DeleteTextsByTextidResponseInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: kafka_sink
+      dataConnectorObjectType: delete_texts_by_textid_response
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: DeleteTextsByTextidResponse
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: DeleteTextsByTextid
+  outputType: DeleteTextsByTextidResponse!
+  arguments:
+    - name: keyTextid
+      type: Int4!
+    - name: preCheck
+      type: TextsBoolExp!
+      description: Delete permission predicate over the 'texts' collection
+  source:
+    dataConnectorName: kafka_sink
+    dataConnectorCommand:
+      procedure: delete_texts_by_textid
+    argumentMapping:
+      keyTextid: key_textid
+      preCheck: pre_check
+  graphql:
+    rootFieldName: DeleteTextsByTextid
+    rootFieldKind: Mutation
+  description: Delete any row on the 'texts' collection using the 'textid' key
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: DeleteTextsByTextid
+  permissions:
+    - role: admin
+      allowExecution: true
+
