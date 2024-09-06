@@ -15,7 +15,7 @@ jobs:
         MONDAY_BOARD_ID: "6863162607"
         MONDAY_GROUP_ID: "group_title"
         ISSUE_TITLE: ${{ github.event.issue.title }}
-        ISSUE_BODY: ${{ github.event.issue.body }}
+        ISSUE_BODY: ${{ github.event.issue.body || "No issue body provided." }}
 
       run: |
         curl -X POST https://api.monday.com/v2 \
@@ -24,3 +24,4 @@ jobs:
         -d '{
           "query": "mutation { create_item(board_id: '"$MONDAY_BOARD_ID"', group_id: \""$MONDAY_GROUP_ID"\", item_name: \""$ISSUE_TITLE"\", column_values: \"{\\\"status\\\": {\\\"label\\\": \\\"New\\\"}, \\\"text\\\": \\\"$ISSUE_BODY\\\"}\") { id name } }"
         }'
+
