@@ -1,0 +1,26 @@
+name: Create Monday.com Item on Issue Creation
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  create_monday_item:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Call Monday.com API
+      env:
+        MONDAY_API_KEY: ${{ secrets.MONDAY_API_KEY }}
+        MONDAY_BOARD_ID: "6863162607"
+        MONDAY_GROUP_ID: "backlog"
+        ISSUE_TITLE: ${{ github.event.issue.title }}
+        ISSUE_BODY: ${{ github.event.issue.body }}
+
+      run: |
+        curl -X POST https://api.monday.com/v2 \
+        -H "Authorization: $MONDAY_API_KEY" \
+        -H "Content-Type: application/json" \
+        -d '{
+          "query": "mutation { create_item(board_id: $MONDAY_BOARD_ID, group_id: \"$MONDAY_GROUP_ID\", item_name: \"$ISSUE_TITLE\", column_values: \"{\\\"status\\\": {\\\"label\\\": \\\"New\\\"}, \\\"text\\\": \\\"$ISSUE_BODY\\\"}\") { id name } }"
+        }'
