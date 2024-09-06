@@ -1,0 +1,72 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: V2DeletePlansByPlanNameResponse
+  description: Responses from the 'v2_delete_plans_by_plan_name' procedure
+  fields:
+    - name: affectedRows
+      type: Int4!
+      description: The number of rows affected by the mutation
+    - name: returning
+      type: "[Plans!]!"
+      description: Data from rows affected by the mutation
+  graphql:
+    typeName: V2DeletePlansByPlanNameResponse
+    inputTypeName: V2DeletePlansByPlanNameResponseInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: v2_delete_plans_by_plan_name_response
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: V2DeletePlansByPlanNameResponse
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: V2DeletePlansByPlanName
+  outputType: V2DeletePlansByPlanNameResponse!
+  arguments:
+    - name: keyPlanName
+      type: Varchar
+    - name: preCheck
+      type: PlansBoolExp!
+      description: Delete permission predicate over the 'plans' collection
+  source:
+    dataConnectorName: aurora
+    dataConnectorCommand:
+      procedure: v2_delete_plans_by_plan_name
+    argumentMapping:
+      keyPlanName: key_plan_name
+      preCheck: pre_check
+  graphql:
+    rootFieldName: DeletePlansByPlanName
+    rootFieldKind: Mutation
+  description: Delete any row on the 'plans' collection using the 'plan_name' key
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: V2DeletePlansByPlanName
+  permissions:
+    - role: admin
+      allowExecution: true
+

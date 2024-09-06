@@ -572,6 +572,60 @@ definition:
                 type: named
                 name: varchar
       object_types:
+        update_column_users_created_at:
+          description: Update the 'created_at' column in the 'users' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: timestamptz
+        update_column_users_email:
+          description: Update the 'email' column in the 'users' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        update_column_users_id:
+          description: Update the 'id' column in the 'users' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: int4
+        update_column_users_password:
+          description: Update the 'password' column in the 'users' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        update_column_users_roles:
+          description: Update the 'roles' column in the 'users' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        update_column_users_updated_at:
+          description: Update the 'updated_at' column in the 'users' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: timestamptz
         users:
           fields:
             created_at:
@@ -604,6 +658,134 @@ definition:
               type:
                 type: named
                 name: timestamptz
+        v2_delete_users_by_id_response:
+          description: Responses from the 'v2_delete_users_by_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: users
+        v2_insert_users_object:
+          fields:
+            created_at:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: timestamptz
+            email:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            id:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            password:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            roles:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            updated_at:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: timestamptz
+        v2_insert_users_response:
+          description: Responses from the 'v2_insert_users' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: users
+        v2_update_users_by_id_response:
+          description: Responses from the 'v2_update_users_by_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: users
+        v2_update_users_by_id_update_columns:
+          description: Update the columns of the 'users' collection
+          fields:
+            created_at:
+              description: Update the 'created_at' column in the 'users' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_users_created_at
+            email:
+              description: Update the 'email' column in the 'users' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_users_email
+            id:
+              description: Update the 'id' column in the 'users' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_users_id
+            password:
+              description: Update the 'password' column in the 'users' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_users_password
+            roles:
+              description: Update the 'roles' column in the 'users' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_users_roles
+            updated_at:
+              description: Update the 'updated_at' column in the 'users' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_users_updated_at
       collections:
         - name: users
           arguments: {}
@@ -614,9 +796,65 @@ definition:
                 - id
           foreign_keys: {}
       functions: []
-      procedures: []
+      procedures:
+        - name: v2_delete_users_by_id
+          description: Delete any row on the 'users' collection using the 'id' key
+          arguments:
+            key_id:
+              type:
+                type: named
+                name: int4
+            pre_check:
+              description: Delete permission predicate over the 'users' collection
+              type:
+                type: predicate
+                object_type_name: users
+          result_type:
+            type: named
+            name: v2_delete_users_by_id_response
+        - name: v2_insert_users
+          description: Insert into the users table
+          arguments:
+            objects:
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: v2_insert_users_object
+            post_check:
+              description: Insert permission predicate over the 'users' collection
+              type:
+                type: predicate
+                object_type_name: users
+          result_type:
+            type: named
+            name: v2_insert_users_response
+        - name: v2_update_users_by_id
+          description: Update any row on the 'users' collection using the 'id' key
+          arguments:
+            key_id:
+              type:
+                type: named
+                name: int4
+            post_check:
+              description: Update permission post-condition predicate over the 'users' collection
+              type:
+                type: predicate
+                object_type_name: users
+            pre_check:
+              description: Update permission pre-condition predicate over the 'users' collection
+              type:
+                type: predicate
+                object_type_name: users
+            update_columns:
+              type:
+                type: named
+                name: v2_update_users_by_id_update_columns
+          result_type:
+            type: named
+            name: v2_update_users_by_id_response
     capabilities:
-      version: 0.1.5
+      version: 0.1.6
       capabilities:
         query:
           aggregates: {}

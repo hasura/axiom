@@ -1,0 +1,73 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: V2DeleteCreditCardsByCreditCardIdResponse
+  description: Responses from the 'v2_delete_credit_cards_by_credit_card_id' procedure
+  fields:
+    - name: affectedRows
+      type: Int4!
+      description: The number of rows affected by the mutation
+    - name: returning
+      type: "[CreditCards!]!"
+      description: Data from rows affected by the mutation
+  graphql:
+    typeName: V2DeleteCreditCardsByCreditCardIdResponse
+    inputTypeName: V2DeleteCreditCardsByCreditCardIdResponseInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: v2_delete_credit_cards_by_credit_card_id_response
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: V2DeleteCreditCardsByCreditCardIdResponse
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: V2DeleteCreditCardsByCreditCardId
+  outputType: V2DeleteCreditCardsByCreditCardIdResponse!
+  arguments:
+    - name: keyCreditCardId
+      type: Int4!
+    - name: preCheck
+      type: CreditCardsBoolExp!
+      description: Delete permission predicate over the 'credit_cards' collection
+  source:
+    dataConnectorName: aurora
+    dataConnectorCommand:
+      procedure: v2_delete_credit_cards_by_credit_card_id
+    argumentMapping:
+      keyCreditCardId: key_credit_card_id
+      preCheck: pre_check
+  graphql:
+    rootFieldName: DeleteCreditCardsByCreditCardId
+    rootFieldKind: Mutation
+  description: Delete any row on the 'credit_cards' collection using the
+    'credit_card_id' key
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: V2DeleteCreditCardsByCreditCardId
+  permissions:
+    - role: admin
+      allowExecution: true
+

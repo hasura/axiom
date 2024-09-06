@@ -1,0 +1,119 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: V2InsertCallsObject
+  fields:
+    - name: callid
+      type: Int4
+    - name: calltype
+      type: Varchar
+    - name: customerid
+      type: Int4!
+    - name: deviceid
+      type: Int4!
+    - name: duration
+      type: Int4!
+    - name: nodeid
+      type: Int4
+    - name: receivernumber
+      type: Varchar
+    - name: timestamp
+      type: Timestamptz!
+  graphql:
+    typeName: V2InsertCallsObject
+    inputTypeName: V2InsertCallsObjectInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: kafka_sink
+      dataConnectorObjectType: v2_insert_calls_object
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: V2InsertCallsObject
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - callid
+          - calltype
+          - customerid
+          - deviceid
+          - duration
+          - nodeid
+          - receivernumber
+          - timestamp
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: V2InsertCallsResponse
+  description: Responses from the 'v2_insert_calls' procedure
+  fields:
+    - name: affectedRows
+      type: Int4!
+      description: The number of rows affected by the mutation
+    - name: returning
+      type: "[Calls!]!"
+      description: Data from rows affected by the mutation
+  graphql:
+    typeName: V2InsertCallsResponse
+    inputTypeName: V2InsertCallsResponseInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: kafka_sink
+      dataConnectorObjectType: v2_insert_calls_response
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: V2InsertCallsResponse
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: V2InsertCalls
+  outputType: V2InsertCallsResponse!
+  arguments:
+    - name: objects
+      type: "[V2InsertCallsObject!]!"
+    - name: postCheck
+      type: CallsBoolExp!
+      description: Insert permission predicate over the 'calls' collection
+  source:
+    dataConnectorName: kafka_sink
+    dataConnectorCommand:
+      procedure: v2_insert_calls
+    argumentMapping:
+      objects: objects
+      postCheck: post_check
+  graphql:
+    rootFieldName: InsertCalls
+    rootFieldKind: Mutation
+  description: Insert into the calls table
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: V2InsertCalls
+  permissions:
+    - role: admin
+      allowExecution: true
+
