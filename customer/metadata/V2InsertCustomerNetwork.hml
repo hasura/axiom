@@ -1,0 +1,108 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: V2InsertCustomerNetworkObject
+  fields:
+    - name: customerId
+      type: Int4!
+    - name: nodeId
+      type: Int4!
+  graphql:
+    typeName: V2InsertCustomerNetworkObject
+    inputTypeName: V2InsertCustomerNetworkObjectInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: v2_insert_customer_network_object
+      fieldMapping:
+        customerId:
+          column:
+            name: customer_id
+        nodeId:
+          column:
+            name: node_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: V2InsertCustomerNetworkObject
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - customerId
+          - nodeId
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: V2InsertCustomerNetworkResponse
+  description: Responses from the 'v2_insert_customer_network' procedure
+  fields:
+    - name: affectedRows
+      type: Int4!
+      description: The number of rows affected by the mutation
+    - name: returning
+      type: "[CustomerNetwork!]!"
+      description: Data from rows affected by the mutation
+  graphql:
+    typeName: V2InsertCustomerNetworkResponse
+    inputTypeName: V2InsertCustomerNetworkResponseInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: v2_insert_customer_network_response
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: V2InsertCustomerNetworkResponse
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: V2InsertCustomerNetwork
+  outputType: V2InsertCustomerNetworkResponse!
+  arguments:
+    - name: objects
+      type: "[V2InsertCustomerNetworkObject!]!"
+    - name: postCheck
+      type: CustomerNetworkBoolExp!
+      description: Insert permission predicate over the 'customer_network' collection
+  source:
+    dataConnectorName: aurora
+    dataConnectorCommand:
+      procedure: v2_insert_customer_network
+    argumentMapping:
+      objects: objects
+      postCheck: post_check
+  graphql:
+    rootFieldName: InsertCustomerNetwork
+    rootFieldKind: Mutation
+  description: Insert into the customer_network table
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: V2InsertCustomerNetwork
+  permissions:
+    - role: admin
+      allowExecution: true
+

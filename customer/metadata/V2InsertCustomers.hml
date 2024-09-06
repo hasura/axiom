@@ -1,0 +1,168 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: V2InsertCustomersObject
+  fields:
+    - name: address
+      type: Varchar
+    - name: city
+      type: Varchar
+    - name: country
+      type: Varchar
+    - name: customerId
+      type: Int4
+    - name: email
+      type: Varchar
+    - name: firstName
+      type: Varchar
+    - name: image
+      type: Varchar
+    - name: lastName
+      type: Varchar
+    - name: phoneNumber
+      type: Varchar
+    - name: postcode
+      type: Varchar
+    - name: segment
+      type: Varchar
+    - name: state
+      type: Varchar
+  graphql:
+    typeName: V2InsertCustomersObject
+    inputTypeName: V2InsertCustomersObjectInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: v2_insert_customers_object
+      fieldMapping:
+        address:
+          column:
+            name: address
+        city:
+          column:
+            name: city
+        country:
+          column:
+            name: country
+        customerId:
+          column:
+            name: customer_id
+        email:
+          column:
+            name: email
+        firstName:
+          column:
+            name: first_name
+        image:
+          column:
+            name: image
+        lastName:
+          column:
+            name: last_name
+        phoneNumber:
+          column:
+            name: phone_number
+        postcode:
+          column:
+            name: postcode
+        segment:
+          column:
+            name: segment
+        state:
+          column:
+            name: state
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: V2InsertCustomersObject
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - address
+          - city
+          - country
+          - customerId
+          - email
+          - firstName
+          - image
+          - lastName
+          - phoneNumber
+          - postcode
+          - segment
+          - state
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: V2InsertCustomersResponse
+  description: Responses from the 'v2_insert_customers' procedure
+  fields:
+    - name: affectedRows
+      type: Int4!
+      description: The number of rows affected by the mutation
+    - name: returning
+      type: "[Customers!]!"
+      description: Data from rows affected by the mutation
+  graphql:
+    typeName: V2InsertCustomersResponse
+    inputTypeName: V2InsertCustomersResponseInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: v2_insert_customers_response
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: V2InsertCustomersResponse
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: V2InsertCustomers
+  outputType: V2InsertCustomersResponse!
+  arguments:
+    - name: objects
+      type: "[V2InsertCustomersObject!]!"
+    - name: postCheck
+      type: CustomersBoolExp!
+      description: Insert permission predicate over the 'customers' collection
+  source:
+    dataConnectorName: aurora
+    dataConnectorCommand:
+      procedure: v2_insert_customers
+    argumentMapping:
+      objects: objects
+      postCheck: post_check
+  graphql:
+    rootFieldName: InsertCustomers
+    rootFieldKind: Mutation
+  description: Insert into the customers table
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: V2InsertCustomers
+  permissions:
+    - role: admin
+      allowExecution: true
+
