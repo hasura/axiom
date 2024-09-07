@@ -8,15 +8,7 @@ jobs:
   create_monday_item:
     runs-on: ubuntu-latest
 
-    env:
-      title: ${{ github.event.issue.title }}
-      body: ${{ github.event.issue.body }}
-
     steps:
-    - name: Call Monday.com API
+    - name: Create Monday.com Item
       run: |
-
-        curl -X POST https://api.monday.com/v2 \
-        -H "Authorization: ${{ secrets.MONDAY_API_KEY }}" \
-        -H "Content-Type: application/json" \
-        -d '{"query": "mutation { create_item(board_id: 6863162607, group_id: \"group_title\", item_name: \"'$title'\", column_values: \"{\\\"status\\\": {\\\"label\\\": \\\"New\\\"}, \\\"text\\\": \\\"$body\\\"}\") { id name } }"}'
+        curl -v -X POST https://api.monday.com/v2 -H "Authorization: ${{secrets.MONDAY_API_KEY}}" -H "Content-Type: application/json" -d "{\"query\": \"mutation { create_item(board_id: 6863162607, group_id: \\\"group_title\\\", item_name: \\\"${{ github.event.issue.title }}\\\", column_values: \\\"{\\\\\\\"status\\\\\\\": {\\\\\\\"label\\\\\\\": \\\\\\\"New\\\\\\\"}, \\\\\\\"link__1\\\\\\\": {\\\\\\\"url\\\\\\\": \\\\\\\"${{ github.event.issue.html_url }}\\\\\\\", \\\\\\\"text\\\\\\\": \\\\\\\"GitHub Issue\\\\\\\"}}\\\") { id name } }\"}"
