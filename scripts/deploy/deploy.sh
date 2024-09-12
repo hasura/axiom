@@ -8,7 +8,6 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
-
 # Determine the directory where the script is located
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -25,6 +24,35 @@ handle_error() {
 }
 trap 'handle_error $LINENO' ERR
 
+# Check if the script is running on the 'main' branch
+check_branch() {
+    local current_branch
+    current_branch=$(git rev-parse --abbrev-ref HEAD)
+
+    if [[ "$current_branch" != "main" ]]; then
+        log "This script must be run on the 'main' branch. Current branch is '$current_branch'."
+        exit 1
+    fi
+
+    log "Running on the 'main' branch."
+}
+
+# Check for uncommitted changes
+check_uncommitted_changes() {
+    if [[ -n "$(git status --porcelain)" ]]; then
+        log "Uncommitted changes detected. Please commit or stash your changes before running this script."
+        exit 1
+    else
+        log "No uncommitted changes detected. Proceeding with script execution."
+    fi
+}
+
+# Call the function to check the branch
+check_branch
+
+# Call the function to check for uncommitted changes
+check_uncommitted_changes
+
 # Define paths and filenames relative to the script's directory
 JWT_FILE="$SCRIPT_DIR/jwtauth.hml"
 NOAUTH_FILE="$SCRIPT_DIR/noauth.hml"
@@ -37,7 +65,7 @@ ALLOWED_CONTEXTS=("default" "au" "eu" "us-east" "us-west")
 # Set context to 'default' if not provided as an argument
 CONTEXT="${1:-default}"
 
-# Define allowed context values
+# Define allowed log levels
 ALLOWED_LOGLEVEL=("DEBUG" "WARN" "INFO" "ERROR" "FATAL")
 
 # Set log level to 'FATAL' if not provided as an argument
