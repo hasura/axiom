@@ -1,5 +1,5 @@
 kind: Context
-version: v2
+version: v3
 definition:
   current: default
   contexts:
@@ -39,3 +39,7 @@ definition:
       subgraph: ../customer/subgraph.yaml
       localEnvFile: ../.env
       cloudEnvFile: ../.env.cloud.us-west
+  scripts:
+    docker-start:
+      bash: HASURA_DDN_PAT=$(ddn auth print-pat) docker compose -f compose.yaml --env-file .env up --build --pull always -d
+      powershell: $Env:HASURA_DDN_PAT = ddn auth print-pat; docker compose -f compose.yaml --env-file .env up --build --pull always -d
