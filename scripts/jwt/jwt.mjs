@@ -40,7 +40,12 @@ const envFilePath = options.env
 loadEnvFile(envFilePath);
 
 // Get the key from command line option, environment variable, or use a default value
-const key = options.key || process.env.JWT_SECRET || 'default-secret-key';
+const key = options.key || process.env.JWT_SECRET;
+
+if (!key) {
+  console.error('Error: No JWT secret provided. Please pass a key with the --key option, --env with the path to an env file or set the JWT_SECRET environment variable.');
+  process.exit(1);
+}
 
 const claims = {
   "x-hasura-allowed-roles": roles,
