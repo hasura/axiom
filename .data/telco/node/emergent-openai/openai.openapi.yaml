@@ -1,0 +1,71 @@
+openapi: 3.0.0
+info:
+  title: OpenAI Integration API
+  version: 1.0.0
+  description: API to interact with OpenAI and Hasura for document embeddings.
+servers:
+  - url: http://localhost:13001
+    description: Local server
+paths:
+  /generate-embeddings:
+    post:
+      summary: Generate and update embeddings for a given document.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+                uuid:
+                  type: string
+      responses:
+        '200':
+          description: Embeddings updated successfully.
+        '400':
+          description: Invalid input.
+        '500':
+          description: Error occurred.
+
+  /update-embeddings:
+    post:
+      summary: Update embeddings for all documents.
+      responses:
+        '200':
+          description: Embeddings updated for all documents.
+        '500':
+          description: Error occurred.
+
+  /search:
+    post:
+      summary: Search documents based on embedding.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                search:
+                  type: string
+      responses:
+        '200':
+          description: Search results returned successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  searchResult:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        document_uuid:
+                          type: string
+        '400':
+          description: Invalid input.
+        '500':
+          description: Error occurred.

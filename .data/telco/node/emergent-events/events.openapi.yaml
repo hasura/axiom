@@ -1,0 +1,56 @@
+openapi: 3.0.0
+info:
+  title: Sample API
+  description: API for managing calls and texts
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000/
+    description: Local server
+
+paths:
+  /cron:
+    get:
+      summary: Delete old calls and texts
+      description: Deletes calls and texts older than one day.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  affected_rows:
+                    type: integer
+        '500':
+          description: Error
+
+  /insert:
+    get:
+      summary: Get latest call and text
+      description: Fetches the latest call and text records.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  calls:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        callid:
+                          type: integer
+                  texts:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        textid:
+                          type: integer
+        '500':
+          description: Error

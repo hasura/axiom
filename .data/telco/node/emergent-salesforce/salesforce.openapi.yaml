@@ -1,0 +1,1056 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Salesforce CPQ API",
+    "version": "1.0.0",
+    "description": "API for Salesforce CPQ, including saving, calculating, reading, and validating quotes."
+  },
+  "servers": [
+    {
+      "url": "http://node-salesforce:4016"
+    }
+  ],
+  "paths": {
+    "/services/apexrest/SBQQ/ServiceRouter": {
+          "get": {
+        "summary": "Read Quote",
+        "description": "Retrieves a specific quote from Salesforce CPQ.",
+        "parameters": [
+          {
+            "name": "reader",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "SBQQ.QuoteAPI.QuoteReader",
+              "description": "The reader parameter specifying the Quote Reader."
+            }
+          },
+          {
+            "name": "uid",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The unique identifier of the quote to be read."
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response with the quote data.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "record": {
+                      "type": "object",
+                      "properties": {
+                        "attributes": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string"
+                            },
+                            "url": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "Id": {
+                          "type": "string"
+                        },
+                        "Name": {
+                          "type": "string"
+                        },
+                        "sbqq__TotalAmount__c": {
+                          "type": "number"
+                        },
+                        "sbqq__EffectiveDate__c": {
+                          "type": "string"
+                        },
+                        "sbqq__ExpirationDate__c": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "nextKey": {
+                      "type": "integer"
+                    },
+                    "netTotal": {
+                      "type": "number"
+                    },
+                    "netNonSegmentTotal": {
+                      "type": "number"
+                    },
+                    "lineItems": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "Id": {
+                            "type": "string"
+                          },
+                          "sbqq__ProductId__c": {
+                            "type": "string"
+                          },
+                          "sbqq__Product__c": {
+                            "type": "string"
+                          },
+                          "sbqq__ProductName__c": {
+                            "type": "string"
+                          },
+                          "sbqq__Quantity__c": {
+                            "type": "integer"
+                          },
+                          "sbqq__UnitPrice__c": {
+                            "type": "number"
+                          },
+                          "sbqq__DeviceId__c": {
+                            "type": "string"
+                          },
+                          "sbqq__Device__c": {
+                            "type": "string"
+                          },
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Purchasew Quote",
+        "description": "Finalizes the purchase of the quote data in Salesforce CPQ, initiating billing and fulfillment processes.",
+        "parameters": [
+          {
+            "name": "buyer",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "SBQQ.QuoteAPI.QuoteBuyer",
+              "description": "The buyer parameter specifying the Quote Buyer."
+            }
+          },
+          {
+            "name": "dealId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "SBQQ.QuoteAPI.QuoteBuyer",
+              "description": "The buyer parameter specifying the Quote Buyer."
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response indicating the quote has been purchased and the order is being processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "record": {
+                      "type": "object",
+                      "properties": {
+                        "attributes": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string"
+                            },
+                            "url": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "Name": {
+                          "type": "string"
+                        },
+                        "Id": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "orderConfirmation": {
+                      "type": "object",
+                      "properties": {
+                        "orderId": {
+                          "type": "string"
+                        },
+                        "orderStatus": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "nextKey": {
+                      "type": "integer"
+                    },
+                    "netTotal": {
+                      "type": "number"
+                    },
+                    "customerTotal": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Patch Operation for Multiple Functionalities",
+        "description": "This PATCH operation is used for multiple functionalities in the Salesforce CPQ API, differentiated by the 'loader' query parameter. The specific functions include 'Add Products', 'Read Products', 'Calculate Quote', and 'Validate Quote'. The behavior depends on the provided query parameters and request body. - To add products, use 'loader=SBQQ.QuoteAPI.QuoteProductAdder'. - To read product details, use 'loader=SBQQ.ProductAPI.ProductLoader'. - To calculate a quote, use 'loader=SBQQ.QuoteAPI.QuoteCalculator'. - To validate a quote, use 'loader=QuoteAPI.QuoteValidator'.\n",
+        "parameters": [
+          {
+            "name": "loader",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Specifies the loader to be used for different operations."
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response. The structure depends on the operation performed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/services/data/v60.0/sobjects/OpportunityLineItemSchedule/": {
+      "get": {
+        "summary": "Get Opportunity Line Item Schedules",
+        "description": "Retrieves a list of Opportunity Line Item Schedules.",
+        "responses": {
+          "200": {
+            "description": "List of Opportunity Line Item Schedules.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "Id": {
+                        "type": "string"
+                      },
+                      "OpportunityLineItemId": {
+                        "type": "string"
+                      },
+                      "Quantity": {
+                        "type": "number"
+                      },
+                      "Revenue": {
+                        "type": "number"
+                      },
+                      "ScheduleDate": {
+                        "type": "string"
+                      },
+                      "Type": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update Opportunity Line Item Schedules",
+        "description": "Updates an existing Opportunity Line Item Schedule.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Id": {
+                    "type": "string"
+                  },
+                  "OpportunityLineItemId": {
+                    "type": "string"
+                  },
+                  "Quantity": {
+                    "type": "number"
+                  },
+                  "Revenue": {
+                    "type": "number"
+                  },
+                  "ScheduleDate": {
+                    "type": "string"
+                  },
+                  "Type": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Opportunity Line Item Schedule updated successfully."
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Opportunity Line Item Schedules",
+        "description": "Deletes an existing Opportunity Line Item Schedule.",
+        "responses": {
+          "204": {
+            "description": "Opportunity Line Item Schedule deleted successfully."
+          }
+        }
+      }
+    },
+    "/services/data/v60.0/consents/": {
+      "post": {
+        "summary": "Write Consent Data",
+        "description": "Writes consent data for a particular entity.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "IndividualId": {
+                    "type": "string",
+                    "description": "The ID of the individual to whom the consent record is related."
+                  },
+                  "DataUsePurposeId": {
+                    "type": "string",
+                    "description": "The ID of the data use purpose associated with the consent record."
+                  },
+                  "ConsentGiverId": {
+                    "type": "string",
+                    "description": "The ID of the person or entity giving consent."
+                  },
+                  "Status": {
+                    "type": "string",
+                    "description": "The status of the consent (e.g., 'Granted', 'Denied')."
+                  },
+                  "EffectiveFrom": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "The start date and time from which the consent is effective."
+                  },
+                  "EffectiveTo": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "The end date and time until which the consent is effective."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Consent data written successfully."
+          }
+        }
+      }
+    },
+    "/services/data/v60.0/search/": {
+      "get": {
+        "summary": "Search",
+        "description": "Performs a search across Salesforce data using the Salesforce Object Search Language (SOSL).",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "SOSL search query."
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Search results.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "searchRecords": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/services/data/v60.0/process/rules/": {
+      "get": {
+        "summary": "Get Process Rules",
+        "description": "Retrieves a list of process rules.",
+        "responses": {
+          "200": {
+            "description": "List of process rules.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "Id": {
+                        "type": "string"
+                      },
+                      "Name": {
+                        "type": "string"
+                      },
+                      "Description": {
+                        "type": "string"
+                      },
+                      "Active": {
+                        "type": "boolean"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create Process Rules",
+        "description": "Creates new process rules.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Id": {
+                    "type": "string"
+                  },
+                  "Name": {
+                    "type": "string"
+                  },
+                  "Description": {
+                    "type": "string"
+                  },
+                  "Active": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Process rule created successfully."
+          }
+        }
+      },
+      "head": {
+        "summary": "Check Process Rules",
+        "description": "Checks for the existence of process rules.",
+        "responses": {
+          "200": {
+            "description": "Process rules exist."
+          },
+          "404": {
+            "description": "Process rules not found."
+          }
+        }
+      }
+    },
+    "/services/data/v60.0/process/rules/{ruleId}": {
+      "get": {
+        "summary": "Get Process Rule Object",
+        "description": "Retrieves a specific process rule object by its ID.",
+        "parameters": [
+          {
+            "name": "ruleId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The ID of the process rule object."
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Process rule object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "Id": {
+                      "type": "string"
+                    },
+                    "Name": {
+                      "type": "string"
+                    },
+                    "Description": {
+                      "type": "string"
+                    },
+                    "Active": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create Process Rule Object",
+        "description": "Creates a new process rule object.",
+        "parameters": [
+          {
+            "name": "ruleId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The ID of the process rule object."
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Id": {
+                    "type": "string"
+                  },
+                  "Name": {
+                    "type": "string"
+                  },
+                  "Description": {
+                    "type": "string"
+                  },
+                  "Active": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Process rule object created successfully."
+          }
+        }
+      },
+      "head": {
+        "summary": "Check Process Rule Object",
+        "description": "Checks for the existence of a specific process rule object.",
+        "parameters": [
+          {
+            "name": "ruleId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The ID of the process rule object."
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Process rule object exists."
+          },
+          "404": {
+            "description": "Process rule object not found."
+          }
+        }
+      }
+    },
+    "/services/data/v60.0/sobjects/": {
+      "get": {
+        "summary": "Describe Global",
+        "description": "Lists the available objects and their metadata for your organization's data.",
+        "responses": {
+          "200": {
+            "description": "Array of all available objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "context": {
+                        "type": "object",
+                        "properties": {
+                          "globalObjectId": {
+                            "type": "string"
+                          },
+                          "globalObjectDescription": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/services/data/v60.0/sobjects/{sObjectName}": {
+      "get": {
+        "summary": "Describe an sObject",
+        "description": "Describes the individual metadata for the specified object.",
+        "parameters": [
+          {
+            "name": "sObjectName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The name of the sObject."
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Metadata for the specified sObject.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "context": {
+                      "type": "object",
+                      "properties": {
+                        "sObjectId": {
+                          "type": "string"
+                        },
+                        "sObjectDescription": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Basic Information about an sObject (POST)",
+        "description": "Provides basic information about the sObject, including how to create records.",
+        "parameters": [
+          {
+            "name": "sObjectName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The name of the sObject."
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Basic information about the sObject.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "context": {
+                      "type": "object",
+                      "properties": {
+                        "sObjectInfoId": {
+                          "type": "string"
+                        },
+                        "sObjectInfoDescription": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "GenericPatchRequest": {
+        "type": "object"
+      },
+      "GenericPatchResponse": {
+        "type": "object"
+      },
+      "QuoteModel": {
+        "type": "object",
+        "properties": {
+          "record": {
+            "type": "object",
+            "properties": {
+              "attributes": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string"
+                  },
+                  "url": {
+                    "type": "string"
+                  }
+                }
+              },
+              "Name": {
+                "type": "string"
+              },
+              "Id": {
+                "type": "string"
+              }
+            }
+          },
+          "nextKey": {
+            "type": "integer"
+          },
+          "netTotal": {
+            "type": "number"
+          },
+          "lineItems": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "lineItemGroups": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "customerTotal": {
+            "type": "number"
+          }
+        }
+      },
+      "QuoteContext": {
+        "type": "object",
+        "properties": {
+          "record": {
+            "type": "object",
+            "properties": {
+              "attributes": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string"
+                  },
+                  "url": {
+                    "type": "string"
+                  }
+                }
+              },
+              "Name": {
+                "type": "string"
+              },
+              "Id": {
+                "type": "string"
+              }
+            }
+          },
+          "nextKey": {
+            "type": "integer"
+          },
+          "netTotal": {
+            "type": "number"
+          },
+          "lineItems": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "lineItemGroups": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "customerTotal": {
+            "type": "number"
+          }
+        }
+      },
+      "AddProductsContext": {
+        "type": "object",
+        "properties": {
+          "context": {
+            "type": "object",
+            "properties": {
+              "quote": {
+                "type": "object",
+                "properties": {
+                  "record": {
+                    "type": "object",
+                    "properties": {
+                      "attributes": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string"
+                          },
+                          "url": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "Name": {
+                        "type": "string"
+                      },
+                      "Id": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "nextKey": {
+                    "type": "integer"
+                  },
+                  "netTotal": {
+                    "type": "number"
+                  },
+                  "lineItems": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    }
+                  },
+                  "lineItemGroups": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    }
+                  },
+                  "customerTotal": {
+                    "type": "number"
+                  }
+                }
+              },
+              "products": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              },
+              "groupKey": {
+                "type": "integer"
+              },
+              "ignoreCalculate": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      },
+      "ProductLoaderContext": {
+        "type": "object",
+        "properties": {
+          "context": {
+            "type": "object",
+            "properties": {
+              "pricebookId": {
+                "type": "string"
+              },
+              "currencyCode": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "GlobalObject": {
+        "type": "object",
+        "properties": {
+          "context": {
+            "type": "object",
+            "properties": {
+              "globalObjectId": {
+                "type": "string"
+              },
+              "globalObjectDescription": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "sObjectDescription": {
+        "type": "object",
+        "properties": {
+          "context": {
+            "type": "object",
+            "properties": {
+              "sObjectId": {
+                "type": "string"
+              },
+              "sObjectDescription": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "sObjectBasicInfo": {
+        "type": "object",
+        "properties": {
+          "context": {
+            "type": "object",
+            "properties": {
+              "sObjectInfoId": {
+                "type": "string"
+              },
+              "sObjectInfoDescription": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "OpportunityLineItemSchedule": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": "string"
+          },
+          "OpportunityLineItemId": {
+            "type": "string"
+          },
+          "Quantity": {
+            "type": "number"
+          },
+          "Revenue": {
+            "type": "number"
+          },
+          "ScheduleDate": {
+            "type": "string"
+          },
+          "Type": {
+            "type": "string"
+          }
+        }
+      },
+      "ConsentData": {
+        "type": "object",
+        "properties": {
+          "IndividualId": {
+            "type": "string",
+            "description": "The ID of the individual to whom the consent record is related."
+          },
+          "DataUsePurposeId": {
+            "type": "string",
+            "description": "The ID of the data use purpose associated with the consent record."
+          },
+          "ConsentGiverId": {
+            "type": "string",
+            "description": "The ID of the person or entity giving consent."
+          },
+          "Status": {
+            "type": "string",
+            "description": "The status of the consent (e.g., 'Granted', 'Denied')."
+          },
+          "EffectiveFrom": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The start date and time from which the consent is effective."
+          },
+          "EffectiveTo": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The end date and time until which the consent is effective."
+          }
+        }
+      },
+      "ProcessRuleObject": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": "string"
+          },
+          "Name": {
+            "type": "string"
+          },
+          "Description": {
+            "type": "string"
+          },
+          "Active": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ProcessRule": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": "string"
+          },
+          "Name": {
+            "type": "string"
+          },
+          "Description": {
+            "type": "string"
+          },
+          "Active": {
+            "type": "boolean"
+          }
+        }
+      }
+    }
+  }
+}

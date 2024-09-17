@@ -1,0 +1,406 @@
+version: '3.8'
+name: emergent
+services:
+  nextjs:
+    image: emergent-nextjs-app
+    container_name: ${CONTAINER_PREFIX}nextjs-app
+    build:
+      context: nextjs
+      dockerfile: Dockerfile.nextjs
+    ports:
+      - "${WEBSITE_PORT_FORWARD}"
+    environment:
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      HASURA_JWT_SECRET_1: ${HASURA_JWT_SECRET_1}
+      HASURA_API_URL: ${HASURA_API_URL}
+      HASURA_API_ADMIN_SECRET: ${HASURA_API_ADMIN_SECRET}
+      SECURE: ${SECURE}
+      NEXT_PUBLIC_SECURE: ${SECURE}
+      NEXTAUTH_URL: ${NEXTAUTH_URL}
+      NEXTAUTH_URL_INTERNAL: ${NEXTAUTH_URL_INTERNAL}
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
+      NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: ${NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
+      NEXT_PUBLIC_HASURA_API_URL: ${NEXT_PUBLIC_HASURA_API_URL}
+      NEXT_API_HASURA_API_URL: ${NEXT_API_HASURA_API_URL}
+
+  # APIs
+  node-idverification:
+    image: emergent-node-idverification
+    container_name: ${CONTAINER_PREFIX}node-idverification
+    restart: unless-stopped
+    build:
+      context: ${DATASET}/node/emergent-idverification
+      dockerfile: docker/Dockerfile.node
+    healthcheck:
+      test: bash -c ':> /dev/tcp/0.0.0.0/4015' || exit 1
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "127.0.0.1:14015:4015"
+
+  node-salesforce:
+    image: emergent-node-salesforce
+    container_name: ${CONTAINER_PREFIX}node-salesforce
+    restart: unless-stopped
+    build:
+      context: ${DATASET}/node/emergent-salesforce
+      dockerfile: docker/Dockerfile.node
+    healthcheck:
+      test: bash -c ':> /dev/tcp/0.0.0.0/4016' || exit 1
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "127.0.0.1:14016:4016"
+
+  node-kafka-emulator:
+    image: emergent-kafka-emulator
+    container_name: ${CONTAINER_PREFIX}node-kafka-emulator
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    environment:
+      RUNNING_IN_DOCKER: true
+      HASURA_GRAPHQL_ADMIN_SECRET: "${HASURA_GRAPHQL_ADMIN_SECRET}"
+      EMULATOR_DELAY: "${EMULATOR_DELAY}"
+    build:
+      context: ${DATASET}/node/emergent-kafka-emulator
+      dockerfile: docker/Dockerfile.node
+
+  node-openai:
+    image: emergent-node-openai
+    container_name: ${CONTAINER_PREFIX}node-openai
+    restart: unless-stopped
+    environment:
+      RUNNING_IN_DOCKER: true
+      HASURA_GRAPHQL_ADMIN_SECRET: "${HASURA_GRAPHQL_ADMIN_SECRET}"
+      OPENAI_API_KEY: "${OPENAI_API_KEY}"
+    build:
+      context: ${DATASET}/node/emergent-openai
+      dockerfile: docker/Dockerfile.node
+    ports:
+      - "127.0.0.1:14027:4027"
+
+  node-events:
+    image: emergent-node-events
+    container_name: ${CONTAINER_PREFIX}node-events
+    restart: unless-stopped
+    environment:
+      RUNNING_IN_DOCKER: true
+      HASURA_GRAPHQL_ADMIN_SECRET: "${HASURA_GRAPHQL_ADMIN_SECRET}"
+    build:
+      context: ${DATASET}/node/emergent-events
+      dockerfile: docker/Dockerfile.node
+    healthcheck:
+      test: bash -c ':> /dev/tcp/0.0.0.0/4050' || exit 1
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "127.0.0.1:14050:4050"
+
+  # Hasura
+  hasura:
+    image: hasura/graphql-engine:${EMERGENT_HASURA_VERSION}
+    container_name: ${CONTAINER_PREFIX}hasura
+    restart: unless-stopped
+    depends_on:
+      # - jaeger
+      - postgres
+      - pgvector
+      - clickhouse
+      - redis
+      - data-connector-agent
+      - mongo-data-connector
+      - clickhouse-data-connector
+      # - grafana
+      # - prometheus
+      - mongodb
+    ports:
+      - "${HASURA_PORT_FORWARD}"
+    environment:
+      # HASURA_GRAPHQL_AUTH_HOOK: 'http://host.docker.internal:6000/auth'
+      # HASURA_GRAPHQL_AUTH_HOOK_MODE: 'POST'
+      HASURA_GRAPHQL_EE_LICENSE_KEY: ${HASURA_GRAPHQL_EE_LICENSE_KEY}
+      HASURA_GRAPHQL_ADMIN_SECRETS: |
+       [
+        "${HASURA_GRAPHQL_ADMIN_SECRET}",
+        "4cd563b1b03b25411b02a527f949710d"
+        ]
+      HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD}@postgres:5432/emergent_metadata_main
+      HASURA_GRAPHQL_DB_URL_FROM_ENV_POSTGRES: postgres://postgres:${POSTGRES_PASSWORD}@postgres:5432/postgres
+      HASURA_GRAPHQL_DB_URL_FROM_ENV_HOLOTEL: postgres://postgres:${POSTGRES_PASSWORD}@postgres:5432/emergent_holotel
+      HASURA_GRAPHQL_DB_URL_FROM_ENV_PGVECTOR: postgres://postgres:${POSTGRES_PASSWORD}@pgvector:5432/postgres
+      HASURA_GRAPHQL_DB_URL_FROM_ENV_AUTH: postgres://postgres:${POSTGRES_PASSWORD}@postgres:5432/emergent_auth
+      HASURA_GRAPHQL_MIGRATIONS_SERVER_TIMEOUT: 30
+      HASURA_GRAPHQL_REDIS_URL: redis://redis:6379
+      HASURA_GRAPHQL_JWT_SECRETS: |
+        [
+          {
+            "key": "${HASURA_JWT_SECRET_1}",
+            "type": "HS256",
+            "issuer": "holotel-next-auth"
+          },
+          {
+            "key": "${HASURA_JWT_SECRET_2}",
+            "type": "HS384",
+            "issuer": "holotel-internal"
+          }
+        ]
+      HASURA_GRAPHQL_ENABLE_REMOTE_SCHEMA_PERMISSIONS: true
+      HASURA_GRAPHQL_UNAUTHORIZED_ROLE: anonymous
+      HASURA_GRAPHQL_ENABLE_CONSOLE: true
+      HASURA_GRAPHQL_DEV_MODE: true
+      HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
+      HASURA_GRAPHQL_EXPERIMENTAL_FEATURES: streaming_subscriptions
+      # @TODO uncomment this when 2.37.1 is released
+      # HASURA_GRAPHQL_CONSOLE_ASSETS_DIR: /srv/console-assets
+      HASURA_GRAPHQL_METADATA_DEFAULTS: '{"backend_configs":{"dataconnector":{"snowflake":{"uri":"http://data-connector-agent:8081/api/v1/snowflake"},"oracle":{"uri":"http://data-connector-agent:8081/api/v1/oracle"},"mysqlgdc":{"uri":"http://data-connector-agent:8081/api/v1/mysql"},"athena":{"uri":"http://data-connector-agent:8081/api/v1/athena"},"Mongo":{"uri":"http://mongo-data-connector:3000"},"Trino":{"uri":"http://trino-data-connector:8081/api/v1/trino"},"ClickHouse":{"uri":"http://clickhouse-data-connector:8080"}}}}'
+      HASURA_GRAPHQL_ENABLED_APIS: metadata,graphql,config,metrics
+      HASURA_GRAPHQL_METRICS_SECRET: "${HASURA_GRAPHQL_ADMIN_SECRET}"
+      HASURA_FF_NATIVE_QUERY_INTERFACE: 'True'
+      OTEL_COLLECTOR_HOST: http://otel-collector:4318
+    healthcheck:
+      test: bash -c ':> /dev/tcp/0.0.0.0/8080' || exit 1
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Databases & Connectors
+  postgres:
+    image: postgres
+    container_name: ${CONTAINER_PREFIX}postgres
+    restart: unless-stopped
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./${DATASET}/postgres/scripts/:/docker-entrypoint-initdb.d/
+    environment:
+      PGUSER: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: "pg_isready -q -h postgres"
+      interval: 10s
+      timeout: 5s
+      retries: 30
+
+  pgvector:
+    image: ankane/pgvector:latest
+    container_name: ${CONTAINER_PREFIX}pgvector
+    restart: unless-stopped
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgvector-data:/var/lib/postgresql/data
+      - ./${DATASET}/pgvector/scripts/:/docker-entrypoint-initdb.d/
+    environment:
+      PGUSER: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    healthcheck:
+      test: "pg_isready -q -h postgres"
+      interval: 10s
+      timeout: 5s
+      retries: 30
+
+  data-connector-agent:
+    image: hasura/graphql-data-connector:${EMERGENT_HASURA_VERSION}
+    container_name: ${CONTAINER_PREFIX}data-connector-agent
+    restart: unless-stopped
+    environment:
+      QUARKUS_LOG_LEVEL: ERROR # FATAL, ERROR, WARN, INFO, DEBUG, TRACE
+      ## https://quarkus.io/guides/opentelemetry#configuration-reference
+      QUARKUS_OPENTELEMETRY_ENABLED: 'false'
+      QUARKUS_OPENTELEMETRY_TRACER_EXPORTER_OTLP_ENDPOINT: http://jaeger:4317
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:8081/api/v1/snowflake/health"
+        ]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+      start_period: 5s
+
+  mongo-data-connector:
+    image: hasura/mongo-data-connector:${EMERGENT_HASURA_VERSION}
+    container_name: ${CONTAINER_PREFIX}mongo-data-connector
+    restart: unless-stopped
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: mongo
+    container_name: ${CONTAINER_PREFIX}mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    command: mongod --auth
+    volumes:
+      - mongodb-data:/data/db
+      - ./${DATASET}/mongodb/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js
+    environment:
+      - MONGO_INITDB_DATABASE=holotel
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
+
+  clickhouse-data-connector:
+    image: hasura/clickhouse-data-connector:v2.36.2
+    container_name: ${CONTAINER_PREFIX}clickhouse-data-connector
+    depends_on:
+      - clickhouse
+  
+  clickhouse:
+    image: clickhouse/clickhouse-server
+    container_name: ${CONTAINER_PREFIX}clickhouse
+    restart: unless-stopped
+    user: "101:101"
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+    hostname: clickhouse
+    environment:
+      - CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD}
+    volumes:
+      - ./${DATASET}/clickhouse/config.d/config.xml:/etc/clickhouse-server/config.d/config.xml
+      - ./${DATASET}/clickhouse/users.d/users.xml:/etc/clickhouse-server/users.d/users.xml
+      - clickhouse_data:/var/lib/clickhouse
+      - ./${DATASET}/clickhouse/scripts/:/docker-entrypoint-initdb.d/
+
+  trino-data-connector:
+    image: hasura/trino-data-connector:${EMERGENT_HASURA_VERSION_PREVIOUS}
+    container_name: ${CONTAINER_PREFIX}trino-data-connector
+
+  # Caching
+  redis:
+    image: docker.dragonflydb.io/dragonflydb/dragonfly
+    container_name: ${CONTAINER_PREFIX}redis
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+
+  # # Observability
+  # alertmanager:
+  #   container_name: ${CONTAINER_PREFIX}alert-manager
+  #   image: prom/alertmanager:latest
+  #   restart: unless-stopped
+  #   volumes:
+  #     - ./global/alertmanager/config.yml/:/etc/alertmanager/alertmanager.yml
+
+  # blackbox_exporter:
+  #   container_name: ${CONTAINER_PREFIX}blackbox
+  #   image: prom/blackbox-exporter:latest
+  #   restart: unless-stopped
+  #   volumes:
+  #     - ./global/blackboxexporter/:/etc/blackboxexporter/
+  #   command:
+  #     - "--config.file=/etc/blackboxexporter/config.yml"
+
+  # grafana:
+  #   container_name: ${CONTAINER_PREFIX}grafana
+  #   image: grafana/grafana:latest
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - prometheus
+  #   ports:
+  #     - "127.0.0.1:13300:3000"
+  #   volumes:
+  #     - grafana-data:/var/lib/grafana
+  #     - ./global/grafana/dashboards:/var/lib/grafana/dashboards/
+  #     - ./global/grafana/provisioning:/etc/grafana/provisioning/
+  #   environment:
+  #     GF_SECURITY_ADMIN_PASSWORD: admin
+
+  # jaeger:
+  #   container_name: ${CONTAINER_PREFIX}jaeger
+  #   image: jaegertracing/all-in-one:1.37
+  #   restart: unless-stopped
+  #   environment:
+  #     COLLECTOR_ZIPKIN_HOST_PORT: ":9411"
+  #     COLLECTOR_OTLP_ENABLED: "true"
+
+  # loki:
+  #   image: grafana/loki:latest
+  #   container_name: ${CONTAINER_PREFIX}loki
+  #   restart: unless-stopped
+  #   volumes:
+  #     - loki-data:/loki
+  #     - ./global/loki/loki-config.yaml:/etc/loki/local-config.yaml
+  #   command: -config.file=/etc/loki/local-config.yaml
+
+  # node-exporter:
+  #   container_name: ${CONTAINER_PREFIX}node-exporter
+  #   image: prom/node-exporter:latest
+  #   restart: unless-stopped
+  #   volumes:
+  #     - /proc:/host/proc:ro
+  #     - /sys:/host/sys:ro
+  #     - /:/rootfs:ro
+  #   command:
+  #     - "--path.procfs=/host/proc"
+  #     - "--path.sysfs=/host/sys"
+  #     - --collector.filesystem.ignored-mount-points
+  #     - "^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)"
+
+  # otel-collector:
+  #   container_name: ${CONTAINER_PREFIX}otel-collector
+  #   image: otel/opentelemetry-collector-contrib:0.76.1
+  #   restart: unless-stopped
+  #   command:
+  #     - --config=/etc/otel-collector-config.yaml
+  #   volumes:
+  #     - ./global/otel/otel-collector-config.yaml:/etc/otel-collector-config.yaml
+  #   ports:
+  #     - "1888" # pprof extension
+  #     - "8888" # Prometheus metrics exposed by the collector
+  #     - "8889" # Prometheus exporter metrics
+  #     - "13133" # health_check extension
+  #     - "4317" # OTLP gRPC receiver
+  #     - "4318" # OTLP http receiver
+  #     - "55679" # zpages extension
+  #   # environment:
+  #   #   DD_API_KEY: ${DD_API_KEY}
+  #   #   HONEYCOMB_API_KEY: ${HONEYCOMB_API_KEY}
+  #   #   HONEYCOMB_DATASET: ${HONEYCOMB_DATASET}
+
+  # promtail:
+  #   image: grafana/promtail:latest
+  #   container_name: ${CONTAINER_PREFIX}promtail
+  #   restart: unless-stopped
+  #   volumes:
+  #     - /var/lib/docker/:/var/lib/docker:ro
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #     - ./global/promtail/promtail-config.yml:/etc/promtail/config.yml
+  #   depends_on:
+  #     - loki
+
+  # prometheus:
+  #   container_name: ${CONTAINER_PREFIX}prometheus
+  #   image: prom/prometheus:v2.30.0
+  #   restart: unless-stopped
+  #   volumes:
+  #     - ./global/prometheus:/etc/prometheus
+  #     - prometheus-data:/prometheus
+  #   command:
+  #     - "--config.file=/etc/prometheus/prometheus.yml"
+  #     - "--storage.tsdb.path=/prometheus"
+  #     - "--web.console.libraries=/usr/share/prometheus/console_libraries"
+  #     - "--web.console.templates=/usr/share/prometheus/consoles"
+  #     - "--web.enable-lifecycle"
+  #   links:
+      # - alertmanager:alertmanager
+
+volumes:
+  postgres-data:
+  pgvector-data:
+  clickhouse_data:
+  mongodb-data:
+  # loki-data:
+  # grafana-data:
+  # prometheus-data:
