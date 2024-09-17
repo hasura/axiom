@@ -60,7 +60,7 @@ DEST_DIR="$SCRIPT_DIR/../../globals"
 DEST_FILE="auth-config.hml"
 
 # Define allowed context values
-ALLOWED_CONTEXTS=("default" "au" "eu" "us-east" "us-west")
+ALLOWED_CONTEXTS=("default" "au" "eu" "us-east" "us-west", "sg")
 
 # Set context to 'default' if not provided as an argument
 CONTEXT="${1:-default}"
