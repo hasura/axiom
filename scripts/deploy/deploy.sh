@@ -147,7 +147,7 @@ rebuild_supergraph() {
 
     # Build a project, domain, and enterprise supergraph
     local index=1
-    for supergraph in "./supergraph-project.yaml" "./supergraph-domain.yaml" "./supergraph.yaml"; do
+    for supergraph in "./supergraph-project-queries.yaml" "./supergraph-project.yaml" "./supergraph-domain.yaml" "./supergraph.yaml"; do
         run_command_with_tag "$NOAUTH_FILE" "NoAuth RB-$index" $supergraph true
         index=$((index + 1))
     done
