@@ -41,5 +41,20 @@ definition:
       cloudEnvFile: ../.env.cloud.us-west
   scripts:
     docker-start:
-      bash: HASURA_DDN_PAT=$(ddn auth print-pat) docker compose -f compose.yaml --env-file .env up --build --pull always -d
+      bash: echo "Please use a region specific command [docker-start-us-west|docker-start-us-east|docker-start-au|docker-start-eu|docker-start-sg]"
+      powershell: ""
+    docker-start-au:
+      bash: HASURA_DDN_PAT=$(ddn auth print-pat) docker compose -f compose.yaml --env-file .env.cloud.au --env-file .env up --build --pull always -d
+      powershell: ""
+    docker-start-eu:
+      bash: HASURA_DDN_PAT=$(ddn auth print-pat) docker compose -f compose.yaml --env-file .env.cloud.eu --env-file .env up --build --pull always -d
+      powershell: ""
+    docker-start-sg:
+      bash: HASURA_DDN_PAT=$(ddn auth print-pat) docker compose -f compose.yaml --env-file .env.cloud.sg --env-file .env up --build --pull always -d
+      powershell: ""
+    docker-start-us-east:
+      bash: HASURA_DDN_PAT=$(ddn auth print-pat) docker compose -f compose.yaml --env-file .env.cloud.us-east --env-file .env up --build --pull always -d
+      powershell: ""
+    docker-start-us-west:
+      bash: HASURA_DDN_PAT=$(ddn auth print-pat) docker compose -f compose.yaml --env-file .env.cloud.us-west --env-file .env up --build --pull always -d
       powershell: $Env:HASURA_DDN_PAT = ddn auth print-pat; docker compose -f compose.yaml --env-file .env up --build --pull always -d
