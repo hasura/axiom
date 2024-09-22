@@ -100,6 +100,19 @@ function findConnectorYamlFiles(dir) {
     return results;
 }
 
+// Apply the build using the build version
+function applyBuild(region, buildVersion) {
+    const command = `ddn supergraph build apply ${buildVersion} -c ${region}`;
+
+    if (!dryRun) {
+        console.log(chalk.magentaBright(`Applying build version: ${buildVersion}`));
+        execSync(command, { stdio: 'inherit' });
+        console.log(chalk.green(`Build version ${buildVersion} applied successfully.`));
+    } else {
+        console.log(chalk.yellow(`[Dry Run] Would apply build version: ${buildVersion}`));
+    }
+}
+
 // Deploy supergraph
 function runCommandWithTag(region, srcFile, tag, supergraph, noBuildConnectors = true) {
     const DEST_DIR = path.join(__dirname, '../../globals');
@@ -129,8 +142,14 @@ function runCommandWithTag(region, srcFile, tag, supergraph, noBuildConnectors =
 
     if (!dryRun) {
         console.log(chalk.magentaBright(`[${region}] => Executing command: ${command}`));
-        execSync(command, { stdio: 'inherit' });
+        const output = execSync(command, { stdio: 'pipe' }).toString();
+        const buildInfo = JSON.parse(output);
+
         console.log(chalk.green(`[${region}] => Deployment completed successfully for ${tag}`));
+        console.log(chalk.green(`Build URL: ${buildInfo.build_url}`));
+
+        // Apply the build using the extracted build_version
+        applyBuild(region, buildInfo.build_version);
     } else {
         console.log(chalk.yellow(`[Dry Run] Would execute command: ${command}`));
     }
