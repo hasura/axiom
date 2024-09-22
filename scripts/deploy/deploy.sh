@@ -26,7 +26,7 @@ trap 'handle_error $LINENO' ERR
 OVERRIDE=false
 REBUILD=false
 CONTEXT="default"
-LOGLEVEL="DEBUG"
+LOGLEVEL="FATAL"
 
 # Define paths and filenames relative to the script's directory
 JWT_FILE="$SCRIPT_DIR/jwtauth.hml"
