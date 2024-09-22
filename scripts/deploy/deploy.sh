@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Exit immediately if a command exits with a non-zero status
 set -e
@@ -103,14 +103,14 @@ check_uncommitted_changes() {
     fi
 }
 
-# Function to apply the build version
+# Apply the supergraph build as the project API
 apply_build() {
     local build_version="$1"
     log "Applying supergraph build version $build_version"
     ddn supergraph build apply "$build_version" -c "$CONTEXT" --log-level "$LOGLEVEL"
 }
 
-# Function to move a file and run the command
+# Copy in the correct auth-config file and run a ddn supergraph build create
 run_command_with_tag() {
     local src_file="$1"
     local tag="$2"
@@ -122,6 +122,7 @@ run_command_with_tag() {
         exit 1
     fi
 
+    # Copy the auth file into the right place depending on whether we're doing a JWT/NoAuth build
     log "Copying $src_file to $DEST_DIR/$DEST_FILE"
     cp "$src_file" "$DEST_DIR/$DEST_FILE"
 
@@ -133,17 +134,18 @@ run_command_with_tag() {
     [[ "$skip_no_build_connectors" == false ]] && build_command+=" --no-build-connectors"
 
     local build_version
+    log "Running build command => $build_command"
     build_version=$(eval "$build_command" | jq -r '.build_version')
 
     log "Build version $build_version created from $supergraph with $src_file"
     apply_build "$build_version"
 }
 
-# New rebuild function reusing run_command_with_tag
+# Rebuild each supergraph and push new builds to demonstrate how it builds up
 rebuild_supergraph() {
-    log "Starting a complete rebuild of all supergraphs, including NoAuth."
+    log "Starting a complete rebuild of all supergraphs and connectors."
 
-    # Build each supergraph in the specified order
+    # Build a project, domain, and enterprise supergraph
     local index=1
     for supergraph in "./supergraph-project.yaml" "./supergraph-domain.yaml" "./supergraph.yaml"; do
         run_command_with_tag "$NOAUTH_FILE" "NoAuth RB-$index" $supergraph true
@@ -153,22 +155,22 @@ rebuild_supergraph() {
     log "Rebuild completed successfully."
 }
 
-# Call the function to check the branch
+# Check the branch is main
 check_branch
 
-# Call the function to check for uncommitted changes
+# Check for uncommitted changes
 check_uncommitted_changes
 
-# If the rebuild flag is set, perform the rebuild
+# If the rebuild flag is set, perform the rebuild rather than a metadata only deployment
 if [[ "$REBUILD" == true ]]; then
     rebuild_supergraph
     exit 0
 fi
 
-# Run the command for JWT
+# Push a JWT deployment first to demonstrate JWTs if needed
 run_command_with_tag "$JWT_FILE" "JWT" "./supergraph.yaml"
 
-# Run the command for NoAuth
+# Push a NoAuth deployment second to allow unauthenticated visitors to view everything
 run_command_with_tag "$NOAUTH_FILE" "NoAuth" "./supergraph.yaml"
 
 log "Script completed successfully."
