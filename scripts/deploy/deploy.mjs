@@ -17,21 +17,24 @@ const program = new Command();
 program
     .option('-l, --log-level <level>', 'Set the log level (FATAL, ERROR, WARN, INFO, DEBUG)', 'FATAL')
     .option('-o, --override', 'Override branch and uncommitted changes checks', false)
+    .option('-d, --dry-run', 'Simulate the deployment without executing commands', false)
     .parse(process.argv);
 
 const options = program.opts();
 const logLevel = options.logLevel.toUpperCase();
 const override = options.override;
+const dryRun = options.dryRun;
 
 // Validate log level
 const allowedLogLevels = ['FATAL', 'ERROR', 'WARN', 'INFO', 'DEBUG'];
 if (!allowedLogLevels.includes(logLevel)) {
-    console.error(chalk.red(`Invalid log level: ${logLevel}. Allowed values are: ${allowedLogLevels.join(', ')}`));
+    console.error(chalk.whiteBright.bgRed(`Invalid log level: ${logLevel}. Allowed values are: ${allowedLogLevels.join(', ')}`));
     process.exit(1);
 }
 
-console.log(chalk.blue(`Log level set to: ${logLevel}`));
-console.log(chalk.blue(`Override flag is ${override ? 'enabled' : 'disabled'}`));
+console.log(chalk.magentaBright(`Log level set to: ${logLevel}`));
+console.log(chalk.magentaBright(`Override flag is ${override ? 'enabled' : 'disabled'}`));
+console.log(chalk.magentaBright(`Dry run mode is ${dryRun ? 'enabled' : 'disabled'}`));
 
 // Get the current directory of the script
 const __filename = path.basename(import.meta.url);
@@ -51,7 +54,7 @@ const regionMapping = {
 const root = path.resolve(__dirname, '../../');
 
 if (!fs.existsSync(root)) {
-    console.error(chalk.red(`Error: Directory ${root} does not exist.`));
+    console.error(chalk.whiteBright.bgRed(`Error: Directory ${root} does not exist.`));
     process.exit(1);
 }
 
@@ -67,13 +70,17 @@ function updateRegionInFile(filePath, region) {
             });
 
             const newYaml = yaml.stringify(doc);
-            fs.writeFileSync(filePath, newYaml, 'utf8');
-            console.log(chalk.green(`Successfully updated region in ${filePath}`));
+            if (!dryRun) {
+                fs.writeFileSync(filePath, newYaml, 'utf8');
+                console.log(chalk.green(`Successfully updated region to ${region} in ${filePath}`));
+            } else {
+                console.log(chalk.yellow(`[Dry Run] Would update region to ${region} in ${filePath}`));
+            }
         } else {
             console.warn(chalk.yellow(`Warning: No valid region configuration found in ${filePath}.`));
         }
     } catch (error) {
-        console.error(chalk.red(`Failed to update region in ${filePath}: ${error.message}`));
+        console.error(chalk.whiteBright.bgRed(`Failed to update region in ${filePath}: ${error.message}`));
     }
 }
 
@@ -99,15 +106,19 @@ function runCommandWithTag(region, srcFile, tag, supergraph, noBuildConnectors =
     const DEST_FILE = 'auth-config.hml';
 
     if (!fs.existsSync(srcFile)) {
-        console.error(chalk.red(`Error: Source file ${srcFile} does not exist.`));
+        console.error(chalk.whiteBright.bgRed(`Error: Source file ${srcFile} does not exist.`));
         process.exit(1);
     }
 
     // Copy the auth file to the correct location
-    fs.copyFileSync(srcFile, path.join(DEST_DIR, DEST_FILE));
-    console.log(chalk.green(`Copied ${srcFile} to ${DEST_DIR}/${DEST_FILE}`));
+    if (!dryRun) {
+        fs.copyFileSync(srcFile, path.join(DEST_DIR, DEST_FILE));
+        console.log(chalk.green(`Copied ${srcFile} to ${DEST_DIR}/${DEST_FILE}`));
+    } else {
+        console.log(chalk.yellow(`[Dry Run] Would copy ${srcFile} to ${DEST_DIR}/${DEST_FILE}`));
+    }
 
-    // Get git log description for the command to use as the supergrah build description
+    // Get git log description for the command to use as the supergraph build description
     const gitLogDescription = execSync(`git log -1 --pretty=format:"%h [${tag}] %s"`).toString().trim();
 
     // Construct the ddn supergraph build command
@@ -116,14 +127,18 @@ function runCommandWithTag(region, srcFile, tag, supergraph, noBuildConnectors =
         command += ' --no-build-connectors';
     }
 
-    console.log(chalk.blue(`Executing command: ${command}`));
-    execSync(command, { stdio: 'inherit' });
-    console.log(chalk.green(`Successfully executed deployment for ${tag}`));
+    if (!dryRun) {
+        console.log(chalk.magentaBright(`[${region}] => Executing command: ${command}`));
+        execSync(command, { stdio: 'inherit' });
+        console.log(chalk.green(`[${region}] => Deployment completed successfully for ${tag}`));
+    } else {
+        console.log(chalk.yellow(`[Dry Run] Would execute command: ${command}`));
+    }
 }
 
 // Rebuild function that does not use --no-build-connectors
 async function rebuildSupergraph(contextRegion) {
-    console.log(chalk.blue('Starting a complete rebuild of all supergraphs and connectors.'));
+    console.log(chalk.magentaBright(`[${contextRegion}] => Starting a complete rebuild of all supergraphs and connectors.`));
 
     const NOAUTH_FILE = path.join(__dirname, 'noauth.hml');
     let index = 1;
@@ -140,7 +155,7 @@ async function rebuildSupergraph(contextRegion) {
         index++;
     }
 
-    console.log(chalk.green('Rebuild completed successfully.'));
+    console.log(chalk.green(`[${contextRegion}] => Rebuild completed successfully.`));
 }
 
 async function main() {
@@ -148,14 +163,14 @@ async function main() {
         // Check if on the main branch
         const currentBranch = await git.revparse(['--abbrev-ref', 'HEAD']);
         if (currentBranch !== 'main') {
-            console.error(chalk.red(`Error: You must be on the 'main' branch to deploy.`));
+            console.error(chalk.whiteBright.bgRed(`Error: You must be on the 'main' branch to deploy.`));
             process.exit(1);
         }
 
         // Check for uncommitted changes
         const status = await git.status();
         if (status.files.length > 0) {
-            console.error(chalk.red('Error: Uncommitted changes detected. Please commit or stash changes before running this script.'));
+            console.error(chalk.whiteBright.bgRed('Error: Uncommitted changes detected. Please commit or stash changes before running this script.'));
             process.exit(1);
         }
     } else {
@@ -183,7 +198,7 @@ async function main() {
     // Update all `connector.yaml` files with the selected region
     const yamlFiles = findConnectorYamlFiles(root);
     yamlFiles.forEach(file => updateRegionInFile(file, connectorRegion));
-    console.log(chalk.blue(`All 'connector.yaml' files have been updated to use the region ${connectorRegion}.`));
+    console.log(chalk.magentaBright(`All 'connector.yaml' files have been updated to use the region ${connectorRegion}.`));
 
     const SCRIPT_DIR = __dirname;
     const JWT_FILE = path.join(SCRIPT_DIR, 'jwtauth.hml');
@@ -196,10 +211,14 @@ async function main() {
     runCommandWithTag(contextRegion, JWT_FILE, 'JWT', `${root}/supergraph.yaml`, true);  // Deploy with JWT file
     runCommandWithTag(contextRegion, NOAUTH_FILE, 'NoAuth', `${root}/supergraph.yaml`, true);  // Deploy with NoAuth file
 
-    console.log(chalk.green('Deployment process completed successfully.'));
+    const defaultRegion = regionMapping['default'];
+    console.log(chalk.magentaBright(`Reverting 'connector.yaml' files to ${defaultRegion}.`));
+    yamlFiles.forEach(file => updateRegionInFile(file, defaultRegion));
+
+    console.log(chalk.green(`[${contextRegion}] => Deployment completed successfully.`));
 }
 
 main().catch(error => {
-    console.error(chalk.red(`Unexpected error: ${error.message}`));
+    console.error(chalk.whiteBright.bgRed(`Unexpected error: ${error.message}`));
     process.exit(1);
 });
