@@ -1,11 +1,13 @@
 #!/usr/bin/env node
 
 import fs from 'fs';
-import path from 'path';
+
+import { dirname, resolve, join } from 'path';
 import yaml from 'yaml';
 import chalk from 'chalk';
 import inquirer from 'inquirer';
 import simpleGit from 'simple-git';
+import { fileURLToPath } from 'url';
 import { execSync } from 'child_process';
 import { Command } from 'commander';
 
@@ -58,10 +60,6 @@ console.log(
     chalk.magentaBright(`Dry run mode is ${dryRun ? 'enabled' : 'disabled'}`)
 );
 
-// Get the current directory of the script
-const __filename = path.basename(import.meta.url);
-const __dirname = path.dirname(__filename);
-
 // Mapping context regions to GCP region IDs
 const regionMapping = {
     au: 'gcp-australia-southeast1',
@@ -72,8 +70,12 @@ const regionMapping = {
     default: 'gcp-us-west2', // Default axiom-test to us-west
 };
 
-// Define root so we can reference files in the same manner
-const root = path.resolve(__dirname, '../../');
+// Locate the script to allow it to be used from anywhere
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const root = resolve(__dirname, '../../');
+console.log(chalk.magentaBright('Resolved repository root:', root));
 
 if (!fs.existsSync(root)) {
     console.error(
@@ -132,7 +134,7 @@ function findConnectorYamlFiles(dir) {
     let results = [];
     const list = fs.readdirSync(dir);
     list.forEach((file) => {
-        const filePath = path.join(dir, file);
+        const filePath = join(dir, file);
         const stat = fs.statSync(filePath);
         if (stat && stat.isDirectory()) {
             results = results.concat(findConnectorYamlFiles(filePath));
@@ -170,7 +172,7 @@ function runCommandWithTag(
     supergraph,
     noBuildConnectors = true
 ) {
-    const DEST_DIR = path.join(__dirname, '../../globals');
+    const DEST_DIR = join(__dirname, '../../globals');
     const DEST_FILE = 'auth-config.hml';
 
     if (!fs.existsSync(srcFile)) {
@@ -184,7 +186,7 @@ function runCommandWithTag(
 
     // Copy the auth file to the correct location
     if (!dryRun) {
-        fs.copyFileSync(srcFile, path.join(DEST_DIR, DEST_FILE));
+        fs.copyFileSync(srcFile, join(DEST_DIR, DEST_FILE));
         console.log(
             chalk.green(`Copied ${srcFile} to ${DEST_DIR}/${DEST_FILE}`)
         );
@@ -240,7 +242,7 @@ async function rebuildSupergraph(contextRegion) {
         )
     );
 
-    const NOAUTH_FILE = path.join(__dirname, 'noauth.hml');
+    const NOAUTH_FILE = join(__dirname, 'noauth.hml');
     let index = 1;
 
     const supergraphs = [
@@ -325,8 +327,8 @@ async function main() {
     );
 
     const SCRIPT_DIR = __dirname;
-    const JWT_FILE = path.join(SCRIPT_DIR, 'jwtauth.hml');
-    const NOAUTH_FILE = path.join(SCRIPT_DIR, 'noauth.hml');
+    const JWT_FILE = join(SCRIPT_DIR, 'jwtauth.hml');
+    const NOAUTH_FILE = join(SCRIPT_DIR, 'noauth.hml');
 
     if (rebuild) {
         await rebuildSupergraph(contextRegion);
