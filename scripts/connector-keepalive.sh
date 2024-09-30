@@ -18,21 +18,31 @@ TESTQUERY='{
   "query": "query getUsers { customer_customers(limit: 1) { customerId } }"
 }'
 
+# Function to get current time in milliseconds
+current_time_ms() {
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    # macOS: use gdate from coreutils
+    gdate +%s%3N
+  else
+    # Linux: use date
+    date +%s%3N
+  fi
+}
+
 for ENDPOINT in "${ENDPOINTS[@]}"; do
   {
-    START_TIME=$(date +%s%3N)
-    if [[ $ENDPOINT =~ "https://axiom-test.ddn.hasura.app/graphql" ]]
-    then
-      QUERY='{ "query": "query getUsers { customer_customers(limit: 1) { customerId } }" }'
+    if [[ "$ENDPOINT" == "https://axiom-test.ddn.hasura.app/graphql" ]]; then
+      QUERY="$TESTQUERY"
     fi
+
+    START_TIME=$(current_time_ms)
     RESPONSE=$(curl -s -w "\nHTTP_CODE:%{http_code}" -X POST -H "Content-Type: application/json" -d "$QUERY" "$ENDPOINT")
-    END_TIME=$(date +%s%3N)
+    END_TIME=$(current_time_ms)
 
     HTTP_CODE=$(echo "$RESPONSE" | tail -n 1 | sed 's/HTTP_CODE://')
     RESPONSE_BODY=$(echo "$RESPONSE" | sed '$d')
     DURATION=$((END_TIME - START_TIME))
 
-    # Output the result to stdout
     echo "Endpoint: $ENDPOINT | HTTP Code: $HTTP_CODE | Time Taken: ${DURATION}ms | Response: $RESPONSE_BODY"
   } &
 done
