@@ -42,19 +42,21 @@ definition:
   scripts:
     docker-start:
       bash: echo "Please use a region specific command [docker-start-us-west|docker-start-us-east|docker-start-au|docker-start-eu|docker-start-sg]"
-      powershell: ""
+      powershell: echo "Please use a region specific command [docker-start-us-west|docker-start-us-east|docker-start-au|docker-start-eu|docker-start-sg]"
     docker-start-au:
       bash: HASURA_DDN_PAT=$(ddn auth print-pat) docker compose -f compose.yaml --env-file .env.cloud.au --env-file .env up --build --pull always -d
-      powershell: ""
+      powershell: $Env:HASURA_DDN_PAT = ddn auth print-pat; docker compose -f compose.yaml --env-file .env.cloud.au --env-file .env up --build --pull always -d
     docker-start-eu:
       bash: HASURA_DDN_PAT=$(ddn auth print-pat) docker compose -f compose.yaml --env-file .env.cloud.eu --env-file .env up --build --pull always -d
-      powershell: ""
+      powershell: $Env:HASURA_DDN_PAT = ddn auth print-pat; docker compose -f compose.yaml --env-file .env.cloud.eu --env-file .env up --build --pull always -d
     docker-start-sg:
       bash: HASURA_DDN_PAT=$(ddn auth print-pat) docker compose -f compose.yaml --env-file .env.cloud.sg --env-file .env up --build --pull always -d
-      powershell: ""
+      powershell: $Env:HASURA_DDN_PAT = ddn auth print-pat; docker compose -f compose.yaml --env-file .env.cloud.sg --env-file .env up --build --pull always -d
     docker-start-us-east:
       bash: HASURA_DDN_PAT=$(ddn auth print-pat) docker compose -f compose.yaml --env-file .env.cloud.us-east --env-file .env up --build --pull always -d
-      powershell: ""
+      powershell: $Env:HASURA_DDN_PAT = ddn auth print-pat; docker compose -f compose.yaml --env-file .env.cloud.us-east --env-file .env up --build --pull always -d
     docker-start-us-west:
       bash: HASURA_DDN_PAT=$(ddn auth print-pat) docker compose -f compose.yaml --env-file .env.cloud.us-west --env-file .env up --build --pull always -d
-      powershell: $Env:HASURA_DDN_PAT = ddn auth print-pat; docker compose -f compose.yaml --env-file .env up --build --pull always -d
+      powershell: $Env:HASURA_DDN_PAT = ddn auth print-pat; docker compose -f compose.yaml --env-file .env.cloud.us-west --env-file .env up --build --pull always -d
+    demo-telco:
+      bash: docker compose -f .data/compose.yaml --env-file .data/.env.telco up --build --pull always -d
