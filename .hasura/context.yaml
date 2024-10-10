@@ -41,8 +41,23 @@ definition:
       cloudEnvFile: ../.env.cloud.us-west
   scripts:
     docker-start:
-      bash: echo "Please use a region specific command [docker-start-us-west|docker-start-us-east|docker-start-au|docker-start-eu|docker-start-sg]"
-      powershell: echo "Please use a region specific command [docker-start-us-west|docker-start-us-east|docker-start-au|docker-start-eu|docker-start-sg]"
+      bash: echo "Please use a region specific command [docker-start-us-west|docker-start-us-east|docker-start-au|docker-start-eu|docker-start-sg|docker-start-local]"
+      powershell: echo "Please use a region specific command [docker-start-us-west|docker-start-us-east|docker-start-au|docker-start-eu|docker-start-sg|docker-start-local]"
+    docker-build-local:
+      bash:  ddn supergraph build local --env-file .env.local --supergraph supergraph.yaml
+    docker-build-au:
+      bash:  ddn supergraph build local --env-file .env.cloud.au --env-file .env --supergraph supergraph.yaml
+    docker-build-eu:
+      bash:  ddn supergraph build local --env-file .env.cloud.eu --env-file .env --supergraph supergraph.yaml
+    docker-build-sg:
+      bash:  ddn supergraph build local --env-file .env.cloud.sg --env-file .env --supergraph supergraph.yaml
+    docker-build-us-east:
+      bash:  ddn supergraph build local --env-file .env.cloud.us-east --env-file .env --supergraph supergraph.yaml
+    docker-build-us-west:
+      bash:  ddn supergraph build local --env-file .env.cloud.us-west --env-file .env --supergraph supergraph.yaml
+    docker-start-local:
+      bash: ddn run demo-telco ; HASURA_DDN_PAT=$(ddn auth print-pat) docker compose -f compose.yaml --env-file .env.local up --build --pull always -d
+      powershell: $Env:HASURA_DDN_PAT = ddn auth print-pat; docker compose -f compose.yaml --env-file .env.local up --build --pull always -d
     docker-start-au:
       bash: HASURA_DDN_PAT=$(ddn auth print-pat) docker compose -f compose.yaml --env-file .env.cloud.au --env-file .env up --build --pull always -d
       powershell: $Env:HASURA_DDN_PAT = ddn auth print-pat; docker compose -f compose.yaml --env-file .env.cloud.au --env-file .env up --build --pull always -d
