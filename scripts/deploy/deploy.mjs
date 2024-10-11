@@ -338,14 +338,14 @@ async function main() {
         contextRegion,
         JWT_FILE,
         'JWT',
-        `${root}/supergraph.yaml`,
+        `${root}/supergraph-with-mutations.yaml`,
         true
     ); // Deploy with JWT file
     runCommandWithTag(
         contextRegion,
         NOAUTH_FILE,
         'NoAuth',
-        `${root}/supergraph.yaml`,
+        `${root}/supergraph-with-mutations.yaml`,
         true
     ); // Deploy with NoAuth file
 
