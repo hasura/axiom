@@ -247,9 +247,9 @@ async function rebuildSupergraph(contextRegion) {
 
     const supergraphs = [
         `${root}/supergraph-project-queries.yaml`,
-        `${root}/supergraph-project.yaml`,
         `${root}/supergraph-domain.yaml`,
         `${root}/supergraph.yaml`,
+        `${root}/supergraph-with-mutations.yaml`,
     ];
 
     for (const supergraph of supergraphs) {
