@@ -247,9 +247,9 @@ async function rebuildSupergraph(contextRegion) {
 
     const supergraphs = [
         `${root}/supergraph-project-queries.yaml`,
-        `${root}/supergraph-project.yaml`,
         `${root}/supergraph-domain.yaml`,
         `${root}/supergraph.yaml`,
+        `${root}/supergraph-with-mutations.yaml`,
     ];
 
     for (const supergraph of supergraphs) {
@@ -338,14 +338,14 @@ async function main() {
         contextRegion,
         JWT_FILE,
         'JWT',
-        `${root}/supergraph.yaml`,
+        `${root}/supergraph-with-mutations.yaml`,
         true
     ); // Deploy with JWT file
     runCommandWithTag(
         contextRegion,
         NOAUTH_FILE,
         'NoAuth',
-        `${root}/supergraph.yaml`,
+        `${root}/supergraph-with-mutations.yaml`,
         true
     ); // Deploy with NoAuth file
 
