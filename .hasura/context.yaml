@@ -62,7 +62,7 @@ definition:
     build-local-us-west-dbs:
       bash:  ddn supergraph build local --env-file .env.cloud.us-west --env-file .env --supergraph supergraph.yaml
     docker-start-local:
-      bash: ddn run demo-telco ; HASURA_DDN_PAT=$(ddn auth print-pat) docker compose -f compose.yaml --env-file .env.local up --build --pull always -d
+      bash: ddn run demo-telco ; HASURA_DDN_PAT=$(ddn auth print-pat) docker compose -f compose.yaml --env-file .env.local --env-file .env up --build --pull always -d
       powershell: $Env:HASURA_DDN_PAT = ddn auth print-pat; docker compose -f compose.yaml --env-file .env.local up --build --pull always -d
     docker-start-au:
       bash: HASURA_DDN_PAT=$(ddn auth print-pat) docker compose -f compose.yaml --env-file .env.cloud.au --env-file .env up --build --pull always -d
@@ -80,7 +80,7 @@ definition:
       bash: HASURA_DDN_PAT=$(ddn auth print-pat) docker compose -f compose.yaml --env-file .env.cloud.us-west --env-file .env up --build --pull always -d
       powershell: $Env:HASURA_DDN_PAT = ddn auth print-pat; docker compose -f compose.yaml --env-file .env.cloud.us-west --env-file .env up --build --pull always -d
     docker-stop:
-      bash: echo "docker compose -f compose.yaml down -v ; docker compose -f .data/compose.yaml down -v"
+      bash: docker compose -f compose.yaml down -v ; docker compose -f .data/compose.yaml down -v
     demo-telco:
       bash: DATASET=telco docker compose -f .data/compose.yaml --env-file .data/.env up --build --pull always -d
     demo-healthcare:

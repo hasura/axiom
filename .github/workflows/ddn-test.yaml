@@ -1,0 +1,44 @@
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up DDN CLI and Login
+        uses: hasura/ddn-deployment@2.1.0
+        with:
+          hasura-pat: ${{ secrets.HASURA_PAT }}
+
+      - name: Install Dependencies (jq)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+
+      - name: Prep Repository
+        run: |
+          cp .hasura/context.yaml.template .hasura/context.yaml
+          cp .env.template .env
+          cp .env.local.template .env.local
+
+      - name: Build All Supergraphs
+        run: |
+          for i in {1..4}; do
+            ddn run build-local-s$i
+          done
+
+      - name: Run DDN with Docker
+        env:
+          HASURA_DDN_PAT: ${{ secrets.HASURA_PAT }}
+        run: |
+          ddn run demo-telco
+          docker compose -f compose.yaml \
+            --env-file .env.local \
+            --env-file .env \
+            up --build --pull always -d
