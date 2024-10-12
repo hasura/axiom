@@ -102,6 +102,10 @@ definition:
           - guid
           - timestamp
     orderByExpressionType: Network_CdrOrderBy
+    filterInputTypeName: CdrFilterInput
+    aggregate:
+      queryRootField: cdrAggregate
+  aggregateExpression: CdrAggExp
 
 ---
 kind: ModelPermissions
@@ -149,3 +153,26 @@ definition:
       target:
         argument:
           argumentName: date
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: CdrAggExp
+  operand:
+    object:
+      aggregatedType: Cdr
+      aggregatableFields:
+        - fieldName: callDuration
+          aggregateExpression: Int32AggExp
+        - fieldName: callType
+          aggregateExpression: StringAggExp
+        - fieldName: guid
+          aggregateExpression: StringAggExp
+        - fieldName: timestamp
+          aggregateExpression: DateTimeAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: CdrAggExp
+

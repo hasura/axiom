@@ -90,6 +90,10 @@ definition:
           - guid
           - timestamp
     orderByExpressionType: Network_DataUsageOrderBy
+    filterInputTypeName: DataUsageFilterInput
+    aggregate:
+      queryRootField: dataUsageAggregate
+  aggregateExpression: DataUsageAggExp
 
 ---
 kind: ModelPermissions
@@ -137,3 +141,24 @@ definition:
       target:
         argument:
           argumentName: date
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: DataUsageAggExp
+  operand:
+    object:
+      aggregatedType: DataUsage
+      aggregatableFields:
+        - fieldName: dataUsage
+          aggregateExpression: Float32AggExp
+        - fieldName: guid
+          aggregateExpression: StringAggExp
+        - fieldName: timestamp
+          aggregateExpression: DateTimeAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: DataUsageAggExp
+

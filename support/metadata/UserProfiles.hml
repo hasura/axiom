@@ -718,6 +718,10 @@ definition:
         uniqueIdentifier:
           - id
     orderByExpressionType: Support_UserProfilesOrderBy
+    filterInputTypeName: UserProfilesFilterInput
+    aggregate:
+      queryRootField: userProfilesAggregate
+  aggregateExpression: UserProfilesAggExp
 
 ---
 kind: ModelPermissions
@@ -747,3 +751,24 @@ definition:
       target:
         modelField:
           - fieldName: customerGuid
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: UserProfilesAggExp
+  operand:
+    object:
+      aggregatedType: UserProfiles
+      aggregatableFields:
+        - fieldName: id
+          aggregateExpression: StringAggExp
+        - fieldName: memberId
+          aggregateExpression: StringAggExp
+        - fieldName: notes
+          aggregateExpression: StringAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: UserProfilesAggExp
+

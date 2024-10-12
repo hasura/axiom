@@ -194,6 +194,10 @@ definition:
       queryRootField: detailedUserActivityMv
     selectUniques: []
     orderByExpressionType: Network_DetailedUserActivityMvOrderBy
+    filterInputTypeName: DetailedUserActivityMvFilterInput
+    aggregate:
+      queryRootField: detailedUserActivityMvAggregate
+  aggregateExpression: DetailedUserActivityMvAggExp
 
 ---
 kind: ModelPermissions
@@ -223,3 +227,42 @@ definition:
       target:
         modelField:
           - fieldName: customerGuid
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: DetailedUserActivityMvAggExp
+  operand:
+    object:
+      aggregatedType: DetailedUserActivityMv
+      aggregatableFields:
+        - fieldName: cdrGuid
+          aggregateExpression: StringAggExp
+        - fieldName: cdrTimestamp
+          aggregateExpression: DateTimeAggExp
+        - fieldName: callDuration
+          aggregateExpression: Int32AggExp
+        - fieldName: callType
+          aggregateExpression: StringAggExp
+        - fieldName: duGuid
+          aggregateExpression: StringAggExp
+        - fieldName: duTimestamp
+          aggregateExpression: DateTimeAggExp
+        - fieldName: dataUsage
+          aggregateExpression: Float32AggExp
+        - fieldName: downloadSpeed
+          aggregateExpression: Float32AggExp
+        - fieldName: latency
+          aggregateExpression: Int32AggExp
+        - fieldName: npGuid
+          aggregateExpression: StringAggExp
+        - fieldName: npTimestamp
+          aggregateExpression: DateTimeAggExp
+        - fieldName: uploadSpeed
+          aggregateExpression: Float32AggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: DetailedUserActivityMvAggExp
+

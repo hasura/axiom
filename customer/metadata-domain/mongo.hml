@@ -210,8 +210,70 @@ definition:
         ExtendedJSON:
           representation:
             type: json
-          aggregate_functions: {}
-          comparison_operators: {}
+          aggregate_functions:
+            avg:
+              result_type:
+                type: named
+                name: ExtendedJSON
+            count:
+              result_type:
+                type: named
+                name: Int
+            max:
+              result_type:
+                type: named
+                name: ExtendedJSON
+            min:
+              result_type:
+                type: named
+                name: ExtendedJSON
+            sum:
+              result_type:
+                type: named
+                name: ExtendedJSON
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                type: named
+                name: ExtendedJSON
+            _gte:
+              type: custom
+              argument_type:
+                type: named
+                name: ExtendedJSON
+            _in:
+              type: custom
+              argument_type:
+                type: named
+                name: ExtendedJSON
+            _iregex:
+              type: custom
+              argument_type:
+                type: named
+                name: String
+            _lt:
+              type: custom
+              argument_type:
+                type: named
+                name: ExtendedJSON
+            _lte:
+              type: custom
+              argument_type:
+                type: named
+                name: ExtendedJSON
+            _neq:
+              type: custom
+              argument_type:
+                type: named
+                name: ExtendedJSON
+            _regex:
+              type: custom
+              argument_type:
+                type: named
+                name: String
         Int:
           representation:
             type: int32
@@ -521,111 +583,347 @@ definition:
                 name: Undefined
       object_types:
         customerPreferences:
+          description: Object type for collection customerPreferences
           fields:
             _id:
+              description: primary key _id
               type:
                 type: named
                 name: ObjectId
             behavioralData:
+              description: behavioralData is an object containing behavioral metrics
               type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: customerPreferences_behavioralData
+                type: named
+                name: customerPreferences_behavioralData
             customer_guid:
+              description: must be a string and is required
               type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: String
+                type: named
+                name: String
             customerNotes:
+              description: customerNotes is an array of note objects with author, date, and content
               type:
-                type: nullable
-                underlying_type:
-                  type: array
-                  element_type:
-                    type: named
-                    name: customerPreferences_customerNotes
+                type: array
+                element_type:
+                  type: named
+                  name: customerPreferences_customerNotes
             preferences:
               type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: customerPreferences_preferences
+                type: named
+                name: customerPreferences_preferences
             socialMedia:
+              description: socialMedia is an object containing social media profile URLs
               type:
                 type: nullable
                 underlying_type:
                   type: named
                   name: customerPreferences_socialMedia
         customerPreferences_behavioralData:
+          description: generated from MongoDB validation schema
           fields:
             lastAppLogin:
+              description: must be a valid ISO date and is required
               type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: String
+                type: named
+                name: String
             lastWebsiteVisit:
+              description: must be a valid ISO date and is required
               type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: String
+                type: named
+                name: String
         customerPreferences_customerNotes:
+          description: generated from MongoDB validation schema
           fields:
             author:
+              description: must be a string and is required
               type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: String
+                type: named
+                name: String
             content:
+              description: must be a string and is required
               type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: String
+                type: named
+                name: String
             date:
+              description: must be a valid ISO date and is required
               type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: String
+                type: named
+                name: String
         customerPreferences_preferences:
+          description: generated from MongoDB validation schema
           fields:
             contactMethod:
+              description: must be one of 'email', 'phone', or 'SMS' and is required
               type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: String
+                type: named
+                name: String
             marketingOptIn:
+              description: must be a boolean value and is required
               type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: Bool
+                type: named
+                name: Bool
         customerPreferences_socialMedia:
+          description: generated from MongoDB validation schema
           fields:
             facebook:
+              description: must be a valid Facebook URL
               type:
                 type: nullable
                 underlying_type:
                   type: named
                   name: String
             linkedin:
+              description: must be a valid LinkedIn URL
               type:
                 type: nullable
                 underlying_type:
                   type: named
                   name: String
             twitter:
+              description: must be a valid Twitter URL
               type:
                 type: nullable
                 underlying_type:
                   type: named
                   name: String
+        userProfiles:
+          description: Object type for collection userProfiles
+          fields:
+            _id:
+              type:
+                type: named
+                name: String
+            accountDetails:
+              type:
+                type: named
+                name: userProfiles_accountDetails
+            identification:
+              type:
+                type: named
+                name: userProfiles_identification
+            memberID:
+              type:
+                type: named
+                name: String
+            notes:
+              type:
+                type: named
+                name: String
+            preferences:
+              type:
+                type: named
+                name: userProfiles_preferences
+            supportHistory:
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: userProfiles_supportHistory
+            usageStats:
+              type:
+                type: named
+                name: userProfiles_usageStats
+        userProfiles_accountDetails:
+          description: generated from MongoDB validation schema
+          fields:
+            accountNumber:
+              type:
+                type: named
+                name: String
+            registrationDate:
+              type:
+                type: named
+                name: String
+        userProfiles_identification:
+          description: generated from MongoDB validation schema
+          fields:
+            expiryDate:
+              type:
+                type: named
+                name: String
+            issuedBy:
+              type:
+                type: named
+                name: String
+            number:
+              type:
+                type: named
+                name: String
+            type:
+              type:
+                type: named
+                name: String
+        userProfiles_preferences:
+          description: generated from MongoDB validation schema
+          fields:
+            communication:
+              type:
+                type: named
+                name: userProfiles_preferences_communication
+            privacySettings:
+              type:
+                type: named
+                name: userProfiles_preferences_privacySettings
+            servicePreferences:
+              type:
+                type: named
+                name: userProfiles_preferences_servicePreferences
+        userProfiles_preferences_communication:
+          description: generated from MongoDB validation schema
+          fields:
+            appNotifications:
+              type:
+                type: named
+                name: userProfiles_preferences_communication_appNotifications
+            emailUpdates:
+              type:
+                type: named
+                name: Bool
+            smsNotifications:
+              type:
+                type: named
+                name: Bool
+        userProfiles_preferences_communication_appNotifications:
+          description: generated from MongoDB validation schema
+          fields:
+            enabled:
+              type:
+                type: named
+                name: Bool
+            frequency:
+              type:
+                type: named
+                name: String
+        userProfiles_preferences_privacySettings:
+          description: generated from MongoDB validation schema
+          fields:
+            adPersonalization:
+              type:
+                type: named
+                name: Bool
+            shareDataForImprovements:
+              type:
+                type: named
+                name: Bool
+        userProfiles_preferences_servicePreferences:
+          description: generated from MongoDB validation schema
+          fields:
+            favoriteLocations:
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: userProfiles_preferences_servicePreferences_favoriteLocations
+            networkSettings:
+              type:
+                type: named
+                name: userProfiles_preferences_servicePreferences_networkSettings
+        userProfiles_preferences_servicePreferences_favoriteLocations:
+          description: generated from MongoDB validation schema
+          fields:
+            coordinates:
+              type:
+                type: named
+                name: userProfiles_preferences_servicePreferences_favoriteLocations_coordinates
+            name:
+              type:
+                type: named
+                name: String
+        userProfiles_preferences_servicePreferences_favoriteLocations_coordinates:
+          description: generated from MongoDB validation schema
+          fields:
+            lat:
+              type:
+                type: named
+                name: Double
+            long:
+              type:
+                type: named
+                name: Double
+        userProfiles_preferences_servicePreferences_networkSettings:
+          description: generated from MongoDB validation schema
+          fields:
+            dataSaverMode:
+              type:
+                type: named
+                name: Bool
+            preferredNetworkType:
+              type:
+                type: named
+                name: String
+        userProfiles_supportHistory:
+          description: generated from MongoDB validation schema
+          fields:
+            date:
+              type:
+                type: named
+                name: String
+            issue:
+              type:
+                type: named
+                name: String
+            resolutionNotes:
+              type:
+                type: named
+                name: String
+            status:
+              type:
+                type: named
+                name: String
+            ticketId:
+              type:
+                type: named
+                name: String
+        userProfiles_usageStats:
+          description: generated from MongoDB validation schema
+          fields:
+            appUsage:
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: userProfiles_usageStats_appUsage
+            callStats:
+              type:
+                type: named
+                name: userProfiles_usageStats_callStats
+            dataUsage:
+              type:
+                type: named
+                name: userProfiles_usageStats_dataUsage
+        userProfiles_usageStats_appUsage:
+          description: generated from MongoDB validation schema
+          fields:
+            name:
+              type:
+                type: named
+                name: String
+            usage:
+              type:
+                type: named
+                name: String
+        userProfiles_usageStats_callStats:
+          description: generated from MongoDB validation schema
+          fields:
+            internationalMinutes:
+              type:
+                type: named
+                name: Int
+            totalMinutes:
+              type:
+                type: named
+                name: Int
+        userProfiles_usageStats_dataUsage:
+          description: generated from MongoDB validation schema
+          fields:
+            currentMonth:
+              type:
+                type: named
+                name: String
+            total:
+              type:
+                type: named
+                name: String
       collections:
         - name: customerPreferences
           arguments: {}
@@ -635,10 +933,18 @@ definition:
               unique_columns:
                 - _id
           foreign_keys: {}
+        - name: userProfiles
+          arguments: {}
+          type: userProfiles
+          uniqueness_constraints:
+            userProfiles_id:
+              unique_columns:
+                - _id
+          foreign_keys: {}
       functions: []
       procedures: []
     capabilities:
-      version: 0.1.5
+      version: 0.1.6
       capabilities:
         query:
           aggregates: {}

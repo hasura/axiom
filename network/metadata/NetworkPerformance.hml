@@ -114,6 +114,10 @@ definition:
           - guid
           - timestamp
     orderByExpressionType: Network_NetworkPerformanceOrderBy
+    filterInputTypeName: NetworkPerformanceFilterInput
+    aggregate:
+      queryRootField: networkPerformanceAggregate
+  aggregateExpression: NetworkPerformanceAggExp
 
 ---
 kind: ModelPermissions
@@ -161,3 +165,28 @@ definition:
       target:
         argument:
           argumentName: date
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: NetworkPerformanceAggExp
+  operand:
+    object:
+      aggregatedType: NetworkPerformance
+      aggregatableFields:
+        - fieldName: downloadSpeed
+          aggregateExpression: Float32AggExp
+        - fieldName: guid
+          aggregateExpression: StringAggExp
+        - fieldName: latency
+          aggregateExpression: Int32AggExp
+        - fieldName: timestamp
+          aggregateExpression: DateTimeAggExp
+        - fieldName: uploadSpeed
+          aggregateExpression: Float32AggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: NetworkPerformanceAggExp
+
