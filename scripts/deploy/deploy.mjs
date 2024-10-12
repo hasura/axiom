@@ -8,7 +8,8 @@ import chalk from 'chalk';
 import inquirer from 'inquirer';
 import simpleGit from 'simple-git';
 import { fileURLToPath } from 'url';
-import { execSync } from 'child_process';
+import { spawn, execSync } from 'child_process';
+import shellQuote from 'shell-quote';
 import { Command } from 'commander';
 
 const git = simpleGit();
@@ -145,6 +146,53 @@ function findConnectorYamlFiles(dir) {
     return results;
 }
 
+function runCommandWithOutput(command, region = '') {
+    return new Promise((resolve, reject) => {
+        console.log(chalk.magentaBright(`Executing command: ${command}`));
+
+        if (dryRun) {
+            console.log(
+                chalk.yellow(`[Dry Run] Would execute command: ${command}`)
+            );
+            return resolve();
+        }
+
+        const parsedCommand = shellQuote.parse(command);
+        const [cmd, ...args] = parsedCommand;
+        const childProcess = spawn(cmd, args);
+
+        let output = '';
+
+        childProcess.stdout.on('data', (data) => {
+            const message = data.toString();
+            output += message;
+            console.log(
+                chalk.magentaBright(`[${region}] => ${message.trim()}`)
+            );
+        });
+
+        childProcess.stderr.on('data', (data) => {
+            const message = data.toString();
+            console.log(chalk.cyanBright(`[${region}] => ${message.trim()}`));
+        });
+
+        childProcess.on('close', (code) => {
+            if (code === 0) {
+                console.log(
+                    chalk.green(`Command completed successfully: ${command}`)
+                );
+                resolve(output);
+            } else {
+                console.error(
+                    chalk.whiteBright.bgRed(
+                        `Command failed with exit code ${code}: ${command}`
+                    )
+                );
+                reject(new Error(`Command failed with exit code ${code}`));
+            }
+        });
+    });
+}
 // Apply the build using the build version
 function applyBuild(region, buildVersion) {
     const command = `ddn supergraph build apply ${buildVersion} -c ${region}`;
@@ -153,7 +201,7 @@ function applyBuild(region, buildVersion) {
         console.log(
             chalk.magentaBright(`Applying build version: ${buildVersion}`)
         );
-        execSync(command, { stdio: 'inherit' });
+        runCommandWithOutput(command, region);
         console.log(
             chalk.green(`Build version ${buildVersion} applied successfully.`)
         );
@@ -165,7 +213,7 @@ function applyBuild(region, buildVersion) {
 }
 
 // Deploy supergraph
-function runCommandWithTag(
+async function runCommandWithTag(
     region,
     srcFile,
     tag,
@@ -215,7 +263,8 @@ function runCommandWithTag(
         console.log(
             chalk.magentaBright(`[${region}] => Executing command: ${command}`)
         );
-        const output = execSync(command, { stdio: 'pipe' }).toString();
+        const output = await runCommandWithOutput(command, region);
+        // const output = execSync(command, { stdio: 'pipe' }).toString();
         const buildInfo = JSON.parse(output);
 
         console.log(
@@ -253,7 +302,7 @@ async function rebuildSupergraph(contextRegion) {
     ];
 
     for (const supergraph of supergraphs) {
-        runCommandWithTag(
+        await runCommandWithTag(
             contextRegion,
             NOAUTH_FILE,
             `NoAuth RB-${index}`,
@@ -334,14 +383,16 @@ async function main() {
         await rebuildSupergraph(contextRegion);
     }
 
-    runCommandWithTag(
+    const deploymentPromises = [];
+
+    await runCommandWithTag(
         contextRegion,
         JWT_FILE,
         'JWT',
         `${root}/supergraph-with-mutations.yaml`,
         true
     ); // Deploy with JWT file
-    runCommandWithTag(
+    await runCommandWithTag(
         contextRegion,
         NOAUTH_FILE,
         'NoAuth',
