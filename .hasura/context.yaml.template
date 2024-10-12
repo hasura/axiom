@@ -42,28 +42,37 @@ definition:
   scripts:
     docker-start:
       bash: echo "Please use a region specific command [docker-start-us-west|docker-start-us-east|docker-start-au|docker-start-eu|docker-start-sg|docker-start-local]"
-      powershell: echo "Please use a region specific command [docker-start-us-west|docker-start-us-east|docker-start-au|docker-start-eu|docker-start-sg|docker-start-local]"
+      powershell: Write-Output "Please use a region specific command [docker-start-us-west|docker-start-us-east|docker-start-au|docker-start-eu|docker-start-sg|docker-start-local]"
     build-local-s1:
-      bash:  ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph-project-queries.yaml
+      bash: ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph-project-queries.yaml
+      powershell: ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph-project-queries.yaml
     build-local-s2:
-      bash:  ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph-domain.yaml
+      bash: ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph-domain.yaml
+      powershell: ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph-domain.yaml
     build-local-s3:
-      bash:  ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph.yaml
+      bash: ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph.yaml
+      powershell: ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph.yaml
     build-local-s4:
-      bash:  ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph-with-mutations.yaml
+      bash: ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph-with-mutations.yaml
+      powershell: ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph-with-mutations.yaml
     build-local-au-dbs:
-      bash:  ddn supergraph build local --env-file .env.cloud.au --env-file .env --supergraph supergraph.yaml
+      bash: ddn supergraph build local --env-file .env.cloud.au --env-file .env --supergraph supergraph.yaml
+      powershell: ddn supergraph build local --env-file .env.cloud.au --env-file .env --supergraph supergraph.yaml
     build-local-eu-dbs:
-      bash:  ddn supergraph build local --env-file .env.cloud.eu --env-file .env --supergraph supergraph.yaml
+      bash: ddn supergraph build local --env-file .env.cloud.eu --env-file .env --supergraph supergraph.yaml
+      powershell: ddn supergraph build local --env-file .env.cloud.eu --env-file .env --supergraph supergraph.yaml
     build-local-sg-dbs:
-      bash:  ddn supergraph build local --env-file .env.cloud.sg --env-file .env --supergraph supergraph.yaml
+      bash: ddn supergraph build local --env-file .env.cloud.sg --env-file .env --supergraph supergraph.yaml
+      powershell: ddn supergraph build local --env-file .env.cloud.sg --env-file .env --supergraph supergraph.yaml
     build-local-us-east-dbs:
-      bash:  ddn supergraph build local --env-file .env.cloud.us-east --env-file .env --supergraph supergraph.yaml
+      bash: ddn supergraph build local --env-file .env.cloud.us-east --env-file .env --supergraph supergraph.yaml
+      powershell: ddn supergraph build local --env-file .env.cloud.us-east --env-file .env --supergraph supergraph.yaml
     build-local-us-west-dbs:
-      bash:  ddn supergraph build local --env-file .env.cloud.us-west --env-file .env --supergraph supergraph.yaml
+      bash: ddn supergraph build local --env-file .env.cloud.us-west --env-file .env --supergraph supergraph.yaml
+      powershell: ddn supergraph build local --env-file .env.cloud.us-west --env-file .env --supergraph supergraph.yaml
     docker-start-local:
-      bash: ddn run demo-telco ; HASURA_DDN_PAT=$(ddn auth print-pat) docker compose -f compose.yaml --env-file .env.local up --build --pull always -d
-      powershell: $Env:HASURA_DDN_PAT = ddn auth print-pat; docker compose -f compose.yaml --env-file .env.local up --build --pull always -d
+      bash: ddn run demo-telco ; HASURA_DDN_PAT=$(ddn auth print-pat) docker compose -f compose.yaml --env-file .env.local --env-file .env up --build --pull always -d
+      powershell: $Env:HASURA_DDN_PAT = ddn auth print-pat; docker compose -f compose.yaml --env-file .env.local --env-file .env up --build --pull always -d
     docker-start-au:
       bash: HASURA_DDN_PAT=$(ddn auth print-pat) docker compose -f compose.yaml --env-file .env.cloud.au --env-file .env up --build --pull always -d
       powershell: $Env:HASURA_DDN_PAT = ddn auth print-pat; docker compose -f compose.yaml --env-file .env.cloud.au --env-file .env up --build --pull always -d
@@ -80,10 +89,14 @@ definition:
       bash: HASURA_DDN_PAT=$(ddn auth print-pat) docker compose -f compose.yaml --env-file .env.cloud.us-west --env-file .env up --build --pull always -d
       powershell: $Env:HASURA_DDN_PAT = ddn auth print-pat; docker compose -f compose.yaml --env-file .env.cloud.us-west --env-file .env up --build --pull always -d
     docker-stop:
-      bash: echo "docker compose -f compose.yaml down -v ; docker compose -f .data/compose.yaml down -v"
+      bash: docker compose -f compose.yaml down -v ; docker compose -f .data/compose.yaml down -v
+      powershell: docker compose -f compose.yaml down -v; docker compose -f .data/compose.yaml down -v
     demo-telco:
       bash: DATASET=telco docker compose -f .data/compose.yaml --env-file .data/.env up --build --pull always -d
+      powershell: $Env:DATASET = "telco"; docker compose -f .data/compose.yaml --env-file .data/.env up --build --pull always -d
     demo-healthcare:
       bash: echo "not yet implemented"
+      powershell: Write-Output "not yet implemented"
     demo-banking:
       bash: echo "not yet implemented"
+      powershell: Write-Output "not yet implemented"
