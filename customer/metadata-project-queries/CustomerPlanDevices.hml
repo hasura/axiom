@@ -40,24 +40,6 @@ definition:
           - deviceId
 
 ---
-kind: ObjectBooleanExpressionType
-version: v1
-definition:
-  name: CustomerPlanDevicesBoolExp
-  objectType: CustomerPlanDevices
-  dataConnectorName: aurora
-  dataConnectorObjectType: customer_plan_devices
-  comparableFields:
-    - fieldName: customerPlanId
-      operators:
-        enableAll: true
-    - fieldName: deviceId
-      operators:
-        enableAll: true
-  graphql:
-    typeName: Customer_CustomerPlanDevicesBoolExp
-
----
 kind: Model
 version: v1
 definition:
@@ -83,6 +65,10 @@ definition:
           - customerPlanId
           - deviceId
     orderByExpressionType: Customer_CustomerPlanDevicesOrderBy
+    filterInputTypeName: CustomerPlanDevicesFilterInput
+    aggregate:
+      queryRootField: customerPlanDevicesAggregate
+  aggregateExpression: CustomerPlanDevicesAggExp
 
 ---
 kind: ModelPermissions
@@ -94,18 +80,18 @@ definition:
       select:
         filter: null
     - role: customer
-      select: 
-        filter: 
+      select:
+        filter:
           relationship:
             name: customerPlan
-            predicate: 
+            predicate:
               relationship:
                 name: customer
-                predicate: 
+                predicate:
                   fieldComparison:
                     field: customerId
                     operator: _eq
-                    value: 
+                    value:
                       sessionVariable: x-hasura-user-id
 
 ---
@@ -143,4 +129,44 @@ definition:
       target:
         modelField:
           - fieldName: deviceId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: CustomerPlanDevicesBoolExp
+  operand:
+    object:
+      type: CustomerPlanDevices
+      comparableFields:
+        - fieldName: customerPlanId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: deviceId
+          booleanExpressionType: Int4BoolExp
+      comparableRelationships:
+        - relationshipName: customerPlan
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Customer_CustomerPlanDevicesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: CustomerPlanDevicesAggExp
+  operand:
+    object:
+      aggregatedType: CustomerPlanDevices
+      aggregatableFields:
+        - fieldName: customerPlanId
+          aggregateExpression: Int4AggExp
+        - fieldName: deviceId
+          aggregateExpression: Int4AggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: CustomerPlanDevicesAggExp
 

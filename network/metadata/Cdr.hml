@@ -47,30 +47,6 @@ definition:
           - timestamp
 
 ---
-kind: ObjectBooleanExpressionType
-version: v1
-definition:
-  name: CdrBoolExp
-  objectType: Cdr
-  dataConnectorName: clickhouse
-  dataConnectorObjectType: cdr
-  comparableFields:
-    - fieldName: callDuration
-      operators:
-        enableAll: true
-    - fieldName: callType
-      operators:
-        enableAll: true
-    - fieldName: guid
-      operators:
-        enableAll: true
-    - fieldName: timestamp
-      operators:
-        enableAll: true
-  graphql:
-    typeName: Network_CdrBoolExp
-
----
 kind: Model
 version: v1
 definition:
@@ -102,6 +78,10 @@ definition:
           - guid
           - timestamp
     orderByExpressionType: Network_CdrOrderBy
+    filterInputTypeName: CdrFilterInput
+    aggregate:
+      queryRootField: cdrAggregate
+  aggregateExpression: CdrAggExp
 
 ---
 kind: ModelPermissions
@@ -149,3 +129,51 @@ definition:
       target:
         argument:
           argumentName: date
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: CdrAggExp
+  operand:
+    object:
+      aggregatedType: Cdr
+      aggregatableFields:
+        - fieldName: callDuration
+          aggregateExpression: Int32AggExp
+        - fieldName: callType
+          aggregateExpression: StringAggExp
+        - fieldName: guid
+          aggregateExpression: StringAggExp
+        - fieldName: timestamp
+          aggregateExpression: DateTimeAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: CdrAggExp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: CdrBoolExp
+  operand:
+    object:
+      type: Cdr
+      comparableFields:
+        - fieldName: callDuration
+          booleanExpressionType: Int32BoolExp
+        - fieldName: callType
+          booleanExpressionType: StringBoolExp
+        - fieldName: guid
+          booleanExpressionType: StringBoolExp
+        - fieldName: timestamp
+          booleanExpressionType: DateTimeBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Network_CdrBoolExp
+

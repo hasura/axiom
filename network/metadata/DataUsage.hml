@@ -41,27 +41,6 @@ definition:
           - timestamp
 
 ---
-kind: ObjectBooleanExpressionType
-version: v1
-definition:
-  name: DataUsageBoolExp
-  objectType: DataUsage
-  dataConnectorName: clickhouse
-  dataConnectorObjectType: data_usage
-  comparableFields:
-    - fieldName: dataUsage
-      operators:
-        enableAll: true
-    - fieldName: guid
-      operators:
-        enableAll: true
-    - fieldName: timestamp
-      operators:
-        enableAll: true
-  graphql:
-    typeName: Network_DataUsageBoolExp
-
----
 kind: Model
 version: v1
 definition:
@@ -90,6 +69,10 @@ definition:
           - guid
           - timestamp
     orderByExpressionType: Network_DataUsageOrderBy
+    filterInputTypeName: DataUsageFilterInput
+    aggregate:
+      queryRootField: dataUsageAggregate
+  aggregateExpression: DataUsageAggExp
 
 ---
 kind: ModelPermissions
@@ -137,3 +120,47 @@ definition:
       target:
         argument:
           argumentName: date
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: DataUsageAggExp
+  operand:
+    object:
+      aggregatedType: DataUsage
+      aggregatableFields:
+        - fieldName: dataUsage
+          aggregateExpression: Float32AggExp
+        - fieldName: guid
+          aggregateExpression: StringAggExp
+        - fieldName: timestamp
+          aggregateExpression: DateTimeAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: DataUsageAggExp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: DataUsageBoolExp
+  operand:
+    object:
+      type: DataUsage
+      comparableFields:
+        - fieldName: dataUsage
+          booleanExpressionType: Float32BoolExp
+        - fieldName: guid
+          booleanExpressionType: StringBoolExp
+        - fieldName: timestamp
+          booleanExpressionType: DateTimeBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Network_DataUsageBoolExp
+

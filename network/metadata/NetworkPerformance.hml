@@ -53,33 +53,6 @@ definition:
           - uploadSpeed
 
 ---
-kind: ObjectBooleanExpressionType
-version: v1
-definition:
-  name: NetworkPerformanceBoolExp
-  objectType: NetworkPerformance
-  dataConnectorName: clickhouse
-  dataConnectorObjectType: network_performance
-  comparableFields:
-    - fieldName: downloadSpeed
-      operators:
-        enableAll: true
-    - fieldName: guid
-      operators:
-        enableAll: true
-    - fieldName: latency
-      operators:
-        enableAll: true
-    - fieldName: timestamp
-      operators:
-        enableAll: true
-    - fieldName: uploadSpeed
-      operators:
-        enableAll: true
-  graphql:
-    typeName: Network_NetworkPerformanceBoolExp
-
----
 kind: Model
 version: v1
 definition:
@@ -114,6 +87,10 @@ definition:
           - guid
           - timestamp
     orderByExpressionType: Network_NetworkPerformanceOrderBy
+    filterInputTypeName: NetworkPerformanceFilterInput
+    aggregate:
+      queryRootField: networkPerformanceAggregate
+  aggregateExpression: NetworkPerformanceAggExp
 
 ---
 kind: ModelPermissions
@@ -161,3 +138,55 @@ definition:
       target:
         argument:
           argumentName: date
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: NetworkPerformanceAggExp
+  operand:
+    object:
+      aggregatedType: NetworkPerformance
+      aggregatableFields:
+        - fieldName: downloadSpeed
+          aggregateExpression: Float32AggExp
+        - fieldName: guid
+          aggregateExpression: StringAggExp
+        - fieldName: latency
+          aggregateExpression: Int32AggExp
+        - fieldName: timestamp
+          aggregateExpression: DateTimeAggExp
+        - fieldName: uploadSpeed
+          aggregateExpression: Float32AggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: NetworkPerformanceAggExp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: NetworkPerformanceBoolExp
+  operand:
+    object:
+      type: NetworkPerformance
+      comparableFields:
+        - fieldName: downloadSpeed
+          booleanExpressionType: Float32BoolExp
+        - fieldName: guid
+          booleanExpressionType: StringBoolExp
+        - fieldName: latency
+          booleanExpressionType: Int32BoolExp
+        - fieldName: timestamp
+          booleanExpressionType: DateTimeBoolExp
+        - fieldName: uploadSpeed
+          booleanExpressionType: Float32BoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Network_NetworkPerformanceBoolExp
+

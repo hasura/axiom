@@ -75,39 +75,6 @@ definition:
           - updatedAt
 
 ---
-kind: ObjectBooleanExpressionType
-version: v1
-definition:
-  name: DevicesBoolExp
-  objectType: Devices
-  dataConnectorName: aurora
-  dataConnectorObjectType: devices
-  comparableFields:
-    - fieldName: brand
-      operators:
-        enableAll: true
-    - fieldName: createdAt
-      operators:
-        enableAll: true
-    - fieldName: deviceId
-      operators:
-        enableAll: true
-    - fieldName: image
-      operators:
-        enableAll: true
-    - fieldName: model
-      operators:
-        enableAll: true
-    - fieldName: sfRecord
-      operators:
-        enableAll: true
-    - fieldName: updatedAt
-      operators:
-        enableAll: true
-  graphql:
-    typeName: Customer_DevicesBoolExp
-
----
 kind: Model
 version: v1
 definition:
@@ -147,6 +114,10 @@ definition:
         uniqueIdentifier:
           - deviceId
     orderByExpressionType: Customer_DevicesOrderBy
+    filterInputTypeName: DevicesFilterInput
+    aggregate:
+      queryRootField: devicesAggregate
+  aggregateExpression: DevicesAggExp
 
 ---
 kind: ModelPermissions
@@ -158,17 +129,17 @@ definition:
       select:
         filter: null
     - role: customer
-      select: 
-        filter: 
+      select:
+        filter:
           relationship:
             name: customerPlanDevices
-            predicate: 
+            predicate:
               relationship:
                 name: customerPlan
-                predicate: 
+                predicate:
                   relationship:
                     name: customer
-                    predicate: 
+                    predicate:
                       fieldComparison:
                         field: customerId
                         operator: _eq
@@ -192,4 +163,64 @@ definition:
       target:
         modelField:
           - fieldName: deviceId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: DevicesBoolExp
+  operand:
+    object:
+      type: Devices
+      comparableFields:
+        - fieldName: brand
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: createdAt
+          booleanExpressionType: TimestamptzBoolExp
+        - fieldName: deviceId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: image
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: model
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: sfRecord
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: updatedAt
+          booleanExpressionType: TimestamptzBoolExp
+      comparableRelationships:
+        - relationshipName: customerPlanDevices
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Customer_DevicesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: DevicesAggExp
+  operand:
+    object:
+      aggregatedType: Devices
+      aggregatableFields:
+        - fieldName: brand
+          aggregateExpression: VarcharAggExp
+        - fieldName: createdAt
+          aggregateExpression: TimestamptzAggExp
+        - fieldName: deviceId
+          aggregateExpression: Int4AggExp
+        - fieldName: image
+          aggregateExpression: VarcharAggExp
+        - fieldName: model
+          aggregateExpression: VarcharAggExp
+        - fieldName: sfRecord
+          aggregateExpression: VarcharAggExp
+        - fieldName: updatedAt
+          aggregateExpression: TimestamptzAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: DevicesAggExp
 

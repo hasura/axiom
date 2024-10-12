@@ -57,42 +57,6 @@ definition:
           - timestamp
 
 ---
-kind: ObjectBooleanExpressionType
-version: v1
-definition:
-  name: CallsBoolExp
-  objectType: Calls
-  dataConnectorName: kafka_sink
-  dataConnectorObjectType: calls
-  comparableFields:
-    - fieldName: callid
-      operators:
-        enableAll: true
-    - fieldName: calltype
-      operators:
-        enableAll: true
-    - fieldName: customerid
-      operators:
-        enableAll: true
-    - fieldName: deviceid
-      operators:
-        enableAll: true
-    - fieldName: duration
-      operators:
-        enableAll: true
-    - fieldName: nodeid
-      operators:
-        enableAll: true
-    - fieldName: receivernumber
-      operators:
-        enableAll: true
-    - fieldName: timestamp
-      operators:
-        enableAll: true
-  graphql:
-    typeName: Network_CallsBoolExp
-
----
 kind: Model
 version: v1
 definition:
@@ -135,6 +99,10 @@ definition:
         uniqueIdentifier:
           - callid
     orderByExpressionType: Network_CallsOrderBy
+    filterInputTypeName: CallsFilterInput
+    aggregate:
+      queryRootField: callsAggregate
+  aggregateExpression: CallsAggExp
 
 ---
 kind: ModelPermissions
@@ -163,3 +131,67 @@ definition:
       target:
         argument:
           argumentName: date
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: CallsBoolExp
+  operand:
+    object:
+      type: Calls
+      comparableFields:
+        - fieldName: callid
+          booleanExpressionType: Int4BoolExp
+        - fieldName: calltype
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: customerid
+          booleanExpressionType: Int4BoolExp
+        - fieldName: deviceid
+          booleanExpressionType: Int4BoolExp
+        - fieldName: duration
+          booleanExpressionType: Int4BoolExp
+        - fieldName: nodeid
+          booleanExpressionType: Int4BoolExp
+        - fieldName: receivernumber
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: timestamp
+          booleanExpressionType: TimestamptzBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Network_CallsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: CallsAggExp
+  operand:
+    object:
+      aggregatedType: Calls
+      aggregatableFields:
+        - fieldName: callid
+          aggregateExpression: Int4AggExp
+        - fieldName: calltype
+          aggregateExpression: VarcharAggExp
+        - fieldName: customerid
+          aggregateExpression: Int4AggExp
+        - fieldName: deviceid
+          aggregateExpression: Int4AggExp
+        - fieldName: duration
+          aggregateExpression: Int4AggExp
+        - fieldName: nodeid
+          aggregateExpression: Int4AggExp
+        - fieldName: receivernumber
+          aggregateExpression: VarcharAggExp
+        - fieldName: timestamp
+          aggregateExpression: TimestamptzAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: CallsAggExp
+

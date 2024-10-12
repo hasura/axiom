@@ -47,27 +47,6 @@ definition:
           - id
 
 ---
-kind: ObjectBooleanExpressionType
-version: v1
-definition:
-  name: CustomerLinkBoolExp
-  objectType: CustomerLink
-  dataConnectorName: aurora
-  dataConnectorObjectType: customer_link
-  comparableFields:
-    - fieldName: customerGuid
-      operators:
-        enableAll: true
-    - fieldName: customerId
-      operators:
-        enableAll: true
-    - fieldName: id
-      operators:
-        enableAll: true
-  graphql:
-    typeName: Customer_CustomerLinkBoolExp
-
----
 kind: Model
 version: v1
 definition:
@@ -98,6 +77,10 @@ definition:
         uniqueIdentifier:
           - id
     orderByExpressionType: Customer_CustomerLinkOrderBy
+    filterInputTypeName: CustomerLinkFilterInput
+    aggregate:
+      queryRootField: customerLinkAggregate
+  aggregateExpression: CustomerLinkAggExp
 
 ---
 kind: ModelPermissions
@@ -109,15 +92,15 @@ definition:
       select:
         filter: null
     - role: customer
-      select: 
-        filter: 
+      select:
+        filter:
           relationship:
             name: customer
-            predicate: 
+            predicate:
               fieldComparison:
                 field: customerId
                 operator: _eq
-                value: 
+                value:
                   sessionVariable: 'x-hasura-user-id'
 
 ---
@@ -137,3 +120,48 @@ definition:
       target:
         modelField:
           - fieldName: customerId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: CustomerLinkBoolExp
+  operand:
+    object:
+      type: CustomerLink
+      comparableFields:
+        - fieldName: customerGuid
+          booleanExpressionType: UuidBoolExp
+        - fieldName: customerId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: id
+          booleanExpressionType: Int4BoolExp
+      comparableRelationships:
+        - relationshipName: customer
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Customer_CustomerLinkBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: CustomerLinkAggExp
+  operand:
+    object:
+      aggregatedType: CustomerLink
+      aggregatableFields:
+        - fieldName: customerGuid
+          aggregateExpression: UuidAggExp
+        - fieldName: customerId
+          aggregateExpression: Int4AggExp
+        - fieldName: id
+          aggregateExpression: Int4AggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: CustomerLinkAggExp
+
