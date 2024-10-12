@@ -1,0 +1,72 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: V2DeleteCustomersByPhoneNumberResponse
+  description: Responses from the 'v2_delete_customers_by_phone_number' procedure
+  fields:
+    - name: affectedRows
+      type: Int4!
+      description: The number of rows affected by the mutation
+    - name: returning
+      type: "[Customers!]!"
+      description: Data from rows affected by the mutation
+  graphql:
+    typeName: V2DeleteCustomersByPhoneNumberResponse
+    inputTypeName: V2DeleteCustomersByPhoneNumberResponseInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: v2_delete_customers_by_phone_number_response
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: V2DeleteCustomersByPhoneNumberResponse
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: DeleteCustomersByPhoneNumber
+  outputType: V2DeleteCustomersByPhoneNumberResponse!
+  arguments:
+    - name: keyPhoneNumber
+      type: Varchar
+    - name: preCheck
+      type: CustomersBoolExp!
+      description: Delete permission predicate over the 'customers' collection
+  source:
+    dataConnectorName: aurora
+    dataConnectorCommand:
+      procedure: v2_delete_customers_by_phone_number
+    argumentMapping:
+      keyPhoneNumber: key_phone_number
+      preCheck: pre_check
+  graphql:
+    rootFieldName: DeleteCustomersByPhoneNumber
+    rootFieldKind: Mutation
+  description: Delete any row on the 'customers' collection using the 'phone_number' key
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: DeleteCustomersByPhoneNumber
+  permissions:
+    - role: admin
+      allowExecution: true
+

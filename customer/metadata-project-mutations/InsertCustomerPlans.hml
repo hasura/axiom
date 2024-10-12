@@ -1,0 +1,138 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: V2InsertCustomerPlansObject
+  fields:
+    - name: cellNumber
+      type: Varchar
+    - name: customerId
+      type: Int4
+    - name: customerPlanId
+      type: Int4
+    - name: endDate
+      type: Date
+    - name: planId
+      type: Int4
+    - name: startDate
+      type: Date
+    - name: status
+      type: Varchar
+  graphql:
+    typeName: V2InsertCustomerPlansObject
+    inputTypeName: V2InsertCustomerPlansObjectInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: v2_insert_customer_plans_object
+      fieldMapping:
+        cellNumber:
+          column:
+            name: cell_number
+        customerId:
+          column:
+            name: customer_id
+        customerPlanId:
+          column:
+            name: customer_plan_id
+        endDate:
+          column:
+            name: end_date
+        planId:
+          column:
+            name: plan_id
+        startDate:
+          column:
+            name: start_date
+        status:
+          column:
+            name: status
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: V2InsertCustomerPlansObject
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - cellNumber
+          - customerId
+          - customerPlanId
+          - endDate
+          - planId
+          - startDate
+          - status
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: V2InsertCustomerPlansResponse
+  description: Responses from the 'v2_insert_customer_plans' procedure
+  fields:
+    - name: affectedRows
+      type: Int4!
+      description: The number of rows affected by the mutation
+    - name: returning
+      type: "[CustomerPlans!]!"
+      description: Data from rows affected by the mutation
+  graphql:
+    typeName: V2InsertCustomerPlansResponse
+    inputTypeName: V2InsertCustomerPlansResponseInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: v2_insert_customer_plans_response
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: V2InsertCustomerPlansResponse
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: InsertCustomerPlans
+  outputType: V2InsertCustomerPlansResponse!
+  arguments:
+    - name: objects
+      type: "[V2InsertCustomerPlansObject!]!"
+    - name: postCheck
+      type: CustomerPlansBoolExp!
+      description: Insert permission predicate over the 'customer_plans' collection
+  source:
+    dataConnectorName: aurora
+    dataConnectorCommand:
+      procedure: v2_insert_customer_plans
+    argumentMapping:
+      objects: objects
+      postCheck: post_check
+  graphql:
+    rootFieldName: InsertCustomerPlans
+    rootFieldKind: Mutation
+  description: Insert into the customer_plans table
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: InsertCustomerPlans
+  permissions:
+    - role: admin
+      allowExecution: true
+

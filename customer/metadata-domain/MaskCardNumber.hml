@@ -13,9 +13,32 @@ definition:
     dataConnectorCommand:
       function: maskCardNumber
   graphql:
-    rootFieldName: customer_maskCardNumber
+    rootFieldName: maskCardNumber
     rootFieldKind: Query
   description: Masks a credit card number to hide all but the last four digits.
+
+# kind: Command
+# version: v1
+# definition:
+#   name: V2DeleteBillingByBillingId
+#   outputType: V2DeleteBillingByBillingIdResponse!
+#   arguments:
+#     - name: keyBillingId
+#       type: Int4!
+#     - name: preCheck
+#       type: BillingBoolExp!
+#       description: Delete permission predicate over the 'billing' collection
+#   source:
+#     dataConnectorName: aurora
+#     dataConnectorCommand:
+#       procedure: v2_delete_billing_by_billing_id
+#     argumentMapping:
+#       keyBillingId: key_billing_id
+#       preCheck: pre_check
+#   graphql:
+#     rootFieldName: DeleteBillingByBillingId
+#     rootFieldKind: Mutation
+#   description: Delete any row on the 'billing' collection using the 'billing_id' key
 
 ---
 kind: CommandPermissions
@@ -28,3 +51,20 @@ definition:
     - role: customer
       allowExecution: true
 
+---
+kind: Relationship
+version: v1
+definition:
+  name: relationship_name
+  sourceType: CreditCards
+  target:
+    command:
+      name: MaskCardNumber
+      subgraph: customer
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        argument:
+          argumentName: cardNumber

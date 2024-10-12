@@ -1,0 +1,116 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: V2InsertTextsObject
+  fields:
+    - name: customerid
+      type: Int4!
+    - name: deviceid
+      type: Int4!
+    - name: messagetype
+      type: Varchar
+    - name: nodeid
+      type: Int4
+    - name: receivernumber
+      type: Varchar
+    - name: textid
+      type: Int4
+    - name: timestamp
+      type: Timestamptz!
+  graphql:
+    typeName: V2InsertTextsObject
+    inputTypeName: V2InsertTextsObjectInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: kafka_sink
+      dataConnectorObjectType: v2_insert_texts_object
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: V2InsertTextsObject
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - customerid
+          - deviceid
+          - messagetype
+          - nodeid
+          - receivernumber
+          - textid
+          - timestamp
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: V2InsertTextsResponse
+  description: Responses from the 'v2_insert_texts' procedure
+  fields:
+    - name: affectedRows
+      type: Int4!
+      description: The number of rows affected by the mutation
+    - name: returning
+      type: "[Texts!]!"
+      description: Data from rows affected by the mutation
+  graphql:
+    typeName: V2InsertTextsResponse
+    inputTypeName: V2InsertTextsResponseInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: kafka_sink
+      dataConnectorObjectType: v2_insert_texts_response
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: V2InsertTextsResponse
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: InsertTexts
+  outputType: V2InsertTextsResponse!
+  arguments:
+    - name: objects
+      type: "[V2InsertTextsObject!]!"
+    - name: postCheck
+      type: TextsBoolExp!
+      description: Insert permission predicate over the 'texts' collection
+  source:
+    dataConnectorName: kafka_sink
+    dataConnectorCommand:
+      procedure: v2_insert_texts
+    argumentMapping:
+      objects: objects
+      postCheck: post_check
+  graphql:
+    rootFieldName: InsertTexts
+    rootFieldKind: Mutation
+  description: Insert into the texts table
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: InsertTexts
+  permissions:
+    - role: admin
+      allowExecution: true
+

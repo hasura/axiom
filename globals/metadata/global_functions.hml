@@ -1,0 +1,100 @@
+kind: DataConnectorLink
+version: v1
+definition:
+  name: global_functions
+  url:
+    readWriteUrls:
+      read:
+        valueFromEnv: GLOBALS_GLOBAL_FUNCTIONS_READ_URL
+      write:
+        valueFromEnv: GLOBALS_GLOBAL_FUNCTIONS_WRITE_URL
+  headers:
+    Authorization:
+      valueFromEnv: GLOBALS_GLOBAL_FUNCTIONS_AUTHORIZATION_HEADER
+  schema:
+    version: v0.1
+    schema:
+      scalar_types:
+        Float:
+          representation:
+            type: float64
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+        String:
+          representation:
+            type: string
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+      object_types: {}
+      collections: []
+      functions:
+        - name: toDateString
+          description: Formats a date string to a human-readable format.
+          arguments:
+            date:
+              description: The date string to format.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
+          result_type:
+            type: named
+            name: String
+        - name: formatDateToISO
+          description: Formats a date string to ISO 8601 format.
+          arguments:
+            dateString:
+              description: The date string to format.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
+          result_type:
+            type: named
+            name: String
+        - name: convertDataToMB
+          description: Converts data from GB to MB.
+          arguments:
+            dataInGB:
+              description: The data in GB.
+              type:
+                type: named
+                name: Float
+          result_type:
+            type: named
+            name: Float
+        - name: convertCurrency
+          description: Converts currency amount to the target currency.
+          arguments:
+            amount:
+              description: The amount to convert.
+              type:
+                type: named
+                name: Float
+            currentCurrency:
+              description: The current currency of the amount.
+              type:
+                type: named
+                name: String
+            targetCurrency:
+              description: The target currency to convert to.
+              type:
+                type: named
+                name: String
+          result_type:
+            type: named
+            name: Float
+      procedures: []
+    capabilities:
+      version: 0.1.6
+      capabilities:
+        query:
+          variables: {}
+          nested_fields: {}
+        mutation: {}

@@ -1,0 +1,192 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnCustomerPlanDevicesCustomerPlanId
+  description: Update the 'customer_plan_id' column in the 'customer_plan_devices'
+    collection
+  fields:
+    - name: set
+      type: Int4!
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnCustomerPlanDevicesCustomerPlanId
+    inputTypeName: UpdateColumnCustomerPlanDevicesCustomerPlanIdInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: update_column_customer_plan_devices_customer_plan_id
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnCustomerPlanDevicesCustomerPlanId
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnCustomerPlanDevicesDeviceId
+  description: Update the 'device_id' column in the 'customer_plan_devices' collection
+  fields:
+    - name: set
+      type: Int4!
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnCustomerPlanDevicesDeviceId
+    inputTypeName: UpdateColumnCustomerPlanDevicesDeviceIdInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: update_column_customer_plan_devices_device_id
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnCustomerPlanDevicesDeviceId
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: V2UpdateCustomerPlanDevicesByCustomerPlanIdAndDeviceIdUpdateColumns
+  description: Update the columns of the 'customer_plan_devices' collection
+  fields:
+    - name: customerPlanId
+      type: UpdateColumnCustomerPlanDevicesCustomerPlanId
+      description: Update the 'customer_plan_id' column in the 'customer_plan_devices'
+        collection.
+    - name: deviceId
+      type: UpdateColumnCustomerPlanDevicesDeviceId
+      description: Update the 'device_id' column in the 'customer_plan_devices' collection.
+  graphql:
+    typeName: V2UpdateCustomerPlanDevicesByCustomerPlanIdAndDeviceIdUpdateColumns
+    inputTypeName: V2UpdateCustomerPlanDevicesByCustomerPlanIdAndDeviceIdUpdateColumnsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: v2_update_customer_plan_devices_by_customer_plan_id_and_device_id_update_columns
+      fieldMapping:
+        customerPlanId:
+          column:
+            name: customer_plan_id
+        deviceId:
+          column:
+            name: device_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: V2UpdateCustomerPlanDevicesByCustomerPlanIdAndDeviceIdUpdateColumns
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - customerPlanId
+          - deviceId
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: V2UpdateCustomerPlanDevicesByCustomerPlanIdAndDeviceIdResponse
+  description: Responses from the
+    'v2_update_customer_plan_devices_by_customer_plan_id_and_device_id'
+    procedure
+  fields:
+    - name: affectedRows
+      type: Int4!
+      description: The number of rows affected by the mutation
+    - name: returning
+      type: "[CustomerPlanDevices!]!"
+      description: Data from rows affected by the mutation
+  graphql:
+    typeName: V2UpdateCustomerPlanDevicesByCustomerPlanIdAndDeviceIdResponse
+    inputTypeName: V2UpdateCustomerPlanDevicesByCustomerPlanIdAndDeviceIdResponseInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: v2_update_customer_plan_devices_by_customer_plan_id_and_device_id_response
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: V2UpdateCustomerPlanDevicesByCustomerPlanIdAndDeviceIdResponse
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: UpdateCustomerPlanDevicesByCustomerPlanIdAndDeviceId
+  outputType: V2UpdateCustomerPlanDevicesByCustomerPlanIdAndDeviceIdResponse!
+  arguments:
+    - name: keyCustomerPlanId
+      type: Int4!
+    - name: keyDeviceId
+      type: Int4!
+    - name: postCheck
+      type: CustomerPlanDevicesBoolExp!
+      description: Update permission post-condition predicate over the
+        'customer_plan_devices' collection
+    - name: preCheck
+      type: CustomerPlanDevicesBoolExp!
+      description: Update permission pre-condition predicate over the
+        'customer_plan_devices' collection
+    - name: updateColumns
+      type: V2UpdateCustomerPlanDevicesByCustomerPlanIdAndDeviceIdUpdateColumns!
+  source:
+    dataConnectorName: aurora
+    dataConnectorCommand:
+      procedure: v2_update_customer_plan_devices_by_customer_plan_id_and_device_id
+    argumentMapping:
+      keyCustomerPlanId: key_customer_plan_id
+      keyDeviceId: key_device_id
+      postCheck: post_check
+      preCheck: pre_check
+      updateColumns: update_columns
+  graphql:
+    rootFieldName: UpdateCustomerPlanDevicesByCustomerPlanIdAndDeviceId
+    rootFieldKind: Mutation
+  description: Update any row on the 'customer_plan_devices' collection using the
+    'customer_plan_id' and 'device_id' keys
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: UpdateCustomerPlanDevicesByCustomerPlanIdAndDeviceId
+  permissions:
+    - role: admin
+      allowExecution: true
+

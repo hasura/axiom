@@ -1,0 +1,138 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: V2InsertCreditCardsObject
+  fields:
+    - name: createdAt
+      type: Timestamptz
+    - name: creditCardId
+      type: Int4
+    - name: customerId
+      type: Int4
+    - name: cvv
+      type: Int4!
+    - name: expiry
+      type: Date!
+    - name: number
+      type: Text!
+    - name: updatedAt
+      type: Timestamptz
+  graphql:
+    typeName: V2InsertCreditCardsObject
+    inputTypeName: V2InsertCreditCardsObjectInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: v2_insert_credit_cards_object
+      fieldMapping:
+        createdAt:
+          column:
+            name: created_at
+        creditCardId:
+          column:
+            name: credit_card_id
+        customerId:
+          column:
+            name: customer_id
+        cvv:
+          column:
+            name: cvv
+        expiry:
+          column:
+            name: expiry
+        number:
+          column:
+            name: number
+        updatedAt:
+          column:
+            name: updated_at
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: V2InsertCreditCardsObject
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - createdAt
+          - creditCardId
+          - customerId
+          - cvv
+          - expiry
+          - number
+          - updatedAt
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: V2InsertCreditCardsResponse
+  description: Responses from the 'v2_insert_credit_cards' procedure
+  fields:
+    - name: affectedRows
+      type: Int4!
+      description: The number of rows affected by the mutation
+    - name: returning
+      type: "[CreditCards!]!"
+      description: Data from rows affected by the mutation
+  graphql:
+    typeName: V2InsertCreditCardsResponse
+    inputTypeName: V2InsertCreditCardsResponseInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: v2_insert_credit_cards_response
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: V2InsertCreditCardsResponse
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: InsertCreditCards
+  outputType: V2InsertCreditCardsResponse!
+  arguments:
+    - name: objects
+      type: "[V2InsertCreditCardsObject!]!"
+    - name: postCheck
+      type: CreditCardsBoolExp!
+      description: Insert permission predicate over the 'credit_cards' collection
+  source:
+    dataConnectorName: aurora
+    dataConnectorCommand:
+      procedure: v2_insert_credit_cards
+    argumentMapping:
+      objects: objects
+      postCheck: post_check
+  graphql:
+    rootFieldName: InsertCreditCards
+    rootFieldKind: Mutation
+  description: Insert into the credit_cards table
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: InsertCreditCards
+  permissions:
+    - role: admin
+      allowExecution: true
+

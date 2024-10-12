@@ -1,0 +1,30 @@
+---
+kind: Command
+version: v1
+definition:
+  name: ConvertDataToMb
+  outputType: Float!
+  arguments:
+    - name: dataInGb
+      type: Float!
+      description: The data in GB.
+  source:
+    dataConnectorName: global_functions
+    dataConnectorCommand:
+      function: convertDataToMB
+    argumentMapping:
+      dataInGb: dataInGB
+  graphql:
+    rootFieldName: convertDataToMb
+    rootFieldKind: Query
+  description: Converts data from GB to MB.
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: ConvertDataToMb
+  permissions:
+    - role: admin
+      allowExecution: true
+
