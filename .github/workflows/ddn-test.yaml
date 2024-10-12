@@ -29,15 +29,18 @@ jobs:
 
       - name: Build All Supergraphs
         run: |
-          for i in {1..4}; do
-            ddn run build-local-s$i
-          done
+          ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph-project-queries.yaml
+          ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph-domain.yaml
+          ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph.yaml
+          ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph-with-mutations.yaml
 
-      - name: Run DDN with Docker
+      - name: Set up demo databases
+        run: DATASET=telco docker compose -f .data/compose.yaml --env-file .data/.env up --build --pull always -d
+
+      - name: Run DDN
         env:
           HASURA_DDN_PAT: ${{ secrets.HASURA_PAT }}
         run: |
-          ddn run demo-telco
           docker compose -f compose.yaml \
             --env-file .env.local \
             --env-file .env \
