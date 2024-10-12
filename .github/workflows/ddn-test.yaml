@@ -1,0 +1,88 @@
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up DDN CLI and Login
+        uses: hasura/ddn-deployment@main
+        with:
+          hasura-pat: ${{ secrets.HASURA_PAT }}
+
+      - name: Install Dependencies (jq)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+
+      - name: Prep Repository
+        run: |
+          cp .hasura/context.yaml.template .hasura/context.yaml
+          cp .env.template .env
+          cp .env.local.template .env.local
+
+      - name: Build All Supergraphs
+        run: |
+          ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph-project-queries.yaml
+          ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph-domain.yaml
+          ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph.yaml
+          ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph-with-mutations.yaml
+
+      - name: Set up demo databases
+        run: DATASET=telco docker compose -f .data/compose.yaml --env-file .data/.env up --build --pull always -d
+
+      - name: Run DDN
+        env:
+          HASURA_DDN_PAT: ${{ secrets.HASURA_PAT }}
+        run: |
+          docker compose -f compose.yaml \
+            --env-file .env.local \
+            --env-file .env \
+            up --build --pull always -d
+
+      - name: Query DDN Endpoint and Validate Response
+        run: |
+          QUERY='{
+            "query": "query getUsers { usersById(id: 1) { email formatCreatedAtTimestamp } customers(limit: 1) { firstName lastName email segment customerLinks { customerPreferences { socialMedia { linkedin } } supportDB { supportHistory { date status } } } creditCards { maskCreditCard expiry cvv } billings { formatBillingDate paymentStatus totalAmount } } calls(limit: 1) { callid } cdr(limit: 1) { guid } documents(limit: 1) { uuid } }"
+          }'
+
+          EXPECTED_RESPONSE='{
+            "data": {
+              "usersById": { "email": "adam.mcdaniel@bigpond.com", "formatCreatedAtTimestamp": "Sun Aug 18 2024" },
+              "customers": [{
+                "firstName": "Adam",
+                "lastName": "Mcdaniel",
+                "email": "adam.mcdaniel@bigpond.com",
+                "segment": "family",
+                "customerLinks": [{
+                  "customerPreferences": { "socialMedia": { "linkedin": null } },
+                  "supportDB": { "supportHistory": [{ "date": "2020-03-22", "status": "Resolved" }] }
+                }],
+                "creditCards": [{ "maskCreditCard": "***********8922", "expiry": "2028-04-23", "cvv": 651 }],
+                "billings": [{ "formatBillingDate": "Thu Feb 02 2023", "paymentStatus": "overdue", "totalAmount": "50.50" }]
+              }],
+              "calls": [{ "callid": 188359 }],
+              "cdr": [{ "guid": "dd264970-f61f-429f-97f8-4761fea4de2f" }],
+              "documents": [{ "uuid": "a1b2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d" }]
+            }
+          }'
+
+          RESPONSE=$(curl -s -X POST http://localhost:3000/graphql \
+            -H "Content-Type: application/json" \
+            -d "$QUERY")
+
+          # Compare the actual response with the expected response
+          if echo "$RESPONSE" | jq --argjson expected "$EXPECTED_RESPONSE" 'if . == $expected then "MATCH" else "MISMATCH" end' | grep -q "MATCH"; then
+            echo "✅ Response matches expected output."
+          else
+            echo "❌ Response does not match expected output."
+            echo "Expected: $EXPECTED_RESPONSE"
+            echo "Got: $RESPONSE"
+            exit 1
+          fi
