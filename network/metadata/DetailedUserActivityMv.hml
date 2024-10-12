@@ -95,54 +95,6 @@ definition:
           - uploadSpeed
 
 ---
-kind: ObjectBooleanExpressionType
-version: v1
-definition:
-  name: DetailedUserActivityMvBoolExp
-  objectType: DetailedUserActivityMv
-  dataConnectorName: clickhouse
-  dataConnectorObjectType: detailed_user_activity_mv
-  comparableFields:
-    - fieldName: cdrGuid
-      operators:
-        enableAll: true
-    - fieldName: cdrTimestamp
-      operators:
-        enableAll: true
-    - fieldName: callDuration
-      operators:
-        enableAll: true
-    - fieldName: callType
-      operators:
-        enableAll: true
-    - fieldName: duGuid
-      operators:
-        enableAll: true
-    - fieldName: duTimestamp
-      operators:
-        enableAll: true
-    - fieldName: dataUsage
-      operators:
-        enableAll: true
-    - fieldName: downloadSpeed
-      operators:
-        enableAll: true
-    - fieldName: latency
-      operators:
-        enableAll: true
-    - fieldName: npGuid
-      operators:
-        enableAll: true
-    - fieldName: npTimestamp
-      operators:
-        enableAll: true
-    - fieldName: uploadSpeed
-      operators:
-        enableAll: true
-  graphql:
-    typeName: Network_DetailedUserActivityMvBoolExp
-
----
 kind: Model
 version: v1
 definition:
@@ -194,6 +146,10 @@ definition:
       queryRootField: detailedUserActivityMv
     selectUniques: []
     orderByExpressionType: Network_DetailedUserActivityMvOrderBy
+    filterInputTypeName: DetailedUserActivityMvFilterInput
+    aggregate:
+      queryRootField: detailedUserActivityMvAggregate
+  aggregateExpression: DetailedUserActivityMvAggExp
 
 ---
 kind: ModelPermissions
@@ -223,3 +179,83 @@ definition:
       target:
         modelField:
           - fieldName: customerGuid
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: DetailedUserActivityMvAggExp
+  operand:
+    object:
+      aggregatedType: DetailedUserActivityMv
+      aggregatableFields:
+        - fieldName: cdrGuid
+          aggregateExpression: StringAggExp
+        - fieldName: cdrTimestamp
+          aggregateExpression: DateTimeAggExp
+        - fieldName: callDuration
+          aggregateExpression: Int32AggExp
+        - fieldName: callType
+          aggregateExpression: StringAggExp
+        - fieldName: duGuid
+          aggregateExpression: StringAggExp
+        - fieldName: duTimestamp
+          aggregateExpression: DateTimeAggExp
+        - fieldName: dataUsage
+          aggregateExpression: Float32AggExp
+        - fieldName: downloadSpeed
+          aggregateExpression: Float32AggExp
+        - fieldName: latency
+          aggregateExpression: Int32AggExp
+        - fieldName: npGuid
+          aggregateExpression: StringAggExp
+        - fieldName: npTimestamp
+          aggregateExpression: DateTimeAggExp
+        - fieldName: uploadSpeed
+          aggregateExpression: Float32AggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: DetailedUserActivityMvAggExp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: DetailedUserActivityMvBoolExp
+  operand:
+    object:
+      type: DetailedUserActivityMv
+      comparableFields:
+        - fieldName: cdrGuid
+          booleanExpressionType: StringBoolExp
+        - fieldName: cdrTimestamp
+          booleanExpressionType: DateTimeBoolExp
+        - fieldName: callDuration
+          booleanExpressionType: Int32BoolExp
+        - fieldName: callType
+          booleanExpressionType: StringBoolExp
+        - fieldName: duGuid
+          booleanExpressionType: StringBoolExp
+        - fieldName: duTimestamp
+          booleanExpressionType: DateTimeBoolExp
+        - fieldName: dataUsage
+          booleanExpressionType: Float32BoolExp
+        - fieldName: downloadSpeed
+          booleanExpressionType: Float32BoolExp
+        - fieldName: latency
+          booleanExpressionType: Int32BoolExp
+        - fieldName: npGuid
+          booleanExpressionType: StringBoolExp
+        - fieldName: npTimestamp
+          booleanExpressionType: DateTimeBoolExp
+        - fieldName: uploadSpeed
+          booleanExpressionType: Float32BoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Network_DetailedUserActivityMvBoolExp
+

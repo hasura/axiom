@@ -35,24 +35,6 @@ definition:
           - embeddings
 
 ---
-kind: ObjectBooleanExpressionType
-version: v1
-definition:
-  name: DocumentEmbeddingsBoolExp
-  objectType: DocumentEmbeddings
-  dataConnectorName: vector
-  dataConnectorObjectType: document_embeddings
-  comparableFields:
-    - fieldName: documentUuid
-      operators:
-        enableAll: true
-    - fieldName: embeddings
-      operators:
-        enableAll: true
-  graphql:
-    typeName: Support_DocumentEmbeddingsBoolExp
-
----
 kind: Model
 version: v1
 definition:
@@ -77,6 +59,10 @@ definition:
         uniqueIdentifier:
           - documentUuid
     orderByExpressionType: Support_DocumentEmbeddingsOrderBy
+    filterInputTypeName: DocumentEmbeddingsFilterInput
+    aggregate:
+      queryRootField: documentEmbeddingsAggregate
+  aggregateExpression: DocumentEmbeddingsAggExp
 
 ---
 kind: ModelPermissions
@@ -105,4 +91,43 @@ definition:
       target:
         modelField:
           - fieldName: uuid
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: DocumentEmbeddingsBoolExp
+  operand:
+    object:
+      type: DocumentEmbeddings
+      comparableFields:
+        - fieldName: documentUuid
+          booleanExpressionType: UuidBoolExp
+        - fieldName: embeddings
+          booleanExpressionType: VectorBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Support_DocumentEmbeddingsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: DocumentEmbeddingsAggExp
+  operand:
+    object:
+      aggregatedType: DocumentEmbeddings
+      aggregatableFields:
+        - fieldName: documentUuid
+          aggregateExpression: UuidAggExp
+        - fieldName: embeddings
+          aggregateExpression: VectorAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: DocumentEmbeddingsAggExp
 

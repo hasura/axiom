@@ -640,42 +640,6 @@ definition:
           - usageStats
 
 ---
-kind: ObjectBooleanExpressionType
-version: v1
-definition:
-  name: UserProfilesBoolExp
-  objectType: UserProfiles
-  dataConnectorName: atlas
-  dataConnectorObjectType: userProfiles
-  comparableFields:
-    - fieldName: id
-      operators:
-        enableAll: true
-    - fieldName: accountDetails
-      operators:
-        enableAll: true
-    - fieldName: identification
-      operators:
-        enableAll: true
-    - fieldName: memberId
-      operators:
-        enableAll: true
-    - fieldName: notes
-      operators:
-        enableAll: true
-    - fieldName: preferences
-      operators:
-        enableAll: true
-    - fieldName: supportHistory
-      operators:
-        enableAll: true
-    - fieldName: usageStats
-      operators:
-        enableAll: true
-  graphql:
-    typeName: Support_UserProfilesBoolExp
-
----
 kind: Model
 version: v1
 definition:
@@ -718,6 +682,10 @@ definition:
         uniqueIdentifier:
           - id
     orderByExpressionType: Support_UserProfilesOrderBy
+    filterInputTypeName: UserProfilesFilterInput
+    aggregate:
+      queryRootField: userProfilesAggregate
+  aggregateExpression: UserProfilesAggExp
 
 ---
 kind: ModelPermissions
@@ -747,3 +715,292 @@ definition:
       target:
         modelField:
           - fieldName: customerGuid
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: UserProfilesAggExp
+  operand:
+    object:
+      aggregatedType: UserProfiles
+      aggregatableFields:
+        - fieldName: id
+          aggregateExpression: StringAggExp
+        - fieldName: memberId
+          aggregateExpression: StringAggExp
+        - fieldName: notes
+          aggregateExpression: StringAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: UserProfilesAggExp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: UserProfilesAccountDetailsBoolExp
+  operand:
+    object:
+      type: UserProfilesAccountDetails
+      comparableFields:
+        - fieldName: accountNumber
+          booleanExpressionType: StringBoolExp
+        - fieldName: registrationDate
+          booleanExpressionType: StringBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: UserProfilesAccountDetailsBoolExp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: UserProfilesIdentificationBoolExp
+  operand:
+    object:
+      type: UserProfilesIdentification
+      comparableFields:
+        - fieldName: expiryDate
+          booleanExpressionType: StringBoolExp
+        - fieldName: issuedBy
+          booleanExpressionType: StringBoolExp
+        - fieldName: number
+          booleanExpressionType: StringBoolExp
+        - fieldName: type
+          booleanExpressionType: StringBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: UserProfilesIdentificationBoolExp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: UserProfilesPreferencesCommunicationAppNotificationsBoolExp
+  operand:
+    object:
+      type: UserProfilesPreferencesCommunicationAppNotifications
+      comparableFields:
+        - fieldName: enabled
+          booleanExpressionType: BoolBoolExp
+        - fieldName: frequency
+          booleanExpressionType: StringBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: UserProfilesPreferencesCommunicationAppNotificationsBoolExp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: UserProfilesPreferencesCommunicationBoolExp
+  operand:
+    object:
+      type: UserProfilesPreferencesCommunication
+      comparableFields:
+        - fieldName: appNotifications
+          booleanExpressionType: UserProfilesPreferencesCommunicationAppNotificationsBoolExp
+        - fieldName: emailUpdates
+          booleanExpressionType: BoolBoolExp
+        - fieldName: smsNotifications
+          booleanExpressionType: BoolBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: UserProfilesPreferencesCommunicationBoolExp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: UserProfilesPreferencesPrivacySettingsBoolExp
+  operand:
+    object:
+      type: UserProfilesPreferencesPrivacySettings
+      comparableFields:
+        - fieldName: adPersonalization
+          booleanExpressionType: BoolBoolExp
+        - fieldName: shareDataForImprovements
+          booleanExpressionType: BoolBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: UserProfilesPreferencesPrivacySettingsBoolExp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: UserProfilesPreferencesServicePreferencesNetworkSettingsBoolExp
+  operand:
+    object:
+      type: UserProfilesPreferencesServicePreferencesNetworkSettings
+      comparableFields:
+        - fieldName: dataSaverMode
+          booleanExpressionType: BoolBoolExp
+        - fieldName: preferredNetworkType
+          booleanExpressionType: StringBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: UserProfilesPreferencesServicePreferencesNetworkSettingsBoolExp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: UserProfilesPreferencesServicePreferencesBoolExp
+  operand:
+    object:
+      type: UserProfilesPreferencesServicePreferences
+      comparableFields:
+        - fieldName: networkSettings
+          booleanExpressionType: UserProfilesPreferencesServicePreferencesNetworkSettingsBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: UserProfilesPreferencesServicePreferencesBoolExp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: UserProfilesPreferencesBoolExp
+  operand:
+    object:
+      type: UserProfilesPreferences
+      comparableFields:
+        - fieldName: communication
+          booleanExpressionType: UserProfilesPreferencesCommunicationBoolExp
+        - fieldName: privacySettings
+          booleanExpressionType: UserProfilesPreferencesPrivacySettingsBoolExp
+        - fieldName: servicePreferences
+          booleanExpressionType: UserProfilesPreferencesServicePreferencesBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: UserProfilesPreferencesBoolExp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: UserProfilesUsageStatsCallStatsBoolExp
+  operand:
+    object:
+      type: UserProfilesUsageStatsCallStats
+      comparableFields:
+        - fieldName: internationalMinutes
+          booleanExpressionType: IntBoolExp
+        - fieldName: totalMinutes
+          booleanExpressionType: IntBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: UserProfilesUsageStatsCallStatsBoolExp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: UserProfilesUsageStatsDataUsageBoolExp
+  operand:
+    object:
+      type: UserProfilesUsageStatsDataUsage
+      comparableFields:
+        - fieldName: currentMonth
+          booleanExpressionType: StringBoolExp
+        - fieldName: total
+          booleanExpressionType: StringBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: UserProfilesUsageStatsDataUsageBoolExp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: UserProfilesUsageStatsBoolExp
+  operand:
+    object:
+      type: UserProfilesUsageStats
+      comparableFields:
+        - fieldName: callStats
+          booleanExpressionType: UserProfilesUsageStatsCallStatsBoolExp
+        - fieldName: dataUsage
+          booleanExpressionType: UserProfilesUsageStatsDataUsageBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: UserProfilesUsageStatsBoolExp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: UserProfilesBoolExp
+  operand:
+    object:
+      type: UserProfiles
+      comparableFields:
+        - fieldName: id
+          booleanExpressionType: StringBoolExp
+        - fieldName: accountDetails
+          booleanExpressionType: UserProfilesAccountDetailsBoolExp
+        - fieldName: identification
+          booleanExpressionType: UserProfilesIdentificationBoolExp
+        - fieldName: memberId
+          booleanExpressionType: StringBoolExp
+        - fieldName: notes
+          booleanExpressionType: StringBoolExp
+        - fieldName: preferences
+          booleanExpressionType: UserProfilesPreferencesBoolExp
+        - fieldName: usageStats
+          booleanExpressionType: UserProfilesUsageStatsBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Support_UserProfilesBoolExp
+

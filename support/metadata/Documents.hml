@@ -96,48 +96,6 @@ definition:
           - viewCount
 
 ---
-kind: ObjectBooleanExpressionType
-version: v1
-definition:
-  name: DocumentsBoolExp
-  objectType: Documents
-  dataConnectorName: vector
-  dataConnectorObjectType: documents
-  comparableFields:
-    - fieldName: body
-      operators:
-        enableAll: true
-    - fieldName: createdAt
-      operators:
-        enableAll: true
-    - fieldName: language
-      operators:
-        enableAll: true
-    - fieldName: rating
-      operators:
-        enableAll: true
-    - fieldName: status
-      operators:
-        enableAll: true
-    - fieldName: tags
-      operators:
-        enableAll: true
-    - fieldName: title
-      operators:
-        enableAll: true
-    - fieldName: updatedAt
-      operators:
-        enableAll: true
-    - fieldName: uuid
-      operators:
-        enableAll: true
-    - fieldName: viewCount
-      operators:
-        enableAll: true
-  graphql:
-    typeName: Support_DocumentsBoolExp
-
----
 kind: Model
 version: v1
 definition:
@@ -186,6 +144,10 @@ definition:
         uniqueIdentifier:
           - uuid
     orderByExpressionType: Support_DocumentsOrderBy
+    filterInputTypeName: DocumentsFilterInput
+    aggregate:
+      queryRootField: documentsAggregate
+  aggregateExpression: DocumentsAggExp
 
 ---
 kind: ModelPermissions
@@ -197,7 +159,7 @@ definition:
       select:
         filter: null
     - role: customer
-      select: 
+      select:
         filter: null
 
 ---
@@ -253,3 +215,75 @@ definition:
       target:
         argument:
           argumentName: date
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: DocumentsBoolExp
+  operand:
+    object:
+      type: Documents
+      comparableFields:
+        - fieldName: body
+          booleanExpressionType: TextBoolExp
+        - fieldName: createdAt
+          booleanExpressionType: TimestamptzBoolExp
+        - fieldName: language
+          booleanExpressionType: TextBoolExp
+        - fieldName: rating
+          booleanExpressionType: Int4BoolExp
+        - fieldName: status
+          booleanExpressionType: TextBoolExp
+        - fieldName: tags
+          booleanExpressionType: TextBoolExp
+        - fieldName: title
+          booleanExpressionType: TextBoolExp
+        - fieldName: updatedAt
+          booleanExpressionType: TimestamptzBoolExp
+        - fieldName: uuid
+          booleanExpressionType: UuidBoolExp
+        - fieldName: viewCount
+          booleanExpressionType: Int4BoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Support_DocumentsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: DocumentsAggExp
+  operand:
+    object:
+      aggregatedType: Documents
+      aggregatableFields:
+        - fieldName: body
+          aggregateExpression: TextAggExp
+        - fieldName: createdAt
+          aggregateExpression: TimestamptzAggExp
+        - fieldName: language
+          aggregateExpression: TextAggExp
+        - fieldName: rating
+          aggregateExpression: Int4AggExp
+        - fieldName: status
+          aggregateExpression: TextAggExp
+        - fieldName: tags
+          aggregateExpression: TextAggExp
+        - fieldName: title
+          aggregateExpression: TextAggExp
+        - fieldName: updatedAt
+          aggregateExpression: TimestamptzAggExp
+        - fieldName: uuid
+          aggregateExpression: UuidAggExp
+        - fieldName: viewCount
+          aggregateExpression: Int4AggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: DocumentsAggExp
+

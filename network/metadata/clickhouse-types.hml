@@ -62,3 +62,417 @@ definition:
   graphql:
     comparisonExpressionTypeName: Network_Float32ComparisonExp
 
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: Int32BoolExp
+  operand:
+    scalar:
+      type: Int32
+      comparisonOperators:
+        - name: _eq
+          argumentType: Int32!
+        - name: _gt
+          argumentType: Int32!
+        - name: _gte
+          argumentType: Int32!
+        - name: _in
+          argumentType: "[Int32!]!"
+        - name: _lt
+          argumentType: Int32!
+        - name: _lte
+          argumentType: Int32!
+        - name: _neq
+          argumentType: Int32!
+        - name: _nin
+          argumentType: "[Int32!]!"
+      dataConnectorOperatorMapping:
+        - dataConnectorName: clickhouse
+          dataConnectorScalarType: Int32
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Int32BoolExp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: DateTimeBoolExp
+  operand:
+    scalar:
+      type: DateTime
+      comparisonOperators:
+        - name: _eq
+          argumentType: DateTime!
+        - name: _gt
+          argumentType: DateTime!
+        - name: _gte
+          argumentType: DateTime!
+        - name: _in
+          argumentType: "[DateTime!]!"
+        - name: _lt
+          argumentType: DateTime!
+        - name: _lte
+          argumentType: DateTime!
+        - name: _neq
+          argumentType: DateTime!
+        - name: _nin
+          argumentType: "[DateTime!]!"
+      dataConnectorOperatorMapping:
+        - dataConnectorName: clickhouse
+          dataConnectorScalarType: DateTime
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: DateTimeBoolExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: Float64
+  graphql:
+    typeName: Float64
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: clickhouse
+  dataConnectorScalarType: Float64
+  representation: Float64
+  graphql:
+    comparisonExpressionTypeName: Float64ComparisonExp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: Float64BoolExp
+  operand:
+    scalar:
+      type: Float64
+      comparisonOperators:
+        - name: _eq
+          argumentType: Float64!
+        - name: _gt
+          argumentType: Float64!
+        - name: _gte
+          argumentType: Float64!
+        - name: _in
+          argumentType: "[Float64!]!"
+        - name: _lt
+          argumentType: Float64!
+        - name: _lte
+          argumentType: Float64!
+        - name: _neq
+          argumentType: Float64!
+        - name: _nin
+          argumentType: "[Float64!]!"
+      dataConnectorOperatorMapping:
+        - dataConnectorName: clickhouse
+          dataConnectorScalarType: Float64
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Float64BoolExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: Int64
+  graphql:
+    typeName: Int64
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: clickhouse
+  dataConnectorScalarType: Int64
+  representation: Int64
+  graphql:
+    comparisonExpressionTypeName: Int64ComparisonExp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: Int64BoolExp
+  operand:
+    scalar:
+      type: Int64
+      comparisonOperators:
+        - name: _eq
+          argumentType: Int64!
+        - name: _gt
+          argumentType: Int64!
+        - name: _gte
+          argumentType: Int64!
+        - name: _in
+          argumentType: "[Int64!]!"
+        - name: _lt
+          argumentType: Int64!
+        - name: _lte
+          argumentType: Int64!
+        - name: _neq
+          argumentType: Int64!
+        - name: _nin
+          argumentType: "[Int64!]!"
+      dataConnectorOperatorMapping:
+        - dataConnectorName: clickhouse
+          dataConnectorScalarType: Int64
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Int64BoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: Int32AggExp
+  operand:
+    scalar:
+      aggregatedType: Int32
+      aggregationFunctions:
+        - name: avg
+          returnType: Float64!
+        - name: max
+          returnType: Int32!
+        - name: min
+          returnType: Int32!
+        - name: stddev_pop
+          returnType: Float64!
+        - name: stddev_samp
+          returnType: Float64!
+        - name: sum
+          returnType: Int64!
+        - name: var_pop
+          returnType: Float64!
+        - name: var_samp
+          returnType: Float64!
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: clickhouse
+          dataConnectorScalarType: Int32
+          functionMapping:
+            avg:
+              name: avg
+            max:
+              name: max
+            min:
+              name: min
+            stddev_pop:
+              name: stddev_pop
+            stddev_samp:
+              name: stddev_samp
+            sum:
+              name: sum
+            var_pop:
+              name: var_pop
+            var_samp:
+              name: var_samp
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: Int32AggExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: StringAggExp
+  operand:
+    scalar:
+      aggregatedType: String
+      aggregationFunctions: []
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: clickhouse
+          dataConnectorScalarType: String
+          functionMapping: {}
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: StringAggExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: DateTimeAggExp
+  operand:
+    scalar:
+      aggregatedType: DateTime
+      aggregationFunctions:
+        - name: max
+          returnType: DateTime!
+        - name: min
+          returnType: DateTime!
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: clickhouse
+          dataConnectorScalarType: DateTime
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: DateTimeAggExp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: Float32BoolExp
+  operand:
+    scalar:
+      type: Float32
+      comparisonOperators:
+        - name: _eq
+          argumentType: Float32!
+        - name: _gt
+          argumentType: Float32!
+        - name: _gte
+          argumentType: Float32!
+        - name: _in
+          argumentType: "[Float32!]!"
+        - name: _lt
+          argumentType: Float32!
+        - name: _lte
+          argumentType: Float32!
+        - name: _neq
+          argumentType: Float32!
+        - name: _nin
+          argumentType: "[Float32!]!"
+      dataConnectorOperatorMapping:
+        - dataConnectorName: clickhouse
+          dataConnectorScalarType: Float32
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Float32BoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: Float32AggExp
+  operand:
+    scalar:
+      aggregatedType: Float32
+      aggregationFunctions:
+        - name: avg
+          returnType: Float64!
+        - name: max
+          returnType: Float64!
+        - name: min
+          returnType: Float32!
+        - name: stddev_pop
+          returnType: Float32!
+        - name: stddev_samp
+          returnType: Float32!
+        - name: sum
+          returnType: Float32!
+        - name: var_pop
+          returnType: Float32!
+        - name: var_samp
+          returnType: Float32!
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: clickhouse
+          dataConnectorScalarType: Float32
+          functionMapping:
+            avg:
+              name: avg
+            max:
+              name: max
+            min:
+              name: min
+            stddev_pop:
+              name: stddev_pop
+            stddev_samp:
+              name: stddev_samp
+            sum:
+              name: sum
+            var_pop:
+              name: var_pop
+            var_samp:
+              name: var_samp
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: Float32AggExp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: StringBoolExp
+  operand:
+    scalar:
+      type: String
+      comparisonOperators:
+        - name: _eq
+          argumentType: String!
+        - name: _gt
+          argumentType: String!
+        - name: _gte
+          argumentType: String!
+        - name: _ilike
+          argumentType: String!
+        - name: _in
+          argumentType: "[String!]!"
+        - name: _like
+          argumentType: String!
+        - name: _lt
+          argumentType: String!
+        - name: _lte
+          argumentType: String!
+        - name: _match
+          argumentType: String!
+        - name: _neq
+          argumentType: String!
+        - name: _nilike
+          argumentType: String!
+        - name: _nin
+          argumentType: "[String!]!"
+        - name: _nlike
+          argumentType: String!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: clickhouse
+          dataConnectorScalarType: String
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: StringBoolExp_1
+

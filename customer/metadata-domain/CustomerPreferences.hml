@@ -6,10 +6,10 @@ definition:
   description: generated from MongoDB validation schema
   fields:
     - name: lastAppLogin
-      type: String
+      type: String!
       description: must be a valid ISO date and is required
     - name: lastWebsiteVisit
-      type: String
+      type: String!
       description: must be a valid ISO date and is required
   graphql:
     typeName: CustomerPreferencesBehavioralData
@@ -43,13 +43,13 @@ definition:
   description: generated from MongoDB validation schema
   fields:
     - name: author
-      type: String
+      type: String!
       description: must be a string and is required
     - name: content
-      type: String
+      type: String!
       description: must be a string and is required
     - name: date
-      type: String
+      type: String!
       description: must be a valid ISO date and is required
   graphql:
     typeName: CustomerPreferencesCustomerNotes
@@ -79,10 +79,10 @@ definition:
   description: generated from MongoDB validation schema
   fields:
     - name: contactMethod
-      type: String
+      type: String!
       description: must be one of 'email', 'phone', or 'SMS' and is required
     - name: marketingOptIn
-      type: Bool
+      type: Bool!
       description: must be a boolean value and is required
   graphql:
     typeName: CustomerPreferencesPreferences
@@ -150,16 +150,16 @@ definition:
       type: ObjectId!
       description: primary key _id
     - name: behavioralData
-      type: CustomerPreferencesBehavioralData
+      type: CustomerPreferencesBehavioralData!
       description: behavioralData is an object containing behavioral metrics
     - name: customerGuid
-      type: String
+      type: String!
       description: must be a string and is required
     - name: customerNotes
-      type: "[CustomerPreferencesCustomerNotes!]"
+      type: "[CustomerPreferencesCustomerNotes!]!"
       description: customerNotes is an array of note objects with author, date, and content
     - name: preferences
-      type: CustomerPreferencesPreferences
+      type: CustomerPreferencesPreferences!
     - name: socialMedia
       type: CustomerPreferencesSocialMedia
       description: socialMedia is an object containing social media profile URLs
@@ -215,36 +215,6 @@ definition:
           - socialMedia
 
 ---
-kind: ObjectBooleanExpressionType
-version: v1
-definition:
-  name: CustomerPreferencesBoolExp
-  objectType: CustomerPreferences
-  dataConnectorName: mongo
-  dataConnectorObjectType: customerPreferences
-  comparableFields:
-    - fieldName: id
-      operators:
-        enableAll: true
-    - fieldName: behavioralData
-      operators:
-        enableAll: true
-    - fieldName: customerGuid
-      operators:
-        enableAll: true
-    - fieldName: customerNotes
-      operators:
-        enableAll: true
-    - fieldName: preferences
-      operators:
-        enableAll: true
-    - fieldName: socialMedia
-      operators:
-        enableAll: true
-  graphql:
-    typeName: CustomerPreferencesBoolExp
-
----
 kind: Model
 version: v1
 definition:
@@ -281,6 +251,10 @@ definition:
         uniqueIdentifier:
           - id
     orderByExpressionType: CustomerPreferencesOrderBy
+    filterInputTypeName: CustomerPreferencesFilterInput
+    aggregate:
+      queryRootField: customerPreferencesAggregate
+  aggregateExpression: CustomerPreferencesAggExp
 
 ---
 kind: ModelPermissions
@@ -312,3 +286,114 @@ definition:
       target:
         modelField:
           - fieldName: customerGuid
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: CustomerPreferencesAggExp
+  operand:
+    object:
+      aggregatedType: CustomerPreferences
+      aggregatableFields:
+        - fieldName: id
+          aggregateExpression: ObjectIdAggExp
+        - fieldName: customerGuid
+          aggregateExpression: Customer_StringAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: CustomerPreferencesAggExp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: CustomerPreferencesBehavioralDataBoolExp
+  operand:
+    object:
+      type: CustomerPreferencesBehavioralData
+      comparableFields:
+        - fieldName: lastAppLogin
+          booleanExpressionType: StringBoolExp
+        - fieldName: lastWebsiteVisit
+          booleanExpressionType: StringBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: CustomerPreferencesBehavioralDataBoolExp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: CustomerPreferencesPreferencesBoolExp
+  operand:
+    object:
+      type: CustomerPreferencesPreferences
+      comparableFields:
+        - fieldName: contactMethod
+          booleanExpressionType: StringBoolExp
+        - fieldName: marketingOptIn
+          booleanExpressionType: BoolBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: CustomerPreferencesPreferencesBoolExp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: CustomerPreferencesSocialMediaBoolExp
+  operand:
+    object:
+      type: CustomerPreferencesSocialMedia
+      comparableFields:
+        - fieldName: facebook
+          booleanExpressionType: StringBoolExp
+        - fieldName: linkedin
+          booleanExpressionType: StringBoolExp
+        - fieldName: twitter
+          booleanExpressionType: StringBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: CustomerPreferencesSocialMediaBoolExp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: CustomerPreferencesBoolExp
+  operand:
+    object:
+      type: CustomerPreferences
+      comparableFields:
+        - fieldName: id
+          booleanExpressionType: ObjectIdBoolExp
+        - fieldName: behavioralData
+          booleanExpressionType: CustomerPreferencesBehavioralDataBoolExp
+        - fieldName: customerGuid
+          booleanExpressionType: StringBoolExp
+        - fieldName: preferences
+          booleanExpressionType: CustomerPreferencesPreferencesBoolExp
+        - fieldName: socialMedia
+          booleanExpressionType: CustomerPreferencesSocialMediaBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: CustomerPreferencesBoolExp
+

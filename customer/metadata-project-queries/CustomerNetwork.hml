@@ -40,24 +40,6 @@ definition:
           - nodeId
 
 ---
-kind: ObjectBooleanExpressionType
-version: v1
-definition:
-  name: CustomerNetworkBoolExp
-  objectType: CustomerNetwork
-  dataConnectorName: aurora
-  dataConnectorObjectType: customer_network
-  comparableFields:
-    - fieldName: customerId
-      operators:
-        enableAll: true
-    - fieldName: nodeId
-      operators:
-        enableAll: true
-  graphql:
-    typeName: Customer_CustomerNetworkBoolExp
-
----
 kind: Model
 version: v1
 definition:
@@ -83,6 +65,10 @@ definition:
           - customerId
           - nodeId
     orderByExpressionType: Customer_CustomerNetworkOrderBy
+    filterInputTypeName: CustomerNetworkFilterInput
+    aggregate:
+      queryRootField: customerNetworkAggregate
+  aggregateExpression: CustomerNetworkAggExp
 
 ---
 kind: ModelPermissions
@@ -94,15 +80,15 @@ definition:
       select:
         filter: null
     - role: customer
-      select: 
-        filter: 
+      select:
+        filter:
           relationship:
             name: customer
-            predicate: 
+            predicate:
               fieldComparison:
                 field: customerId
                 operator: _eq
-                value: 
+                value:
                   sessionVariable: 'x-hasura-user-id'
 
 ---
@@ -140,4 +126,44 @@ definition:
       target:
         modelField:
           - fieldName: nodeId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: CustomerNetworkBoolExp
+  operand:
+    object:
+      type: CustomerNetwork
+      comparableFields:
+        - fieldName: customerId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: nodeId
+          booleanExpressionType: Int4BoolExp
+      comparableRelationships:
+        - relationshipName: customer
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Customer_CustomerNetworkBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: CustomerNetworkAggExp
+  operand:
+    object:
+      aggregatedType: CustomerNetwork
+      aggregatableFields:
+        - fieldName: customerId
+          aggregateExpression: Int4AggExp
+        - fieldName: nodeId
+          aggregateExpression: Int4AggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: CustomerNetworkAggExp
 
