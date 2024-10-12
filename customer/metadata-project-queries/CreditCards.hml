@@ -75,39 +75,6 @@ definition:
           - number
 
 ---
-kind: ObjectBooleanExpressionType
-version: v1
-definition:
-  name: CreditCardsBoolExp
-  objectType: CreditCards
-  dataConnectorName: aurora
-  dataConnectorObjectType: credit_cards
-  comparableFields:
-    - fieldName: createdAt
-      operators:
-        enableAll: true
-    - fieldName: creditCardId
-      operators:
-        enableAll: true
-    - fieldName: customerId
-      operators:
-        enableAll: true
-    - fieldName: cvv
-      operators:
-        enableAll: true
-    - fieldName: expiry
-      operators:
-        enableAll: true
-    - fieldName: number
-      operators:
-        enableAll: true
-    - fieldName: updatedAt
-      operators:
-        enableAll: true
-  graphql:
-    typeName: Customer_CreditCardsBoolExp
-
----
 kind: Model
 version: v1
 definition:
@@ -147,6 +114,10 @@ definition:
         uniqueIdentifier:
           - creditCardId
     orderByExpressionType: Customer_CreditCardsOrderBy
+    filterInputTypeName: CreditCardsFilterInput
+    aggregate:
+      queryRootField: creditCardsAggregate
+  aggregateExpression: CreditCardsAggExp
 
 ---
 kind: ModelPermissions
@@ -158,15 +129,15 @@ definition:
       select:
         filter: null
     - role: customer
-      select: 
-        filter: 
+      select:
+        filter:
           relationship:
             name: customer
-            predicate: 
+            predicate:
               fieldComparison:
                 field: customerId
                 operator: _eq
-                value: 
+                value:
                   sessionVariable: 'x-hasura-user-id'
 
 ---
@@ -186,4 +157,64 @@ definition:
       target:
         modelField:
           - fieldName: customerId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: CreditCardsBoolExp
+  operand:
+    object:
+      type: CreditCards
+      comparableFields:
+        - fieldName: createdAt
+          booleanExpressionType: TimestamptzBoolExp
+        - fieldName: creditCardId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: customerId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: cvv
+          booleanExpressionType: Int4BoolExp
+        - fieldName: expiry
+          booleanExpressionType: DateBoolExp
+        - fieldName: number
+          booleanExpressionType: TextBoolExp
+        - fieldName: updatedAt
+          booleanExpressionType: TimestamptzBoolExp
+      comparableRelationships:
+        - relationshipName: customer
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Customer_CreditCardsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: CreditCardsAggExp
+  operand:
+    object:
+      aggregatedType: CreditCards
+      aggregatableFields:
+        - fieldName: createdAt
+          aggregateExpression: TimestamptzAggExp
+        - fieldName: creditCardId
+          aggregateExpression: Int4AggExp
+        - fieldName: customerId
+          aggregateExpression: Int4AggExp
+        - fieldName: cvv
+          aggregateExpression: Int4AggExp
+        - fieldName: expiry
+          aggregateExpression: DateAggExp
+        - fieldName: number
+          aggregateExpression: TextAggExp
+        - fieldName: updatedAt
+          aggregateExpression: TimestamptzAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: CreditCardsAggExp
 

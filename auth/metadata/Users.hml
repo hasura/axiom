@@ -66,36 +66,6 @@ definition:
           - roles
 
 ---
-kind: ObjectBooleanExpressionType
-version: v1
-definition:
-  name: UsersBoolExp
-  objectType: Users
-  dataConnectorName: auth
-  dataConnectorObjectType: users
-  comparableFields:
-    - fieldName: createdAt
-      operators:
-        enableAll: true
-    - fieldName: email
-      operators:
-        enableAll: true
-    - fieldName: id
-      operators:
-        enableAll: true
-    - fieldName: password
-      operators:
-        enableAll: true
-    - fieldName: roles
-      operators:
-        enableAll: true
-    - fieldName: updatedAt
-      operators:
-        enableAll: true
-  graphql:
-    typeName: Auth_UsersBoolExp
-
----
 kind: Model
 version: v1
 definition:
@@ -132,6 +102,10 @@ definition:
         uniqueIdentifier:
           - id
     orderByExpressionType: Auth_UsersOrderBy
+    filterInputTypeName: UsersFilterInput
+    aggregate:
+      queryRootField: usersAggregate
+  aggregateExpression: UsersAggExp
 
 ---
 kind: ModelPermissions
@@ -144,7 +118,7 @@ definition:
         filter: null
     - role: customer
       select:
-        filter: 
+        filter:
           fieldComparison:
             field: id
             operator: '_eq'
@@ -186,3 +160,59 @@ definition:
       target:
         argument:
           argumentName: date
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: UsersBoolExp
+  operand:
+    object:
+      type: Users
+      comparableFields:
+        - fieldName: createdAt
+          booleanExpressionType: TimestamptzBoolExp
+        - fieldName: email
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: id
+          booleanExpressionType: Int4BoolExp
+        - fieldName: password
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: roles
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: updatedAt
+          booleanExpressionType: TimestamptzBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Auth_UsersBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: UsersAggExp
+  operand:
+    object:
+      aggregatedType: Users
+      aggregatableFields:
+        - fieldName: createdAt
+          aggregateExpression: TimestamptzAggExp
+        - fieldName: email
+          aggregateExpression: VarcharAggExp
+        - fieldName: id
+          aggregateExpression: Int4AggExp
+        - fieldName: password
+          aggregateExpression: VarcharAggExp
+        - fieldName: roles
+          aggregateExpression: VarcharAggExp
+        - fieldName: updatedAt
+          aggregateExpression: TimestamptzAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: UsersAggExp
+

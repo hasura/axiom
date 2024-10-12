@@ -41,27 +41,6 @@ definition:
           - timestamp
 
 ---
-kind: ObjectBooleanExpressionType
-version: v1
-definition:
-  name: DataUsageBoolExp
-  objectType: DataUsage
-  dataConnectorName: clickhouse
-  dataConnectorObjectType: data_usage
-  comparableFields:
-    - fieldName: dataUsage
-      operators:
-        enableAll: true
-    - fieldName: guid
-      operators:
-        enableAll: true
-    - fieldName: timestamp
-      operators:
-        enableAll: true
-  graphql:
-    typeName: Network_DataUsageBoolExp
-
----
 kind: Model
 version: v1
 definition:
@@ -161,4 +140,27 @@ definition:
     enable: true
   graphql:
     selectTypeName: DataUsageAggExp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: DataUsageBoolExp
+  operand:
+    object:
+      type: DataUsage
+      comparableFields:
+        - fieldName: dataUsage
+          booleanExpressionType: Float32BoolExp
+        - fieldName: guid
+          booleanExpressionType: StringBoolExp
+        - fieldName: timestamp
+          booleanExpressionType: DateTimeBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Network_DataUsageBoolExp
 

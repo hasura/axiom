@@ -65,36 +65,6 @@ definition:
           - status
 
 ---
-kind: ObjectBooleanExpressionType
-version: v1
-definition:
-  name: NetworkBoolExp
-  objectType: Network
-  dataConnectorName: aurora
-  dataConnectorObjectType: network
-  comparableFields:
-    - fieldName: capacity
-      operators:
-        enableAll: true
-    - fieldName: latitude
-      operators:
-        enableAll: true
-    - fieldName: longitude
-      operators:
-        enableAll: true
-    - fieldName: nodeId
-      operators:
-        enableAll: true
-    - fieldName: nodeName
-      operators:
-        enableAll: true
-    - fieldName: status
-      operators:
-        enableAll: true
-  graphql:
-    typeName: Customer_NetworkBoolExp
-
----
 kind: Model
 version: v1
 definition:
@@ -131,6 +101,10 @@ definition:
         uniqueIdentifier:
           - nodeId
     orderByExpressionType: Customer_NetworkOrderBy
+    filterInputTypeName: NetworkFilterInput
+    aggregate:
+      queryRootField: networkAggregate
+  aggregateExpression: NetworkAggExp
 
 ---
 kind: ModelPermissions
@@ -142,18 +116,18 @@ definition:
       select:
         filter: null
     - role: customer
-      select: 
-        filter: 
+      select:
+        filter:
           relationship:
             name: customerNetworks
-            predicate: 
+            predicate:
               relationship:
                 name: customer
-                predicate: 
+                predicate:
                   fieldComparison:
                     field: customerId
                     operator: _eq
-                    value: 
+                    value:
                       sessionVariable: x-hasura-user-id
 
 ---
@@ -173,4 +147,60 @@ definition:
       target:
         modelField:
           - fieldName: nodeId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: NetworkBoolExp
+  operand:
+    object:
+      type: Network
+      comparableFields:
+        - fieldName: capacity
+          booleanExpressionType: Int4BoolExp
+        - fieldName: latitude
+          booleanExpressionType: NumericBoolExp
+        - fieldName: longitude
+          booleanExpressionType: NumericBoolExp
+        - fieldName: nodeId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: nodeName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: status
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: customerNetworks
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Customer_NetworkBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: NetworkAggExp
+  operand:
+    object:
+      aggregatedType: Network
+      aggregatableFields:
+        - fieldName: capacity
+          aggregateExpression: Int4AggExp
+        - fieldName: latitude
+          aggregateExpression: NumericAggExp
+        - fieldName: longitude
+          aggregateExpression: NumericAggExp
+        - fieldName: nodeId
+          aggregateExpression: Int4AggExp
+        - fieldName: nodeName
+          aggregateExpression: VarcharAggExp
+        - fieldName: status
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: NetworkAggExp
 

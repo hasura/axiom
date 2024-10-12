@@ -215,36 +215,6 @@ definition:
           - socialMedia
 
 ---
-kind: ObjectBooleanExpressionType
-version: v1
-definition:
-  name: CustomerPreferencesBoolExp
-  objectType: CustomerPreferences
-  dataConnectorName: mongo
-  dataConnectorObjectType: customerPreferences
-  comparableFields:
-    - fieldName: id
-      operators:
-        enableAll: true
-    - fieldName: behavioralData
-      operators:
-        enableAll: true
-    - fieldName: customerGuid
-      operators:
-        enableAll: true
-    - fieldName: customerNotes
-      operators:
-        enableAll: true
-    - fieldName: preferences
-      operators:
-        enableAll: true
-    - fieldName: socialMedia
-      operators:
-        enableAll: true
-  graphql:
-    typeName: CustomerPreferencesBoolExp
-
----
 kind: Model
 version: v1
 definition:
@@ -334,4 +304,96 @@ definition:
     enable: true
   graphql:
     selectTypeName: CustomerPreferencesAggExp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: CustomerPreferencesBehavioralDataBoolExp
+  operand:
+    object:
+      type: CustomerPreferencesBehavioralData
+      comparableFields:
+        - fieldName: lastAppLogin
+          booleanExpressionType: StringBoolExp
+        - fieldName: lastWebsiteVisit
+          booleanExpressionType: StringBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: CustomerPreferencesBehavioralDataBoolExp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: CustomerPreferencesPreferencesBoolExp
+  operand:
+    object:
+      type: CustomerPreferencesPreferences
+      comparableFields:
+        - fieldName: contactMethod
+          booleanExpressionType: StringBoolExp
+        - fieldName: marketingOptIn
+          booleanExpressionType: BoolBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: CustomerPreferencesPreferencesBoolExp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: CustomerPreferencesSocialMediaBoolExp
+  operand:
+    object:
+      type: CustomerPreferencesSocialMedia
+      comparableFields:
+        - fieldName: facebook
+          booleanExpressionType: StringBoolExp
+        - fieldName: linkedin
+          booleanExpressionType: StringBoolExp
+        - fieldName: twitter
+          booleanExpressionType: StringBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: CustomerPreferencesSocialMediaBoolExp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: CustomerPreferencesBoolExp
+  operand:
+    object:
+      type: CustomerPreferences
+      comparableFields:
+        - fieldName: id
+          booleanExpressionType: ObjectIdBoolExp
+        - fieldName: behavioralData
+          booleanExpressionType: CustomerPreferencesBehavioralDataBoolExp
+        - fieldName: customerGuid
+          booleanExpressionType: StringBoolExp
+        - fieldName: preferences
+          booleanExpressionType: CustomerPreferencesPreferencesBoolExp
+        - fieldName: socialMedia
+          booleanExpressionType: CustomerPreferencesSocialMediaBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: CustomerPreferencesBoolExp
 

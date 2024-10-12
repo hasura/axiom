@@ -75,39 +75,6 @@ definition:
           - status
 
 ---
-kind: ObjectBooleanExpressionType
-version: v1
-definition:
-  name: CustomerPlansBoolExp
-  objectType: CustomerPlans
-  dataConnectorName: aurora
-  dataConnectorObjectType: customer_plans
-  comparableFields:
-    - fieldName: cellNumber
-      operators:
-        enableAll: true
-    - fieldName: customerId
-      operators:
-        enableAll: true
-    - fieldName: customerPlanId
-      operators:
-        enableAll: true
-    - fieldName: endDate
-      operators:
-        enableAll: true
-    - fieldName: planId
-      operators:
-        enableAll: true
-    - fieldName: startDate
-      operators:
-        enableAll: true
-    - fieldName: status
-      operators:
-        enableAll: true
-  graphql:
-    typeName: Customer_CustomerPlansBoolExp
-
----
 kind: Model
 version: v1
 definition:
@@ -147,6 +114,10 @@ definition:
         uniqueIdentifier:
           - customerPlanId
     orderByExpressionType: Customer_CustomerPlansOrderBy
+    filterInputTypeName: CustomerPlansFilterInput
+    aggregate:
+      queryRootField: customerPlansAggregate
+  aggregateExpression: CustomerPlansAggExp
 
 ---
 kind: ModelPermissions
@@ -158,15 +129,15 @@ definition:
       select:
         filter: null
     - role: customer
-      select: 
-        filter: 
+      select:
+        filter:
           relationship:
             name: customer
-            predicate: 
+            predicate:
               fieldComparison:
                 field: customerId
                 operator: _eq
-                value: 
+                value:
                   sessionVariable: 'x-hasura-user-id'
 
 ---
@@ -222,3 +193,66 @@ definition:
       target:
         modelField:
           - fieldName: planId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: CustomerPlansBoolExp
+  operand:
+    object:
+      type: CustomerPlans
+      comparableFields:
+        - fieldName: cellNumber
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: customerId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: customerPlanId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: endDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: planId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: startDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: status
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: plan
+        - relationshipName: customer
+        - relationshipName: customerPlanDevices
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Customer_CustomerPlansBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: CustomerPlansAggExp
+  operand:
+    object:
+      aggregatedType: CustomerPlans
+      aggregatableFields:
+        - fieldName: cellNumber
+          aggregateExpression: VarcharAggExp
+        - fieldName: customerId
+          aggregateExpression: Int4AggExp
+        - fieldName: customerPlanId
+          aggregateExpression: Int4AggExp
+        - fieldName: endDate
+          aggregateExpression: DateAggExp
+        - fieldName: planId
+          aggregateExpression: Int4AggExp
+        - fieldName: startDate
+          aggregateExpression: DateAggExp
+        - fieldName: status
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: CustomerPlansAggExp
+

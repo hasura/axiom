@@ -47,30 +47,6 @@ definition:
           - timestamp
 
 ---
-kind: ObjectBooleanExpressionType
-version: v1
-definition:
-  name: CdrBoolExp
-  objectType: Cdr
-  dataConnectorName: clickhouse
-  dataConnectorObjectType: cdr
-  comparableFields:
-    - fieldName: callDuration
-      operators:
-        enableAll: true
-    - fieldName: callType
-      operators:
-        enableAll: true
-    - fieldName: guid
-      operators:
-        enableAll: true
-    - fieldName: timestamp
-      operators:
-        enableAll: true
-  graphql:
-    typeName: Network_CdrBoolExp
-
----
 kind: Model
 version: v1
 definition:
@@ -175,4 +151,29 @@ definition:
     enable: true
   graphql:
     selectTypeName: CdrAggExp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: CdrBoolExp
+  operand:
+    object:
+      type: Cdr
+      comparableFields:
+        - fieldName: callDuration
+          booleanExpressionType: Int32BoolExp
+        - fieldName: callType
+          booleanExpressionType: StringBoolExp
+        - fieldName: guid
+          booleanExpressionType: StringBoolExp
+        - fieldName: timestamp
+          booleanExpressionType: DateTimeBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Network_CdrBoolExp
 

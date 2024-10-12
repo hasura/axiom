@@ -61,33 +61,6 @@ definition:
           - totalAmount
 
 ---
-kind: ObjectBooleanExpressionType
-version: v1
-definition:
-  name: BillingBoolExp
-  objectType: Billing
-  dataConnectorName: aurora
-  dataConnectorObjectType: billing
-  comparableFields:
-    - fieldName: billingDate
-      operators:
-        enableAll: true
-    - fieldName: billingId
-      operators:
-        enableAll: true
-    - fieldName: customerId
-      operators:
-        enableAll: true
-    - fieldName: paymentStatus
-      operators:
-        enableAll: true
-    - fieldName: totalAmount
-      operators:
-        enableAll: true
-  graphql:
-    typeName: Customer_BillingBoolExp
-
----
 kind: Model
 version: v1
 definition:
@@ -121,6 +94,10 @@ definition:
         uniqueIdentifier:
           - billingId
     orderByExpressionType: Customer_BillingOrderBy
+    filterInputTypeName: BillingFilterInput
+    aggregate:
+      queryRootField: billingAggregate
+  aggregateExpression: BillingAggExp
 
 ---
 kind: ModelPermissions
@@ -132,16 +109,17 @@ definition:
       select:
         filter: null
     - role: customer
-      select: 
-        filter: 
+      select:
+        filter:
           relationship:
             name: customer
-            predicate: 
+            predicate:
               fieldComparison:
                 field: customerId
-                operator: _eq
-                value: 
+                operator: '_eq'
+                value:
                   sessionVariable: 'x-hasura-user-id'
+
 
 ---
 kind: Relationship
@@ -160,4 +138,56 @@ definition:
       target:
         modelField:
           - fieldName: customerId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: BillingBoolExp
+  operand:
+    object:
+      type: Billing
+      comparableFields:
+        - fieldName: billingDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: billingId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: customerId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: paymentStatus
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: totalAmount
+          booleanExpressionType: NumericBoolExp
+      comparableRelationships:
+        - relationshipName: customer
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Customer_BillingBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: BillingAggExp
+  operand:
+    object:
+      aggregatedType: Billing
+      aggregatableFields:
+        - fieldName: billingDate
+          aggregateExpression: DateAggExp
+        - fieldName: billingId
+          aggregateExpression: Int4AggExp
+        - fieldName: customerId
+          aggregateExpression: Int4AggExp
+        - fieldName: paymentStatus
+          aggregateExpression: VarcharAggExp
+        - fieldName: totalAmount
+          aggregateExpression: NumericAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: BillingAggExp
 

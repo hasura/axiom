@@ -96,48 +96,6 @@ definition:
           - termsConditions
 
 ---
-kind: ObjectBooleanExpressionType
-version: v1
-definition:
-  name: DealsBoolExp
-  objectType: Deals
-  dataConnectorName: aurora
-  dataConnectorObjectType: deals
-  comparableFields:
-    - fieldName: additionalBenefits
-      operators:
-        enableAll: true
-    - fieldName: customerSegment
-      operators:
-        enableAll: true
-    - fieldName: dealId
-      operators:
-        enableAll: true
-    - fieldName: dealName
-      operators:
-        enableAll: true
-    - fieldName: description
-      operators:
-        enableAll: true
-    - fieldName: endDate
-      operators:
-        enableAll: true
-    - fieldName: maxMonthlySpend
-      operators:
-        enableAll: true
-    - fieldName: minMonthlySpend
-      operators:
-        enableAll: true
-    - fieldName: startDate
-      operators:
-        enableAll: true
-    - fieldName: termsConditions
-      operators:
-        enableAll: true
-  graphql:
-    typeName: Customer_DealsBoolExp
-
----
 kind: Model
 version: v1
 definition:
@@ -186,6 +144,10 @@ definition:
         uniqueIdentifier:
           - dealId
     orderByExpressionType: Customer_DealsOrderBy
+    filterInputTypeName: DealsFilterInput
+    aggregate:
+      queryRootField: dealsAggregate
+  aggregateExpression: DealsAggExp
 
 ---
 kind: ModelPermissions
@@ -197,9 +159,9 @@ definition:
       select:
         filter: null
     - role: customer
-      select: 
-        filter: 
-          and: 
+      select:
+        filter:
+          and:
             - fieldComparison:
                 field: startDate
                 operator: _lte
@@ -210,3 +172,75 @@ definition:
                 operator: _gte
                 value:
                   literal: now()
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: DealsBoolExp
+  operand:
+    object:
+      type: Deals
+      comparableFields:
+        - fieldName: additionalBenefits
+          booleanExpressionType: TextBoolExp
+        - fieldName: customerSegment
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: dealId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: dealName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: description
+          booleanExpressionType: TextBoolExp
+        - fieldName: endDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: maxMonthlySpend
+          booleanExpressionType: NumericBoolExp
+        - fieldName: minMonthlySpend
+          booleanExpressionType: NumericBoolExp
+        - fieldName: startDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: termsConditions
+          booleanExpressionType: TextBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Customer_DealsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: DealsAggExp
+  operand:
+    object:
+      aggregatedType: Deals
+      aggregatableFields:
+        - fieldName: additionalBenefits
+          aggregateExpression: TextAggExp
+        - fieldName: customerSegment
+          aggregateExpression: VarcharAggExp
+        - fieldName: dealId
+          aggregateExpression: Int4AggExp
+        - fieldName: dealName
+          aggregateExpression: VarcharAggExp
+        - fieldName: description
+          aggregateExpression: TextAggExp
+        - fieldName: endDate
+          aggregateExpression: DateAggExp
+        - fieldName: maxMonthlySpend
+          aggregateExpression: NumericAggExp
+        - fieldName: minMonthlySpend
+          aggregateExpression: NumericAggExp
+        - fieldName: startDate
+          aggregateExpression: DateAggExp
+        - fieldName: termsConditions
+          aggregateExpression: TextAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: DealsAggExp
+

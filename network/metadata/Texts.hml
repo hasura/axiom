@@ -53,39 +53,6 @@ definition:
           - timestamp
 
 ---
-kind: ObjectBooleanExpressionType
-version: v1
-definition:
-  name: TextsBoolExp
-  objectType: Texts
-  dataConnectorName: kafka_sink
-  dataConnectorObjectType: texts
-  comparableFields:
-    - fieldName: customerid
-      operators:
-        enableAll: true
-    - fieldName: deviceid
-      operators:
-        enableAll: true
-    - fieldName: messagetype
-      operators:
-        enableAll: true
-    - fieldName: nodeid
-      operators:
-        enableAll: true
-    - fieldName: receivernumber
-      operators:
-        enableAll: true
-    - fieldName: textid
-      operators:
-        enableAll: true
-    - fieldName: timestamp
-      operators:
-        enableAll: true
-  graphql:
-    typeName: Network_TextsBoolExp
-
----
 kind: Model
 version: v1
 definition:
@@ -125,6 +92,10 @@ definition:
         uniqueIdentifier:
           - textid
     orderByExpressionType: Network_TextsOrderBy
+    filterInputTypeName: TextsFilterInput
+    aggregate:
+      queryRootField: textsAggregate
+  aggregateExpression: TextsAggExp
 
 ---
 kind: ModelPermissions
@@ -153,3 +124,63 @@ definition:
       target:
         argument:
           argumentName: date
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: TextsBoolExp
+  operand:
+    object:
+      type: Texts
+      comparableFields:
+        - fieldName: customerid
+          booleanExpressionType: Int4BoolExp
+        - fieldName: deviceid
+          booleanExpressionType: Int4BoolExp
+        - fieldName: messagetype
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: nodeid
+          booleanExpressionType: Int4BoolExp
+        - fieldName: receivernumber
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: textid
+          booleanExpressionType: Int4BoolExp
+        - fieldName: timestamp
+          booleanExpressionType: TimestamptzBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Network_TextsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: TextsAggExp
+  operand:
+    object:
+      aggregatedType: Texts
+      aggregatableFields:
+        - fieldName: customerid
+          aggregateExpression: Int4AggExp
+        - fieldName: deviceid
+          aggregateExpression: Int4AggExp
+        - fieldName: messagetype
+          aggregateExpression: VarcharAggExp
+        - fieldName: nodeid
+          aggregateExpression: Int4AggExp
+        - fieldName: receivernumber
+          aggregateExpression: VarcharAggExp
+        - fieldName: textid
+          aggregateExpression: Int4AggExp
+        - fieldName: timestamp
+          aggregateExpression: TimestamptzAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: TextsAggExp
+
