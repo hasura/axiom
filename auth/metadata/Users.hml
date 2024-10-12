@@ -17,7 +17,7 @@ definition:
     - name: updatedAt
       type: Timestamptz!
   graphql:
-    typeName: Auth_Users
+    typeName: Users
     inputTypeName: Auth_UsersInput
   dataConnectorTypeMapping:
     - dataConnectorName: auth
@@ -126,9 +126,9 @@ definition:
         enableAll: true
   graphql:
     selectMany:
-      queryRootField: auth_users
+      queryRootField: users
     selectUniques:
-      - queryRootField: auth_usersById
+      - queryRootField: usersById
         uniqueIdentifier:
           - id
     orderByExpressionType: Auth_UsersOrderBy
@@ -151,3 +151,38 @@ definition:
             value:
               sessionVariable: 'x-hasura-user-id'
 
+---
+kind: Relationship
+version: v1
+definition:
+  name: formatCreatedAtTimestamp
+  sourceType: Users
+  target:
+    command:
+      name: ToDateString
+      subgraph: globals
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: createdAt
+      target:
+        argument:
+          argumentName: date
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: formatUpdatedAtTimestamp
+  sourceType: Users
+  target:
+    command:
+      name: ToDateString
+      subgraph: globals
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: updatedAt
+      target:
+        argument:
+          argumentName: date

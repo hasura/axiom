@@ -1,25 +1,3 @@
-
-/**
- * Formats a date string to a human-readable format.
- *
- * @param date The date string to format.
- * @returns The formatted date string.
- * @readonly This function should only query data without making modifications
- * @paralleldegree 5
- */
-export function toDateString(date?: string): string {
-  console.log("date", date);
-  if (!date) {
-    return "Invalid date";
-  }
-  try {
-    return new Date(date).toDateString();
-  } catch (error) {
-    console.error("Error formatting date:", error);
-    return "Invalid date";
-  }
-}
-
 /**
  * Masks a credit card number to hide all but the last four digits.
  *

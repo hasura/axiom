@@ -129,9 +129,9 @@ definition:
         enableAll: true
   graphql:
     selectMany:
-      queryRootField: network_calls
+      queryRootField: calls
     selectUniques:
-      - queryRootField: network_callsByCallid
+      - queryRootField: callsByCallid
         uniqueIdentifier:
           - callid
     orderByExpressionType: Network_CallsOrderBy
@@ -146,3 +146,20 @@ definition:
       select:
         filter: null
 
+---
+kind: Relationship
+version: v1
+definition:
+  name: formatTimestamp
+  sourceType: Calls
+  target:
+    command:
+      name: ToDateString
+      subgraph: globals
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: timestamp
+      target:
+        argument:
+          argumentName: date

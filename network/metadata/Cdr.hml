@@ -95,9 +95,9 @@ definition:
         enableAll: true
   graphql:
     selectMany:
-      queryRootField: network_cdr
+      queryRootField: cdr
     selectUniques:
-      - queryRootField: network_cdrByTimestampGuid
+      - queryRootField: cdrByTimestampGuid
         uniqueIdentifier:
           - guid
           - timestamp
@@ -132,3 +132,20 @@ definition:
         modelField:
           - fieldName: customerGuid
 
+---
+kind: Relationship
+version: v1
+definition:
+  name: formatTimestamp
+  sourceType: Cdr
+  target:
+    command:
+      name: ToDateString
+      subgraph: globals
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: timestamp
+      target:
+        argument:
+          argumentName: date

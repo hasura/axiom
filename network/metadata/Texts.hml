@@ -119,9 +119,9 @@ definition:
         enableAll: true
   graphql:
     selectMany:
-      queryRootField: network_texts
+      queryRootField: texts
     selectUniques:
-      - queryRootField: network_textsByTextid
+      - queryRootField: textsByTextid
         uniqueIdentifier:
           - textid
     orderByExpressionType: Network_TextsOrderBy
@@ -136,3 +136,20 @@ definition:
       select:
         filter: null
 
+---
+kind: Relationship
+version: v1
+definition:
+  name: formatTimestamp
+  sourceType: Texts
+  target:
+    command:
+      name: ToDateString
+      subgraph: globals
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: timestamp
+      target:
+        argument:
+          argumentName: date

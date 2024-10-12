@@ -1,0 +1,19 @@
+kind: Connector
+version: v2
+definition:
+  name: global_functions
+  subgraph: globals
+  source: hasura/nodejs:v1.8.0
+  context: .
+  envMapping:
+    HASURA_CONNECTOR_PORT:
+      fromEnv: GLOBALS_GLOBAL_FUNCTIONS_HASURA_CONNECTOR_PORT
+    HASURA_SERVICE_TOKEN_SECRET:
+      fromEnv: GLOBALS_GLOBAL_FUNCTIONS_HASURA_SERVICE_TOKEN_SECRET
+    OTEL_EXPORTER_OTLP_ENDPOINT:
+      fromEnv: GLOBALS_GLOBAL_FUNCTIONS_OTEL_EXPORTER_OTLP_ENDPOINT
+    OTEL_SERVICE_NAME:
+      fromEnv: GLOBALS_GLOBAL_FUNCTIONS_OTEL_SERVICE_NAME
+  regionConfiguration:
+    - region: gcp-us-west2
+      mode: ReadWrite

@@ -107,9 +107,9 @@ definition:
         enableAll: true
   graphql:
     selectMany:
-      queryRootField: network_networkPerformance
+      queryRootField: networkPerformance
     selectUniques:
-      - queryRootField: network_networkPerformanceByTimestampGuid
+      - queryRootField: networkPerformanceByTimestampGuid
         uniqueIdentifier:
           - guid
           - timestamp
@@ -143,3 +143,21 @@ definition:
       target:
         modelField:
           - fieldName: customerGuid
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: formatTimestamp
+  sourceType: NetworkPerformance
+  target:
+    command:
+      name: ToDateString
+      subgraph: globals
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: timestamp
+      target:
+        argument:
+          argumentName: date

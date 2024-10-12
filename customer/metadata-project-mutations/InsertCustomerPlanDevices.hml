@@ -1,0 +1,108 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: V2InsertCustomerPlanDevicesObject
+  fields:
+    - name: customerPlanId
+      type: Int4!
+    - name: deviceId
+      type: Int4!
+  graphql:
+    typeName: V2InsertCustomerPlanDevicesObject
+    inputTypeName: V2InsertCustomerPlanDevicesObjectInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: v2_insert_customer_plan_devices_object
+      fieldMapping:
+        customerPlanId:
+          column:
+            name: customer_plan_id
+        deviceId:
+          column:
+            name: device_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: V2InsertCustomerPlanDevicesObject
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - customerPlanId
+          - deviceId
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: V2InsertCustomerPlanDevicesResponse
+  description: Responses from the 'v2_insert_customer_plan_devices' procedure
+  fields:
+    - name: affectedRows
+      type: Int4!
+      description: The number of rows affected by the mutation
+    - name: returning
+      type: "[CustomerPlanDevices!]!"
+      description: Data from rows affected by the mutation
+  graphql:
+    typeName: V2InsertCustomerPlanDevicesResponse
+    inputTypeName: V2InsertCustomerPlanDevicesResponseInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: v2_insert_customer_plan_devices_response
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: V2InsertCustomerPlanDevicesResponse
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: InsertCustomerPlanDevices
+  outputType: V2InsertCustomerPlanDevicesResponse!
+  arguments:
+    - name: objects
+      type: "[V2InsertCustomerPlanDevicesObject!]!"
+    - name: postCheck
+      type: CustomerPlanDevicesBoolExp!
+      description: Insert permission predicate over the 'customer_plan_devices' collection
+  source:
+    dataConnectorName: aurora
+    dataConnectorCommand:
+      procedure: v2_insert_customer_plan_devices
+    argumentMapping:
+      objects: objects
+      postCheck: post_check
+  graphql:
+    rootFieldName: InsertCustomerPlanDevices
+    rootFieldKind: Mutation
+  description: Insert into the customer_plan_devices table
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: InsertCustomerPlanDevices
+  permissions:
+    - role: admin
+      allowExecution: true
+

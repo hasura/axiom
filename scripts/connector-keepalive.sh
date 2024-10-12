@@ -12,10 +12,10 @@ ENDPOINTS=(
 
 # Define the query
 QUERY='{
-  "query": "query getUsers { auth_users(limit: 1) { id } customer_customers(limit: 1) { customerId } customer_maskCardNumber(cardNumber: \"1234123412341234\") customerPreferences(limit: 1) { id } network_calls(limit: 1) { callid } network_cdr(limit: 1) { guid } support_convertDataUsageToMb(usageInGb: 1.5) support_documents(limit: 1) { uuid } support_userProfiles(limit: 1) { id } }"
+  "query": "query getUsers { usersById(id: 1) { email formatCreatedAtTimestamp } customers(limit: 1) { firstName lastName email segment customerLinks { customerPreferences { socialMedia { linkedin } } supportDB { supportHistory { date status } } } creditCards { maskCreditCard expiry cvv } billings { formatBillingDate paymentStatus totalAmount } } calls(limit: 1) { callid } cdr(limit: 1) { guid } documents(limit: 1) { uuid } }"
 }'
 TESTQUERY='{
-  "query": "query getUsers { customer_customers(limit: 1) { customerId } }"
+  "query": "query getUsers { customers(limit: 1) { customerId } }"
 }'
 
 # Function to get current time in milliseconds
