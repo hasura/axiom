@@ -1,3 +1,9 @@
+name: Axiom auto-test + auto-deploy
+
+permissions:
+  contents: read
+  pull-requests: write
+
 on:
   pull_request:
     branches:
@@ -6,10 +12,83 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up DDN CLI and Login
+        uses: hasura/ddn-deployment@main
+        with:
+          hasura-pat: ${{ secrets.HASURA_PAT }}
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+
+      - name: Create .env.cloud.default
+        run: |
+          echo "${{ secrets.ENV_CLOUD_DEFAULT }}" > .env.cloud.default
+
+      - name: Detect Connector Changes
+        id: detect_changes
+        run: |
+          # Check if any changes occurred in the connector directories
+          if git diff --name-only ${{ github.sha }}~1 ${{ github.sha }} | grep -q 'connector/'; then
+            echo "connector_changes=true" >> $GITHUB_ENV
+          else
+            echo "connector_changes=false" >> $GITHUB_ENV
+          fi
+
+      - name: Build supergraph
+        run: |
+          calculatedSha=$(git rev-parse --short ${{ github.sha }})
+          if [ "${{ env.connector_changes }}" = "true" ]; then
+            echo "Building connectors..."
+            ddn supergraph build create \
+              --supergraph ./supergraph-with-mutations.yaml \
+              --context default \
+              --description "${calculatedSha} [PR-${{ github.event.pull_request.number }}] Test build for commit $GITHUB_SHA" \
+              --out=json > build_output.json
+          else
+            echo "Skipping connector build."
+            ddn supergraph build create --no-build-connectors \
+              --supergraph ./supergraph-with-mutations.yaml \
+              --context default \
+              --description "${calculatedSha} [PR-${{ github.event.pull_request.number }}] Test build for commit $GITHUB_SHA" \
+              --out=json > build_output.json
+          fi
+
+      - name: Extract URLs from JSON
+        id: extract_urls
+        run: |
+          BUILD_URL=$(jq -r '.build_url' build_output.json)
+          CONSOLE_URL=$(jq -r '.console_url' build_output.json)
+          echo "build_url=$BUILD_URL" >> $GITHUB_ENV
+          echo "console_url=$CONSOLE_URL" >> $GITHUB_ENV
+
+      - name: Add PR comment with build details
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const buildUrl = process.env.build_url;
+            const consoleUrl = process.env.console_url;
+            const prNumber = context.payload.pull_request.number;
+            const commitId = context.sha;
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `Supergraph build was successful! 🎉\n\n**Build URL:** [${buildUrl}](${buildUrl})\n**Console URL:** [${consoleUrl}](${consoleUrl})\n**Commit ID:** ${commitId}`
+            })
+
+  test:
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up DDN CLI and Login
         uses: hasura/ddn-deployment@main
@@ -45,6 +124,15 @@ jobs:
             --env-file .env.local \
             --env-file .env \
             up --build --pull always -d
+
+      - name: Wait for GraphQL Service to Be Ready
+        run: |
+          echo "Waiting for GraphQL service to start..."
+          until curl -s http://localhost:3000/graphql -o /dev/null; do
+            echo "Service not ready, retrying in 5 seconds..."
+            sleep 5
+          done
+          echo "Service is up!"
 
       - name: Query DDN Endpoint and Validate Response
         run: |
