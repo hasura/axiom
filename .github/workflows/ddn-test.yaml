@@ -83,6 +83,37 @@ jobs:
               body: `Supergraph build was successful! 🎉\n\n**Build URL:** [${buildUrl}](${buildUrl})\n**Console URL:** [${consoleUrl}](${consoleUrl})\n**Commit ID:** ${commitId}`
             })
 
+      - name: Encrypt and update ENV_CLOUD_DEFAULT
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const sodium = require('tweetsodium');
+
+            const secretValue = fs.readFileSync('.env.cloud.default', 'utf8').trim();
+
+            const { data: publicKeyData } = await github.rest.actions.getRepoPublicKey({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            });
+
+            const publicKey = publicKeyData.key;
+            const keyId = publicKeyData.key_id;
+
+            const messageBytes = Buffer.from(secretValue);
+            const keyBytes = Buffer.from(publicKey, 'base64');
+            const encryptedBytes = sodium.seal(messageBytes, keyBytes);
+            const encryptedValue = Buffer.from(encryptedBytes).toString('base64');
+
+            await github.rest.actions.createOrUpdateRepoSecret({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              secret_name: 'ENV_CLOUD_DEFAULT',
+              encrypted_value: encryptedValue,
+              key_id: keyId
+            });
+
   test:
     runs-on: ubuntu-latest
 
