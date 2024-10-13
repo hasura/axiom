@@ -25,7 +25,8 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y jq
+          sudo apt-get install -y jq npm
+          npm install libsodium-wrappers
 
       - name: Create .env.cloud.default
         run: |
@@ -83,38 +84,66 @@ jobs:
               body: `Supergraph build was successful! 🎉\n\n**Build URL:** [${buildUrl}](${buildUrl})\n**Console URL:** [${consoleUrl}](${consoleUrl})\n**Commit ID:** ${commitId}`
             })
 
-      - name: Encrypt and update ENV_CLOUD_DEFAULT
+      - name: Get Public Key Using GitHub Script
+        id: get-public-key
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const fs = require('fs');
-            const sodium = require('libsodium-wrappers')
-
-            const secretValue = fs.readFileSync('.env.cloud.default', 'utf8').trim();
             const { data: publicKeyData } = await github.rest.actions.getRepoPublicKey({
               owner: context.repo.owner,
               repo: context.repo.repo,
             });
 
-            const keyId = publicKeyData.key_id;
-            const secret = fs.readFileSync('.env.cloud.default', 'utf8').trim();
-            const key = publicKeyData.key;
+            return {
+              key: publicKeyData.key,
+              key_id: publicKeyData.key_id,
+            };
 
-            sodium.ready.then(() => {
-              let binkey = sodium.from_base64(key, sodium.base64_variants.ORIGINAL)
-              let binsec = sodium.from_string(secretValue)
-              let encBytes = sodium.crypto_box_seal(binsec, binkey)
-              let output = sodium.to_base64(encBytes, sodium.base64_variants.ORIGINAL)
-            });
+      - name: Encrypt the Secret Using Node.js
+        id: encrypt-secret
+        run: |
+          node -e "
+            const sodium = require('libsodium-wrappers');
+            const fs = require('fs');
 
+            (async () => {
+              await sodium.ready;
+
+              const publicKey = process.env.PUBLIC_KEY;
+              const secretValue = fs.readFileSync('.env.cloud.default', 'utf8').trim();
+
+              const binkey = sodium.from_base64(publicKey, sodium.base64_variants.ORIGINAL);
+              const binsec = sodium.from_string(secretValue);
+              const encBytes = sodium.crypto_box_seal(binsec, binkey);
+              const encryptedValue = sodium.to_base64(encBytes, sodium.base64_variants.ORIGINAL);
+
+              console.log(encryptedValue);
+            })();
+          " | tee /tmp/encrypted.txt
+
+          # Export encrypted value to an environment variable
+          echo "ENCRYPTED_VALUE=$(cat /tmp/encrypted.txt)" >> $GITHUB_ENV
+
+        env:
+          PUBLIC_KEY: ${{ steps.get-public-key.outputs.key }}
+            
+
+      - name: Update Secret Using GitHub Script
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
             await github.rest.actions.createOrUpdateRepoSecret({
               owner: context.repo.owner,
               repo: context.repo.repo,
               secret_name: 'ENV_CLOUD_DEFAULT',
-              encrypted_value: encryptedValue,
-              key_id: keyId
+              encrypted_value: process.env.ENCRYPTED_VALUE,
+              key_id: process.env.KEY_ID
             });
+
+        env:
+          KEY_ID: ${{ steps.get-public-key.outputs.key_id }}
 
   test:
     runs-on: ubuntu-latest
@@ -158,14 +187,14 @@ jobs:
             --env-file .env \
             up --build --pull always -d
 
-      - name: Wait for GraphQL Service to Be Ready
+      - name: Wait for Hasura DDN to be ready
         run: |
-          echo "Waiting for GraphQL service to start..."
+          echo "Waiting for Hasura DDN to start..."
           until curl -s http://localhost:3000/graphql -o /dev/null; do
             echo "Service not ready, retrying in 5 seconds..."
             sleep 5
           done
-          echo "Service is up!"
+          echo "Hasura DDN is up!"
 
       - name: Query DDN Endpoint and Validate Response
         run: |
