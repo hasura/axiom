@@ -89,22 +89,24 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const fs = require('fs');
-            const sodium = require('tweetsodium');
+            const sodium = require('libsodium-wrappers')
 
             const secretValue = fs.readFileSync('.env.cloud.default', 'utf8').trim();
-
             const { data: publicKeyData } = await github.rest.actions.getRepoPublicKey({
               owner: context.repo.owner,
               repo: context.repo.repo,
             });
 
-            const publicKey = publicKeyData.key;
             const keyId = publicKeyData.key_id;
+            const secret = fs.readFileSync('.env.cloud.default', 'utf8').trim();
+            const key = publicKeyData.key;
 
-            const messageBytes = Buffer.from(secretValue);
-            const keyBytes = Buffer.from(publicKey, 'base64');
-            const encryptedBytes = sodium.seal(messageBytes, keyBytes);
-            const encryptedValue = Buffer.from(encryptedBytes).toString('base64');
+            sodium.ready.then(() => {
+              let binkey = sodium.from_base64(key, sodium.base64_variants.ORIGINAL)
+              let binsec = sodium.from_string(secretValue)
+              let encBytes = sodium.crypto_box_seal(binsec, binkey)
+              let output = sodium.to_base64(encBytes, sodium.base64_variants.ORIGINAL)
+            });
 
             await github.rest.actions.createOrUpdateRepoSecret({
               owner: context.repo.owner,
