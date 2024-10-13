@@ -63,15 +63,15 @@ jobs:
         run: |
           BUILD_URL=$(jq -r '.build_url' build_output.json)
           CONSOLE_URL=$(jq -r '.console_url' build_output.json)
-          echo "::set-output name=build_url::$BUILD_URL"
-          echo "::set-output name=console_url::$CONSOLE_URL"
+          echo "build_url=$BUILD_URL" >> $GITHUB_ENV
+          echo "console_url=$CONSOLE_URL" >> $GITHUB_ENV
 
       - name: Add PR comment with build details
         uses: actions/github-script@v7
         with:
           script: |
-            const buildUrl = '${{ steps.extract_urls.outputs.build_url }}';
-            const consoleUrl = '${{ steps.extract_urls.outputs.console_url }}';
+            const buildUrl = process.env.build_url;
+            const consoleUrl = process.env.console_url;
             const prNumber = context.payload.pull_request.number;
             const commitId = context.sha;
             github.rest.issues.createComment({
