@@ -29,14 +29,34 @@ jobs:
         run: |
           echo "${{ secrets.ENV_CLOUD_DEFAULT }}" > .env.cloud.default
 
+      - name: Detect Connector Changes
+        id: detect_changes
+        run: |
+          # Check if any changes occurred in the connector directories
+          if git diff --name-only ${{ github.sha }}~1 ${{ github.sha }} | grep -q 'connector/'; then
+            echo "connector_changes=true" >> $GITHUB_ENV
+          else
+            echo "connector_changes=false" >> $GITHUB_ENV
+          fi
+
       - name: Build supergraph
         run: |
           calculatedSha=$(git rev-parse --short ${{ github.sha }})
-          ddn supergraph build create --no-build-connectors \
-            --supergraph ./supergraph-with-mutations.yaml \
-            --context default \
-            --description "${calculatedSha} [PR-${{ github.event.pull_request.number }}] Test build for commit $GITHUB_SHA" \
-            --out=json > build_output.json
+          if [ "${{ env.connector_changes }}" = "true" ]; then
+            echo "Building connectors..."
+            ddn supergraph build create \
+              --supergraph ./supergraph-with-mutations.yaml \
+              --context default \
+              --description "${calculatedSha} [PR-${{ github.event.pull_request.number }}] Test build for commit $GITHUB_SHA" \
+              --out=json > build_output.json
+          else
+            echo "Skipping connector build."
+            ddn supergraph build create --no-build-connectors \
+              --supergraph ./supergraph-with-mutations.yaml \
+              --context default \
+              --description "${calculatedSha} [PR-${{ github.event.pull_request.number }}] Test build for commit $GITHUB_SHA" \
+              --out=json > build_output.json
+          fi
 
       - name: Extract URLs from JSON
         id: extract_urls
