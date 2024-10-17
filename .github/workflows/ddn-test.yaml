@@ -49,14 +49,14 @@ jobs:
             ddn supergraph build create \
               --supergraph ./supergraph-with-mutations.yaml \
               --context default \
-              --description "${calculatedSha} [PR-${{ github.event.pull_request.number }}] Test build for commit $GITHUB_SHA" \
+              --description "${calculatedSha} [PR-${{ github.event.pull_request.number }}] Comments: ${{ github.event.pull_request.comments }} Test build for commit $GITHUB_SHA" \
               --out=json > build_output.json
           else
             echo "Skipping connector build."
             ddn supergraph build create --no-build-connectors \
               --supergraph ./supergraph-with-mutations.yaml \
               --context default \
-              --description "${calculatedSha} [PR-${{ github.event.pull_request.number }}] Test build for commit $GITHUB_SHA" \
+              --description "${calculatedSha} [PR-${{ github.event.pull_request.number }}] Comments: ${{ github.event.pull_request.comments }} Test build for commit $GITHUB_SHA" \
               --out=json > build_output.json
           fi
 
