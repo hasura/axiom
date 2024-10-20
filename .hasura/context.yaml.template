@@ -62,11 +62,11 @@ definition:
       bash: docker compose -f compose.yaml down -v ; docker compose -f .data/compose.yaml down -v
       powershell: docker compose -f compose.yaml down -v; docker compose -f .data/compose.yaml down -v
     demo-telco:
-      bash: DATASET=telco docker compose -f .data/compose.yaml --env-file .data/.env up --build --pull always -d
-      powershell: $Env:DATASET = "telco"; docker compose -f .data/compose.yaml --env-file .data/.env up --build --pull always -d
+      bash: export DATASET=telco; .data/initdb-prepare.sh; docker compose -f .data/compose.yaml --env-file .data/.env up --build --pull always -d
+      powershell: $Env:DATASET = "telco"; .data/initdb-prepare.sh; docker compose -f .data/compose.yaml --env-file .data/.env up --build --pull always -d
     demo-healthcare:
-      bash: echo "not yet implemented"
-      powershell: Write-Output "not yet implemented"
+      bash: export DATASET=hc; echo "not yet implemented"
+      powershell: $Env:DATASET = "hc"; Write-Output "not yet implemented"
     demo-banking:
-      bash: echo "not yet implemented"
-      powershell: Write-Output "not yet implemented"
+      bash: export DATASET=fis; echo "not yet implemented"
+      powershell: $Env:DATASET = "fis"; Write-Output "not yet implemented"
