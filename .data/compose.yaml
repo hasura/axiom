@@ -7,7 +7,7 @@ services:
     restart: unless-stopped
     volumes:
       - postgres-data:/var/lib/postgresql/data
-      - ./${DATASET}/postgres/scripts/:/docker-entrypoint-initdb.d/
+      - ./build/postgres/:/docker-entrypoint-initdb.d/
     environment:
       PGUSER: postgres
       POSTGRES_USER: postgres
@@ -28,7 +28,7 @@ services:
       - "5433:5432"
     volumes:
       - pgvector-data:/var/lib/postgresql/data
-      - ./${DATASET}/pgvector/scripts/:/docker-entrypoint-initdb.d/
+      - ./global/pgvector/:/docker-entrypoint-initdb.d/
     environment:
       PGUSER: postgres
       POSTGRES_USER: postgres
@@ -48,7 +48,7 @@ services:
     command: mongod --auth
     volumes:
       - mongodb-data:/data/db
-      - ./${DATASET}/mongodb/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js
+      - ./build/mongodb/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js
     environment:
       - MONGO_INITDB_DATABASE=holotel
       - MONGO_INITDB_ROOT_USERNAME=root
