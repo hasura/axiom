@@ -383,8 +383,6 @@ async function main() {
         await rebuildSupergraph(contextRegion);
     }
 
-    const deploymentPromises = [];
-
     await runCommandWithTag(
         contextRegion,
         JWT_FILE,
