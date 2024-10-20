@@ -43,33 +43,39 @@ definition:
     docker-start:
       bash: echo "Please use a region specific command [docker-start-us-west|docker-start-us-east|docker-start-au|docker-start-eu|docker-start-sg|docker-start-local]"
       powershell: Write-Output "Please use a region specific command [docker-start-us-west|docker-start-us-east|docker-start-au|docker-start-eu|docker-start-sg|docker-start-local]"
-    build-local-s1:
+
+    ### Build Scripts (Local)
+    build-local-step1:
       bash: ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph-project-queries.yaml
       powershell: ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph-project-queries.yaml
-    build-local-s2:
+    build-local-step2:
       bash: ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph-domain.yaml
       powershell: ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph-domain.yaml
-    build-local-s3:
+    build-local-step3:
       bash: ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph.yaml
       powershell: ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph.yaml
-    build-local-s4:
+    build-local-step4:
       bash: ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph-with-mutations.yaml
       powershell: ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph-with-mutations.yaml
-    build-local-au-dbs:
+
+    ### Build Scripts (Region Specific)
+    build-au:
       bash: ddn supergraph build local --env-file .env.cloud.au --env-file .env --supergraph supergraph.yaml
       powershell: ddn supergraph build local --env-file .env.cloud.au --env-file .env --supergraph supergraph.yaml
-    build-local-eu-dbs:
+    build-eu:
       bash: ddn supergraph build local --env-file .env.cloud.eu --env-file .env --supergraph supergraph.yaml
       powershell: ddn supergraph build local --env-file .env.cloud.eu --env-file .env --supergraph supergraph.yaml
-    build-local-sg-dbs:
+    build-sg:
       bash: ddn supergraph build local --env-file .env.cloud.sg --env-file .env --supergraph supergraph.yaml
       powershell: ddn supergraph build local --env-file .env.cloud.sg --env-file .env --supergraph supergraph.yaml
-    build-local-us-east-dbs:
+    build-us-east:
       bash: ddn supergraph build local --env-file .env.cloud.us-east --env-file .env --supergraph supergraph.yaml
       powershell: ddn supergraph build local --env-file .env.cloud.us-east --env-file .env --supergraph supergraph.yaml
-    build-local-us-west-dbs:
+    build-us-west:
       bash: ddn supergraph build local --env-file .env.cloud.us-west --env-file .env --supergraph supergraph.yaml
       powershell: ddn supergraph build local --env-file .env.cloud.us-west --env-file .env --supergraph supergraph.yaml
+
+    ### Docker Start Scripts (Using Region Specific DBs)
     docker-start-local:
       bash: ddn run demo-telco ; HASURA_DDN_PAT=$(ddn auth print-pat) docker compose -f compose.yaml --env-file .env.local --env-file .env up --build --pull always -d
       powershell: $Env:HASURA_DDN_PAT = ddn auth print-pat; docker compose -f compose.yaml --env-file .env.local --env-file .env up --build --pull always -d
@@ -88,9 +94,13 @@ definition:
     docker-start-us-west:
       bash: HASURA_DDN_PAT=$(ddn auth print-pat) docker compose -f compose.yaml --env-file .env.cloud.us-west --env-file .env up --build --pull always -d
       powershell: $Env:HASURA_DDN_PAT = ddn auth print-pat; docker compose -f compose.yaml --env-file .env.cloud.us-west --env-file .env up --build --pull always -d
+
+    ### Docker Stop
     docker-stop:
       bash: docker compose -f compose.yaml down -v ; docker compose -f .data/compose.yaml down -v
       powershell: docker compose -f compose.yaml down -v; docker compose -f .data/compose.yaml down -v
+
+    ### Demo Scripts
     demo-telco:
       bash: DATASET=telco docker compose -f .data/compose.yaml --env-file .data/.env up --build --pull always -d
       powershell: $Env:DATASET = "telco"; docker compose -f .data/compose.yaml --env-file .data/.env up --build --pull always -d

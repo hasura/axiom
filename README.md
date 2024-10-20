@@ -16,7 +16,7 @@ Next, create a build using these environment files:
 
 ```
 # Create a basic supergraph
-ddn run build-local-s1
+ddn run build-local-step1
 ```
 
 Finally, set up the demo databases and start your supergraph:
@@ -26,17 +26,58 @@ Finally, set up the demo databases and start your supergraph:
 ddn run docker-start-local
 ```
 
+## Demo datasets
+There is currently one dataset that's packaged with Axiom and a near term plan to include two more
+
+| **Demo** | **Data Location** | **Subgraph(s)** |**Owner**|
+|-|-|-|-|
+| TMT (telco) | `.data/telco` | Customer, Network |[@typhonius](https://github.com/typhonius) |
+| FIS (banking) | `.data/fis` | TBC |[@hasura-ericnelson](https://github.com/hasura-ericnelson) |
+| HC (health insurance) | `.data/hc` | TBC | [@dlavigne-hasura](https://github.com/dlavigne-hasura) |
+
+### Subgraphs
+
+Subgraphs are how we divide one repo into different demonstrations as each subgraph may easily be added/removed from individual supergraph builds.
+
+All demonstrations share:
+- global
+- auth
+- support
+
+Each of these subgraphs is generic and provides common patterns for joining across data domain to show cross-domain relationships.
+
+Different subgraphs for each demo that maintains information specific to the demos:
+- TMT: customer contains deals, handsets, plans and network provides calls, texts
+- FIS: a subgraph here could contain balances, transactions, credit cards
+- HC: a subgraph here could contain patient data, another could container provider data
+
+### Supergraphs
+
+Each demo uses multiple `supergraph.yaml` files to define the state of the supergraph at a point in time, and to easily build different versions to demonstrate how usage of Hasura will expand within an organisation to encompass more digital properties.
+
+Each supergraph file comprises a collection of subgraph definitions which allows us to predefine specific supergraph states.
+
+Future demos will use the same approach with differing combinations of subgraphs. A simple set of supergraph files e.g. 3 per industry demo) will be created and labeled with industry and type e.g.:
+- `fis-supergraph-project.yaml`: financial services project based supergraph
+- `hc-supergraph-domain.yaml`: healthcare domain spanning supergraph
+- `tmt-supergraph-enterprise.yaml` telco full enterprise supergraph
+
+### Data
+The databases and data which power the demos are stored in the `.data` directory and includes everything required to spin up a copy of the TMT/telco demo.
+
+FIS & HC will have their own directories. Each demo has a docker file and references databases and configuration from both the industry directory as well as shared globals.
+
 ## Command Documentation
 Each of the `ddn run` commands in `.hasura/context.yaml` corresponds to both a different way to build your supergraph and which source databases to use
 
 | **Command**              | **Database Location** | **Description**                                                                                                   |
 |--------------------------|-----------------|-------------------------------------------------------------------------------------------------------------------|
-| `docker-start`           | Any             | Overrides standard message with customer `axiom` instructions|
+| `docker-start`           | Any             | Overrides standard message with custom `axiom` instructions|
 | `docker-stop`            | Any             | Stops and removes all Docker containers and volumes related to the current setup|
-| `build-local-s1`         | Local           | Builds a basic supergraph with one data domain and one data source|
-| `build-local-s2`         | Local           | Builds a supergraph with one data domain, multiple data sources and global functions|
-| `build-local-s3`         | Local           | Builds a full/complex supergraph with multiple data domains and data sources|
-| `build-local-s4`         | Local           | Builds a complex supergraph and adds mutations|
+| `build-local-step1`         | Local           | Builds a basic supergraph with one data domain and one data source|
+| `build-local-step2`         | Local           | Builds a supergraph with one data domain, multiple data sources and global functions|
+| `build-local-step3`         | Local           | Builds a full/complex supergraph with multiple data domains and data sources|
+| `build-local-step4`         | Local           | Builds a complex supergraph and adds mutations|
 | `docker-start-local`     | Local           | Initiates the telco demo datasources locally and starts the local Hasura DDN containers|
 | `demo-telco`             | Telco           | Starts the containers for the telco demo data sources locally|
 | `demo-healthcare`        | Healthcare      | Not yet implemented|
@@ -48,11 +89,11 @@ Each of the `ddn run` commands in `.hasura/context.yaml` corresponds to both a d
 ### Hasura Commands
 | **Command**              | **Database Location** | **Description**                                                                                                   |
 |--------------------------|-----------------|-------------------------------------------------------------------------------------------------------------------|
-| `build-local-au-dbs`        | AU              | Hasura only: Builds the supergraph locally using the Australian database sources|
-| `build-local-eu-dbs`        | EU              | Hasura only: Builds the supergraph locally using the European database sources|
-| `build-local-sg-dbs`        | SG              | Hasura only: Builds the supergraph locally using the Singapore database sources|
-| `build-local-us-east-dbs`   | US-East         | Hasura only: Builds the supergraph locally using the US-East database sources|
-| `build-local-us-west-dbs`   | US-West         | Hasura only: Builds the supergraph locally using the US-West database sources|
+| `build-au`        | AU              | Hasura only: Builds the supergraph locally using the Australian database sources|
+| `build-eu`        | EU              | Hasura only: Builds the supergraph locally using the European database sources|
+| `build-sg`        | SG              | Hasura only: Builds the supergraph locally using the Singapore database sources|
+| `build-us-east`   | US-East         | Hasura only: Builds the supergraph locally using the US-East database sources|
+| `build-us-west`   | US-West         | Hasura only: Builds the supergraph locally using the US-West database sources|
 | `docker-start-au`        | AU              | Hasura only: Starts DDN locally with Australian database sources|
 | `docker-start-eu`        | EU              | Hasura only: Starts DDN locally with European database sources|
 | `docker-start-sg`        | SG              | Hasura only: Starts DDN locally with Singapore database sources|
