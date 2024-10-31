@@ -1,6 +1,6 @@
-CREATE DATABASE emergent_auth;
+CREATE DATABASE auth;
 
-\c emergent_auth;
+\c auth;
 
 CREATE TABLE users
   (
