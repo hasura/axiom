@@ -17,22 +17,33 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Check for [no-op] in commit message
+        run: |
+          if [[ "${{ github.event.pull_request.title }}" =~ ^\[no-op\] ]]; then
+            echo "no_op=true" >> $GITHUB_ENV
+          else
+            echo "no_op=false" >> $GITHUB_ENV
+          fi
+
       - name: Set up DDN CLI and Login
+        if: env.no_op != 'true'
         uses: hasura/ddn-deployment@main
         with:
           hasura-pat: ${{ secrets.HASURA_PAT }}
 
       - name: Install dependencies
+        if: env.no_op != 'true'
         run: |
           sudo apt-get update
           sudo apt-get install -y jq
 
       - name: Create .env.cloud.default
+        if: env.no_op != 'true'
         run: |
           echo "${{ secrets.ENV_CLOUD_DEFAULT }}" > .env.cloud.default
 
       - name: Detect Connector Changes
-        id: detect_changes
+        if: env.no_op != 'true'
         run: |
           # Check if any changes occurred in the connector directories
           if git diff --name-only ${{ github.sha }}~1 ${{ github.sha }} | grep -q 'connector/'; then
@@ -42,6 +53,7 @@ jobs:
           fi
 
       - name: Build supergraph
+        if: env.no_op != 'true'
         run: |
           calculatedSha=$(git rev-parse --short ${{ github.sha }})
           if [ "${{ env.connector_changes }}" = "true" ]; then
@@ -61,7 +73,7 @@ jobs:
           fi
 
       - name: Extract URLs from JSON
-        id: extract_urls
+        if: env.no_op != 'true'
         run: |
           BUILD_URL=$(jq -r '.build_url' build_output.json)
           CONSOLE_URL=$(jq -r '.console_url' build_output.json)
@@ -69,6 +81,7 @@ jobs:
           echo "console_url=$CONSOLE_URL" >> $GITHUB_ENV
 
       - name: Add PR comment with build details
+        if: env.no_op != 'true'
         uses: actions/github-script@v7
         with:
           script: |
@@ -83,6 +96,19 @@ jobs:
               body: `Supergraph build was successful! 🎉\n\n**Build URL:** [${buildUrl}](${buildUrl})\n**Console URL:** [${consoleUrl}](${consoleUrl})\n**Commit ID:** ${commitId}`
             })
 
+      - name: Add PR comment with no-op
+        if: env.no_op != 'false'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const commitId = context.sha;
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `**[no-op] build detected:** No build attempted\n**Commit ID:** ${commitId}`
+            })
+
   test:
     runs-on: ubuntu-latest
 
@@ -90,23 +116,35 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Check for [no-op] in commit message
+        run: |
+          if [[ "${{ github.event.pull_request.title }}" =~ ^\[no-op\] ]]; then
+            echo "no_op=true" >> $GITHUB_ENV
+          else
+            echo "no_op=false" >> $GITHUB_ENV
+          fi
+
       - name: Set up DDN CLI and Login
+        if: env.no_op != 'true'
         uses: hasura/ddn-deployment@main
         with:
           hasura-pat: ${{ secrets.HASURA_PAT }}
 
       - name: Install Dependencies (jq)
+        if: env.no_op != 'true'
         run: |
           sudo apt-get update
           sudo apt-get install -y jq
 
       - name: Prep Repository
+        if: env.no_op != 'true'
         run: |
           cp .hasura/context.yaml.template .hasura/context.yaml
           cp .env.template .env
           cp .env.local.template .env.local
 
       - name: Build All Supergraphs
+        if: env.no_op != 'true'
         run: |
           ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph-project-queries.yaml
           ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph-domain.yaml
@@ -114,9 +152,11 @@ jobs:
           ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph-with-mutations.yaml
 
       - name: Set up demo databases
+        if: env.no_op != 'true'
         run: DATASET=telco docker compose -f .data/compose.yaml --env-file .data/.env up --build --pull always -d
 
       - name: Run DDN
+        if: env.no_op != 'true'
         env:
           HASURA_DDN_PAT: ${{ secrets.HASURA_PAT }}
         run: |
@@ -126,6 +166,7 @@ jobs:
             up --build --pull always -d
 
       - name: Wait for GraphQL Service to Be Ready
+        if: env.no_op != 'true'
         run: |
           echo "Waiting for GraphQL service to start..."
           until curl -s http://localhost:3000/graphql -o /dev/null; do
@@ -135,6 +176,7 @@ jobs:
           echo "Service is up!"
 
       - name: Query DDN Endpoint and Validate Response
+        if: env.no_op != 'true'
         run: |
           QUERY='{
             "query": "query getUsers { usersById(id: 1) { email formatCreatedAtTimestamp } customers(limit: 1) { firstName lastName email segment customerLinks { customerPreferences { socialMedia { linkedin } } supportDB { supportHistory { date status } } } creditCards { maskCreditCard expiry cvv } billings { formatBillingDate paymentStatus totalAmount } } calls(limit: 1) { callid } cdr(limit: 1) { guid } documents(limit: 1) { uuid } }"
