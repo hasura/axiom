@@ -159,6 +159,9 @@ definition:
   graphql:
     selectMany:
       queryRootField: customers
+      subscription:
+        rootField: customers_sub
+        description: Subscribe to customers model
     selectUniques:
       - queryRootField: customersByPhoneNumber
         uniqueIdentifier:
@@ -170,6 +173,8 @@ definition:
     filterInputTypeName: CustomersFilterInput
     aggregate:
       queryRootField: customersAggregate
+    subscription:
+        rootField: customersAggregate
   aggregateExpression: CustomersAggExp
 
 ---
@@ -181,6 +186,7 @@ definition:
     - role: admin
       select:
         filter: null
+        allowSubscriptions: true
     - role: customer
       select:
         filter:
