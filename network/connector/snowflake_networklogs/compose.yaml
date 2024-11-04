@@ -1,0 +1,15 @@
+services:
+  network_snowflake_networklogs:
+    build:
+      context: .
+      dockerfile: .hasura-connector/Dockerfile.snowflake_networklogs
+    environment:
+      HASURA_SERVICE_TOKEN_SECRET: $NETWORK_SNOWFLAKE_NETWORKLOGS_HASURA_SERVICE_TOKEN_SECRET
+      JDBC_SCHEMAS: $NETWORK_SNOWFLAKE_NETWORKLOGS_JDBC_SCHEMAS
+      JDBC_URL: $NETWORK_SNOWFLAKE_NETWORKLOGS_JDBC_URL
+      OTEL_EXPORTER_OTLP_ENDPOINT: $NETWORK_SNOWFLAKE_NETWORKLOGS_OTEL_EXPORTER_OTLP_ENDPOINT
+      OTEL_SERVICE_NAME: $NETWORK_SNOWFLAKE_NETWORKLOGS_OTEL_SERVICE_NAME
+    extra_hosts:
+      - local.hasura.dev:host-gateway
+    ports:
+      - 7786:8080

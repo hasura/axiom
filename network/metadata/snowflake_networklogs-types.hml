@@ -1,0 +1,412 @@
+---
+kind: ScalarType
+version: v1
+definition:
+  name: Int_1
+  graphql:
+    typeName: Int1
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: IntBoolExp1
+  operand:
+    scalar:
+      type: Int_1
+      comparisonOperators:
+        - name: _eq
+          argumentType: Int_1!
+        - name: _gt
+          argumentType: Int_1!
+        - name: _gte
+          argumentType: Int_1!
+        - name: _in
+          argumentType: "[Int_1!]!"
+        - name: _lt
+          argumentType: Int_1!
+        - name: _lte
+          argumentType: Int_1!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: snowflake_networklogs
+          dataConnectorScalarType: INT
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: IntBoolExp2
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: snowflake_networklogs
+  dataConnectorScalarType: INT
+  representation: Int_1
+  graphql:
+    comparisonExpressionTypeName: Int1ComparisonExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: Float_1
+  graphql:
+    typeName: Float1
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: FloatBoolExp
+  operand:
+    scalar:
+      type: Float_1
+      comparisonOperators:
+        - name: _eq
+          argumentType: Float_1!
+        - name: _gt
+          argumentType: Float_1!
+        - name: _gte
+          argumentType: Float_1!
+        - name: _in
+          argumentType: "[Float_1!]!"
+        - name: _lt
+          argumentType: Float_1!
+        - name: _lte
+          argumentType: Float_1!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: snowflake_networklogs
+          dataConnectorScalarType: FLOAT
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: FloatBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: snowflake_networklogs
+  dataConnectorScalarType: FLOAT
+  representation: Float_1
+  graphql:
+    comparisonExpressionTypeName: Float1ComparisonExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: Datetime
+  graphql:
+    typeName: Datetime
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: DatetimeBoolExp
+  operand:
+    scalar:
+      type: Datetime
+      comparisonOperators:
+        - name: _eq
+          argumentType: Datetime!
+        - name: _gt
+          argumentType: Datetime!
+        - name: _gte
+          argumentType: Datetime!
+        - name: _lt
+          argumentType: Datetime!
+        - name: _lte
+          argumentType: Datetime!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: snowflake_networklogs
+          dataConnectorScalarType: DATETIME
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: DatetimeBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: snowflake_networklogs
+  dataConnectorScalarType: DATETIME
+  representation: Datetime
+  graphql:
+    comparisonExpressionTypeName: DatetimeComparisonExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: String_1
+  graphql:
+    typeName: String1
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: StringBoolExp_1
+  operand:
+    scalar:
+      type: String_1
+      comparisonOperators:
+        - name: _contains
+          argumentType: String_1!
+        - name: _eq
+          argumentType: String_1!
+        - name: _like
+          argumentType: String_1!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: snowflake_networklogs
+          dataConnectorScalarType: STRING
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: StringBoolExp1
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: snowflake_networklogs
+  dataConnectorScalarType: STRING
+  representation: String_1
+  graphql:
+    comparisonExpressionTypeName: String1ComparisonExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: IntAggExp
+  operand:
+    scalar:
+      aggregatedType: Int_1
+      aggregationFunctions:
+        - name: avg
+          returnType: Float_1!
+        - name: count
+          returnType: Int_1!
+        - name: max
+          returnType: Int_1!
+        - name: min
+          returnType: Int_1!
+        - name: stddev_pop
+          returnType: Float_1!
+        - name: stddev_samp
+          returnType: Float_1!
+        - name: sum
+          returnType: Int_1!
+        - name: var_pop
+          returnType: Float_1!
+        - name: var_samp
+          returnType: Float_1!
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: snowflake_networklogs
+          dataConnectorScalarType: INT
+          functionMapping:
+            avg:
+              name: avg
+            count:
+              name: count
+            max:
+              name: max
+            min:
+              name: min
+            stddev_pop:
+              name: stddev_pop
+            stddev_samp:
+              name: stddev_samp
+            sum:
+              name: sum
+            var_pop:
+              name: var_pop
+            var_samp:
+              name: var_samp
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: IntAggExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: FloatAggExp
+  operand:
+    scalar:
+      aggregatedType: Float_1
+      aggregationFunctions:
+        - name: avg
+          returnType: Float_1!
+        - name: count
+          returnType: Int_1!
+        - name: max
+          returnType: Float_1!
+        - name: min
+          returnType: Float_1!
+        - name: stddev_pop
+          returnType: Float_1!
+        - name: stddev_samp
+          returnType: Float_1!
+        - name: sum
+          returnType: Float_1!
+        - name: var_pop
+          returnType: Float_1!
+        - name: var_samp
+          returnType: Float_1!
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: snowflake_networklogs
+          dataConnectorScalarType: FLOAT
+          functionMapping:
+            avg:
+              name: avg
+            count:
+              name: count
+            max:
+              name: max
+            min:
+              name: min
+            stddev_pop:
+              name: stddev_pop
+            stddev_samp:
+              name: stddev_samp
+            sum:
+              name: sum
+            var_pop:
+              name: var_pop
+            var_samp:
+              name: var_samp
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: FloatAggExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: DatetimeAggExp
+  operand:
+    scalar:
+      aggregatedType: Datetime
+      aggregationFunctions: []
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: snowflake_networklogs
+          dataConnectorScalarType: DATETIME
+          functionMapping: {}
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: DatetimeAggExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: StringAggExp_1
+  operand:
+    scalar:
+      aggregatedType: String_1
+      aggregationFunctions:
+        - name: max
+          returnType: String_1!
+        - name: min
+          returnType: String_1!
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: snowflake_networklogs
+          dataConnectorScalarType: STRING
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: StringAggExp1
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: Boolean_1
+  graphql:
+    typeName: Boolean1
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: BooleanBoolExp
+  operand:
+    scalar:
+      type: Boolean_1
+      comparisonOperators:
+        - name: _eq
+          argumentType: Boolean_1!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: snowflake_networklogs
+          dataConnectorScalarType: BOOLEAN
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: BooleanBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: snowflake_networklogs
+  dataConnectorScalarType: BOOLEAN
+  representation: Boolean_1
+  graphql:
+    comparisonExpressionTypeName: Boolean1ComparisonExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: BooleanAggExp
+  operand:
+    scalar:
+      aggregatedType: Boolean_1
+      aggregationFunctions: []
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: snowflake_networklogs
+          dataConnectorScalarType: BOOLEAN
+          functionMapping: {}
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: BooleanAggExp
+

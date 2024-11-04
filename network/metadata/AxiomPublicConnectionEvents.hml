@@ -1,0 +1,284 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: AxiomPublicConnectionEvents
+  fields:
+    - name: cellSector
+      type: String_1
+    - name: connectionStatus
+      type: String_1
+    - name: createdAt
+      type: Datetime
+    - name: customerId
+      type: String_1!
+    - name: deviceType
+      type: String_1
+    - name: eventId
+      type: Int_1!
+    - name: eventTime
+      type: Datetime
+    - name: eventType
+      type: String_1
+    - name: failureReason
+      type: String_1
+    - name: latencyMs
+      type: Float_1
+    - name: towerLogId
+      type: Int_1!
+    - name: updatedAt
+      type: Datetime
+  graphql:
+    typeName: AxiomPublicConnectionEvents
+    inputTypeName: AxiomPublicConnectionEventsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: snowflake_networklogs
+      dataConnectorObjectType: AXIOM.PUBLIC.CONNECTION_EVENTS
+      fieldMapping:
+        cellSector:
+          column:
+            name: CELL_SECTOR
+        connectionStatus:
+          column:
+            name: CONNECTION_STATUS
+        createdAt:
+          column:
+            name: CREATED_AT
+        customerId:
+          column:
+            name: CUSTOMER_ID
+        deviceType:
+          column:
+            name: DEVICE_TYPE
+        eventId:
+          column:
+            name: EVENT_ID
+        eventTime:
+          column:
+            name: EVENT_TIME
+        eventType:
+          column:
+            name: EVENT_TYPE
+        failureReason:
+          column:
+            name: FAILURE_REASON
+        latencyMs:
+          column:
+            name: LATENCY_MS
+        towerLogId:
+          column:
+            name: TOWER_LOG_ID
+        updatedAt:
+          column:
+            name: UPDATED_AT
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: AxiomPublicConnectionEvents
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - cellSector
+          - connectionStatus
+          - createdAt
+          - customerId
+          - deviceType
+          - eventId
+          - eventTime
+          - eventType
+          - failureReason
+          - latencyMs
+          - towerLogId
+          - updatedAt
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: AxiomPublicConnectionEventsBoolExp
+  operand:
+    object:
+      type: AxiomPublicConnectionEvents
+      comparableFields:
+        - fieldName: cellSector
+          booleanExpressionType: StringBoolExp_1
+        - fieldName: connectionStatus
+          booleanExpressionType: StringBoolExp_1
+        - fieldName: createdAt
+          booleanExpressionType: DatetimeBoolExp
+        - fieldName: customerId
+          booleanExpressionType: StringBoolExp_1
+        - fieldName: deviceType
+          booleanExpressionType: StringBoolExp_1
+        - fieldName: eventId
+          booleanExpressionType: IntBoolExp1
+        - fieldName: eventTime
+          booleanExpressionType: DatetimeBoolExp
+        - fieldName: eventType
+          booleanExpressionType: StringBoolExp_1
+        - fieldName: failureReason
+          booleanExpressionType: StringBoolExp_1
+        - fieldName: latencyMs
+          booleanExpressionType: FloatBoolExp
+        - fieldName: towerLogId
+          booleanExpressionType: IntBoolExp1
+        - fieldName: updatedAt
+          booleanExpressionType: DatetimeBoolExp
+      comparableRelationships:
+        - relationshipName: axiomPublicNetworkTowerLog
+        - relationshipName: axiomPublicSignalQualityMetrics
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: AxiomPublicConnectionEventsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: AxiomPublicConnectionEventsAggExp
+  operand:
+    object:
+      aggregatedType: AxiomPublicConnectionEvents
+      aggregatableFields:
+        - fieldName: cellSector
+          aggregateExpression: StringAggExp_1
+        - fieldName: connectionStatus
+          aggregateExpression: StringAggExp_1
+        - fieldName: createdAt
+          aggregateExpression: DatetimeAggExp
+        - fieldName: customerId
+          aggregateExpression: StringAggExp_1
+        - fieldName: deviceType
+          aggregateExpression: StringAggExp_1
+        - fieldName: eventId
+          aggregateExpression: IntAggExp
+        - fieldName: eventTime
+          aggregateExpression: DatetimeAggExp
+        - fieldName: eventType
+          aggregateExpression: StringAggExp_1
+        - fieldName: failureReason
+          aggregateExpression: StringAggExp_1
+        - fieldName: latencyMs
+          aggregateExpression: FloatAggExp
+        - fieldName: towerLogId
+          aggregateExpression: IntAggExp
+        - fieldName: updatedAt
+          aggregateExpression: DatetimeAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: AxiomPublicConnectionEventsAggExp
+
+---
+kind: Model
+version: v1
+definition:
+  name: AxiomPublicConnectionEvents
+  objectType: AxiomPublicConnectionEvents
+  source:
+    dataConnectorName: snowflake_networklogs
+    collection: AXIOM.PUBLIC.CONNECTION_EVENTS
+  filterExpressionType: AxiomPublicConnectionEventsBoolExp
+  aggregateExpression: AxiomPublicConnectionEventsAggExp
+  orderableFields:
+    - fieldName: cellSector
+      orderByDirections:
+        enableAll: true
+    - fieldName: connectionStatus
+      orderByDirections:
+        enableAll: true
+    - fieldName: createdAt
+      orderByDirections:
+        enableAll: true
+    - fieldName: customerId
+      orderByDirections:
+        enableAll: true
+    - fieldName: deviceType
+      orderByDirections:
+        enableAll: true
+    - fieldName: eventId
+      orderByDirections:
+        enableAll: true
+    - fieldName: eventTime
+      orderByDirections:
+        enableAll: true
+    - fieldName: eventType
+      orderByDirections:
+        enableAll: true
+    - fieldName: failureReason
+      orderByDirections:
+        enableAll: true
+    - fieldName: latencyMs
+      orderByDirections:
+        enableAll: true
+    - fieldName: towerLogId
+      orderByDirections:
+        enableAll: true
+    - fieldName: updatedAt
+      orderByDirections:
+        enableAll: true
+  graphql:
+    selectMany:
+      queryRootField: axiomPublicConnectionEvents
+    selectUniques: []
+    orderByExpressionType: AxiomPublicConnectionEventsOrderBy
+    filterInputTypeName: AxiomPublicConnectionEventsFilterInput
+    aggregate:
+      queryRootField: axiomPublicConnectionEventsAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: AxiomPublicConnectionEvents
+  permissions:
+    - role: admin
+      select:
+        filter: null
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: axiomPublicNetworkTowerLog
+  sourceType: AxiomPublicConnectionEvents
+  target:
+    model:
+      name: AxiomPublicNetworkTowerLogs
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: towerLogId
+      target:
+        modelField:
+          - fieldName: towerLogId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: axiomPublicSignalQualityMetrics
+  sourceType: AxiomPublicConnectionEvents
+  target:
+    model:
+      name: AxiomPublicSignalQualityMetrics
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: AxiomPublicSignalQualityMetricsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: eventId
+      target:
+        modelField:
+          - fieldName: eventId
+  graphql:
+    aggregateFieldName: axiomPublicSignalQualityMetricsAggregate
+

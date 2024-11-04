@@ -1,0 +1,177 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: AxiomPublicVRecentTowerPerformance
+  fields:
+    - name: activeConnections
+      type: Int_1
+    - name: avgPacketLoss
+      type: Float_1
+    - name: avgSignalStrength
+      type: Float_1
+    - name: bandwidthUtilization
+      type: Float_1
+    - name: connectionEvents
+      type: Int_1
+    - name: errorCount
+      type: Int_1
+    - name: towerId
+      type: String_1!
+  graphql:
+    typeName: AxiomPublicVRecentTowerPerformance
+    inputTypeName: AxiomPublicVRecentTowerPerformanceInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: snowflake_networklogs
+      dataConnectorObjectType: AXIOM.PUBLIC.V_RECENT_TOWER_PERFORMANCE
+      fieldMapping:
+        activeConnections:
+          column:
+            name: ACTIVE_CONNECTIONS
+        avgPacketLoss:
+          column:
+            name: AVG_PACKET_LOSS
+        avgSignalStrength:
+          column:
+            name: AVG_SIGNAL_STRENGTH
+        bandwidthUtilization:
+          column:
+            name: BANDWIDTH_UTILIZATION
+        connectionEvents:
+          column:
+            name: CONNECTION_EVENTS
+        errorCount:
+          column:
+            name: ERROR_COUNT
+        towerId:
+          column:
+            name: TOWER_ID
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: AxiomPublicVRecentTowerPerformance
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - activeConnections
+          - avgPacketLoss
+          - avgSignalStrength
+          - bandwidthUtilization
+          - connectionEvents
+          - errorCount
+          - towerId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: AxiomPublicVRecentTowerPerformanceBoolExp
+  operand:
+    object:
+      type: AxiomPublicVRecentTowerPerformance
+      comparableFields:
+        - fieldName: activeConnections
+          booleanExpressionType: IntBoolExp1
+        - fieldName: avgPacketLoss
+          booleanExpressionType: FloatBoolExp
+        - fieldName: avgSignalStrength
+          booleanExpressionType: FloatBoolExp
+        - fieldName: bandwidthUtilization
+          booleanExpressionType: FloatBoolExp
+        - fieldName: connectionEvents
+          booleanExpressionType: IntBoolExp1
+        - fieldName: errorCount
+          booleanExpressionType: IntBoolExp1
+        - fieldName: towerId
+          booleanExpressionType: StringBoolExp_1
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: AxiomPublicVRecentTowerPerformanceBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: AxiomPublicVRecentTowerPerformanceAggExp
+  operand:
+    object:
+      aggregatedType: AxiomPublicVRecentTowerPerformance
+      aggregatableFields:
+        - fieldName: activeConnections
+          aggregateExpression: IntAggExp
+        - fieldName: avgPacketLoss
+          aggregateExpression: FloatAggExp
+        - fieldName: avgSignalStrength
+          aggregateExpression: FloatAggExp
+        - fieldName: bandwidthUtilization
+          aggregateExpression: FloatAggExp
+        - fieldName: connectionEvents
+          aggregateExpression: IntAggExp
+        - fieldName: errorCount
+          aggregateExpression: IntAggExp
+        - fieldName: towerId
+          aggregateExpression: StringAggExp_1
+  count:
+    enable: true
+  graphql:
+    selectTypeName: AxiomPublicVRecentTowerPerformanceAggExp
+
+---
+kind: Model
+version: v1
+definition:
+  name: AxiomPublicVRecentTowerPerformance
+  objectType: AxiomPublicVRecentTowerPerformance
+  source:
+    dataConnectorName: snowflake_networklogs
+    collection: AXIOM.PUBLIC.V_RECENT_TOWER_PERFORMANCE
+  filterExpressionType: AxiomPublicVRecentTowerPerformanceBoolExp
+  aggregateExpression: AxiomPublicVRecentTowerPerformanceAggExp
+  orderableFields:
+    - fieldName: activeConnections
+      orderByDirections:
+        enableAll: true
+    - fieldName: avgPacketLoss
+      orderByDirections:
+        enableAll: true
+    - fieldName: avgSignalStrength
+      orderByDirections:
+        enableAll: true
+    - fieldName: bandwidthUtilization
+      orderByDirections:
+        enableAll: true
+    - fieldName: connectionEvents
+      orderByDirections:
+        enableAll: true
+    - fieldName: errorCount
+      orderByDirections:
+        enableAll: true
+    - fieldName: towerId
+      orderByDirections:
+        enableAll: true
+  graphql:
+    selectMany:
+      queryRootField: axiomPublicVRecentTowerPerformance
+    selectUniques: []
+    orderByExpressionType: AxiomPublicVRecentTowerPerformanceOrderBy
+    filterInputTypeName: AxiomPublicVRecentTowerPerformanceFilterInput
+    aggregate:
+      queryRootField: axiomPublicVRecentTowerPerformanceAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: AxiomPublicVRecentTowerPerformance
+  permissions:
+    - role: admin
+      select:
+        filter: null
+

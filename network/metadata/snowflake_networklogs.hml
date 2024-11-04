@@ -1,0 +1,590 @@
+kind: DataConnectorLink
+version: v1
+definition:
+  name: snowflake_networklogs
+  url:
+    readWriteUrls:
+      read:
+        valueFromEnv: NETWORK_SNOWFLAKE_NETWORKLOGS_READ_URL
+      write:
+        valueFromEnv: NETWORK_SNOWFLAKE_NETWORKLOGS_WRITE_URL
+  headers:
+    Authorization:
+      valueFromEnv: NETWORK_SNOWFLAKE_NETWORKLOGS_AUTHORIZATION_HEADER
+  schema:
+    version: v0.1
+    schema:
+      scalar_types:
+        BOOLEAN:
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+        DATE:
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                type: named
+                name: DATE
+            _gte:
+              type: custom
+              argument_type:
+                type: named
+                name: DATE
+            _lt:
+              type: custom
+              argument_type:
+                type: named
+                name: DATE
+            _lte:
+              type: custom
+              argument_type:
+                type: named
+                name: DATE
+        DATETIME:
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                type: named
+                name: DATETIME
+            _gte:
+              type: custom
+              argument_type:
+                type: named
+                name: DATETIME
+            _lt:
+              type: custom
+              argument_type:
+                type: named
+                name: DATETIME
+            _lte:
+              type: custom
+              argument_type:
+                type: named
+                name: DATETIME
+        FLOAT:
+          aggregate_functions:
+            avg:
+              result_type:
+                type: named
+                name: FLOAT
+            count:
+              result_type:
+                type: named
+                name: INT
+            max:
+              result_type:
+                type: named
+                name: FLOAT
+            min:
+              result_type:
+                type: named
+                name: FLOAT
+            stddev_pop:
+              result_type:
+                type: named
+                name: FLOAT
+            stddev_samp:
+              result_type:
+                type: named
+                name: FLOAT
+            sum:
+              result_type:
+                type: named
+                name: FLOAT
+            var_pop:
+              result_type:
+                type: named
+                name: FLOAT
+            var_samp:
+              result_type:
+                type: named
+                name: FLOAT
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                type: named
+                name: FLOAT
+            _gte:
+              type: custom
+              argument_type:
+                type: named
+                name: FLOAT
+            _in:
+              type: in
+            _lt:
+              type: custom
+              argument_type:
+                type: named
+                name: FLOAT
+            _lte:
+              type: custom
+              argument_type:
+                type: named
+                name: FLOAT
+        INT:
+          aggregate_functions:
+            avg:
+              result_type:
+                type: named
+                name: FLOAT
+            count:
+              result_type:
+                type: named
+                name: INT
+            max:
+              result_type:
+                type: named
+                name: INT
+            min:
+              result_type:
+                type: named
+                name: INT
+            stddev_pop:
+              result_type:
+                type: named
+                name: FLOAT
+            stddev_samp:
+              result_type:
+                type: named
+                name: FLOAT
+            sum:
+              result_type:
+                type: named
+                name: INT
+            var_pop:
+              result_type:
+                type: named
+                name: FLOAT
+            var_samp:
+              result_type:
+                type: named
+                name: FLOAT
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                type: named
+                name: INT
+            _gte:
+              type: custom
+              argument_type:
+                type: named
+                name: INT
+            _in:
+              type: in
+            _lt:
+              type: custom
+              argument_type:
+                type: named
+                name: INT
+            _lte:
+              type: custom
+              argument_type:
+                type: named
+                name: INT
+        STRING:
+          aggregate_functions:
+            max:
+              result_type:
+                type: named
+                name: STRING
+            min:
+              result_type:
+                type: named
+                name: STRING
+          comparison_operators:
+            _contains:
+              type: custom
+              argument_type:
+                type: named
+                name: STRING
+            _eq:
+              type: equal
+            _like:
+              type: custom
+              argument_type:
+                type: named
+                name: STRING
+        TIME:
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                type: named
+                name: TIME
+            _gte:
+              type: custom
+              argument_type:
+                type: named
+                name: TIME
+            _lt:
+              type: custom
+              argument_type:
+                type: named
+                name: TIME
+            _lte:
+              type: custom
+              argument_type:
+                type: named
+                name: TIME
+      object_types:
+        AXIOM.PUBLIC.CONNECTION_EVENTS:
+          fields:
+            CELL_SECTOR:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            CONNECTION_STATUS:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            CREATED_AT:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: DATETIME
+              arguments: {}
+            CUSTOMER_ID:
+              type:
+                type: named
+                name: STRING
+              arguments: {}
+            DEVICE_TYPE:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            EVENT_ID:
+              type:
+                type: named
+                name: INT
+              arguments: {}
+            EVENT_TIME:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: DATETIME
+              arguments: {}
+            EVENT_TYPE:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            FAILURE_REASON:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            LATENCY_MS:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: FLOAT
+              arguments: {}
+            TOWER_LOG_ID:
+              type:
+                type: named
+                name: INT
+              arguments: {}
+            UPDATED_AT:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: DATETIME
+              arguments: {}
+        AXIOM.PUBLIC.NETWORK_TOWER_LOGS:
+          fields:
+            ACTIVE_CONNECTIONS:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: INT
+              arguments: {}
+            BANDWIDTH_UTILIZATION:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: FLOAT
+              arguments: {}
+            CREATED_AT:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: DATETIME
+              arguments: {}
+            ERROR_COUNT:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: INT
+              arguments: {}
+            LOG_TIMESTAMP:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: DATETIME
+              arguments: {}
+            MAINTENANCE_STATUS:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            NETWORK_PROTOCOL:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            POWER_LEVEL:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: FLOAT
+              arguments: {}
+            TEMPERATURE:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: FLOAT
+              arguments: {}
+            TOWER_ID:
+              type:
+                type: named
+                name: STRING
+              arguments: {}
+            TOWER_LOG_ID:
+              type:
+                type: named
+                name: INT
+              arguments: {}
+            UPDATED_AT:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: DATETIME
+              arguments: {}
+        AXIOM.PUBLIC.SIGNAL_QUALITY_METRICS:
+          fields:
+            CREATED_AT:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: DATETIME
+              arguments: {}
+            EVENT_ID:
+              type:
+                type: named
+                name: INT
+              arguments: {}
+            FREQUENCY_BAND:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            JITTER_MS:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: FLOAT
+              arguments: {}
+            MEASUREMENT_TIME:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: DATETIME
+              arguments: {}
+            MEETS_SLA:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: BOOLEAN
+              arguments: {}
+            METRIC_ID:
+              type:
+                type: named
+                name: INT
+              arguments: {}
+            NOISE_RATIO:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: FLOAT
+              arguments: {}
+            PACKET_LOSS_RATE:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: FLOAT
+              arguments: {}
+            SIGNAL_STRENGTH_DBM:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: FLOAT
+              arguments: {}
+            THROUGHPUT_MBPS:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: FLOAT
+              arguments: {}
+            UPDATED_AT:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: DATETIME
+              arguments: {}
+        AXIOM.PUBLIC.V_RECENT_TOWER_PERFORMANCE:
+          fields:
+            ACTIVE_CONNECTIONS:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: INT
+              arguments: {}
+            AVG_PACKET_LOSS:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: FLOAT
+              arguments: {}
+            AVG_SIGNAL_STRENGTH:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: FLOAT
+              arguments: {}
+            BANDWIDTH_UTILIZATION:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: FLOAT
+              arguments: {}
+            CONNECTION_EVENTS:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: INT
+              arguments: {}
+            ERROR_COUNT:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: INT
+              arguments: {}
+            TOWER_ID:
+              type:
+                type: named
+                name: STRING
+              arguments: {}
+      collections:
+        - name: AXIOM.PUBLIC.NETWORK_TOWER_LOGS
+          arguments: {}
+          type: AXIOM.PUBLIC.NETWORK_TOWER_LOGS
+          uniqueness_constraints:
+            AXIOM.PUBLIC.NETWORK_TOWER_LOGS_PK:
+              unique_columns: []
+          foreign_keys: {}
+        - name: AXIOM.PUBLIC.V_RECENT_TOWER_PERFORMANCE
+          arguments: {}
+          type: AXIOM.PUBLIC.V_RECENT_TOWER_PERFORMANCE
+          uniqueness_constraints:
+            AXIOM.PUBLIC.V_RECENT_TOWER_PERFORMANCE_PK:
+              unique_columns: []
+          foreign_keys: {}
+        - name: AXIOM.PUBLIC.CONNECTION_EVENTS
+          arguments: {}
+          type: AXIOM.PUBLIC.CONNECTION_EVENTS
+          uniqueness_constraints:
+            AXIOM.PUBLIC.CONNECTION_EVENTS_PK:
+              unique_columns: []
+          foreign_keys:
+            FK_TOWER_LOG:
+              column_mapping:
+                TOWER_LOG_ID: TOWER_LOG_ID
+              foreign_collection: AXIOM.PUBLIC.NETWORK_TOWER_LOGS
+        - name: AXIOM.PUBLIC.SIGNAL_QUALITY_METRICS
+          arguments: {}
+          type: AXIOM.PUBLIC.SIGNAL_QUALITY_METRICS
+          uniqueness_constraints:
+            AXIOM.PUBLIC.SIGNAL_QUALITY_METRICS_PK:
+              unique_columns: []
+          foreign_keys:
+            FK_EVENT:
+              column_mapping:
+                EVENT_ID: EVENT_ID
+              foreign_collection: AXIOM.PUBLIC.CONNECTION_EVENTS
+      functions: []
+      procedures: []
+    capabilities:
+      version: 0.1.2
+      capabilities:
+        query:
+          aggregates: {}
+          variables: {}
+          explain: {}
+        mutation: {}
+        relationships:
+          relation_comparisons: {}
+          order_by_aggregate: {}
