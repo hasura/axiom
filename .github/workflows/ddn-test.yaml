@@ -5,6 +5,8 @@ permissions:
   pull-requests: write
 
 on:
+  pull_request_target:
+    types: [opened, synchronize]
   pull_request:
     branches:
       - main
@@ -14,8 +16,25 @@ jobs:
     runs-on: ubuntu-latest
     needs: test
     steps:
+      - name: Get User Permission
+        id: checkAccess
+        uses: actions-cool/check-user-permission@v2
+        with:
+          require: write
+          username: ${{ github.triggering_actor }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Check User Permission
+        if: steps.checkAccess.outputs.require-result == 'false'
+        run: |
+          echo "${{ github.triggering_actor }} does not have permissions on this repo."
+          echo "Current permission level is ${{ steps.checkAccess.outputs.user-permission }}"
+          echo "Job originally triggered by ${{ github.actor }}"
+          exit 1
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{  github.event.pull_request.head.sha }} # This requires the permissions check above
 
       - name: Check for [no-op] in commit message
         run: |
