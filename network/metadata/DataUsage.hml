@@ -85,43 +85,6 @@ definition:
         filter: null
 
 ---
-kind: Relationship
-version: v1
-definition:
-  name: customer
-  sourceType: DataUsage
-  target:
-    model:
-      subgraph: customer
-      name: CustomerLink
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: guid
-      target:
-        modelField:
-          - fieldName: customerGuid
-
----
-kind: Relationship
-version: v1
-definition:
-  name: formatTimestamp
-  sourceType: DataUsage
-  target:
-    command:
-      name: ToDateString
-      subgraph: globals
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: timestamp
-      target:
-        argument:
-          argumentName: date
-
----
 kind: AggregateExpression
 version: v1
 definition:

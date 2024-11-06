@@ -56,35 +56,9 @@ definition:
 kind: ScalarType
 version: v1
 definition:
-  name: Timestamp
-  graphql:
-    typeName: Network_Timestamp
-
----
-kind: ScalarType
-version: v1
-definition:
   name: Text
   graphql:
     typeName: Network_Text
-
----
-kind: ScalarType
-version: v1
-definition:
-  name: Json
-  graphql:
-    typeName: Network_Json
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: kafka_sink
-  dataConnectorScalarType: timestamp
-  representation: Timestamp
-  graphql:
-    comparisonExpressionTypeName: Network_TimestampComparisonExp
 
 ---
 kind: DataConnectorScalarRepresentation
@@ -95,52 +69,6 @@ definition:
   representation: Text
   graphql:
     comparisonExpressionTypeName: Network_TextComparisonExp
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: kafka_sink
-  dataConnectorScalarType: json
-  representation: Json
-  graphql:
-    comparisonExpressionTypeName: Network_JsonComparisonExp
-
----
-kind: ScalarType
-version: v1
-definition:
-  name: Bool
-  graphql:
-    typeName: Network_Bool
-
----
-kind: ScalarType
-version: v1
-definition:
-  name: Jsonb
-  graphql:
-    typeName: Network_Jsonb
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: kafka_sink
-  dataConnectorScalarType: bool
-  representation: Bool
-  graphql:
-    comparisonExpressionTypeName: Network_BoolComparisonExp
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: kafka_sink
-  dataConnectorScalarType: jsonb
-  representation: Jsonb
-  graphql:
-    comparisonExpressionTypeName: Network_JsonbComparisonExp
 
 ---
 kind: BooleanExpressionType
@@ -283,40 +211,6 @@ definition:
     comparisonExpressionTypeName: NumericComparisonExp_2
 
 ---
-kind: BooleanExpressionType
-version: v1
-definition:
-  name: NumericBoolExp
-  operand:
-    scalar:
-      type: Numeric
-      comparisonOperators:
-        - name: _eq
-          argumentType: Numeric!
-        - name: _gt
-          argumentType: Numeric!
-        - name: _gte
-          argumentType: Numeric!
-        - name: _in
-          argumentType: "[Numeric!]!"
-        - name: _lt
-          argumentType: Numeric!
-        - name: _lte
-          argumentType: Numeric!
-        - name: _neq
-          argumentType: Numeric!
-      dataConnectorOperatorMapping:
-        - dataConnectorName: kafka_sink
-          dataConnectorScalarType: numeric
-          operatorMapping: {}
-  logicalOperators:
-    enable: true
-  isNull:
-    enable: true
-  graphql:
-    typeName: NumericBoolExp_3
-
----
 kind: ScalarType
 version: v1
 definition:
@@ -333,40 +227,6 @@ definition:
   representation: Int8
   graphql:
     comparisonExpressionTypeName: Int8ComparisonExp_3
-
----
-kind: BooleanExpressionType
-version: v1
-definition:
-  name: Int8BoolExp
-  operand:
-    scalar:
-      type: Int8
-      comparisonOperators:
-        - name: _eq
-          argumentType: Int8!
-        - name: _gt
-          argumentType: Int8!
-        - name: _gte
-          argumentType: Int8!
-        - name: _in
-          argumentType: "[Int8!]!"
-        - name: _lt
-          argumentType: Int8!
-        - name: _lte
-          argumentType: Int8!
-        - name: _neq
-          argumentType: Int8!
-      dataConnectorOperatorMapping:
-        - dataConnectorName: kafka_sink
-          dataConnectorScalarType: int8
-          operatorMapping: {}
-  logicalOperators:
-    enable: true
-  isNull:
-    enable: true
-  graphql:
-    typeName: Int8BoolExp_3
 
 ---
 kind: AggregateExpression
@@ -439,60 +299,6 @@ definition:
     enable: true
   graphql:
     selectTypeName: Int4AggExp_3
-
----
-kind: BooleanExpressionType
-version: v1
-definition:
-  name: TextBoolExp
-  operand:
-    scalar:
-      type: Text
-      comparisonOperators:
-        - name: _eq
-          argumentType: Text!
-        - name: _gt
-          argumentType: Text!
-        - name: _gte
-          argumentType: Text!
-        - name: _ilike
-          argumentType: Text!
-        - name: _in
-          argumentType: "[Text!]!"
-        - name: _iregex
-          argumentType: Text!
-        - name: _like
-          argumentType: Text!
-        - name: _lt
-          argumentType: Text!
-        - name: _lte
-          argumentType: Text!
-        - name: _neq
-          argumentType: Text!
-        - name: _nilike
-          argumentType: Text!
-        - name: _niregex
-          argumentType: Text!
-        - name: _nlike
-          argumentType: Text!
-        - name: _nregex
-          argumentType: Text!
-        - name: _regex
-          argumentType: Text!
-        - name: starts_with
-          argumentType: Text!
-        - name: ts_match_tt
-          argumentType: Text!
-      dataConnectorOperatorMapping:
-        - dataConnectorName: kafka_sink
-          dataConnectorScalarType: text
-          operatorMapping: {}
-  logicalOperators:
-    enable: true
-  isNull:
-    enable: true
-  graphql:
-    typeName: TextBoolExp_3
 
 ---
 kind: AggregateExpression
