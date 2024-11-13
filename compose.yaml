@@ -46,17 +46,3 @@ services:
         target: 4318
     volumes:
       - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
-  caching:
-    build:
-      context: https://github.com/hasura/engine-plugin-caching.git
-    ports:
-      - 8787:8787
-    environment:
-      CACHING_PLUGIN_SECRET: ${CACHING_PLUGIN_SECRET}
-      CACHING_PLUGIN_REDIS_URL: ${CACHING_PLUGIN_REDIS_URL}
-    env_file:
-      - engine/.env.engine
-    extra_hosts:
-      - local.hasura.dev=host-gateway
-    volumes:
-      - ./.data/plugins/caching-config.js:/app/src/config.js
