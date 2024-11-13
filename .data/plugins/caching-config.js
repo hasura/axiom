@@ -1,8 +1,8 @@
 export const Config = {
-  headers: { "hasura-m-auth": "zZkhKqFjqXR4g5MZCsJUZCnhCcoPyZ" },
+  headers: { "hasura-m-auth": process.env.CACHING_PLUGIN_SECRET },
   time_to_live: 600,
-  redis_url: "redis://redis:6379",
-  otel_endpoint: "http://jaeger:4318/v1/traces",
+  redis_url: process.env.CACHING_PLUGIN_REDIS_URL,
+  otel_endpoint: process.env.OTLP_ENDPOINT,
   otel_headers: {},
 
   queries_to_cache: [
