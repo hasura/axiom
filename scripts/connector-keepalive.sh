@@ -12,8 +12,9 @@ ENDPOINTS=(
 
 # Define the query
 QUERY='{
-  "query": "query buildUserDashboard { usersById(id: 1) { email formatCreatedAtTimestamp } customers(limit: 1) { firstName lastName email segment customerLinks { customerPreferences { socialMedia { linkedin } } supportDB { supportHistory { date status } } } creditCards { maskCreditCard expiry cvv } billings { formatBillingDate paymentStatus totalAmount } } calls(limit: 1) { callid } cdr(limit: 1) { guid } documents(limit: 1) { uuid } }", "operationName": "buildUserDashboard"
+  "query": "query buildUserDashboard { usersById(id: 1) { email formatCreatedAtTimestamp } customers(limit: 1, where: {segment: {_eq: \"family\"}}) { firstName lastName email segment customerLinks { customerPreferences { socialMedia { linkedin } } supportDB { supportHistory { date status } } } creditCards(where: {expiry: {_gte: \"2024-01-01\"}}) { maskCreditCard expiry cvv } billings(where: {billingDate: {_lte: \"2025-01-01\"}}) { formatBillingDate paymentStatus totalAmount } } calls(limit: 1) { callid } cdr(limit: 1) { guid } documents(limit: 1) { uuid } }", "operationName": "buildUserDashboard"
 }'
+
 TESTQUERY='{
   "query": "query simpleUserRetrieval { customers(limit: 1) { customerId } }", "operationName": "simpleUserRetrieval"
 }'
