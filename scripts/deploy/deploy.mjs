@@ -85,16 +85,20 @@ console.log(
     chalk.magentaBright(`Dry run mode is ${dryRun ? 'enabled' : 'disabled'}`)
 );
 console.log(
-    chalk.magentaBright(`Connectors ${rebuildConnectors ? 'will' : "won't"} be rebuilt`)
+    chalk.magentaBright(
+        `Connectors ${rebuildConnectors ? 'will' : "won't"} be rebuilt`
+    )
+);
+console.log(chalk.magentaBright(`Context: ${context}`));
+console.log(
+    chalk.magentaBright(
+        `Full metadata build is: ${fullMetadataBuild ? 'enabled' : 'disabled'}`
+    )
 );
 console.log(
-    chalk.magentaBright(`Context: ${context}`)
-);
-console.log(
-    chalk.magentaBright(`Full metadata build is: ${fullMetadataBuild ? 'enabled' : 'disabled'}`)
-);
-console.log(
-    chalk.magentaBright(`No interaction mode is: ${noInteraction ? 'enabled' : 'disabled'}`)
+    chalk.magentaBright(
+        `No interaction mode is: ${noInteraction ? 'enabled' : 'disabled'}`
+    )
 );
 
 // Mapping context regions to GCP region IDs
@@ -185,6 +189,7 @@ function findConnectorYamlFiles(dir) {
     return results;
 }
 
+// Helper function to convert each connector to the right region
 function convertConnectorRegion(connectorRegion) {
     console.log(
         chalk.magentaBright(
@@ -202,6 +207,7 @@ function convertConnectorRegion(connectorRegion) {
     );
 }
 
+// Run the command that the deploy script defines
 function runCommandWithOutput(command, region = '') {
     return new Promise((resolve, reject) => {
         console.log(chalk.magentaBright(`Executing command: ${command}`));
@@ -277,7 +283,6 @@ async function runCommandWithTag(
     supergraph,
     rebuildConnectors = true
 ) {
-
     const DEST_DIR = join(__dirname, '../../globals');
     const DEST_FILE = 'auth-config.hml';
 
@@ -307,7 +312,9 @@ async function runCommandWithTag(
     // Get git log description for the command to use as the supergraph build description
     const gitLogDescription = execSync(
         `git log -1 --pretty=format:"%h [${tag}] %s"`
-    ).toString().trim();
+    )
+        .toString()
+        .trim();
 
     // Construct the ddn supergraph build command
     let command = `ddn supergraph build create -d "${gitLogDescription}" -c "${region}" --out json --log-level "${logLevel}" --supergraph "${supergraph}"`;
@@ -320,7 +327,6 @@ async function runCommandWithTag(
             chalk.magentaBright(`[${region}] => Executing command: ${command}`)
         );
         const output = await runCommandWithOutput(command, region);
-        // const output = execSync(command, { stdio: 'pipe' }).toString();
         const buildInfo = JSON.parse(output);
 
         console.log(
@@ -347,23 +353,28 @@ async function pushMetadataRelease(contextRegion, rebuildConnectors) {
         )
     );
 
+    // Deploy with JWT file to demo authz
     await runCommandWithTag(
         contextRegion,
         jwtFile,
         'JWT',
         `${root}/supergraph-with-mutations.yaml`,
         rebuildConnectors
-    ); // Deploy with JWT file
+    );
+
+    // Deploy with NoAuth file to allow instant access
     await runCommandWithTag(
         contextRegion,
         noauthFile,
         'NoAuth',
         `${root}/supergraph-with-mutations.yaml`,
         rebuildConnectors
-    ); // Deploy with NoAuth file
+    );
 
     console.log(
-        chalk.green(`[${contextRegion}] => Incremental release completed successfully.`)
+        chalk.green(
+            `[${contextRegion}] => Incremental release completed successfully.`
+        )
     );
 }
 
@@ -434,47 +445,56 @@ async function main() {
         );
     }
 
-    let contextRegion = context || 'default';
+    let contextRegion = context || null;
     let rebuildConnectors = options.rebuildConnectors || null;
     let fullMetadataBuild = options.fullMetadataBuild || null;
 
-    if (!noInteraction && contextRegion === 'default') {
-        contextRegion = (await inquirer.prompt([
-            {
-                type: 'list',
-                name: 'contextRegion',
-                message: 'Select a context region to set:',
-                choices: Object.keys(regionMapping),
-            },
-        ])).contextRegion;
+    if (!noInteraction && contextRegion === null) {
+        contextRegion = (
+            await inquirer.prompt([
+                {
+                    type: 'list',
+                    name: 'contextRegion',
+                    message: 'Select a context region to set:',
+                    choices: Object.keys(regionMapping),
+                },
+            ])
+        ).contextRegion;
     }
 
     if (!noInteraction && fullMetadataBuild === null) {
-        fullMetadataBuild = (await inquirer.prompt([
-            {
-                type: 'confirm',
-                name: 'fullMetadataBuild',
-                message: 'Do you want to perform a full metadata rebuild? (warning slow)',
-                default: false,
-            },
-        ])).fullMetadataBuild;
+        fullMetadataBuild = (
+            await inquirer.prompt([
+                {
+                    type: 'confirm',
+                    name: 'fullMetadataBuild',
+                    message:
+                        'Do you want to perform a full metadata rebuild? (warning slow)',
+                    default: false,
+                },
+            ])
+        ).fullMetadataBuild;
     }
-    
+
     if (!noInteraction && rebuildConnectors === null) {
-        rebuildConnectors = (await inquirer.prompt([
-            {
-                type: 'confirm',
-                name: 'rebuildConnectors',
-                message: 'Do you want to perform a full connector rebuild? (warning even slower)',
-                default: false,
-            },
-        ])).rebuildConnectors;
+        rebuildConnectors = (
+            await inquirer.prompt([
+                {
+                    type: 'confirm',
+                    name: 'rebuildConnectors',
+                    message:
+                        'Do you want to perform a full connector rebuild? (warning even slower)',
+                    default: false,
+                },
+            ])
+        ).rebuildConnectors;
     }
 
     // Map the selected context region to the GCP region ID
     const connectorRegion = regionMapping[contextRegion];
 
-    convertConnectorRegion(connectorRegion)
+    // switch connectors to the right region
+    convertConnectorRegion(connectorRegion);
 
     if (fullMetadataBuild) {
         await rebuildSupergraph(contextRegion, rebuildConnectors);
@@ -482,7 +502,8 @@ async function main() {
 
     await pushMetadataRelease(contextRegion, rebuildConnectors);
 
-    convertConnectorRegion('default');
+    // Revert connectors to the default
+    convertConnectorRegion(regionMapping['default']);
 
     console.log(
         chalk.green(`[${contextRegion}] => Deployment completed successfully.`)
