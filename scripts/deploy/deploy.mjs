@@ -257,7 +257,7 @@ function runCommandWithOutput(command, region = '') {
 }
 
 // Apply the build using the build version
-function applyBuild(region, buildVersion) {
+async function applyBuild(region, buildVersion) {
     const command = `ddn supergraph build apply ${buildVersion} -c ${region}`;
 
     if (!dryRun) {
