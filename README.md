@@ -10,6 +10,7 @@ To get started, first copy template files into the correct locations:
 cp .hasura/context.yaml.template .hasura/context.yaml
 cp .env.template .env
 cp .env.local.template .env.local
+cp .data/.env.template .data/.env
 ```
 
 Next, create a build using these environment files:

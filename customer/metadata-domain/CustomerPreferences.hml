@@ -246,6 +246,9 @@ definition:
   graphql:
     selectMany:
       queryRootField: customerPreferences
+      subscription:
+        rootField: customer_preferences
+        description: Subscribe to customere preferences model
     selectUniques:
       - queryRootField: customerPreferencesById
         uniqueIdentifier:
@@ -254,6 +257,8 @@ definition:
     filterInputTypeName: CustomerPreferencesFilterInput
     aggregate:
       queryRootField: customerPreferencesAggregate
+      subscription:
+        rootField: customerPreferencesAggregate
   aggregateExpression: CustomerPreferencesAggExp
 
 ---
@@ -265,6 +270,7 @@ definition:
     - role: admin
       select:
         filter: null
+        allowSubscriptions: true
     - role: customer
       select:
         filter: null

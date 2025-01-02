@@ -71,6 +71,24 @@ services:
       - clickhouse_data:/var/lib/clickhouse
       - ./${DATASET}/clickhouse/scripts/:/docker-entrypoint-initdb.d/
 
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
+
+  caching:
+    build:
+      context: https://github.com/hasura/engine-plugin-caching.git
+    ports:
+      - 8787:8787
+    environment:
+      CACHING_PLUGIN_SECRET: ${CACHING_PLUGIN_SECRET}
+      CACHING_PLUGIN_REDIS_URL: ${CACHING_PLUGIN_REDIS_URL}
+    extra_hosts:
+      - local.hasura.dev=host-gateway
+    volumes:
+      - ./plugins/caching-config.js:/app/src/config.js
+
 volumes:
   postgres-data:
   pgvector-data:

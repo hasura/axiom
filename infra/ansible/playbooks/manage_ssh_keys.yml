@@ -1,0 +1,48 @@
+- name: Ensure SSH keys are present
+  hosts: all
+  become: true
+  tasks:
+    - name: Add SSH keys to authorized_keys
+      ansible.posix.authorized_key:
+        user: "ubuntu"
+        key: "{{ item.key }}"
+        state: present
+      loop:
+        - name: adam.malone@hades
+          key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDCeMGVosn2JB/RBWXQ+zVngRCHp9vGcoPiL9yh8xFd9mR\
+                Twt7Q5BWSneANU7odpYTHQZRWETxvqzuxCwqMLGgOLzi7xBBfguMj3oRzrYKXTOPRyfF/fjtzr0LEYdHL6R\
+                iYEfRmIW70fm5jAGj32DBcIiEMF69dv9AeOuXic4HaEAQxHahuvA1m4DYhCycBGay3wOjMAMFeVN2yQqYSv\
+                LKsp4kASHunssLsiEiHzUhClqlUQ3E8oEWc3BbJenkmjSDtOLKgOQs23ZZR7x1EnVtCX0rzRIHGkmPvi7W8\
+                RIDD9qWfa3RKf9jxnw53MGH4p4R3PkZPFgv9d9igUG2ntQkoD2bxRzzJtWVlCnFWtu2MaU3KcKXLV6mvxDb\
+                H2oPGEn1Qyr/z+cIcoLZ5bkZw1bIKNOxb0fuazLUlMgdzck39YJJkOG+SJPc1FZLT4Ew+R48oDe63gDI4vM\
+                p2uuvN4auiMhTX0Xzk/Xnu5tbH8rQyfFKWNxDkti1O87IhoAsjKvvxijkQWDO4zbNMtSjenQMpcPmi09ZSE\
+                u00nW7um6rCZNXiKztje0Ln7L2fe2EgAnM6CAd6Bd8DowypdHGF0F7dpzF2PPaRDQl+EXwUKI+NfPCgrKlR\
+                XgiH23RThYi0/Nz87w6Q2lm5Avv4xWP3zLdHjg/3FrAjHB+UuXDhe0Fryw== adam.malone@hades"
+        - name: david.lavigne@hasura.io
+          key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDIBqJNE+aLuwYHSkvHZVEpE68vGNNGIAffyBqTZjiwp8Z\
+                cgcV1yCL8rd0kuwJVZHVRCb8YctBCPe/LL+TiKSLIYRylnNqoZUGf/Eu/pnQawu27Pto5TQmXzxCM69IIFc\
+                lq9qnW0UqYDLBI+6pWf8SlRwB6F3zj7ZzJGgUaYxxP1tLWPr03cGVs9+cOzVQSCmJqzG4KEMoe0WDhPpXbG\
+                kRUovv87T6zQcUJ/jt0zn5TyDYDAqc6Lt5dVspM/cLfgLIdatTJDBhXiFZ4E7bht+5wOncQ3QI9CHjBZ72o\
+                MRsZccutJ4A9SEWKUA+thBUgkBRs7JI7DePkUnfkbHbPrw9t3ruK+E2nVshdX3tt9YXGe/743dsi/+njIN/\
+                wSQRpAbdTEInYvlv7eWwm+cPQ0vZgRr6WjEXWves58tSWjJLWh/LApBt6UGrR+rdypFLflKoRmmighbYK6o\
+                AH5c3+GNrxozouzmnh+cwyjkSy9eJ+A4SO32uNhismQIp2rRpdkgL7dw88Cwg+dzkbP9EIRHWlf6TvxK+Yb\
+                SKx+RJZqz8GDbzfXYnZD4pumKyQ3TKh/FCIt569XGx1qpQZvhewGbq+6GLPEj2O26eqC43LMQKUW5kDzUPa\
+                6FHtNGFF0/Ujhq+srY2xIfxC/n6pmiWOxJXT2WTRue13HLxDrBkHBQe2Rw== david.lavigne@hasura.io"
+        - name: dannick.liudzius@hasura.io
+          key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDNOeTYLCHuE4Y+3EeNawSJ9v77XSm5kBA0vZs0Dg4fUiN\
+                HahrNINvwPVKpEtOX4v0swhbqeAB0VeBu69E05Fqa9EMjowHuCZEPrCHkTDC/8/yGEzddxeDWCxdZTvKv7o\
+                XPWTbfVveO0gEz11VgY6jCUkmzXTwAIT9eaSPicguNB/KOkrTPCTsSaT4OokwQjuHB1MhkFKxj+MkKhF7EM\
+                z6EsVhy6jdhM8bAfbF0iBNYITaOBQV0YuESRDmHBXR6HqOcJRqto/GruVQ5/2evs9SA+qSIzNHZFuGV0gME\
+                nAV5zmHRwn4iEH3s4oIZKCB6ISuetUGRxSasG6frphkYYCGhfVKjTnWvFwxRu62ky+RRHhzDCPP6KdgFtAL\
+                NkhkjLs5IsY9Ew0GJRDLrKGWSZHAuYbf+souCs84tMWNOR8fyH+Oak+hApXEP9etO3E9CQ52Km0Et4jtdVz\
+                C0ev7SGQNU5hMkViTFHly/TI+ndS51V48WMt6ce3pcacekTNymkOpCJbn0cVoI+/pWYIj3tx+CHgnUNnQOa\
+                P9aQdHitVDcMJ2J45QwSpzGD/dT9MrbmO+d606wjtidUIDvFzJLtLf7pDByiKpKY6Y6bX2CQWYgeWO/ZGE9\
+                vfbwclJR0sbUOss12fgPHJL44c7sTNLY4cFude0qR5Hs19QWNsj8w9mwFw== dannick.liudzius@hasura.io"
+        - name: rajusunny@hasura.io
+          key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDEvHPxvOCnUhFr88x1xbmV8sE/Zt4qCoCNS92iQEnubnI\
+                xOKlqHpnUxVq/s/vQaJvjSb0uywCDckol+eI7r6rMAM0qhZ4OooNgN8SZFzMr8Z4yJNEusU2d8I2LaVoW+0\
+                Wx6v0ff7Dk5oE4Ar5sHS5SVz2lHsj/KWIEyK+W0LyHm8bX3D+MVFAnY/6SEpY8UwWhHZHyWT/RjPY24FFvC\
+                ivmeUJCK0huRFSkeh2dJQSc9SkSEXA3uVstlJbHghIlsbdlAtYpgYVCipVoePTcODsFyvdGzBhieZLB/TRI\
+                ILghIkUrDMhRiT8bmT3oymGU8wuET6cGHDLpdtzlkxmuE4r0H18xcdIuxCCUh6SWhTlFGVGI0gLZ0W9rWaq\
+                QZMILIQ/qaWAhItzmx1PZzF32ucWpqhq0x54EJwugXPGuiu7Aai970ZRyYz5sFmspC7XKM2sg6oBsd3k6+r\
+                DD1QR7h9IAb2SuP3RDsvlF+7wehqydI5eKiJI8qkQ65l4+X16iJpM= rajusunny@hasura.io"

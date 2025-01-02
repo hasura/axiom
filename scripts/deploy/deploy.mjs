@@ -33,12 +33,36 @@ program
         'Simulate the deployment without executing commands',
         false
     )
+    .option(
+        '-n, --no-interaction',
+        'Deploy without interactive questions',
+        true
+    )
+    .option(
+        '-c, --context <context>',
+        'Deploy specific context from .hasura/context.yaml',
+        'default'
+    )
+    .option(
+        '-r, --rebuild-connectors',
+        'Rebuild all connectors as a result of changing connector configuration (warning: slow)',
+        false
+    )
+    .option(
+        '-f, --full-metadata-build',
+        'Perform a full rebuild of metadata to build up functionality on DDN',
+        false
+    )
     .parse(process.argv);
 
 const options = program.opts();
 const logLevel = options.logLevel.toUpperCase();
 const override = options.override;
 const dryRun = options.dryRun;
+const noInteraction = !options.interaction;
+const rebuildConnectors = options.rebuildConnectors;
+const context = options.context;
+const fullMetadataBuild = options.fullMetadataBuild;
 
 // Validate log level
 const allowedLogLevels = ['FATAL', 'ERROR', 'WARN', 'INFO', 'DEBUG'];
@@ -60,6 +84,22 @@ console.log(
 console.log(
     chalk.magentaBright(`Dry run mode is ${dryRun ? 'enabled' : 'disabled'}`)
 );
+console.log(
+    chalk.magentaBright(
+        `Connectors ${rebuildConnectors ? 'will' : "won't"} be rebuilt`
+    )
+);
+console.log(chalk.magentaBright(`Context: ${context}`));
+console.log(
+    chalk.magentaBright(
+        `Full metadata build is: ${fullMetadataBuild ? 'enabled' : 'disabled'}`
+    )
+);
+console.log(
+    chalk.magentaBright(
+        `No interaction mode is: ${noInteraction ? 'enabled' : 'disabled'}`
+    )
+);
 
 // Mapping context regions to GCP region IDs
 const regionMapping = {
@@ -74,6 +114,9 @@ const regionMapping = {
 // Locate the script to allow it to be used from anywhere
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+const script_dir = __dirname;
+const jwtFile = join(script_dir, 'jwtauth.hml');
+const noauthFile = join(script_dir, 'noauth.hml');
 
 const root = resolve(__dirname, '../../');
 console.log(chalk.magentaBright('Resolved repository root:', root));
@@ -146,6 +189,25 @@ function findConnectorYamlFiles(dir) {
     return results;
 }
 
+// Helper function to convert each connector to the right region
+function convertConnectorRegion(connectorRegion) {
+    console.log(
+        chalk.magentaBright(
+            `Converting 'connector.yaml' files to ${connectorRegion}.`
+        )
+    );
+
+    const yamlFiles = findConnectorYamlFiles(root);
+    yamlFiles.forEach((file) => updateRegionInFile(file, connectorRegion));
+
+    console.log(
+        chalk.magentaBright(
+            `All 'connector.yaml' files have been updated to use the region ${connectorRegion}.`
+        )
+    );
+}
+
+// Run the command that the deploy script defines
 function runCommandWithOutput(command, region = '') {
     return new Promise((resolve, reject) => {
         console.log(chalk.magentaBright(`Executing command: ${command}`));
@@ -193,8 +255,9 @@ function runCommandWithOutput(command, region = '') {
         });
     });
 }
+
 // Apply the build using the build version
-function applyBuild(region, buildVersion) {
+async function applyBuild(region, buildVersion) {
     const command = `ddn supergraph build apply ${buildVersion} -c ${region}`;
 
     if (!dryRun) {
@@ -218,7 +281,7 @@ async function runCommandWithTag(
     srcFile,
     tag,
     supergraph,
-    noBuildConnectors = true
+    rebuildConnectors = true
 ) {
     const DEST_DIR = join(__dirname, '../../globals');
     const DEST_FILE = 'auth-config.hml';
@@ -255,7 +318,7 @@ async function runCommandWithTag(
 
     // Construct the ddn supergraph build command
     let command = `ddn supergraph build create -d "${gitLogDescription}" -c "${region}" --out json --log-level "${logLevel}" --supergraph "${supergraph}"`;
-    if (noBuildConnectors) {
+    if (!rebuildConnectors) {
         command += ' --no-build-connectors';
     }
 
@@ -264,7 +327,6 @@ async function runCommandWithTag(
             chalk.magentaBright(`[${region}] => Executing command: ${command}`)
         );
         const output = await runCommandWithOutput(command, region);
-        // const output = execSync(command, { stdio: 'pipe' }).toString();
         const buildInfo = JSON.parse(output);
 
         console.log(
@@ -283,31 +345,66 @@ async function runCommandWithTag(
     }
 }
 
+// Pushes incremental release of metadata
+async function pushMetadataRelease(contextRegion, rebuildConnectors) {
+    console.log(
+        chalk.magentaBright(
+            `[${contextRegion}] => Starting an incremental release of metadata.`
+        )
+    );
+
+    // Deploy with JWT file to demo authz
+    await runCommandWithTag(
+        contextRegion,
+        jwtFile,
+        'JWT',
+        `${root}/supergraph-with-mutations.yaml`,
+        rebuildConnectors
+    );
+
+    // Deploy with NoAuth file to allow instant access
+    await runCommandWithTag(
+        contextRegion,
+        noauthFile,
+        'NoAuth',
+        `${root}/supergraph-with-mutations.yaml`,
+        rebuildConnectors
+    );
+
+    console.log(
+        chalk.green(
+            `[${contextRegion}] => Incremental release completed successfully.`
+        )
+    );
+}
+
 // Rebuild function that does not use --no-build-connectors
-async function rebuildSupergraph(contextRegion) {
+async function rebuildSupergraph(contextRegion, rebuildConnectors) {
     console.log(
         chalk.magentaBright(
             `[${contextRegion}] => Starting a complete rebuild of all supergraphs and connectors.`
         )
     );
 
-    const NOAUTH_FILE = join(__dirname, 'noauth.hml');
     let index = 1;
 
     const supergraphs = [
         `${root}/supergraph-project-queries.yaml`,
         `${root}/supergraph-domain.yaml`,
         `${root}/supergraph.yaml`,
-        `${root}/supergraph-with-mutations.yaml`,
+        // @TODO do we want to include mutations in automated builds?
+        // Alternatively we can include it but not have it as the final/published build.
+        // Maybe we leave it as part of the JWT/NoAuth build
+        // `${root}/supergraph-with-mutations.yaml`,
     ];
 
     for (const supergraph of supergraphs) {
         await runCommandWithTag(
             contextRegion,
-            NOAUTH_FILE,
-            `NoAuth RB-${index}`,
+            noauthFile,
+            `NoAuth S-${index}`,
             supergraph,
-            false
+            rebuildConnectors
         );
         index++;
     }
@@ -348,63 +445,65 @@ async function main() {
         );
     }
 
-    const { contextRegion, rebuild } = await inquirer.prompt([
-        {
-            type: 'list',
-            name: 'contextRegion',
-            message: 'Select a context region to set:',
-            choices: Object.keys(regionMapping),
-        },
-        {
-            type: 'confirm',
-            name: 'rebuild',
-            message: 'Do you want to perform a complete rebuild?',
-            default: false,
-        },
-    ]);
+    let contextRegion = context || null;
+    let rebuildConnectors = options.rebuildConnectors || null;
+    let fullMetadataBuild = options.fullMetadataBuild || null;
+
+    if (!noInteraction && contextRegion === null) {
+        contextRegion = (
+            await inquirer.prompt([
+                {
+                    type: 'list',
+                    name: 'contextRegion',
+                    message: 'Select a context region to set:',
+                    choices: Object.keys(regionMapping),
+                },
+            ])
+        ).contextRegion;
+    }
+
+    if (!noInteraction && fullMetadataBuild === null) {
+        fullMetadataBuild = (
+            await inquirer.prompt([
+                {
+                    type: 'confirm',
+                    name: 'fullMetadataBuild',
+                    message:
+                        'Do you want to perform a full metadata rebuild? (warning slow)',
+                    default: false,
+                },
+            ])
+        ).fullMetadataBuild;
+    }
+
+    if (!noInteraction && rebuildConnectors === null) {
+        rebuildConnectors = (
+            await inquirer.prompt([
+                {
+                    type: 'confirm',
+                    name: 'rebuildConnectors',
+                    message:
+                        'Do you want to perform a full connector rebuild? (warning even slower)',
+                    default: false,
+                },
+            ])
+        ).rebuildConnectors;
+    }
 
     // Map the selected context region to the GCP region ID
     const connectorRegion = regionMapping[contextRegion];
 
-    // Update all `connector.yaml` files with the selected region
-    const yamlFiles = findConnectorYamlFiles(root);
-    yamlFiles.forEach((file) => updateRegionInFile(file, connectorRegion));
-    console.log(
-        chalk.magentaBright(
-            `All 'connector.yaml' files have been updated to use the region ${connectorRegion}.`
-        )
-    );
+    // switch connectors to the right region
+    convertConnectorRegion(connectorRegion);
 
-    const SCRIPT_DIR = __dirname;
-    const JWT_FILE = join(SCRIPT_DIR, 'jwtauth.hml');
-    const NOAUTH_FILE = join(SCRIPT_DIR, 'noauth.hml');
-
-    if (rebuild) {
-        await rebuildSupergraph(contextRegion);
+    if (fullMetadataBuild) {
+        await rebuildSupergraph(contextRegion, rebuildConnectors);
     }
 
-    await runCommandWithTag(
-        contextRegion,
-        JWT_FILE,
-        'JWT',
-        `${root}/supergraph-with-mutations.yaml`,
-        true
-    ); // Deploy with JWT file
-    await runCommandWithTag(
-        contextRegion,
-        NOAUTH_FILE,
-        'NoAuth',
-        `${root}/supergraph-with-mutations.yaml`,
-        true
-    ); // Deploy with NoAuth file
+    await pushMetadataRelease(contextRegion, rebuildConnectors);
 
-    const defaultRegion = regionMapping['default'];
-    console.log(
-        chalk.magentaBright(
-            `Reverting 'connector.yaml' files to ${defaultRegion}.`
-        )
-    );
-    yamlFiles.forEach((file) => updateRegionInFile(file, defaultRegion));
+    // Revert connectors to the default
+    convertConnectorRegion(regionMapping['default']);
 
     console.log(
         chalk.green(`[${contextRegion}] => Deployment completed successfully.`)
