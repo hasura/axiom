@@ -1,0 +1,40 @@
+- name: Install DDN CLI
+  hosts: demo
+  become: true
+  tasks:
+
+    - name: Ensure curl is installed
+      ansible.builtin.apt:
+        name: curl
+        state: present
+
+    - name: Check if Hasura CLI is installed
+      ansible.builtin.stat:
+        path: /usr/local/bin/ddn
+      register: ddn
+
+    - name: Download Hasura CLI installation script
+      ansible.builtin.get_url:
+        url: https://graphql-engine-cdn.hasura.io/ddn/cli/v4/get.sh
+        dest: /tmp/ddn.sh
+        mode: "0755"
+      when: not ddn.stat.exists
+
+    - name: Install Hasura CLI
+      ansible.builtin.shell: |
+        set -o pipefail
+        /bin/bash /tmp/ddn.sh
+      args:
+        executable: /bin/bash
+        creates: /usr/local/bin/ddn
+      register: install_output
+      when: not ddn.stat.exists
+
+    - name: Verify Hasura CLI installation
+      ansible.builtin.command: /usr/local/bin/ddn version
+      register: version_output
+      changed_when: false
+
+    - name: Display Hasura CLI version
+      ansible.builtin.debug:
+        msg: "{{ version_output.stdout }}"

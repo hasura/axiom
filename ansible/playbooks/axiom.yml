@@ -1,0 +1,40 @@
+- name: Install prerequisites for Axiom
+  import_playbook: ddn.yml
+
+- name: Configure Docker for Axiom
+  import_playbook: configure_docker.yml
+
+- name: Clone and configure Axiom repository
+  hosts: demo
+  become: true
+  tasks:
+    - name: Clone axiom repository
+      ansible.builtin.git:
+        repo: https://github.com/hasura/axiom.git
+        dest: /home/ubuntu/axiom
+        version: main
+        accept_hostkey: true
+
+    - name: Load environment variables from .env
+      ansible.builtin.include_vars:
+        file: ../.env
+        name: env_vars
+
+    - name: Setup environment variables
+      ansible.builtin.copy:
+        dest: /home/ubuntu/axiom/.data/.env
+        owner: ubuntu
+        group: ubuntu
+        mode: '0600'
+        content: |
+          CONTAINER_PREFIX={{ env_vars.CONTAINER_PREFIX }}
+          MONGO_PASSWORD={{ env_vars.MONGO_PASSWORD }}
+          POSTGRES_PASSWORD={{ env_vars.POSTGRES_PASSWORD }}
+          CLICKHOUSE_PASSWORD={{ env_vars.CLICKHOUSE_PASSWORD }}
+
+    - name: Turn on the demo
+      ansible.builtin.command: /usr/local/bin/ddn run demo-telco
+      args:
+        chdir: /home/ubuntu/axiom
+      register: ddn_demo_start
+      changed_when: false
