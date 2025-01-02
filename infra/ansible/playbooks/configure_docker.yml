@@ -3,17 +3,14 @@
   become: true
   tasks:
 
-    - name: Update APT cache
-      ansible.builtin.apt:
-        update_cache: true
-        cache_valid_time: 3600
-
     - name: Install ca-certificates and curl
       ansible.builtin.apt:
         name:
           - ca-certificates
           - curl
         state: present
+        update_cache: true
+        cache_valid_time: 3600
 
     - name: Create Docker keyrings directory
       ansible.builtin.file:
@@ -32,10 +29,7 @@
       ansible.builtin.apt_repository:
         repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
         state: present
-
-    - name: Update APT cache again after adding Docker repository
-      ansible.builtin.apt:
-        update_cache: true
+      notify: Refresh APT cache
 
     - name: Install Docker packages
       ansible.builtin.apt:
@@ -63,3 +57,8 @@
         name: docker
         enabled: true
         state: started
+
+  handlers:
+    - name: Refresh APT cache
+      ansible.builtin.apt:
+        update_cache: true
