@@ -1,3 +1,7 @@
+CREATE DATABASE customer;
+
+\c customer;
+
 -- Table for storing customer information
 CREATE TABLE public.customers (
     customer_id SERIAL PRIMARY KEY,

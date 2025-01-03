@@ -43,6 +43,10 @@ program
         'Deploy specific context from .hasura/context.yaml',
         'default'
     )
+    .requiredOption(
+        '-p --profile <profile>',
+        'Deploy from demo config in supergraph-config/<profile>',
+    )
     .option(
         '-r, --rebuild-connectors',
         'Rebuild all connectors as a result of changing connector configuration (warning: slow)',
@@ -55,6 +59,7 @@ program
     )
     .parse(process.argv);
 
+// Load command options
 const options = program.opts();
 const logLevel = options.logLevel.toUpperCase();
 const override = options.override;
@@ -62,7 +67,54 @@ const dryRun = options.dryRun;
 const noInteraction = !options.interaction;
 const rebuildConnectors = options.rebuildConnectors;
 const context = options.context;
+const profile = options.profile;
 const fullMetadataBuild = options.fullMetadataBuild;
+
+// Locate the script to allow it to be used from anywhere
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const script_dir = __dirname;
+const jwtFile = join(script_dir, 'jwtauth.hml');
+const noauthFile = join(script_dir, 'noauth.hml');
+const root = resolve(__dirname, '../../hasura/');
+
+console.log(chalk.magentaBright('Resolved repository root:', root));
+
+if (!fs.existsSync(root)) {
+    console.error(
+        chalk.whiteBright.bgRed(`Error: Directory ${root} does not exist.`)
+    );
+    process.exit(1);
+}
+
+// Change the working directory to hasura subdirectory so ddn can find .hasura/context.yaml
+const workingDir = join(root);
+process.chdir(workingDir);
+
+console.log(chalk.magentaBright('Changed working directory to:', process.cwd()));
+
+if (!fs.existsSync('.hasura/context.yaml')) {
+    console.error(
+        chalk.whiteBright.bgRed(
+            'Error: .hasura/context.yaml not found in the current working directory.'
+        )
+    );
+    process.exit(1);
+}
+
+// Validate profile
+const profilePath = resolve(root, 'supergraph-config', profile);
+if (!fs.existsSync(profilePath)) {
+    console.error(
+        chalk.whiteBright.bgRed(
+            `Invalid profile: ${profile}. Profile directory does not exist within ${root}/supergraph-config`
+        )
+    );
+    process.exit(1);
+}
+
+const supergraphConfig = resolve(root, 'supergraph-config', profile);
+console.log(chalk.magentaBright('Resolved supergraph config:', supergraphConfig));
 
 // Validate log level
 const allowedLogLevels = ['FATAL', 'ERROR', 'WARN', 'INFO', 'DEBUG'];
@@ -110,24 +162,6 @@ const regionMapping = {
     'us-west': 'gcp-us-west2',
     default: 'gcp-us-west2', // Default axiom-test to us-west
 };
-
-// Locate the script to allow it to be used from anywhere
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-const script_dir = __dirname;
-const jwtFile = join(script_dir, 'jwtauth.hml');
-const noauthFile = join(script_dir, 'noauth.hml');
-
-const root = resolve(__dirname, '../../hasura/');
-const supergraphConfig = resolve(root, 'supergraph-config/telco');
-console.log(chalk.magentaBright('Resolved repository root:', root));
-
-if (!fs.existsSync(root)) {
-    console.error(
-        chalk.whiteBright.bgRed(`Error: Directory ${root} does not exist.`)
-    );
-    process.exit(1);
-}
 
 // Update the region in connector files
 function updateRegionInFile(filePath, region) {
@@ -347,7 +381,7 @@ async function runCommandWithTag(
 }
 
 // Pushes incremental release of metadata
-async function pushMetadataRelease(contextRegion, rebuildConnectors) {
+async function pushMetadataRelease(supergraph, contextRegion, rebuildConnectors) {
     console.log(
         chalk.magentaBright(
             `[${contextRegion}] => Starting an incremental release of metadata.`
@@ -359,7 +393,7 @@ async function pushMetadataRelease(contextRegion, rebuildConnectors) {
         contextRegion,
         jwtFile,
         'JWT',
-        `${supergraphConfig}/supergraph-with-mutations.yaml`,
+        supergraph,
         rebuildConnectors
     );
 
@@ -368,7 +402,7 @@ async function pushMetadataRelease(contextRegion, rebuildConnectors) {
         contextRegion,
         noauthFile,
         'NoAuth',
-        `${supergraphConfig}/supergraph-with-mutations.yaml`,
+        supergraph,
         rebuildConnectors
     );
 
@@ -380,24 +414,14 @@ async function pushMetadataRelease(contextRegion, rebuildConnectors) {
 }
 
 // Rebuild function that does not use --no-build-connectors
-async function rebuildSupergraph(contextRegion, rebuildConnectors) {
+async function rebuildSupergraph(supergraphs, contextRegion, rebuildConnectors) {
     console.log(
         chalk.magentaBright(
-            `[${contextRegion}] => Starting a complete rebuild of all supergraphs and connectors.`
+            `[${contextRegion}] => Starting a complete rebuild of all supergraphs.`
         )
     );
 
     let index = 1;
-
-    const supergraphs = [
-        `${supergraphConfig}/supergraph-project-queries.yaml`,
-        `${supergraphConfig}/supergraph-domain.yaml`,
-        `${supergraphConfig}/supergraph.yaml`,
-        // @TODO do we want to include mutations in automated builds?
-        // Alternatively we can include it but not have it as the final/published build.
-        // Maybe we leave it as part of the JWT/NoAuth build
-        // `${root}/supergraph-with-mutations.yaml`,
-    ];
 
     for (const supergraph of supergraphs) {
         await runCommandWithTag(
@@ -413,6 +437,20 @@ async function rebuildSupergraph(contextRegion, rebuildConnectors) {
     console.log(
         chalk.green(`[${contextRegion}] => Rebuild completed successfully.`)
     );
+}
+
+// Load all supergraphs from the relevant industry profile in supergraph-config
+// Order them numerically and return them so they can be built
+function getSupergraphs() {
+    let files = fs.readdirSync(supergraphConfig);
+    files = files
+        .filter(file => file.endsWith('.yaml'))
+        .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+
+    const supergraphs = files.map(file => join(supergraphConfig, file));
+
+    return supergraphs;
+
 }
 
 async function main() {
@@ -497,11 +535,24 @@ async function main() {
     // switch connectors to the right region
     convertConnectorRegion(connectorRegion);
 
-    if (fullMetadataBuild) {
-        await rebuildSupergraph(contextRegion, rebuildConnectors);
+    // Split up all intermediate supergraphs from the final one and
+    // build each intermediate supergraph with rebuildSupergraph if
+    // --full-metadata-build is selected
+    // If --full-metadata-build is not selected or if there is only a single
+    // supergraph, only build that with pushMetadataRelease
+    const supergraphs = getSupergraphs();
+
+    if (supergraphs.length === 0) {
+        throw new Error("No supergraphs found!");
+    }
+    const intermediarySupergraphs = supergraphs.slice(0, -1);
+    const fullyBuiltSupergraph = supergraphs[supergraphs.length - 1];
+
+    if (fullMetadataBuild && intermediarySupergraphs.length > 0) {
+        await rebuildSupergraph(intermediarySupergraphs, contextRegion, rebuildConnectors);
     }
 
-    await pushMetadataRelease(contextRegion, rebuildConnectors);
+    await pushMetadataRelease(fullyBuiltSupergraph, contextRegion, rebuildConnectors);
 
     // Revert connectors to the default
     convertConnectorRegion(regionMapping['default']);

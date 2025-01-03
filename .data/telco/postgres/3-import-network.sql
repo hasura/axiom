@@ -1,6 +1,6 @@
-CREATE DATABASE emergent_holotel;
+CREATE DATABASE network;
 
-\c emergent_holotel;
+\c network;
 
 CREATE TABLE Calls (
     CallID SERIAL PRIMARY KEY,
