@@ -118,7 +118,8 @@ const script_dir = __dirname;
 const jwtFile = join(script_dir, 'jwtauth.hml');
 const noauthFile = join(script_dir, 'noauth.hml');
 
-const root = resolve(__dirname, '../../');
+const root = resolve(__dirname, '../../hasura/');
+const supergraphConfig = resolve(root, 'supergraph-config/telco');
 console.log(chalk.magentaBright('Resolved repository root:', root));
 
 if (!fs.existsSync(root)) {
@@ -283,7 +284,7 @@ async function runCommandWithTag(
     supergraph,
     rebuildConnectors = true
 ) {
-    const DEST_DIR = join(__dirname, '../../globals');
+    const DEST_DIR = join(root, '/globals');
     const DEST_FILE = 'auth-config.hml';
 
     if (!fs.existsSync(srcFile)) {
@@ -358,7 +359,7 @@ async function pushMetadataRelease(contextRegion, rebuildConnectors) {
         contextRegion,
         jwtFile,
         'JWT',
-        `${root}/supergraph-with-mutations.yaml`,
+        `${supergraphConfig}/supergraph-with-mutations.yaml`,
         rebuildConnectors
     );
 
@@ -367,7 +368,7 @@ async function pushMetadataRelease(contextRegion, rebuildConnectors) {
         contextRegion,
         noauthFile,
         'NoAuth',
-        `${root}/supergraph-with-mutations.yaml`,
+        `${supergraphConfig}/supergraph-with-mutations.yaml`,
         rebuildConnectors
     );
 
@@ -389,9 +390,9 @@ async function rebuildSupergraph(contextRegion, rebuildConnectors) {
     let index = 1;
 
     const supergraphs = [
-        `${root}/supergraph-project-queries.yaml`,
-        `${root}/supergraph-domain.yaml`,
-        `${root}/supergraph.yaml`,
+        `${supergraphConfig}/supergraph-project-queries.yaml`,
+        `${supergraphConfig}/supergraph-domain.yaml`,
+        `${supergraphConfig}/supergraph.yaml`,
         // @TODO do we want to include mutations in automated builds?
         // Alternatively we can include it but not have it as the final/published build.
         // Maybe we leave it as part of the JWT/NoAuth build
