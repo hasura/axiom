@@ -1,0 +1,57 @@
+kind: Context
+version: v3
+definition:
+  current: default
+  contexts:
+    au:
+      project: axiom-au
+      supergraph: ../supergraph.yaml
+      subgraph: ../customer/subgraph.yaml
+      localEnvFile: ../.env
+      cloudEnvFile: ../.env.cloud.au
+    default:
+      project: axiom-test
+      supergraph: ../supergraph.yaml
+      subgraph: ../customer/subgraph.yaml
+      localEnvFile: ../.env
+      cloudEnvFile: ../.env.cloud.default
+    eu:
+      project: axiom-eu
+      supergraph: ../supergraph.yaml
+      subgraph: ../customer/subgraph.yaml
+      localEnvFile: ../.env
+      cloudEnvFile: ../.env.cloud.eu
+    sg:
+      project: axiom-sg
+      supergraph: ../supergraph.yaml
+      subgraph: ../customer/subgraph.yaml
+      localEnvFile: ../.env
+      cloudEnvFile: ../.env.cloud.sg
+    us-east:
+      project: axiom-us-east
+      supergraph: ../supergraph.yaml
+      subgraph: ../customer/subgraph.yaml
+      localEnvFile: ../.env
+      cloudEnvFile: ../.env.cloud.us-east
+    us-west:
+      project: axiom-us-west
+      supergraph: ../supergraph.yaml
+      subgraph: ../customer/subgraph.yaml
+      localEnvFile: ../.env
+      cloudEnvFile: ../.env.cloud.us-west
+  scripts:
+    docker-start:
+      bash: ddn run demo-telco; HASURA_DDN_PAT=$(ddn auth print-pat) docker compose -f compose.yaml --env-file .env.local --env-file .env up --build --pull always -d
+      powershell: $Env:HASURA_DDN_PAT = ddn auth print-pat; docker compose -f compose.yaml --env-file .env.local --env-file .env up --build --pull always -d
+    docker-stop:
+      bash: export DATASET=telco; docker compose -f compose.yaml down -v ; docker compose -f .data/compose.yaml down -v
+      powershell: docker compose -f compose.yaml down -v; docker compose -f .data/compose.yaml down -v
+    demo-telco:
+      bash: export DATASET=telco; ../.data/initdb-prepare.sh; docker compose -f ../.data/compose.yaml --env-file ../.data/.env up --build --pull always -d
+      powershell: $Env:DATASET = "telco"; docker compose -f ../.data/compose.yaml --env-file ../.data/.env up --build --pull always -d
+    demo-healthcare:
+      bash: export DATASET=hc; echo "not yet implemented"
+      powershell: $Env:DATASET = "hc"; Write-Output "not yet implemented"
+    demo-fsi:
+      bash: export DATASET=fsi; echo "not yet implemented"
+      powershell: $Env:DATASET = "fsi"; Write-Output "not yet implemented"

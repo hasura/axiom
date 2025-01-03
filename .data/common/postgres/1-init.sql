@@ -1,5 +1,3 @@
-CREATE DATABASE emergent_metadata_main;
-
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
