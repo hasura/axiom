@@ -41,11 +41,14 @@ definition:
       cloudEnvFile: ../.env.cloud.us-west
   scripts:
     docker-start:
-      bash: ddn run demo-telco; HASURA_DDN_PAT=$(ddn auth print-pat) docker compose -f compose.yaml --env-file .env.local --env-file .env up --build --pull always -d
-      powershell: $Env:HASURA_DDN_PAT = ddn auth print-pat; docker compose -f compose.yaml --env-file .env.local --env-file .env up --build --pull always -d
+      bash: ddn run demo-telco; HASURA_DDN_PAT=$(ddn auth print-pat) docker compose -f compose-telco.yaml --env-file .env.local --env-file .env up --build --pull always -d
+      powershell: $Env:HASURA_DDN_PAT = ddn auth print-pat; docker compose -f compose-telco.yaml --env-file .env.local --env-file .env up --build --pull always -d
     docker-stop:
       bash: export DATASET=telco; docker compose -f compose.yaml down -v ; docker compose -f .data/compose.yaml down -v
       powershell: docker compose -f compose.yaml down -v; docker compose -f .data/compose.yaml down -v
+    build-telco:
+      bash: ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph-config/telco/4-supergraph-with-mutations.yaml
+      powershell: ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph-config/telco/4-supergraph-with-mutations.yaml
     demo-telco:
       bash: export DATASET=telco; ../.data/initdb-prepare.sh; docker compose -f ../.data/compose.yaml --env-file ../.data/.env up --build --pull always -d
       powershell: $Env:DATASET = "telco"; docker compose -f ../.data/compose.yaml --env-file ../.data/.env up --build --pull always -d
