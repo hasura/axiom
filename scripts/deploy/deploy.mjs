@@ -57,6 +57,11 @@ program
         'Perform a full rebuild of metadata to build up functionality on DDN',
         false
     )
+    .option(
+        '-o, --override-description',
+        'Override the automatically generated deployment description',
+        false
+    )
     .parse(process.argv);
 
 // Load command options
@@ -344,12 +349,17 @@ async function runCommandWithTag(
         );
     }
 
-    // Get git log description for the command to use as the supergraph build description
-    const gitLogDescription = execSync(
-        `git log -1 --pretty=format:"%h [${tag}] %s"`
-    )
-        .toString()
-        .trim();
+    // Construct the description, either from the git log or via a user generated override
+    let gitLogDescription = options.overrideDescription || null;
+
+    if (gitLogDescription === null) {
+        // Get git log description for the command to use as the supergraph build description
+        gitLogDescription = execSync(
+            `git log -1 --pretty=format:"%h [${tag}] %s"`
+        )
+            .toString()
+            .trim();
+    }
 
     // Construct the ddn supergraph build command
     let command = `ddn supergraph build create -d "${gitLogDescription}" -c "${region}" --out json --log-level "${logLevel}" --supergraph "${supergraph}"`;

@@ -1,4 +1,4 @@
-name: axiomdata
+name: axiomtelcodata
 services:
   # Databases
   postgres:
@@ -7,7 +7,7 @@ services:
     restart: unless-stopped
     volumes:
       - postgres-data:/var/lib/postgresql/data
-      - ./build/postgres/:/docker-entrypoint-initdb.d/
+      - ../build/postgres/:/docker-entrypoint-initdb.d/
     environment:
       PGUSER: postgres
       POSTGRES_USER: postgres
@@ -28,7 +28,7 @@ services:
       - "5433:5432"
     volumes:
       - pgvector-data:/var/lib/postgresql/data
-      - ./common/pgvector/:/docker-entrypoint-initdb.d/
+      - ../common/pgvector/:/docker-entrypoint-initdb.d/
     environment:
       PGUSER: postgres
       POSTGRES_USER: postgres
@@ -48,7 +48,7 @@ services:
     command: mongod --auth
     volumes:
       - mongodb-data:/data/db
-      - ./build/mongodb:/docker-entrypoint-initdb.d/
+      - ../build/mongodb:/docker-entrypoint-initdb.d/
     environment:
       - MONGO_INITDB_DATABASE=holotel
       - MONGO_INITDB_ROOT_USERNAME=root
@@ -66,10 +66,10 @@ services:
     environment:
       - CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD}
     volumes:
-      - ./${DATASET}/clickhouse/config.d/config.xml:/etc/clickhouse-server/config.d/config.xml
-      - ./${DATASET}/clickhouse/users.d/users.xml:/etc/clickhouse-server/users.d/users.xml
+      - ../telco/clickhouse/config.d/config.xml:/etc/clickhouse-server/config.d/config.xml
+      - ../telco/clickhouse/users.d/users.xml:/etc/clickhouse-server/users.d/users.xml
       - clickhouse_data:/var/lib/clickhouse
-      - ./${DATASET}/clickhouse/scripts/:/docker-entrypoint-initdb.d/
+      - ../telco/clickhouse/scripts/:/docker-entrypoint-initdb.d/
 
   redis:
     image: redis:latest
@@ -87,7 +87,7 @@ services:
     extra_hosts:
       - local.hasura.dev=host-gateway
     volumes:
-      - ./plugins/caching-config.js:/app/src/config.js
+      - ../plugins/caching-config.js:/app/src/config.js
 
 volumes:
   postgres-data:

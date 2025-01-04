@@ -49,9 +49,12 @@ definition:
     build-telco:
       bash: ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph-config/telco/4-supergraph-with-mutations.yaml
       powershell: ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph-config/telco/4-supergraph-with-mutations.yaml
+    demo-starter:
+      bash: export DATASET=starter; ../.data/initdb-prepare.sh; docker compose -f ../.data/starter/compose.yaml --env-file ../.data/starter/.env up --build --pull always -d
+      powershell: $Env:DATASET = "telco"; docker compose -f ../.data/starter/compose.yaml --env-file ../.data/starter/.env up --build --pull always -d
     demo-telco:
-      bash: export DATASET=telco; ../.data/initdb-prepare.sh; docker compose -f ../.data/compose.yaml --env-file ../.data/.env up --build --pull always -d
-      powershell: $Env:DATASET = "telco"; docker compose -f ../.data/compose.yaml --env-file ../.data/.env up --build --pull always -d
+      bash: export DATASET=telco; ../.data/initdb-prepare.sh; docker compose -f ../.data/telco/compose.yaml --env-file ../.data/telco/.env up --build --pull always -d
+      powershell: $Env:DATASET = "telco"; docker compose -f ../.data/telco/compose.yaml --env-file ../.data/telco/.env up --build --pull always -d
     demo-healthcare:
       bash: export DATASET=hc; echo "not yet implemented"
       powershell: $Env:DATASET = "hc"; Write-Output "not yet implemented"
