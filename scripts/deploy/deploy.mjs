@@ -58,9 +58,8 @@ program
         false
     )
     .option(
-        '-o, --override-description',
+        '-x, --override-description <description>',
         'Override the automatically generated deployment description',
-        false
     )
     .parse(process.argv);
 
@@ -494,21 +493,21 @@ async function main() {
         );
     }
 
-    let contextRegion = context || null;
+    let context = options.context || null;
     let rebuildConnectors = options.rebuildConnectors || null;
     let fullMetadataBuild = options.fullMetadataBuild || null;
 
-    if (!noInteraction && contextRegion === null) {
-        contextRegion = (
+    if (!noInteraction && context === null) {
+        context = (
             await inquirer.prompt([
                 {
                     type: 'list',
-                    name: 'contextRegion',
-                    message: 'Select a context region to set:',
+                    name: 'context',
+                    message: 'Select a context to set:',
                     choices: Object.keys(regionMapping),
                 },
             ])
-        ).contextRegion;
+        ).context;
     }
 
     if (!noInteraction && fullMetadataBuild === null) {
@@ -540,7 +539,7 @@ async function main() {
     }
 
     // Map the selected context region to the GCP region ID
-    const connectorRegion = regionMapping[contextRegion];
+    const connectorRegion = regionMapping[context] || regionMapping['default'];
 
     // switch connectors to the right region
     convertConnectorRegion(connectorRegion);
@@ -559,16 +558,16 @@ async function main() {
     const fullyBuiltSupergraph = supergraphs[supergraphs.length - 1];
 
     if (fullMetadataBuild && intermediarySupergraphs.length > 0) {
-        await rebuildSupergraph(intermediarySupergraphs, contextRegion, rebuildConnectors);
+        await rebuildSupergraph(intermediarySupergraphs, context, rebuildConnectors);
     }
 
-    await pushMetadataRelease(fullyBuiltSupergraph, contextRegion, rebuildConnectors);
+    await pushMetadataRelease(fullyBuiltSupergraph, context, rebuildConnectors);
 
     // Revert connectors to the default
     convertConnectorRegion(regionMapping['default']);
 
     console.log(
-        chalk.green(`[${contextRegion}] => Deployment completed successfully.`)
+        chalk.green(`[${context}] => Deployment completed successfully.`)
     );
 }
 

@@ -9,13 +9,17 @@ usage() {
   echo ""
   echo "Arguments:"
   echo "  -r <region>  AWS region (e.g., us-east-1)"
+  echo "  -t <tag>     (Optional) Tag for resources (default: presales-demo)"
   exit 1
 }
 
+TAG="PRESALES-AXIOM"
+
 # Parse arguments
-while getopts "r:" opt; do
+while getopts "r:t:" opt; do
   case $opt in
     r) REGION="$OPTARG" ;;
+    t) TAG="$OPTARG" ;;
     *) usage ;;
   esac
 done
@@ -66,26 +70,38 @@ aws ec2 create-key-pair \
   --output text > "$KEY_PATH"
 chmod 400 "$KEY_PATH"
 
-# Create the security group
-echo "Creating security group: $SG_NAME..."
-SG_ID=$(aws ec2 create-security-group \
-  --group-name "$SG_NAME" \
-  --description "$SG_DESCRIPTION" \
+# Check if the security group already exists
+echo "Checking for existing security group: $SG_NAME..."
+SG_ID=$(aws ec2 describe-security-groups \
   --region "$REGION" \
-  --query "GroupId" \
-  --output text)
+  --filters "Name=group-name,Values=$SG_NAME" \
+  --query "SecurityGroups[0].GroupId" \
+  --output text 2>/dev/null || echo "")
 
-# Add rules to the security group
-echo "Adding rules to security group..."
-for PORT in "${PORTS[@]}"; do
-  OK=$(aws ec2 authorize-security-group-ingress \
-    --group-id "$SG_ID" \
-    --protocol tcp \
-    --port "$PORT" \
-    --cidr 0.0.0.0/0 \
-    --region "$REGION")
-  echo "Port $PORT added to security group."
-done
+# Create the security group if it doesn't exist
+if [[ -z "$SG_ID" ]]; then
+  echo "Creating security group: $SG_NAME..."
+  SG_ID=$(aws ec2 create-security-group \
+    --group-name "$SG_NAME" \
+    --description "$SG_DESCRIPTION" \
+    --region "$REGION" \
+    --query "GroupId" \
+    --output text)
+
+  # Add rules to the security group
+  echo "Adding rules to security group..."
+  for PORT in "${PORTS[@]}"; do
+    OK=$(aws ec2 authorize-security-group-ingress \
+      --group-id "$SG_ID" \
+      --protocol tcp \
+      --port "$PORT" \
+      --cidr 0.0.0.0/0 \
+      --region "$REGION")
+    echo "Port $PORT added to security group."
+  done
+else
+  echo "Security group already exists with ID: $SG_ID"
+fi
 
 # Launch the EC2 instance
 echo "Creating EC2 instance..."
@@ -97,7 +113,7 @@ INSTANCE_ID=$(aws ec2 run-instances \
   --security-group-ids "$SG_ID" \
   --region "$REGION" \
   --block-device-mappings "[{\"DeviceName\":\"/dev/xvda\",\"Ebs\":{\"VolumeSize\":$VOLUME_SIZE,\"DeleteOnTermination\":true}}]" \
-  --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=PRESALES-AXIOM}]" \
+  --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=${TAG}}]" \
   --query "Instances[0].InstanceId" \
   --output text)
 

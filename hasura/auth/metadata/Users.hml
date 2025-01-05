@@ -126,42 +126,6 @@ definition:
               sessionVariable: 'x-hasura-user-id'
 
 ---
-kind: Relationship
-version: v1
-definition:
-  name: formatCreatedAtTimestamp
-  sourceType: Users
-  target:
-    command:
-      name: ToDateString
-      subgraph: globals
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: createdAt
-      target:
-        argument:
-          argumentName: date
-
----
-kind: Relationship
-version: v1
-definition:
-  name: formatUpdatedAtTimestamp
-  sourceType: Users
-  target:
-    command:
-      name: ToDateString
-      subgraph: globals
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: updatedAt
-      target:
-        argument:
-          argumentName: date
-
----
 kind: BooleanExpressionType
 version: v1
 definition:

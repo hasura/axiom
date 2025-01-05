@@ -1,9 +1,9 @@
-name: axiomstarterdata
+name: ${CONTAINER_PREFIX}
 services:
   # Databases
   postgres:
     image: postgres
-    container_name: ${CONTAINER_PREFIX}postgres
+    container_name: ${CONTAINER_PREFIX}_postgres
     restart: unless-stopped
     volumes:
       - postgres-data:/var/lib/postgresql/data
@@ -22,7 +22,7 @@ services:
 
   pgvector:
     image: ankane/pgvector:latest
-    container_name: ${CONTAINER_PREFIX}pgvector
+    container_name: ${CONTAINER_PREFIX}_pgvector
     restart: unless-stopped
     ports:
       - "5433:5432"
@@ -41,7 +41,7 @@ services:
 
   mongodb:
     image: mongo
-    container_name: ${CONTAINER_PREFIX}mongodb
+    container_name: ${CONTAINER_PREFIX}_mongodb
     restart: unless-stopped
     ports:
       - "27017:27017"

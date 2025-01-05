@@ -5,7 +5,7 @@
   import_playbook: configure_docker.yml
 
 - name: Clone and configure Axiom repository
-  hosts: demo
+  hosts: demo_servers
   become: true
   tasks:
     - name: Clone axiom repository
@@ -20,22 +20,18 @@
         file: ../.env
         name: env_vars
 
-    - name: Setup environment variables
-      ansible.builtin.copy:
-        dest: /home/ubuntu/axiom/.data/.env
+    - name: Setup environment variables from Ansible -> Docker
+      ansible.builtin.template:
+        src: templates/env_vars.j2
+        dest: "{{ env_file_path }}"
         owner: ubuntu
         group: ubuntu
         mode: '0600'
-        content: |
-          CONTAINER_PREFIX={{ env_vars.CONTAINER_PREFIX }}
-          MONGO_PASSWORD={{ env_vars.MONGO_PASSWORD }}
-          POSTGRES_PASSWORD={{ env_vars.POSTGRES_PASSWORD }}
-          CLICKHOUSE_PASSWORD={{ env_vars.CLICKHOUSE_PASSWORD }}
-          CACHING_PLUGIN_SECRET={{ env_vars.CACHING_PLUGIN_SECRET }}
-          CACHING_PLUGIN_REDIS_URL={{ env_vars.CACHING_PLUGIN_REDIS_URL }}
+      vars:
+        env_file_path: "/home/ubuntu/axiom/.data/{{ demo_profile }}/.env"
 
     - name: Turn on the demo
-      ansible.builtin.command: /usr/local/bin/ddn run demo-telco
+      ansible.builtin.command: /usr/local/bin/ddn run docker-start-{{ demo_profile }}
       args:
         chdir: /home/ubuntu/axiom
       register: ddn_demo_start

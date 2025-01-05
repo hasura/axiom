@@ -2,89 +2,9 @@
 kind: ScalarType
 version: v1
 definition:
-  name: Timestamptz
-  graphql:
-    typeName: Auth_Timestamptz
-
----
-kind: ScalarType
-version: v1
-definition:
   name: Varchar
   graphql:
-    typeName: Auth_Varchar
-
----
-kind: ScalarType
-version: v1
-definition:
-  name: Int4
-  graphql:
-    typeName: Auth_Int4
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: auth
-  dataConnectorScalarType: timestamptz
-  representation: Timestamptz
-  graphql:
-    comparisonExpressionTypeName: Auth_TimestamptzComparisonExp
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: auth
-  dataConnectorScalarType: varchar
-  representation: Varchar
-  graphql:
-    comparisonExpressionTypeName: Auth_VarcharComparisonExp
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: auth
-  dataConnectorScalarType: int4
-  representation: Int4
-  graphql:
-    comparisonExpressionTypeName: Auth_Int4ComparisonExp
-
----
-kind: BooleanExpressionType
-version: v1
-definition:
-  name: TimestamptzBoolExp
-  operand:
-    scalar:
-      type: Timestamptz
-      comparisonOperators:
-        - name: _eq
-          argumentType: Timestamptz!
-        - name: _gt
-          argumentType: Timestamptz!
-        - name: _gte
-          argumentType: Timestamptz!
-        - name: _in
-          argumentType: "[Timestamptz!]!"
-        - name: _lt
-          argumentType: Timestamptz!
-        - name: _lte
-          argumentType: Timestamptz!
-        - name: _neq
-          argumentType: Timestamptz!
-      dataConnectorOperatorMapping:
-        - dataConnectorName: auth
-          dataConnectorScalarType: timestamptz
-          operatorMapping: {}
-  logicalOperators:
-    enable: true
-  isNull:
-    enable: true
-  graphql:
-    typeName: TimestamptzBoolExp_2
+    typeName: Varchar
 
 ---
 kind: BooleanExpressionType
@@ -130,7 +50,7 @@ definition:
         - name: ts_match_tt
           argumentType: Varchar!
       dataConnectorOperatorMapping:
-        - dataConnectorName: auth
+        - dataConnectorName: mypostgres
           dataConnectorScalarType: varchar
           operatorMapping: {}
   logicalOperators:
@@ -138,7 +58,25 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: VarcharBoolExp_1
+    typeName: VarcharBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: mypostgres
+  dataConnectorScalarType: varchar
+  representation: Varchar
+  graphql:
+    comparisonExpressionTypeName: VarcharComparisonExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: Int4
+  graphql:
+    typeName: Int4
 
 ---
 kind: BooleanExpressionType
@@ -164,7 +102,7 @@ definition:
         - name: _neq
           argumentType: Int4!
       dataConnectorOperatorMapping:
-        - dataConnectorName: auth
+        - dataConnectorName: mypostgres
           dataConnectorScalarType: int4
           operatorMapping: {}
   logicalOperators:
@@ -172,35 +110,17 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: Int4BoolExp_2
+    typeName: Int4BoolExp
 
 ---
-kind: AggregateExpression
+kind: DataConnectorScalarRepresentation
 version: v1
 definition:
-  name: TimestamptzAggExp
-  operand:
-    scalar:
-      aggregatedType: Timestamptz
-      aggregationFunctions:
-        - name: max
-          returnType: Timestamptz
-        - name: min
-          returnType: Timestamptz
-      dataConnectorAggregationFunctionMapping:
-        - dataConnectorName: auth
-          dataConnectorScalarType: timestamptz
-          functionMapping:
-            max:
-              name: max
-            min:
-              name: min
-  count:
-    enable: true
-  countDistinct:
-    enable: true
+  dataConnectorName: mypostgres
+  dataConnectorScalarType: int4
+  representation: Int4
   graphql:
-    selectTypeName: TimestamptzAggExp_2
+    comparisonExpressionTypeName: Int4ComparisonExp
 
 ---
 kind: ScalarType
@@ -208,17 +128,7 @@ version: v1
 definition:
   name: Text
   graphql:
-    typeName: Text_1
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: auth
-  dataConnectorScalarType: text
-  representation: Text
-  graphql:
-    comparisonExpressionTypeName: TextComparisonExp_1
+    typeName: Text
 
 ---
 kind: BooleanExpressionType
@@ -264,7 +174,7 @@ definition:
         - name: ts_match_tt
           argumentType: Text!
       dataConnectorOperatorMapping:
-        - dataConnectorName: auth
+        - dataConnectorName: mypostgres
           dataConnectorScalarType: text
           operatorMapping: {}
   logicalOperators:
@@ -272,7 +182,17 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: TextBoolExp_2
+    typeName: TextBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: mypostgres
+  dataConnectorScalarType: text
+  representation: Text
+  graphql:
+    comparisonExpressionTypeName: TextComparisonExp
 
 ---
 kind: AggregateExpression
@@ -288,7 +208,7 @@ definition:
         - name: min
           returnType: Text
       dataConnectorAggregationFunctionMapping:
-        - dataConnectorName: auth
+        - dataConnectorName: mypostgres
           dataConnectorScalarType: varchar
           functionMapping:
             max:
@@ -300,25 +220,15 @@ definition:
   countDistinct:
     enable: true
   graphql:
-    selectTypeName: VarcharAggExp_1
+    selectTypeName: VarcharAggExp
 
 ---
 kind: ScalarType
 version: v1
 definition:
-  name: Numeric_1
+  name: Numeric
   graphql:
-    typeName: Numeric_1
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: auth
-  dataConnectorScalarType: numeric
-  representation: Numeric_1
-  graphql:
-    comparisonExpressionTypeName: NumericComparisonExp_1
+    typeName: Numeric
 
 ---
 kind: BooleanExpressionType
@@ -327,24 +237,24 @@ definition:
   name: NumericBoolExp
   operand:
     scalar:
-      type: Numeric_1
+      type: Numeric
       comparisonOperators:
         - name: _eq
-          argumentType: Numeric_1!
+          argumentType: Numeric!
         - name: _gt
-          argumentType: Numeric_1!
+          argumentType: Numeric!
         - name: _gte
-          argumentType: Numeric_1!
+          argumentType: Numeric!
         - name: _in
-          argumentType: "[Numeric_1!]!"
+          argumentType: "[Numeric!]!"
         - name: _lt
-          argumentType: Numeric_1!
+          argumentType: Numeric!
         - name: _lte
-          argumentType: Numeric_1!
+          argumentType: Numeric!
         - name: _neq
-          argumentType: Numeric_1!
+          argumentType: Numeric!
       dataConnectorOperatorMapping:
-        - dataConnectorName: auth
+        - dataConnectorName: mypostgres
           dataConnectorScalarType: numeric
           operatorMapping: {}
   logicalOperators:
@@ -352,7 +262,17 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: NumericBoolExp_2
+    typeName: NumericBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: mypostgres
+  dataConnectorScalarType: numeric
+  representation: Numeric
+  graphql:
+    comparisonExpressionTypeName: NumericComparisonExp
 
 ---
 kind: ScalarType
@@ -360,17 +280,7 @@ version: v1
 definition:
   name: Int8
   graphql:
-    typeName: Int8_2
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: auth
-  dataConnectorScalarType: int8
-  representation: Int8
-  graphql:
-    comparisonExpressionTypeName: Int8ComparisonExp_2
+    typeName: Int8
 
 ---
 kind: BooleanExpressionType
@@ -396,7 +306,7 @@ definition:
         - name: _neq
           argumentType: Int8!
       dataConnectorOperatorMapping:
-        - dataConnectorName: auth
+        - dataConnectorName: mypostgres
           dataConnectorScalarType: int8
           operatorMapping: {}
   logicalOperators:
@@ -404,7 +314,17 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: Int8BoolExp_2
+    typeName: Int8BoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: mypostgres
+  dataConnectorScalarType: int8
+  representation: Int8
+  graphql:
+    comparisonExpressionTypeName: Int8ComparisonExp
 
 ---
 kind: AggregateExpression
@@ -416,7 +336,7 @@ definition:
       aggregatedType: Int4
       aggregationFunctions:
         - name: avg
-          returnType: Numeric_1
+          returnType: Numeric
         - name: bit_and
           returnType: Int4
         - name: bit_or
@@ -428,21 +348,21 @@ definition:
         - name: min
           returnType: Int4
         - name: stddev
-          returnType: Numeric_1
+          returnType: Numeric
         - name: stddev_pop
-          returnType: Numeric_1
+          returnType: Numeric
         - name: stddev_samp
-          returnType: Numeric_1
+          returnType: Numeric
         - name: sum
           returnType: Int8
         - name: var_pop
-          returnType: Numeric_1
+          returnType: Numeric
         - name: var_samp
-          returnType: Numeric_1
+          returnType: Numeric
         - name: variance
-          returnType: Numeric_1
+          returnType: Numeric
       dataConnectorAggregationFunctionMapping:
-        - dataConnectorName: auth
+        - dataConnectorName: mypostgres
           dataConnectorScalarType: int4
           functionMapping:
             avg:
@@ -476,5 +396,31 @@ definition:
   countDistinct:
     enable: true
   graphql:
-    selectTypeName: Int4AggExp_2
+    selectTypeName: Int4AggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: VarcharOrderByExp
+  operand:
+    scalar:
+      orderedType: Varchar
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: VarcharOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: Int4OrderByExp
+  operand:
+    scalar:
+      orderedType: Int4
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: Int4OrderByExp
 
