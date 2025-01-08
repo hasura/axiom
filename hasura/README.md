@@ -15,7 +15,8 @@ To utilise an existing demo profile, run the commands specified in `.hasura/cont
 - **`demo-telco`**: Executes `docker-start-telco` and launches Hasura locally.
 
 ### Deploying to the Cloud
-**TODO**: Add instructions for deploying demo profiles to the cloud using the deploy script.
+For deployment instructions, see [scripts/deploy/README.md](../scripts/deploy/README.md).
+
 
 ---
 
