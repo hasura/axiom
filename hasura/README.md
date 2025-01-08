@@ -1,84 +1,95 @@
+# Axiom Hasura Installation Guide
 
-# Axiom Hasura Install
-Axiom provides a library of different demo profiles that can be used (and deployed) with ease. The aim of Axiom is allow multiple different Hasura industry demos to be used from one place.
+Axiom provides a centralised platform for deploying and testing a variety of Hasura industry demos. It serves as:
+- A library of demo profiles for quick deployment.
+- A testing ground for showcasing new Hasura features with real-world examples.
 
-Axiom also provides a testing ground for new Hasura features and will include recently released features as a means of providing a real world example.
+---
 
+## Existing Demo Profiles
 
-## Existing demo profiles
-### Usage
-To use an existing demo profile, use the commands that exist within the `.hasura/context.yaml` file. By abstracting the commands that Hasura uses into `ddn run` commands, it's far easier to spin up and test industry demos:
+### How to Use
+To utilise an existing demo profile, run the commands specified in `.hasura/context.yaml`. These commands are abstracted into `ddn run` scripts for simplicity:
+- **`build-telco`**: Builds metadata for the telco demo.
+- **`docker-start-telco`**: Sets up the telco demo's Docker environment.
+- **`demo-telco`**: Executes `docker-start-telco` and launches Hasura locally.
 
-* build-telco: builds the metadata that powers the telco demo
-* docker-start-telco: creates the docker ecosystem for the telco demo
-* demo-telco: runs docker-start-telco and then spins up Hasura locally
+### Deploying to the Cloud
+**TODO**: Add instructions for deploying demo profiles to the cloud using the deploy script.
 
+---
 
-### Deploying an existing demo profile to the cloud
-TODO: Add directions for how to use the deploy script
+## Creating a New Demo Profile
 
+New profiles can be added with minimal effort, enabling streamlined testing and cloud deployment. Follow these steps:
 
-## Setting up a new demo profile
-New demo profiles can be incorporated with a limited number of steps. Doing this will allow the deployment scripts (and CI/CD) to hook into the demo profile and make testing/rollout to cloud more simple.
+### Step 1: Naming Your Profile
+Decide on a name for your profile. This name (e.g., `telco`, `starter`) will be referenced throughout the repo.
 
-### Instructions
-First decide on a name for your profile. This will be important as it'll be a key to use throughout this repo e.g. the telco demo is called 'telco' and the stub/example demo is called 'starter'.
+### Step 2: Initial Setup
+Use the starter profile to get bootstrapped sooner with existing/common data sets. BYO `compose.yaml` and `.env` is also viable but the location must be in `.data/$PROFILE`
 
-#### Set up profile and add default data
-```
-# Set your $PROFILE so all future commands work
-PROFILE=<your profile name here>
+Run the following commands to set up your profile.
+
+```bash
+# Set the $PROFILE variable for reuse
+PROFILE=<your_profile_name>
 echo $PROFILE
 
-# Create a new directory in .data for your demo profile
+# Create the directory structure
 mkdir -p .data/$PROFILE
 
-# Copy the starter compose.yaml in (or create your own docker compose)
+# Add the starter compose.yaml
 cp .data/starter/compose.yaml .data/$PROFILE/compose.yaml
 
-# Copy the starter dataset in. Alternatively, use your own that are referenced in your .data/$PROFILE/compose.yaml
+# Add starter dataset or your own
 cp -r .data/starter/postgres .data/$PROFILE/
 
-# Copy the environment variable template and alter/add any additional variables you have in your compose.yaml that should not be committed.
-cp .data/.env.template .data/$PROFILE/.env`
-
-# Use this one-liner to rename the containers if needed
+# Copy and customise the environment file
+cp .data/.env.template .data/$PROFILE/.env
 sed "s/CONTAINER_PREFIX=axiomdata/CONTAINER_PREFIX=axiom${PROFILE}/g" .data/$PROFILE/.env > .data/$PROFILE/.env.tmp && mv .data/$PROFILE/.env.tmp .data/$PROFILE/.env
 ```
 
-#### Run docker for local datasets
-Navigate into the hasura directory and create the new profile:
+### Step 3: Local Docker Setup
+1. Navigate to the Hasura directory:
+   ```bash
+   cd hasura
+   ```
 
-`cd hasura`
+2. Update `.hasura/context.yaml`:
+   Add a script for starting the Docker environment. Replace `$PROFILE` with your profile name:
 
-Add this to the scripts section in your `.hasura/context.yaml` making sure you **manually** replace `$PROFILE` with the name of your profile:
-```
-docker-start-$PROFILE:
-      bash: export DATASET=$PROFILE; ../.data/initdb-prepare.sh; docker compose -f ../.data/$PROFILE/compose.yaml --env-file ../.data/$PROFILE/.env up --build --pull always -d
-      powershell: $Env:DATASET = "$PROFILE"; docker compose -f ../.data/$PROFILE/compose.yaml --env-file ../.data/$PROFILE/.env up --build --pull always -d
-```
+   ```yaml
+   docker-start-$PROFILE:
+     bash: export DATASET=$PROFILE; ../.data/initdb-prepare.sh; docker compose -f ../.data/$PROFILE/compose.yaml --env-file ../.data/$PROFILE/.env up --build --pull always -d
+     powershell: $Env:DATASET = "$PROFILE"; docker compose -f ../.data/$PROFILE/compose.yaml --env-file ../.data/$PROFILE/.env up --build --pull always -d
+   ```
 
-N.B. the initdb-prepare.sh will automatically combine common datasets (auth and support). This can be removed if you don't plan on using those.
+   This can be achieved automatically with `yq`
+   ```
+   yq eval ".definition.scripts[\"docker-start-$PROFILE\"] = {\"bash\": \"export DATASET=\$PROFILE; ../.data/initdb-prepare.sh; docker compose -f ../.data/\$PROFILE/compose.yaml --env-file ../.data/\$PROFILE/.env up --build --pull always -d\", \"powershell\": \"\$Env:DATASET = \\\"\$PROFILE\\\"; docker compose -f ../.data/\$PROFILE/compose.yaml --env-file ../.data/\$PROFILE/.env up --build --pull always -d\"}" -i .hasura/context.yaml
+   ```
 
+---
 
+### Step 4: Creating the Demo Project
 
-#### Create the project for your demo profile
-```
-ddn project create axiom-$PROFILE
-ddn context create-context axiom-$PROFILE
-ddn context set localEnvFile .env.$PROFILE
-ddn context set cloudEnvFile .env.cloud.$PROFILE
-ddn context set project axiom-$PROFILE
-```
+1. Create a new project and context:
+   ```bash
+   ddn project create axiom-$PROFILE
+   ddn context create-context axiom-$PROFILE
+   ddn context set localEnvFile .env.$PROFILE
+   ddn context set cloudEnvFile .env.cloud.$PROFILE
+   ddn context set project axiom-$PROFILE
+   ```
 
-#### Create your local supergraph
+2. Set up a supergraph directory:
+   ```bash
+   mkdir -p supergraph-config/$PROFILE
+   ```
 
-```
-# Create a supergraph directory
-mkdir -p supergraph-config/$PROFILE
-
-# Copy your supergraph in to supergraph-config/$PROFILE/1-supergraph.yaml. Optional: use the following as a starter
-
+3. Add a starter supergraph configuration:
+```bash
 cat <<EOF > supergraph-config/$PROFILE/1-supergraph.yaml
 kind: Supergraph
 version: v2
@@ -88,104 +99,114 @@ definition:
 EOF
 ```
 
-#### Set up profile subgraph(s)
-Init a new subgraph for your profile
-```
-SUBGRAPH=commercial
+---
 
-# Create any subgraphs on the cloud project.
-# auth and support may be omitted if shared subgraphs are not being used
-ddn project subgraph create auth
-ddn project subgraph create support
-ddn project subgraph create globals
-ddn project subgraph create $SUBGRAPH
-```
+### Step 5: Adding Subgraphs
+1. Create subgraphs:
+   ```bash
+   SUBGRAPH=<your_subgraph_name>
+   ddn project subgraph create auth
+   ddn project subgraph create support
+   ddn project subgraph create globals
+   ddn project subgraph create $SUBGRAPH
+   ```
 
-Initialise the structure for your custom subgraphs in the repo
-```
-ddn subgraph init $SUBGRAPH --dir industry/$PROFILE/$SUBGRAPH
-```
+2. Initialise and link subgraphs:
+   ```bash
+   ddn subgraph init $SUBGRAPH --dir industry/$PROFILE/$SUBGRAPH
+   ddn subgraph add --subgraph ./industry/$PROFILE/$SUBGRAPH/subgraph.yaml --target-supergraph ./supergraph-config/$PROFILE/1-supergraph.yaml
+   ```
 
-Add your subgraphs to the local supergraph
-```
-ddn subgraph add --subgraph ./industry/$PROFILE/$SUBGRAPH/subgraph.yaml --target-supergraph ./supergraph-config/$PROFILE/1-supergraph.yaml
-ddn subgraph add --subgraph ./auth/subgraph.yaml --target-supergraph ./supergraph-config/$PROFILE/1-supergraph.yaml
-ddn subgraph add --subgraph ./support/subgraph.yaml --target-supergraph ./supergraph-config/$PROFILE/1-supergraph.yaml
-```
+---
 
-#### Seed environment files
-```
-cp .env.local .env.$PROFILE
-cp .env.local .env.cloud.$PROFILE
-```
+### Step 6: Environment and Connectors
+1. Seed environment files:
+   ```bash
+   cp .env.local .env.$PROFILE
+   cp .env.local .env.cloud.$PROFILE
+   ```
 
-#### Add your connectors
-```
-# Define your connector name
-CONNECTOR=myconnector
+2. Define connectors:
+   ```bash
+   CONNECTOR=<your_connector_name>
+   ddn connector init $CONNECTOR -i --subgraph industry/$PROFILE/$SUBGRAPH/subgraph.yaml
+   ddn connector introspect $CONNECTOR --subgraph industry/$PROFILE/$SUBGRAPH/subgraph.yaml
+   ddn model add $CONNECTOR "*" --subgraph industry/$PROFILE/$SUBGRAPH/subgraph.yaml
+   ```
 
-# Run through connector logic
-ddn connector init $CONNECTOR -i --subgraph industry/$PROFILE/$SUBGRAPH/subgraph.yaml
-ddn connector introspect $CONNECTOR --subgraph industry/$PROFILE/$SUBGRAPH/subgraph.yaml
-ddn model add $CONNECTOR "*" --subgraph industry/$PROFILE/$SUBGRAPH/subgraph.yaml
-```
+3. Add region configurations:
+   Update `connector.yaml` in industry/$PROFILE/$SUBGRAPH/connector:
+   ```yaml
+   regionConfiguration:
+     - mode: ReadWrite
+       region: gcp-us-west2
+   ```
 
-Add the region config to `industry/$PROFILE/$SUBGRAPH/connector/$CONNECTOR/connector.yaml`
-```
-  regionConfiguration:
-    - mode: ReadWrite
-      region: gcp-us-west2
-```
+   This can be achieved automatically with `yq`
+   ```
+   yq eval '.definition.regionConfiguration = [{"mode": "ReadWrite", "region": "gcp-us-west2"}]' -i industry/testing/commercial/connector/myconnector/connector.yaml
+   ```
 
+---
 
-#### Create a profile compose
-```
+### Step 7: Docker Compose
+Create a profile-specific Docker Compose file:
+```bash
 cp compose.yaml compose-$PROFILE.yaml
 ```
+**Note:** Do not commit changes to the base `compose.yaml`.
 
-N.B. Don't commit anything to the original compose.yaml
+---
 
+### Step 8: Add remaining scripts to `.hasura/context.yaml`
+1. Build script:
+   ```yaml
+   build-$PROFILE:
+     bash: ddn supergraph build local --env-file .env.$PROFILE --env-file .env --supergraph supergraph-config/$PROFILE/1-supergraph.yaml
+   ```
 
-#### DDN Scripts
-Create easy start scripts in `.hasura/context.yaml` for the following. Remember to **manually** change the `$PROFILE` for your profile name.
+   This can be achieved automatically with `yq`
+   ```
+   yq eval ".definition.scripts[\"build-$PROFILE\"] = {\"bash\": \"ddn supergraph build local --env-file .env.$PROFILE --env-file .env --supergraph supergraph-config/$PROFILE/1-supergraph.yaml\"}" -i .hasura/context.yaml
+   ```
 
-* build-$PROFILE
-```
-build-$PROFILE:
-      bash: ddn supergraph build local --env-file .env.$PROFILE --env-file .env --supergraph supergraph-config/$PROFILE/1-supergraph.yaml
-      powershell: ddn supergraph build local --env-file .env.$PROFILE --env-file .env --supergraph supergraph-config/$PROFILE/1-supergraph.yaml
-```
+2. Demo script:
+   ```yaml
+   demo-$PROFILE:
+     bash: ddn run docker-start-$PROFILE; HASURA_DDN_PAT=$(ddn auth print-pat) docker compose -f compose-$PROFILE.yaml --env-file .env.$PROFILE --env-file .env up --build --pull always -d
+   ```
 
-* demo-$PROFILE
-```
-demo-$PROFILE:
-      bash: ddn run docker-start-$PROFILE; HASURA_DDN_PAT=$(ddn auth print-pat) docker compose -f compose-$PROFILE.yaml --env-file .env.$PROFILE --env-file .env up --build --pull always -d
-      powershell: $Env:HASURA_DDN_PAT = ddn auth print-pat; docker compose -f compose-$PROFILE.yaml --env-file .env.local --env-file .env up --build --pull always -d
-```
+   This can be achieved automatically with `yq`
+   ```
+   yq eval ".definition.scripts[\"demo-$PROFILE\"] = {\"bash\": \"ddn run docker-start-$PROFILE; HASURA_DDN_PAT=\$(ddn auth print-pat) docker compose -f compose-$PROFILE.yaml --env-file .env.$PROFILE --env-file .env up --build --pull always -d\"}" -i .hasura/context.yaml
+   ```
 
-### Test the build
-Once the ddn scripts have been added in to `.hasura/context.yaml` test the build
+---
 
-```
-ddn run build-$PROFILE
-```
+### Testing and Deployment
 
-### Start the demo
+1. **Test the Build:**
+   ```bash
+   ddn run build-$PROFILE
+   ```
 
-```
-ddn run demo-$PROFILE
-```
+2. **Start the Demo:**
+   ```bash
+   ddn run demo-$PROFILE
+   ```
 
-### Deploying to the cloud
-In order to deploy to cloud, it is mandatory for the data sources to be available on the open internet.
+3. **Cloud Deployment:**
+   - Ensure data sources are internet-accessible.
+   - Update `.env.cloud.$PROFILE` with the relevant URLs.
+   - Run the deploy script:
+     ```bash
+     ./scripts/deploy/deploy.mjs --context axiom-$PROFILE -p $PROFILE -l DEBUG
+     ```
 
-This can either be achieved by using cloud services, or by using the resources within the `infra` directory of this repo.
+---
 
-N.B. As Ansible deploys the main branch of the repo to servers, ensure the working demo profile above is committed before deploying with Ansible.
+## Notes
+- **Shared Datasets:** `auth` and `support` are optional and can be omitted.
+- **Ansible Deployments:** Ensure changes are committed to the `main` branch for cloud deployments.
 
-Once your data sources are available over the internet, update `.env.cloud.$PROFILE` with the internet-accessible database URLs.
-
-
-TODO: Detailed instructions for running the deploy script
-
-`./scripts/deploy/deploy.mjs --context axiom-$PROFILE -p $PROFILE -l DEBUG`
+**TODO:** Add detailed instructions for deploying demo profiles to the cloud.
