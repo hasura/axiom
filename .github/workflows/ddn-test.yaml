@@ -38,6 +38,7 @@ jobs:
           sudo apt-get install -y jq
 
       - name: Create .env.cloud.default
+        working-directory: ./hasura
         if: env.no_op != 'true'
         run: |
           echo "${{ secrets.ENV_CLOUD_DEFAULT }}" > .env.cloud.default
@@ -45,12 +46,21 @@ jobs:
       - name: Detect Connector Changes
         if: env.no_op != 'true'
         run: |
+          # Pull the base branch
+          git fetch origin ${{ github.base_ref }}
+
           # Check if any changes occurred in the connector directories
-          if git diff --name-only ${{ github.sha }}~1 ${{ github.sha }} | grep -q 'connector/'; then
+          if git diff --name-only origin/${{ github.base_ref }} ${{ github.sha }} | grep -q 'connector/'; then
             echo "connector_changes=true" >> $GITHUB_ENV
           else
             echo "connector_changes=false" >> $GITHUB_ENV
           fi
+
+      - name: Install deploy script dependencies
+        if: env.no_op != 'true'
+        run: |
+          cd ./scripts/deploy
+          npm i
 
       - name: Build supergraph
         if: env.no_op != 'true'
@@ -58,42 +68,66 @@ jobs:
           calculatedSha=$(git rev-parse --short ${{ github.sha }})
           if [ "${{ env.connector_changes }}" = "true" ]; then
             echo "Building connectors..."
-            ddn supergraph build create \
-              --supergraph ./supergraph-with-mutations.yaml \
-              --context default \
-              --description "${calculatedSha} [PR-${{ github.event.pull_request.number }}: ${{ github.event.pull_request.title }}] Test build for commit $GITHUB_SHA" \
-              --out=json > build_output.json
+            ./scripts/deploy/deploy.mjs \
+              --context axiom-test \
+              --profile telco \
+              --override-description "${calculatedSha} [PR-${{ github.event.pull_request.number }}: ${{ github.event.pull_request.title }}] Test build for commit $GITHUB_SHA" \
+              --rebuild-connectors \
+              --override \
+              --log-level FATAL \
+              --quiet \
+              --no-interaction > build_output.json
           else
             echo "Skipping connector build."
-            ddn supergraph build create --no-build-connectors \
-              --supergraph ./supergraph-with-mutations.yaml \
-              --context default \
-              --description "${calculatedSha} [PR-${{ github.event.pull_request.number }}: ${{ github.event.pull_request.title }}] Test build for commit $GITHUB_SHA" \
-              --out=json > build_output.json
+            ./scripts/deploy/deploy.mjs \
+              --context axiom-test \
+              --profile telco \
+              --override-description "${calculatedSha} [PR-${{ github.event.pull_request.number }}: ${{ github.event.pull_request.title }}] Test build for commit $GITHUB_SHA" \
+              --override \
+              --log-level FATAL \
+              --quiet \
+              --no-interaction > build_output.json
           fi
 
       - name: Extract URLs from JSON
         if: env.no_op != 'true'
         run: |
-          BUILD_URL=$(jq -r '.build_url' build_output.json)
-          CONSOLE_URL=$(jq -r '.console_url' build_output.json)
-          echo "build_url=$BUILD_URL" >> $GITHUB_ENV
-          echo "console_url=$CONSOLE_URL" >> $GITHUB_ENV
+          cat build_output.json
+          BUILD_URLS=$(jq -r '.build_url' build_output.json | tr '\n' ',')
+          CONSOLE_URLS=$(jq -r '.console_url' build_output.json | tr '\n' ',')
+          echo "build_urls=${BUILD_URLS%,}" >> $GITHUB_ENV
+          echo "console_urls=${CONSOLE_URLS%,}" >> $GITHUB_ENV
 
       - name: Add PR comment with build details
         if: env.no_op != 'true'
         uses: actions/github-script@v7
         with:
           script: |
-            const buildUrl = process.env.build_url;
-            const consoleUrl = process.env.console_url;
+            const buildUrls = process.env.build_urls.split(',').map(url => url.trim());
+            const consoleUrls = process.env.console_urls.split(',').map(url => url.trim());
             const prNumber = context.payload.pull_request.number;
             const commitId = context.sha;
+
+            const buildUrlsList = buildUrls.map(url => `- [${url}](${url})`).join('\n');
+            const consoleUrlsList = consoleUrls.map(url => `- [${url}](${url})`).join('\n');
+
+            const commentBody = `
+            Supergraph build was successful! 🎉
+
+            **Build URLs:**
+            ${buildUrlsList}
+
+            **Console URLs:**
+            ${consoleUrlsList}
+
+            **Commit ID:** ${commitId}
+            `;
+
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `Supergraph build was successful! 🎉\n\n**Build URL:** [${buildUrl}](${buildUrl})\n**Console URL:** [${consoleUrl}](${consoleUrl})\n**Commit ID:** ${commitId}`
+              body: commentBody
             })
 
       - name: Add PR comment with no-op
@@ -139,32 +173,40 @@ jobs:
       - name: Prep Repository
         if: env.no_op != 'true'
         run: |
-          cp .hasura/context.yaml.template .hasura/context.yaml
-          cp .env.template .env
-          cp .env.local.template .env.local
-          cp .data/.env.template .data/.env
+          cp ./hasura/.env.template ./hasura/.env
+          cp ./hasura/.env.local.template ./hasura/.env.local
+          cp .data/.env.template .data/telco/.env
 
       - name: Build All Supergraphs
+        working-directory: ./hasura
         if: env.no_op != 'true'
         run: |
-          ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph-project-queries.yaml
-          ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph-domain.yaml
-          ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph.yaml
-          ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph-with-mutations.yaml
+          ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph-config/telco/1-supergraph-project-queries.yaml
+          ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph-config/telco/2-supergraph-domain.yaml
+          ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph-config/telco/3-supergraph.yaml
+          ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph-config/telco/4-supergraph-with-mutations.yaml
 
+      # TODO: could delete this too if everything is bundled into demo-telco
       - name: Set up demo databases
+        working-directory: ./hasura
         if: env.no_op != 'true'
-        run: DATASET=telco docker compose -f .data/compose.yaml --env-file .data/.env up --build --pull always -d
+        run: ddn run docker-start-telco
+        # TODO: delete this
+        # run: DATASET=telco docker compose -f .data/compose.yaml --env-file .data/.env up --build --pull always -d
 
-      - name: Run DDN
+      - name: Set up demo databases & Run DDN
+        working-directory: ./hasura
         if: env.no_op != 'true'
         env:
           HASURA_DDN_PAT: ${{ secrets.HASURA_PAT }}
         run: |
-          docker compose -f compose.yaml \
-            --env-file .env.local \
-            --env-file .env \
-            up --build --pull always -d
+          ddn run demo-telco
+
+        # TODO: delete this
+        # docker compose -f compose.yaml \
+        #  --env-file .env.local \
+        #  --env-file .env \
+        #  up --build --pull always -d
 
       - name: Wait for GraphQL Service to Be Ready
         if: env.no_op != 'true'

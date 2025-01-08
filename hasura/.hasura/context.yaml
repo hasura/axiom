@@ -1,0 +1,79 @@
+kind: Context
+version: v3
+definition:
+  current: default
+  contexts:
+    au:
+      project: axiom-au
+      supergraph: ../supergraph.yaml
+      subgraph: ../customer/subgraph.yaml
+      localEnvFile: ../.env
+      cloudEnvFile: ../.env.cloud.au
+    axiom-fsi:
+      project: axiom-fsi
+      localEnvFile: ../.env.fsi
+      cloudEnvFile: ../.env.cloud.fsi
+    axiom-starter:
+      project: axiom-starter
+      supergraph: ../supergraph-config/starter/2-supergraph.yaml
+      subgraph: ../customer/subgraph.yaml
+      localEnvFile: ../.env.starter
+      cloudEnvFile: ../.env.cloud.starter
+    axiom-test:
+      project: axiom-test
+      supergraph: ../supergraph.yaml
+      subgraph: ../customer/subgraph.yaml
+      localEnvFile: ../.env
+      cloudEnvFile: ../.env.cloud.default
+    eu:
+      project: axiom-eu
+      supergraph: ../supergraph.yaml
+      subgraph: ../customer/subgraph.yaml
+      localEnvFile: ../.env
+      cloudEnvFile: ../.env.cloud.eu
+    sg:
+      project: axiom-sg
+      supergraph: ../supergraph.yaml
+      subgraph: ../customer/subgraph.yaml
+      localEnvFile: ../.env
+      cloudEnvFile: ../.env.cloud.sg
+    us-east:
+      project: axiom-us-east
+      supergraph: ../supergraph.yaml
+      subgraph: ../customer/subgraph.yaml
+      localEnvFile: ../.env
+      cloudEnvFile: ../.env.cloud.us-east
+    us-west:
+      project: axiom-us-west
+      supergraph: ../supergraph.yaml
+      subgraph: ../customer/subgraph.yaml
+      localEnvFile: ../.env
+      cloudEnvFile: ../.env.cloud.us-west
+  scripts:
+    build-starter:
+      bash: ddn supergraph build local --env-file .env.starter --env-file .env --supergraph supergraph-config/starter/2-supergraph.yaml
+      powershell: ddn supergraph build local --env-file .env.starter --env-file .env --supergraph supergraph-config/starter/2-supergraph.yaml
+    build-telco:
+      bash: ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph-config/telco/4-supergraph-with-mutations.yaml
+      powershell: ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph-config/telco/4-supergraph-with-mutations.yaml
+    demo-fsi:
+      bash: export DATASET=fsi; echo "not yet implemented"
+      powershell: $Env:DATASET = "fsi"; Write-Output "not yet implemented"
+    demo-healthcare:
+      bash: export DATASET=hc; echo "not yet implemented"
+      powershell: $Env:DATASET = "hc"; Write-Output "not yet implemented"
+    demo-starter:
+      bash: ddn run docker-start-starter; HASURA_DDN_PAT=$(ddn auth print-pat) docker compose -f compose-starter.yaml --env-file .env.starter --env-file .env up --build --pull always -d
+      powershell: $Env:HASURA_DDN_PAT = ddn auth print-pat; docker compose -f compose-starter.yaml --env-file .env.local --env-file .env up --build --pull always -d
+    demo-telco:
+      bash: ddn run docker-start-telco; HASURA_DDN_PAT=$(ddn auth print-pat) docker compose -f compose-telco.yaml --env-file .env.local --env-file .env up --build --pull always -d
+      powershell: $Env:HASURA_DDN_PAT = ddn auth print-pat; docker compose -f compose-telco.yaml --env-file .env.local --env-file .env up --build --pull always -d
+    docker-start-starter:
+      bash: export DATASET=starter; ../.data/initdb-prepare.sh; docker compose -f ../.data/starter/compose.yaml --env-file ../.data/starter/.env up --build --pull always -d
+      powershell: $Env:DATASET = "starter"; docker compose -f ../.data/starter/compose.yaml --env-file ../.data/starter/.env up --build --pull always -d
+    docker-start-telco:
+      bash: export DATASET=telco; ../.data/initdb-prepare.sh; docker compose -f ../.data/telco/compose.yaml --env-file ../.data/telco/.env up --build --pull always -d
+      powershell: $Env:DATASET = "starter"; docker compose -f ../.data/telco/compose.yaml --env-file ../.data/telco/.env up --build --pull always -d
+    docker-stop:
+      bash: for file in compose*.yaml $(find ../.data -type f -name "compose.yaml"); do docker compose -f $file down -v; done
+      powershell: docker compose -f compose.yaml down -v; docker compose -f .data/compose.yaml down -v

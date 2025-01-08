@@ -1,0 +1,19 @@
+kind: Connector
+version: v2
+definition:
+  name: logic
+  subgraph: customer
+  source: hasura/nodejs:v1.7.0
+  context: .
+  envMapping:
+    HASURA_CONNECTOR_PORT:
+      fromEnv: CUSTOMER_LOGIC_HASURA_CONNECTOR_PORT
+    HASURA_SERVICE_TOKEN_SECRET:
+      fromEnv: CUSTOMER_LOGIC_HASURA_SERVICE_TOKEN_SECRET
+    OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:
+      fromEnv: CUSTOMER_LOGIC_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+    OTEL_SERVICE_NAME:
+      fromEnv: CUSTOMER_LOGIC_OTEL_SERVICE_NAME
+  regionConfiguration:
+    - mode: ReadWrite
+      region: gcp-us-west2

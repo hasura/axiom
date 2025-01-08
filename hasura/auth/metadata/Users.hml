@@ -1,0 +1,182 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: Users
+  fields:
+    - name: createdAt
+      type: Timestamptz!
+    - name: email
+      type: Varchar
+    - name: id
+      type: Int4!
+    - name: password
+      type: Varchar
+    - name: roles
+      type: Varchar
+    - name: updatedAt
+      type: Timestamptz!
+  graphql:
+    typeName: Users
+    inputTypeName: Auth_UsersInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: auth
+      dataConnectorObjectType: users
+      fieldMapping:
+        createdAt:
+          column:
+            name: created_at
+        email:
+          column:
+            name: email
+        id:
+          column:
+            name: id
+        password:
+          column:
+            name: password
+        roles:
+          column:
+            name: roles
+        updatedAt:
+          column:
+            name: updated_at
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: Users
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - createdAt
+          - email
+          - id
+          - password
+          - roles
+          - updatedAt
+    - role: customer
+      output:
+        allowedFields:
+          - email
+          - id
+          - password
+          - roles
+
+---
+kind: Model
+version: v1
+definition:
+  name: Users
+  objectType: Users
+  source:
+    dataConnectorName: auth
+    collection: users
+  filterExpressionType: UsersBoolExp
+  orderableFields:
+    - fieldName: createdAt
+      orderByDirections:
+        enableAll: true
+    - fieldName: email
+      orderByDirections:
+        enableAll: true
+    - fieldName: id
+      orderByDirections:
+        enableAll: true
+    - fieldName: password
+      orderByDirections:
+        enableAll: true
+    - fieldName: roles
+      orderByDirections:
+        enableAll: true
+    - fieldName: updatedAt
+      orderByDirections:
+        enableAll: true
+  graphql:
+    selectMany:
+      queryRootField: users
+    selectUniques:
+      - queryRootField: usersById
+        uniqueIdentifier:
+          - id
+    orderByExpressionType: Auth_UsersOrderBy
+    filterInputTypeName: UsersFilterInput
+    aggregate:
+      queryRootField: usersAggregate
+  aggregateExpression: UsersAggExp
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: Users
+  permissions:
+    - role: admin
+      select:
+        filter: null
+    - role: customer
+      select:
+        filter:
+          fieldComparison:
+            field: id
+            operator: '_eq'
+            value:
+              sessionVariable: 'x-hasura-user-id'
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: UsersBoolExp
+  operand:
+    object:
+      type: Users
+      comparableFields:
+        - fieldName: createdAt
+          booleanExpressionType: TimestamptzBoolExp
+        - fieldName: email
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: id
+          booleanExpressionType: Int4BoolExp
+        - fieldName: password
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: roles
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: updatedAt
+          booleanExpressionType: TimestamptzBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Auth_UsersBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: UsersAggExp
+  operand:
+    object:
+      aggregatedType: Users
+      aggregatableFields:
+        - fieldName: createdAt
+          aggregateExpression: TimestamptzAggExp
+        - fieldName: email
+          aggregateExpression: VarcharAggExp
+        - fieldName: id
+          aggregateExpression: Int4AggExp
+        - fieldName: password
+          aggregateExpression: VarcharAggExp
+        - fieldName: roles
+          aggregateExpression: VarcharAggExp
+        - fieldName: updatedAt
+          aggregateExpression: TimestamptzAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: UsersAggExp
+

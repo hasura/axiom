@@ -1,0 +1,14 @@
+services:
+  example_mypostgres:
+    build:
+      context: .
+      dockerfile: .hasura-connector/Dockerfile.mypostgres
+    environment:
+      CONNECTION_URI: $EXAMPLE_MYPOSTGRES_CONNECTION_URI_1
+      HASURA_SERVICE_TOKEN_SECRET: $EXAMPLE_MYPOSTGRES_HASURA_SERVICE_TOKEN_SECRET_1
+      OTEL_EXPORTER_OTLP_ENDPOINT: $EXAMPLE_MYPOSTGRES_OTEL_EXPORTER_OTLP_ENDPOINT_1
+      OTEL_SERVICE_NAME: $EXAMPLE_MYPOSTGRES_OTEL_SERVICE_NAME_1
+    extra_hosts:
+      - local.hasura.dev:host-gateway
+    ports:
+      - 6571:8080

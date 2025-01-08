@@ -1,6 +1,8 @@
 # Axiom
 Hasura presales demo kit
 
+## Mostly superceded by docs in hasura/README.md
+
 ## Quickstart
 
 

@@ -33,6 +33,7 @@ program
         'Simulate the deployment without executing commands',
         false
     )
+    // It looks counter inttuitive to default --no-interaction to true but it's correct (see below)
     .option(
         '-n, --no-interaction',
         'Deploy without interactive questions',
@@ -42,6 +43,10 @@ program
         '-c, --context <context>',
         'Deploy specific context from .hasura/context.yaml',
         'default'
+    )
+    .requiredOption(
+        '-p --profile <profile>',
+        'Deploy from demo config in supergraph-config/<profile>',
     )
     .option(
         '-r, --rebuild-connectors',
@@ -53,16 +58,77 @@ program
         'Perform a full rebuild of metadata to build up functionality on DDN',
         false
     )
+    .option(
+        '-x, --override-description <description>',
+        'Override the automatically generated deployment description',
+    )
+    .option(
+        '-q, --quiet',
+        'Silence all logging except for errors.',
+    )
+    .option(
+        '-a, --apply',
+        'Automatically apply the build once it is deployed',
+        false
+    )
     .parse(process.argv);
 
+// Load command options
 const options = program.opts();
 const logLevel = options.logLevel.toUpperCase();
 const override = options.override;
 const dryRun = options.dryRun;
+// Counter-intuitive, but --no-interaction is actually changed to options.interaction (nfi why)
+// So we reverse it and call the variable something reasonable. This is why --no-interaction
+// defaults to true above as (interaction = true) = (no-interaction = false)... at least in my mind
 const noInteraction = !options.interaction;
 const rebuildConnectors = options.rebuildConnectors;
 const context = options.context;
+const profile = options.profile;
 const fullMetadataBuild = options.fullMetadataBuild;
+
+// Locate the script to allow it to be used from anywhere
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const script_dir = __dirname;
+const jwtFile = join(script_dir, 'jwtauth.hml');
+const noauthFile = join(script_dir, 'noauth.hml');
+const root = resolve(__dirname, '../../hasura/');
+
+log('magentaBright', 'Resolved repository root:', root);
+
+if (!fs.existsSync(root)) {
+    throw new Error(`Error: Directory ${root} does not exist.`);
+}
+
+// Change the working directory to hasura subdirectory so ddn can find .hasura/context.yaml
+const workingDir = join(root);
+process.chdir(workingDir);
+
+log('magentaBright', 'Changed working directory to:', process.cwd());
+
+if (!fs.existsSync('.hasura/context.yaml')) {
+    console.error(
+        chalk.whiteBright.bgRed(
+            'Error: .hasura/context.yaml not found in the current working directory.'
+        )
+    );
+    process.exit(1);
+}
+
+// Validate profile
+const profilePath = resolve(root, 'supergraph-config', profile);
+if (!fs.existsSync(profilePath)) {
+    console.error(
+        chalk.whiteBright.bgRed(
+            `Invalid profile: ${profile}. Profile directory does not exist within ${root}/supergraph-config`
+        )
+    );
+    process.exit(1);
+}
+
+const supergraphConfig = resolve(root, 'supergraph-config', profile);
+log('magentaBright', 'Resolved supergraph config:', supergraphConfig);
 
 // Validate log level
 const allowedLogLevels = ['FATAL', 'ERROR', 'WARN', 'INFO', 'DEBUG'];
@@ -77,29 +143,14 @@ if (!allowedLogLevels.includes(logLevel)) {
     process.exit(1);
 }
 
-console.log(chalk.magentaBright(`Log level set to: ${logLevel}`));
-console.log(
-    chalk.magentaBright(`Override flag is ${override ? 'enabled' : 'disabled'}`)
-);
-console.log(
-    chalk.magentaBright(`Dry run mode is ${dryRun ? 'enabled' : 'disabled'}`)
-);
-console.log(
-    chalk.magentaBright(
-        `Connectors ${rebuildConnectors ? 'will' : "won't"} be rebuilt`
-    )
-);
-console.log(chalk.magentaBright(`Context: ${context}`));
-console.log(
-    chalk.magentaBright(
-        `Full metadata build is: ${fullMetadataBuild ? 'enabled' : 'disabled'}`
-    )
-);
-console.log(
-    chalk.magentaBright(
-        `No interaction mode is: ${noInteraction ? 'enabled' : 'disabled'}`
-    )
-);
+log('magentaBright', `Log level set to: ${logLevel}`);
+log('magentaBright', `Override flag is ${override ? 'enabled' : 'disabled'}`);
+log('magentaBright', `Dry run mode is ${dryRun ? 'enabled' : 'disabled'}`);
+log('magentaBright', `Connectors ${rebuildConnectors ? 'will' : "won't"} be rebuilt`);
+log('magentaBright', (`Context: ${context}`));
+log('magentaBright', `Full metadata build is: ${fullMetadataBuild ? 'enabled' : 'disabled'}`);
+log('magentaBright', `No interaction mode is: ${noInteraction ? 'enabled' : 'disabled'}`);
+log('magentaBright', `Automatically apply build is set to: ${options.applyBuild ? 'enabled' : 'disabled'}`);
 
 // Mapping context regions to GCP region IDs
 const regionMapping = {
@@ -110,23 +161,6 @@ const regionMapping = {
     'us-west': 'gcp-us-west2',
     default: 'gcp-us-west2', // Default axiom-test to us-west
 };
-
-// Locate the script to allow it to be used from anywhere
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-const script_dir = __dirname;
-const jwtFile = join(script_dir, 'jwtauth.hml');
-const noauthFile = join(script_dir, 'noauth.hml');
-
-const root = resolve(__dirname, '../../');
-console.log(chalk.magentaBright('Resolved repository root:', root));
-
-if (!fs.existsSync(root)) {
-    console.error(
-        chalk.whiteBright.bgRed(`Error: Directory ${root} does not exist.`)
-    );
-    process.exit(1);
-}
 
 // Update the region in connector files
 function updateRegionInFile(filePath, region) {
@@ -145,17 +179,9 @@ function updateRegionInFile(filePath, region) {
             const newYaml = yaml.stringify(doc);
             if (!dryRun) {
                 fs.writeFileSync(filePath, newYaml, 'utf8');
-                console.log(
-                    chalk.green(
-                        `Successfully updated region to ${region} in ${filePath}`
-                    )
-                );
+                log('green', `Successfully updated region to ${region} in ${filePath}`);
             } else {
-                console.log(
-                    chalk.yellow(
-                        `[Dry Run] Would update region to ${region} in ${filePath}`
-                    )
-                );
+                log('yellow', `[Dry Run] Would update region to ${region} in ${filePath}`);
             }
         } else {
             console.warn(
@@ -191,31 +217,21 @@ function findConnectorYamlFiles(dir) {
 
 // Helper function to convert each connector to the right region
 function convertConnectorRegion(connectorRegion) {
-    console.log(
-        chalk.magentaBright(
-            `Converting 'connector.yaml' files to ${connectorRegion}.`
-        )
-    );
+    log('magentaBright', `Converting 'connector.yaml' files to ${connectorRegion}.`);
 
     const yamlFiles = findConnectorYamlFiles(root);
     yamlFiles.forEach((file) => updateRegionInFile(file, connectorRegion));
 
-    console.log(
-        chalk.magentaBright(
-            `All 'connector.yaml' files have been updated to use the region ${connectorRegion}.`
-        )
-    );
+    log('magentaBright', `All 'connector.yaml' files have been updated to use the region ${connectorRegion}.`);
 }
 
 // Run the command that the deploy script defines
 function runCommandWithOutput(command, region = '') {
     return new Promise((resolve, reject) => {
-        console.log(chalk.magentaBright(`Executing command: ${command}`));
+        log('magentaBright', `Executing command: ${command}`);
 
         if (dryRun) {
-            console.log(
-                chalk.yellow(`[Dry Run] Would execute command: ${command}`)
-            );
+            log('yellow', `[Dry Run] Would execute command: ${command}`);
             return resolve();
         }
 
@@ -228,21 +244,17 @@ function runCommandWithOutput(command, region = '') {
         childProcess.stdout.on('data', (data) => {
             const message = data.toString();
             output += message;
-            console.log(
-                chalk.magentaBright(`[${region}] => ${message.trim()}`)
-            );
+            log('magentaBright', `[${region}] => ${message.trim()}`);
         });
 
         childProcess.stderr.on('data', (data) => {
             const message = data.toString();
-            console.log(chalk.cyanBright(`[${region}] => ${message.trim()}`));
+            log('cyanBright', `[${region}] => ${message.trim()}`);
         });
 
         childProcess.on('close', (code) => {
             if (code === 0) {
-                console.log(
-                    chalk.green(`Command completed successfully: ${command}`)
-                );
+                log('green', `Command completed successfully: ${command}`);
                 resolve(output);
             } else {
                 console.error(
@@ -258,20 +270,18 @@ function runCommandWithOutput(command, region = '') {
 
 // Apply the build using the build version
 async function applyBuild(region, buildVersion) {
+    if (options.applyBuild !== true) {
+        log('yellow', `Not automatically applying build`);
+        return;
+    }
     const command = `ddn supergraph build apply ${buildVersion} -c ${region}`;
 
     if (!dryRun) {
-        console.log(
-            chalk.magentaBright(`Applying build version: ${buildVersion}`)
-        );
+        log('magentaBright', `Applying build version: ${buildVersion}`);
         runCommandWithOutput(command, region);
-        console.log(
-            chalk.green(`Build version ${buildVersion} applied successfully.`)
-        );
+        log('green', `Build version ${buildVersion} applied successfully.`);
     } else {
-        console.log(
-            chalk.yellow(`[Dry Run] Would apply build version: ${buildVersion}`)
-        );
+        log('yellow', `[Dry Run] Would apply build version: ${buildVersion}`);
     }
 }
 
@@ -283,38 +293,32 @@ async function runCommandWithTag(
     supergraph,
     rebuildConnectors = true
 ) {
-    const DEST_DIR = join(__dirname, '../../globals');
+    const DEST_DIR = join(root, '/globals');
     const DEST_FILE = 'auth-config.hml';
 
     if (!fs.existsSync(srcFile)) {
-        console.error(
-            chalk.whiteBright.bgRed(
-                `Error: Source file ${srcFile} does not exist.`
-            )
-        );
-        process.exit(1);
+        throw new Error(`Error: Source file ${srcFile} does not exist.`);
     }
 
     // Copy the auth file to the correct location
     if (!dryRun) {
         fs.copyFileSync(srcFile, join(DEST_DIR, DEST_FILE));
-        console.log(
-            chalk.green(`Copied ${srcFile} to ${DEST_DIR}/${DEST_FILE}`)
-        );
+        log('green', `Copied ${srcFile} to ${DEST_DIR}/${DEST_FILE}`);
     } else {
-        console.log(
-            chalk.yellow(
-                `[Dry Run] Would copy ${srcFile} to ${DEST_DIR}/${DEST_FILE}`
-            )
-        );
+        log('yellow', `[Dry Run] Would copy ${srcFile} to ${DEST_DIR}/${DEST_FILE}`);
     }
 
-    // Get git log description for the command to use as the supergraph build description
-    const gitLogDescription = execSync(
-        `git log -1 --pretty=format:"%h [${tag}] %s"`
-    )
-        .toString()
-        .trim();
+    // Construct the description, either from the git log or via a user generated override
+    let gitLogDescription = options.overrideDescription || null;
+
+    if (gitLogDescription === null) {
+        // Get git log description for the command to use as the supergraph build description
+        gitLogDescription = execSync(
+            `git log -1 --pretty=format:"%h [${tag}] %s"`
+        )
+            .toString()
+            .trim();
+    }
 
     // Construct the ddn supergraph build command
     let command = `ddn supergraph build create -d "${gitLogDescription}" -c "${region}" --out json --log-level "${logLevel}" --supergraph "${supergraph}"`;
@@ -323,42 +327,42 @@ async function runCommandWithTag(
     }
 
     if (!dryRun) {
-        console.log(
-            chalk.magentaBright(`[${region}] => Executing command: ${command}`)
-        );
+        log('magentaBright', `[${region}] => Executing command: ${command}`);
         const output = await runCommandWithOutput(command, region);
         const buildInfo = JSON.parse(output);
 
-        console.log(
-            chalk.green(
-                `[${region}] => Deployment completed successfully for ${tag}`
-            )
-        );
-        console.log(chalk.green(`Build URL: ${buildInfo.build_url}`));
+        if (options.quiet) {
+            // I'm not super happy with this as a way to allow CI/CD to work
+            // The github action looks for output that it redirects to a file
+            // From here it gets the build IDs, console IDs etc.
+            // Ideally we should log specific output to an untracked log file
+            // and handle that in this deploy script or something but that's
+            // a TODO for the future
+            // Can't wait for it to bite me in the butt
+            console.log(output);
+        }
+
+        log('green', `[${region}] => Deployment completed successfully for ${tag}`);
+        log('green', `Build URL: ${buildInfo.build_url}`);
+        log('green', `Console URL: ${buildInfo.console_url}`);
 
         // Apply the build using the extracted build_version
         applyBuild(region, buildInfo.build_version);
     } else {
-        console.log(
-            chalk.yellow(`[Dry Run] Would execute command: ${command}`)
-        );
+        log('yellow', `[Dry Run] Would execute command: ${command}`);
     }
 }
 
 // Pushes incremental release of metadata
-async function pushMetadataRelease(contextRegion, rebuildConnectors) {
-    console.log(
-        chalk.magentaBright(
-            `[${contextRegion}] => Starting an incremental release of metadata.`
-        )
-    );
+async function pushMetadataRelease(supergraph, contextRegion, rebuildConnectors) {
+    log('magentaBright', `[${contextRegion}] => Starting an incremental release of metadata.`);
 
     // Deploy with JWT file to demo authz
     await runCommandWithTag(
         contextRegion,
         jwtFile,
         'JWT',
-        `${root}/supergraph-with-mutations.yaml`,
+        supergraph,
         rebuildConnectors
     );
 
@@ -367,36 +371,18 @@ async function pushMetadataRelease(contextRegion, rebuildConnectors) {
         contextRegion,
         noauthFile,
         'NoAuth',
-        `${root}/supergraph-with-mutations.yaml`,
+        supergraph,
         rebuildConnectors
     );
 
-    console.log(
-        chalk.green(
-            `[${contextRegion}] => Incremental release completed successfully.`
-        )
-    );
+    log('green', `[${contextRegion}] => Incremental release completed successfully.`);
 }
 
 // Rebuild function that does not use --no-build-connectors
-async function rebuildSupergraph(contextRegion, rebuildConnectors) {
-    console.log(
-        chalk.magentaBright(
-            `[${contextRegion}] => Starting a complete rebuild of all supergraphs and connectors.`
-        )
-    );
+async function rebuildSupergraph(supergraphs, contextRegion, rebuildConnectors) {
+    log('magentaBright', `[${contextRegion}] => Starting a complete rebuild of all supergraphs.`);
 
     let index = 1;
-
-    const supergraphs = [
-        `${root}/supergraph-project-queries.yaml`,
-        `${root}/supergraph-domain.yaml`,
-        `${root}/supergraph.yaml`,
-        // @TODO do we want to include mutations in automated builds?
-        // Alternatively we can include it but not have it as the final/published build.
-        // Maybe we leave it as part of the JWT/NoAuth build
-        // `${root}/supergraph-with-mutations.yaml`,
-    ];
 
     for (const supergraph of supergraphs) {
         await runCommandWithTag(
@@ -409,9 +395,21 @@ async function rebuildSupergraph(contextRegion, rebuildConnectors) {
         index++;
     }
 
-    console.log(
-        chalk.green(`[${contextRegion}] => Rebuild completed successfully.`)
-    );
+    log('green', `[${contextRegion}] => Rebuild completed successfully.`);
+}
+
+// Load all supergraphs from the relevant industry profile in supergraph-config
+// Order them numerically and return them so they can be built
+function getSupergraphs() {
+    let files = fs.readdirSync(supergraphConfig);
+    files = files
+        .filter(file => file.endsWith('.yaml'))
+        .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+
+    const supergraphs = files.map(file => join(supergraphConfig, file));
+
+    return supergraphs;
+
 }
 
 async function main() {
@@ -419,47 +417,33 @@ async function main() {
         // Check if on the main branch
         const currentBranch = await git.revparse(['--abbrev-ref', 'HEAD']);
         if (currentBranch !== 'main') {
-            console.error(
-                chalk.whiteBright.bgRed(
-                    `Error: You must be on the 'main' branch to deploy.`
-                )
-            );
-            process.exit(1);
+            throw new Error(`Error: You must be on the 'main' branch to deploy.`);
         }
 
         // Check for uncommitted changes
         const status = await git.status();
         if (status.files.length > 0) {
-            console.error(
-                chalk.whiteBright.bgRed(
-                    'Error: Uncommitted changes detected. Please commit or stash changes before running this script.'
-                )
-            );
-            process.exit(1);
+            throw new Error(`Error: Uncommitted changes detected. Please commit or stash changes before running this script.`);
         }
     } else {
-        console.log(
-            chalk.yellow(
-                'Override flag enabled: Skipping branch and uncommitted changes checks.'
-            )
-        );
+        log('yellow', 'Override flag enabled: Skipping branch and uncommitted changes checks.');
     }
 
-    let contextRegion = context || null;
+    let context = options.context || null;
     let rebuildConnectors = options.rebuildConnectors || null;
     let fullMetadataBuild = options.fullMetadataBuild || null;
 
-    if (!noInteraction && contextRegion === null) {
-        contextRegion = (
+    if (!noInteraction && context === null) {
+        context = (
             await inquirer.prompt([
                 {
                     type: 'list',
-                    name: 'contextRegion',
-                    message: 'Select a context region to set:',
+                    name: 'context',
+                    message: 'Select a context to set:',
                     choices: Object.keys(regionMapping),
                 },
             ])
-        ).contextRegion;
+        ).context;
     }
 
     if (!noInteraction && fullMetadataBuild === null) {
@@ -491,23 +475,45 @@ async function main() {
     }
 
     // Map the selected context region to the GCP region ID
-    const connectorRegion = regionMapping[contextRegion];
+    const connectorRegion = regionMapping[context] || regionMapping['default'];
 
     // switch connectors to the right region
     convertConnectorRegion(connectorRegion);
 
-    if (fullMetadataBuild) {
-        await rebuildSupergraph(contextRegion, rebuildConnectors);
+    // Split up all intermediate supergraphs from the final one and
+    // build each intermediate supergraph with rebuildSupergraph if
+    // --full-metadata-build is selected
+    // If --full-metadata-build is not selected or if there is only a single
+    // supergraph, only build that with pushMetadataRelease
+    const supergraphs = getSupergraphs();
+
+    if (supergraphs.length === 0) {
+        throw new Error("No supergraphs found!");
+    }
+    const intermediarySupergraphs = supergraphs.slice(0, -1);
+    const fullyBuiltSupergraph = supergraphs[supergraphs.length - 1];
+
+    if (fullMetadataBuild && intermediarySupergraphs.length > 0) {
+        await rebuildSupergraph(intermediarySupergraphs, context, rebuildConnectors);
     }
 
-    await pushMetadataRelease(contextRegion, rebuildConnectors);
+    await pushMetadataRelease(fullyBuiltSupergraph, context, rebuildConnectors);
 
     // Revert connectors to the default
     convertConnectorRegion(regionMapping['default']);
 
-    console.log(
-        chalk.green(`[${contextRegion}] => Deployment completed successfully.`)
-    );
+    log('green',`[${context}] => Deployment completed successfully.`);
+}
+
+async function log(colour, message) {
+    if (options.quiet) {
+        return;
+    }
+    if (chalk[colour]) {
+        console.log(chalk[colour](message));
+    } else {
+        console.log(chalk.white(`Invalid colour '${colour}'. ${message}`));
+    }
 }
 
 main().catch((error) => {

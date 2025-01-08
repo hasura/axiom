@@ -1,0 +1,19 @@
+kind: Connector
+version: v2
+definition:
+  name: mongo
+  subgraph: customer
+  source: hasura/mongodb:v1.3.0
+  context: .
+  envMapping:
+    HASURA_SERVICE_TOKEN_SECRET:
+      fromEnv: CUSTOMER_MONGO_HASURA_SERVICE_TOKEN_SECRET
+    MONGODB_DATABASE_URI:
+      fromEnv: CUSTOMER_MONGO_MONGODB_DATABASE_URI
+    OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:
+      fromEnv: CUSTOMER_MONGO_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+    OTEL_SERVICE_NAME:
+      fromEnv: CUSTOMER_MONGO_OTEL_SERVICE_NAME
+  regionConfiguration:
+    - mode: ReadWrite
+      region: gcp-us-west2

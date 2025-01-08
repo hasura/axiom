@@ -1,0 +1,19 @@
+kind: Connector
+version: v2
+definition:
+  name: aurora
+  subgraph: customer
+  source: hasura/postgres:v1.1.1
+  context: .
+  envMapping:
+    CONNECTION_URI:
+      fromEnv: CUSTOMER_AURORA_CONNECTION_URI
+    HASURA_SERVICE_TOKEN_SECRET:
+      fromEnv: CUSTOMER_AURORA_HASURA_SERVICE_TOKEN_SECRET
+    OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:
+      fromEnv: CUSTOMER_AURORA_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+    OTEL_SERVICE_NAME:
+      fromEnv: CUSTOMER_AURORA_OTEL_SERVICE_NAME
+  regionConfiguration:
+    - mode: ReadWrite
+      region: gcp-us-west2
