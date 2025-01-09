@@ -1,0 +1,821 @@
+kind: DataConnectorLink
+version: v1
+definition:
+  name: oracle_acc
+  url:
+    readWriteUrls:
+      read:
+        valueFromEnv: APP_ORACLE_ACC_READ_URL
+      write:
+        valueFromEnv: APP_ORACLE_ACC_WRITE_URL
+  headers:
+    Authorization:
+      valueFromEnv: APP_ORACLE_ACC_AUTHORIZATION_HEADER
+  schema:
+    version: v0.1
+    schema:
+      scalar_types:
+        BOOLEAN:
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+        DATE:
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                type: named
+                name: DATE
+            _gte:
+              type: custom
+              argument_type:
+                type: named
+                name: DATE
+            _lt:
+              type: custom
+              argument_type:
+                type: named
+                name: DATE
+            _lte:
+              type: custom
+              argument_type:
+                type: named
+                name: DATE
+        DATETIME:
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                type: named
+                name: DATETIME
+            _gte:
+              type: custom
+              argument_type:
+                type: named
+                name: DATETIME
+            _lt:
+              type: custom
+              argument_type:
+                type: named
+                name: DATETIME
+            _lte:
+              type: custom
+              argument_type:
+                type: named
+                name: DATETIME
+        FLOAT:
+          aggregate_functions:
+            avg:
+              result_type:
+                type: named
+                name: FLOAT
+            count:
+              result_type:
+                type: named
+                name: INT
+            max:
+              result_type:
+                type: named
+                name: FLOAT
+            min:
+              result_type:
+                type: named
+                name: FLOAT
+            stddev_pop:
+              result_type:
+                type: named
+                name: FLOAT
+            stddev_samp:
+              result_type:
+                type: named
+                name: FLOAT
+            sum:
+              result_type:
+                type: named
+                name: FLOAT
+            var_pop:
+              result_type:
+                type: named
+                name: FLOAT
+            var_samp:
+              result_type:
+                type: named
+                name: FLOAT
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                type: named
+                name: FLOAT
+            _gte:
+              type: custom
+              argument_type:
+                type: named
+                name: FLOAT
+            _in:
+              type: in
+            _lt:
+              type: custom
+              argument_type:
+                type: named
+                name: FLOAT
+            _lte:
+              type: custom
+              argument_type:
+                type: named
+                name: FLOAT
+        INT:
+          aggregate_functions:
+            avg:
+              result_type:
+                type: named
+                name: FLOAT
+            count:
+              result_type:
+                type: named
+                name: INT
+            max:
+              result_type:
+                type: named
+                name: INT
+            min:
+              result_type:
+                type: named
+                name: INT
+            stddev_pop:
+              result_type:
+                type: named
+                name: FLOAT
+            stddev_samp:
+              result_type:
+                type: named
+                name: FLOAT
+            sum:
+              result_type:
+                type: named
+                name: INT
+            var_pop:
+              result_type:
+                type: named
+                name: FLOAT
+            var_samp:
+              result_type:
+                type: named
+                name: FLOAT
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                type: named
+                name: INT
+            _gte:
+              type: custom
+              argument_type:
+                type: named
+                name: INT
+            _in:
+              type: in
+            _lt:
+              type: custom
+              argument_type:
+                type: named
+                name: INT
+            _lte:
+              type: custom
+              argument_type:
+                type: named
+                name: INT
+        STRING:
+          aggregate_functions:
+            max:
+              result_type:
+                type: named
+                name: STRING
+            min:
+              result_type:
+                type: named
+                name: STRING
+          comparison_operators:
+            _contains:
+              type: custom
+              argument_type:
+                type: named
+                name: STRING
+            _eq:
+              type: equal
+            _like:
+              type: custom
+              argument_type:
+                type: named
+                name: STRING
+        TIME:
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                type: named
+                name: TIME
+            _gte:
+              type: custom
+              argument_type:
+                type: named
+                name: TIME
+            _lt:
+              type: custom
+              argument_type:
+                type: named
+                name: TIME
+            _lte:
+              type: custom
+              argument_type:
+                type: named
+                name: TIME
+      object_types:
+        AXIOM.ACCOUNT_OWNERSHIP:
+          fields:
+            ACCOUNTNUMBER:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            CREATEDBY:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            CREATEDDATE:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            LASTUPDATEDBY:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            LASTUPDATEDDATE:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            OWNERSHIPID:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            OWNERSHIPTYPE:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            PARTYID:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            SOURCESYSTEM:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+        AXIOM.ACCOUNTS:
+          fields:
+            ACCOUNTNUMBER:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            ACCOUNTTYPE:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            BRANCHID:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            CLOSEDATE:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            CREATEDBY:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            CREATEDDATE:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            CURRENCY:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            FEESTRUCTURE:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            INTERESTRATE:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: FLOAT
+              arguments: {}
+            LASTUPDATEDBY:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            LASTUPDATEDDATE:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            OPENDATE:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            OVERDRAFTLIMIT:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: INT
+              arguments: {}
+            PARTYID:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            SOURCESYSTEM:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            STATUS:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+        AXIOM.BRANCHES:
+          fields:
+            ADDRESS:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            BRANCHID:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            BRANCHNAME:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            CREATEDBY:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            CREATEDDATE:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            LASTUPDATEDBY:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            LASTUPDATEDDATE:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            MANAGEREMPLOYEEID:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            SOURCESYSTEM:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+        AXIOM.EMPLOYEES:
+          fields:
+            CREATEDBY:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            CREATEDDATE:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            EMAIL:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            EMPLOYEEID:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            FIRSTNAME:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            LASTNAME:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            LASTUPDATEDBY:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            LASTUPDATEDDATE:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            POSITION:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            SOURCESYSTEM:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+        AXIOM.INDIVIDUAL_PARTIES:
+          fields:
+            CREATEDBY:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            CREATEDDATE:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            FIRSTNAME:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            LASTNAME:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            LASTUPDATEDBY:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            LASTUPDATEDDATE:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            PARTYID:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            SOURCESYSTEM:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+        AXIOM.PARTIES:
+          fields:
+            ADDRESS:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            BRANCHID:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            CREATEDBY:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            CREATEDDATE:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            DATEOFBIRTH:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            DEPARTMENT:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            EMPLOYEEID:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            KYCCOMPLETIONDATE:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            KYCMETHOD:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            KYCSTATUS:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            LASTUPDATEDBY:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            LASTUPDATEDDATE:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            NAME:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            PARTYCATEGORY:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            PARTYID:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            PEPFLAG:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            RISKRATING:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            ROLE:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            SANCTIONCHECKDATE:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            SANCTIONLISTREFERENCE:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            SOURCESYSTEM:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: STRING
+              arguments: {}
+            TAXID:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: INT
+              arguments: {}
+      collections:
+        - name: AXIOM.ACCOUNT_OWNERSHIP
+          arguments: {}
+          type: AXIOM.ACCOUNT_OWNERSHIP
+          uniqueness_constraints: {}
+          foreign_keys: {}
+        - name: AXIOM.INDIVIDUAL_PARTIES
+          arguments: {}
+          type: AXIOM.INDIVIDUAL_PARTIES
+          uniqueness_constraints: {}
+          foreign_keys: {}
+        - name: AXIOM.PARTIES
+          arguments: {}
+          type: AXIOM.PARTIES
+          uniqueness_constraints: {}
+          foreign_keys: {}
+        - name: AXIOM.BRANCHES
+          arguments: {}
+          type: AXIOM.BRANCHES
+          uniqueness_constraints: {}
+          foreign_keys: {}
+        - name: AXIOM.EMPLOYEES
+          arguments: {}
+          type: AXIOM.EMPLOYEES
+          uniqueness_constraints: {}
+          foreign_keys: {}
+        - name: AXIOM.ACCOUNTS
+          arguments: {}
+          type: AXIOM.ACCOUNTS
+          uniqueness_constraints: {}
+          foreign_keys: {}
+      functions: []
+      procedures: []
+    capabilities:
+      version: 0.1.2
+      capabilities:
+        query:
+          aggregates: {}
+          variables: {}
+          explain: {}
+        mutation: {}
+        relationships:
+          relation_comparisons: {}
+          order_by_aggregate: {}

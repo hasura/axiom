@@ -1,0 +1,297 @@
+
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: AxiomAccounts
+  fields:
+    - name: accountnumber
+      type: String_1
+    - name: accounttype
+      type: String_1
+    - name: branchid
+      type: String_1
+    - name: closedate
+      type: String_1
+    - name: createdby
+      type: String_1
+    - name: createddate
+      type: String_1
+    - name: currency
+      type: String_1
+    - name: feestructure
+      type: String_1
+    - name: interestrate
+      type: Float_1
+    - name: lastupdatedby
+      type: String_1
+    - name: lastupdateddate
+      type: String_1
+    - name: opendate
+      type: String_1
+    - name: overdraftlimit
+      type: Int_1
+    - name: partyid
+      type: String_1
+    - name: sourcesystem
+      type: String_1
+    - name: status
+      type: String_1
+  graphql:
+    typeName: AxiomAccounts
+    inputTypeName: AxiomAccountsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: oracle_acc
+      dataConnectorObjectType: AXIOM.ACCOUNTS
+      fieldMapping:
+        accountnumber:
+          column:
+            name: ACCOUNTNUMBER
+        accounttype:
+          column:
+            name: ACCOUNTTYPE
+        branchid:
+          column:
+            name: BRANCHID
+        closedate:
+          column:
+            name: CLOSEDATE
+        createdby:
+          column:
+            name: CREATEDBY
+        createddate:
+          column:
+            name: CREATEDDATE
+        currency:
+          column:
+            name: CURRENCY
+        feestructure:
+          column:
+            name: FEESTRUCTURE
+        interestrate:
+          column:
+            name: INTERESTRATE
+        lastupdatedby:
+          column:
+            name: LASTUPDATEDBY
+        lastupdateddate:
+          column:
+            name: LASTUPDATEDDATE
+        opendate:
+          column:
+            name: OPENDATE
+        overdraftlimit:
+          column:
+            name: OVERDRAFTLIMIT
+        partyid:
+          column:
+            name: PARTYID
+        sourcesystem:
+          column:
+            name: SOURCESYSTEM
+        status:
+          column:
+            name: STATUS
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: AxiomAccounts
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - accountnumber
+          - accounttype
+          - branchid
+          - closedate
+          - createdby
+          - createddate
+          - currency
+          - feestructure
+          - interestrate
+          - lastupdatedby
+          - lastupdateddate
+          - opendate
+          - overdraftlimit
+          - partyid
+          - sourcesystem
+          - status
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: AxiomAccountsBoolExp
+  operand:
+    object:
+      type: AxiomAccounts
+      comparableFields:
+        - fieldName: accountnumber
+          booleanExpressionType: StringBoolExp
+        - fieldName: accounttype
+          booleanExpressionType: StringBoolExp
+        - fieldName: branchid
+          booleanExpressionType: StringBoolExp
+        - fieldName: closedate
+          booleanExpressionType: StringBoolExp
+        - fieldName: createdby
+          booleanExpressionType: StringBoolExp
+        - fieldName: createddate
+          booleanExpressionType: StringBoolExp
+        - fieldName: currency
+          booleanExpressionType: StringBoolExp
+        - fieldName: feestructure
+          booleanExpressionType: StringBoolExp
+        - fieldName: interestrate
+          booleanExpressionType: FloatBoolExp
+        - fieldName: lastupdatedby
+          booleanExpressionType: StringBoolExp
+        - fieldName: lastupdateddate
+          booleanExpressionType: StringBoolExp
+        - fieldName: opendate
+          booleanExpressionType: StringBoolExp
+        - fieldName: overdraftlimit
+          booleanExpressionType: IntBoolExp
+        - fieldName: partyid
+          booleanExpressionType: StringBoolExp
+        - fieldName: sourcesystem
+          booleanExpressionType: StringBoolExp
+        - fieldName: status
+          booleanExpressionType: StringBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: AxiomAccountsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: AxiomAccountsAggExp
+  operand:
+    object:
+      aggregatedType: AxiomAccounts
+      aggregatableFields:
+        - fieldName: accountnumber
+          aggregateExpression: StringAggExp
+        - fieldName: accounttype
+          aggregateExpression: StringAggExp
+        - fieldName: branchid
+          aggregateExpression: StringAggExp
+        - fieldName: closedate
+          aggregateExpression: StringAggExp
+        - fieldName: createdby
+          aggregateExpression: StringAggExp
+        - fieldName: createddate
+          aggregateExpression: StringAggExp
+        - fieldName: currency
+          aggregateExpression: StringAggExp
+        - fieldName: feestructure
+          aggregateExpression: StringAggExp
+        - fieldName: interestrate
+          aggregateExpression: FloatAggExp
+        - fieldName: lastupdatedby
+          aggregateExpression: StringAggExp
+        - fieldName: lastupdateddate
+          aggregateExpression: StringAggExp
+        - fieldName: opendate
+          aggregateExpression: StringAggExp
+        - fieldName: overdraftlimit
+          aggregateExpression: IntAggExp
+        - fieldName: partyid
+          aggregateExpression: StringAggExp
+        - fieldName: sourcesystem
+          aggregateExpression: StringAggExp
+        - fieldName: status
+          aggregateExpression: StringAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: AxiomAccountsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: AxiomAccountsOrderByExp
+  operand:
+    object:
+      orderedType: AxiomAccounts
+      orderableFields:
+        - fieldName: accountnumber
+          orderByExpression: String1OrderByExp
+        - fieldName: accounttype
+          orderByExpression: String1OrderByExp
+        - fieldName: branchid
+          orderByExpression: String1OrderByExp
+        - fieldName: closedate
+          orderByExpression: String1OrderByExp
+        - fieldName: createdby
+          orderByExpression: String1OrderByExp
+        - fieldName: createddate
+          orderByExpression: String1OrderByExp
+        - fieldName: currency
+          orderByExpression: String1OrderByExp
+        - fieldName: feestructure
+          orderByExpression: String1OrderByExp
+        - fieldName: interestrate
+          orderByExpression: Float1OrderByExp
+        - fieldName: lastupdatedby
+          orderByExpression: String1OrderByExp
+        - fieldName: lastupdateddate
+          orderByExpression: String1OrderByExp
+        - fieldName: opendate
+          orderByExpression: String1OrderByExp
+        - fieldName: overdraftlimit
+          orderByExpression: Int1OrderByExp
+        - fieldName: partyid
+          orderByExpression: String1OrderByExp
+        - fieldName: sourcesystem
+          orderByExpression: String1OrderByExp
+        - fieldName: status
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: AxiomAccountsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: AxiomAccounts
+  objectType: AxiomAccounts
+  source:
+    dataConnectorName: oracle_acc
+    collection: AXIOM.ACCOUNTS
+  filterExpressionType: AxiomAccountsBoolExp
+  aggregateExpression: AxiomAccountsAggExp
+  orderByExpression: AxiomAccountsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: axiomAccounts
+      subscription:
+        rootField: axiomAccounts
+    selectUniques: []
+    filterInputTypeName: AxiomAccountsFilterInput
+    aggregate:
+      queryRootField: axiomAccountsAggregate
+      subscription:
+        rootField: axiomAccountsAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: AxiomAccounts
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

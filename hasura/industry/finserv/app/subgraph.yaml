@@ -1,0 +1,27 @@
+kind: Subgraph
+version: v2
+definition:
+  name: app
+  generator:
+    rootPath: .
+    namingConvention: graphql
+  includePaths:
+    - metadata
+  envMapping:
+    APP_ORACLE_ACC_AUTHORIZATION_HEADER:
+      fromEnv: APP_ORACLE_ACC_AUTHORIZATION_HEADER
+    APP_ORACLE_ACC_READ_URL:
+      fromEnv: APP_ORACLE_ACC_READ_URL
+    APP_ORACLE_ACC_WRITE_URL:
+      fromEnv: APP_ORACLE_ACC_WRITE_URL
+    APP_POSTGRES_TX_AUTHORIZATION_HEADER:
+      fromEnv: APP_POSTGRES_TX_AUTHORIZATION_HEADER
+    APP_POSTGRES_TX_READ_URL:
+      fromEnv: APP_POSTGRES_TX_READ_URL
+    APP_POSTGRES_TX_WRITE_URL:
+      fromEnv: APP_POSTGRES_TX_WRITE_URL
+  connectors:
+    - path: connector/postgres_tx/connector.yaml
+      connectorLinkName: postgres_tx
+    - path: connector/oracle_acc/connector.yaml
+      connectorLinkName: oracle_acc

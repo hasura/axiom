@@ -1,0 +1,152 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: Creditcard
+  fields:
+    - name: accountnumber
+      type: Varchar!
+    - name: cardnumber
+      type: Varchar!
+    - name: cardtype
+      type: Varchar!
+    - name: creditlimit
+      type: Numeric!
+    - name: expirationdate
+      type: Date!
+  graphql:
+    typeName: Creditcard
+    inputTypeName: CreditcardInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: postgres_tx
+      dataConnectorObjectType: creditcard
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: Creditcard
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - accountnumber
+          - cardnumber
+          - cardtype
+          - creditlimit
+          - expirationdate
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: CreditcardBoolExp
+  operand:
+    object:
+      type: Creditcard
+      comparableFields:
+        - fieldName: accountnumber
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: cardnumber
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: cardtype
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: creditlimit
+          booleanExpressionType: NumericBoolExp
+        - fieldName: expirationdate
+          booleanExpressionType: DateBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: CreditcardBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: CreditcardAggExp
+  operand:
+    object:
+      aggregatedType: Creditcard
+      aggregatableFields:
+        - fieldName: accountnumber
+          aggregateExpression: VarcharAggExp
+        - fieldName: cardnumber
+          aggregateExpression: VarcharAggExp
+        - fieldName: cardtype
+          aggregateExpression: VarcharAggExp
+        - fieldName: creditlimit
+          aggregateExpression: NumericAggExp
+        - fieldName: expirationdate
+          aggregateExpression: DateAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: CreditcardAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: CreditcardOrderByExp
+  operand:
+    object:
+      orderedType: Creditcard
+      orderableFields:
+        - fieldName: accountnumber
+          orderByExpression: VarcharOrderByExp
+        - fieldName: cardnumber
+          orderByExpression: VarcharOrderByExp
+        - fieldName: cardtype
+          orderByExpression: VarcharOrderByExp
+        - fieldName: creditlimit
+          orderByExpression: NumericOrderByExp
+        - fieldName: expirationdate
+          orderByExpression: DateOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: CreditcardOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: Creditcard
+  objectType: Creditcard
+  source:
+    dataConnectorName: postgres_tx
+    collection: creditcard
+  filterExpressionType: CreditcardBoolExp
+  aggregateExpression: CreditcardAggExp
+  orderByExpression: CreditcardOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: creditcard
+      subscription:
+        rootField: creditcard
+    selectUniques:
+      - queryRootField: creditcardByCardnumber
+        uniqueIdentifier:
+          - cardnumber
+        subscription:
+          rootField: creditcardByCardnumber
+    filterInputTypeName: CreditcardFilterInput
+    aggregate:
+      queryRootField: creditcardAggregate
+      subscription:
+        rootField: creditcardAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: Creditcard
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

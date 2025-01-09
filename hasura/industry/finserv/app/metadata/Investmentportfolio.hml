@@ -1,0 +1,161 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: Investmentportfolio
+  fields:
+    - name: advisorid
+      type: Varchar!
+    - name: creationdate
+      type: Date!
+    - name: partyid
+      type: Varchar!
+    - name: portfolioid
+      type: Varchar!
+    - name: riskprofile
+      type: RiskProfile!
+    - name: totalvalue
+      type: Numeric!
+  graphql:
+    typeName: Investmentportfolio
+    inputTypeName: InvestmentportfolioInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: postgres_tx
+      dataConnectorObjectType: investmentportfolio
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: Investmentportfolio
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - advisorid
+          - creationdate
+          - partyid
+          - portfolioid
+          - riskprofile
+          - totalvalue
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: InvestmentportfolioBoolExp
+  operand:
+    object:
+      type: Investmentportfolio
+      comparableFields:
+        - fieldName: advisorid
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: creationdate
+          booleanExpressionType: DateBoolExp
+        - fieldName: partyid
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: portfolioid
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: riskprofile
+          booleanExpressionType: RiskProfileBoolExp
+        - fieldName: totalvalue
+          booleanExpressionType: NumericBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: InvestmentportfolioBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: InvestmentportfolioAggExp
+  operand:
+    object:
+      aggregatedType: Investmentportfolio
+      aggregatableFields:
+        - fieldName: advisorid
+          aggregateExpression: VarcharAggExp
+        - fieldName: creationdate
+          aggregateExpression: DateAggExp
+        - fieldName: partyid
+          aggregateExpression: VarcharAggExp
+        - fieldName: portfolioid
+          aggregateExpression: VarcharAggExp
+        - fieldName: riskprofile
+          aggregateExpression: RiskProfileAggExp
+        - fieldName: totalvalue
+          aggregateExpression: NumericAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: InvestmentportfolioAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: InvestmentportfolioOrderByExp
+  operand:
+    object:
+      orderedType: Investmentportfolio
+      orderableFields:
+        - fieldName: advisorid
+          orderByExpression: VarcharOrderByExp
+        - fieldName: creationdate
+          orderByExpression: DateOrderByExp
+        - fieldName: partyid
+          orderByExpression: VarcharOrderByExp
+        - fieldName: portfolioid
+          orderByExpression: VarcharOrderByExp
+        - fieldName: riskprofile
+          orderByExpression: RiskProfileOrderByExp
+        - fieldName: totalvalue
+          orderByExpression: NumericOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: InvestmentportfolioOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: Investmentportfolio
+  objectType: Investmentportfolio
+  source:
+    dataConnectorName: postgres_tx
+    collection: investmentportfolio
+  filterExpressionType: InvestmentportfolioBoolExp
+  aggregateExpression: InvestmentportfolioAggExp
+  orderByExpression: InvestmentportfolioOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: investmentportfolio
+      subscription:
+        rootField: investmentportfolio
+    selectUniques:
+      - queryRootField: investmentportfolioByPortfolioid
+        uniqueIdentifier:
+          - portfolioid
+        subscription:
+          rootField: investmentportfolioByPortfolioid
+    filterInputTypeName: InvestmentportfolioFilterInput
+    aggregate:
+      queryRootField: investmentportfolioAggregate
+      subscription:
+        rootField: investmentportfolioAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: Investmentportfolio
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

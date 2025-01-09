@@ -1,0 +1,206 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: Creditcardtransaction
+  fields:
+    - name: accountnumber
+      type: Varchar!
+    - name: amount
+      type: Numeric!
+    - name: cardnumber
+      type: Varchar!
+    - name: currency
+      type: Varchar!
+    - name: description
+      type: Varchar!
+    - name: effectivedate
+      type: Timestamp!
+    - name: merchantname
+      type: Varchar
+    - name: posteddate
+      type: Timestamp!
+    - name: status
+      type: Varchar!
+    - name: transactiondate
+      type: Timestamp!
+    - name: transactionid
+      type: Varchar!
+  graphql:
+    typeName: Creditcardtransaction
+    inputTypeName: CreditcardtransactionInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: postgres_tx
+      dataConnectorObjectType: creditcardtransaction
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: Creditcardtransaction
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - accountnumber
+          - amount
+          - cardnumber
+          - currency
+          - description
+          - effectivedate
+          - merchantname
+          - posteddate
+          - status
+          - transactiondate
+          - transactionid
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: CreditcardtransactionBoolExp
+  operand:
+    object:
+      type: Creditcardtransaction
+      comparableFields:
+        - fieldName: accountnumber
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: amount
+          booleanExpressionType: NumericBoolExp
+        - fieldName: cardnumber
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: currency
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: description
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: effectivedate
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: merchantname
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: posteddate
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: status
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: transactiondate
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: transactionid
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: CreditcardtransactionBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: CreditcardtransactionAggExp
+  operand:
+    object:
+      aggregatedType: Creditcardtransaction
+      aggregatableFields:
+        - fieldName: accountnumber
+          aggregateExpression: VarcharAggExp
+        - fieldName: amount
+          aggregateExpression: NumericAggExp
+        - fieldName: cardnumber
+          aggregateExpression: VarcharAggExp
+        - fieldName: currency
+          aggregateExpression: VarcharAggExp
+        - fieldName: description
+          aggregateExpression: VarcharAggExp
+        - fieldName: effectivedate
+          aggregateExpression: TimestampAggExp
+        - fieldName: merchantname
+          aggregateExpression: VarcharAggExp
+        - fieldName: posteddate
+          aggregateExpression: TimestampAggExp
+        - fieldName: status
+          aggregateExpression: VarcharAggExp
+        - fieldName: transactiondate
+          aggregateExpression: TimestampAggExp
+        - fieldName: transactionid
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: CreditcardtransactionAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: CreditcardtransactionOrderByExp
+  operand:
+    object:
+      orderedType: Creditcardtransaction
+      orderableFields:
+        - fieldName: accountnumber
+          orderByExpression: VarcharOrderByExp
+        - fieldName: amount
+          orderByExpression: NumericOrderByExp
+        - fieldName: cardnumber
+          orderByExpression: VarcharOrderByExp
+        - fieldName: currency
+          orderByExpression: VarcharOrderByExp
+        - fieldName: description
+          orderByExpression: VarcharOrderByExp
+        - fieldName: effectivedate
+          orderByExpression: TimestampOrderByExp
+        - fieldName: merchantname
+          orderByExpression: VarcharOrderByExp
+        - fieldName: posteddate
+          orderByExpression: TimestampOrderByExp
+        - fieldName: status
+          orderByExpression: VarcharOrderByExp
+        - fieldName: transactiondate
+          orderByExpression: TimestampOrderByExp
+        - fieldName: transactionid
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: CreditcardtransactionOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: Creditcardtransaction
+  objectType: Creditcardtransaction
+  source:
+    dataConnectorName: postgres_tx
+    collection: creditcardtransaction
+  filterExpressionType: CreditcardtransactionBoolExp
+  aggregateExpression: CreditcardtransactionAggExp
+  orderByExpression: CreditcardtransactionOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: creditcardtransaction
+      subscription:
+        rootField: creditcardtransaction
+    selectUniques:
+      - queryRootField: creditcardtransactionByTransactionid
+        uniqueIdentifier:
+          - transactionid
+        subscription:
+          rootField: creditcardtransactionByTransactionid
+    filterInputTypeName: CreditcardtransactionFilterInput
+    aggregate:
+      queryRootField: creditcardtransactionAggregate
+      subscription:
+        rootField: creditcardtransactionAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: Creditcardtransaction
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

@@ -1,0 +1,102 @@
+# ---
+# kind: Relationship
+# version: v1
+# definition:
+#   name: Party
+#   sourceType: AxiomParties
+#   target: 
+#     model:
+#       name: AxiomAccounts
+#       relationshipType: Object
+#   mapping:
+#     - source:
+#         fieldPath:
+#           - fieldName: partyid
+#       target:
+#         modelField:
+#           - fieldName: partyid
+#   description: Account have a Party
+# ---
+
+# Party to AccountOwnership
+kind: Relationship
+version: v1
+definition:
+  name: _accountOwnership
+  sourceType: AxiomParties
+  target: 
+    model:
+      name: AxiomAccounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: partyid
+      target:
+        modelField:
+          - fieldName: partyid
+  description: Account have a Party
+---
+
+# AccountOwnership to Account
+kind: Relationship
+version: v1
+definition:
+  name: _account
+  sourceType: AxiomAccountOwnership
+  target:
+    model:
+      name: AxiomAccounts
+      subgraph: app
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: accountnumber
+      target:
+        modelField:
+          - fieldName: accountnumber
+  description: The Account details for an AccountOwnership
+
+---
+# Account has 1 or more transactions
+kind: Relationship
+version: v1
+definition:
+  name: _transactions
+  sourceType: AxiomAccounts
+  target:
+    model:
+      name: Creditcardtransaction
+      subgraph: app
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: accountnumber
+      target:
+        modelField:
+          - fieldName: accountnumber
+  description: The transactions associated with an account
+
+
+# Transaction has an account number
+---
+kind: Relationship
+version: v1
+definition:
+  name: Account
+  sourceType: Creditcardtransaction
+  target:
+    model:
+      name: AxiomAccounts
+      subgraph: app
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: accountnumber
+      target:
+        modelField:
+          - fieldName: accountnumber
+  description: The account a transaction is associated with

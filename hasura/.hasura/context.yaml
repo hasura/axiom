@@ -1,7 +1,7 @@
 kind: Context
 version: v3
 definition:
-  current: default
+  current: axiom-finserv
   contexts:
     au:
       project: axiom-au
@@ -9,6 +9,10 @@ definition:
       subgraph: ../customer/subgraph.yaml
       localEnvFile: ../.env
       cloudEnvFile: ../.env.cloud.au
+    axiom-finserv:
+      project: axiom-finserv
+      localEnvFile: ../.env.finserv
+      cloudEnvFile: ../.env.cloud.finserv
     axiom-fsi:
       project: axiom-fsi
       localEnvFile: ../.env.fsi
@@ -77,3 +81,5 @@ definition:
     docker-stop:
       bash: for file in compose*.yaml $(find ../.data -type f -name "compose.yaml"); do docker compose -f $file down -v; done
       powershell: docker compose -f compose.yaml down -v; docker compose -f .data/compose.yaml down -v
+    build-finserv:
+      bash: ddn supergraph build local --env-file .env.finserv --env-file .env --supergraph supergraph-config/finserv/1-supergraph.yaml

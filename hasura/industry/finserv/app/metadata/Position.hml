@@ -1,0 +1,161 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: Position
+  fields:
+    - name: accountnumber
+      type: Varchar!
+    - name: currentvalue
+      type: Numeric!
+    - name: positionid
+      type: Varchar!
+    - name: purchasedate
+      type: Date!
+    - name: quantity
+      type: Int4!
+    - name: security
+      type: Varchar!
+  graphql:
+    typeName: Position
+    inputTypeName: PositionInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: postgres_tx
+      dataConnectorObjectType: position
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: Position
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - accountnumber
+          - currentvalue
+          - positionid
+          - purchasedate
+          - quantity
+          - security
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PositionBoolExp
+  operand:
+    object:
+      type: Position
+      comparableFields:
+        - fieldName: accountnumber
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: currentvalue
+          booleanExpressionType: NumericBoolExp
+        - fieldName: positionid
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: purchasedate
+          booleanExpressionType: DateBoolExp
+        - fieldName: quantity
+          booleanExpressionType: Int4BoolExp
+        - fieldName: security
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: PositionBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PositionAggExp
+  operand:
+    object:
+      aggregatedType: Position
+      aggregatableFields:
+        - fieldName: accountnumber
+          aggregateExpression: VarcharAggExp
+        - fieldName: currentvalue
+          aggregateExpression: NumericAggExp
+        - fieldName: positionid
+          aggregateExpression: VarcharAggExp
+        - fieldName: purchasedate
+          aggregateExpression: DateAggExp
+        - fieldName: quantity
+          aggregateExpression: Int4AggExp
+        - fieldName: security
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: PositionAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PositionOrderByExp
+  operand:
+    object:
+      orderedType: Position
+      orderableFields:
+        - fieldName: accountnumber
+          orderByExpression: VarcharOrderByExp
+        - fieldName: currentvalue
+          orderByExpression: NumericOrderByExp
+        - fieldName: positionid
+          orderByExpression: VarcharOrderByExp
+        - fieldName: purchasedate
+          orderByExpression: DateOrderByExp
+        - fieldName: quantity
+          orderByExpression: Int4OrderByExp
+        - fieldName: security
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: PositionOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: Position
+  objectType: Position
+  source:
+    dataConnectorName: postgres_tx
+    collection: position
+  filterExpressionType: PositionBoolExp
+  aggregateExpression: PositionAggExp
+  orderByExpression: PositionOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: position
+      subscription:
+        rootField: position
+    selectUniques:
+      - queryRootField: positionByPositionid
+        uniqueIdentifier:
+          - positionid
+        subscription:
+          rootField: positionByPositionid
+    filterInputTypeName: PositionFilterInput
+    aggregate:
+      queryRootField: positionAggregate
+      subscription:
+        rootField: positionAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: Position
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
