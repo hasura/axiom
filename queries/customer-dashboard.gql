@@ -1,0 +1,43 @@
+query CustomerDashboard {
+  billing(where: { customerId: { _eq: "7" } }) {
+    customerId
+    paymentStatus
+    totalAmount
+    customer {
+      firstName
+      lastName
+      email
+      phoneNumber
+      address
+      city
+      state
+      country
+      customerPlans {
+        startDate
+        endDate
+        plan {
+          description
+          monthlyFee
+        }
+        customerPlanDevices {
+          device {
+            brand
+            model
+            image
+          }
+        }
+      }
+      customerLinks {
+        DataUsage {
+          dataUsage
+          timestamp
+        }
+        NetworkPerformance {
+          downloadSpeed
+          uploadSpeed
+          latency
+        }
+      }
+    }
+  }
+}
