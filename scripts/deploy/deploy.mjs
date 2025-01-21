@@ -72,7 +72,7 @@ program
         'Silence all logging except for errors.',
     )
     .option(
-        '-a, --apply',
+        '-a, --apply-build',
         'Automatically apply the build once it is deployed',
         false
     )
