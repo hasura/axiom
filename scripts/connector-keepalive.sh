@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if ! command -v jq &> /dev/null; then
+  echo "Error: jq is not installed."
+  exit 1
+fi
+
 # Define the GraphQL endpoints
 ENDPOINTS=(
   "https://axiom-au.ddn.hasura.app/graphql"
@@ -30,6 +35,13 @@ current_time_ms() {
   fi
 }
 
+notify_slack() {
+  local message=$1
+
+  payload=$(jq -n --arg text "$message" '{text: $text}')
+  curl -s -X POST -H "Content-Type: application/json" -d "$payload" "$SLACK_WEBHOOK"
+}
+
 for ENDPOINT in "${ENDPOINTS[@]}"; do
   {
     if [[ "$ENDPOINT" == "https://axiom-test.ddn.hasura.app/graphql" ]]; then
@@ -44,7 +56,12 @@ for ENDPOINT in "${ENDPOINTS[@]}"; do
     RESPONSE_BODY=$(echo "$RESPONSE" | sed '$d')
     DURATION=$((END_TIME - START_TIME))
 
-    echo "Endpoint: $ENDPOINT | HTTP Code: $HTTP_CODE | Time Taken: ${DURATION}ms | Response: $RESPONSE_BODY"
+    MESSAGE="Endpoint: $ENDPOINT | HTTP Code: $HTTP_CODE | Time Taken: ${DURATION}ms | Response: $RESPONSE_BODY"
+    echo "$MESSAGE"
+
+    if echo "$RESPONSE_BODY" | grep -qiv "error"; then
+      notify_slack "$MESSAGE"
+    fi
   } &
 done
 
