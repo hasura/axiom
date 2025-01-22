@@ -73,12 +73,14 @@ services:
 
   redis:
     image: redis:latest
+    restart: unless-stopped
     ports:
       - 6379:6379
 
   caching:
     build:
-      context: https://github.com/hasura/engine-plugin-caching.git
+      context: https://github.com/hasura/engine-plugin-caching.git#f59acfe4004c869181de83be78d0f5d48459ef3c
+    restart: unless-stopped
     ports:
       - 8787:8787
     environment:

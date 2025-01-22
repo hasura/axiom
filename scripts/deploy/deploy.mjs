@@ -40,6 +40,11 @@ program
         true
     )
     .option(
+        '-g, --gcp-region <gcpRegion>',
+        'Deploy connectors to a specific GCP region',
+        'gcp-us-west2'
+    )
+    .option(
         '-c, --context <context>',
         'Deploy specific context from .hasura/context.yaml',
         'default'
@@ -67,7 +72,7 @@ program
         'Silence all logging except for errors.',
     )
     .option(
-        '-a, --apply',
+        '-a, --apply-build',
         'Automatically apply the build once it is deployed',
         false
     )
@@ -83,6 +88,7 @@ const dryRun = options.dryRun;
 // defaults to true above as (interaction = true) = (no-interaction = false)... at least in my mind
 const noInteraction = !options.interaction;
 const rebuildConnectors = options.rebuildConnectors;
+const gcpRegion = options.gcpRegion;
 const context = options.context;
 const profile = options.profile;
 const fullMetadataBuild = options.fullMetadataBuild;
@@ -95,7 +101,7 @@ const jwtFile = join(script_dir, 'jwtauth.hml');
 const noauthFile = join(script_dir, 'noauth.hml');
 const root = resolve(__dirname, '../../hasura/');
 
-log('magentaBright', 'Resolved repository root:', root);
+log('magentaBright', `Resolved repository root: ${root}`);
 
 if (!fs.existsSync(root)) {
     throw new Error(`Error: Directory ${root} does not exist.`);
@@ -105,12 +111,30 @@ if (!fs.existsSync(root)) {
 const workingDir = join(root);
 process.chdir(workingDir);
 
-log('magentaBright', 'Changed working directory to:', process.cwd());
+log('magentaBright', `Changed working directory to: ${process.cwd()}`);
 
 if (!fs.existsSync('.hasura/context.yaml')) {
     console.error(
         chalk.whiteBright.bgRed(
             'Error: .hasura/context.yaml not found in the current working directory.'
+        )
+    );
+    process.exit(1);
+}
+
+// Validate region
+const availableRegions = [
+    'gcp-australia-southeast1',
+    'gcp-europe-west1',
+    'gcp-asia-southeast1',
+    'gcp-us-east4',
+    'gcp-us-west2',
+];
+
+if (!availableRegions.includes(gcpRegion)) {
+    console.error(
+        chalk.whiteBright.bgRed(
+            `Error: GCP Region ${gcpRegion} not in supported list: ${availableRegions.join(', ')}.`
         )
     );
     process.exit(1);
@@ -128,7 +152,7 @@ if (!fs.existsSync(profilePath)) {
 }
 
 const supergraphConfig = resolve(root, 'supergraph-config', profile);
-log('magentaBright', 'Resolved supergraph config:', supergraphConfig);
+log('magentaBright', `Resolved supergraph config: ${supergraphConfig}`);
 
 // Validate log level
 const allowedLogLevels = ['FATAL', 'ERROR', 'WARN', 'INFO', 'DEBUG'];
@@ -147,20 +171,11 @@ log('magentaBright', `Log level set to: ${logLevel}`);
 log('magentaBright', `Override flag is ${override ? 'enabled' : 'disabled'}`);
 log('magentaBright', `Dry run mode is ${dryRun ? 'enabled' : 'disabled'}`);
 log('magentaBright', `Connectors ${rebuildConnectors ? 'will' : "won't"} be rebuilt`);
+log('magentaBright', `Connector region is set to: ${gcpRegion}`);
 log('magentaBright', (`Context: ${context}`));
 log('magentaBright', `Full metadata build is: ${fullMetadataBuild ? 'enabled' : 'disabled'}`);
 log('magentaBright', `No interaction mode is: ${noInteraction ? 'enabled' : 'disabled'}`);
 log('magentaBright', `Automatically apply build is set to: ${options.applyBuild ? 'enabled' : 'disabled'}`);
-
-// Mapping context regions to GCP region IDs
-const regionMapping = {
-    au: 'gcp-australia-southeast1',
-    eu: 'gcp-europe-west1',
-    sg: 'gcp-asia-southeast1',
-    'us-east': 'gcp-us-east4',
-    'us-west': 'gcp-us-west2',
-    default: 'gcp-us-west2', // Default axiom-test to us-west
-};
 
 // Update the region in connector files
 function updateRegionInFile(filePath, region) {
@@ -474,11 +489,8 @@ async function main() {
         ).rebuildConnectors;
     }
 
-    // Map the selected context region to the GCP region ID
-    const connectorRegion = regionMapping[context] || regionMapping['default'];
-
     // switch connectors to the right region
-    convertConnectorRegion(connectorRegion);
+    convertConnectorRegion(gcpRegion);
 
     // Split up all intermediate supergraphs from the final one and
     // build each intermediate supergraph with rebuildSupergraph if
@@ -500,7 +512,7 @@ async function main() {
     await pushMetadataRelease(fullyBuiltSupergraph, context, rebuildConnectors);
 
     // Revert connectors to the default
-    convertConnectorRegion(regionMapping['default']);
+    convertConnectorRegion('gcp-us-west2');
 
     log('green',`[${context}] => Deployment completed successfully.`);
 }
