@@ -13,6 +13,7 @@ ENDPOINTS=(
   "https://axiom-us-east.ddn.hasura.app/graphql"
   "https://axiom-sg.ddn.hasura.app/graphql"
   "https://axiom-test.ddn.hasura.app/graphql"
+  "https://axiom-dev.ddn.hasura.app/graphql"
 )
 
 # Define the query
@@ -44,12 +45,14 @@ notify_slack() {
 
 for ENDPOINT in "${ENDPOINTS[@]}"; do
   {
-    if [[ "$ENDPOINT" == "https://axiom-test.ddn.hasura.app/graphql" ]]; then
-      QUERY="$TESTQUERY"
+    # Define locally to prevent parallel execution from changing it for other processes
+    query="$QUERY"
+    if [[ "$ENDPOINT" =~ https://axiom-(test|dev).ddn.hasura.app/graphql ]]; then
+      query="$TESTQUERY"
     fi
 
     START_TIME=$(current_time_ms)
-    RESPONSE=$(curl -s -w "\nHTTP_CODE:%{http_code}" -X POST -H "Content-Type: application/json" -d "$QUERY" "$ENDPOINT")
+    RESPONSE=$(curl -s -w "\nHTTP_CODE:%{http_code}" -X POST -H "Content-Type: application/json" -d "$query" "$ENDPOINT")
     END_TIME=$(current_time_ms)
 
     HTTP_CODE=$(echo "$RESPONSE" | tail -n 1 | sed 's/HTTP_CODE://')
@@ -59,7 +62,7 @@ for ENDPOINT in "${ENDPOINTS[@]}"; do
     MESSAGE="Endpoint: $ENDPOINT | HTTP Code: $HTTP_CODE | Time Taken: ${DURATION}ms | Response: $RESPONSE_BODY"
     echo "$MESSAGE"
 
-    if echo "$RESPONSE_BODY" | grep -qiv "error"; then
+    if echo "$RESPONSE_BODY" | grep -qi "error"; then
       notify_slack "$MESSAGE"
     fi
   } &
