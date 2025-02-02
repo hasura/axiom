@@ -41,7 +41,7 @@ definition:
 
 ---
 kind: Model
-version: v1
+version: v2
 definition:
   name: CustomerNetwork
   objectType: CustomerNetwork
@@ -49,13 +49,6 @@ definition:
     dataConnectorName: aurora
     collection: customer_network
   filterExpressionType: CustomerNetworkBoolExp
-  orderableFields:
-    - fieldName: customerId
-      orderByDirections:
-        enableAll: true
-    - fieldName: nodeId
-      orderByDirections:
-        enableAll: true
   graphql:
     selectMany:
       queryRootField: customerNetwork
@@ -64,11 +57,11 @@ definition:
         uniqueIdentifier:
           - customerId
           - nodeId
-    orderByExpressionType: Customer_CustomerNetworkOrderBy
     filterInputTypeName: CustomerNetworkFilterInput
     aggregate:
       queryRootField: customerNetworkAggregate
   aggregateExpression: CustomerNetworkAggExp
+  orderByExpression: CustomerNetworkOrderByExp
 
 ---
 kind: ModelPermissions
@@ -166,4 +159,23 @@ definition:
     enable: true
   graphql:
     selectTypeName: CustomerNetworkAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: CustomerNetworkOrderByExp
+  operand:
+    object:
+      orderedType: CustomerNetwork
+      orderableFields:
+        - fieldName: customerId
+          orderByExpression: Int4OrderByExp
+        - fieldName: nodeId
+          orderByExpression: Int4OrderByExp
+      orderableRelationships:
+        - relationshipName: customer
+        - relationshipName: network
+  graphql:
+    expressionTypeName: customer_CustomerNetworkOrderByExp
 

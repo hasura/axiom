@@ -111,15 +111,13 @@ definition:
 
 ---
 kind: Model
-version: v1
+version: v2
 definition:
   name: Customers
   description: >
     **Customers Model**
 
-    This model represents customer-related data sourced from the Aurora database. It provides
-    the ability to query, filter, and order customer records based on various fields,
-    including name, address, contact information, and more.
+    This model represents customer-related data sourced from the Aurora database. It provides the ability to query, filter, and order customer records based on various fields, including name, address, contact information, and more.
 
 
     _Key features include:_
@@ -136,43 +134,6 @@ definition:
     dataConnectorName: aurora
     collection: customers
   filterExpressionType: CustomersBoolExp
-  orderableFields:
-    - fieldName: address
-      orderByDirections:
-        enableAll: true
-    - fieldName: city
-      orderByDirections:
-        enableAll: true
-    - fieldName: country
-      orderByDirections:
-        enableAll: true
-    - fieldName: customerId
-      orderByDirections:
-        enableAll: true
-    - fieldName: email
-      orderByDirections:
-        enableAll: true
-    - fieldName: firstName
-      orderByDirections:
-        enableAll: true
-    - fieldName: image
-      orderByDirections:
-        enableAll: true
-    - fieldName: lastName
-      orderByDirections:
-        enableAll: true
-    - fieldName: phoneNumber
-      orderByDirections:
-        enableAll: true
-    - fieldName: postcode
-      orderByDirections:
-        enableAll: true
-    - fieldName: segment
-      orderByDirections:
-        enableAll: true
-    - fieldName: state
-      orderByDirections:
-        enableAll: true
   graphql:
     selectMany:
       queryRootField: customers
@@ -186,13 +147,13 @@ definition:
       - queryRootField: customersByCustomerId
         uniqueIdentifier:
           - customerId
-    orderByExpressionType: Customer_CustomersOrderBy
     filterInputTypeName: CustomersFilterInput
     aggregate:
       queryRootField: customersAggregate
     subscription:
-        rootField: customersAggregate
+      rootField: customersAggregate
   aggregateExpression: CustomersAggExp
+  orderByExpression: CustomersOrderByExp
 
 ---
 kind: ModelPermissions
@@ -386,4 +347,41 @@ definition:
     enable: true
   graphql:
     selectTypeName: CustomersAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: CustomersOrderByExp
+  operand:
+    object:
+      orderedType: Customers
+      orderableFields:
+        - fieldName: address
+          orderByExpression: VarcharOrderByExp
+        - fieldName: city
+          orderByExpression: VarcharOrderByExp
+        - fieldName: country
+          orderByExpression: VarcharOrderByExp
+        - fieldName: customerId
+          orderByExpression: Int4OrderByExp
+        - fieldName: email
+          orderByExpression: VarcharOrderByExp
+        - fieldName: firstName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: image
+          orderByExpression: VarcharOrderByExp
+        - fieldName: lastName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: phoneNumber
+          orderByExpression: VarcharOrderByExp
+        - fieldName: postcode
+          orderByExpression: VarcharOrderByExp
+        - fieldName: segment
+          orderByExpression: VarcharOrderByExp
+        - fieldName: state
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: customer_CustomersOrderByExp
 

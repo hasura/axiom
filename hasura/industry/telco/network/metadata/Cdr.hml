@@ -48,7 +48,7 @@ definition:
 
 ---
 kind: Model
-version: v1
+version: v2
 definition:
   name: Cdr
   objectType: Cdr
@@ -56,19 +56,6 @@ definition:
     dataConnectorName: clickhouse
     collection: cdr
   filterExpressionType: CdrBoolExp
-  orderableFields:
-    - fieldName: callDuration
-      orderByDirections:
-        enableAll: true
-    - fieldName: callType
-      orderByDirections:
-        enableAll: true
-    - fieldName: guid
-      orderByDirections:
-        enableAll: true
-    - fieldName: timestamp
-      orderByDirections:
-        enableAll: true
   graphql:
     selectMany:
       queryRootField: cdr
@@ -77,11 +64,11 @@ definition:
         uniqueIdentifier:
           - guid
           - timestamp
-    orderByExpressionType: Network_CdrOrderBy
     filterInputTypeName: CdrFilterInput
     aggregate:
       queryRootField: cdrAggregate
   aggregateExpression: CdrAggExp
+  orderByExpression: CdrOrderByExp
 
 ---
 kind: ModelPermissions
@@ -176,4 +163,26 @@ definition:
     enable: true
   graphql:
     typeName: Network_CdrBoolExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: CdrOrderByExp
+  operand:
+    object:
+      orderedType: Cdr
+      orderableFields:
+        - fieldName: callDuration
+          orderByExpression: Int32OrderByExp
+        - fieldName: callType
+          orderByExpression: StringOrderByExp
+        - fieldName: guid
+          orderByExpression: StringOrderByExp
+        - fieldName: timestamp
+          orderByExpression: DateTimeOrderByExp
+      orderableRelationships:
+        - relationshipName: customer
+  graphql:
+    expressionTypeName: network_CdrOrderByExp
 

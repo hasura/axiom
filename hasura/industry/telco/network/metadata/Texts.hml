@@ -54,7 +54,7 @@ definition:
 
 ---
 kind: Model
-version: v1
+version: v2
 definition:
   name: Texts
   objectType: Texts
@@ -62,28 +62,6 @@ definition:
     dataConnectorName: kafka_sink
     collection: texts
   filterExpressionType: TextsBoolExp
-  orderableFields:
-    - fieldName: customerid
-      orderByDirections:
-        enableAll: true
-    - fieldName: deviceid
-      orderByDirections:
-        enableAll: true
-    - fieldName: messagetype
-      orderByDirections:
-        enableAll: true
-    - fieldName: nodeid
-      orderByDirections:
-        enableAll: true
-    - fieldName: receivernumber
-      orderByDirections:
-        enableAll: true
-    - fieldName: textid
-      orderByDirections:
-        enableAll: true
-    - fieldName: timestamp
-      orderByDirections:
-        enableAll: true
   graphql:
     selectMany:
       queryRootField: texts
@@ -91,11 +69,11 @@ definition:
       - queryRootField: textsByTextid
         uniqueIdentifier:
           - textid
-    orderByExpressionType: Network_TextsOrderBy
     filterInputTypeName: TextsFilterInput
     aggregate:
       queryRootField: textsAggregate
   aggregateExpression: TextsAggExp
+  orderByExpression: TextsOrderByExp
 
 ---
 kind: ModelPermissions
@@ -183,4 +161,31 @@ definition:
     enable: true
   graphql:
     selectTypeName: TextsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: TextsOrderByExp
+  operand:
+    object:
+      orderedType: Texts
+      orderableFields:
+        - fieldName: customerid
+          orderByExpression: Int4OrderByExp
+        - fieldName: deviceid
+          orderByExpression: Int4OrderByExp
+        - fieldName: messagetype
+          orderByExpression: VarcharOrderByExp
+        - fieldName: nodeid
+          orderByExpression: Int4OrderByExp
+        - fieldName: receivernumber
+          orderByExpression: VarcharOrderByExp
+        - fieldName: textid
+          orderByExpression: Int4OrderByExp
+        - fieldName: timestamp
+          orderByExpression: TimestamptzOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: network_TextsOrderByExp
 

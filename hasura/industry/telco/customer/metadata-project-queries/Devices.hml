@@ -76,7 +76,7 @@ definition:
 
 ---
 kind: Model
-version: v1
+version: v2
 definition:
   name: Devices
   objectType: Devices
@@ -84,28 +84,6 @@ definition:
     dataConnectorName: aurora
     collection: devices
   filterExpressionType: DevicesBoolExp
-  orderableFields:
-    - fieldName: brand
-      orderByDirections:
-        enableAll: true
-    - fieldName: createdAt
-      orderByDirections:
-        enableAll: true
-    - fieldName: deviceId
-      orderByDirections:
-        enableAll: true
-    - fieldName: image
-      orderByDirections:
-        enableAll: true
-    - fieldName: model
-      orderByDirections:
-        enableAll: true
-    - fieldName: sfRecord
-      orderByDirections:
-        enableAll: true
-    - fieldName: updatedAt
-      orderByDirections:
-        enableAll: true
   graphql:
     selectMany:
       queryRootField: devices
@@ -113,11 +91,11 @@ definition:
       - queryRootField: devicesByDeviceId
         uniqueIdentifier:
           - deviceId
-    orderByExpressionType: Customer_DevicesOrderBy
     filterInputTypeName: DevicesFilterInput
     aggregate:
       queryRootField: devicesAggregate
   aggregateExpression: DevicesAggExp
+  orderByExpression: DevicesOrderByExp
 
 ---
 kind: ModelPermissions
@@ -223,4 +201,31 @@ definition:
     enable: true
   graphql:
     selectTypeName: DevicesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: DevicesOrderByExp
+  operand:
+    object:
+      orderedType: Devices
+      orderableFields:
+        - fieldName: brand
+          orderByExpression: VarcharOrderByExp
+        - fieldName: createdAt
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: deviceId
+          orderByExpression: Int4OrderByExp
+        - fieldName: image
+          orderByExpression: VarcharOrderByExp
+        - fieldName: model
+          orderByExpression: VarcharOrderByExp
+        - fieldName: sfRecord
+          orderByExpression: VarcharOrderByExp
+        - fieldName: updatedAt
+          orderByExpression: TimestamptzOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: customer_DevicesOrderByExp
 
