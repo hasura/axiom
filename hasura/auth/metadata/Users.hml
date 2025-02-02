@@ -67,7 +67,7 @@ definition:
 
 ---
 kind: Model
-version: v1
+version: v2
 definition:
   name: Users
   objectType: Users
@@ -75,37 +75,24 @@ definition:
     dataConnectorName: auth
     collection: users
   filterExpressionType: UsersBoolExp
-  orderableFields:
-    - fieldName: createdAt
-      orderByDirections:
-        enableAll: true
-    - fieldName: email
-      orderByDirections:
-        enableAll: true
-    - fieldName: id
-      orderByDirections:
-        enableAll: true
-    - fieldName: password
-      orderByDirections:
-        enableAll: true
-    - fieldName: roles
-      orderByDirections:
-        enableAll: true
-    - fieldName: updatedAt
-      orderByDirections:
-        enableAll: true
   graphql:
     selectMany:
       queryRootField: users
+      subscription:
+        rootField: users
     selectUniques:
       - queryRootField: usersById
         uniqueIdentifier:
           - id
-    orderByExpressionType: Auth_UsersOrderBy
+        subscription:
+          rootField: usersById
     filterInputTypeName: UsersFilterInput
     aggregate:
       queryRootField: usersAggregate
+      subscription:
+        rootField: usersAggregate
   aggregateExpression: UsersAggExp
+  orderByExpression: UsersOrderByExp
 
 ---
 kind: ModelPermissions
@@ -116,14 +103,15 @@ definition:
     - role: admin
       select:
         filter: null
+        allowSubscriptions: true
     - role: customer
       select:
         filter:
           fieldComparison:
             field: id
-            operator: '_eq'
+            operator: _eq
             value:
-              sessionVariable: 'x-hasura-user-id'
+              sessionVariable: x-hasura-user-id
 
 ---
 kind: BooleanExpressionType
@@ -179,4 +167,29 @@ definition:
     enable: true
   graphql:
     selectTypeName: UsersAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: UsersOrderByExp
+  operand:
+    object:
+      orderedType: Users
+      orderableFields:
+        - fieldName: createdAt
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: email
+          orderByExpression: VarcharOrderByExp
+        - fieldName: id
+          orderByExpression: Int4OrderByExp
+        - fieldName: password
+          orderByExpression: VarcharOrderByExp
+        - fieldName: roles
+          orderByExpression: VarcharOrderByExp
+        - fieldName: updatedAt
+          orderByExpression: TimestamptzOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: auth_UsersOrderByExp
 
