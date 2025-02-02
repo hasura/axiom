@@ -11,7 +11,7 @@
     - name: Set up cron for metrics filler
       ansible.builtin.cron:
         name: "Axiom connector-keepalive"
-        job: "/home/ubuntu/axiom/scripts/connector-keepalive.sh 2>&1 | logger -t gql-check"
+        job: "SLACK_WEBHOOK='{{ slack_webhook }}' /home/ubuntu/axiom/scripts/connector-keepalive.sh 2>&1 | logger -t gql-check"
         day: "*"
         hour: "*"
         minute: "*"

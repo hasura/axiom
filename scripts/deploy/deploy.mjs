@@ -50,7 +50,7 @@ program
         'default'
     )
     .requiredOption(
-        '-p --profile <profile>',
+        '-p, --profile <profile>',
         'Deploy from demo config in supergraph-config/<profile>',
     )
     .option(

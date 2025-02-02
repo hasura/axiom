@@ -97,7 +97,7 @@ definition:
 
 ---
 kind: Model
-version: v1
+version: v2
 definition:
   name: Documents
   objectType: Documents
@@ -105,49 +105,24 @@ definition:
     dataConnectorName: vector
     collection: documents
   filterExpressionType: DocumentsBoolExp
-  orderableFields:
-    - fieldName: body
-      orderByDirections:
-        enableAll: true
-    - fieldName: createdAt
-      orderByDirections:
-        enableAll: true
-    - fieldName: language
-      orderByDirections:
-        enableAll: true
-    - fieldName: rating
-      orderByDirections:
-        enableAll: true
-    - fieldName: status
-      orderByDirections:
-        enableAll: true
-    - fieldName: tags
-      orderByDirections:
-        enableAll: true
-    - fieldName: title
-      orderByDirections:
-        enableAll: true
-    - fieldName: updatedAt
-      orderByDirections:
-        enableAll: true
-    - fieldName: uuid
-      orderByDirections:
-        enableAll: true
-    - fieldName: viewCount
-      orderByDirections:
-        enableAll: true
   graphql:
     selectMany:
       queryRootField: documents
+      subscription:
+        rootField: documents
     selectUniques:
       - queryRootField: documentsByUuid
         uniqueIdentifier:
           - uuid
-    orderByExpressionType: Support_DocumentsOrderBy
+        subscription:
+          rootField: documentsByUuid
     filterInputTypeName: DocumentsFilterInput
     aggregate:
       queryRootField: documentsAggregate
+      subscription:
+        rootField: documentsAggregate
   aggregateExpression: DocumentsAggExp
+  orderByExpression: DocumentsOrderByExp
 
 ---
 kind: ModelPermissions
@@ -158,6 +133,7 @@ definition:
     - role: admin
       select:
         filter: null
+        allowSubscriptions: true
     - role: customer
       select:
         filter: null
@@ -250,4 +226,37 @@ definition:
     enable: true
   graphql:
     selectTypeName: DocumentsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: DocumentsOrderByExp
+  operand:
+    object:
+      orderedType: Documents
+      orderableFields:
+        - fieldName: body
+          orderByExpression: TextOrderByExp
+        - fieldName: createdAt
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: language
+          orderByExpression: TextOrderByExp
+        - fieldName: rating
+          orderByExpression: Int4OrderByExp
+        - fieldName: status
+          orderByExpression: TextOrderByExp
+        - fieldName: tags
+          orderByExpression: TextOrderByExp
+        - fieldName: title
+          orderByExpression: TextOrderByExp
+        - fieldName: updatedAt
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: uuid
+          orderByExpression: UuidOrderByExp
+        - fieldName: viewCount
+          orderByExpression: Int4OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: support_DocumentsOrderByExp
 

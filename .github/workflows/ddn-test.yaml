@@ -1,21 +1,26 @@
 name: Axiom auto-test + auto-deploy
 
-permissions:
-  contents: read
-  pull-requests: write
-
 on:
-  pull_request:
+  # Manual approval of environment is required
+  pull_request_target:
     branches:
       - main
+    paths-ignore:
+      - ".vscode/**"
+      - "README.md"
+      - "hasura/README.md"
+      - "infra/**"
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: CI
     needs: test
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Check for [no-op] in commit message
         run: |
@@ -37,11 +42,11 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y jq
 
-      - name: Create .env.cloud.test
+      - name: Create .env.cloud.dev
         working-directory: ./hasura
         if: env.no_op != 'true'
         run: |
-          echo "${{ secrets.ENV_CLOUD_DEFAULT }}" > .env.cloud.test
+          echo "${{ secrets.ENV_CLOUD_DEFAULT }}" > .env.cloud.dev
 
       - name: Detect Connector Changes
         if: env.no_op != 'true'
@@ -69,9 +74,9 @@ jobs:
           if [ "${{ env.connector_changes }}" = "true" ]; then
             echo "Building connectors..."
             ./scripts/deploy/deploy.mjs \
-              --context axiom-test \
+              --context axiom-dev \
               --profile telco \
-              --override-description "${calculatedSha} [PR-${{ github.event.pull_request.number }}: ${{ github.event.pull_request.title }}] Test build for commit $GITHUB_SHA" \
+              --override-description "${calculatedSha} [PR-${{ github.event.pull_request.number }}] ${{ github.event.pull_request.title }} | Build for commit $GITHUB_SHA" \
               --rebuild-connectors \
               --override \
               --log-level FATAL \
@@ -80,9 +85,9 @@ jobs:
           else
             echo "Skipping connector build."
             ./scripts/deploy/deploy.mjs \
-              --context axiom-test \
+              --context axiom-dev \
               --profile telco \
-              --override-description "${calculatedSha} [PR-${{ github.event.pull_request.number }}: ${{ github.event.pull_request.title }}] Test build for commit $GITHUB_SHA" \
+              --override-description "${calculatedSha} [PR-${{ github.event.pull_request.number }}] ${{ github.event.pull_request.title }} | Build for commit $GITHUB_SHA" \
               --override \
               --log-level FATAL \
               --quiet \
@@ -145,10 +150,12 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-
+    environment: CI
     steps:
-      - name: Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Check for [no-op] in commit message
         run: |
@@ -158,41 +165,32 @@ jobs:
             echo "no_op=false" >> $GITHUB_ENV
           fi
 
-      - name: Set up DDN CLI and Login
+      - name: Set up DDN CLI and login
         if: env.no_op != 'true'
         uses: hasura/ddn-deployment@main
         with:
           hasura-pat: ${{ secrets.HASURA_PAT }}
 
-      - name: Install Dependencies (jq)
+      - name: Install dependencies (jq)
         if: env.no_op != 'true'
         run: |
           sudo apt-get update
           sudo apt-get install -y jq
 
-      - name: Prep Repository
+      - name: Prep repository
         if: env.no_op != 'true'
         run: |
-          cp ./hasura/.env.template ./hasura/.env
-          cp ./hasura/.env.local.template ./hasura/.env.local
+          cp hasura/.env.telco.template hasura/.env.telco
           cp .data/.env.template .data/telco/.env
 
-      - name: Build All Supergraphs
+      - name: Build all supergraphs
         working-directory: ./hasura
         if: env.no_op != 'true'
         run: |
-          ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph-config/telco/1-supergraph-project-queries.yaml
-          ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph-config/telco/2-supergraph-domain.yaml
-          ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph-config/telco/3-supergraph.yaml
-          ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph-config/telco/4-supergraph-with-mutations.yaml
-
-      # TODO: could delete this too if everything is bundled into demo-telco
-      - name: Set up demo databases
-        working-directory: ./hasura
-        if: env.no_op != 'true'
-        run: ddn run docker-start-telco
-        # TODO: delete this
-        # run: DATASET=telco docker compose -f .data/compose.yaml --env-file .data/.env up --build --pull always -d
+          ddn supergraph build local --supergraph supergraph-config/telco/1-supergraph-project-queries.yaml
+          ddn supergraph build local --supergraph supergraph-config/telco/2-supergraph-domain.yaml
+          ddn supergraph build local --supergraph supergraph-config/telco/3-supergraph.yaml
+          ddn supergraph build local --supergraph supergraph-config/telco/4-supergraph-with-mutations.yaml
 
       - name: Set up demo databases & Run DDN
         working-directory: ./hasura
@@ -202,13 +200,7 @@ jobs:
         run: |
           ddn run demo-telco
 
-        # TODO: delete this
-        # docker compose -f compose.yaml \
-        #  --env-file .env.local \
-        #  --env-file .env \
-        #  up --build --pull always -d
-
-      - name: Wait for GraphQL Service to Be Ready
+      - name: Wait for DDN to be ready
         if: env.no_op != 'true'
         run: |
           echo "Waiting for GraphQL service to start..."
@@ -218,7 +210,7 @@ jobs:
           done
           echo "Service is up!"
 
-      - name: Query DDN Endpoint and Validate Response
+      - name: Query DDN endpoint and validate response
         if: env.no_op != 'true'
         run: |
           QUERY='{
