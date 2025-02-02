@@ -1,6 +1,15 @@
 # Axiom
 Hasura presales demo kit
 
+Axiom contains all the resources and tools required to run industry demos of DDN and PromptQL. Within axiom, are a number of different subdirectories with a specific focus, and documentation to support their usage.
+| **Directory**  | **Usage** |
+|----------------|-----------|
+| `hasura`        | Contains all configuration and metadata required to run instances of DDN. `hasura` includes supergraph, subgraph, and connector metadata for a number of industry demo profiles.   |
+| `infra`          | Contains ansible playbooks for the ongoing configuration management of existing demo servers and is used to set up new servers. |
+| `scripts`        | The `scripts` directory holds useful tools for demoing, managing, and deploying DDN. |
+| `.data`          | Seeds content for local and cloud based demonstrations |
+
+
 ## Quickstart (Telco)
 
 To get started, first copy template files into the correct locations:
