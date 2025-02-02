@@ -37,11 +37,11 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y jq
 
-      - name: Create .env.cloud.test
+      - name: Create .env.cloud.dev
         working-directory: ./hasura
         if: env.no_op != 'true'
         run: |
-          echo "${{ secrets.ENV_CLOUD_DEFAULT }}" > .env.cloud.test
+          echo "${{ secrets.ENV_CLOUD_DEFAULT }}" > .env.cloud.dev
 
       - name: Detect Connector Changes
         if: env.no_op != 'true'
@@ -69,9 +69,9 @@ jobs:
           if [ "${{ env.connector_changes }}" = "true" ]; then
             echo "Building connectors..."
             ./scripts/deploy/deploy.mjs \
-              --context axiom-test \
+              --context axiom-dev \
               --profile telco \
-              --override-description "${calculatedSha} [PR-${{ github.event.pull_request.number }}: ${{ github.event.pull_request.title }}] Test build for commit $GITHUB_SHA" \
+              --override-description "${calculatedSha} [PR-${{ github.event.pull_request.number }}] ${{ github.event.pull_request.title }} | Build for commit $GITHUB_SHA" \
               --rebuild-connectors \
               --override \
               --log-level FATAL \
@@ -80,9 +80,9 @@ jobs:
           else
             echo "Skipping connector build."
             ./scripts/deploy/deploy.mjs \
-              --context axiom-test \
+              --context axiom-dev \
               --profile telco \
-              --override-description "${calculatedSha} [PR-${{ github.event.pull_request.number }}: ${{ github.event.pull_request.title }}] Test build for commit $GITHUB_SHA" \
+              --override-description "${calculatedSha} [PR-${{ github.event.pull_request.number }}] ${{ github.event.pull_request.title }} | Build for commit $GITHUB_SHA" \
               --override \
               --log-level FATAL \
               --quiet \
@@ -173,26 +173,23 @@ jobs:
       - name: Prep Repository
         if: env.no_op != 'true'
         run: |
-          cp ./hasura/.env.template ./hasura/.env
-          cp ./hasura/.env.local.template ./hasura/.env.local
+          cp hasura/.env.telco.template hasura/.env.telco
           cp .data/.env.template .data/telco/.env
 
       - name: Build All Supergraphs
         working-directory: ./hasura
         if: env.no_op != 'true'
         run: |
-          ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph-config/telco/1-supergraph-project-queries.yaml
-          ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph-config/telco/2-supergraph-domain.yaml
-          ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph-config/telco/3-supergraph.yaml
-          ddn supergraph build local --env-file .env.local --env-file .env --supergraph supergraph-config/telco/4-supergraph-with-mutations.yaml
+          ddn supergraph build local --supergraph supergraph-config/telco/1-supergraph-project-queries.yaml
+          ddn supergraph build local --supergraph supergraph-config/telco/2-supergraph-domain.yaml
+          ddn supergraph build local --supergraph supergraph-config/telco/3-supergraph.yaml
+          ddn supergraph build local --supergraph supergraph-config/telco/4-supergraph-with-mutations.yaml
 
       # TODO: could delete this too if everything is bundled into demo-telco
       - name: Set up demo databases
         working-directory: ./hasura
         if: env.no_op != 'true'
         run: ddn run docker-start-telco
-        # TODO: delete this
-        # run: DATASET=telco docker compose -f .data/compose.yaml --env-file .data/.env up --build --pull always -d
 
       - name: Set up demo databases & Run DDN
         working-directory: ./hasura
@@ -201,12 +198,6 @@ jobs:
           HASURA_DDN_PAT: ${{ secrets.HASURA_PAT }}
         run: |
           ddn run demo-telco
-
-        # TODO: delete this
-        # docker compose -f compose.yaml \
-        #  --env-file .env.local \
-        #  --env-file .env \
-        #  up --build --pull always -d
 
       - name: Wait for GraphQL Service to Be Ready
         if: env.no_op != 'true'

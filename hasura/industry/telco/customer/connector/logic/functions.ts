@@ -7,7 +7,6 @@
  * @paralleldegree 5
  */
 export function maskCardNumber(cardNumber?: string): string {
-  console.log("cardNumber", cardNumber);
   if (!cardNumber) {
     return "Invalid card number";
   }
