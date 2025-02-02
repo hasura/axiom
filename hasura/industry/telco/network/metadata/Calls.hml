@@ -58,7 +58,7 @@ definition:
 
 ---
 kind: Model
-version: v1
+version: v2
 definition:
   name: Calls
   objectType: Calls
@@ -66,31 +66,6 @@ definition:
     dataConnectorName: kafka_sink
     collection: calls
   filterExpressionType: CallsBoolExp
-  orderableFields:
-    - fieldName: callid
-      orderByDirections:
-        enableAll: true
-    - fieldName: calltype
-      orderByDirections:
-        enableAll: true
-    - fieldName: customerid
-      orderByDirections:
-        enableAll: true
-    - fieldName: deviceid
-      orderByDirections:
-        enableAll: true
-    - fieldName: duration
-      orderByDirections:
-        enableAll: true
-    - fieldName: nodeid
-      orderByDirections:
-        enableAll: true
-    - fieldName: receivernumber
-      orderByDirections:
-        enableAll: true
-    - fieldName: timestamp
-      orderByDirections:
-        enableAll: true
   graphql:
     selectMany:
       queryRootField: calls
@@ -98,11 +73,11 @@ definition:
       - queryRootField: callsByCallid
         uniqueIdentifier:
           - callid
-    orderByExpressionType: Network_CallsOrderBy
     filterInputTypeName: CallsFilterInput
     aggregate:
       queryRootField: callsAggregate
   aggregateExpression: CallsAggExp
+  orderByExpression: CallsOrderByExp
 
 ---
 kind: ModelPermissions
@@ -194,4 +169,33 @@ definition:
     enable: true
   graphql:
     selectTypeName: CallsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: CallsOrderByExp
+  operand:
+    object:
+      orderedType: Calls
+      orderableFields:
+        - fieldName: callid
+          orderByExpression: Int4OrderByExp
+        - fieldName: calltype
+          orderByExpression: VarcharOrderByExp
+        - fieldName: customerid
+          orderByExpression: Int4OrderByExp
+        - fieldName: deviceid
+          orderByExpression: Int4OrderByExp
+        - fieldName: duration
+          orderByExpression: Int4OrderByExp
+        - fieldName: nodeid
+          orderByExpression: Int4OrderByExp
+        - fieldName: receivernumber
+          orderByExpression: VarcharOrderByExp
+        - fieldName: timestamp
+          orderByExpression: TimestamptzOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: network_CallsOrderByExp
 

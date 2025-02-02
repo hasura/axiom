@@ -96,7 +96,7 @@ definition:
 
 ---
 kind: Model
-version: v1
+version: v2
 definition:
   name: DetailedUserActivityMv
   objectType: DetailedUserActivityMv
@@ -104,52 +104,15 @@ definition:
     dataConnectorName: clickhouse
     collection: detailed_user_activity_mv
   filterExpressionType: DetailedUserActivityMvBoolExp
-  orderableFields:
-    - fieldName: cdrGuid
-      orderByDirections:
-        enableAll: true
-    - fieldName: cdrTimestamp
-      orderByDirections:
-        enableAll: true
-    - fieldName: callDuration
-      orderByDirections:
-        enableAll: true
-    - fieldName: callType
-      orderByDirections:
-        enableAll: true
-    - fieldName: duGuid
-      orderByDirections:
-        enableAll: true
-    - fieldName: duTimestamp
-      orderByDirections:
-        enableAll: true
-    - fieldName: dataUsage
-      orderByDirections:
-        enableAll: true
-    - fieldName: downloadSpeed
-      orderByDirections:
-        enableAll: true
-    - fieldName: latency
-      orderByDirections:
-        enableAll: true
-    - fieldName: npGuid
-      orderByDirections:
-        enableAll: true
-    - fieldName: npTimestamp
-      orderByDirections:
-        enableAll: true
-    - fieldName: uploadSpeed
-      orderByDirections:
-        enableAll: true
   graphql:
     selectMany:
       queryRootField: detailedUserActivityMv
     selectUniques: []
-    orderByExpressionType: Network_DetailedUserActivityMvOrderBy
     filterInputTypeName: DetailedUserActivityMvFilterInput
     aggregate:
       queryRootField: detailedUserActivityMvAggregate
   aggregateExpression: DetailedUserActivityMvAggExp
+  orderByExpression: DetailedUserActivityMvOrderByExp
 
 ---
 kind: ModelPermissions
@@ -258,4 +221,42 @@ definition:
     enable: true
   graphql:
     typeName: Network_DetailedUserActivityMvBoolExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: DetailedUserActivityMvOrderByExp
+  operand:
+    object:
+      orderedType: DetailedUserActivityMv
+      orderableFields:
+        - fieldName: cdrGuid
+          orderByExpression: StringOrderByExp
+        - fieldName: cdrTimestamp
+          orderByExpression: DateTimeOrderByExp
+        - fieldName: callDuration
+          orderByExpression: Int32OrderByExp
+        - fieldName: callType
+          orderByExpression: StringOrderByExp
+        - fieldName: duGuid
+          orderByExpression: StringOrderByExp
+        - fieldName: duTimestamp
+          orderByExpression: DateTimeOrderByExp
+        - fieldName: dataUsage
+          orderByExpression: Float32OrderByExp
+        - fieldName: downloadSpeed
+          orderByExpression: Float32OrderByExp
+        - fieldName: latency
+          orderByExpression: Int32OrderByExp
+        - fieldName: npGuid
+          orderByExpression: StringOrderByExp
+        - fieldName: npTimestamp
+          orderByExpression: DateTimeOrderByExp
+        - fieldName: uploadSpeed
+          orderByExpression: Float32OrderByExp
+      orderableRelationships:
+        - relationshipName: customer
+  graphql:
+    expressionTypeName: network_DetailedUserActivityMvOrderByExp
 
