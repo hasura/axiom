@@ -102,6 +102,12 @@ git add -f .env.$PROFILE.template
 
 3. Copy environment files from your own supergraph to populate environments in this repository
 
+Remember to include a JWT_SECRET in your `.env` files to allow for JWT builds to proceed. Use the following one-liner to generate a JWT_SECRET
+
+```bash
+openssl rand -base64 32
+```
+
 > [!WARNING]
 > Do not commit any database credentials to the pull request and ensure that the template file that gets force committed uses dummy data
 
@@ -179,8 +185,6 @@ This can be achieved automatically with `yq`
 yq eval ".definition.scripts[\"docker-start-$PROFILE\"] = {\"bash\": \"export DATASET=\$PROFILE; ../.data/initdb-prepare.sh; docker compose -f ../.data/\$PROFILE/compose.yaml --env-file ../.data/\$PROFILE/.env up --build --pull always -d\", \"powershell\": \"\$Env:DATASET = \\\"\$PROFILE\\\"; docker compose -f ../.data/\$PROFILE/compose.yaml --env-file ../.data/\$PROFILE/.env up --build --pull always -d\"}" -i hasura/.hasura/context.yaml
 ```
 
----
-
 ### Step 3: Docker Compose
 1. Create a profile-specific Docker Compose file
 ```bash
@@ -189,8 +193,6 @@ cp hasura/compose.yaml hasura/compose-$PROFILE.yaml
 
 > [!IMPORTANT]
 > Do not commit changes to the base `hasura/compose.yaml`.
-
----
 
 ### Step 4: Add remaining scripts to `hasura/.hasura/context.yaml` 
 1. Build script:

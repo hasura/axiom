@@ -12,11 +12,25 @@ Axiom contains all the resources and tools required to run industry demos of DDN
 
 ## Quickstart (Telco)
 
-To get started, first copy template files into the correct locations:
-
+1. Clone this repo
+```bash
+git clone git@github.com:hasura/axiom.git
 ```
+
+2. Install DDN CLI
+
+Follow the [DDN CLI installation instructions](https://hasura.io/docs/3.0/reference/cli/installation/) to download and install DDN CLI
+
+3. Copy .env files
+
+```bash
 cp hasura/.env.template.telco hasura/.env.telco
 cp .data/.env.template .data/.env
+```
+
+4. Run the demo script
+
+```bash
 cd hasura
 ddn run demo-telco
 ```
@@ -24,11 +38,11 @@ ddn run demo-telco
 ## Command Documentation
 Each of the `ddn run` commands in `hasura/.hasura/context.yaml` corresponds to both a different way to build your supergraph and which source databases to use
 
-| **Command**              | **Database Location** | **Description**                                                                                                   |
+| **Command**              | **Demo Profile** | **Description**                                                                                                   |
 |--------------------------|-----------------|-------------------------------------------------------------------------------------------------------------------|
 | `docker-start-telco`     | Telco           | Starts the containers for the telco demo data sources locally|
-| `docker-stop`            | Any             | Stops and removes all Docker containers and volumes related to the current setup|
 | `demo-telco`             | Telco           | Starts the containers for the telco demo data sources locally|
+| `docker-stop`            | Any             | Stops and removes all Docker containers and volumes related to Axiom|
 
 
 ## Deployment
