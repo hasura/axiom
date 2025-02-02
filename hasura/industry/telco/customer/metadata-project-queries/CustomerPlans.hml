@@ -76,7 +76,7 @@ definition:
 
 ---
 kind: Model
-version: v1
+version: v2
 definition:
   name: CustomerPlans
   objectType: CustomerPlans
@@ -84,28 +84,6 @@ definition:
     dataConnectorName: aurora
     collection: customer_plans
   filterExpressionType: CustomerPlansBoolExp
-  orderableFields:
-    - fieldName: cellNumber
-      orderByDirections:
-        enableAll: true
-    - fieldName: customerId
-      orderByDirections:
-        enableAll: true
-    - fieldName: customerPlanId
-      orderByDirections:
-        enableAll: true
-    - fieldName: endDate
-      orderByDirections:
-        enableAll: true
-    - fieldName: planId
-      orderByDirections:
-        enableAll: true
-    - fieldName: startDate
-      orderByDirections:
-        enableAll: true
-    - fieldName: status
-      orderByDirections:
-        enableAll: true
   graphql:
     selectMany:
       queryRootField: customerPlans
@@ -113,11 +91,11 @@ definition:
       - queryRootField: customerPlansByCustomerPlanId
         uniqueIdentifier:
           - customerPlanId
-    orderByExpressionType: Customer_CustomerPlansOrderBy
     filterInputTypeName: CustomerPlansFilterInput
     aggregate:
       queryRootField: customerPlansAggregate
   aggregateExpression: CustomerPlansAggExp
+  orderByExpression: CustomerPlansOrderByExp
 
 ---
 kind: ModelPermissions
@@ -255,4 +233,33 @@ definition:
     enable: true
   graphql:
     selectTypeName: CustomerPlansAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: CustomerPlansOrderByExp
+  operand:
+    object:
+      orderedType: CustomerPlans
+      orderableFields:
+        - fieldName: cellNumber
+          orderByExpression: VarcharOrderByExp
+        - fieldName: customerId
+          orderByExpression: Int4OrderByExp
+        - fieldName: customerPlanId
+          orderByExpression: Int4OrderByExp
+        - fieldName: endDate
+          orderByExpression: DateOrderByExp
+        - fieldName: planId
+          orderByExpression: Int4OrderByExp
+        - fieldName: startDate
+          orderByExpression: DateOrderByExp
+        - fieldName: status
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: customer
+        - relationshipName: plan
+  graphql:
+    expressionTypeName: customer_CustomerPlansOrderByExp
 

@@ -48,7 +48,7 @@ definition:
 
 ---
 kind: Model
-version: v1
+version: v2
 definition:
   name: CustomerLink
   objectType: CustomerLink
@@ -56,16 +56,6 @@ definition:
     dataConnectorName: aurora
     collection: customer_link
   filterExpressionType: CustomerLinkBoolExp
-  orderableFields:
-    - fieldName: customerGuid
-      orderByDirections:
-        enableAll: true
-    - fieldName: customerId
-      orderByDirections:
-        enableAll: true
-    - fieldName: id
-      orderByDirections:
-        enableAll: true
   graphql:
     selectMany:
       queryRootField: customerLink
@@ -76,11 +66,11 @@ definition:
       - queryRootField: customerLinkById
         uniqueIdentifier:
           - id
-    orderByExpressionType: Customer_CustomerLinkOrderBy
     filterInputTypeName: CustomerLinkFilterInput
     aggregate:
       queryRootField: customerLinkAggregate
   aggregateExpression: CustomerLinkAggExp
+  orderByExpression: CustomerLinkOrderByExp
 
 ---
 kind: ModelPermissions
@@ -164,4 +154,24 @@ definition:
     enable: true
   graphql:
     selectTypeName: CustomerLinkAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: CustomerLinkOrderByExp
+  operand:
+    object:
+      orderedType: CustomerLink
+      orderableFields:
+        - fieldName: customerGuid
+          orderByExpression: UuidOrderByExp
+        - fieldName: customerId
+          orderByExpression: Int4OrderByExp
+        - fieldName: id
+          orderByExpression: Int4OrderByExp
+      orderableRelationships:
+        - relationshipName: customer
+  graphql:
+    expressionTypeName: customer_CustomerLinkOrderByExp
 

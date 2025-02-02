@@ -66,7 +66,7 @@ definition:
 
 ---
 kind: Model
-version: v1
+version: v2
 definition:
   name: Network
   objectType: Network
@@ -74,25 +74,6 @@ definition:
     dataConnectorName: aurora
     collection: network
   filterExpressionType: NetworkBoolExp
-  orderableFields:
-    - fieldName: capacity
-      orderByDirections:
-        enableAll: true
-    - fieldName: latitude
-      orderByDirections:
-        enableAll: true
-    - fieldName: longitude
-      orderByDirections:
-        enableAll: true
-    - fieldName: nodeId
-      orderByDirections:
-        enableAll: true
-    - fieldName: nodeName
-      orderByDirections:
-        enableAll: true
-    - fieldName: status
-      orderByDirections:
-        enableAll: true
   graphql:
     selectMany:
       queryRootField: network
@@ -100,11 +81,11 @@ definition:
       - queryRootField: networkByNodeId
         uniqueIdentifier:
           - nodeId
-    orderByExpressionType: Customer_NetworkOrderBy
     filterInputTypeName: NetworkFilterInput
     aggregate:
       queryRootField: networkAggregate
   aggregateExpression: NetworkAggExp
+  orderByExpression: NetworkOrderByExp
 
 ---
 kind: ModelPermissions
@@ -203,4 +184,29 @@ definition:
     enable: true
   graphql:
     selectTypeName: NetworkAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: NetworkOrderByExp
+  operand:
+    object:
+      orderedType: Network
+      orderableFields:
+        - fieldName: capacity
+          orderByExpression: Int4OrderByExp
+        - fieldName: latitude
+          orderByExpression: NumericOrderByExp
+        - fieldName: longitude
+          orderByExpression: NumericOrderByExp
+        - fieldName: nodeId
+          orderByExpression: Int4OrderByExp
+        - fieldName: nodeName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: status
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: customer_NetworkOrderByExp
 

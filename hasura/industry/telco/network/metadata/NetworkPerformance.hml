@@ -54,7 +54,7 @@ definition:
 
 ---
 kind: Model
-version: v1
+version: v2
 definition:
   name: NetworkPerformance
   objectType: NetworkPerformance
@@ -62,22 +62,6 @@ definition:
     dataConnectorName: clickhouse
     collection: network_performance
   filterExpressionType: NetworkPerformanceBoolExp
-  orderableFields:
-    - fieldName: downloadSpeed
-      orderByDirections:
-        enableAll: true
-    - fieldName: guid
-      orderByDirections:
-        enableAll: true
-    - fieldName: latency
-      orderByDirections:
-        enableAll: true
-    - fieldName: timestamp
-      orderByDirections:
-        enableAll: true
-    - fieldName: uploadSpeed
-      orderByDirections:
-        enableAll: true
   graphql:
     selectMany:
       queryRootField: networkPerformance
@@ -86,11 +70,11 @@ definition:
         uniqueIdentifier:
           - guid
           - timestamp
-    orderByExpressionType: Network_NetworkPerformanceOrderBy
     filterInputTypeName: NetworkPerformanceFilterInput
     aggregate:
       queryRootField: networkPerformanceAggregate
   aggregateExpression: NetworkPerformanceAggExp
+  orderByExpression: NetworkPerformanceOrderByExp
 
 ---
 kind: ModelPermissions
@@ -189,4 +173,28 @@ definition:
     enable: true
   graphql:
     typeName: Network_NetworkPerformanceBoolExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: NetworkPerformanceOrderByExp
+  operand:
+    object:
+      orderedType: NetworkPerformance
+      orderableFields:
+        - fieldName: downloadSpeed
+          orderByExpression: Float32OrderByExp
+        - fieldName: guid
+          orderByExpression: StringOrderByExp
+        - fieldName: latency
+          orderByExpression: Int32OrderByExp
+        - fieldName: timestamp
+          orderByExpression: DateTimeOrderByExp
+        - fieldName: uploadSpeed
+          orderByExpression: Float32OrderByExp
+      orderableRelationships:
+        - relationshipName: customer
+  graphql:
+    expressionTypeName: network_NetworkPerformanceOrderByExp
 

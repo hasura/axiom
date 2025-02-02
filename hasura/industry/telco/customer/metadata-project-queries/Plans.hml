@@ -69,7 +69,7 @@ definition:
 
 ---
 kind: Model
-version: v1
+version: v2
 definition:
   name: Plans
   objectType: Plans
@@ -77,25 +77,6 @@ definition:
     dataConnectorName: aurora
     collection: plans
   filterExpressionType: PlansBoolExp
-  orderableFields:
-    - fieldName: description
-      orderByDirections:
-        enableAll: true
-    - fieldName: monthlyFee
-      orderByDirections:
-        enableAll: true
-    - fieldName: planId
-      orderByDirections:
-        enableAll: true
-    - fieldName: planName
-      orderByDirections:
-        enableAll: true
-    - fieldName: sfRecord
-      orderByDirections:
-        enableAll: true
-    - fieldName: type
-      orderByDirections:
-        enableAll: true
   graphql:
     selectMany:
       queryRootField: plans
@@ -106,11 +87,11 @@ definition:
       - queryRootField: plansByPlanName
         uniqueIdentifier:
           - planName
-    orderByExpressionType: Customer_PlansOrderBy
     filterInputTypeName: PlansFilterInput
     aggregate:
       queryRootField: plansAggregate
   aggregateExpression: PlansAggExp
+  orderByExpression: PlansOrderByExp
 
 ---
 kind: ModelPermissions
@@ -209,4 +190,29 @@ definition:
     enable: true
   graphql:
     selectTypeName: PlansAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PlansOrderByExp
+  operand:
+    object:
+      orderedType: Plans
+      orderableFields:
+        - fieldName: description
+          orderByExpression: TextOrderByExp
+        - fieldName: monthlyFee
+          orderByExpression: NumericOrderByExp
+        - fieldName: planId
+          orderByExpression: Int4OrderByExp
+        - fieldName: planName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: sfRecord
+          orderByExpression: VarcharOrderByExp
+        - fieldName: type
+          orderByExpression: TextOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: customer_PlansOrderByExp
 

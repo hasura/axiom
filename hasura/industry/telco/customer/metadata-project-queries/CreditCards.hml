@@ -76,7 +76,7 @@ definition:
 
 ---
 kind: Model
-version: v1
+version: v2
 definition:
   name: CreditCards
   description: Credit Card information - take care to enforce PCI
@@ -85,28 +85,6 @@ definition:
     dataConnectorName: aurora
     collection: credit_cards
   filterExpressionType: CreditCardsBoolExp
-  orderableFields:
-    - fieldName: createdAt
-      orderByDirections:
-        enableAll: true
-    - fieldName: creditCardId
-      orderByDirections:
-        enableAll: true
-    - fieldName: customerId
-      orderByDirections:
-        enableAll: true
-    - fieldName: cvv
-      orderByDirections:
-        enableAll: true
-    - fieldName: expiry
-      orderByDirections:
-        enableAll: true
-    - fieldName: number
-      orderByDirections:
-        enableAll: true
-    - fieldName: updatedAt
-      orderByDirections:
-        enableAll: true
   graphql:
     selectMany:
       queryRootField: creditCards
@@ -114,11 +92,11 @@ definition:
       - queryRootField: creditCardsByCreditCardId
         uniqueIdentifier:
           - creditCardId
-    orderByExpressionType: Customer_CreditCardsOrderBy
     filterInputTypeName: CreditCardsFilterInput
     aggregate:
       queryRootField: creditCardsAggregate
   aggregateExpression: CreditCardsAggExp
+  orderByExpression: CreditCardsOrderByExp
 
 ---
 kind: ModelPermissions
@@ -218,4 +196,32 @@ definition:
     enable: true
   graphql:
     selectTypeName: CreditCardsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: CreditCardsOrderByExp
+  operand:
+    object:
+      orderedType: CreditCards
+      orderableFields:
+        - fieldName: createdAt
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: creditCardId
+          orderByExpression: Int4OrderByExp
+        - fieldName: customerId
+          orderByExpression: Int4OrderByExp
+        - fieldName: cvv
+          orderByExpression: Int4OrderByExp
+        - fieldName: expiry
+          orderByExpression: DateOrderByExp
+        - fieldName: number
+          orderByExpression: TextOrderByExp
+        - fieldName: updatedAt
+          orderByExpression: TimestamptzOrderByExp
+      orderableRelationships:
+        - relationshipName: customer
+  graphql:
+    expressionTypeName: customer_CreditCardsOrderByExp
 

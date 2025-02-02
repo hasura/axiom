@@ -62,7 +62,7 @@ definition:
 
 ---
 kind: Model
-version: v1
+version: v2
 definition:
   name: Billing
   objectType: Billing
@@ -70,22 +70,6 @@ definition:
     dataConnectorName: aurora
     collection: billing
   filterExpressionType: BillingBoolExp
-  orderableFields:
-    - fieldName: billingDate
-      orderByDirections:
-        enableAll: true
-    - fieldName: billingId
-      orderByDirections:
-        enableAll: true
-    - fieldName: customerId
-      orderByDirections:
-        enableAll: true
-    - fieldName: paymentStatus
-      orderByDirections:
-        enableAll: true
-    - fieldName: totalAmount
-      orderByDirections:
-        enableAll: true
   graphql:
     selectMany:
       queryRootField: billing
@@ -93,11 +77,11 @@ definition:
       - queryRootField: billingByBillingId
         uniqueIdentifier:
           - billingId
-    orderByExpressionType: Customer_BillingOrderBy
     filterInputTypeName: BillingFilterInput
     aggregate:
       queryRootField: billingAggregate
   aggregateExpression: BillingAggExp
+  orderByExpression: BillingOrderByExp
 
 ---
 kind: ModelPermissions
@@ -119,7 +103,6 @@ definition:
                 operator: '_eq'
                 value:
                   sessionVariable: 'x-hasura-user-id'
-
 
 ---
 kind: Relationship
@@ -190,4 +173,28 @@ definition:
     enable: true
   graphql:
     selectTypeName: BillingAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: BillingOrderByExp
+  operand:
+    object:
+      orderedType: Billing
+      orderableFields:
+        - fieldName: billingDate
+          orderByExpression: DateOrderByExp
+        - fieldName: billingId
+          orderByExpression: Int4OrderByExp
+        - fieldName: customerId
+          orderByExpression: Int4OrderByExp
+        - fieldName: paymentStatus
+          orderByExpression: VarcharOrderByExp
+        - fieldName: totalAmount
+          orderByExpression: NumericOrderByExp
+      orderableRelationships:
+        - relationshipName: customer
+  graphql:
+    expressionTypeName: customer_BillingOrderByExp
 

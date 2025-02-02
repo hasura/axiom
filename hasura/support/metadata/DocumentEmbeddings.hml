@@ -36,7 +36,7 @@ definition:
 
 ---
 kind: Model
-version: v1
+version: v2
 definition:
   name: DocumentEmbeddings
   objectType: DocumentEmbeddings
@@ -44,25 +44,24 @@ definition:
     dataConnectorName: vector
     collection: document_embeddings
   filterExpressionType: DocumentEmbeddingsBoolExp
-  orderableFields:
-    - fieldName: documentUuid
-      orderByDirections:
-        enableAll: true
-    - fieldName: embeddings
-      orderByDirections:
-        enableAll: true
   graphql:
     selectMany:
       queryRootField: documentEmbeddings
+      subscription:
+        rootField: documentEmbeddings
     selectUniques:
       - queryRootField: documentEmbeddingsByDocumentUuid
         uniqueIdentifier:
           - documentUuid
-    orderByExpressionType: Support_DocumentEmbeddingsOrderBy
+        subscription:
+          rootField: documentEmbeddingsByDocumentUuid
     filterInputTypeName: DocumentEmbeddingsFilterInput
     aggregate:
       queryRootField: documentEmbeddingsAggregate
+      subscription:
+        rootField: documentEmbeddingsAggregate
   aggregateExpression: DocumentEmbeddingsAggExp
+  orderByExpression: DocumentEmbeddingsOrderByExp
 
 ---
 kind: ModelPermissions
@@ -73,6 +72,7 @@ definition:
     - role: admin
       select:
         filter: null
+        allowSubscriptions: true
 
 ---
 kind: Relationship
@@ -130,4 +130,22 @@ definition:
     enable: true
   graphql:
     selectTypeName: DocumentEmbeddingsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: DocumentEmbeddingsOrderByExp
+  operand:
+    object:
+      orderedType: DocumentEmbeddings
+      orderableFields:
+        - fieldName: documentUuid
+          orderByExpression: UuidOrderByExp
+        - fieldName: embeddings
+          orderByExpression: VectorOrderByExp
+      orderableRelationships:
+        - relationshipName: document
+  graphql:
+    expressionTypeName: support_DocumentEmbeddingsOrderByExp
 

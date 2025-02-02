@@ -97,7 +97,7 @@ definition:
 
 ---
 kind: Model
-version: v1
+version: v2
 definition:
   name: Deals
   objectType: Deals
@@ -105,37 +105,6 @@ definition:
     dataConnectorName: aurora
     collection: deals
   filterExpressionType: DealsBoolExp
-  orderableFields:
-    - fieldName: additionalBenefits
-      orderByDirections:
-        enableAll: true
-    - fieldName: customerSegment
-      orderByDirections:
-        enableAll: true
-    - fieldName: dealId
-      orderByDirections:
-        enableAll: true
-    - fieldName: dealName
-      orderByDirections:
-        enableAll: true
-    - fieldName: description
-      orderByDirections:
-        enableAll: true
-    - fieldName: endDate
-      orderByDirections:
-        enableAll: true
-    - fieldName: maxMonthlySpend
-      orderByDirections:
-        enableAll: true
-    - fieldName: minMonthlySpend
-      orderByDirections:
-        enableAll: true
-    - fieldName: startDate
-      orderByDirections:
-        enableAll: true
-    - fieldName: termsConditions
-      orderByDirections:
-        enableAll: true
   graphql:
     selectMany:
       queryRootField: deals
@@ -143,11 +112,11 @@ definition:
       - queryRootField: dealsByDealId
         uniqueIdentifier:
           - dealId
-    orderByExpressionType: Customer_DealsOrderBy
     filterInputTypeName: DealsFilterInput
     aggregate:
       queryRootField: dealsAggregate
   aggregateExpression: DealsAggExp
+  orderByExpression: DealsOrderByExp
 
 ---
 kind: ModelPermissions
@@ -243,4 +212,37 @@ definition:
     enable: true
   graphql:
     selectTypeName: DealsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: DealsOrderByExp
+  operand:
+    object:
+      orderedType: Deals
+      orderableFields:
+        - fieldName: additionalBenefits
+          orderByExpression: TextOrderByExp
+        - fieldName: customerSegment
+          orderByExpression: VarcharOrderByExp
+        - fieldName: dealId
+          orderByExpression: Int4OrderByExp
+        - fieldName: dealName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: description
+          orderByExpression: TextOrderByExp
+        - fieldName: endDate
+          orderByExpression: DateOrderByExp
+        - fieldName: maxMonthlySpend
+          orderByExpression: NumericOrderByExp
+        - fieldName: minMonthlySpend
+          orderByExpression: NumericOrderByExp
+        - fieldName: startDate
+          orderByExpression: DateOrderByExp
+        - fieldName: termsConditions
+          orderByExpression: TextOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: customer_DealsOrderByExp
 

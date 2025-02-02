@@ -41,7 +41,7 @@ definition:
 
 ---
 kind: Model
-version: v1
+version: v2
 definition:
   name: CustomerPlanDevices
   objectType: CustomerPlanDevices
@@ -49,13 +49,6 @@ definition:
     dataConnectorName: aurora
     collection: customer_plan_devices
   filterExpressionType: CustomerPlanDevicesBoolExp
-  orderableFields:
-    - fieldName: customerPlanId
-      orderByDirections:
-        enableAll: true
-    - fieldName: deviceId
-      orderByDirections:
-        enableAll: true
   graphql:
     selectMany:
       queryRootField: customerPlanDevices
@@ -64,11 +57,11 @@ definition:
         uniqueIdentifier:
           - customerPlanId
           - deviceId
-    orderByExpressionType: Customer_CustomerPlanDevicesOrderBy
     filterInputTypeName: CustomerPlanDevicesFilterInput
     aggregate:
       queryRootField: customerPlanDevicesAggregate
   aggregateExpression: CustomerPlanDevicesAggExp
+  orderByExpression: CustomerPlanDevicesOrderByExp
 
 ---
 kind: ModelPermissions
@@ -169,4 +162,23 @@ definition:
     enable: true
   graphql:
     selectTypeName: CustomerPlanDevicesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: CustomerPlanDevicesOrderByExp
+  operand:
+    object:
+      orderedType: CustomerPlanDevices
+      orderableFields:
+        - fieldName: customerPlanId
+          orderByExpression: Int4OrderByExp
+        - fieldName: deviceId
+          orderByExpression: Int4OrderByExp
+      orderableRelationships:
+        - relationshipName: customerPlan
+        - relationshipName: device
+  graphql:
+    expressionTypeName: customer_CustomerPlanDevicesOrderByExp
 

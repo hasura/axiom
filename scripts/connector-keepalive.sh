@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if ! command -v jq &> /dev/null; then
+  echo "Error: jq is not installed."
+  exit 1
+fi
+
 # Define the GraphQL endpoints
 ENDPOINTS=(
   "https://axiom-au.ddn.hasura.app/graphql"
@@ -8,11 +13,12 @@ ENDPOINTS=(
   "https://axiom-us-east.ddn.hasura.app/graphql"
   "https://axiom-sg.ddn.hasura.app/graphql"
   "https://axiom-test.ddn.hasura.app/graphql"
+  "https://axiom-dev.ddn.hasura.app/graphql"
 )
 
 # Define the query
 QUERY='{
-  "query": "query buildUserDashboard { usersById(id: 1) { email formatCreatedAtTimestamp } customers(limit: 1, where: {segment: {_eq: \"family\"}}) { firstName lastName email segment customerLinks { customerPreferences { socialMedia { linkedin } } supportDB { supportHistory { date status } } } creditCards(where: {expiry: {_gte: \"2024-01-01\"}}) { maskCreditCard expiry cvv } billings(where: {billingDate: {_lte: \"2025-01-01\"}}) { formatBillingDate paymentStatus totalAmount } } calls(limit: 1) { callid } cdr(limit: 1) { guid } documents(limit: 1) { uuid } }", "operationName": "buildUserDashboard"
+  "query": "query buildUserDashboard { formatDateToIso(dateString: \"2025-01-01\") usersById(id: 1) { email } customers(limit: 1, where: {segment: {_eq: \"family\"}}) { firstName lastName email segment customerLinks { customerPreferences { socialMedia { linkedin } } supportDB { supportHistory { date status } } } creditCards(where: {expiry: {_gte: \"2024-01-01\"}}) { maskCreditCard expiry cvv } billings(where: {billingDate: {_lte: \"2025-01-01\"}}) { formatBillingDate paymentStatus totalAmount } } calls(limit: 1) { callid } cdr(limit: 1) { guid } documents(limit: 1) { uuid } }", "operationName": "buildUserDashboard"
 }'
 
 TESTQUERY='{
@@ -30,21 +36,35 @@ current_time_ms() {
   fi
 }
 
+notify_slack() {
+  local message=$1
+
+  payload=$(jq -n --arg text "$message" '{text: $text}')
+  curl -s -X POST -H "Content-Type: application/json" -d "$payload" "$SLACK_WEBHOOK"
+}
+
 for ENDPOINT in "${ENDPOINTS[@]}"; do
   {
-    if [[ "$ENDPOINT" == "https://axiom-test.ddn.hasura.app/graphql" ]]; then
-      QUERY="$TESTQUERY"
+    # Define locally to prevent parallel execution from changing it for other processes
+    query="$QUERY"
+    if [[ "$ENDPOINT" =~ https://axiom-(test|dev).ddn.hasura.app/graphql ]]; then
+      query="$TESTQUERY"
     fi
 
     START_TIME=$(current_time_ms)
-    RESPONSE=$(curl -s -w "\nHTTP_CODE:%{http_code}" -X POST -H "Content-Type: application/json" -d "$QUERY" "$ENDPOINT")
+    RESPONSE=$(curl -s -w "\nHTTP_CODE:%{http_code}" -X POST -H "Content-Type: application/json" -d "$query" "$ENDPOINT")
     END_TIME=$(current_time_ms)
 
     HTTP_CODE=$(echo "$RESPONSE" | tail -n 1 | sed 's/HTTP_CODE://')
     RESPONSE_BODY=$(echo "$RESPONSE" | sed '$d')
     DURATION=$((END_TIME - START_TIME))
 
-    echo "Endpoint: $ENDPOINT | HTTP Code: $HTTP_CODE | Time Taken: ${DURATION}ms | Response: $RESPONSE_BODY"
+    MESSAGE="Endpoint: $ENDPOINT | HTTP Code: $HTTP_CODE | Time Taken: ${DURATION}ms | Response: $RESPONSE_BODY"
+    echo "$MESSAGE"
+
+    if echo "$RESPONSE_BODY" | grep -qi "error"; then
+      notify_slack "$MESSAGE"
+    fi
   } &
 done
 
