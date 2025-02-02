@@ -1,67 +1,77 @@
 # Axiom
 Hasura presales demo kit
 
-## Mostly superceded by docs in hasura/README.md
+Axiom contains all the resources and tools required to run industry demos of DDN and PromptQL. Within axiom, are a number of different subdirectories with a specific focus, and documentation to support their usage.
+| **Directory**  | **Usage** |
+|----------------|-----------|
+| `hasura`        | Contains all configuration and metadata required to run instances of DDN. `hasura` includes supergraph, subgraph, and connector metadata for a number of industry demo profiles.   |
+| `infra`          | Contains ansible playbooks for the ongoing configuration management of existing demo servers and is used to set up new servers. |
+| `scripts`        | The `scripts` directory holds useful tools for demoing, managing, and deploying DDN. |
+| `.data`          | Seeds content for local and cloud based demonstrations |
 
-## Quickstart
 
+## Quickstart (Telco)
 
-To get started, first copy template files into the correct locations:
-
+1. Clone this repo
+```bash
+git clone git@github.com:hasura/axiom.git
 ```
-cp .hasura/context.yaml.template .hasura/context.yaml
-cp .env.template .env
-cp .env.local.template .env.local
+
+2. Install DDN CLI
+
+Follow the [DDN CLI installation instructions](https://hasura.io/docs/3.0/reference/cli/installation/) to download and install DDN CLI
+
+3. Copy .env files
+
+```bash
+cp hasura/.env.template.telco hasura/.env.telco
 cp .data/.env.template .data/.env
 ```
 
-Next, create a build using these environment files:
+4. Run the demo script
 
-```
-# Create a basic supergraph
-ddn run build-local-s1
-```
-
-Finally, set up the demo databases and start your supergraph:
-
-```
-# Initiate the demo databases and connect to them
-ddn run docker-start-local
+```bash
+cd hasura
+ddn run demo-telco
 ```
 
 ## Command Documentation
-Each of the `ddn run` commands in `.hasura/context.yaml` corresponds to both a different way to build your supergraph and which source databases to use
+Each of the `ddn run` commands in `hasura/.hasura/context.yaml` corresponds to both a different way to build your supergraph and which source databases to use
 
-| **Command**              | **Database Location** | **Description**                                                                                                   |
+| **Command**              | **Demo Profile** | **Description**                                                                                                   |
 |--------------------------|-----------------|-------------------------------------------------------------------------------------------------------------------|
-| `docker-start`           | Any             | Overrides standard message with customer `axiom` instructions|
-| `docker-stop`            | Any             | Stops and removes all Docker containers and volumes related to the current setup|
-| `build-local-s1`         | Local           | Builds a basic supergraph with one data domain and one data source|
-| `build-local-s2`         | Local           | Builds a supergraph with one data domain, multiple data sources and global functions|
-| `build-local-s3`         | Local           | Builds a full/complex supergraph with multiple data domains and data sources|
-| `build-local-s4`         | Local           | Builds a complex supergraph and adds mutations|
-| `docker-start-local`     | Local           | Initiates the telco demo datasources locally and starts the local Hasura DDN containers|
+| `docker-start-telco`     | Telco           | Starts the containers for the telco demo data sources locally|
 | `demo-telco`             | Telco           | Starts the containers for the telco demo data sources locally|
-| `demo-healthcare`        | Healthcare      | Not yet implemented|
-| `demo-banking`           | Banking         | Not yet implemented|
+| `docker-stop`            | Any             | Stops and removes all Docker containers and volumes related to Axiom|
 
 
-## Hasura Team Documentation
+## Deployment
 
-### Hasura Commands
-| **Command**              | **Database Location** | **Description**                                                                                                   |
-|--------------------------|-----------------|-------------------------------------------------------------------------------------------------------------------|
-| `build-local-au-dbs`        | AU              | Hasura only: Builds the supergraph locally using the Australian database sources|
-| `build-local-eu-dbs`        | EU              | Hasura only: Builds the supergraph locally using the European database sources|
-| `build-local-sg-dbs`        | SG              | Hasura only: Builds the supergraph locally using the Singapore database sources|
-| `build-local-us-east-dbs`   | US-East         | Hasura only: Builds the supergraph locally using the US-East database sources|
-| `build-local-us-west-dbs`   | US-West         | Hasura only: Builds the supergraph locally using the US-West database sources|
-| `docker-start-au`        | AU              | Hasura only: Starts DDN locally with Australian database sources|
-| `docker-start-eu`        | EU              | Hasura only: Starts DDN locally with European database sources|
-| `docker-start-sg`        | SG              | Hasura only: Starts DDN locally with Singapore database sources|
-| `docker-start-us-east`   | US-East         | Hasura only: Starts DDN locally with US-East database sources|
-| `docker-start-us-west`   | US-West         | Hasura only: Starts DDN locally with US-West database sources|
+### Deploying new metadata
 
+Any metadata change that has been tested locally and against CI/CD in a pull request may be rolled out in a couple of seconds with the [deploy script](./scripts/deploy/). 
+
+The deploy script will run a JWT deployment and a No-Auth deployment before applying No-Auth as the project API.
+
+Full documentation may be found in the deploy [README](./scripts/deploy/README.md)
+
+```
+# Run the deploy script
+node ./scripts/deploy/deploy.mjs --context axiom-dev --profile telco --no-build-connectors
+```
+
+### Deploying new connectors
+New connectors should be deployed after connector configuration/schema is updated.
+
+The simplest way to deploy new connectors is to run a new supergraph build in each region. It's important to ensure that the connector regions match the regions you're deploying.
+
+```
+# Deploy new connectors
+node ./scripts/deploy/deploy.mjs --context axiom-dev --profile telco --gcp-region gcp-us-west2
+```
+
+> [!IMPORTANT]  
+> Hasura Note: Following a connector update, it's important to update all the `.env.cloud.*` file details in Confluence. These are not stored in the repo for obvious reasons.
 
 ## Connectors
 
@@ -75,47 +85,5 @@ A handy script has been created to quickly and easily delete older connectors fr
 
 ```
 # Delete the 20 oldest connector builds from the default environment in .hasura/context.yaml
-./scripts/connector-delete.sh default 20
+./scripts/connector-delete.sh axiom-dev 20
 ```
-
-### Deploying new connectors
-
-The simplest way to deploy new connectors is to run a new supergraph build in each region. It's important to ensure that the connector regions match the regions you're deploying to so this process takes all that into account.
-
-This full rebuild deployment will run a 'build up' of 4 progressively more complex supergraph before running the standard metadata deploy for JWT/NoAuth
-
-```
-# Run the deploy script
-./scripts/deploy/deploy.mjs
-
-# Set the region (default points to axiom-test)
-# ? Select a context region to set: default
-# A complete rebuild will redeploy connectors. Do not use this if you have only altered metadata/hml files
-# ? Do you want to perform a complete rebuild? yes
-
-```
-
-> [!IMPORTANT]  
-> Hasura Note: Following a connector update, it's important to update all the `.env.cloud.*` file details in Monday.com with the new locations/bearer tokens etc. These are not stored in the repo for obvious reasons.
-
-### Deploying new metadata
-
-Any metadata change that you've tested locally and against `axiom-test` can be rolled out in a couple of seconds with the deploy script. The deploy script will run a JWT deployment and a No-Auth deployment before applying No-Auth as the project API.
-
-```
-# Run the deploy script
-./scripts/deploy/deploy.mjs
-
-# ? Select a context region to set: default
-# ? Do you want to perform a complete rebuild? no
-
-```
-
-## Supported regions
-
-The most up-to-date list is in `.hasura/context.yaml` and mirrored in the deploy script. We're currently deployed with axiom supergraphs in:
-- Australia
-- Europe
-- Singapore
-- US East
-- US West
