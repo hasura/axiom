@@ -216,7 +216,7 @@ definition:
 
 ---
 kind: Model
-version: v1
+version: v2
 definition:
   name: CustomerPreferences
   objectType: CustomerPreferences
@@ -224,25 +224,6 @@ definition:
     dataConnectorName: mongo
     collection: customerPreferences
   filterExpressionType: CustomerPreferencesBoolExp
-  orderableFields:
-    - fieldName: id
-      orderByDirections:
-        enableAll: true
-    - fieldName: behavioralData
-      orderByDirections:
-        enableAll: true
-    - fieldName: customerGuid
-      orderByDirections:
-        enableAll: true
-    - fieldName: customerNotes
-      orderByDirections:
-        enableAll: true
-    - fieldName: preferences
-      orderByDirections:
-        enableAll: true
-    - fieldName: socialMedia
-      orderByDirections:
-        enableAll: true
   graphql:
     selectMany:
       queryRootField: customerPreferences
@@ -253,13 +234,13 @@ definition:
       - queryRootField: customerPreferencesById
         uniqueIdentifier:
           - id
-    orderByExpressionType: CustomerPreferencesOrderBy
     filterInputTypeName: CustomerPreferencesFilterInput
     aggregate:
       queryRootField: customerPreferencesAggregate
       subscription:
         rootField: customerPreferencesAggregate
   aggregateExpression: CustomerPreferencesAggExp
+  orderByExpression: CustomerPreferencesOrderByExp
 
 ---
 kind: ModelPermissions
@@ -402,4 +383,81 @@ definition:
     enable: true
   graphql:
     typeName: CustomerPreferencesBoolExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: CustomerPreferencesBehavioralDataOrderByExp
+  operand:
+    object:
+      orderedType: CustomerPreferencesBehavioralData
+      orderableFields:
+        - fieldName: lastAppLogin
+          orderByExpression: StringOrderByExp
+        - fieldName: lastWebsiteVisit
+          orderByExpression: StringOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: customer_CustomerPreferencesBehavioralDataOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: CustomerPreferencesPreferencesOrderByExp
+  operand:
+    object:
+      orderedType: CustomerPreferencesPreferences
+      orderableFields:
+        - fieldName: contactMethod
+          orderByExpression: StringOrderByExp
+        - fieldName: marketingOptIn
+          orderByExpression: BoolOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: customer_CustomerPreferencesPreferencesOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: CustomerPreferencesSocialMediaOrderByExp
+  operand:
+    object:
+      orderedType: CustomerPreferencesSocialMedia
+      orderableFields:
+        - fieldName: facebook
+          orderByExpression: StringOrderByExp
+        - fieldName: linkedin
+          orderByExpression: StringOrderByExp
+        - fieldName: twitter
+          orderByExpression: StringOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: customer_CustomerPreferencesSocialMediaOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: CustomerPreferencesOrderByExp
+  operand:
+    object:
+      orderedType: CustomerPreferences
+      orderableFields:
+        - fieldName: id
+          orderByExpression: ObjectIdOrderByExp
+        - fieldName: behavioralData
+          orderByExpression: CustomerPreferencesBehavioralDataOrderByExp
+        - fieldName: customerGuid
+          orderByExpression: StringOrderByExp
+        - fieldName: preferences
+          orderByExpression: CustomerPreferencesPreferencesOrderByExp
+        - fieldName: socialMedia
+          orderByExpression: CustomerPreferencesSocialMediaOrderByExp
+      orderableRelationships:
+        - relationshipName: customerlink
+  graphql:
+    expressionTypeName: customer_CustomerPreferencesOrderByExp
 

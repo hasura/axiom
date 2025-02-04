@@ -5,17 +5,20 @@ permissions:
   pull-requests: write
 
 on:
-  pull_request:
+  # Manual approval of environment is required
+  pull_request_target:
     branches:
       - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    needs: test
+    environment: CI
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Check for [no-op] in commit message
         run: |
@@ -145,10 +148,12 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-
+    environment: CI
     steps:
-      - name: Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Check for [no-op] in commit message
         run: |
@@ -158,25 +163,25 @@ jobs:
             echo "no_op=false" >> $GITHUB_ENV
           fi
 
-      - name: Set up DDN CLI and Login
+      - name: Set up DDN CLI and login
         if: env.no_op != 'true'
         uses: hasura/ddn-deployment@main
         with:
           hasura-pat: ${{ secrets.HASURA_PAT }}
 
-      - name: Install Dependencies (jq)
+      - name: Install dependencies (jq)
         if: env.no_op != 'true'
         run: |
           sudo apt-get update
           sudo apt-get install -y jq
 
-      - name: Prep Repository
+      - name: Prep repository
         if: env.no_op != 'true'
         run: |
           cp hasura/.env.telco.template hasura/.env.telco
           cp .data/.env.template .data/telco/.env
 
-      - name: Build All Supergraphs
+      - name: Build all supergraphs
         working-directory: ./hasura
         if: env.no_op != 'true'
         run: |
@@ -184,12 +189,6 @@ jobs:
           ddn supergraph build local --supergraph supergraph-config/telco/2-supergraph-domain.yaml
           ddn supergraph build local --supergraph supergraph-config/telco/3-supergraph.yaml
           ddn supergraph build local --supergraph supergraph-config/telco/4-supergraph-with-mutations.yaml
-
-      # TODO: could delete this too if everything is bundled into demo-telco
-      - name: Set up demo databases
-        working-directory: ./hasura
-        if: env.no_op != 'true'
-        run: ddn run docker-start-telco
 
       - name: Set up demo databases & Run DDN
         working-directory: ./hasura
@@ -199,7 +198,7 @@ jobs:
         run: |
           ddn run demo-telco
 
-      - name: Wait for GraphQL Service to Be Ready
+      - name: Wait for DDN to be ready
         if: env.no_op != 'true'
         run: |
           echo "Waiting for GraphQL service to start..."
@@ -209,7 +208,7 @@ jobs:
           done
           echo "Service is up!"
 
-      - name: Query DDN Endpoint and Validate Response
+      - name: Query DDN endpoint and validate response
         if: env.no_op != 'true'
         run: |
           QUERY='{

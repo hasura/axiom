@@ -641,7 +641,7 @@ definition:
 
 ---
 kind: Model
-version: v1
+version: v2
 definition:
   name: UserProfiles
   objectType: UserProfiles
@@ -649,43 +649,24 @@ definition:
     dataConnectorName: atlas
     collection: userProfiles
   filterExpressionType: UserProfilesBoolExp
-  orderableFields:
-    - fieldName: id
-      orderByDirections:
-        enableAll: true
-    - fieldName: accountDetails
-      orderByDirections:
-        enableAll: true
-    - fieldName: identification
-      orderByDirections:
-        enableAll: true
-    - fieldName: memberId
-      orderByDirections:
-        enableAll: true
-    - fieldName: notes
-      orderByDirections:
-        enableAll: true
-    - fieldName: preferences
-      orderByDirections:
-        enableAll: true
-    - fieldName: supportHistory
-      orderByDirections:
-        enableAll: true
-    - fieldName: usageStats
-      orderByDirections:
-        enableAll: true
   graphql:
     selectMany:
       queryRootField: userProfiles
+      subscription:
+        rootField: userProfiles
     selectUniques:
       - queryRootField: userProfilesById
         uniqueIdentifier:
           - id
-    orderByExpressionType: Support_UserProfilesOrderBy
+        subscription:
+          rootField: userProfilesById
     filterInputTypeName: UserProfilesFilterInput
     aggregate:
       queryRootField: userProfilesAggregate
+      subscription:
+        rootField: userProfilesAggregate
   aggregateExpression: UserProfilesAggExp
+  orderByExpression: UserProfilesOrderByExp
 
 ---
 kind: ModelPermissions
@@ -696,6 +677,7 @@ definition:
     - role: admin
       select:
         filter: null
+        allowSubscriptions: true
 
 ---
 kind: AggregateExpression
@@ -984,4 +966,224 @@ definition:
     enable: true
   graphql:
     typeName: Support_UserProfilesBoolExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: UserProfilesAccountDetailsOrderByExp
+  operand:
+    object:
+      orderedType: UserProfilesAccountDetails
+      orderableFields:
+        - fieldName: accountNumber
+          orderByExpression: StringOrderByExp
+        - fieldName: registrationDate
+          orderByExpression: StringOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: support_UserProfilesAccountDetailsOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: UserProfilesIdentificationOrderByExp
+  operand:
+    object:
+      orderedType: UserProfilesIdentification
+      orderableFields:
+        - fieldName: expiryDate
+          orderByExpression: StringOrderByExp
+        - fieldName: issuedBy
+          orderByExpression: StringOrderByExp
+        - fieldName: number
+          orderByExpression: StringOrderByExp
+        - fieldName: type
+          orderByExpression: StringOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: support_UserProfilesIdentificationOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: UserProfilesPreferencesCommunicationAppNotificationsOrderByExp
+  operand:
+    object:
+      orderedType: UserProfilesPreferencesCommunicationAppNotifications
+      orderableFields:
+        - fieldName: enabled
+          orderByExpression: BoolOrderByExp
+        - fieldName: frequency
+          orderByExpression: StringOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: support_UserProfilesPreferencesCommunicationAppNotificationsOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: UserProfilesPreferencesCommunicationOrderByExp
+  operand:
+    object:
+      orderedType: UserProfilesPreferencesCommunication
+      orderableFields:
+        - fieldName: appNotifications
+          orderByExpression: UserProfilesPreferencesCommunicationAppNotificationsOrderByExp
+        - fieldName: emailUpdates
+          orderByExpression: BoolOrderByExp
+        - fieldName: smsNotifications
+          orderByExpression: BoolOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: support_UserProfilesPreferencesCommunicationOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: UserProfilesPreferencesPrivacySettingsOrderByExp
+  operand:
+    object:
+      orderedType: UserProfilesPreferencesPrivacySettings
+      orderableFields:
+        - fieldName: adPersonalization
+          orderByExpression: BoolOrderByExp
+        - fieldName: shareDataForImprovements
+          orderByExpression: BoolOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: support_UserProfilesPreferencesPrivacySettingsOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: UserProfilesPreferencesServicePreferencesNetworkSettingsOrderByExp
+  operand:
+    object:
+      orderedType: UserProfilesPreferencesServicePreferencesNetworkSettings
+      orderableFields:
+        - fieldName: dataSaverMode
+          orderByExpression: BoolOrderByExp
+        - fieldName: preferredNetworkType
+          orderByExpression: StringOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: support_UserProfilesPreferencesServicePreferencesNetworkSettingsOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: UserProfilesPreferencesServicePreferencesOrderByExp
+  operand:
+    object:
+      orderedType: UserProfilesPreferencesServicePreferences
+      orderableFields:
+        - fieldName: networkSettings
+          orderByExpression: UserProfilesPreferencesServicePreferencesNetworkSettingsOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: support_UserProfilesPreferencesServicePreferencesOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: UserProfilesPreferencesOrderByExp
+  operand:
+    object:
+      orderedType: UserProfilesPreferences
+      orderableFields:
+        - fieldName: communication
+          orderByExpression: UserProfilesPreferencesCommunicationOrderByExp
+        - fieldName: privacySettings
+          orderByExpression: UserProfilesPreferencesPrivacySettingsOrderByExp
+        - fieldName: servicePreferences
+          orderByExpression: UserProfilesPreferencesServicePreferencesOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: support_UserProfilesPreferencesOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: UserProfilesUsageStatsCallStatsOrderByExp
+  operand:
+    object:
+      orderedType: UserProfilesUsageStatsCallStats
+      orderableFields:
+        - fieldName: internationalMinutes
+          orderByExpression: IntOrderByExp
+        - fieldName: totalMinutes
+          orderByExpression: IntOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: support_UserProfilesUsageStatsCallStatsOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: UserProfilesUsageStatsDataUsageOrderByExp
+  operand:
+    object:
+      orderedType: UserProfilesUsageStatsDataUsage
+      orderableFields:
+        - fieldName: currentMonth
+          orderByExpression: StringOrderByExp
+        - fieldName: total
+          orderByExpression: StringOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: support_UserProfilesUsageStatsDataUsageOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: UserProfilesUsageStatsOrderByExp
+  operand:
+    object:
+      orderedType: UserProfilesUsageStats
+      orderableFields:
+        - fieldName: callStats
+          orderByExpression: UserProfilesUsageStatsCallStatsOrderByExp
+        - fieldName: dataUsage
+          orderByExpression: UserProfilesUsageStatsDataUsageOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: support_UserProfilesUsageStatsOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: UserProfilesOrderByExp
+  operand:
+    object:
+      orderedType: UserProfiles
+      orderableFields:
+        - fieldName: id
+          orderByExpression: StringOrderByExp
+        - fieldName: accountDetails
+          orderByExpression: UserProfilesAccountDetailsOrderByExp
+        - fieldName: identification
+          orderByExpression: UserProfilesIdentificationOrderByExp
+        - fieldName: memberId
+          orderByExpression: StringOrderByExp
+        - fieldName: notes
+          orderByExpression: StringOrderByExp
+        - fieldName: preferences
+          orderByExpression: UserProfilesPreferencesOrderByExp
+        - fieldName: usageStats
+          orderByExpression: UserProfilesUsageStatsOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: support_UserProfilesOrderByExp
 
