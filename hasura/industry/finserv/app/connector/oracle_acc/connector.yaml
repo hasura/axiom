@@ -1,0 +1,21 @@
+kind: Connector
+version: v2
+definition:
+  name: oracle_acc
+  subgraph: app
+  source: hasura/oracle:v1.0.5
+  context: .
+  envMapping:
+    HASURA_SERVICE_TOKEN_SECRET:
+      fromEnv: APP_ORACLE_ACC_HASURA_SERVICE_TOKEN_SECRET
+    JDBC_SCHEMAS:
+      fromEnv: APP_ORACLE_ACC_JDBC_SCHEMAS
+    JDBC_URL:
+      fromEnv: APP_ORACLE_ACC_JDBC_URL
+    OTEL_EXPORTER_OTLP_ENDPOINT:
+      fromEnv: APP_ORACLE_ACC_OTEL_EXPORTER_OTLP_ENDPOINT
+    OTEL_SERVICE_NAME:
+      fromEnv: APP_ORACLE_ACC_OTEL_SERVICE_NAME
+  regionConfiguration:
+    - mode: ReadWrite
+      region: gcp-us-west2

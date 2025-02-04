@@ -1,0 +1,199 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: AxiomIndividualParties
+  fields:
+    - name: createdby
+      type: String_1
+    - name: createddate
+      type: String_1
+    - name: firstname
+      type: String_1
+    - name: lastname
+      type: String_1
+    - name: lastupdatedby
+      type: String_1
+    - name: lastupdateddate
+      type: String_1
+    - name: partyid
+      type: String_1
+    - name: sourcesystem
+      type: String_1
+  graphql:
+    typeName: AxiomIndividualParties
+    inputTypeName: AxiomIndividualPartiesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: oracle_acc
+      dataConnectorObjectType: AXIOM.INDIVIDUAL_PARTIES
+      fieldMapping:
+        createdby:
+          column:
+            name: CREATEDBY
+        createddate:
+          column:
+            name: CREATEDDATE
+        firstname:
+          column:
+            name: FIRSTNAME
+        lastname:
+          column:
+            name: LASTNAME
+        lastupdatedby:
+          column:
+            name: LASTUPDATEDBY
+        lastupdateddate:
+          column:
+            name: LASTUPDATEDDATE
+        partyid:
+          column:
+            name: PARTYID
+        sourcesystem:
+          column:
+            name: SOURCESYSTEM
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: AxiomIndividualParties
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - createdby
+          - createddate
+          - firstname
+          - lastname
+          - lastupdatedby
+          - lastupdateddate
+          - partyid
+          - sourcesystem
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: AxiomIndividualPartiesBoolExp
+  operand:
+    object:
+      type: AxiomIndividualParties
+      comparableFields:
+        - fieldName: createdby
+          booleanExpressionType: StringBoolExp
+        - fieldName: createddate
+          booleanExpressionType: StringBoolExp
+        - fieldName: firstname
+          booleanExpressionType: StringBoolExp
+        - fieldName: lastname
+          booleanExpressionType: StringBoolExp
+        - fieldName: lastupdatedby
+          booleanExpressionType: StringBoolExp
+        - fieldName: lastupdateddate
+          booleanExpressionType: StringBoolExp
+        - fieldName: partyid
+          booleanExpressionType: StringBoolExp
+        - fieldName: sourcesystem
+          booleanExpressionType: StringBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: AxiomIndividualPartiesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: AxiomIndividualPartiesAggExp
+  operand:
+    object:
+      aggregatedType: AxiomIndividualParties
+      aggregatableFields:
+        - fieldName: createdby
+          aggregateExpression: StringAggExp
+        - fieldName: createddate
+          aggregateExpression: StringAggExp
+        - fieldName: firstname
+          aggregateExpression: StringAggExp
+        - fieldName: lastname
+          aggregateExpression: StringAggExp
+        - fieldName: lastupdatedby
+          aggregateExpression: StringAggExp
+        - fieldName: lastupdateddate
+          aggregateExpression: StringAggExp
+        - fieldName: partyid
+          aggregateExpression: StringAggExp
+        - fieldName: sourcesystem
+          aggregateExpression: StringAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: AxiomIndividualPartiesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: AxiomIndividualPartiesOrderByExp
+  operand:
+    object:
+      orderedType: AxiomIndividualParties
+      orderableFields:
+        - fieldName: createdby
+          orderByExpression: String1OrderByExp
+        - fieldName: createddate
+          orderByExpression: String1OrderByExp
+        - fieldName: firstname
+          orderByExpression: String1OrderByExp
+        - fieldName: lastname
+          orderByExpression: String1OrderByExp
+        - fieldName: lastupdatedby
+          orderByExpression: String1OrderByExp
+        - fieldName: lastupdateddate
+          orderByExpression: String1OrderByExp
+        - fieldName: partyid
+          orderByExpression: String1OrderByExp
+        - fieldName: sourcesystem
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: AxiomIndividualPartiesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: AxiomIndividualParties
+  objectType: AxiomIndividualParties
+  source:
+    dataConnectorName: oracle_acc
+    collection: AXIOM.INDIVIDUAL_PARTIES
+  filterExpressionType: AxiomIndividualPartiesBoolExp
+  aggregateExpression: AxiomIndividualPartiesAggExp
+  orderByExpression: AxiomIndividualPartiesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: axiomIndividualParties
+      subscription:
+        rootField: axiomIndividualParties
+    selectUniques: []
+    filterInputTypeName: AxiomIndividualPartiesFilterInput
+    aggregate:
+      queryRootField: axiomIndividualPartiesAggregate
+      subscription:
+        rootField: axiomIndividualPartiesAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: AxiomIndividualParties
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

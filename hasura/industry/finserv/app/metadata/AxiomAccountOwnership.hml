@@ -1,0 +1,211 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: AxiomAccountOwnership
+  fields:
+    - name: accountnumber
+      type: String_1
+    - name: createdby
+      type: String_1
+    - name: createddate
+      type: String_1
+    - name: lastupdatedby
+      type: String_1
+    - name: lastupdateddate
+      type: String_1
+    - name: ownershipid
+      type: String_1
+    - name: ownershiptype
+      type: String_1
+    - name: partyid
+      type: String_1
+    - name: sourcesystem
+      type: String_1
+  graphql:
+    typeName: AxiomAccountOwnership
+    inputTypeName: AxiomAccountOwnershipInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: oracle_acc
+      dataConnectorObjectType: AXIOM.ACCOUNT_OWNERSHIP
+      fieldMapping:
+        accountnumber:
+          column:
+            name: ACCOUNTNUMBER
+        createdby:
+          column:
+            name: CREATEDBY
+        createddate:
+          column:
+            name: CREATEDDATE
+        lastupdatedby:
+          column:
+            name: LASTUPDATEDBY
+        lastupdateddate:
+          column:
+            name: LASTUPDATEDDATE
+        ownershipid:
+          column:
+            name: OWNERSHIPID
+        ownershiptype:
+          column:
+            name: OWNERSHIPTYPE
+        partyid:
+          column:
+            name: PARTYID
+        sourcesystem:
+          column:
+            name: SOURCESYSTEM
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: AxiomAccountOwnership
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - accountnumber
+          - createdby
+          - createddate
+          - lastupdatedby
+          - lastupdateddate
+          - ownershipid
+          - ownershiptype
+          - partyid
+          - sourcesystem
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: AxiomAccountOwnershipBoolExp
+  operand:
+    object:
+      type: AxiomAccountOwnership
+      comparableFields:
+        - fieldName: accountnumber
+          booleanExpressionType: StringBoolExp
+        - fieldName: createdby
+          booleanExpressionType: StringBoolExp
+        - fieldName: createddate
+          booleanExpressionType: StringBoolExp
+        - fieldName: lastupdatedby
+          booleanExpressionType: StringBoolExp
+        - fieldName: lastupdateddate
+          booleanExpressionType: StringBoolExp
+        - fieldName: ownershipid
+          booleanExpressionType: StringBoolExp
+        - fieldName: ownershiptype
+          booleanExpressionType: StringBoolExp
+        - fieldName: partyid
+          booleanExpressionType: StringBoolExp
+        - fieldName: sourcesystem
+          booleanExpressionType: StringBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: AxiomAccountOwnershipBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: AxiomAccountOwnershipAggExp
+  operand:
+    object:
+      aggregatedType: AxiomAccountOwnership
+      aggregatableFields:
+        - fieldName: accountnumber
+          aggregateExpression: StringAggExp
+        - fieldName: createdby
+          aggregateExpression: StringAggExp
+        - fieldName: createddate
+          aggregateExpression: StringAggExp
+        - fieldName: lastupdatedby
+          aggregateExpression: StringAggExp
+        - fieldName: lastupdateddate
+          aggregateExpression: StringAggExp
+        - fieldName: ownershipid
+          aggregateExpression: StringAggExp
+        - fieldName: ownershiptype
+          aggregateExpression: StringAggExp
+        - fieldName: partyid
+          aggregateExpression: StringAggExp
+        - fieldName: sourcesystem
+          aggregateExpression: StringAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: AxiomAccountOwnershipAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: AxiomAccountOwnershipOrderByExp
+  operand:
+    object:
+      orderedType: AxiomAccountOwnership
+      orderableFields:
+        - fieldName: accountnumber
+          orderByExpression: String1OrderByExp
+        - fieldName: createdby
+          orderByExpression: String1OrderByExp
+        - fieldName: createddate
+          orderByExpression: String1OrderByExp
+        - fieldName: lastupdatedby
+          orderByExpression: String1OrderByExp
+        - fieldName: lastupdateddate
+          orderByExpression: String1OrderByExp
+        - fieldName: ownershipid
+          orderByExpression: String1OrderByExp
+        - fieldName: ownershiptype
+          orderByExpression: String1OrderByExp
+        - fieldName: partyid
+          orderByExpression: String1OrderByExp
+        - fieldName: sourcesystem
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: AxiomAccountOwnershipOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: AxiomAccountOwnership
+  objectType: AxiomAccountOwnership
+  source:
+    dataConnectorName: oracle_acc
+    collection: AXIOM.ACCOUNT_OWNERSHIP
+  filterExpressionType: AxiomAccountOwnershipBoolExp
+  aggregateExpression: AxiomAccountOwnershipAggExp
+  orderByExpression: AxiomAccountOwnershipOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: axiomAccountOwnership
+      subscription:
+        rootField: axiomAccountOwnership
+    selectUniques: []
+    filterInputTypeName: AxiomAccountOwnershipFilterInput
+    aggregate:
+      queryRootField: axiomAccountOwnershipAggregate
+      subscription:
+        rootField: axiomAccountOwnershipAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: AxiomAccountOwnership
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

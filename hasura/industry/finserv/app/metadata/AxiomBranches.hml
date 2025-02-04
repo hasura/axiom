@@ -1,0 +1,211 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: AxiomBranches
+  fields:
+    - name: address
+      type: String_1
+    - name: branchid
+      type: String_1
+    - name: branchname
+      type: String_1
+    - name: createdby
+      type: String_1
+    - name: createddate
+      type: String_1
+    - name: lastupdatedby
+      type: String_1
+    - name: lastupdateddate
+      type: String_1
+    - name: manageremployeeid
+      type: String_1
+    - name: sourcesystem
+      type: String_1
+  graphql:
+    typeName: AxiomBranches
+    inputTypeName: AxiomBranchesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: oracle_acc
+      dataConnectorObjectType: AXIOM.BRANCHES
+      fieldMapping:
+        address:
+          column:
+            name: ADDRESS
+        branchid:
+          column:
+            name: BRANCHID
+        branchname:
+          column:
+            name: BRANCHNAME
+        createdby:
+          column:
+            name: CREATEDBY
+        createddate:
+          column:
+            name: CREATEDDATE
+        lastupdatedby:
+          column:
+            name: LASTUPDATEDBY
+        lastupdateddate:
+          column:
+            name: LASTUPDATEDDATE
+        manageremployeeid:
+          column:
+            name: MANAGEREMPLOYEEID
+        sourcesystem:
+          column:
+            name: SOURCESYSTEM
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: AxiomBranches
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - address
+          - branchid
+          - branchname
+          - createdby
+          - createddate
+          - lastupdatedby
+          - lastupdateddate
+          - manageremployeeid
+          - sourcesystem
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: AxiomBranchesBoolExp
+  operand:
+    object:
+      type: AxiomBranches
+      comparableFields:
+        - fieldName: address
+          booleanExpressionType: StringBoolExp
+        - fieldName: branchid
+          booleanExpressionType: StringBoolExp
+        - fieldName: branchname
+          booleanExpressionType: StringBoolExp
+        - fieldName: createdby
+          booleanExpressionType: StringBoolExp
+        - fieldName: createddate
+          booleanExpressionType: StringBoolExp
+        - fieldName: lastupdatedby
+          booleanExpressionType: StringBoolExp
+        - fieldName: lastupdateddate
+          booleanExpressionType: StringBoolExp
+        - fieldName: manageremployeeid
+          booleanExpressionType: StringBoolExp
+        - fieldName: sourcesystem
+          booleanExpressionType: StringBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: AxiomBranchesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: AxiomBranchesAggExp
+  operand:
+    object:
+      aggregatedType: AxiomBranches
+      aggregatableFields:
+        - fieldName: address
+          aggregateExpression: StringAggExp
+        - fieldName: branchid
+          aggregateExpression: StringAggExp
+        - fieldName: branchname
+          aggregateExpression: StringAggExp
+        - fieldName: createdby
+          aggregateExpression: StringAggExp
+        - fieldName: createddate
+          aggregateExpression: StringAggExp
+        - fieldName: lastupdatedby
+          aggregateExpression: StringAggExp
+        - fieldName: lastupdateddate
+          aggregateExpression: StringAggExp
+        - fieldName: manageremployeeid
+          aggregateExpression: StringAggExp
+        - fieldName: sourcesystem
+          aggregateExpression: StringAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: AxiomBranchesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: AxiomBranchesOrderByExp
+  operand:
+    object:
+      orderedType: AxiomBranches
+      orderableFields:
+        - fieldName: address
+          orderByExpression: String1OrderByExp
+        - fieldName: branchid
+          orderByExpression: String1OrderByExp
+        - fieldName: branchname
+          orderByExpression: String1OrderByExp
+        - fieldName: createdby
+          orderByExpression: String1OrderByExp
+        - fieldName: createddate
+          orderByExpression: String1OrderByExp
+        - fieldName: lastupdatedby
+          orderByExpression: String1OrderByExp
+        - fieldName: lastupdateddate
+          orderByExpression: String1OrderByExp
+        - fieldName: manageremployeeid
+          orderByExpression: String1OrderByExp
+        - fieldName: sourcesystem
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: AxiomBranchesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: AxiomBranches
+  objectType: AxiomBranches
+  source:
+    dataConnectorName: oracle_acc
+    collection: AXIOM.BRANCHES
+  filterExpressionType: AxiomBranchesBoolExp
+  aggregateExpression: AxiomBranchesAggExp
+  orderByExpression: AxiomBranchesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: axiomBranches
+      subscription:
+        rootField: axiomBranches
+    selectUniques: []
+    filterInputTypeName: AxiomBranchesFilterInput
+    aggregate:
+      queryRootField: axiomBranchesAggregate
+      subscription:
+        rootField: axiomBranchesAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: AxiomBranches
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

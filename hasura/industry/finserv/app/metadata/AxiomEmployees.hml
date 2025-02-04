@@ -1,0 +1,223 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: AxiomEmployees
+  fields:
+    - name: createdby
+      type: String_1
+    - name: createddate
+      type: String_1
+    - name: email
+      type: String_1
+    - name: employeeid
+      type: String_1
+    - name: firstname
+      type: String_1
+    - name: lastname
+      type: String_1
+    - name: lastupdatedby
+      type: String_1
+    - name: lastupdateddate
+      type: String_1
+    - name: position
+      type: String_1
+    - name: sourcesystem
+      type: String_1
+  graphql:
+    typeName: AxiomEmployees
+    inputTypeName: AxiomEmployeesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: oracle_acc
+      dataConnectorObjectType: AXIOM.EMPLOYEES
+      fieldMapping:
+        createdby:
+          column:
+            name: CREATEDBY
+        createddate:
+          column:
+            name: CREATEDDATE
+        email:
+          column:
+            name: EMAIL
+        employeeid:
+          column:
+            name: EMPLOYEEID
+        firstname:
+          column:
+            name: FIRSTNAME
+        lastname:
+          column:
+            name: LASTNAME
+        lastupdatedby:
+          column:
+            name: LASTUPDATEDBY
+        lastupdateddate:
+          column:
+            name: LASTUPDATEDDATE
+        position:
+          column:
+            name: POSITION
+        sourcesystem:
+          column:
+            name: SOURCESYSTEM
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: AxiomEmployees
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - createdby
+          - createddate
+          - email
+          - employeeid
+          - firstname
+          - lastname
+          - lastupdatedby
+          - lastupdateddate
+          - position
+          - sourcesystem
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: AxiomEmployeesBoolExp
+  operand:
+    object:
+      type: AxiomEmployees
+      comparableFields:
+        - fieldName: createdby
+          booleanExpressionType: StringBoolExp
+        - fieldName: createddate
+          booleanExpressionType: StringBoolExp
+        - fieldName: email
+          booleanExpressionType: StringBoolExp
+        - fieldName: employeeid
+          booleanExpressionType: StringBoolExp
+        - fieldName: firstname
+          booleanExpressionType: StringBoolExp
+        - fieldName: lastname
+          booleanExpressionType: StringBoolExp
+        - fieldName: lastupdatedby
+          booleanExpressionType: StringBoolExp
+        - fieldName: lastupdateddate
+          booleanExpressionType: StringBoolExp
+        - fieldName: position
+          booleanExpressionType: StringBoolExp
+        - fieldName: sourcesystem
+          booleanExpressionType: StringBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: AxiomEmployeesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: AxiomEmployeesAggExp
+  operand:
+    object:
+      aggregatedType: AxiomEmployees
+      aggregatableFields:
+        - fieldName: createdby
+          aggregateExpression: StringAggExp
+        - fieldName: createddate
+          aggregateExpression: StringAggExp
+        - fieldName: email
+          aggregateExpression: StringAggExp
+        - fieldName: employeeid
+          aggregateExpression: StringAggExp
+        - fieldName: firstname
+          aggregateExpression: StringAggExp
+        - fieldName: lastname
+          aggregateExpression: StringAggExp
+        - fieldName: lastupdatedby
+          aggregateExpression: StringAggExp
+        - fieldName: lastupdateddate
+          aggregateExpression: StringAggExp
+        - fieldName: position
+          aggregateExpression: StringAggExp
+        - fieldName: sourcesystem
+          aggregateExpression: StringAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: AxiomEmployeesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: AxiomEmployeesOrderByExp
+  operand:
+    object:
+      orderedType: AxiomEmployees
+      orderableFields:
+        - fieldName: createdby
+          orderByExpression: String1OrderByExp
+        - fieldName: createddate
+          orderByExpression: String1OrderByExp
+        - fieldName: email
+          orderByExpression: String1OrderByExp
+        - fieldName: employeeid
+          orderByExpression: String1OrderByExp
+        - fieldName: firstname
+          orderByExpression: String1OrderByExp
+        - fieldName: lastname
+          orderByExpression: String1OrderByExp
+        - fieldName: lastupdatedby
+          orderByExpression: String1OrderByExp
+        - fieldName: lastupdateddate
+          orderByExpression: String1OrderByExp
+        - fieldName: position
+          orderByExpression: String1OrderByExp
+        - fieldName: sourcesystem
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: AxiomEmployeesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: AxiomEmployees
+  objectType: AxiomEmployees
+  source:
+    dataConnectorName: oracle_acc
+    collection: AXIOM.EMPLOYEES
+  filterExpressionType: AxiomEmployeesBoolExp
+  aggregateExpression: AxiomEmployeesAggExp
+  orderByExpression: AxiomEmployeesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: axiomEmployees
+      subscription:
+        rootField: axiomEmployees
+    selectUniques: []
+    filterInputTypeName: AxiomEmployeesFilterInput
+    aggregate:
+      queryRootField: axiomEmployeesAggregate
+      subscription:
+        rootField: axiomEmployeesAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: AxiomEmployees
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

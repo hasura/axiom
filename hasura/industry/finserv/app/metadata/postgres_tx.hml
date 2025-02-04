@@ -1,0 +1,1825 @@
+kind: DataConnectorLink
+version: v1
+definition:
+  name: postgres_tx
+  url:
+    readWriteUrls:
+      read:
+        valueFromEnv: APP_POSTGRES_TX_READ_URL
+      write:
+        valueFromEnv: APP_POSTGRES_TX_WRITE_URL
+  headers:
+    Authorization:
+      valueFromEnv: APP_POSTGRES_TX_AUTHORIZATION_HEADER
+  schema:
+    version: v0.1
+    schema:
+      scalar_types:
+        date:
+          representation:
+            type: date
+          aggregate_functions:
+            max:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: date
+            min:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: date
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                type: named
+                name: date
+            _gte:
+              type: custom
+              argument_type:
+                type: named
+                name: date
+            _in:
+              type: in
+            _lt:
+              type: custom
+              argument_type:
+                type: named
+                name: date
+            _lte:
+              type: custom
+              argument_type:
+                type: named
+                name: date
+            _neq:
+              type: custom
+              argument_type:
+                type: named
+                name: date
+        int4:
+          representation:
+            type: int32
+          aggregate_functions:
+            avg:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            bit_and:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            bit_or:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            max:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            min:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            stddev:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            stddev_pop:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            stddev_samp:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            sum:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int8
+            var_pop:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            var_samp:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            variance:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                type: named
+                name: int4
+            _gte:
+              type: custom
+              argument_type:
+                type: named
+                name: int4
+            _in:
+              type: in
+            _lt:
+              type: custom
+              argument_type:
+                type: named
+                name: int4
+            _lte:
+              type: custom
+              argument_type:
+                type: named
+                name: int4
+            _neq:
+              type: custom
+              argument_type:
+                type: named
+                name: int4
+        int8:
+          representation:
+            type: int64
+          aggregate_functions:
+            avg:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            bit_and:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int8
+            bit_or:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int8
+            max:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int8
+            min:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int8
+            stddev:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            stddev_pop:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            stddev_samp:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            sum:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            var_pop:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            var_samp:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            variance:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                type: named
+                name: int8
+            _gte:
+              type: custom
+              argument_type:
+                type: named
+                name: int8
+            _in:
+              type: in
+            _lt:
+              type: custom
+              argument_type:
+                type: named
+                name: int8
+            _lte:
+              type: custom
+              argument_type:
+                type: named
+                name: int8
+            _neq:
+              type: custom
+              argument_type:
+                type: named
+                name: int8
+        numeric:
+          representation:
+            type: bigdecimal
+          aggregate_functions:
+            avg:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            max:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            min:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            stddev:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            stddev_pop:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            stddev_samp:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            sum:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            var_pop:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            var_samp:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            variance:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                type: named
+                name: numeric
+            _gte:
+              type: custom
+              argument_type:
+                type: named
+                name: numeric
+            _in:
+              type: in
+            _lt:
+              type: custom
+              argument_type:
+                type: named
+                name: numeric
+            _lte:
+              type: custom
+              argument_type:
+                type: named
+                name: numeric
+            _neq:
+              type: custom
+              argument_type:
+                type: named
+                name: numeric
+        risk_profile:
+          representation:
+            type: enum
+            one_of:
+              - Conservative
+              - Balanced
+              - Aggressive
+          aggregate_functions:
+            max:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: risk_profile
+            min:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: risk_profile
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                type: named
+                name: risk_profile
+            _gte:
+              type: custom
+              argument_type:
+                type: named
+                name: risk_profile
+            _in:
+              type: in
+            _lt:
+              type: custom
+              argument_type:
+                type: named
+                name: risk_profile
+            _lte:
+              type: custom
+              argument_type:
+                type: named
+                name: risk_profile
+            _neq:
+              type: custom
+              argument_type:
+                type: named
+                name: risk_profile
+        text:
+          representation:
+            type: string
+          aggregate_functions:
+            max:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: text
+            min:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: text
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _gte:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _ilike:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _in:
+              type: in
+            _iregex:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _like:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _lt:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _lte:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _neq:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _nilike:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _niregex:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _nlike:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _nregex:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _regex:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            starts_with:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            ts_match_tt:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+        timestamp:
+          representation:
+            type: timestamp
+          aggregate_functions:
+            max:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: timestamp
+            min:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: timestamp
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                type: named
+                name: timestamp
+            _gte:
+              type: custom
+              argument_type:
+                type: named
+                name: timestamp
+            _in:
+              type: in
+            _lt:
+              type: custom
+              argument_type:
+                type: named
+                name: timestamp
+            _lte:
+              type: custom
+              argument_type:
+                type: named
+                name: timestamp
+            _neq:
+              type: custom
+              argument_type:
+                type: named
+                name: timestamp
+        varchar:
+          representation:
+            type: string
+          aggregate_functions:
+            max:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: text
+            min:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: text
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _gte:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _ilike:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _in:
+              type: in
+            _iregex:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _like:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _lt:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _lte:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _neq:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _nilike:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _niregex:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _nlike:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _nregex:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _regex:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            starts_with:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            ts_match_tt:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+      object_types:
+        creditcard:
+          fields:
+            accountnumber:
+              type:
+                type: named
+                name: varchar
+            cardnumber:
+              type:
+                type: named
+                name: varchar
+            cardtype:
+              type:
+                type: named
+                name: varchar
+            creditlimit:
+              type:
+                type: named
+                name: numeric
+            expirationdate:
+              type:
+                type: named
+                name: date
+        creditcardtransaction:
+          fields:
+            accountnumber:
+              type:
+                type: named
+                name: varchar
+            amount:
+              type:
+                type: named
+                name: numeric
+            cardnumber:
+              type:
+                type: named
+                name: varchar
+            currency:
+              type:
+                type: named
+                name: varchar
+            description:
+              type:
+                type: named
+                name: varchar
+            effectivedate:
+              type:
+                type: named
+                name: timestamp
+            merchantname:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            posteddate:
+              type:
+                type: named
+                name: timestamp
+            status:
+              type:
+                type: named
+                name: varchar
+            transactiondate:
+              type:
+                type: named
+                name: timestamp
+            transactionid:
+              type:
+                type: named
+                name: varchar
+        delete_creditcard_by_cardnumber_response:
+          description: Responses from the 'delete_creditcard_by_cardnumber' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: creditcard
+        delete_creditcardtransaction_by_transactionid_response:
+          description: Responses from the 'delete_creditcardtransaction_by_transactionid' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: creditcardtransaction
+        delete_investmentportfolio_by_portfolioid_response:
+          description: Responses from the 'delete_investmentportfolio_by_portfolioid' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: investmentportfolio
+        delete_position_by_positionid_response:
+          description: Responses from the 'delete_position_by_positionid' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: position
+        insert_creditcard_object:
+          fields:
+            accountnumber:
+              type:
+                type: named
+                name: varchar
+            cardnumber:
+              type:
+                type: named
+                name: varchar
+            cardtype:
+              type:
+                type: named
+                name: varchar
+            creditlimit:
+              type:
+                type: named
+                name: numeric
+            expirationdate:
+              type:
+                type: named
+                name: date
+        insert_creditcard_response:
+          description: Responses from the 'insert_creditcard' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: creditcard
+        insert_creditcardtransaction_object:
+          fields:
+            accountnumber:
+              type:
+                type: named
+                name: varchar
+            amount:
+              type:
+                type: named
+                name: numeric
+            cardnumber:
+              type:
+                type: named
+                name: varchar
+            currency:
+              type:
+                type: named
+                name: varchar
+            description:
+              type:
+                type: named
+                name: varchar
+            effectivedate:
+              type:
+                type: named
+                name: timestamp
+            merchantname:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            posteddate:
+              type:
+                type: named
+                name: timestamp
+            status:
+              type:
+                type: named
+                name: varchar
+            transactiondate:
+              type:
+                type: named
+                name: timestamp
+            transactionid:
+              type:
+                type: named
+                name: varchar
+        insert_creditcardtransaction_response:
+          description: Responses from the 'insert_creditcardtransaction' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: creditcardtransaction
+        insert_investmentportfolio_object:
+          fields:
+            advisorid:
+              type:
+                type: named
+                name: varchar
+            creationdate:
+              type:
+                type: named
+                name: date
+            partyid:
+              type:
+                type: named
+                name: varchar
+            portfolioid:
+              type:
+                type: named
+                name: varchar
+            riskprofile:
+              type:
+                type: named
+                name: risk_profile
+            totalvalue:
+              type:
+                type: named
+                name: numeric
+        insert_investmentportfolio_response:
+          description: Responses from the 'insert_investmentportfolio' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: investmentportfolio
+        insert_position_object:
+          fields:
+            accountnumber:
+              type:
+                type: named
+                name: varchar
+            currentvalue:
+              type:
+                type: named
+                name: numeric
+            positionid:
+              type:
+                type: named
+                name: varchar
+            purchasedate:
+              type:
+                type: named
+                name: date
+            quantity:
+              type:
+                type: named
+                name: int4
+            security:
+              type:
+                type: named
+                name: varchar
+        insert_position_response:
+          description: Responses from the 'insert_position' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: position
+        investmentportfolio:
+          fields:
+            advisorid:
+              type:
+                type: named
+                name: varchar
+            creationdate:
+              type:
+                type: named
+                name: date
+            partyid:
+              type:
+                type: named
+                name: varchar
+            portfolioid:
+              type:
+                type: named
+                name: varchar
+            riskprofile:
+              type:
+                type: named
+                name: risk_profile
+            totalvalue:
+              type:
+                type: named
+                name: numeric
+        position:
+          fields:
+            accountnumber:
+              type:
+                type: named
+                name: varchar
+            currentvalue:
+              type:
+                type: named
+                name: numeric
+            positionid:
+              type:
+                type: named
+                name: varchar
+            purchasedate:
+              type:
+                type: named
+                name: date
+            quantity:
+              type:
+                type: named
+                name: int4
+            security:
+              type:
+                type: named
+                name: varchar
+        update_column_creditcard_accountnumber:
+          description: Update the 'accountnumber' column in the 'creditcard' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: varchar
+        update_column_creditcard_cardnumber:
+          description: Update the 'cardnumber' column in the 'creditcard' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: varchar
+        update_column_creditcard_cardtype:
+          description: Update the 'cardtype' column in the 'creditcard' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: varchar
+        update_column_creditcard_creditlimit:
+          description: Update the 'creditlimit' column in the 'creditcard' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: numeric
+        update_column_creditcard_expirationdate:
+          description: Update the 'expirationdate' column in the 'creditcard' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: date
+        update_column_creditcardtransaction_accountnumber:
+          description: Update the 'accountnumber' column in the 'creditcardtransaction' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: varchar
+        update_column_creditcardtransaction_amount:
+          description: Update the 'amount' column in the 'creditcardtransaction' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: numeric
+        update_column_creditcardtransaction_cardnumber:
+          description: Update the 'cardnumber' column in the 'creditcardtransaction' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: varchar
+        update_column_creditcardtransaction_currency:
+          description: Update the 'currency' column in the 'creditcardtransaction' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: varchar
+        update_column_creditcardtransaction_description:
+          description: Update the 'description' column in the 'creditcardtransaction' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: varchar
+        update_column_creditcardtransaction_effectivedate:
+          description: Update the 'effectivedate' column in the 'creditcardtransaction' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: timestamp
+        update_column_creditcardtransaction_merchantname:
+          description: Update the 'merchantname' column in the 'creditcardtransaction' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        update_column_creditcardtransaction_posteddate:
+          description: Update the 'posteddate' column in the 'creditcardtransaction' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: timestamp
+        update_column_creditcardtransaction_status:
+          description: Update the 'status' column in the 'creditcardtransaction' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: varchar
+        update_column_creditcardtransaction_transactiondate:
+          description: Update the 'transactiondate' column in the 'creditcardtransaction' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: timestamp
+        update_column_creditcardtransaction_transactionid:
+          description: Update the 'transactionid' column in the 'creditcardtransaction' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: varchar
+        update_column_investmentportfolio_advisorid:
+          description: Update the 'advisorid' column in the 'investmentportfolio' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: varchar
+        update_column_investmentportfolio_creationdate:
+          description: Update the 'creationdate' column in the 'investmentportfolio' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: date
+        update_column_investmentportfolio_partyid:
+          description: Update the 'partyid' column in the 'investmentportfolio' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: varchar
+        update_column_investmentportfolio_portfolioid:
+          description: Update the 'portfolioid' column in the 'investmentportfolio' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: varchar
+        update_column_investmentportfolio_riskprofile:
+          description: Update the 'riskprofile' column in the 'investmentportfolio' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: risk_profile
+        update_column_investmentportfolio_totalvalue:
+          description: Update the 'totalvalue' column in the 'investmentportfolio' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: numeric
+        update_column_position_accountnumber:
+          description: Update the 'accountnumber' column in the 'position' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: varchar
+        update_column_position_currentvalue:
+          description: Update the 'currentvalue' column in the 'position' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: numeric
+        update_column_position_positionid:
+          description: Update the 'positionid' column in the 'position' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: varchar
+        update_column_position_purchasedate:
+          description: Update the 'purchasedate' column in the 'position' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: date
+        update_column_position_quantity:
+          description: Update the 'quantity' column in the 'position' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: int4
+        update_column_position_security:
+          description: Update the 'security' column in the 'position' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: varchar
+        update_creditcard_by_cardnumber_response:
+          description: Responses from the 'update_creditcard_by_cardnumber' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: creditcard
+        update_creditcard_by_cardnumber_update_columns:
+          description: Update the columns of the 'creditcard' collection
+          fields:
+            accountnumber:
+              description: Update the 'accountnumber' column in the 'creditcard' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_creditcard_accountnumber
+            cardnumber:
+              description: Update the 'cardnumber' column in the 'creditcard' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_creditcard_cardnumber
+            cardtype:
+              description: Update the 'cardtype' column in the 'creditcard' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_creditcard_cardtype
+            creditlimit:
+              description: Update the 'creditlimit' column in the 'creditcard' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_creditcard_creditlimit
+            expirationdate:
+              description: Update the 'expirationdate' column in the 'creditcard' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_creditcard_expirationdate
+        update_creditcardtransaction_by_transactionid_response:
+          description: Responses from the 'update_creditcardtransaction_by_transactionid' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: creditcardtransaction
+        update_creditcardtransaction_by_transactionid_update_columns:
+          description: Update the columns of the 'creditcardtransaction' collection
+          fields:
+            accountnumber:
+              description: Update the 'accountnumber' column in the 'creditcardtransaction' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_creditcardtransaction_accountnumber
+            amount:
+              description: Update the 'amount' column in the 'creditcardtransaction' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_creditcardtransaction_amount
+            cardnumber:
+              description: Update the 'cardnumber' column in the 'creditcardtransaction' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_creditcardtransaction_cardnumber
+            currency:
+              description: Update the 'currency' column in the 'creditcardtransaction' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_creditcardtransaction_currency
+            description:
+              description: Update the 'description' column in the 'creditcardtransaction' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_creditcardtransaction_description
+            effectivedate:
+              description: Update the 'effectivedate' column in the 'creditcardtransaction' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_creditcardtransaction_effectivedate
+            merchantname:
+              description: Update the 'merchantname' column in the 'creditcardtransaction' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_creditcardtransaction_merchantname
+            posteddate:
+              description: Update the 'posteddate' column in the 'creditcardtransaction' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_creditcardtransaction_posteddate
+            status:
+              description: Update the 'status' column in the 'creditcardtransaction' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_creditcardtransaction_status
+            transactiondate:
+              description: Update the 'transactiondate' column in the 'creditcardtransaction' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_creditcardtransaction_transactiondate
+            transactionid:
+              description: Update the 'transactionid' column in the 'creditcardtransaction' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_creditcardtransaction_transactionid
+        update_investmentportfolio_by_portfolioid_response:
+          description: Responses from the 'update_investmentportfolio_by_portfolioid' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: investmentportfolio
+        update_investmentportfolio_by_portfolioid_update_columns:
+          description: Update the columns of the 'investmentportfolio' collection
+          fields:
+            advisorid:
+              description: Update the 'advisorid' column in the 'investmentportfolio' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_investmentportfolio_advisorid
+            creationdate:
+              description: Update the 'creationdate' column in the 'investmentportfolio' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_investmentportfolio_creationdate
+            partyid:
+              description: Update the 'partyid' column in the 'investmentportfolio' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_investmentportfolio_partyid
+            portfolioid:
+              description: Update the 'portfolioid' column in the 'investmentportfolio' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_investmentportfolio_portfolioid
+            riskprofile:
+              description: Update the 'riskprofile' column in the 'investmentportfolio' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_investmentportfolio_riskprofile
+            totalvalue:
+              description: Update the 'totalvalue' column in the 'investmentportfolio' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_investmentportfolio_totalvalue
+        update_position_by_positionid_response:
+          description: Responses from the 'update_position_by_positionid' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: position
+        update_position_by_positionid_update_columns:
+          description: Update the columns of the 'position' collection
+          fields:
+            accountnumber:
+              description: Update the 'accountnumber' column in the 'position' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_position_accountnumber
+            currentvalue:
+              description: Update the 'currentvalue' column in the 'position' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_position_currentvalue
+            positionid:
+              description: Update the 'positionid' column in the 'position' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_position_positionid
+            purchasedate:
+              description: Update the 'purchasedate' column in the 'position' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_position_purchasedate
+            quantity:
+              description: Update the 'quantity' column in the 'position' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_position_quantity
+            security:
+              description: Update the 'security' column in the 'position' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_position_security
+      collections:
+        - name: creditcard
+          arguments: {}
+          type: creditcard
+          uniqueness_constraints:
+            creditcard_pkey:
+              unique_columns:
+                - cardnumber
+          foreign_keys: {}
+        - name: creditcardtransaction
+          arguments: {}
+          type: creditcardtransaction
+          uniqueness_constraints:
+            creditcardtransaction_pkey:
+              unique_columns:
+                - transactionid
+          foreign_keys: {}
+        - name: investmentportfolio
+          arguments: {}
+          type: investmentportfolio
+          uniqueness_constraints:
+            investmentportfolio_pkey:
+              unique_columns:
+                - portfolioid
+          foreign_keys: {}
+        - name: position
+          arguments: {}
+          type: position
+          uniqueness_constraints:
+            position_pkey:
+              unique_columns:
+                - positionid
+          foreign_keys: {}
+      functions: []
+      procedures:
+        - name: delete_creditcard_by_cardnumber
+          description: Delete any row on the 'creditcard' collection using the 'cardnumber' key
+          arguments:
+            key_cardnumber:
+              type:
+                type: named
+                name: varchar
+            pre_check:
+              description: Delete permission predicate over the 'creditcard' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: creditcard
+          result_type:
+            type: named
+            name: delete_creditcard_by_cardnumber_response
+        - name: delete_creditcardtransaction_by_transactionid
+          description: Delete any row on the 'creditcardtransaction' collection using the 'transactionid' key
+          arguments:
+            key_transactionid:
+              type:
+                type: named
+                name: varchar
+            pre_check:
+              description: Delete permission predicate over the 'creditcardtransaction' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: creditcardtransaction
+          result_type:
+            type: named
+            name: delete_creditcardtransaction_by_transactionid_response
+        - name: delete_investmentportfolio_by_portfolioid
+          description: Delete any row on the 'investmentportfolio' collection using the 'portfolioid' key
+          arguments:
+            key_portfolioid:
+              type:
+                type: named
+                name: varchar
+            pre_check:
+              description: Delete permission predicate over the 'investmentportfolio' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: investmentportfolio
+          result_type:
+            type: named
+            name: delete_investmentportfolio_by_portfolioid_response
+        - name: delete_position_by_positionid
+          description: Delete any row on the 'position' collection using the 'positionid' key
+          arguments:
+            key_positionid:
+              type:
+                type: named
+                name: varchar
+            pre_check:
+              description: Delete permission predicate over the 'position' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: position
+          result_type:
+            type: named
+            name: delete_position_by_positionid_response
+        - name: insert_creditcard
+          description: Insert into the creditcard table
+          arguments:
+            objects:
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: insert_creditcard_object
+            post_check:
+              description: Insert permission predicate over the 'creditcard' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: creditcard
+          result_type:
+            type: named
+            name: insert_creditcard_response
+        - name: insert_creditcardtransaction
+          description: Insert into the creditcardtransaction table
+          arguments:
+            objects:
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: insert_creditcardtransaction_object
+            post_check:
+              description: Insert permission predicate over the 'creditcardtransaction' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: creditcardtransaction
+          result_type:
+            type: named
+            name: insert_creditcardtransaction_response
+        - name: insert_investmentportfolio
+          description: Insert into the investmentportfolio table
+          arguments:
+            objects:
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: insert_investmentportfolio_object
+            post_check:
+              description: Insert permission predicate over the 'investmentportfolio' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: investmentportfolio
+          result_type:
+            type: named
+            name: insert_investmentportfolio_response
+        - name: insert_position
+          description: Insert into the position table
+          arguments:
+            objects:
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: insert_position_object
+            post_check:
+              description: Insert permission predicate over the 'position' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: position
+          result_type:
+            type: named
+            name: insert_position_response
+        - name: update_creditcard_by_cardnumber
+          description: Update any row on the 'creditcard' collection using the 'cardnumber' key
+          arguments:
+            key_cardnumber:
+              type:
+                type: named
+                name: varchar
+            post_check:
+              description: Update permission post-condition predicate over the 'creditcard' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: creditcard
+            pre_check:
+              description: Update permission pre-condition predicate over the 'creditcard' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: creditcard
+            update_columns:
+              type:
+                type: named
+                name: update_creditcard_by_cardnumber_update_columns
+          result_type:
+            type: named
+            name: update_creditcard_by_cardnumber_response
+        - name: update_creditcardtransaction_by_transactionid
+          description: Update any row on the 'creditcardtransaction' collection using the 'transactionid' key
+          arguments:
+            key_transactionid:
+              type:
+                type: named
+                name: varchar
+            post_check:
+              description: Update permission post-condition predicate over the 'creditcardtransaction' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: creditcardtransaction
+            pre_check:
+              description: Update permission pre-condition predicate over the 'creditcardtransaction' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: creditcardtransaction
+            update_columns:
+              type:
+                type: named
+                name: update_creditcardtransaction_by_transactionid_update_columns
+          result_type:
+            type: named
+            name: update_creditcardtransaction_by_transactionid_response
+        - name: update_investmentportfolio_by_portfolioid
+          description: Update any row on the 'investmentportfolio' collection using the 'portfolioid' key
+          arguments:
+            key_portfolioid:
+              type:
+                type: named
+                name: varchar
+            post_check:
+              description: Update permission post-condition predicate over the 'investmentportfolio' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: investmentportfolio
+            pre_check:
+              description: Update permission pre-condition predicate over the 'investmentportfolio' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: investmentportfolio
+            update_columns:
+              type:
+                type: named
+                name: update_investmentportfolio_by_portfolioid_update_columns
+          result_type:
+            type: named
+            name: update_investmentportfolio_by_portfolioid_response
+        - name: update_position_by_positionid
+          description: Update any row on the 'position' collection using the 'positionid' key
+          arguments:
+            key_positionid:
+              type:
+                type: named
+                name: varchar
+            post_check:
+              description: Update permission post-condition predicate over the 'position' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: position
+            pre_check:
+              description: Update permission pre-condition predicate over the 'position' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: position
+            update_columns:
+              type:
+                type: named
+                name: update_position_by_positionid_update_columns
+          result_type:
+            type: named
+            name: update_position_by_positionid_response
+    capabilities:
+      version: 0.1.6
+      capabilities:
+        query:
+          aggregates: {}
+          variables: {}
+          explain: {}
+          nested_fields:
+            filter_by: {}
+            order_by: {}
+          exists:
+            nested_collections: {}
+        mutation:
+          transactional: {}
+          explain: {}
+        relationships:
+          relation_comparisons: {}
+          order_by_aggregate: {}

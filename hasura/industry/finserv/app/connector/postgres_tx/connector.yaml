@@ -1,0 +1,19 @@
+kind: Connector
+version: v2
+definition:
+  name: postgres_tx
+  subgraph: app
+  source: hasura/postgres:v1.2.0
+  context: .
+  envMapping:
+    CONNECTION_URI:
+      fromEnv: APP_POSTGRES_TX_CONNECTION_URI
+    HASURA_SERVICE_TOKEN_SECRET:
+      fromEnv: APP_POSTGRES_TX_HASURA_SERVICE_TOKEN_SECRET
+    OTEL_EXPORTER_OTLP_ENDPOINT:
+      fromEnv: APP_POSTGRES_TX_OTEL_EXPORTER_OTLP_ENDPOINT
+    OTEL_SERVICE_NAME:
+      fromEnv: APP_POSTGRES_TX_OTEL_SERVICE_NAME
+  regionConfiguration:
+    - mode: ReadWrite
+      region: gcp-us-west2
