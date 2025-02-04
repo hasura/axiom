@@ -47,7 +47,7 @@ program
     .option(
         '-c, --context <context>',
         'Deploy specific context from .hasura/context.yaml',
-        'default'
+        'axiom-dev'
     )
     .requiredOption(
         '-p, --profile <profile>',

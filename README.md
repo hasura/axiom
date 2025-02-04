@@ -24,14 +24,15 @@ Follow the [DDN CLI installation instructions](https://hasura.io/docs/3.0/refere
 3. Copy .env files
 
 ```bash
-cp hasura/.env.template.telco hasura/.env.telco
-cp .data/.env.template .data/.env
+cp hasura/.env.telco.template hasura/.env.telco
+cp .data/.env.template .data/telco/.env
 ```
 
 4. Run the demo script
 
 ```bash
 cd hasura
+ddn run build-telco
 ddn run demo-telco
 ```
 
