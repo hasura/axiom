@@ -1,0 +1,36 @@
+---
+kind: Command
+version: v1
+definition:
+  name: DeactivateDevice
+  description: This function allows user devices to be deactivated and
+    should be used for any device deactivation.
+  outputType: DeviceActionResponse!
+  arguments:
+    - name: customerId
+      type: String!
+    - name: deviceId
+      type: String!
+    - name: email
+      type: String!
+  source:
+    dataConnectorName: logic
+    dataConnectorCommand:
+      procedure: deactivateDevice
+    argumentMapping:
+      customerId: customer_id
+      deviceId: device_id
+      email: email
+  graphql:
+    rootFieldName: deactivateDevice
+    rootFieldKind: Mutation
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: DeactivateDevice
+  permissions:
+    - role: admin
+      allowExecution: true
+
