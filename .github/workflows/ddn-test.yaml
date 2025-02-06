@@ -68,13 +68,13 @@ jobs:
       - name: Build supergraph
         if: env.no_op != 'true'
         run: |
-          calculatedSha=$(git rev-parse --short ${{ github.sha }})
+          calculatedSha=$(git rev-parse --short ${{ github.event.pull_request.head.sha }})
           if [ "${{ env.connector_changes }}" = "true" ]; then
             echo "Building connectors..."
             ./scripts/deploy/deploy.mjs \
               --context axiom-dev \
               --profile telco \
-              --override-description "${calculatedSha} [PR-${{ github.event.pull_request.number }}] ${{ github.event.pull_request.title }} | Build for commit $GITHUB_SHA" \
+              --override-description "${calculatedSha} [PR-${{ github.event.pull_request.number }}] ${{ github.event.pull_request.title }} | Build for commit ${{ github.event.pull_request.head.sha }}" \
               --rebuild-connectors \
               --override \
               --log-level FATAL \
@@ -85,7 +85,7 @@ jobs:
             ./scripts/deploy/deploy.mjs \
               --context axiom-dev \
               --profile telco \
-              --override-description "${calculatedSha} [PR-${{ github.event.pull_request.number }}] ${{ github.event.pull_request.title }} | Build for commit $GITHUB_SHA" \
+              --override-description "${calculatedSha} [PR-${{ github.event.pull_request.number }}] ${{ github.event.pull_request.title }} | Build for commit ${{ github.event.pull_request.head.sha }}" \
               --override \
               --log-level FATAL \
               --quiet \
@@ -109,7 +109,7 @@ jobs:
             const buildUrls = process.env.build_urls.split(',').map(url => url.trim());
             const consoleUrls = process.env.console_urls.split(',').map(url => url.trim());
             const prNumber = context.payload.pull_request.number;
-            const commitId = context.sha;
+            const commitId = context.payload.pull_request.head.sha;
 
             const buildUrlsList = buildUrls.map(url => `- [${url}](${url})`).join('\n');
             const consoleUrlsList = consoleUrls.map(url => `- [${url}](${url})`).join('\n');
@@ -138,7 +138,7 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const commitId = context.sha;
+            const commitId = context.payload.pull_request.head.sha;
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
