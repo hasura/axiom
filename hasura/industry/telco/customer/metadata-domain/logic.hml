@@ -1,48 +1,106 @@
 kind: DataConnectorLink
 version: v1
 definition:
-    name: logic
-    url:
-        readWriteUrls:
-            read:
-                valueFromEnv: CUSTOMER_LOGIC_READ_URL
-            write:
-                valueFromEnv: CUSTOMER_LOGIC_WRITE_URL
-    headers:
-        Authorization:
-            valueFromEnv: CUSTOMER_LOGIC_AUTHORIZATION_HEADER
+  name: logic
+  url:
+    readWriteUrls:
+      read:
+        valueFromEnv: CUSTOMER_LOGIC_READ_URL
+      write:
+        valueFromEnv: CUSTOMER_LOGIC_WRITE_URL
+  headers:
+    Authorization:
+      valueFromEnv: CUSTOMER_LOGIC_AUTHORIZATION_HEADER
+  schema:
+    version: v0.1
     schema:
-        version: v0.1
-        schema:
-            scalar_types:
-                String:
-                    representation:
-                        type: string
-                    aggregate_functions: {}
-                    comparison_operators:
-                        _eq:
-                            type: equal
-            object_types: {}
-            collections: []
-            functions:
-                - name: maskCardNumber
-                  description: Masks a credit card number to hide all but the last four digits.
-                  arguments:
-                    cardNumber:
-                        description: The credit card number to mask.
-                        type:
-                            type: nullable
-                            underlying_type:
-                                type: named
-                                name: String
-                  result_type:
-                    type: named
-                    name: String
-            procedures: []
-        capabilities:
-            version: 0.1.6
-            capabilities:
-                query:
-                    variables: {}
-                    nested_fields: {}
-                mutation: {}
+      scalar_types:
+        String:
+          representation:
+            type: string
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+      object_types:
+        DeviceActionResponse:
+          fields:
+            activation_id:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
+            deactivation_id:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
+            device_id:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
+            status:
+              type:
+                type: named
+                name: String
+      collections: []
+      functions:
+        - name: maskCardNumber
+          description: Masks a credit card number to hide all but the last four digits.
+          arguments:
+            cardNumber:
+              description: The credit card number to mask.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
+          result_type:
+            type: named
+            name: String
+      procedures:
+        - name: activateDevice
+          arguments:
+            customer_id:
+              type:
+                type: named
+                name: String
+            device_id:
+              type:
+                type: named
+                name: String
+            email:
+              type:
+                type: named
+                name: String
+          result_type:
+            type: named
+            name: DeviceActionResponse
+        - name: deactivateDevice
+          arguments:
+            customer_id:
+              type:
+                type: named
+                name: String
+            device_id:
+              type:
+                type: named
+                name: String
+            email:
+              type:
+                type: named
+                name: String
+          result_type:
+            type: named
+            name: DeviceActionResponse
+    capabilities:
+      version: 0.1.6
+      capabilities:
+        query:
+          variables: {}
+          nested_fields: {}
+        mutation: {}

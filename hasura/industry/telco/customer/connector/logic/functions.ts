@@ -1,3 +1,41 @@
+interface DeviceActionResponse {
+  activation_id?: string;
+  deactivation_id?: string;
+  device_id?: string;
+  status: string;
+}
+
+async function processDeviceAction(
+  action: "activate" | "deactivate",
+  email: string,
+  customer_id: string,
+  device_id: string
+): Promise<DeviceActionResponse> {
+  const idKey = action === "activate" ? "activation_id" : "deactivation_id";
+
+  return {
+    [idKey]: `${action}_${Math.floor(Math.random() * 10000)}`,
+    device_id,
+    status: action === "activate" ? "activated" : "deactivated",
+  };
+}
+
+export async function activateDevice(
+  email: string,
+  customer_id: string,
+  device_id: string
+): Promise<DeviceActionResponse> {
+  return processDeviceAction("activate", email, customer_id, device_id);
+}
+
+export async function deactivateDevice(
+  email: string,
+  customer_id: string,
+  device_id: string
+): Promise<DeviceActionResponse> {
+  return processDeviceAction("deactivate", email, customer_id, device_id);
+}
+
 /**
  * Masks a credit card number to hide all but the last four digits.
  *

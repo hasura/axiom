@@ -1,0 +1,83 @@
+---
+kind: Command
+version: v1
+definition:
+  name: ActivateDevice
+  description: This function allows user devices to be activated and
+    should be used for any device activation.
+  outputType: DeviceActionResponse!
+  arguments:
+    - name: customerId
+      type: String!
+    - name: deviceId
+      type: String!
+    - name: email
+      type: String!
+  source:
+    dataConnectorName: logic
+    dataConnectorCommand:
+      procedure: activateDevice
+    argumentMapping:
+      customerId: customer_id
+      deviceId: device_id
+      email: email
+  graphql:
+    rootFieldName: activateDevice
+    rootFieldKind: Mutation
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: ActivateDevice
+  permissions:
+    - role: admin
+      allowExecution: true
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: DeviceActionResponse
+  fields:
+    - name: activationId
+      type: String
+    - name: deactivationId
+      type: String
+    - name: deviceId
+      type: String
+    - name: status
+      type: String!
+  graphql:
+    typeName: customer_DeviceActionResponse
+    inputTypeName: customer_DeviceActionResponseInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: logic
+      dataConnectorObjectType: DeviceActionResponse
+      fieldMapping:
+        activationId:
+          column:
+            name: activation_id
+        deactivationId:
+          column:
+            name: deactivation_id
+        deviceId:
+          column:
+            name: device_id
+        status:
+          column:
+            name: status
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: DeviceActionResponse
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - activationId
+          - deactivationId
+          - deviceId
+          - status
