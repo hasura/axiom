@@ -674,6 +674,13 @@ const userProfilesData = [
         },
         "supportHistory": [
             {
+                "ticketId": "2F810678100",
+                "date": "2025-02-08",
+                "issue": "Activate my iPhone",
+                "status": "Open",
+                "resolutionNotes": "Awaiting activation"
+            },
+            {
                 "ticketId": "4K950776359",
                 "date": "2024-03-17",
                 "issue": "Billing discrepancy",
