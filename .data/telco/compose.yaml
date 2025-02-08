@@ -66,10 +66,10 @@ services:
     environment:
       - CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD}
     volumes:
-      - ../telco/clickhouse/config.d/config.xml:/etc/clickhouse-server/config.d/config.xml
-      - ../telco/clickhouse/users.d/users.xml:/etc/clickhouse-server/users.d/users.xml
+      - ./clickhouse/config.d/config.xml:/etc/clickhouse-server/config.d/config.xml
+      - ./clickhouse/users.d/users.xml:/etc/clickhouse-server/users.d/users.xml
       - clickhouse_data:/var/lib/clickhouse
-      - ../telco/clickhouse/scripts/:/docker-entrypoint-initdb.d/
+      - ./clickhouse/scripts/:/docker-entrypoint-initdb.d/
 
   redis:
     image: redis:latest
