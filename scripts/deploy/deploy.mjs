@@ -241,7 +241,7 @@ function convertConnectorRegion(connectorRegion) {
 }
 
 // Run the command that the deploy script defines
-function runCommandWithOutput(command, region = '') {
+function runCommandWithOutput(command, context = '') {
     return new Promise((resolve, reject) => {
         log('magentaBright', `Executing command: ${command}`);
 
@@ -259,12 +259,12 @@ function runCommandWithOutput(command, region = '') {
         childProcess.stdout.on('data', (data) => {
             const message = data.toString();
             output += message;
-            log('magentaBright', `[${region}] => ${message.trim()}`);
+            log('magentaBright', `[${context}] => ${message.trim()}`);
         });
 
         childProcess.stderr.on('data', (data) => {
             const message = data.toString();
-            log('cyanBright', `[${region}] => ${message.trim()}`);
+            log('cyanBright', `[${context}] => ${message.trim()}`);
         });
 
         childProcess.on('close', (code) => {
@@ -284,25 +284,27 @@ function runCommandWithOutput(command, region = '') {
 }
 
 // Apply the build using the build version
-async function applyBuild(region, buildVersion) {
+async function applyBuild(context, buildInfo) {
     if (options.applyBuild !== true) {
         log('yellow', `Not automatically applying build`);
         return;
     }
-    const command = `ddn supergraph build apply ${buildVersion} -c ${region}`;
 
     if (!dryRun) {
+        const buildVersion = buildInfo.build_version;
+        const command = `ddn supergraph build apply ${buildVersion} -c ${context}`;
+
         log('magentaBright', `Applying build version: ${buildVersion}`);
-        runCommandWithOutput(command, region);
+        runCommandWithOutput(command, context);
         log('green', `Build version ${buildVersion} applied successfully.`);
     } else {
-        log('yellow', `[Dry Run] Would apply build version: ${buildVersion}`);
+        log('yellow', `[Dry Run] Would apply build`);
     }
 }
 
 // Deploy supergraph
 async function runCommandWithTag(
-    region,
+    context,
     srcFile,
     tag,
     supergraph,
@@ -336,14 +338,14 @@ async function runCommandWithTag(
     }
 
     // Construct the ddn supergraph build command
-    let command = `ddn supergraph build create -d "${gitLogDescription}" -c "${region}" --out json --log-level "${logLevel}" --supergraph "${supergraph}"`;
+    let command = `ddn supergraph build create -d "${gitLogDescription}" -c "${context}" --out json --log-level "${logLevel}" --supergraph "${supergraph}"`;
     if (!rebuildConnectors) {
         command += ' --no-build-connectors';
     }
 
     if (!dryRun) {
-        log('magentaBright', `[${region}] => Executing command: ${command}`);
-        const output = await runCommandWithOutput(command, region);
+        log('magentaBright', `[${context}] => Executing command: ${command}`);
+        const output = await runCommandWithOutput(command, context);
         const buildInfo = JSON.parse(output);
 
         if (options.quiet) {
@@ -357,24 +359,25 @@ async function runCommandWithTag(
             console.log(output);
         }
 
-        log('green', `[${region}] => Deployment completed successfully for ${tag}`);
+        log('green', `[${context}] => Deployment completed successfully for ${tag}`);
         log('green', `Build URL: ${buildInfo.build_url}`);
         log('green', `Console URL: ${buildInfo.console_url}`);
 
-        // Apply the build using the extracted build_version
-        applyBuild(region, buildInfo.build_version);
+        return buildInfo;
+
     } else {
         log('yellow', `[Dry Run] Would execute command: ${command}`);
     }
 }
 
 // Pushes incremental release of metadata
-async function pushMetadataRelease(supergraph, contextRegion, rebuildConnectors) {
-    log('magentaBright', `[${contextRegion}] => Starting an incremental release of metadata.`);
+async function pushMetadataRelease(supergraph, context, rebuildConnectors) {
+    log('magentaBright', `[${context}] => Starting an incremental release of metadata.`);
 
+    let buildInfo = {};
     // Deploy with JWT file to demo authz
-    await runCommandWithTag(
-        contextRegion,
+    buildInfo = await runCommandWithTag(
+        context,
         jwtFile,
         'JWT',
         supergraph,
@@ -382,26 +385,27 @@ async function pushMetadataRelease(supergraph, contextRegion, rebuildConnectors)
     );
 
     // Deploy with NoAuth file to allow instant access
-    await runCommandWithTag(
-        contextRegion,
+    buildInfo = await runCommandWithTag(
+        context,
         noauthFile,
         'NoAuth',
         supergraph,
         rebuildConnectors
     );
 
-    log('green', `[${contextRegion}] => Incremental release completed successfully.`);
+    log('green', `[${context}] => Incremental release completed successfully.`);
+    return buildInfo;
 }
 
 // Rebuild function that does not use --no-build-connectors
-async function rebuildSupergraph(supergraphs, contextRegion, rebuildConnectors) {
-    log('magentaBright', `[${contextRegion}] => Starting a complete rebuild of all supergraphs.`);
+async function rebuildSupergraph(supergraphs, context, rebuildConnectors) {
+    log('magentaBright', `[${context}] => Starting a complete rebuild of all supergraphs.`);
 
     let index = 1;
 
     for (const supergraph of supergraphs) {
         await runCommandWithTag(
-            contextRegion,
+            context,
             noauthFile,
             `NoAuth S-${index}`,
             supergraph,
@@ -410,7 +414,7 @@ async function rebuildSupergraph(supergraphs, contextRegion, rebuildConnectors) 
         index++;
     }
 
-    log('green', `[${contextRegion}] => Rebuild completed successfully.`);
+    log('green', `[${context}] => Rebuild completed successfully.`);
 }
 
 // Load all supergraphs from the relevant industry profile in supergraph-config
@@ -513,7 +517,11 @@ async function main() {
         await rebuildSupergraph(intermediarySupergraphs, context, rebuildConnectors);
     }
 
-    await pushMetadataRelease(fullyBuiltSupergraph, context, rebuildConnectors);
+    let buildInfo = {};
+    buildInfo = await pushMetadataRelease(fullyBuiltSupergraph, context, rebuildConnectors);
+
+    // Apply the build using the extracted build_version
+    applyBuild(context, buildInfo);
 
     // Revert connectors to the default
     convertConnectorRegion('gcp-us-west2');
