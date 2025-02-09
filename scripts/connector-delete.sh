@@ -20,8 +20,14 @@ if ! command -v jq &>/dev/null; then
   exit 1
 fi
 
-# Get the configuration name or use 'default' if not provided.
-config_name="${1:-default}"
+# Get the context
+context="${1}"
+
+# Check if the config_name is provided.
+if [[ -z "$context" ]]; then
+  echo "Error: You must specify the context from .hasura/context.yaml."
+  usage
+fi
 
 # Get the number of connectors to delete or "all" to delete everything.
 delete_count="${2}"
@@ -38,18 +44,25 @@ if [[ "$delete_count" != "all" && ! "$delete_count" =~ ^[0-9]+$ ]]; then
   usage
 fi
 
+# Change working dir to the Hasura directory
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+cd "$SCRIPT_DIR/../hasura" || {
+  echo "Error: Unable to change to the 'hasura' directory."
+  exit 1
+}
+
 # Get all connector build IDs, sorted by creation time (oldest last).
-connector_ids=$(ddn connector build get -c "$config_name" --out json | jq -r '.[].connectorBuildID')
+connector_ids=$(ddn connector build get -c "$context" --out json | jq -r '.[].connectorBuildID')
 
 # Check if there are any connector IDs to delete.
 if [[ -z "$connector_ids" ]]; then
-  echo "No connector builds found for configuration '$config_name'."
+  echo "No connector builds found for configuration '$context'."
   exit 0
 fi
 
 # Select connector IDs to delete based on the delete_count.
 if [[ "$delete_count" == "all" ]]; then
-  echo "Deleting all connector builds for configuration '$config_name'..."
+  echo "Deleting all connector builds for configuration '$context'..."
   selected_ids="$connector_ids"
 else
   # Use 'tail' to get the specified number of oldest IDs.
@@ -65,4 +78,3 @@ done
 # Wait for all background jobs to complete.
 wait
 echo "Selected connector builds have been deleted successfully."
-
