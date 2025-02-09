@@ -47,7 +47,7 @@ program
     .option(
         '-c, --context <context>',
         'Deploy specific context from .hasura/context.yaml',
-        'axiom-dev'
+        null
     )
     .requiredOption(
         '-p, --profile <profile>',
@@ -449,13 +449,17 @@ async function main() {
     let fullMetadataBuild = options.fullMetadataBuild || null;
 
     if (!noInteraction && context === null) {
+        let doc = yaml.parse(fs.readFileSync('.hasura/context.yaml', 'utf8'));
+        if (!doc.definition || !doc.definition.contexts) {
+            throw new Error(`Error: .hasura/context.yaml has no contexts.`);
+        }
         context = (
             await inquirer.prompt([
                 {
                     type: 'list',
                     name: 'context',
                     message: 'Select a context to set:',
-                    choices: Object.keys(regionMapping),
+                    choices: Object.keys(doc.definition.contexts),
                 },
             ])
         ).context;
