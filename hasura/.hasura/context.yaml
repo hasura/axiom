@@ -79,3 +79,6 @@ definition:
     docker-stop:
       bash: for file in compose*.yaml $(find ../.data -type f -name "compose.yaml"); do docker compose -f $file down -v; done
       powershell: docker compose -f compose.yaml down -v; docker compose -f .data/compose.yaml down -v
+    jwt-gen:
+      bash: cd ../scripts/jwt && npm i && node ./jwt.mjs --env $(find ../../ -name '.env.cloud.*' -print -quit) -r customer -u 7
+      powershell: cd ../scripts/jwt && npm i && node ./jwt.mjs --env $(find ../../ -name '.env.cloud.*' -print -quit) -r customer -u 7

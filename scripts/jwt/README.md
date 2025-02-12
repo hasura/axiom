@@ -18,6 +18,14 @@ Generate a JWT token by running:
 node jwt.mjs
 ```
 
+### Usage as `ddn run` command
+
+From the base hasura folder, call `ddn run jwt-gen` for a default token for user `7` as role `customer`. Pass `-u` to change user and `-r` to change role. Example:
+
+```
+ddn run jwt-gen -- -u 8 -r editor
+```
+
 ### Options
 
 - `-u, --userId <userId>`: User ID (default: `7`).
@@ -26,10 +34,10 @@ node jwt.mjs
 - `-e, --env <path>`: Path to `.env` file containing `JWT_SECRET`.
 - `-c, --context <context>`: Context to auto-find `.env` file defined in `.hasura/context.yaml`.
 
-
 ## Example
 
 Using an alternate context from `.hasura/context.yaml`
+
 ```
 node jwt.mjs -u 8 -r admin,editor -c axiom-test
 ```
@@ -48,7 +56,6 @@ node jwt.mjs -u 123 -r admin,editor -k "qG7zP4cZK9B5vN5fjYcLr1Jq3RZqP+R/B5fXzP3a
 # Alternate method
 JWT_SECRET=qG7zP4cZK9B5vN5fjYcLr1Jq3RZqP+R/B5fXzP3aLqY= node jwt.mjs -u 123 -r admin,editor
 ```
-
 
 ## Output
 
