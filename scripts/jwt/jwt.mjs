@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import jwt from 'jsonwebtoken';
 import { program } from 'commander';
 import dotenv from 'dotenv';
