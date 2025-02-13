@@ -14,6 +14,7 @@ db.getSiblingDB(process.env.MONGO_INITDB_DATABASE).createUser({
 const userProfilesData = [
     {
         "_id": "e1c7a21d6c30ab07b19902fc0e3ee735",
+        "customer_id": 1,
         "identification": {
             "type": "DriverLicense",
             "number": "37416CE2",
@@ -98,6 +99,7 @@ const userProfilesData = [
     },
     {
         "_id": "59aa7b0195c8f0d403b52c4458af50b3",
+        "customer_id": 2,
         "identification": {
             "type": "DriverLicense",
             "number": "7B3EE1E7",
@@ -210,6 +212,7 @@ const userProfilesData = [
     },
     {
         "_id": "9df91bf33f2c95c789b4040fd849c985",
+        "customer_id": 3,
         "identification": {
             "type": "DriverLicense",
             "number": "93470B7A",
@@ -322,6 +325,7 @@ const userProfilesData = [
     },
     {
         "_id": "46016f9290584ea9551b678b566dd5c1",
+        "customer_id": 4,
         "identification": {
             "type": "DriverLicense",
             "number": "D950766C",
@@ -406,6 +410,7 @@ const userProfilesData = [
     },
     {
         "_id": "2d0a382765d6935968c1cd3a118f91d8",
+        "customer_id": 5,
         "identification": {
             "type": "DriverLicense",
             "number": "CF87E94A",
@@ -504,6 +509,7 @@ const userProfilesData = [
     },
     {
         "_id": "e99ccd0a694413c381777e52ff0eba3a",
+        "customer_id": 6,
         "identification": {
             "type": "DriverLicense",
             "number": "011B373D",
@@ -602,6 +608,7 @@ const userProfilesData = [
     },
     {
         "_id": "b96c7ae21978358fb39d514f50fb0a57",
+        "customer_id": 7,
         "identification": {
             "type": "DriverLicense",
             "number": "D3AA4DF7",
@@ -714,6 +721,7 @@ const userProfilesData = [
     },
     {
         "_id": "5182bb3c664f16e0ff27d10745aa52fc",
+        "customer_id": 8,
         "identification": {
             "type": "DriverLicense",
             "number": "A29B03CB",
@@ -826,6 +834,7 @@ const userProfilesData = [
     },
     {
         "_id": "9101865e0c5bcfdb624667274aa8e19a",
+        "customer_id": 9,
         "identification": {
             "type": "DriverLicense",
             "number": "67DE8A8D",
@@ -931,6 +940,7 @@ const userProfilesData = [
     },
     {
         "_id": "b62ea82a0e54c7acb0b5383dcb3f8a15",
+        "customer_id": 10,
         "identification": {
             "type": "DriverLicense",
             "number": "AA52A223",
@@ -1015,6 +1025,7 @@ const userProfilesData = [
     },
     {
         "_id": "48894eb14c687bbf41e2cc87d3ea2cf7",
+        "customer_id": 11,
         "identification": {
             "type": "DriverLicense",
             "number": "20EEF935",
@@ -1120,6 +1131,7 @@ const userProfilesData = [
     },
     {
         "_id": "7ae168afb2d45588d9c4c9354539de9f",
+        "customer_id": 12,
         "identification": {
             "type": "DriverLicense",
             "number": "188144DD",
@@ -1211,6 +1223,7 @@ const userProfilesData = [
     },
     {
         "_id": "f21197a366da122268d94a216a80d24b",
+        "customer_id": 13,
         "identification": {
             "type": "DriverLicense",
             "number": "4BC76726",
@@ -1323,6 +1336,7 @@ const userProfilesData = [
     },
     {
         "_id": "8eb6135a93e7b0044bfa53b28e600703",
+        "customer_id": 14,
         "identification": {
             "type": "DriverLicense",
             "number": "13C4C716",
@@ -1421,6 +1435,7 @@ const userProfilesData = [
     },
     {
         "_id": "086c17af1448f25b0c05575f80ccd774",
+        "customer_id": 15,
         "identification": {
             "type": "DriverLicense",
             "number": "0CFF523E",
@@ -1505,6 +1520,7 @@ const userProfilesData = [
     },
     {
         "_id": "aa33e9fffca78d90e791a9ced0e325f4",
+        "customer_id": 16,
         "identification": {
             "type": "DriverLicense",
             "number": "4A2522A4",
@@ -1596,6 +1612,7 @@ const userProfilesData = [
     },
     {
         "_id": "ff222d6430befd933a7b914980339e65",
+        "customer_id": 17,
         "identification": {
             "type": "DriverLicense",
             "number": "73CD5FCA",
@@ -1680,6 +1697,7 @@ const userProfilesData = [
     },
     {
         "_id": "98c9867ddfcda96e0042d2f0202622cd",
+        "customer_id": 18,
         "identification": {
             "type": "DriverLicense",
             "number": "42D039B5",
@@ -1764,6 +1782,7 @@ const userProfilesData = [
     },
     {
         "_id": "b3703b4f28b7379a6edbda1ac3b79b39",
+        "customer_id": 19,
         "identification": {
             "type": "DriverLicense",
             "number": "74C1ADAC",
@@ -1862,6 +1881,7 @@ const userProfilesData = [
     },
     {
         "_id": "1a83947b6b59ef72657eff3c40ba6712",
+        "customer_id": 20,
         "identification": {
             "type": "DriverLicense",
             "number": "F7410C09",
@@ -1960,6 +1980,7 @@ const userProfilesData = [
     },
     {
         "_id": "09cb19bba8de780d6552f4a0fa44df52",
+        "customer_id": 21,
         "identification": {
             "type": "DriverLicense",
             "number": "14FB4E67",
@@ -2065,6 +2086,7 @@ const userProfilesData = [
     },
     {
         "_id": "f81a5db2cb60e33acb7972c2928a08f7",
+        "customer_id": 22,
         "identification": {
             "type": "DriverLicense",
             "number": "659F0F19",
@@ -2149,6 +2171,7 @@ const userProfilesData = [
     },
     {
         "_id": "026d210680e38f6cb97b7405d09bd6d7",
+        "customer_id": 23,
         "identification": {
             "type": "DriverLicense",
             "number": "B2BDCE74",
@@ -2254,6 +2277,7 @@ const userProfilesData = [
     },
     {
         "_id": "107356f55442d5ecbaeb508b6ccbd694",
+        "customer_id": 24,
         "identification": {
             "type": "DriverLicense",
             "number": "5D3D9A36",
@@ -2338,6 +2362,7 @@ const userProfilesData = [
     },
     {
         "_id": "650114c2223d018a703e1eaccb61d827",
+        "customer_id": 25,
         "identification": {
             "type": "DriverLicense",
             "number": "5B354E90",
@@ -2429,6 +2454,7 @@ const userProfilesData = [
     },
     {
         "_id": "4954ddccfe3e1979474f999905a3b564",
+        "customer_id": 26,
         "identification": {
             "type": "DriverLicense",
             "number": "58C20056",
@@ -2534,6 +2560,7 @@ const userProfilesData = [
     },
     {
         "_id": "fb92107faa37025112d2daefa5a6fbfa",
+        "customer_id": 27,
         "identification": {
             "type": "DriverLicense",
             "number": "AE324619",
@@ -2625,6 +2652,7 @@ const userProfilesData = [
     },
     {
         "_id": "9ac953fc6372c50da7dc7881f1656ae8",
+        "customer_id": 28,
         "identification": {
             "type": "DriverLicense",
             "number": "70BF4C9D",
@@ -2730,6 +2758,7 @@ const userProfilesData = [
     },
     {
         "_id": "efaf9b44b192d91b6398cc631e381990",
+        "customer_id": 29,
         "identification": {
             "type": "DriverLicense",
             "number": "33EB89F9",
@@ -2842,6 +2871,7 @@ const userProfilesData = [
     },
     {
         "_id": "5189c8095495ea2c2e154048e2520cba",
+        "customer_id": 30,
         "identification": {
             "type": "DriverLicense",
             "number": "B7A6CAFE",
@@ -2947,6 +2977,7 @@ const userProfilesData = [
     },
     {
         "_id": "2fd1168d448e8eee1cbfc3ea63c3bae1",
+        "customer_id": 31,
         "identification": {
             "type": "DriverLicense",
             "number": "96E07EF0",
@@ -3045,6 +3076,7 @@ const userProfilesData = [
     },
     {
         "_id": "c5765c12ebe78dc1d78fda7fce7f5bef",
+        "customer_id": 32,
         "identification": {
             "type": "DriverLicense",
             "number": "3122F9C0",
@@ -3157,6 +3189,7 @@ const userProfilesData = [
     },
     {
         "_id": "2d5d7be17acf5cffe68a1a103e2ee45d",
+        "customer_id": 33,
         "identification": {
             "type": "DriverLicense",
             "number": "1E7D5338",
@@ -3269,6 +3302,7 @@ const userProfilesData = [
     },
     {
         "_id": "ec7446da33c7e655a973d99dccb2d310",
+        "customer_id": 34,
         "identification": {
             "type": "DriverLicense",
             "number": "282BFAE0",
@@ -3381,6 +3415,7 @@ const userProfilesData = [
     },
     {
         "_id": "9f14c015b3fbf72fe93abc461af916bf",
+        "customer_id": 35,
         "identification": {
             "type": "DriverLicense",
             "number": "38555835",
@@ -3479,6 +3514,7 @@ const userProfilesData = [
     },
     {
         "_id": "9950ee6d57ba64ad549e65f093e66dfd",
+        "customer_id": 36,
         "identification": {
             "type": "DriverLicense",
             "number": "91A125F4",
@@ -3570,6 +3606,7 @@ const userProfilesData = [
     },
     {
         "_id": "37843b5240af0ba477e0d14218c6243d",
+        "customer_id": 37,
         "identification": {
             "type": "DriverLicense",
             "number": "30EF9F69",
@@ -3675,6 +3712,7 @@ const userProfilesData = [
     },
     {
         "_id": "b846b9113b4a5b77a7f49fda9898f98e",
+        "customer_id": 38,
         "identification": {
             "type": "DriverLicense",
             "number": "95E381A9",
@@ -3787,6 +3825,7 @@ const userProfilesData = [
     },
     {
         "_id": "1de9f8754b6979fbc1c7997c2c4e8beb",
+        "customer_id": 39,
         "identification": {
             "type": "DriverLicense",
             "number": "A37F34D3",
@@ -3899,6 +3938,7 @@ const userProfilesData = [
     },
     {
         "_id": "5d578de78f5b02df1ca31ee1e446907a",
+        "customer_id": 40,
         "identification": {
             "type": "DriverLicense",
             "number": "C6A72B0A",
@@ -3990,6 +4030,7 @@ const userProfilesData = [
     },
     {
         "_id": "24a55c967543d1ec0dc03b1f375872ac",
+        "customer_id": 41,
         "identification": {
             "type": "DriverLicense",
             "number": "C22120A8",
@@ -4102,6 +4143,7 @@ const userProfilesData = [
     },
     {
         "_id": "ac0473b700bb4b53329b18ce0eba4d59",
+        "customer_id": 42,
         "identification": {
             "type": "DriverLicense",
             "number": "2D71D2CD",
@@ -4186,6 +4228,7 @@ const userProfilesData = [
     },
     {
         "_id": "3b5fa9a0ff7bbb3bffeda5610a2997dd",
+        "customer_id": 43,
         "identification": {
             "type": "DriverLicense",
             "number": "78BCDE41",
@@ -4277,6 +4320,7 @@ const userProfilesData = [
     },
     {
         "_id": "12e5bfe3887eff590b0a606fee0d8f45",
+        "customer_id": 44,
         "identification": {
             "type": "DriverLicense",
             "number": "B1F4F741",
@@ -4375,6 +4419,7 @@ const userProfilesData = [
     },
     {
         "_id": "323d63468a37906f4591939fb054eb69",
+        "customer_id": 45,
         "identification": {
             "type": "DriverLicense",
             "number": "44A854CE",
@@ -4480,6 +4525,7 @@ const userProfilesData = [
     },
     {
         "_id": "a6cbc281a213695d899b1919dd1d6b26",
+        "customer_id": 46,
         "identification": {
             "type": "DriverLicense",
             "number": "4394FAAB",
@@ -4564,6 +4610,7 @@ const userProfilesData = [
     },
     {
         "_id": "b409ff5631cb0378202679c392664335",
+        "customer_id": 47,
         "identification": {
             "type": "DriverLicense",
             "number": "D1861C84",
@@ -4648,6 +4695,7 @@ const userProfilesData = [
     },
     {
         "_id": "19c8ab99f367a11973cc91570b24b977",
+        "customer_id": 48,
         "identification": {
             "type": "DriverLicense",
             "number": "05EA17A0",
@@ -4746,6 +4794,7 @@ const userProfilesData = [
     },
     {
         "_id": "0f874323415f6761720b25d826ec9490",
+        "customer_id": 49,
         "identification": {
             "type": "DriverLicense",
             "number": "B040885D",
@@ -4858,6 +4907,7 @@ const userProfilesData = [
     },
     {
         "_id": "eb085ee4467e3b275dcaaeebef3b14e8",
+        "customer_id": 50,
         "identification": {
             "type": "DriverLicense",
             "number": "7E108B50",
@@ -4956,6 +5006,7 @@ const userProfilesData = [
     },
     {
         "_id": "05904d87daff0c2d18b210a9cf05f8fd",
+        "customer_id": 51,
         "identification": {
             "type": "DriverLicense",
             "number": "1E62AC01",
@@ -5061,6 +5112,7 @@ const userProfilesData = [
     },
     {
         "_id": "376f2a7e3f7dab4c4b805429b07ce6ae",
+        "customer_id": 52,
         "identification": {
             "type": "DriverLicense",
             "number": "45B43F1B",
@@ -5173,6 +5225,7 @@ const userProfilesData = [
     },
     {
         "_id": "927d4db87b3cea304af10ac0cd9deb3c",
+        "customer_id": 53,
         "identification": {
             "type": "DriverLicense",
             "number": "D48BA5F1",
@@ -5271,6 +5324,7 @@ const userProfilesData = [
     },
     {
         "_id": "c7f165fff3b3fc91683105ae8323f5f5",
+        "customer_id": 54,
         "identification": {
             "type": "DriverLicense",
             "number": "CF10855A",
@@ -5369,6 +5423,7 @@ const userProfilesData = [
     },
     {
         "_id": "7566d49f02b87272e5cdb105aba76b22",
+        "customer_id": 55,
         "identification": {
             "type": "DriverLicense",
             "number": "5F88188A",
@@ -5481,6 +5536,7 @@ const userProfilesData = [
     },
     {
         "_id": "a32b74b3ffa47425da48f929f5fc347d",
+        "customer_id": 56,
         "identification": {
             "type": "DriverLicense",
             "number": "06C251C2",
@@ -5586,6 +5642,7 @@ const userProfilesData = [
     },
     {
         "_id": "a65a59b78e238a3e540ccab68dadcc62",
+        "customer_id": 57,
         "identification": {
             "type": "DriverLicense",
             "number": "3235CD59",
@@ -5691,6 +5748,7 @@ const userProfilesData = [
     },
     {
         "_id": "3f900fc4135c0e734bc9b29e104eabe2",
+        "customer_id": 58,
         "identification": {
             "type": "DriverLicense",
             "number": "4B3A6C21",
@@ -5796,6 +5854,7 @@ const userProfilesData = [
     },
     {
         "_id": "58515d14b4ad784edfa9ef43693f98e2",
+        "customer_id": 59,
         "identification": {
             "type": "DriverLicense",
             "number": "5015E2E6",
@@ -5901,6 +5960,7 @@ const userProfilesData = [
     },
     {
         "_id": "243cfa0cf631075815020f84e5faeb27",
+        "customer_id": 60,
         "identification": {
             "type": "DriverLicense",
             "number": "B033D162",
@@ -5999,6 +6059,7 @@ const userProfilesData = [
     },
     {
         "_id": "17979453372ad5d7e4a7faff82b9d418",
+        "customer_id": 61,
         "identification": {
             "type": "DriverLicense",
             "number": "79B1C312",
@@ -6083,6 +6144,7 @@ const userProfilesData = [
     },
     {
         "_id": "f9ac7e7e94deda660281fa68b1d96c29",
+        "customer_id": 62,
         "identification": {
             "type": "DriverLicense",
             "number": "1E961ADE",
@@ -6195,6 +6257,7 @@ const userProfilesData = [
     },
     {
         "_id": "882425909982587cb9b36179d358e448",
+        "customer_id": 63,
         "identification": {
             "type": "DriverLicense",
             "number": "59316F48",
@@ -6286,6 +6349,7 @@ const userProfilesData = [
     },
     {
         "_id": "1f3c732e760a694e550f7537c9c5a740",
+        "customer_id": 64,
         "identification": {
             "type": "DriverLicense",
             "number": "34517314",
@@ -6398,6 +6462,7 @@ const userProfilesData = [
     },
     {
         "_id": "13f27369bab534ee6cc2377d7af5f4c8",
+        "customer_id": 65,
         "identification": {
             "type": "DriverLicense",
             "number": "4CC15DB8",
@@ -6510,6 +6575,7 @@ const userProfilesData = [
     },
     {
         "_id": "dcb085227384479638221bb63d30e445",
+        "customer_id": 66,
         "identification": {
             "type": "DriverLicense",
             "number": "1F8E1879",
@@ -6608,6 +6674,7 @@ const userProfilesData = [
     },
     {
         "_id": "9f243a2c91b10fa68a25437001b1d55d",
+        "customer_id": 67,
         "identification": {
             "type": "DriverLicense",
             "number": "928C6BA1",
@@ -6713,6 +6780,7 @@ const userProfilesData = [
     },
     {
         "_id": "c40093e06fb5b2e583259ca5d7cab3f4",
+        "customer_id": 68,
         "identification": {
             "type": "DriverLicense",
             "number": "DE831B18",
@@ -6811,6 +6879,7 @@ const userProfilesData = [
     },
     {
         "_id": "0a5c0271bc4c5286bb9d8e83d2bc98f7",
+        "customer_id": 69,
         "identification": {
             "type": "DriverLicense",
             "number": "3C1D8DB9",
@@ -6902,6 +6971,7 @@ const userProfilesData = [
     },
     {
         "_id": "a0cabf2aea39c7953bbc775320322e47",
+        "customer_id": 70,
         "identification": {
             "type": "DriverLicense",
             "number": "EACE9717",
@@ -7007,6 +7077,7 @@ const userProfilesData = [
     },
     {
         "_id": "3075dde3a8d492c8920827919fc8453a",
+        "customer_id": 71,
         "identification": {
             "type": "DriverLicense",
             "number": "DAE9119B",
@@ -7119,6 +7190,7 @@ const userProfilesData = [
     },
     {
         "_id": "7efbd7981936f59e2676ff963886fee4",
+        "customer_id": 72,
         "identification": {
             "type": "DriverLicense",
             "number": "373F3C42",
@@ -7217,6 +7289,7 @@ const userProfilesData = [
     },
     {
         "_id": "0671e005178cd084b7996e9bf5a61954",
+        "customer_id": 73,
         "identification": {
             "type": "DriverLicense",
             "number": "F4211D1B",
@@ -7329,6 +7402,7 @@ const userProfilesData = [
     },
     {
         "_id": "41ccb6d71fd84268fd6f12a9fc7bf420",
+        "customer_id": 74,
         "identification": {
             "type": "DriverLicense",
             "number": "32A26D22",
@@ -7420,6 +7494,7 @@ const userProfilesData = [
     },
     {
         "_id": "1cf9f70dc7586484094d025f56d7e806",
+        "customer_id": 75,
         "identification": {
             "type": "DriverLicense",
             "number": "00FB58FD",
@@ -7518,6 +7593,7 @@ const userProfilesData = [
     },
     {
         "_id": "7a16375e9a7a31cdc34870ca02726189",
+        "customer_id": 76,
         "identification": {
             "type": "DriverLicense",
             "number": "1E57729B",
@@ -7616,6 +7692,7 @@ const userProfilesData = [
     },
     {
         "_id": "4b300dad7dac3e85d93ee2309b1ce008",
+        "customer_id": 77,
         "identification": {
             "type": "DriverLicense",
             "number": "01E6FB67",
@@ -7700,6 +7777,7 @@ const userProfilesData = [
     },
     {
         "_id": "ccc3cf41a0a5ba8c607f351968f04825",
+        "customer_id": 78,
         "identification": {
             "type": "DriverLicense",
             "number": "E8B21A3E",
@@ -7798,6 +7876,7 @@ const userProfilesData = [
     },
     {
         "_id": "f86d68a8ae2023706ece637aa52f9cc1",
+        "customer_id": 79,
         "identification": {
             "type": "DriverLicense",
             "number": "2D6E5DBD",
@@ -7882,6 +7961,7 @@ const userProfilesData = [
     },
     {
         "_id": "bb43e59d7a95f49accade8776e3572d7",
+        "customer_id": 80,
         "identification": {
             "type": "DriverLicense",
             "number": "E8968CF0",
@@ -7966,6 +8046,7 @@ const userProfilesData = [
     },
     {
         "_id": "cf404226a1cd5d4742f163aa04b4e0b8",
+        "customer_id": 81,
         "identification": {
             "type": "DriverLicense",
             "number": "2D281C2E",
@@ -8078,6 +8159,7 @@ const userProfilesData = [
     },
     {
         "_id": "cde31964a0e75703f13f19cdb5d781d2",
+        "customer_id": 82,
         "identification": {
             "type": "DriverLicense",
             "number": "66936213",
@@ -8169,6 +8251,7 @@ const userProfilesData = [
     },
     {
         "_id": "ae206cf39e432f3b6f21870c4666f61e",
+        "customer_id": 83,
         "identification": {
             "type": "DriverLicense",
             "number": "E8CB1BCF",
@@ -8281,6 +8364,7 @@ const userProfilesData = [
     },
     {
         "_id": "62b5d5a955b01571dedc03e167b3fa6b",
+        "customer_id": 84,
         "identification": {
             "type": "DriverLicense",
             "number": "8383FDCC",
@@ -8379,6 +8463,7 @@ const userProfilesData = [
     },
     {
         "_id": "45265fa95ef8d3bdca879786661d62a5",
+        "customer_id": 85,
         "identification": {
             "type": "DriverLicense",
             "number": "1BB16773",
@@ -8491,6 +8576,7 @@ const userProfilesData = [
     },
     {
         "_id": "1df665b08a99f7a0ede09b8cee1d9c52",
+        "customer_id": 86,
         "identification": {
             "type": "DriverLicense",
             "number": "2FDC37ED",
@@ -8603,6 +8689,7 @@ const userProfilesData = [
     },
     {
         "_id": "2ee7cec0665455a202477c58aaeb7a7e",
+        "customer_id": 87,
         "identification": {
             "type": "DriverLicense",
             "number": "435F2185",
@@ -8694,6 +8781,7 @@ const userProfilesData = [
     },
     {
         "_id": "0ac054977476b43e36c8e28adb7400c5",
+        "customer_id": 88,
         "identification": {
             "type": "DriverLicense",
             "number": "22555957",
@@ -8799,6 +8887,7 @@ const userProfilesData = [
     },
     {
         "_id": "0eb3e8559e4594c7999bd191f0b5b0d5",
+        "customer_id": 89,
         "identification": {
             "type": "DriverLicense",
             "number": "A90A18A1",
@@ -8883,6 +8972,7 @@ const userProfilesData = [
     },
     {
         "_id": "468b51f449829b4de1e21b832f1a6ff0",
+        "customer_id": 90,
         "identification": {
             "type": "DriverLicense",
             "number": "8C98A718",
@@ -8995,6 +9085,7 @@ const userProfilesData = [
     },
     {
         "_id": "2dabe10c1b9a9c2d1ef824aa91bb68c8",
+        "customer_id": 91,
         "identification": {
             "type": "DriverLicense",
             "number": "C2566427",
@@ -9086,6 +9177,7 @@ const userProfilesData = [
     },
     {
         "_id": "bfbcff79e735d9e9737a6d8d5eec6560",
+        "customer_id": 92,
         "identification": {
             "type": "DriverLicense",
             "number": "35AC9922",
@@ -9184,6 +9276,7 @@ const userProfilesData = [
     },
     {
         "_id": "d3f4f00a5f521bb31a811e816370a455",
+        "customer_id": 93,
         "identification": {
             "type": "DriverLicense",
             "number": "7C0EB44B",
@@ -9275,6 +9368,7 @@ const userProfilesData = [
     },
     {
         "_id": "3a6d08483c80d7ee5af0f924c548b435",
+        "customer_id": 94,
         "identification": {
             "type": "DriverLicense",
             "number": "5BF8E8BD",
@@ -9380,6 +9474,7 @@ const userProfilesData = [
     },
     {
         "_id": "c79ea2397ffc7b6e25721671694f1835",
+        "customer_id": 95,
         "identification": {
             "type": "DriverLicense",
             "number": "3D44B678",
@@ -9492,6 +9587,7 @@ const userProfilesData = [
     },
     {
         "_id": "a45445d57c11aaa44ce7806d76a410fd",
+        "customer_id": 96,
         "identification": {
             "type": "DriverLicense",
             "number": "69D3BAA1",
@@ -9604,6 +9700,7 @@ const userProfilesData = [
     },
     {
         "_id": "e8acf03ea4600c23edead48234c4680f",
+        "customer_id": 97,
         "identification": {
             "type": "DriverLicense",
             "number": "DECCA7CD",
@@ -9709,6 +9806,7 @@ const userProfilesData = [
     },
     {
         "_id": "89508180b1a0ab840dd62ca0b251a28b",
+        "customer_id": 98,
         "identification": {
             "type": "DriverLicense",
             "number": "C07307A1",
@@ -9793,6 +9891,7 @@ const userProfilesData = [
     },
     {
         "_id": "505581183fc5bf0165f527ae4fab92a5",
+        "customer_id": 99,
         "identification": {
             "type": "DriverLicense",
             "number": "9E4EBEC9",
@@ -9898,6 +9997,7 @@ const userProfilesData = [
     },
     {
         "_id": "acc4ca1ffaa952bcbfdc2b64671f0a63",
+        "customer_id": 100,
         "identification": {
             "type": "DriverLicense",
             "number": "F5CED12C",
@@ -9993,11 +10093,14 @@ db.createCollection("userProfiles", {
     validator: {
         "$jsonSchema": {
             "bsonType": "object",
-            "required": ["_id", "identification", "accountDetails", "preferences", "usageStats", "supportHistory", "notes", "memberID"],
+            "required": ["_id", "customer_id", "identification", "accountDetails", "preferences", "usageStats", "supportHistory", "notes", "memberID"],
             "properties": {
                 "_id": {
                     "bsonType": "string",
                     "pattern": "^[a-f0-9]{32}$"
+                },
+                "customer_id": {
+                    "bsonType": "number",
                 },
                 "identification": {
                     "bsonType": "object",

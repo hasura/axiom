@@ -315,3 +315,56 @@ definition:
   graphql:
     expressionTypeName: support_IntOrderByExp
 
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ObjectIdOrderByExp
+  operand:
+    scalar:
+      orderedType: ObjectId
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: support_ObjectIdOrderByExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: IntAggExp
+  operand:
+    scalar:
+      aggregatedType: Int
+      aggregationFunctions:
+        - name: avg
+          returnType: Int!
+        - name: count
+          returnType: Int!
+        - name: max
+          returnType: Int!
+        - name: min
+          returnType: Int!
+        - name: sum
+          returnType: Int!
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: atlas
+          dataConnectorScalarType: Int
+          functionMapping:
+            avg:
+              name: avg
+            count:
+              name: count
+            max:
+              name: max
+            min:
+              name: min
+            sum:
+              name: sum
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: support_IntAggExp
+
