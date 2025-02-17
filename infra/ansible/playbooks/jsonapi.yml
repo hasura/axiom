@@ -1,0 +1,48 @@
+---
+- name: Deploy Swagger UI with NGINX
+  hosts: jsonapi
+  become: true
+  roles:
+    - role: geerlingguy.nginx
+
+  vars:
+    nginx_remove_default_vhost: true
+    nginx_vhosts:
+      - listen: "80"
+        server_name: "jsonapi.hasura-demo.com"
+        root: "/var/www/jsonapi"
+        index: "index.html"
+        state: "present"
+        template: "{{ nginx_vhost_template }}"
+        filename: "jsonapi.hasura-demo.com-http.conf"
+
+  tasks:
+    - name: Ensure /var/www exists
+      ansible.builtin.file:
+        path: /var/www
+        owner: www-data
+        group: www-data
+        mode: '0755'
+        state: directory
+
+    - name: Create directory for Swagger UI
+      ansible.builtin.file:
+        path: /var/www/jsonapi/
+        owner: www-data
+        group: www-data
+        mode: '0755'
+        state: directory
+
+    - name: Deploy Swagger UI as index.html
+      ansible.builtin.copy:
+        src: swagger.html
+        dest: /var/www/jsonapi/index.html
+        owner: www-data
+        group: www-data
+        mode: '0644'
+
+  handlers:
+    - name: Restart NGINX
+      ansible.builtin.service:
+        name: nginx
+        state: restarted
