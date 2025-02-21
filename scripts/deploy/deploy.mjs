@@ -28,8 +28,8 @@ class DeploymentManager {
             .option('-g, --gcp-region <region>', 'GCP region', null)
             .option('-c, --context <context>', 'Deploy context', null)
             .option('-p, --profile <profile>', 'Config profile', null)
-            .option('-r, --rebuild-connectors', 'Rebuild connectors', null)
-            .option('-f, --full-metadata-build', 'Full metadata rebuild', null)
+            .option('-r, --rebuild-connectors', 'Rebuild connectors', false)
+            .option('-f, --full-metadata-build', 'Full metadata rebuild', false)
             .option('-x, --override-description <desc>', 'Override description')
             .option('-q, --quiet', 'Quiet mode')
             .option('-a, --apply-build', 'Auto-apply build', false)
@@ -42,6 +42,8 @@ class DeploymentManager {
             noauth: join(__dirname, 'noauth.hml')
         };
         this.options = this.program.opts();
+        // This line is counter-intuitive but required.
+        this.options.noInteraction = !this.options.interaction;
     }
 
     log(level, msg) {
@@ -146,17 +148,23 @@ class DeploymentManager {
                     choices: CONFIG.regions
                 }])).gcpRegion,
 
-            fullMetadataBuild: this.options.fullMetadataBuild ?? (this.options.noInteraction ? false :
-                (await inquirer.prompt([{
-                    type: 'confirm', name: 'fullMetadataBuild',
-                    message: 'Perform full metadata rebuild?', default: false
-                }])).fullMetadataBuild),
+                fullMetadataBuild: this.options.fullMetadataBuild ||
+                (!this.options.noInteraction &&
+                    (await inquirer.prompt([{
+                        type: 'confirm',
+                        name: 'fullMetadataBuild',
+                        message: 'Perform full metadata rebuild?',
+                        default: false
+                    }])).fullMetadataBuild) || false,
 
-            rebuildConnectors: this.options.rebuildConnectors ?? (this.options.noInteraction ? false :
-                (await inquirer.prompt([{
-                    type: 'confirm', name: 'rebuildConnectors',
-                    message: 'Rebuild all connectors?', default: false
-                }])).rebuildConnectors)
+                rebuildConnectors: this.options.rebuildConnectors ||
+                (!this.options.noInteraction &&
+                    (await inquirer.prompt([{
+                        type: 'confirm',
+                        name: 'rebuildConnectors',
+                        message: 'Rebuild all connectors?',
+                        default: false
+                    }])).rebuildConnectors) || false
         };
 
         this.log(
