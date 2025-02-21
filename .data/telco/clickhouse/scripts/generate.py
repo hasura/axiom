@@ -183,7 +183,7 @@ def generate_sql():
 
 # Generate SQL and save to file
 sql_output = generate_sql()
-with open('generated_data.sql', 'w') as file:
+with open('init.sql', 'w') as file:
     file.write(sql_output)
 
 print("Generated SQL saved to generated_data.sql")
