@@ -4,6 +4,8 @@ version: v1
 definition:
   name: DataUsage
   fields:
+    - name: cuid
+      type: Int32!
     - name: dataUsage
       type: Float32!
     - name: guid
@@ -17,6 +19,9 @@ definition:
     - dataConnectorName: clickhouse
       dataConnectorObjectType: data_usage
       fieldMapping:
+        cuid:
+          column:
+            name: CUID
         dataUsage:
           column:
             name: Data_Usage
@@ -39,6 +44,14 @@ definition:
           - dataUsage
           - guid
           - timestamp
+          - cuid
+    - role: customer
+      output:
+        allowedFields:
+          - dataUsage
+          - guid
+          - timestamp
+          - cuid
 
 ---
 kind: Model
@@ -73,6 +86,14 @@ definition:
     - role: admin
       select:
         filter: null
+    - role: customer
+      select: 
+        filter: 
+          fieldComparison:
+            field: cuid
+            operator: _eq
+            value: 
+              sessionVariable: x-hasura-user-id
 
 ---
 kind: Relationship
@@ -120,6 +141,8 @@ definition:
     object:
       aggregatedType: DataUsage
       aggregatableFields:
+        - fieldName: cuid
+          aggregateExpression: Int32AggExp
         - fieldName: dataUsage
           aggregateExpression: Float32AggExp
         - fieldName: guid
@@ -140,6 +163,8 @@ definition:
     object:
       type: DataUsage
       comparableFields:
+        - fieldName: cuid
+          booleanExpressionType: Int32BoolExp
         - fieldName: dataUsage
           booleanExpressionType: Float32BoolExp
         - fieldName: guid
@@ -163,14 +188,15 @@ definition:
     object:
       orderedType: DataUsage
       orderableFields:
+        - fieldName: cuid
+          orderByExpression: Int32OrderByExp
         - fieldName: dataUsage
           orderByExpression: Float32OrderByExp
         - fieldName: guid
           orderByExpression: StringOrderByExp
         - fieldName: timestamp
           orderByExpression: DateTimeOrderByExp
-      orderableRelationships:
-        - relationshipName: customer
+      orderableRelationships: []
   graphql:
     expressionTypeName: network_DataUsageOrderByExp
 

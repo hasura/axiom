@@ -4,6 +4,8 @@ version: v1
 definition:
   name: NetworkPerformance
   fields:
+    - name: cuid
+      type: Int32!
     - name: downloadSpeed
       type: Float32!
     - name: guid
@@ -21,6 +23,9 @@ definition:
     - dataConnectorName: clickhouse
       dataConnectorObjectType: network_performance
       fieldMapping:
+        cuid: 
+          column:
+            name: CUID
         downloadSpeed:
           column:
             name: Download_Speed
@@ -51,6 +56,16 @@ definition:
           - latency
           - timestamp
           - uploadSpeed
+          - cuid
+    - role: customer
+      output:
+        allowedFields:
+          - downloadSpeed
+          - guid
+          - latency
+          - timestamp
+          - uploadSpeed
+          - cuid
 
 ---
 kind: Model
@@ -85,6 +100,14 @@ definition:
     - role: admin
       select:
         filter: null
+    - role: customer
+      select: 
+        filter: 
+          fieldComparison:
+            field: cuid
+            operator: _eq
+            value: 
+              sessionVariable: x-hasura-user-id
 
 ---
 kind: Relationship
@@ -132,6 +155,8 @@ definition:
     object:
       aggregatedType: NetworkPerformance
       aggregatableFields:
+        - fieldName: cuid
+          aggregateExpression: Int32AggExp
         - fieldName: downloadSpeed
           aggregateExpression: Float32AggExp
         - fieldName: guid
@@ -156,6 +181,8 @@ definition:
     object:
       type: NetworkPerformance
       comparableFields:
+        - fieldName: cuid
+          booleanExpressionType: Int32BoolExp
         - fieldName: downloadSpeed
           booleanExpressionType: Float32BoolExp
         - fieldName: guid
@@ -183,6 +210,8 @@ definition:
     object:
       orderedType: NetworkPerformance
       orderableFields:
+        - fieldName: cuid
+          orderByExpression: Int32OrderByExp
         - fieldName: downloadSpeed
           orderByExpression: Float32OrderByExp
         - fieldName: guid
@@ -193,8 +222,7 @@ definition:
           orderByExpression: DateTimeOrderByExp
         - fieldName: uploadSpeed
           orderByExpression: Float32OrderByExp
-      orderableRelationships:
-        - relationshipName: customer
+      orderableRelationships: []
   graphql:
     expressionTypeName: network_NetworkPerformanceOrderByExp
 
