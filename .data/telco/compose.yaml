@@ -7,7 +7,7 @@ services:
     restart: unless-stopped
     volumes:
       - postgres-data:/var/lib/postgresql/data
-      - ../build/postgres/:/docker-entrypoint-initdb.d/
+      - ../telco/postgres/:/docker-entrypoint-initdb.d/
     environment:
       PGUSER: postgres
       POSTGRES_USER: postgres
@@ -48,7 +48,7 @@ services:
     command: mongod --auth
     volumes:
       - mongodb-data:/data/db
-      - ../build/mongodb:/docker-entrypoint-initdb.d/
+      - ../telco/mongodb:/docker-entrypoint-initdb.d/
     environment:
       - MONGO_INITDB_DATABASE=holotel
       - MONGO_INITDB_ROOT_USERNAME=root

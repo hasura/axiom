@@ -12,8 +12,6 @@ import shellQuote from 'shell-quote';
 import { Command } from 'commander';
 
 const CONFIG = {
-    regions: ['gcp-australia-southeast1', 'gcp-europe-west1', 'gcp-asia-southeast1', 'gcp-us-east4', 'gcp-us-west2'],
-    defaultRegion: 'gcp-us-west2',
     logLevels: ['FATAL', 'ERROR', 'WARN', 'INFO', 'DEBUG']
 };
 
@@ -25,7 +23,6 @@ class DeploymentManager {
             .option('-o, --override', 'Override checks', false)
             .option('-d, --dry-run', 'Simulate deployment', false)
             .option('-n, --no-interaction', 'Non-interactive mode', true)
-            .option('-g, --gcp-region <region>', 'GCP region', null)
             .option('-c, --context <context>', 'Deploy context', null)
             .option('-p, --profile <profile>', 'Config profile', null)
             .option('-r, --rebuild-connectors', 'Rebuild connectors', false)
@@ -79,21 +76,6 @@ class DeploymentManager {
         });
     }
 
-    async updateRegions(region) {
-        const files = fs.readdirSync(this.paths.root, { recursive: true })
-            .filter(f => f.endsWith('connector.yaml'))
-            .map(f => join(this.paths.root, f));
-
-        for (const file of files) {
-            const doc = yaml.parse(fs.readFileSync(file, 'utf8'));
-            if (doc.definition?.regionConfiguration) {
-                doc.definition.regionConfiguration.forEach(c => c.region = region);
-                !this.options.dryRun && fs.writeFileSync(file, yaml.stringify(doc));
-                this.log('green', `Updated region to ${region} in ${file}`);
-            }
-        }
-    }
-
     async deploy(context, authFile, tag, supergraph, rebuild) {
         if (!fs.existsSync(authFile)) throw new Error(`Missing auth config: ${authFile}`);
 
@@ -141,13 +123,6 @@ class DeploymentManager {
                     choices: Object.keys(contextYaml.definition.contexts)
                 }])).context),
 
-            gcpRegion: this.options.gcpRegion && CONFIG.regions.includes(this.options.gcpRegion) ?
-                this.options.gcpRegion : this.options.noInteraction ? null :
-                (await inquirer.prompt([{
-                    type: 'list', name: 'gcpRegion', message: 'Select region:',
-                    choices: CONFIG.regions
-                }])).gcpRegion,
-
                 fullMetadataBuild: this.options.fullMetadataBuild ||
                 (!this.options.noInteraction &&
                     (await inquirer.prompt([{
@@ -169,11 +144,11 @@ class DeploymentManager {
 
         this.log(
             'magenta',
-            `Deploying: ${params.profile.name} to ${params.context} (${params.gcpRegion})` +
-            `${params.rebuildConnectors ? '[Connector rebuild]' : ''}` +
+            `Deploying: ${params.profile.name} to ${params.context}` +
+            `${params.rebuildConnectors ? ' [Connector rebuild]' : ''}` +
             `${params.fullMetadataBuild ? ' [Full metadata build]' : ''}`
         );
-        if (!params.profile || !params.context || !params.gcpRegion) {
+        if (!params.profile || !params.context) {
             throw new Error('Missing required parameters in non-interactive mode');
         }
 
@@ -197,10 +172,8 @@ class DeploymentManager {
                 if (status.files.length > 0) throw new Error('Uncommitted changes detected');
             }
 
-            const { profile, context, gcpRegion, fullMetadataBuild, rebuildConnectors, contextYaml } =
+            const { profile, context, fullMetadataBuild, rebuildConnectors, contextYaml } =
                 await this.getDeploymentParams();
-
-            await this.updateRegions(gcpRegion);
 
             const supergraphs = fs.readdirSync(profile.path)
                 .filter(f => f.endsWith('.yaml'))
@@ -235,7 +208,6 @@ class DeploymentManager {
                 );
             }
 
-            await this.updateRegions(CONFIG.defaultRegion);
             await fs.copyFileSync(this.paths.noauth, join(this.paths.root, '/globals/auth-config.hml'));
             this.log('inverse', 'Deployment completed successfully');
         } catch (error) {
