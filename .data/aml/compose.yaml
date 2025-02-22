@@ -20,6 +20,21 @@ services:
       timeout: 5s
       retries: 30
 
+  mongodb:
+    image: mongo
+    container_name: ${CONTAINER_PREFIX}_mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    command: mongod --auth
+    volumes:
+      - mongodb-data:/data/db
+      - ./mongodb:/docker-entrypoint-initdb.d/
+    environment:
+      - MONGO_INITDB_DATABASE=aml
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
+
   redis:
     image: redis:latest
     restart: unless-stopped
@@ -28,7 +43,7 @@ services:
 
   caching:
     build:
-      context: https://github.com/hasura/engine-plugin-caching.git
+      context: https://github.com/hasura/engine-plugin-caching.git#f59acfe4004c869181de83be78d0f5d48459ef3c
     restart: unless-stopped
     ports:
       - 8787:8787
@@ -42,3 +57,4 @@ services:
 
 volumes:
   postgres-data:
+  mongodb-data:

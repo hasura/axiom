@@ -45,7 +45,10 @@ definition:
       powershell: $Env:DATASET = "starter"; docker compose -f ../.data/starter/compose.yaml --env-file ../.data/starter/.env up --build --pull always -d
     docker-start-telco:
       bash: export DATASET=telco; docker compose -f ../.data/telco/compose.yaml --env-file ../.data/telco/.env up --build --pull always -d
-      powershell: $Env:DATASET = "starter"; docker compose -f ../.data/telco/compose.yaml --env-file ../.data/telco/.env up --build --pull always -d
+      powershell: $Env:DATASET = "telco"; docker compose -f ../.data/telco/compose.yaml --env-file ../.data/telco/.env up --build --pull always -d
+    docker-start-aml:
+      bash: export DATASET=aml; docker compose -f ../.data/aml/compose.yaml --env-file ../.data/aml/.env up --build --pull always -d
+      powershell: $Env:DATASET = "aml"; docker compose -f ../.data/aml/compose.yaml --env-file ../.data/aml/.env up --build --pull always -d
     docker-stop:
       bash: for file in compose*.yaml $(find ../.data -type f -name "compose.yaml"); do docker compose -f $file down -v; done
       powershell: docker compose -f compose.yaml down -v; docker compose -f .data/compose.yaml down -v
