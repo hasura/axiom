@@ -1,8 +1,8 @@
+---
 - name: Cron Tasks
   hosts: cron_servers
   become: true
   tasks:
-
     - name: Check if keepalive script is available
       ansible.builtin.stat:
         path: /home/ubuntu/axiom/scripts/connector-keepalive.sh
@@ -11,7 +11,11 @@
     - name: Set up cron for metrics filler
       ansible.builtin.cron:
         name: "Axiom connector-keepalive"
-        job: "SLACK_WEBHOOK='{{ slack_webhook }}' /home/ubuntu/axiom/scripts/connector-keepalive.sh 2>&1 | logger -t gql-check"
+        job: >
+          cron_query='{{ cron_query }}'
+          cron_url='{{ cron_url }}'
+          SLACK_WEBHOOK='{{ slack_webhook }}'
+          /home/ubuntu/axiom/scripts/connector-keepalive.sh 2>&1 | logger -t gql-check
         day: "*"
         hour: "*"
         minute: "*"

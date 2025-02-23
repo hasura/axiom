@@ -1,8 +1,8 @@
+---
 - name: Set up Docker
   hosts: hosts
   become: true
   tasks:
-
     - name: Check if Docker is already installed
       ansible.builtin.command: docker --version
       register: docker_check
@@ -23,14 +23,14 @@
       ansible.builtin.file:
         path: /etc/apt/keyrings
         state: directory
-        mode: '0755'
+        mode: "0755"
       when: docker_check.rc != 0
 
     - name: Download Docker GPG key
       ansible.builtin.get_url:
         url: https://download.docker.com/linux/ubuntu/gpg
         dest: /etc/apt/keyrings/docker.asc
-        mode: '0644'
+        mode: "0644"
         force: false
       when: docker_check.rc != 0
 

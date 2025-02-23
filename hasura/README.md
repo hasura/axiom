@@ -9,7 +9,7 @@ Axiom provides a centralised platform for deploying and testing a variety of Has
 ## Existing Demo Profiles
 * starter
 * telco
-* finserv
+* aml
 
 ### How to Use
 To utilise an existing demo profile, run the commands specified in `.hasura/context.yaml`. These commands are abstracted into `ddn run` scripts for simplicity:
@@ -61,14 +61,11 @@ Copy any subgraph directories from the source repository into `industry/$PROFILE
 
 2. Create subgraphs on DDN:
 
-Add subgraphs to the DDN project, optionally adding the shared `auth` and `support` subgraphs.
+Add subgraphs to the DDN project.
 
    ```bash
    ddn project subgraph create globals
    ddn project subgraph create <your subgraph>
-   # Optionally add shared axiom subgraphs
-   ddn project subgraph create auth
-   ddn project subgraph create support
    ```
 
 ### Step 3: Copy Supergraph
@@ -171,9 +168,6 @@ Make any further adjustments to the profile's `compose.yaml` as appropriate to u
 
 Add a DDN run script for starting the Docker environment. Replace `$PROFILE` with your profile name
 
-> [!NOTE]
-> Use `.data/starter/compose.yaml` for reference.
-
 ```yaml
 docker-start-$PROFILE:
    bash: export DATASET=$PROFILE; docker compose -f ../.data/$PROFILE/compose.yaml --env-file ../.data/$PROFILE/.env up --build --pull always -d
@@ -243,5 +237,4 @@ ddn run demo-$PROFILE
 ---
 
 ## Notes
-- **Shared Datasets:** `auth` and `support` are optional and can be omitted.
 - **Auto Deployments:** Ensure changes to Ansible playbooks and `.data` are committed to the `main` branch to allow them to be automatically deployed.

@@ -10,16 +10,18 @@ Axiom contains all the resources and tools required to run industry demos of DDN
 | `.data`          | Seeds content for local and cloud based demonstrations |
 
 
-## Quickstart (Telco)
+## Quickstarts
+
+### Telco
 
 1. Clone this repo
 ```bash
 git clone git@github.com:hasura/axiom.git
 ```
 
-2. Install DDN CLI
+2. Install prerequisites
 
-Follow the [DDN CLI installation instructions](https://hasura.io/docs/3.0/reference/cli/installation/) to download and install DDN CLI
+    * Follow the [DDN CLI installation instructions](https://hasura.io/docs/3.0/reference/cli/installation/) to download and install DDN CLI
 
 3. Copy .env files
 
@@ -36,13 +38,46 @@ ddn run build-telco
 ddn run demo-telco
 ```
 
+### AML
+
+1. Clone this repo
+```bash
+git clone git@github.com:hasura/axiom.git
+```
+
+2. Install prerequisites
+
+    * Follow the [DDN CLI installation instructions](https://hasura.io/docs/3.0/reference/cli/installation/) to download and install DDN CLI
+
+    * Install git LFS to pull down source datasets
+`brew install git-lfs`
+
+3. Copy .env files
+
+```bash
+cp hasura/.env.aml.template hasura/.aml.telco
+cp .data/.env.template .data/aml/.env
+```
+
+4. Run the demo script
+
+```bash
+cd hasura
+ddn run build-aml
+ddn run demo-aml
+```
+
 ## Command Documentation
 Each of the `ddn run` commands in `hasura/.hasura/context.yaml` corresponds to both a different way to build your supergraph and which source databases to use
 
 | **Command**              | **Demo Profile** | **Description**                                                                                                   |
 |--------------------------|-----------------|-------------------------------------------------------------------------------------------------------------------|
 | `docker-start-telco`     | Telco           | Starts the containers for the telco demo data sources locally|
+| `build-telco`            | Telco           | Builds the DDN supergraph for the telco demo|
 | `demo-telco`             | Telco           | Starts the containers for the telco demo data sources locally|
+| `docker-start-aml`     | AML           | Starts the containers for the aml demo data sources locally|
+| `build-aml`            | AML           | Builds the DDN supergraph for the aml demo|
+| `demo-aml`             | AML           | Starts the containers for the aml demo data sources locally|
 | `docker-stop`            | Any             | Stops and removes all Docker containers and volumes related to Axiom|
 
 
@@ -58,7 +93,7 @@ Full documentation may be found in the deploy [README](./scripts/deploy/README.m
 
 ```
 # Run the deploy script
-node ./scripts/deploy/deploy.mjs --context axiom-dev --profile telco --no-build-connectors
+./scripts/deploy/deploy.mjs --context axiom-dev --profile telco
 ```
 
 ### Deploying new connectors
@@ -68,7 +103,7 @@ The simplest way to deploy new connectors is to run a new supergraph build in ea
 
 ```
 # Deploy new connectors
-node ./scripts/deploy/deploy.mjs --context axiom-dev --profile telco --gcp-region gcp-us-west2
+node ./scripts/deploy/deploy.mjs --context axiom-dev --profile telco --rebuild-connectors
 ```
 
 > [!IMPORTANT]  
