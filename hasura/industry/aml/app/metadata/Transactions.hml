@@ -1,0 +1,324 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: Transactions
+  fields:
+    - name: id
+      type: ObjectId!
+    - name: amlText
+      type: String
+    - name: amlVectors
+      type: "[Double!]"
+    - name: aml
+      type: Int
+    - name: beneficiaryId
+      type: Int
+    - name: beneficiaryType
+      type: String
+    - name: fraud
+      type: Int
+    - name: fraudText
+      type: String
+    - name: fraudVectors
+      type: "[Double!]"
+    - name: originatorId
+      type: Int
+    - name: originatorType
+      type: String
+    - name: reportedBeneficiaryAddress
+      type: String
+    - name: reportedOriginatorAddress
+      type: String
+    - name: sanctioned
+      type: Int
+    - name: transactionAmount
+      type: Double
+    - name: transactionDate
+      type: Date
+  graphql:
+    typeName: Transactions
+    inputTypeName: TransactionsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: sanctions
+      dataConnectorObjectType: transactions
+      fieldMapping:
+        id:
+          column:
+            name: _id
+        amlText:
+          column:
+            name: AML_text
+        amlVectors:
+          column:
+            name: AML_vectors
+        aml:
+          column:
+            name: aml
+        beneficiaryId:
+          column:
+            name: beneficiary_id
+        beneficiaryType:
+          column:
+            name: beneficiary_type
+        fraud:
+          column:
+            name: fraud
+        fraudText:
+          column:
+            name: fraud_text
+        fraudVectors:
+          column:
+            name: fraud_vectors
+        originatorId:
+          column:
+            name: originator_id
+        originatorType:
+          column:
+            name: originator_type
+        reportedBeneficiaryAddress:
+          column:
+            name: reported_beneficiary_address
+        reportedOriginatorAddress:
+          column:
+            name: reported_originator_address
+        sanctioned:
+          column:
+            name: sanctioned
+        transactionAmount:
+          column:
+            name: transaction_amount
+        transactionDate:
+          column:
+            name: transaction_date
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: Transactions
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - id
+          - amlText
+          - amlVectors
+          - aml
+          - beneficiaryId
+          - beneficiaryType
+          - fraud
+          - fraudText
+          - fraudVectors
+          - originatorId
+          - originatorType
+          - reportedBeneficiaryAddress
+          - reportedOriginatorAddress
+          - sanctioned
+          - transactionAmount
+          - transactionDate
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: TransactionsBoolExp
+  operand:
+    object:
+      type: Transactions
+      comparableFields:
+        - fieldName: id
+          booleanExpressionType: ObjectIdBoolExp
+        - fieldName: amlText
+          booleanExpressionType: StringBoolExp
+        - fieldName: aml
+          booleanExpressionType: IntBoolExp
+        - fieldName: beneficiaryId
+          booleanExpressionType: IntBoolExp
+        - fieldName: beneficiaryType
+          booleanExpressionType: StringBoolExp
+        - fieldName: fraud
+          booleanExpressionType: IntBoolExp
+        - fieldName: fraudText
+          booleanExpressionType: StringBoolExp
+        - fieldName: originatorId
+          booleanExpressionType: IntBoolExp
+        - fieldName: originatorType
+          booleanExpressionType: StringBoolExp
+        - fieldName: reportedBeneficiaryAddress
+          booleanExpressionType: StringBoolExp
+        - fieldName: reportedOriginatorAddress
+          booleanExpressionType: StringBoolExp
+        - fieldName: sanctioned
+          booleanExpressionType: IntBoolExp
+        - fieldName: transactionAmount
+          booleanExpressionType: DoubleBoolExp
+        - fieldName: transactionDate
+          booleanExpressionType: DateBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: TransactionsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: TransactionsAggExp
+  operand:
+    object:
+      aggregatedType: Transactions
+      aggregatableFields:
+        - fieldName: id
+          aggregateExpression: ObjectIdAggExp
+        - fieldName: amlText
+          aggregateExpression: StringAggExp
+        - fieldName: aml
+          aggregateExpression: IntAggExp
+        - fieldName: beneficiaryId
+          aggregateExpression: IntAggExp
+        - fieldName: beneficiaryType
+          aggregateExpression: StringAggExp
+        - fieldName: fraud
+          aggregateExpression: IntAggExp
+        - fieldName: fraudText
+          aggregateExpression: StringAggExp
+        - fieldName: originatorId
+          aggregateExpression: IntAggExp
+        - fieldName: originatorType
+          aggregateExpression: StringAggExp
+        - fieldName: reportedBeneficiaryAddress
+          aggregateExpression: StringAggExp
+        - fieldName: reportedOriginatorAddress
+          aggregateExpression: StringAggExp
+        - fieldName: sanctioned
+          aggregateExpression: IntAggExp
+        - fieldName: transactionAmount
+          aggregateExpression: DoubleAggExp
+        - fieldName: transactionDate
+          aggregateExpression: DateAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: TransactionsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: TransactionsOrderByExp
+  operand:
+    object:
+      orderedType: Transactions
+      orderableFields:
+        - fieldName: id
+          orderByExpression: ObjectIdOrderByExp
+        - fieldName: amlText
+          orderByExpression: StringOrderByExp
+        - fieldName: aml
+          orderByExpression: IntOrderByExp
+        - fieldName: beneficiaryId
+          orderByExpression: IntOrderByExp
+        - fieldName: beneficiaryType
+          orderByExpression: StringOrderByExp
+        - fieldName: fraud
+          orderByExpression: IntOrderByExp
+        - fieldName: fraudText
+          orderByExpression: StringOrderByExp
+        - fieldName: originatorId
+          orderByExpression: IntOrderByExp
+        - fieldName: originatorType
+          orderByExpression: StringOrderByExp
+        - fieldName: reportedBeneficiaryAddress
+          orderByExpression: StringOrderByExp
+        - fieldName: reportedOriginatorAddress
+          orderByExpression: StringOrderByExp
+        - fieldName: sanctioned
+          orderByExpression: IntOrderByExp
+        - fieldName: transactionAmount
+          orderByExpression: DoubleOrderByExp
+        - fieldName: transactionDate
+          orderByExpression: DateOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: TransactionsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: Transactions
+  objectType: Transactions
+  source:
+    dataConnectorName: sanctions
+    collection: transactions
+  filterExpressionType: TransactionsBoolExp
+  aggregateExpression: TransactionsAggExp
+  orderByExpression: TransactionsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: transactions
+      subscription:
+        rootField: transactions
+    selectUniques:
+      - queryRootField: transactionsById
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: transactionsById
+    filterInputTypeName: TransactionsFilterInput
+    aggregate:
+      queryRootField: transactionsAggregate
+      subscription:
+        rootField: transactionsAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: Transactions
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: beneficiaryAccount
+  sourceType: Transactions
+  target:
+    model:
+      name: Accounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: beneficiaryId
+      target:
+        modelField:
+          - fieldName: id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: originatorAccount
+  sourceType: Transactions
+  target:
+    model:
+      name: Accounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: originatorId
+      target:
+        modelField:
+          - fieldName: id

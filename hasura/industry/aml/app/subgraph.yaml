@@ -1,0 +1,27 @@
+kind: Subgraph
+version: v2
+definition:
+  name: app
+  generator:
+    rootPath: .
+    namingConvention: graphql
+  includePaths:
+    - metadata
+  envMapping:
+    APP_AML_AUTHORIZATION_HEADER:
+      fromEnv: APP_AML_AUTHORIZATION_HEADER
+    APP_AML_READ_URL:
+      fromEnv: APP_AML_READ_URL
+    APP_AML_WRITE_URL:
+      fromEnv: APP_AML_WRITE_URL
+    APP_SANCTIONS_AUTHORIZATION_HEADER:
+      fromEnv: APP_SANCTIONS_AUTHORIZATION_HEADER
+    APP_SANCTIONS_READ_URL:
+      fromEnv: APP_SANCTIONS_READ_URL
+    APP_SANCTIONS_WRITE_URL:
+      fromEnv: APP_SANCTIONS_WRITE_URL
+  connectors:
+    - path: connector/sanctions/connector.yaml
+      connectorLinkName: sanctions
+    - path: connector/aml/connector.yaml
+      connectorLinkName: aml
