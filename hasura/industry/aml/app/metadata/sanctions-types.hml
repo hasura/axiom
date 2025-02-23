@@ -1,0 +1,594 @@
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: sanctions
+  dataConnectorScalarType: Int
+  representation: Int
+  graphql:
+    comparisonExpressionTypeName: IntComparisonExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: sanctions
+  dataConnectorScalarType: String
+  representation: String
+  graphql:
+    comparisonExpressionTypeName: StringComparisonExp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: IntBoolExp
+  operand:
+    scalar:
+      type: Int
+      comparisonOperators:
+        - name: _eq
+          argumentType: Int!
+        - name: _gt
+          argumentType: Int!
+        - name: _gte
+          argumentType: Int!
+        - name: _in
+          argumentType: "[Int!]!"
+        - name: _lt
+          argumentType: Int!
+        - name: _lte
+          argumentType: Int!
+        - name: _neq
+          argumentType: Int!
+        - name: _nin
+          argumentType: "[Int!]!"
+      dataConnectorOperatorMapping:
+        - dataConnectorName: sanctions
+          dataConnectorScalarType: Int
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: IntBoolExp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: StringBoolExp
+  operand:
+    scalar:
+      type: String
+      comparisonOperators:
+        - name: _eq
+          argumentType: String!
+        - name: _gt
+          argumentType: String!
+        - name: _gte
+          argumentType: String!
+        - name: _in
+          argumentType: "[String!]!"
+        - name: _iregex
+          argumentType: String!
+        - name: _lt
+          argumentType: String!
+        - name: _lte
+          argumentType: String!
+        - name: _neq
+          argumentType: String!
+        - name: _nin
+          argumentType: "[String!]!"
+        - name: _regex
+          argumentType: String!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: sanctions
+          dataConnectorScalarType: String
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: StringBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: IntAggExp
+  operand:
+    scalar:
+      aggregatedType: Int
+      aggregationFunctions:
+        - name: avg
+          returnType: Int
+        - name: count
+          returnType: Int!
+        - name: max
+          returnType: Int
+        - name: min
+          returnType: Int
+        - name: sum
+          returnType: Int
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: sanctions
+          dataConnectorScalarType: Int
+          functionMapping:
+            avg:
+              name: avg
+            count:
+              name: count
+            max:
+              name: max
+            min:
+              name: min
+            sum:
+              name: sum
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: IntAggExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: StringAggExp
+  operand:
+    scalar:
+      aggregatedType: String
+      aggregationFunctions:
+        - name: count
+          returnType: Int!
+        - name: max
+          returnType: String
+        - name: min
+          returnType: String
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: sanctions
+          dataConnectorScalarType: String
+          functionMapping:
+            count:
+              name: count
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: StringAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: IntOrderByExp
+  operand:
+    scalar:
+      orderedType: Int
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: IntOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: StringOrderByExp
+  operand:
+    scalar:
+      orderedType: String
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: StringOrderByExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: Date
+  graphql:
+    typeName: Date
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: DateBoolExp
+  operand:
+    scalar:
+      type: Date
+      comparisonOperators:
+        - name: _eq
+          argumentType: Date!
+        - name: _gt
+          argumentType: Date!
+        - name: _gte
+          argumentType: Date!
+        - name: _in
+          argumentType: "[Date!]!"
+        - name: _lt
+          argumentType: Date!
+        - name: _lte
+          argumentType: Date!
+        - name: _neq
+          argumentType: Date!
+        - name: _nin
+          argumentType: "[Date!]!"
+      dataConnectorOperatorMapping:
+        - dataConnectorName: sanctions
+          dataConnectorScalarType: Date
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: DateBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: sanctions
+  dataConnectorScalarType: Date
+  representation: Date
+  graphql:
+    comparisonExpressionTypeName: DateComparisonExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: DateAggExp
+  operand:
+    scalar:
+      aggregatedType: Date
+      aggregationFunctions:
+        - name: count
+          returnType: Int!
+        - name: max
+          returnType: Date
+        - name: min
+          returnType: Date
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: sanctions
+          dataConnectorScalarType: Date
+          functionMapping:
+            count:
+              name: count
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: DateAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: DateOrderByExp
+  operand:
+    scalar:
+      orderedType: Date
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: DateOrderByExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: ExtendedJson
+  graphql:
+    typeName: ExtendedJson
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ExtendedJsonBoolExp
+  operand:
+    scalar:
+      type: ExtendedJson
+      comparisonOperators:
+        - name: _eq
+          argumentType: ExtendedJson!
+        - name: _gt
+          argumentType: ExtendedJson!
+        - name: _gte
+          argumentType: ExtendedJson!
+        - name: _in
+          argumentType: ExtendedJson!
+        - name: _iregex
+          argumentType: String!
+        - name: _lt
+          argumentType: ExtendedJson!
+        - name: _lte
+          argumentType: ExtendedJson!
+        - name: _neq
+          argumentType: ExtendedJson!
+        - name: _nin
+          argumentType: ExtendedJson!
+        - name: _regex
+          argumentType: String!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: sanctions
+          dataConnectorScalarType: ExtendedJSON
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ExtendedJsonBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: sanctions
+  dataConnectorScalarType: ExtendedJSON
+  representation: ExtendedJson
+  graphql:
+    comparisonExpressionTypeName: ExtendedJsonComparisonExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ExtendedJsonAggExp
+  operand:
+    scalar:
+      aggregatedType: ExtendedJson
+      aggregationFunctions:
+        - name: avg
+          returnType: ExtendedJson!
+        - name: count
+          returnType: Int!
+        - name: max
+          returnType: ExtendedJson!
+        - name: min
+          returnType: ExtendedJson!
+        - name: sum
+          returnType: ExtendedJson!
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: sanctions
+          dataConnectorScalarType: ExtendedJSON
+          functionMapping:
+            avg:
+              name: avg
+            count:
+              name: count
+            max:
+              name: max
+            min:
+              name: min
+            sum:
+              name: sum
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ExtendedJsonAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ExtendedJsonOrderByExp
+  operand:
+    scalar:
+      orderedType: ExtendedJson
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ExtendedJsonOrderByExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: ObjectId
+  graphql:
+    typeName: ObjectId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ObjectIdBoolExp
+  operand:
+    scalar:
+      type: ObjectId
+      comparisonOperators:
+        - name: _eq
+          argumentType: ObjectId!
+        - name: _in
+          argumentType: "[ObjectId!]!"
+        - name: _neq
+          argumentType: ObjectId!
+        - name: _nin
+          argumentType: "[ObjectId!]!"
+      dataConnectorOperatorMapping:
+        - dataConnectorName: sanctions
+          dataConnectorScalarType: ObjectId
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ObjectIdBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: sanctions
+  dataConnectorScalarType: ObjectId
+  representation: ObjectId
+  graphql:
+    comparisonExpressionTypeName: ObjectIdComparisonExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: Double
+  graphql:
+    typeName: Double
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: DoubleBoolExp
+  operand:
+    scalar:
+      type: Double
+      comparisonOperators:
+        - name: _eq
+          argumentType: Double!
+        - name: _gt
+          argumentType: Double!
+        - name: _gte
+          argumentType: Double!
+        - name: _in
+          argumentType: "[Double!]!"
+        - name: _lt
+          argumentType: Double!
+        - name: _lte
+          argumentType: Double!
+        - name: _neq
+          argumentType: Double!
+        - name: _nin
+          argumentType: "[Double!]!"
+      dataConnectorOperatorMapping:
+        - dataConnectorName: sanctions
+          dataConnectorScalarType: Double
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: DoubleBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: sanctions
+  dataConnectorScalarType: Double
+  representation: Double
+  graphql:
+    comparisonExpressionTypeName: DoubleComparisonExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ObjectIdAggExp
+  operand:
+    scalar:
+      aggregatedType: ObjectId
+      aggregationFunctions:
+        - name: count
+          returnType: Int!
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: sanctions
+          dataConnectorScalarType: ObjectId
+          functionMapping:
+            count:
+              name: count
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ObjectIdAggExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: DoubleAggExp
+  operand:
+    scalar:
+      aggregatedType: Double
+      aggregationFunctions:
+        - name: avg
+          returnType: Double
+        - name: count
+          returnType: Int!
+        - name: max
+          returnType: Double
+        - name: min
+          returnType: Double
+        - name: sum
+          returnType: Double
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: sanctions
+          dataConnectorScalarType: Double
+          functionMapping:
+            avg:
+              name: avg
+            count:
+              name: count
+            max:
+              name: max
+            min:
+              name: min
+            sum:
+              name: sum
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: DoubleAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ObjectIdOrderByExp
+  operand:
+    scalar:
+      orderedType: ObjectId
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ObjectIdOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: DoubleOrderByExp
+  operand:
+    scalar:
+      orderedType: Double
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: DoubleOrderByExp
+

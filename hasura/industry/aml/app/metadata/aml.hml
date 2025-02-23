@@ -1,0 +1,1644 @@
+kind: DataConnectorLink
+version: v1
+definition:
+  name: aml
+  url:
+    readWriteUrls:
+      read:
+        valueFromEnv: APP_AML_READ_URL
+      write:
+        valueFromEnv: APP_AML_WRITE_URL
+  headers:
+    Authorization:
+      valueFromEnv: APP_AML_AUTHORIZATION_HEADER
+  schema:
+    version: v0.1
+    schema:
+      scalar_types:
+        bool:
+          representation:
+            type: boolean
+          aggregate_functions:
+            bool_and:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: bool
+            bool_or:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: bool
+            every:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: bool
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                type: named
+                name: bool
+            _gte:
+              type: custom
+              argument_type:
+                type: named
+                name: bool
+            _in:
+              type: in
+            _lt:
+              type: custom
+              argument_type:
+                type: named
+                name: bool
+            _lte:
+              type: custom
+              argument_type:
+                type: named
+                name: bool
+            _neq:
+              type: custom
+              argument_type:
+                type: named
+                name: bool
+        date:
+          representation:
+            type: date
+          aggregate_functions:
+            max:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: date
+            min:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: date
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                type: named
+                name: date
+            _gte:
+              type: custom
+              argument_type:
+                type: named
+                name: date
+            _in:
+              type: in
+            _lt:
+              type: custom
+              argument_type:
+                type: named
+                name: date
+            _lte:
+              type: custom
+              argument_type:
+                type: named
+                name: date
+            _neq:
+              type: custom
+              argument_type:
+                type: named
+                name: date
+        int4:
+          representation:
+            type: int32
+          aggregate_functions: {}
+          comparison_operators: {}
+        int8:
+          representation:
+            type: int64
+          aggregate_functions:
+            avg:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            bit_and:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int8
+            bit_or:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int8
+            bit_xor:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int8
+            max:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int8
+            min:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int8
+            stddev:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            stddev_pop:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            stddev_samp:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            sum:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            var_pop:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            var_samp:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            variance:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                type: named
+                name: int8
+            _gte:
+              type: custom
+              argument_type:
+                type: named
+                name: int8
+            _in:
+              type: in
+            _lt:
+              type: custom
+              argument_type:
+                type: named
+                name: int8
+            _lte:
+              type: custom
+              argument_type:
+                type: named
+                name: int8
+            _neq:
+              type: custom
+              argument_type:
+                type: named
+                name: int8
+        interval:
+          aggregate_functions:
+            avg:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: interval
+            max:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: interval
+            min:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: interval
+            sum:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: interval
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                type: named
+                name: interval
+            _gte:
+              type: custom
+              argument_type:
+                type: named
+                name: interval
+            _in:
+              type: in
+            _lt:
+              type: custom
+              argument_type:
+                type: named
+                name: interval
+            _lte:
+              type: custom
+              argument_type:
+                type: named
+                name: interval
+            _neq:
+              type: custom
+              argument_type:
+                type: named
+                name: interval
+        numeric:
+          representation:
+            type: bigdecimal
+          aggregate_functions:
+            avg:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            max:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            min:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            stddev:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            stddev_pop:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            stddev_samp:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            sum:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            var_pop:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            var_samp:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            variance:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                type: named
+                name: numeric
+            _gte:
+              type: custom
+              argument_type:
+                type: named
+                name: numeric
+            _in:
+              type: in
+            _lt:
+              type: custom
+              argument_type:
+                type: named
+                name: numeric
+            _lte:
+              type: custom
+              argument_type:
+                type: named
+                name: numeric
+            _neq:
+              type: custom
+              argument_type:
+                type: named
+                name: numeric
+        text:
+          representation:
+            type: string
+          aggregate_functions:
+            max:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: text
+            min:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: text
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _gte:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _ilike:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _in:
+              type: in
+            _iregex:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _like:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _lt:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _lte:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _neq:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _nilike:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _niregex:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _nlike:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _nregex:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _regex:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            starts_with:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            ts_match_tt:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+        time:
+          representation:
+            type: string
+          aggregate_functions:
+            avg:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: interval
+            max:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: time
+            min:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: time
+            sum:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: interval
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                type: named
+                name: time
+            _gte:
+              type: custom
+              argument_type:
+                type: named
+                name: time
+            _in:
+              type: in
+            _lt:
+              type: custom
+              argument_type:
+                type: named
+                name: time
+            _lte:
+              type: custom
+              argument_type:
+                type: named
+                name: time
+            _neq:
+              type: custom
+              argument_type:
+                type: named
+                name: time
+        timestamp:
+          representation:
+            type: timestamp
+          aggregate_functions:
+            max:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: timestamp
+            min:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: timestamp
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                type: named
+                name: timestamp
+            _gte:
+              type: custom
+              argument_type:
+                type: named
+                name: timestamp
+            _in:
+              type: in
+            _lt:
+              type: custom
+              argument_type:
+                type: named
+                name: timestamp
+            _lte:
+              type: custom
+              argument_type:
+                type: named
+                name: timestamp
+            _neq:
+              type: custom
+              argument_type:
+                type: named
+                name: timestamp
+        varchar:
+          representation:
+            type: string
+          aggregate_functions:
+            max:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: text
+            min:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: text
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _gte:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _ilike:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _in:
+              type: in
+            _iregex:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _like:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _lt:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _lte:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _neq:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _nilike:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _niregex:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _nlike:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _nregex:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _regex:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            starts_with:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            ts_match_tt:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+      object_types:
+        customers:
+          fields:
+            account:
+              type:
+                type: named
+                name: int8
+            blacklisted:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: bool
+            customer_id:
+              type:
+                type: named
+                name: int8
+            dob:
+              type:
+                type: named
+                name: date
+            name:
+              type:
+                type: named
+                name: varchar
+            nationality:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            pep_status:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: bool
+            risk_level:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        delete_customers_by_account_response:
+          description: Responses from the 'delete_customers_by_account' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: customers
+        delete_customers_by_customer_id_response:
+          description: Responses from the 'delete_customers_by_customer_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: customers
+        delete_sars_by_sar_id_response:
+          description: Responses from the 'delete_sars_by_sar_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: sars
+        insert_customers_object:
+          fields:
+            account:
+              type:
+                type: named
+                name: int8
+            blacklisted:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: bool
+            customer_id:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int8
+            dob:
+              type:
+                type: named
+                name: date
+            name:
+              type:
+                type: named
+                name: varchar
+            nationality:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            pep_status:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: bool
+            risk_level:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        insert_customers_response:
+          description: Responses from the 'insert_customers' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: customers
+        insert_saml_d_object:
+          fields:
+            amount:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            date:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: date
+            is_laundering:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: bool
+            laundering_type:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            payment_currency:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            payment_type:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            received_currency:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            receiver_account:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int8
+            receiver_bank_location:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            sender_account:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int8
+            sender_bank_location:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            time:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: time
+        insert_saml_d_response:
+          description: Responses from the 'insert_saml_d' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: saml_d
+        insert_sars_object:
+          fields:
+            customer_id:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int8
+            filed_date:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: timestamp
+            reason:
+              type:
+                type: named
+                name: text
+            sar_id:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int8
+            status:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            transaction_id:
+              type:
+                type: named
+                name: int8
+        insert_sars_response:
+          description: Responses from the 'insert_sars' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: sars
+        saml_d:
+          fields:
+            amount:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            date:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: date
+            is_laundering:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: bool
+            laundering_type:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            payment_currency:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            payment_type:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            received_currency:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            receiver_account:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int8
+            receiver_bank_location:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            sender_account:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int8
+            sender_bank_location:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            time:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: time
+        sars:
+          fields:
+            customer_id:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int8
+            filed_date:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: timestamp
+            reason:
+              type:
+                type: named
+                name: text
+            sar_id:
+              type:
+                type: named
+                name: int8
+            status:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            transaction_id:
+              type:
+                type: named
+                name: int8
+        update_column_customers_account:
+          description: Update the 'account' column in the 'customers' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: int8
+        update_column_customers_blacklisted:
+          description: Update the 'blacklisted' column in the 'customers' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: bool
+        update_column_customers_customer_id:
+          description: Update the 'customer_id' column in the 'customers' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: int8
+        update_column_customers_dob:
+          description: Update the 'dob' column in the 'customers' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: date
+        update_column_customers_name:
+          description: Update the 'name' column in the 'customers' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: varchar
+        update_column_customers_nationality:
+          description: Update the 'nationality' column in the 'customers' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        update_column_customers_pep_status:
+          description: Update the 'pep_status' column in the 'customers' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: bool
+        update_column_customers_risk_level:
+          description: Update the 'risk_level' column in the 'customers' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        update_column_sars_customer_id:
+          description: Update the 'customer_id' column in the 'sars' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int8
+        update_column_sars_filed_date:
+          description: Update the 'filed_date' column in the 'sars' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: timestamp
+        update_column_sars_reason:
+          description: Update the 'reason' column in the 'sars' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: text
+        update_column_sars_sar_id:
+          description: Update the 'sar_id' column in the 'sars' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: int8
+        update_column_sars_status:
+          description: Update the 'status' column in the 'sars' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        update_column_sars_transaction_id:
+          description: Update the 'transaction_id' column in the 'sars' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: int8
+        update_customers_by_account_response:
+          description: Responses from the 'update_customers_by_account' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: customers
+        update_customers_by_account_update_columns:
+          description: Update the columns of the 'customers' collection
+          fields:
+            account:
+              description: Update the 'account' column in the 'customers' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_customers_account
+            blacklisted:
+              description: Update the 'blacklisted' column in the 'customers' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_customers_blacklisted
+            customer_id:
+              description: Update the 'customer_id' column in the 'customers' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_customers_customer_id
+            dob:
+              description: Update the 'dob' column in the 'customers' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_customers_dob
+            name:
+              description: Update the 'name' column in the 'customers' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_customers_name
+            nationality:
+              description: Update the 'nationality' column in the 'customers' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_customers_nationality
+            pep_status:
+              description: Update the 'pep_status' column in the 'customers' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_customers_pep_status
+            risk_level:
+              description: Update the 'risk_level' column in the 'customers' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_customers_risk_level
+        update_customers_by_customer_id_response:
+          description: Responses from the 'update_customers_by_customer_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: customers
+        update_customers_by_customer_id_update_columns:
+          description: Update the columns of the 'customers' collection
+          fields:
+            account:
+              description: Update the 'account' column in the 'customers' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_customers_account
+            blacklisted:
+              description: Update the 'blacklisted' column in the 'customers' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_customers_blacklisted
+            customer_id:
+              description: Update the 'customer_id' column in the 'customers' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_customers_customer_id
+            dob:
+              description: Update the 'dob' column in the 'customers' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_customers_dob
+            name:
+              description: Update the 'name' column in the 'customers' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_customers_name
+            nationality:
+              description: Update the 'nationality' column in the 'customers' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_customers_nationality
+            pep_status:
+              description: Update the 'pep_status' column in the 'customers' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_customers_pep_status
+            risk_level:
+              description: Update the 'risk_level' column in the 'customers' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_customers_risk_level
+        update_sars_by_sar_id_response:
+          description: Responses from the 'update_sars_by_sar_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: sars
+        update_sars_by_sar_id_update_columns:
+          description: Update the columns of the 'sars' collection
+          fields:
+            customer_id:
+              description: Update the 'customer_id' column in the 'sars' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_sars_customer_id
+            filed_date:
+              description: Update the 'filed_date' column in the 'sars' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_sars_filed_date
+            reason:
+              description: Update the 'reason' column in the 'sars' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_sars_reason
+            sar_id:
+              description: Update the 'sar_id' column in the 'sars' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_sars_sar_id
+            status:
+              description: Update the 'status' column in the 'sars' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_sars_status
+            transaction_id:
+              description: Update the 'transaction_id' column in the 'sars' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_sars_transaction_id
+      collections:
+        - name: customers
+          arguments: {}
+          type: customers
+          uniqueness_constraints:
+            customers_account_key:
+              unique_columns:
+                - account
+            customers_pkey:
+              unique_columns:
+                - customer_id
+          foreign_keys: {}
+        - name: saml_d
+          arguments: {}
+          type: saml_d
+          uniqueness_constraints: {}
+          foreign_keys: {}
+        - name: sars
+          arguments: {}
+          type: sars
+          uniqueness_constraints:
+            sars_pkey:
+              unique_columns:
+                - sar_id
+          foreign_keys:
+            sars_customer_id_fkey:
+              column_mapping:
+                customer_id: customer_id
+              foreign_collection: customers
+      functions: []
+      procedures:
+        - name: delete_customers_by_account
+          description: Delete any row on the 'customers' collection using the 'account' key
+          arguments:
+            key_account:
+              type:
+                type: named
+                name: int8
+            pre_check:
+              description: Delete permission predicate over the 'customers' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: customers
+          result_type:
+            type: named
+            name: delete_customers_by_account_response
+        - name: delete_customers_by_customer_id
+          description: Delete any row on the 'customers' collection using the 'customer_id' key
+          arguments:
+            key_customer_id:
+              type:
+                type: named
+                name: int8
+            pre_check:
+              description: Delete permission predicate over the 'customers' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: customers
+          result_type:
+            type: named
+            name: delete_customers_by_customer_id_response
+        - name: delete_sars_by_sar_id
+          description: Delete any row on the 'sars' collection using the 'sar_id' key
+          arguments:
+            key_sar_id:
+              type:
+                type: named
+                name: int8
+            pre_check:
+              description: Delete permission predicate over the 'sars' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: sars
+          result_type:
+            type: named
+            name: delete_sars_by_sar_id_response
+        - name: insert_customers
+          description: Insert into the customers table
+          arguments:
+            objects:
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: insert_customers_object
+            post_check:
+              description: Insert permission predicate over the 'customers' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: customers
+          result_type:
+            type: named
+            name: insert_customers_response
+        - name: insert_saml_d
+          description: Insert into the saml_d table
+          arguments:
+            objects:
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: insert_saml_d_object
+            post_check:
+              description: Insert permission predicate over the 'saml_d' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: saml_d
+          result_type:
+            type: named
+            name: insert_saml_d_response
+        - name: insert_sars
+          description: Insert into the sars table
+          arguments:
+            objects:
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: insert_sars_object
+            post_check:
+              description: Insert permission predicate over the 'sars' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: sars
+          result_type:
+            type: named
+            name: insert_sars_response
+        - name: update_customers_by_account
+          description: Update any row on the 'customers' collection using the 'account' key
+          arguments:
+            key_account:
+              type:
+                type: named
+                name: int8
+            post_check:
+              description: Update permission post-condition predicate over the 'customers' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: customers
+            pre_check:
+              description: Update permission pre-condition predicate over the 'customers' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: customers
+            update_columns:
+              type:
+                type: named
+                name: update_customers_by_account_update_columns
+          result_type:
+            type: named
+            name: update_customers_by_account_response
+        - name: update_customers_by_customer_id
+          description: Update any row on the 'customers' collection using the 'customer_id' key
+          arguments:
+            key_customer_id:
+              type:
+                type: named
+                name: int8
+            post_check:
+              description: Update permission post-condition predicate over the 'customers' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: customers
+            pre_check:
+              description: Update permission pre-condition predicate over the 'customers' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: customers
+            update_columns:
+              type:
+                type: named
+                name: update_customers_by_customer_id_update_columns
+          result_type:
+            type: named
+            name: update_customers_by_customer_id_response
+        - name: update_sars_by_sar_id
+          description: Update any row on the 'sars' collection using the 'sar_id' key
+          arguments:
+            key_sar_id:
+              type:
+                type: named
+                name: int8
+            post_check:
+              description: Update permission post-condition predicate over the 'sars' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: sars
+            pre_check:
+              description: Update permission pre-condition predicate over the 'sars' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: sars
+            update_columns:
+              type:
+                type: named
+                name: update_sars_by_sar_id_update_columns
+          result_type:
+            type: named
+            name: update_sars_by_sar_id_response
+    capabilities:
+      version: 0.1.6
+      capabilities:
+        query:
+          aggregates: {}
+          variables: {}
+          explain: {}
+          nested_fields:
+            filter_by: {}
+            order_by: {}
+          exists:
+            nested_collections: {}
+        mutation:
+          transactional: {}
+          explain: {}
+        relationships:
+          relation_comparisons: {}
+          order_by_aggregate: {}

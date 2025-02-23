@@ -1,0 +1,198 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: Sanctioned
+  fields:
+    - name: id
+      type: Int!
+    - name: listType
+      type: String
+    - name: address
+      type: String
+    - name: entityName
+      type: String
+    - name: entityType
+      type: String
+    - name: identifications
+      type: "[String!]"
+    - name: listedDate
+      type: Date
+    - name: program
+      type: String
+  graphql:
+    typeName: Sanctioned
+    inputTypeName: SanctionedInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: sanctions
+      dataConnectorObjectType: sanctioned
+      fieldMapping:
+        id:
+          column:
+            name: _id
+        listType:
+          column:
+            name: List_type
+        address:
+          column:
+            name: address
+        entityName:
+          column:
+            name: entity_name
+        entityType:
+          column:
+            name: entity_type
+        identifications:
+          column:
+            name: identifications
+        listedDate:
+          column:
+            name: listed_date
+        program:
+          column:
+            name: program
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: Sanctioned
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - id
+          - listType
+          - address
+          - entityName
+          - entityType
+          - identifications
+          - listedDate
+          - program
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: SanctionedBoolExp
+  operand:
+    object:
+      type: Sanctioned
+      comparableFields:
+        - fieldName: id
+          booleanExpressionType: IntBoolExp
+        - fieldName: listType
+          booleanExpressionType: StringBoolExp
+        - fieldName: address
+          booleanExpressionType: StringBoolExp
+        - fieldName: entityName
+          booleanExpressionType: StringBoolExp
+        - fieldName: entityType
+          booleanExpressionType: StringBoolExp
+        - fieldName: listedDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: program
+          booleanExpressionType: StringBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: SanctionedBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: SanctionedAggExp
+  operand:
+    object:
+      aggregatedType: Sanctioned
+      aggregatableFields:
+        - fieldName: id
+          aggregateExpression: IntAggExp
+        - fieldName: listType
+          aggregateExpression: StringAggExp
+        - fieldName: address
+          aggregateExpression: StringAggExp
+        - fieldName: entityName
+          aggregateExpression: StringAggExp
+        - fieldName: entityType
+          aggregateExpression: StringAggExp
+        - fieldName: listedDate
+          aggregateExpression: DateAggExp
+        - fieldName: program
+          aggregateExpression: StringAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: SanctionedAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: SanctionedOrderByExp
+  operand:
+    object:
+      orderedType: Sanctioned
+      orderableFields:
+        - fieldName: id
+          orderByExpression: IntOrderByExp
+        - fieldName: listType
+          orderByExpression: StringOrderByExp
+        - fieldName: address
+          orderByExpression: StringOrderByExp
+        - fieldName: entityName
+          orderByExpression: StringOrderByExp
+        - fieldName: entityType
+          orderByExpression: StringOrderByExp
+        - fieldName: listedDate
+          orderByExpression: DateOrderByExp
+        - fieldName: program
+          orderByExpression: StringOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: SanctionedOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: Sanctioned
+  objectType: Sanctioned
+  source:
+    dataConnectorName: sanctions
+    collection: sanctioned
+  filterExpressionType: SanctionedBoolExp
+  aggregateExpression: SanctionedAggExp
+  orderByExpression: SanctionedOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: sanctioned
+      subscription:
+        rootField: sanctioned
+    selectUniques:
+      - queryRootField: sanctionedById
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: sanctionedById
+    filterInputTypeName: SanctionedFilterInput
+    aggregate:
+      queryRootField: sanctionedAggregate
+      subscription:
+        rootField: sanctionedAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: Sanctioned
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
