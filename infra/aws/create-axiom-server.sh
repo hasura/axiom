@@ -112,7 +112,7 @@ INSTANCE_ID=$(aws ec2 run-instances \
   --key-name "$KEY_NAME" \
   --security-group-ids "$SG_ID" \
   --region "$REGION" \
-  --block-device-mappings "[{\"DeviceName\":\"/dev/xvda\",\"Ebs\":{\"VolumeSize\":$VOLUME_SIZE,\"DeleteOnTermination\":true}}]" \
+  --block-device-mappings "[{\"DeviceName\":\"/dev/sda1\",\"Ebs\":{\"VolumeSize\":$VOLUME_SIZE,\"DeleteOnTermination\":true}}]" \
   --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=${TAG}}]" \
   --query "Instances[0].InstanceId" \
   --output text)

@@ -1,0 +1,146 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: Array
+  fields:
+    - name: amount
+      type: Float!
+    - name: beneficiary
+      type: String!
+    - name: date
+      type: String!
+  graphql:
+    typeName: Array
+    inputTypeName: ArrayInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: account_operations
+      dataConnectorObjectType: array
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: Array
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - amount
+          - beneficiary
+          - date
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: SarFilingDetails
+  fields:
+    - name: accountId
+      type: Float!
+    - name: accountName
+      type: String!
+    - name: reason
+      type: String!
+    - name: riskFactors
+      type: "[String!]!"
+    - name: suspiciousTransactions
+      type: "[Array!]!"
+  graphql:
+    typeName: SarFilingDetails
+    inputTypeName: SarFilingDetailsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: account_operations
+      dataConnectorObjectType: SARFilingDetails
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: SarFilingDetails
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - accountId
+          - accountName
+          - reason
+          - riskFactors
+          - suspiciousTransactions
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: SarFilingResponse
+  fields:
+    - name: accountId
+      type: Float!
+    - name: sarId
+      type: String
+    - name: status
+      type: String!
+  graphql:
+    typeName: SarFilingResponse
+    inputTypeName: SarFilingResponseInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: account_operations
+      dataConnectorObjectType: SARFilingResponse
+      fieldMapping:
+        accountId:
+          column:
+            name: account_id
+        sarId:
+          column:
+            name: sar_id
+        status:
+          column:
+            name: status
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: SarFilingResponse
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - accountId
+          - sarId
+          - status
+
+---
+kind: Command
+version: v1
+definition:
+  description: >
+    **Description:**
+    This function generates and files a Suspicious Activity Report (SAR) when a pattern of high-risk transactions or behaviors suggests potential financial crimes such as money laundering or fraud. The SAR filing provides documented evidence for compliance teams and regulatory bodies to review and take appropriate actions.
+
+    **When to Call:**
+    - When an account exhibits transactions or behaviors consistent with known fraud patterns or money laundering schemes.
+    - If internal risk teams identify multiple suspicious transactions requiring formal documentation.
+    - When compliance regulations mandate the reporting of unusual account activities for further investigation.
+  name: FileSar
+  outputType: SarFilingResponse!
+  arguments:
+    - name: details
+      type: SarFilingDetails!
+  source:
+    dataConnectorName: account_operations
+    dataConnectorCommand:
+      procedure: fileSAR
+  graphql:
+    rootFieldName: fileSar
+    rootFieldKind: Mutation
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: FileSar
+  permissions:
+    - role: admin
+      allowExecution: true
+

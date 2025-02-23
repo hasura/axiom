@@ -1,0 +1,114 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: AccountFreezeDetails
+  fields:
+    - name: accountId
+      type: Float!
+    - name: accountName
+      type: String!
+    - name: freezeLevel
+      type: String!
+    - name: reason
+      type: String!
+    - name: transactionThreshold
+      type: Float
+  graphql:
+    typeName: AccountFreezeDetails
+    inputTypeName: AccountFreezeDetailsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: account_operations
+      dataConnectorObjectType: AccountFreezeDetails
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: AccountFreezeDetails
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - accountId
+          - accountName
+          - freezeLevel
+          - reason
+          - transactionThreshold
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: AccountFreezeResponse
+  fields:
+    - name: accountId
+      type: Float!
+    - name: freezeId
+      type: String
+    - name: status
+      type: String!
+  graphql:
+    typeName: AccountFreezeResponse
+    inputTypeName: AccountFreezeResponseInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: account_operations
+      dataConnectorObjectType: AccountFreezeResponse
+      fieldMapping:
+        accountId:
+          column:
+            name: account_id
+        freezeId:
+          column:
+            name: freeze_id
+        status:
+          column:
+            name: status
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: AccountFreezeResponse
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - accountId
+          - freezeId
+          - status
+
+---
+kind: Command
+version: v1
+definition:
+  description: >
+    **Description:**
+    This function fully or partially freezes an account to prevent unauthorized transactions. A full freeze blocks all transactions, while a partial freeze imposes specific restrictions based on transaction limits. This function is crucial for fraud mitigation, regulatory compliance, and safeguarding customer funds in cases of suspected account compromise.
+
+    **When to Call:**
+    - Immediately after identifying suspicious activities indicative of account takeover or fraud.
+    - When law enforcement or regulatory agencies require an account freeze as part of an investigation.
+    - If a customer reports unauthorized access or requests a temporary block on their account.
+  name: FreezeAccount
+  outputType: AccountFreezeResponse!
+  arguments:
+    - name: details
+      type: AccountFreezeDetails!
+  source:
+    dataConnectorName: account_operations
+    dataConnectorCommand:
+      procedure: freezeAccount
+  graphql:
+    rootFieldName: freezeAccount
+    rootFieldKind: Mutation
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: FreezeAccount
+  permissions:
+    - role: admin
+      allowExecution: true
+

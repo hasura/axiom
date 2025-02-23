@@ -8,6 +8,16 @@
   hosts: demo_servers
   become: true
   tasks:
+    - name: Ensure git is installed
+      ansible.builtin.apt:
+        name: git
+        state: present
+
+    - name: Ensure git-lfs is installed
+      ansible.builtin.apt:
+        name: git-lfs
+        state: present
+
     - name: Clone axiom repository
       ansible.builtin.git:
         repo: https://github.com/hasura/axiom.git
