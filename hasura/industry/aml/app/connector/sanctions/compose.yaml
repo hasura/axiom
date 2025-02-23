@@ -1,0 +1,14 @@
+services:
+  app_sanctions:
+    build:
+      context: .
+      dockerfile: .hasura-connector/Dockerfile.sanctions
+    environment:
+      HASURA_SERVICE_TOKEN_SECRET: $APP_SANCTIONS_HASURA_SERVICE_TOKEN_SECRET
+      MONGODB_DATABASE_URI: $APP_SANCTIONS_MONGODB_DATABASE_URI
+      OTEL_EXPORTER_OTLP_ENDPOINT: $APP_SANCTIONS_OTEL_EXPORTER_OTLP_ENDPOINT
+      OTEL_SERVICE_NAME: $APP_SANCTIONS_OTEL_SERVICE_NAME
+    extra_hosts:
+      - local.hasura.dev:host-gateway
+    ports:
+      - 8200:8080
