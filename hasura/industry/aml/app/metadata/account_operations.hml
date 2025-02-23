@@ -1,0 +1,203 @@
+kind: DataConnectorLink
+version: v1
+definition:
+  name: account_operations
+  url:
+    readWriteUrls:
+      read:
+        valueFromEnv: APP_ACCOUNT_OPERATIONS_READ_URL
+      write:
+        valueFromEnv: APP_ACCOUNT_OPERATIONS_WRITE_URL
+  headers:
+    Authorization:
+      valueFromEnv: APP_ACCOUNT_OPERATIONS_AUTHORIZATION_HEADER
+  schema:
+    version: v0.1
+    schema:
+      scalar_types:
+        Float:
+          representation:
+            type: float64
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+        String:
+          representation:
+            type: string
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+      object_types:
+        AccountFreezeDetails:
+          fields:
+            accountId:
+              type:
+                type: named
+                name: Float
+            accountName:
+              type:
+                type: named
+                name: String
+            freezeLevel:
+              type:
+                type: named
+                name: String
+            reason:
+              type:
+                type: named
+                name: String
+            transactionThreshold:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Float
+        AccountFreezeResponse:
+          fields:
+            account_id:
+              type:
+                type: named
+                name: Float
+            freeze_id:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
+            status:
+              type:
+                type: named
+                name: String
+        SARFilingDetails:
+          fields:
+            accountId:
+              type:
+                type: named
+                name: Float
+            accountName:
+              type:
+                type: named
+                name: String
+            reason:
+              type:
+                type: named
+                name: String
+            riskFactors:
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: String
+            suspiciousTransactions:
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: array
+        SARFilingResponse:
+          fields:
+            account_id:
+              type:
+                type: named
+                name: Float
+            sar_id:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
+            status:
+              type:
+                type: named
+                name: String
+        TransactionHoldDetails:
+          fields:
+            accountId:
+              type:
+                type: named
+                name: Float
+            accountName:
+              type:
+                type: named
+                name: String
+            holdDuration:
+              type:
+                type: named
+                name: Float
+            reason:
+              type:
+                type: named
+                name: String
+            thresholdAmount:
+              type:
+                type: named
+                name: Float
+        TransactionHoldResponse:
+          fields:
+            account_id:
+              type:
+                type: named
+                name: Float
+            hold_id:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
+            status:
+              type:
+                type: named
+                name: String
+        array:
+          fields:
+            amount:
+              type:
+                type: named
+                name: Float
+            beneficiary:
+              type:
+                type: named
+                name: String
+            date:
+              type:
+                type: named
+                name: String
+      collections: []
+      functions: []
+      procedures:
+        - name: holdTransactions
+          arguments:
+            details:
+              type:
+                type: named
+                name: TransactionHoldDetails
+          result_type:
+            type: named
+            name: TransactionHoldResponse
+        - name: freezeAccount
+          arguments:
+            details:
+              type:
+                type: named
+                name: AccountFreezeDetails
+          result_type:
+            type: named
+            name: AccountFreezeResponse
+        - name: fileSAR
+          arguments:
+            details:
+              type:
+                type: named
+                name: SARFilingDetails
+          result_type:
+            type: named
+            name: SARFilingResponse
+    capabilities:
+      version: 0.1.6
+      capabilities:
+        query:
+          variables: {}
+          nested_fields: {}
+        mutation: {}
