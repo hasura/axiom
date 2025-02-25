@@ -32,3 +32,35 @@ definition:
       rawRequest:
         query: {}
         variables: {}
+
+---
+kind: LifecyclePluginHook
+version: v1
+definition:
+  pre: route
+  name: restified_endpoints
+  url:
+    valueFromEnv: RESTIFIED_ENDPOINTS_URL
+  config:
+    matchPath: "/v1/api/rest/*"
+    matchMethods: ["GET", "POST", "DELETE", "PUT"]
+    request:
+      method: GET
+      headers:
+        forward:
+          - Authorization
+          - x-hasura-role
+          - x-hasura-ddn-token
+        additional:
+          hasura-m-auth:
+            valueFromEnv: RESTIFIED_M_AUTH_KEY
+      rawRequest:
+        path: {}
+        query: {}
+        method: {}
+        body: {}
+    response:
+      headers:
+        additional:
+          content-type:
+            value: application/json
