@@ -1,5 +1,19 @@
 #!/usr/bin/env node
 
+// Global error handler - add at the very top to catch any uncaught exceptions
+process.on('uncaughtException', (err) => {
+    console.error('UNCAUGHT EXCEPTION:', err.message);
+    console.error('Stack trace:', err.stack);
+    process.exit(1);
+  });
+  
+// Initial debugging before imports
+console.log('============== SCRIPT INITIALIZATION ==============');
+console.log('Script starting at:', new Date().toISOString());
+console.log('Node version:', process.version);
+console.log('Process arguments:', process.argv.join(' '));
+console.log('Working directory:', process.cwd());
+
 import fs from 'fs';
 import { dirname, resolve, join } from 'path';
 import yaml from 'yaml';

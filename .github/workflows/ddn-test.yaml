@@ -68,6 +68,16 @@ jobs:
       - name: Build supergraph
         if: env.no_op != 'true'
         run: |
+          # Added logging before script execution
+          echo "===== PRE-EXECUTION LOGGING ====="
+          echo "Current directory: $(pwd)"
+          echo "Listing deploy directory:"
+          ls -la ./scripts/deploy/
+          echo "Checking auth files:"
+          ls -la ./scripts/deploy/jwtauth.hml ./scripts/deploy/noauth.hml || echo "Auth files not found"
+          echo "Node version: $(node --version)"
+          echo "===== END PRE-EXECUTION LOGGING ====="
+          
           calculatedSha=$(git rev-parse --short ${{ github.event.pull_request.head.sha }})
           if [ "${{ env.connector_changes }}" = "true" ]; then
             echo "Building connectors..."
@@ -80,6 +90,8 @@ jobs:
               --log-level FATAL \
               --quiet \
               --no-interaction > build_output.json
+            # Save exit code
+            DEPLOY_EXIT_CODE=$?
           else
             echo "Skipping connector build."
             ./scripts/deploy/deploy.mjs \
@@ -88,8 +100,22 @@ jobs:
               --override-description "${calculatedSha} [PR-${{ github.event.pull_request.number }}] ${{ github.event.pull_request.title }} | Build for commit ${{ github.event.pull_request.head.sha }}" \
               --override \
               --log-level DEBUG \
-              --no-interaction
+              --no-interaction > build_output.json
+            # Save exit code
+            DEPLOY_EXIT_CODE=$?
           fi
+          
+          # Added logging after script execution
+          echo "===== POST-EXECUTION LOGGING ====="
+          echo "Deploy script exit code: $DEPLOY_EXIT_CODE"
+          echo "Current directory: $(pwd)"
+          echo "Checking if build_output.json exists:"
+          ls -la build_output.json || echo "build_output.json not found"
+          echo "Contents of hasura directory:"
+          ls -la ./hasura/ || echo "Hasura directory not found"
+          echo "Contents of hasura/.hasura directory:"
+          ls -la ./hasura/.hasura/ || echo "hasura/.hasura directory not found"
+          echo "===== END POST-EXECUTION LOGGING ====="
 
       - name: Extract URLs from JSON
         if: env.no_op != 'true'
