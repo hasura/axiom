@@ -1,66 +1,77 @@
 # Axiom
-Hasura presales demo kit
+Hasura presales demo kit for showcasing DDN and PromptQL capabilities across various industry verticals.
 
-Axiom contains all the resources and tools required to run industry demos of DDN and PromptQL. Within axiom, are a number of different subdirectories with a specific focus, and documentation to support their usage.
-| **Directory**  | **Usage** |
-|----------------|-----------|
-| `hasura`        | Contains all configuration and metadata required to run instances of DDN. `hasura` includes supergraph, subgraph, and connector metadata for a number of industry demo profiles.   |
-| `infra`          | Contains ansible playbooks for the ongoing configuration management of existing demo servers and is used to set up new servers. |
-| `scripts`        | The `scripts` directory holds useful tools for demoing, managing, and deploying DDN. |
-| `.data`          | Seeds content for local and cloud based demonstrations |
+## Prerequisites
+Before getting started, ensure you have the following installed:
+- [DDN CLI](https://hasura.io/docs/3.0/reference/cli/installation/)
+- Git LFS (`brew install git-lfs` on macOS)
+- Docker and Docker Compose
+- Node.js (for utility scripts)
+- Ansible (for infrastructure management)
 
+## Overview
+Axiom provides a comprehensive platform for deploying and testing Hasura industry demos. It serves as:
+- A library of industry-specific demo profiles for quick deployment
+- A testing ground for showcasing Hasura features with real-world examples
+- A centralized toolkit for demo deployment and management
 
-## Quickstarts
+| Directory | Purpose |
+|-----------|---------|
+| `hasura` | Contains all DDN configurations including supergraph, subgraph, and connector metadata for industry demo profiles |
+| `infra` | Ansible playbooks for managing demo servers and infrastructure automation |
+| `scripts` | Utility tools for demo management, deployment, and maintenance |
+| `.data` | Seed data and Docker configurations for local demonstrations |
 
-### Telco
+## Demo Profiles
 
-1. Clone this repo
+### Telco Demo
+Demonstrates telecommunications industry capabilities with features for:
+- Customer management and billing
+- Network operations and monitoring
+- Service provisioning and activation
+- User authentication and authorization
+
+#### Quick Start
+1. Clone the repository:
 ```bash
 git clone git@github.com:hasura/axiom.git
 ```
 
-2. Install prerequisites
-
-    * Follow the [DDN CLI installation instructions](https://hasura.io/docs/3.0/reference/cli/installation/) to download and install DDN CLI
-
-3. Copy .env files
-
+2. Set up environment:
 ```bash
 cp hasura/.env.telco.template hasura/.env.telco
 cp .data/.env.template .data/telco/.env
 ```
 
-4. Run the demo script
-
+3. Launch the demo:
 ```bash
 cd hasura
 ddn run build-telco
 ddn run demo-telco
 ```
 
-### AML
+### Anti-Money Laundering (AML) Demo
+Comprehensive compliance and risk management solution with detailed examples and workflows available in [hasura/docs/aml-demo-guide.md](hasura/docs/aml-demo-guide.md).
 
-1. Clone this repo
+#### Features
+- Customer Risk Management (real-time scoring, KYC validation)
+- Sanctions Screening (global database integration, automated flagging)
+- Transaction Monitoring (ML-based detection, pattern recognition)
+- Compliance Operations (SAR management, account freezing)
+
+#### Quick Start
+1. Clone the repository:
 ```bash
 git clone git@github.com:hasura/axiom.git
 ```
 
-2. Install prerequisites
-
-    * Follow the [DDN CLI installation instructions](https://hasura.io/docs/3.0/reference/cli/installation/) to download and install DDN CLI
-
-    * Install git LFS to pull down source datasets
-`brew install git-lfs`
-
-3. Copy .env files
-
+2. Set up environment:
 ```bash
-cp hasura/.env.aml.template hasura/.aml.telco
+cp hasura/.env.aml.template hasura/.env.aml
 cp .data/.env.template .data/aml/.env
 ```
 
-4. Run the demo script
-
+3. Launch the demo:
 ```bash
 cd hasura
 ddn run build-aml
