@@ -157,8 +157,19 @@ class DeploymentManager {
 
     async main() {
         try {
+            console.log('Starting deployment process');
+            console.log('Current working directory:', process.cwd());
+            console.log('Checking path existence:', {
+                rootPath: this.paths.root,
+                rootExists: fs.existsSync(this.paths.root),
+                jwtPath: this.paths.jwt,
+                jwtExists: fs.existsSync(this.paths.jwt),
+                noauthPath: this.paths.noauth,
+                noauthExists: fs.existsSync(this.paths.noauth)
+            });
             if (!fs.existsSync(this.paths.root)) throw new Error(`Missing directory: ${this.paths.root}`);
             process.chdir(this.paths.root);
+            console.log('Changed directory to:', process.cwd());
             if (!fs.existsSync('.hasura/context.yaml')) throw new Error('Missing context.yaml');
             if (!CONFIG.logLevels.includes(this.options.logLevel.toUpperCase())) {
                 throw new Error(`Invalid log level: ${this.options.logLevel}`);
@@ -212,6 +223,14 @@ class DeploymentManager {
             this.log('inverse', 'Deployment completed successfully');
         } catch (error) {
             console.error(chalk.whiteBright.bgRed(`Error: ${error.message}`));
+            console.error(`Stack trace: ${error.stack}`);
+            console.error(`Context: ${JSON.stringify({
+                    cwd: process.cwd(),
+                    paths: this.paths,
+                    options: this.options,
+                    existsRoot: fs.existsSync(this.paths.root),
+                    existsContextYaml: fs.existsSync('.hasura/context.yaml')
+                }, null, 2)}`);
             process.exit(1);
         }
     }
