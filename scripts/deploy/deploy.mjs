@@ -156,6 +156,7 @@ class DeploymentManager {
     }
 
     async main() {
+        this.log("STARTING MAIN");
         try {
             if (!fs.existsSync(this.paths.root)) throw new Error(`Missing directory: ${this.paths.root}`);
             process.chdir(this.paths.root);
