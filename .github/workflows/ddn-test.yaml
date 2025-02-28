@@ -72,7 +72,7 @@ jobs:
           if [ "${{ env.connector_changes }}" = "true" ]; then
             echo "Building connectors..."
             ./scripts/deploy/deploy.mjs \
-              --context axiom-dev \
+              --context telco-dev \
               --profile telco \
               --override-description "${calculatedSha} [PR-${{ github.event.pull_request.number }}] ${{ github.event.pull_request.title }} | Build for commit ${{ github.event.pull_request.head.sha }}" \
               --rebuild-connectors \
@@ -83,7 +83,7 @@ jobs:
           else
             echo "Skipping connector build."
             ./scripts/deploy/deploy.mjs \
-              --context axiom-dev \
+              --context telco-dev \
               --profile telco \
               --override-description "${calculatedSha} [PR-${{ github.event.pull_request.number }}] ${{ github.event.pull_request.title }} | Build for commit ${{ github.event.pull_request.head.sha }}" \
               --override \
@@ -236,7 +236,7 @@ jobs:
             }
           }'
 
-          RESPONSE=$(curl -s -X POST http://localhost:3000/graphql \
+          RESPONSE=$(curl -s -X POST http://localhost:3280/graphql \
             -H "Content-Type: application/json" \
             -d "$QUERY")
 
