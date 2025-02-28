@@ -40,11 +40,11 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y jq
 
-      - name: Create .env.cloud.dev
+      - name: Create .env.cloud.telco-dev
         working-directory: ./hasura
         if: env.no_op != 'true'
         run: |
-          echo "${{ secrets.ENV_CLOUD_DEFAULT }}" > .env.cloud.dev
+          echo "${{ secrets.ENV_CLOUD_DEFAULT }}" > .env.cloud.telco-dev
 
       - name: Detect Connector Changes
         if: env.no_op != 'true'
@@ -72,7 +72,7 @@ jobs:
           if [ "${{ env.connector_changes }}" = "true" ]; then
             echo "Building connectors..."
             ./scripts/deploy/deploy.mjs \
-              --context axiom-dev \
+              --context telco-dev \
               --profile telco \
               --override-description "${calculatedSha} [PR-${{ github.event.pull_request.number }}] ${{ github.event.pull_request.title }} | Build for commit ${{ github.event.pull_request.head.sha }}" \
               --rebuild-connectors \
@@ -83,7 +83,7 @@ jobs:
           else
             echo "Skipping connector build."
             ./scripts/deploy/deploy.mjs \
-              --context axiom-dev \
+              --context telco-dev \
               --profile telco \
               --override-description "${calculatedSha} [PR-${{ github.event.pull_request.number }}] ${{ github.event.pull_request.title }} | Build for commit ${{ github.event.pull_request.head.sha }}" \
               --override \
@@ -202,7 +202,7 @@ jobs:
         if: env.no_op != 'true'
         run: |
           echo "Waiting for GraphQL service to start..."
-          until curl -s http://localhost:3000/graphql -o /dev/null; do
+          until curl -s http://localhost:3280/graphql -o /dev/null; do
             echo "Service not ready, retrying in 5 seconds..."
             sleep 5
           done
@@ -236,7 +236,7 @@ jobs:
             }
           }'
 
-          RESPONSE=$(curl -s -X POST http://localhost:3000/graphql \
+          RESPONSE=$(curl -s -X POST http://localhost:3280/graphql \
             -H "Content-Type: application/json" \
             -d "$QUERY")
 
