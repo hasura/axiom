@@ -2,38 +2,6 @@
 kind: ObjectType
 version: v1
 definition:
-  name: Array
-  fields:
-    - name: amount
-      type: Float!
-    - name: beneficiary
-      type: String!
-    - name: date
-      type: String!
-  graphql:
-    typeName: Array
-    inputTypeName: ArrayInput
-  dataConnectorTypeMapping:
-    - dataConnectorName: account_operations
-      dataConnectorObjectType: array
-
----
-kind: TypePermissions
-version: v1
-definition:
-  typeName: Array
-  permissions:
-    - role: admin
-      output:
-        allowedFields:
-          - amount
-          - beneficiary
-          - date
-
----
-kind: ObjectType
-version: v1
-definition:
   name: SarFilingDetails
   fields:
     - name: accountId
@@ -42,10 +10,6 @@ definition:
       type: String!
     - name: reason
       type: String!
-    - name: riskFactors
-      type: "[String!]!"
-    - name: suspiciousTransactions
-      type: "[Array!]!"
   graphql:
     typeName: SarFilingDetails
     inputTypeName: SarFilingDetailsInput
@@ -65,8 +29,6 @@ definition:
           - accountId
           - accountName
           - reason
-          - riskFactors
-          - suspiciousTransactions
 
 ---
 kind: ObjectType
@@ -114,14 +76,6 @@ definition:
 kind: Command
 version: v1
 definition:
-  description: >
-    **Description:**
-    This function generates and files a Suspicious Activity Report (SAR) when a pattern of high-risk transactions or behaviors suggests potential financial crimes such as money laundering or fraud. The SAR filing provides documented evidence for compliance teams and regulatory bodies to review and take appropriate actions.
-
-    **When to Call:**
-    - When an account exhibits transactions or behaviors consistent with known fraud patterns or money laundering schemes.
-    - If internal risk teams identify multiple suspicious transactions requiring formal documentation.
-    - When compliance regulations mandate the reporting of unusual account activities for further investigation.
   name: FileSar
   outputType: SarFilingResponse!
   arguments:
@@ -134,6 +88,19 @@ definition:
   graphql:
     rootFieldName: fileSar
     rootFieldKind: Mutation
+  description: >-
+    **Description:**
+
+    This function generates and files a Suspicious Activity Report (SAR) when a pattern of high-risk transactions or behaviors suggests potential financial crimes such as money laundering or fraud. The SAR filing provides documented evidence for compliance teams and regulatory bodies to review and take appropriate actions.
+
+
+    **When to Call:**
+
+    - When an account exhibits transactions or behaviors consistent with known fraud patterns or money laundering schemes.
+
+    - If internal risk teams identify multiple suspicious transactions requiring formal documentation.
+
+    - When compliance regulations mandate the reporting of unusual account activities for further investigation.
 
 ---
 kind: CommandPermissions

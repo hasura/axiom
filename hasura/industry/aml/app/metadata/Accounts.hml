@@ -14,7 +14,7 @@ definition:
     typeName: AccountsContactInformation
     inputTypeName: AccountsContactInformationInput
   dataConnectorTypeMapping:
-    - dataConnectorName: sanctions
+    - dataConnectorName: aml_monitoring
       dataConnectorObjectType: accounts_contact_information
       fieldMapping:
         address:
@@ -54,15 +54,15 @@ definition:
     typeName: AccountsTransactionLimits
     inputTypeName: AccountsTransactionLimitsInput
   dataConnectorTypeMapping:
-    - dataConnectorName: sanctions
-      dataConnectorObjectType: accounts_transaction-limits
+    - dataConnectorName: aml_monitoring
+      dataConnectorObjectType: accounts_transaction_limits
       fieldMapping:
         maxNumTransactions:
           column:
-            name: max-num-transactions
+            name: max_num_transactions
         maxTransactionLimit:
           column:
-            name: max-transaction-limit
+            name: max_transaction_limit
 
 ---
 kind: TypePermissions
@@ -83,7 +83,9 @@ definition:
   name: Accounts
   fields:
     - name: id
-      type: Int!
+      type: ObjectId!
+    - name: accountId
+      type: Int
     - name: contactInformation
       type: AccountsContactInformation
     - name: entityType
@@ -98,12 +100,15 @@ definition:
     typeName: Accounts
     inputTypeName: AccountsInput
   dataConnectorTypeMapping:
-    - dataConnectorName: sanctions
+    - dataConnectorName: aml_monitoring
       dataConnectorObjectType: accounts
       fieldMapping:
         id:
           column:
             name: _id
+        accountId:
+          column:
+            name: account_id
         contactInformation:
           column:
             name: contact_information
@@ -118,7 +123,7 @@ definition:
             name: risk
         transactionLimits:
           column:
-            name: transaction-limits
+            name: transaction_limits
 
 ---
 kind: TypePermissions
@@ -130,6 +135,7 @@ definition:
       output:
         allowedFields:
           - id
+          - accountId
           - contactInformation
           - entityType
           - name
@@ -190,6 +196,8 @@ definition:
       type: Accounts
       comparableFields:
         - fieldName: id
+          booleanExpressionType: ObjectIdBoolExp
+        - fieldName: accountId
           booleanExpressionType: IntBoolExp
         - fieldName: contactInformation
           booleanExpressionType: AccountsContactInformationBoolExp
@@ -219,6 +227,8 @@ definition:
       aggregatedType: Accounts
       aggregatableFields:
         - fieldName: id
+          aggregateExpression: ObjectIdAggExp
+        - fieldName: accountId
           aggregateExpression: IntAggExp
         - fieldName: entityType
           aggregateExpression: StringAggExp
@@ -277,6 +287,8 @@ definition:
       orderedType: Accounts
       orderableFields:
         - fieldName: id
+          orderByExpression: ObjectIdOrderByExp
+        - fieldName: accountId
           orderByExpression: IntOrderByExp
         - fieldName: contactInformation
           orderByExpression: AccountsContactInformationOrderByExp
@@ -299,7 +311,7 @@ definition:
   name: Accounts
   objectType: Accounts
   source:
-    dataConnectorName: sanctions
+    dataConnectorName: aml_monitoring
     collection: accounts
   filterExpressionType: AccountsBoolExp
   aggregateExpression: AccountsAggExp
@@ -336,16 +348,16 @@ definition:
 kind: Relationship
 version: v1
 definition:
-  name: beneficiaryTransactions
+  name: aml_beneficiary_cases
   sourceType: Accounts
   target:
     model:
-      name: Transactions
+      name: AmlCases
       relationshipType: Array
   mapping:
     - source:
         fieldPath:
-          - fieldName: id
+          - fieldName: accountId
       target:
         modelField:
           - fieldName: beneficiaryId
@@ -354,16 +366,34 @@ definition:
 kind: Relationship
 version: v1
 definition:
-  name: originatorTransactions
+  name: aml_originator_cases
   sourceType: Accounts
   target:
     model:
-      name: Transactions
+      name: AmlCases
       relationshipType: Array
   mapping:
     - source:
         fieldPath:
-          - fieldName: id
+          - fieldName: accountId
       target:
         modelField:
           - fieldName: originatorId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer
+  sourceType: Accounts
+  target:
+    model:
+      name: Customers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: accountId
+      target:
+        modelField:
+          - fieldName: account

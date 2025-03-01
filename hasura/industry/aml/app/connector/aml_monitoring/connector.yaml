@@ -1,0 +1,16 @@
+kind: Connector
+version: v2
+definition:
+  name: aml_monitoring
+  subgraph: app
+  source: hasura/mongodb:v1.6.0
+  context: .
+  envMapping:
+    HASURA_SERVICE_TOKEN_SECRET:
+      fromEnv: APP_AML_MONITORING_HASURA_SERVICE_TOKEN_SECRET
+    MONGODB_DATABASE_URI:
+      fromEnv: APP_AML_MONITORING_MONGODB_DATABASE_URI
+    OTEL_EXPORTER_OTLP_ENDPOINT:
+      fromEnv: APP_AML_MONITORING_OTEL_EXPORTER_OTLP_ENDPOINT
+    OTEL_SERVICE_NAME:
+      fromEnv: APP_AML_MONITORING_OTEL_SERVICE_NAME
