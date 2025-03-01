@@ -2,41 +2,6 @@
 kind: ObjectType
 version: v1
 definition:
-  name: CaseReassignmentDetails
-  fields:
-    - name: caseId
-      type: Float!
-    - name: newOperatorId
-      type: Float!
-    - name: previousOperatorId
-      type: Float!
-    - name: reason
-      type: String!
-  graphql:
-    typeName: CaseReassignmentDetails
-    inputTypeName: CaseReassignmentDetailsInput
-  dataConnectorTypeMapping:
-    - dataConnectorName: ops_mgmt
-      dataConnectorObjectType: CaseReassignmentDetails
-
----
-kind: TypePermissions
-version: v1
-definition:
-  typeName: CaseReassignmentDetails
-  permissions:
-    - role: admin
-      output:
-        allowedFields:
-          - caseId
-          - newOperatorId
-          - previousOperatorId
-          - reason
-
----
-kind: ObjectType
-version: v1
-definition:
   name: CaseReassignmentResponse
   fields:
     - name: caseId
@@ -72,8 +37,14 @@ definition:
   name: ReassignCase
   outputType: CaseReassignmentResponse!
   arguments:
-    - name: details
-      type: CaseReassignmentDetails!
+    - name: caseId
+      type: Float!
+    - name: newOperatorId
+      type: String!
+    - name: previousOperatorId
+      type: String!
+    - name: reason
+      type: String!
   source:
     dataConnectorName: ops_mgmt
     dataConnectorCommand:

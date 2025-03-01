@@ -1,25 +1,3 @@
-export interface SARFilingDetails {
-  accountId: number;
-  accountName: string;
-  reason: string;
-}
-
-export interface AccountFreezeDetails {
-  accountId: number;
-  accountName: string;
-  reason: string;
-  freezeLevel: string;
-  transactionThreshold?: number;
-}
-
-export interface TransactionHoldDetails {
-  accountId: number;
-  accountName: string;
-  thresholdAmount: number;
-  holdDuration: number;
-  reason: string;
-}
-
 export interface SARFilingResponse {
   sar_id?: string;
   account_id: number;
@@ -50,18 +28,22 @@ export interface TransactionHoldResponse {
  * @param details
  */
 export async function holdTransactions(
-  details: TransactionHoldDetails
+  accountId: number,
+  accountName: string,
+  thresholdAmount: number,
+  holdDuration: number,
+  reason: string
 ): Promise<TransactionHoldResponse> {
-  if (details.thresholdAmount <= 0) {
+  if (thresholdAmount <= 0) {
     throw new Error("Threshold amount must be positive");
   }
-  if (details.holdDuration <= 0) {
+  if (holdDuration <= 0) {
     throw new Error("Hold duration must be positive");
   }
 
   return {
     hold_id: `hold_${Math.floor(Math.random() * 10000)}`,
-    account_id: details.accountId,
+    account_id: accountId,
     status: "hold placed",
   };
 }
@@ -78,16 +60,20 @@ export async function holdTransactions(
  * @param details
  */
 export async function freezeAccount(
-  details: AccountFreezeDetails
+  accountId: number,
+  accountName: string,
+  reason: string,
+  freezeLevel: string,
+  transactionThreshold?: number
 ): Promise<AccountFreezeResponse> {
-  if (details.freezeLevel === 'partial' && !details.transactionThreshold) {
+  if (freezeLevel === 'partial' && !transactionThreshold) {
     throw new Error("Transaction threshold required for partial freeze");
   }
 
   return {
     freeze_id: `freeze_${Math.floor(Math.random() * 10000)}`,
-    account_id: details.accountId,
-    status: details.freezeLevel === 'full' ? "fully frozen" : "partially frozen",
+    account_id: accountId,
+    status: freezeLevel === 'full' ? "fully frozen" : "partially frozen",
   };
 }
 
@@ -103,12 +89,13 @@ export async function freezeAccount(
  * @param details
  */
 export async function fileSAR(
-  details: SARFilingDetails
+  accountId: number,
+  accountName: string,
+  reason: string
 ): Promise<SARFilingResponse> {
-
   return {
     sar_id: `sar_${Math.floor(Math.random() * 10000)}`,
-    account_id: details.accountId,
+    account_id: accountId,
     status: "pending",
   };
 }

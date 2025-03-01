@@ -2,41 +2,6 @@
 kind: ObjectType
 version: v1
 definition:
-  name: EmergencySlotBlockDetails
-  fields:
-    - name: endTime
-      type: String!
-    - name: reason
-      type: String!
-    - name: slotId
-      type: Float!
-    - name: startTime
-      type: String!
-  graphql:
-    typeName: EmergencySlotBlockDetails
-    inputTypeName: EmergencySlotBlockDetailsInput
-  dataConnectorTypeMapping:
-    - dataConnectorName: ops_mgmt
-      dataConnectorObjectType: EmergencySlotBlockDetails
-
----
-kind: TypePermissions
-version: v1
-definition:
-  typeName: EmergencySlotBlockDetails
-  permissions:
-    - role: admin
-      output:
-        allowedFields:
-          - endTime
-          - reason
-          - slotId
-          - startTime
-
----
-kind: ObjectType
-version: v1
-definition:
   name: EmergencySlotBlockResponse
   fields:
     - name: blockId
@@ -72,8 +37,14 @@ definition:
   name: BlockEmergencySlot
   outputType: EmergencySlotBlockResponse!
   arguments:
-    - name: details
-      type: EmergencySlotBlockDetails!
+    - name: endTime
+      type: String!
+    - name: reason
+      type: String!
+    - name: slotId
+      type: Float!
+    - name: startTime
+      type: String!
   source:
     dataConnectorName: ops_mgmt
     dataConnectorCommand:

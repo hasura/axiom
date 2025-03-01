@@ -30,30 +30,6 @@ definition:
             _eq:
               type: equal
       object_types:
-        AccountFreezeDetails:
-          fields:
-            accountId:
-              type:
-                type: named
-                name: Float
-            accountName:
-              type:
-                type: named
-                name: String
-            freezeLevel:
-              type:
-                type: named
-                name: String
-            reason:
-              type:
-                type: named
-                name: String
-            transactionThreshold:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: Float
         AccountFreezeResponse:
           fields:
             account_id:
@@ -67,20 +43,6 @@ definition:
                   type: named
                   name: String
             status:
-              type:
-                type: named
-                name: String
-        SARFilingDetails:
-          fields:
-            accountId:
-              type:
-                type: named
-                name: Float
-            accountName:
-              type:
-                type: named
-                name: String
-            reason:
               type:
                 type: named
                 name: String
@@ -100,28 +62,6 @@ definition:
               type:
                 type: named
                 name: String
-        TransactionHoldDetails:
-          fields:
-            accountId:
-              type:
-                type: named
-                name: Float
-            accountName:
-              type:
-                type: named
-                name: String
-            holdDuration:
-              type:
-                type: named
-                name: Float
-            reason:
-              type:
-                type: named
-                name: String
-            thresholdAmount:
-              type:
-                type: named
-                name: Float
         TransactionHoldResponse:
           fields:
             account_id:
@@ -151,20 +91,61 @@ definition:
             - When a customer requests a temporary spending limit as a security measure.
             - As part of an automated fraud detection workflow to prevent potentially fraudulent transactions.
           arguments:
-            details:
+            accountId:
               type:
                 type: named
-                name: TransactionHoldDetails
+                name: Float
+            accountName:
+              type:
+                type: named
+                name: String
+            holdDuration:
+              type:
+                type: named
+                name: Float
+            reason:
+              type:
+                type: named
+                name: String
+            thresholdAmount:
+              type:
+                type: named
+                name: Float
           result_type:
             type: named
             name: TransactionHoldResponse
         - name: freezeAccount
-          description: "**Description:**\nThis function fully or partially freezes an account to prevent unauthorized transactions. A full freeze blocks all transactions, while a partial freeze imposes specific restrictions based on transaction limits. This function is crucial for fraud mitigation, regulatory compliance, and safeguarding customer funds in cases of suspected account compromise.\n   \n**When to Call:**\n- Immediately after identifying suspicious activities indicative of account takeover or fraud.\n- When law enforcement or regulatory agencies require an account freeze as part of an investigation.\n- If a customer reports unauthorized access or requests a temporary block on their account."
+          description: |-
+            **Description:**
+            This function fully or partially freezes an account to prevent unauthorized transactions. A full freeze blocks all transactions, while a partial freeze imposes specific restrictions based on transaction limits. This function is crucial for fraud mitigation, regulatory compliance, and safeguarding customer funds in cases of suspected account compromise.
+
+            **When to Call:**
+            - Immediately after identifying suspicious activities indicative of account takeover or fraud.
+            - When law enforcement or regulatory agencies require an account freeze as part of an investigation.
+            - If a customer reports unauthorized access or requests a temporary block on their account.
           arguments:
-            details:
+            accountId:
               type:
                 type: named
-                name: AccountFreezeDetails
+                name: Float
+            accountName:
+              type:
+                type: named
+                name: String
+            freezeLevel:
+              type:
+                type: named
+                name: String
+            reason:
+              type:
+                type: named
+                name: String
+            transactionThreshold:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Float
           result_type:
             type: named
             name: AccountFreezeResponse
@@ -178,10 +159,18 @@ definition:
             - If internal risk teams identify multiple suspicious transactions requiring formal documentation.
             - When compliance regulations mandate the reporting of unusual account activities for further investigation.
           arguments:
-            details:
+            accountId:
               type:
                 type: named
-                name: SARFilingDetails
+                name: Float
+            accountName:
+              type:
+                type: named
+                name: String
+            reason:
+              type:
+                type: named
+                name: String
           result_type:
             type: named
             name: SARFilingResponse

@@ -2,38 +2,6 @@
 kind: ObjectType
 version: v1
 definition:
-  name: SarFilingDetails
-  fields:
-    - name: accountId
-      type: Float!
-    - name: accountName
-      type: String!
-    - name: reason
-      type: String!
-  graphql:
-    typeName: SarFilingDetails
-    inputTypeName: SarFilingDetailsInput
-  dataConnectorTypeMapping:
-    - dataConnectorName: account_operations
-      dataConnectorObjectType: SARFilingDetails
-
----
-kind: TypePermissions
-version: v1
-definition:
-  typeName: SarFilingDetails
-  permissions:
-    - role: admin
-      output:
-        allowedFields:
-          - accountId
-          - accountName
-          - reason
-
----
-kind: ObjectType
-version: v1
-definition:
   name: SarFilingResponse
   fields:
     - name: accountId
@@ -79,8 +47,12 @@ definition:
   name: FileSar
   outputType: SarFilingResponse!
   arguments:
-    - name: details
-      type: SarFilingDetails!
+    - name: accountId
+      type: Float!
+    - name: accountName
+      type: String!
+    - name: reason
+      type: String!
   source:
     dataConnectorName: account_operations
     dataConnectorCommand:

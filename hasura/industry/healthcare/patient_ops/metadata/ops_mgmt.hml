@@ -30,24 +30,6 @@ definition:
             _eq:
               type: equal
       object_types:
-        CaseReassignmentDetails:
-          fields:
-            caseId:
-              type:
-                type: named
-                name: Float
-            newOperatorId:
-              type:
-                type: named
-                name: Float
-            previousOperatorId:
-              type:
-                type: named
-                name: Float
-            reason:
-              type:
-                type: named
-                name: String
         CaseReassignmentResponse:
           fields:
             caseId:
@@ -64,20 +46,6 @@ definition:
               type:
                 type: named
                 name: String
-        CaseReviewMarkingDetails:
-          fields:
-            caseId:
-              type:
-                type: named
-                name: Float
-            reason:
-              type:
-                type: named
-                name: String
-            reviewerId:
-              type:
-                type: named
-                name: Float
         CaseReviewMarkingResponse:
           fields:
             caseId:
@@ -91,20 +59,6 @@ definition:
                   type: named
                   name: String
             status:
-              type:
-                type: named
-                name: String
-        CaseRiskMarkingDetails:
-          fields:
-            caseId:
-              type:
-                type: named
-                name: Float
-            reason:
-              type:
-                type: named
-                name: String
-            riskLevel:
               type:
                 type: named
                 name: String
@@ -124,24 +78,6 @@ definition:
               type:
                 type: named
                 name: String
-        CaseUrgencyUpdateDetails:
-          fields:
-            caseId:
-              type:
-                type: named
-                name: Float
-            newUrgency:
-              type:
-                type: named
-                name: String
-            previousUrgency:
-              type:
-                type: named
-                name: String
-            reason:
-              type:
-                type: named
-                name: String
         CaseUrgencyUpdateResponse:
           fields:
             caseId:
@@ -158,24 +94,6 @@ definition:
                 underlying_type:
                   type: named
                   name: String
-        EmergencySlotBlockDetails:
-          fields:
-            endTime:
-              type:
-                type: named
-                name: String
-            reason:
-              type:
-                type: named
-                name: String
-            slotId:
-              type:
-                type: named
-                name: Float
-            startTime:
-              type:
-                type: named
-                name: String
         EmergencySlotBlockResponse:
           fields:
             blockId:
@@ -192,28 +110,6 @@ definition:
               type:
                 type: named
                 name: String
-        OperatorAvailabilityAdjustment:
-          fields:
-            newEndTime:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: String
-            newStartTime:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: String
-            operatorId:
-              type:
-                type: named
-                name: Float
-            reason:
-              type:
-                type: named
-                name: String
         OperatorAvailabilityResponse:
           fields:
             adjustmentId:
@@ -225,7 +121,7 @@ definition:
             operatorId:
               type:
                 type: named
-                name: Float
+                name: String
             status:
               type:
                 type: named
@@ -243,10 +139,22 @@ definition:
             - To optimize case distribution for efficiency.
             - When a specialist is required for a complex case.
           arguments:
-            details:
+            caseId:
               type:
                 type: named
-                name: CaseReassignmentDetails
+                name: Float
+            newOperatorId:
+              type:
+                type: named
+                name: String
+            previousOperatorId:
+              type:
+                type: named
+                name: String
+            reason:
+              type:
+                type: named
+                name: String
           result_type:
             type: named
             name: CaseReassignmentResponse
@@ -259,10 +167,22 @@ definition:
             - When an unexpected emergency arises requiring an open time slot.
             - To manage hospital or clinic workflow more efficiently.
           arguments:
-            details:
+            endTime:
               type:
                 type: named
-                name: EmergencySlotBlockDetails
+                name: String
+            reason:
+              type:
+                type: named
+                name: String
+            slotId:
+              type:
+                type: named
+                name: Float
+            startTime:
+              type:
+                type: named
+                name: String
           result_type:
             type: named
             name: EmergencySlotBlockResponse
@@ -275,10 +195,26 @@ definition:
             - To accommodate an operator’s shift adjustment.
             - To align available capacity with case demand.
           arguments:
-            details:
+            newEndTime:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
+            newStartTime:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
+            operatorId:
               type:
                 type: named
-                name: OperatorAvailabilityAdjustment
+                name: String
+            reason:
+              type:
+                type: named
+                name: String
           result_type:
             type: named
             name: OperatorAvailabilityResponse
@@ -291,10 +227,18 @@ definition:
             - When there is a risk of SLA non-compliance.
             - When a patient’s condition changes, increasing urgency.
           arguments:
-            details:
+            caseId:
               type:
                 type: named
-                name: CaseRiskMarkingDetails
+                name: Float
+            reason:
+              type:
+                type: named
+                name: String
+            riskLevel:
+              type:
+                type: named
+                name: String
           result_type:
             type: named
             name: CaseRiskMarkingResponse
@@ -307,10 +251,22 @@ definition:
             - When a case’s urgency escalates or de-escalates due to new information.
             - To ensure proper prioritization in scheduling.
           arguments:
-            details:
+            caseId:
               type:
                 type: named
-                name: CaseUrgencyUpdateDetails
+                name: Float
+            newUrgency:
+              type:
+                type: named
+                name: String
+            previousUrgency:
+              type:
+                type: named
+                name: String
+            reason:
+              type:
+                type: named
+                name: String
           result_type:
             type: named
             name: CaseUrgencyUpdateResponse
@@ -323,10 +279,18 @@ definition:
             - When a case requires further evaluation.
             - To confirm that the right decisions and treatments are being followed.
           arguments:
-            details:
+            caseId:
               type:
                 type: named
-                name: CaseReviewMarkingDetails
+                name: Float
+            reason:
+              type:
+                type: named
+                name: String
+            reviewerId:
+              type:
+                type: named
+                name: Float
           result_type:
             type: named
             name: CaseReviewMarkingResponse

@@ -2,41 +2,6 @@
 kind: ObjectType
 version: v1
 definition:
-  name: CaseUrgencyUpdateDetails
-  fields:
-    - name: caseId
-      type: Float!
-    - name: newUrgency
-      type: String!
-    - name: previousUrgency
-      type: String!
-    - name: reason
-      type: String!
-  graphql:
-    typeName: CaseUrgencyUpdateDetails
-    inputTypeName: CaseUrgencyUpdateDetailsInput
-  dataConnectorTypeMapping:
-    - dataConnectorName: ops_mgmt
-      dataConnectorObjectType: CaseUrgencyUpdateDetails
-
----
-kind: TypePermissions
-version: v1
-definition:
-  typeName: CaseUrgencyUpdateDetails
-  permissions:
-    - role: admin
-      output:
-        allowedFields:
-          - caseId
-          - newUrgency
-          - previousUrgency
-          - reason
-
----
-kind: ObjectType
-version: v1
-definition:
   name: CaseUrgencyUpdateResponse
   fields:
     - name: caseId
@@ -72,8 +37,14 @@ definition:
   name: UpdateCaseUrgency
   outputType: CaseUrgencyUpdateResponse!
   arguments:
-    - name: details
-      type: CaseUrgencyUpdateDetails!
+    - name: caseId
+      type: Float!
+    - name: newUrgency
+      type: String!
+    - name: previousUrgency
+      type: String!
+    - name: reason
+      type: String!
   source:
     dataConnectorName: ops_mgmt
     dataConnectorCommand:

@@ -2,47 +2,12 @@
 kind: ObjectType
 version: v1
 definition:
-  name: OperatorAvailabilityAdjustment
-  fields:
-    - name: newEndTime
-      type: String
-    - name: newStartTime
-      type: String
-    - name: operatorId
-      type: Float!
-    - name: reason
-      type: String!
-  graphql:
-    typeName: OperatorAvailabilityAdjustment
-    inputTypeName: OperatorAvailabilityAdjustmentInput
-  dataConnectorTypeMapping:
-    - dataConnectorName: ops_mgmt
-      dataConnectorObjectType: OperatorAvailabilityAdjustment
-
----
-kind: TypePermissions
-version: v1
-definition:
-  typeName: OperatorAvailabilityAdjustment
-  permissions:
-    - role: admin
-      output:
-        allowedFields:
-          - newEndTime
-          - newStartTime
-          - operatorId
-          - reason
-
----
-kind: ObjectType
-version: v1
-definition:
   name: OperatorAvailabilityResponse
   fields:
     - name: adjustmentId
       type: String
     - name: operatorId
-      type: Float!
+      type: String!
     - name: status
       type: String!
   graphql:
@@ -72,8 +37,14 @@ definition:
   name: AdjustOperatorAvailability
   outputType: OperatorAvailabilityResponse!
   arguments:
-    - name: details
-      type: OperatorAvailabilityAdjustment!
+    - name: newEndTime
+      type: String
+    - name: newStartTime
+      type: String
+    - name: operatorId
+      type: String!
+    - name: reason
+      type: String!
   source:
     dataConnectorName: ops_mgmt
     dataConnectorCommand:

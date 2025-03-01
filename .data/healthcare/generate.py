@@ -80,7 +80,7 @@ def generate_cases(num_cases=1000):
     hcpcs_codes = load_hcpcs_codes()
     patients = [row["patient.patient_id"] for row in csv.DictReader(open(f"{OUTPUT_DIR}/patients.csv"))]
     operators = [row["ops.operator_id"] for row in csv.DictReader(open(f"{OUTPUT_DIR}/operators.csv"))]
-    start_date = CURRENT_DATE
+    start_date = datetime.now()
     
     with open(f"{OUTPUT_DIR}/cases.csv", "w", newline="") as f:
         writer = csv.writer(f)
@@ -93,7 +93,12 @@ def generate_cases(num_cases=1000):
                 ["critical", "emergency", "urgent", "semi-urgent", "routine"],
                 weights=[15, 25, 30, 15, 15]
             )[0]
-            rec_date = start_date + timedelta(days=random.randint(0, 13))
+            rec_date = start_date + timedelta(
+                days=random.randint(0, 13),
+                hours=random.randint(0, 23),
+                minutes=random.randint(0, 59),
+                seconds=random.randint(0, 59)
+            )
             status_roll = random.random()
             if status_roll < 0.4:
                 status, op_id = "pending", ""
@@ -103,7 +108,7 @@ def generate_cases(num_cases=1000):
                 status, op_id = "completed", random.choice(operators)
             
             writer.writerow([
-                random.choice(patients), "CL001", hcpc, urgency, rec_date.date().isoformat(),
+                random.choice(patients), "CL001", hcpc, urgency, rec_date.strftime('%Y-%m-%d %H:%M'),
                 status, op_id, random.choice(regions), datetime.now().isoformat()
             ])
 

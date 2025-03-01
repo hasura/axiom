@@ -2,38 +2,6 @@
 kind: ObjectType
 version: v1
 definition:
-  name: CaseRiskMarkingDetails
-  fields:
-    - name: caseId
-      type: Float!
-    - name: reason
-      type: String!
-    - name: riskLevel
-      type: String!
-  graphql:
-    typeName: CaseRiskMarkingDetails
-    inputTypeName: CaseRiskMarkingDetailsInput
-  dataConnectorTypeMapping:
-    - dataConnectorName: ops_mgmt
-      dataConnectorObjectType: CaseRiskMarkingDetails
-
----
-kind: TypePermissions
-version: v1
-definition:
-  typeName: CaseRiskMarkingDetails
-  permissions:
-    - role: admin
-      output:
-        allowedFields:
-          - caseId
-          - reason
-          - riskLevel
-
----
-kind: ObjectType
-version: v1
-definition:
   name: CaseRiskMarkingResponse
   fields:
     - name: caseId
@@ -69,8 +37,12 @@ definition:
   name: MarkCaseAtRisk
   outputType: CaseRiskMarkingResponse!
   arguments:
-    - name: details
-      type: CaseRiskMarkingDetails!
+    - name: caseId
+      type: Float!
+    - name: reason
+      type: String!
+    - name: riskLevel
+      type: String!
   source:
     dataConnectorName: ops_mgmt
     dataConnectorCommand:

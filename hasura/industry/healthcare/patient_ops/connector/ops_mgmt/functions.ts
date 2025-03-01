@@ -1,43 +1,3 @@
-export interface CaseReassignmentDetails {
-  caseId: number;
-  previousOperatorId: number;
-  newOperatorId: number;
-  reason: string;
-}
-
-export interface EmergencySlotBlockDetails {
-  slotId: number;
-  startTime: string;
-  endTime: string;
-  reason: string;
-}
-
-export interface OperatorAvailabilityAdjustment {
-  operatorId: number;
-  newStartTime?: string;
-  newEndTime?: string;
-  reason: string;
-}
-
-export interface CaseRiskMarkingDetails {
-  caseId: number;
-  reason: string;
-  riskLevel: string;
-}
-
-export interface CaseUrgencyUpdateDetails {
-  caseId: number;
-  previousUrgency: string;
-  newUrgency: string;
-  reason: string;
-}
-
-export interface CaseReviewMarkingDetails {
-  caseId: number;
-  reviewerId: number;
-  reason: string;
-}
-
 export interface CaseReassignmentResponse {
   reassignmentId?: string;
   caseId: number;
@@ -52,7 +12,7 @@ export interface EmergencySlotBlockResponse {
 
 export interface OperatorAvailabilityResponse {
   adjustmentId?: string;
-  operatorId: number;
+  operatorId: string;
   status: string;
 }
 
@@ -84,11 +44,14 @@ export interface CaseReviewMarkingResponse {
  * - When a specialist is required for a complex case.
  */
 export async function reassignCase(
-  details: CaseReassignmentDetails
+  caseId: number,
+  previousOperatorId: string,
+  newOperatorId: string,
+  reason: string
 ): Promise<CaseReassignmentResponse> {
   return {
     reassignmentId: `reassign_${Math.floor(Math.random() * 10000)}`,
-    caseId: details.caseId,
+    caseId,
     status: "reassigned",
   };
 }
@@ -102,11 +65,14 @@ export async function reassignCase(
  * - To manage hospital or clinic workflow more efficiently.
  */
 export async function blockEmergencySlot(
-  details: EmergencySlotBlockDetails
+  slotId: number,
+  startTime: string,
+  endTime: string,
+  reason: string
 ): Promise<EmergencySlotBlockResponse> {
   return {
     blockId: `block_${Math.floor(Math.random() * 10000)}`,
-    slotId: details.slotId,
+    slotId,
     status: "blocked",
   };
 }
@@ -120,11 +86,14 @@ export async function blockEmergencySlot(
  * - To align available capacity with case demand.
  */
 export async function adjustOperatorAvailability(
-  details: OperatorAvailabilityAdjustment
+  operatorId: string,
+  reason: string,
+  newStartTime?: string,
+  newEndTime?: string
 ): Promise<OperatorAvailabilityResponse> {
   return {
     adjustmentId: `adjust_${Math.floor(Math.random() * 10000)}`,
-    operatorId: details.operatorId,
+    operatorId,
     status: "availability updated",
   };
 }
@@ -138,11 +107,13 @@ export async function adjustOperatorAvailability(
  * - When a patient’s condition changes, increasing urgency.
  */
 export async function markCaseAtRisk(
-  details: CaseRiskMarkingDetails
+  caseId: number,
+  reason: string,
+  riskLevel: string
 ): Promise<CaseRiskMarkingResponse> {
   return {
     riskId: `risk_${Math.floor(Math.random() * 10000)}`,
-    caseId: details.caseId,
+    caseId,
     status: "marked at-risk",
   };
 }
@@ -156,11 +127,14 @@ export async function markCaseAtRisk(
  * - To ensure proper prioritization in scheduling.
  */
 export async function updateCaseUrgency(
-  details: CaseUrgencyUpdateDetails
+  caseId: number,
+  previousUrgency: string,
+  newUrgency: string,
+  reason: string
 ): Promise<CaseUrgencyUpdateResponse> {
   return {
     updateId: `update_${Math.floor(Math.random() * 10000)}`,
-    caseId: details.caseId,
+    caseId,
     status: "urgency updated",
   };
 }
@@ -174,11 +148,13 @@ export async function updateCaseUrgency(
  * - To confirm that the right decisions and treatments are being followed.
  */
 export async function markCaseForReview(
-  details: CaseReviewMarkingDetails
+  caseId: number,
+  reviewerId: number,
+  reason: string
 ): Promise<CaseReviewMarkingResponse> {
   return {
     reviewId: `review_${Math.floor(Math.random() * 10000)}`,
-    caseId: details.caseId,
+    caseId,
     status: "marked for review",
   };
 }

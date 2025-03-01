@@ -24,7 +24,7 @@ CREATE TABLE cases (
     clinic_id VARCHAR(10) NOT NULL,
     procedure_code VARCHAR(5),
     urgency_level VARCHAR(20),
-    recommended_date DATE NOT NULL,
+    recommended_date TIMESTAMP NOT NULL,
     status VARCHAR(20),
     operator_id VARCHAR(10) REFERENCES operators(operator_id),
     region VARCHAR(50),

@@ -2,44 +2,6 @@
 kind: ObjectType
 version: v1
 definition:
-  name: AccountFreezeDetails
-  fields:
-    - name: accountId
-      type: Float!
-    - name: accountName
-      type: String!
-    - name: freezeLevel
-      type: String!
-    - name: reason
-      type: String!
-    - name: transactionThreshold
-      type: Float
-  graphql:
-    typeName: AccountFreezeDetails
-    inputTypeName: AccountFreezeDetailsInput
-  dataConnectorTypeMapping:
-    - dataConnectorName: account_operations
-      dataConnectorObjectType: AccountFreezeDetails
-
----
-kind: TypePermissions
-version: v1
-definition:
-  typeName: AccountFreezeDetails
-  permissions:
-    - role: admin
-      output:
-        allowedFields:
-          - accountId
-          - accountName
-          - freezeLevel
-          - reason
-          - transactionThreshold
-
----
-kind: ObjectType
-version: v1
-definition:
   name: AccountFreezeResponse
   fields:
     - name: accountId
@@ -85,8 +47,16 @@ definition:
   name: FreezeAccount
   outputType: AccountFreezeResponse!
   arguments:
-    - name: details
-      type: AccountFreezeDetails!
+    - name: accountId
+      type: Float!
+    - name: accountName
+      type: String!
+    - name: freezeLevel
+      type: String!
+    - name: reason
+      type: String!
+    - name: transactionThreshold
+      type: Float
   source:
     dataConnectorName: account_operations
     dataConnectorCommand:
@@ -98,6 +68,7 @@ definition:
     **Description:**
 
     This function fully or partially freezes an account to prevent unauthorized transactions. A full freeze blocks all transactions, while a partial freeze imposes specific restrictions based on transaction limits. This function is crucial for fraud mitigation, regulatory compliance, and safeguarding customer funds in cases of suspected account compromise.
+
 
     **When to Call:**
 

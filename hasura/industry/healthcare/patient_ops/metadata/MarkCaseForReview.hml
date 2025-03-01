@@ -2,38 +2,6 @@
 kind: ObjectType
 version: v1
 definition:
-  name: CaseReviewMarkingDetails
-  fields:
-    - name: caseId
-      type: Float!
-    - name: reason
-      type: String!
-    - name: reviewerId
-      type: Float!
-  graphql:
-    typeName: CaseReviewMarkingDetails
-    inputTypeName: CaseReviewMarkingDetailsInput
-  dataConnectorTypeMapping:
-    - dataConnectorName: ops_mgmt
-      dataConnectorObjectType: CaseReviewMarkingDetails
-
----
-kind: TypePermissions
-version: v1
-definition:
-  typeName: CaseReviewMarkingDetails
-  permissions:
-    - role: admin
-      output:
-        allowedFields:
-          - caseId
-          - reason
-          - reviewerId
-
----
-kind: ObjectType
-version: v1
-definition:
   name: CaseReviewMarkingResponse
   fields:
     - name: caseId
@@ -69,8 +37,12 @@ definition:
   name: MarkCaseForReview
   outputType: CaseReviewMarkingResponse!
   arguments:
-    - name: details
-      type: CaseReviewMarkingDetails!
+    - name: caseId
+      type: Float!
+    - name: reason
+      type: String!
+    - name: reviewerId
+      type: Float!
   source:
     dataConnectorName: ops_mgmt
     dataConnectorCommand:
