@@ -5,13 +5,15 @@ definition:
   name: Customers
   fields:
     - name: account
-      type: Int8!
+      type: Int4!
+    - name: address
+      type: Text
     - name: blacklisted
       type: Bool
     - name: customerId
-      type: Int8!
+      type: Int4!
     - name: dob
-      type: Date_1!
+      type: Date
     - name: name
       type: Varchar!
     - name: nationality
@@ -24,12 +26,15 @@ definition:
     typeName: Customers
     inputTypeName: CustomersInput
   dataConnectorTypeMapping:
-    - dataConnectorName: aml
+    - dataConnectorName: banking_core
       dataConnectorObjectType: customers
       fieldMapping:
         account:
           column:
             name: account
+        address:
+          column:
+            name: address
         blacklisted:
           column:
             name: blacklisted
@@ -62,6 +67,7 @@ definition:
       output:
         allowedFields:
           - account
+          - address
           - blacklisted
           - customerId
           - dob
@@ -80,13 +86,15 @@ definition:
       type: Customers
       comparableFields:
         - fieldName: account
-          booleanExpressionType: Int8BoolExp
+          booleanExpressionType: Int4BoolExp
+        - fieldName: address
+          booleanExpressionType: TextBoolExp
         - fieldName: blacklisted
           booleanExpressionType: BoolBoolExp
         - fieldName: customerId
-          booleanExpressionType: Int8BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: dob
-          booleanExpressionType: DateBoolExp_1
+          booleanExpressionType: DateBoolExp
         - fieldName: name
           booleanExpressionType: VarcharBoolExp
         - fieldName: nationality
@@ -95,7 +103,8 @@ definition:
           booleanExpressionType: BoolBoolExp
         - fieldName: riskLevel
           booleanExpressionType: VarcharBoolExp
-      comparableRelationships: []
+      comparableRelationships:
+        - relationshipName: sars
   logicalOperators:
     enable: true
   isNull:
@@ -113,13 +122,15 @@ definition:
       aggregatedType: Customers
       aggregatableFields:
         - fieldName: account
-          aggregateExpression: Int8AggExp
+          aggregateExpression: Int4AggExp
+        - fieldName: address
+          aggregateExpression: TextAggExp
         - fieldName: blacklisted
           aggregateExpression: BoolAggExp
         - fieldName: customerId
-          aggregateExpression: Int8AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: dob
-          aggregateExpression: DateAggExp_1
+          aggregateExpression: DateAggExp
         - fieldName: name
           aggregateExpression: VarcharAggExp
         - fieldName: nationality
@@ -143,13 +154,15 @@ definition:
       orderedType: Customers
       orderableFields:
         - fieldName: account
-          orderByExpression: Int8OrderByExp
+          orderByExpression: Int4OrderByExp
+        - fieldName: address
+          orderByExpression: TextOrderByExp
         - fieldName: blacklisted
           orderByExpression: BoolOrderByExp
         - fieldName: customerId
-          orderByExpression: Int8OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: dob
-          orderByExpression: Date1OrderByExp
+          orderByExpression: DateOrderByExp
         - fieldName: name
           orderByExpression: VarcharOrderByExp
         - fieldName: nationality
@@ -169,7 +182,7 @@ definition:
   name: Customers
   objectType: Customers
   source:
-    dataConnectorName: aml
+    dataConnectorName: banking_core
     collection: customers
   filterExpressionType: CustomersBoolExp
   aggregateExpression: CustomersAggExp
@@ -180,11 +193,6 @@ definition:
       subscription:
         rootField: customers
     selectUniques:
-      - queryRootField: customersByAccount
-        uniqueIdentifier:
-          - account
-        subscription:
-          rootField: customersByAccount
       - queryRootField: customersByCustomerId
         uniqueIdentifier:
           - customerId
@@ -211,48 +219,14 @@ definition:
 kind: Relationship
 version: v1
 definition:
-  name: sendingSamlMatches
-  sourceType: Customers
-  target:
-    model:
-      name: SamlD
-      relationshipType: Array
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: account
-      target:
-        modelField:
-          - fieldName: senderAccount
-
----
-kind: Relationship
-version: v1
-definition:
-  name: receivingSamlMatches
-  sourceType: Customers
-  target:
-    model:
-      name: SamlD
-      relationshipType: Array
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: account
-      target:
-        modelField:
-          - fieldName: receiverAccount
-
----
-kind: Relationship
-version: v1
-definition:
   name: sars
   sourceType: Customers
   target:
     model:
       name: Sars
       relationshipType: Array
+      aggregate:
+        aggregateExpression: SarsAggExp
   mapping:
     - source:
         fieldPath:
@@ -260,3 +234,23 @@ definition:
       target:
         modelField:
           - fieldName: customerId
+  graphql:
+    aggregateFieldName: sarsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: account_details
+  sourceType: Customers
+  target:
+    model:
+      name: Accounts
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: account
+      target:
+        modelField:
+          - fieldName: accountId

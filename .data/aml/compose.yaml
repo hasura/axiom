@@ -34,6 +34,22 @@ services:
       - MONGO_INITDB_DATABASE=aml
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
+    extra_hosts:
+      - local.hasura.dev=host-gateway
+  mongo-seed:
+    env_file:
+        - .env
+    build:
+        context: ./mongo_seed
+        dockerfile: Dockerfile
+        args:
+            - DATABASE_URI=mongodb://local.hasura.dev:27017/aml
+            - USERNAME=presales
+            - PASSWORD=${MONGO_PASSWORD}
+    depends_on:
+        - mongodb
+    extra_hosts:
+      - local.hasura.dev=host-gateway
 
   redis:
     image: redis:latest
