@@ -88,7 +88,6 @@ class DeploymentManager {
 
         if (!this.options.dryRun) {
             const output = await this.execCommand(cmd, context);
-            console.log(output)
             const buildInfo = JSON.parse(output);
             this.options.quiet && console.log(output);
             return buildInfo;
