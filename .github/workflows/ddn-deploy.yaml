@@ -1,0 +1,149 @@
+name: Axiom auto-deploy
+
+permissions:
+  contents: read
+  pull-requests: write
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Check for [no-op] in commit message
+        run: |
+          if [[ "${{ github.event.pull_request.title }}" =~ ^\[no-op\] ]]; then
+            echo "no_op=true" >> $GITHUB_ENV
+          else
+            echo "no_op=false" >> $GITHUB_ENV
+          fi
+
+      - name: Set up DDN CLI and Login
+        if: env.no_op != 'true'
+        uses: hasura/ddn-deployment@main
+        with:
+          hasura-pat: ${{ secrets.HASURA_PAT }}
+
+      - name: Install dependencies
+        if: env.no_op != 'true'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+
+      - name: Create .env.cloud.telco-dev
+        working-directory: ./hasura
+        if: env.no_op != 'true'
+        run: |
+          echo "${{ secrets.ENV_CLOUD_DEFAULT }}" > .env.cloud.telco-dev
+
+      - name: Detect Connector Changes
+        if: env.no_op != 'true'
+        run: |
+          # Pull the base branch
+          git fetch origin ${{ github.base_ref }}
+
+          # Check if any changes occurred in the connector directories
+          if git diff --name-only origin/${{ github.base_ref }} ${{ github.sha }} | grep -q 'connector/'; then
+            echo "connector_changes=true" >> $GITHUB_ENV
+          else
+            echo "connector_changes=false" >> $GITHUB_ENV
+          fi
+
+      - name: Install deploy script dependencies
+        if: env.no_op != 'true'
+        run: |
+          cd ./scripts/deploy
+          npm i
+
+      - name: Build supergraph
+        if: env.no_op != 'true'
+        run: |
+          shortSha="${{ github.event.pull_request.head.sha }}"
+          shortSha=${shortSha:0:7}
+          description="\"${shortSha} [PR-${{ github.event.pull_request.number }}] ${{ github.event.pull_request.title }} | Build for commit ${{ github.event.pull_request.head.sha }}\""
+          echo "Using description: $description"
+          calculatedSha=$(git rev-parse --short ${{ github.event.pull_request.head.sha }})
+          if [ "${{ env.connector_changes }}" = "true" ]; then
+            echo "Building connectors..."
+            ./scripts/deploy/deploy.mjs \
+              --context telco-dev \
+              --profile telco \
+              --override-description "$description" \
+              --rebuild-connectors \
+              --override \
+              --log-level FATAL \
+              --quiet \
+              --no-interaction > build_output.json
+          else
+            echo "Skipping connector build."
+            ./scripts/deploy/deploy.mjs \
+              --context telco-dev \
+              --profile telco \
+              --override-description "$description" \
+              --override \
+              --log-level FATAL \
+              --quiet \
+              --no-interaction > build_output.json
+          fi
+
+      - name: Extract URLs from JSON
+        if: env.no_op != 'true'
+        run: |
+          cat build_output.json
+          BUILD_URLS=$(jq -r '.build_url' build_output.json | tr '\n' ',')
+          CONSOLE_URLS=$(jq -r '.console_url' build_output.json | tr '\n' ',')
+          echo "build_urls=${BUILD_URLS%,}" >> $GITHUB_ENV
+          echo "console_urls=${CONSOLE_URLS%,}" >> $GITHUB_ENV
+
+      - name: Add PR comment with build details
+        if: env.no_op != 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const buildUrls = process.env.build_urls.split(',').map(url => url.trim());
+            const consoleUrls = process.env.console_urls.split(',').map(url => url.trim());
+            const prNumber = context.payload.pull_request.number;
+            const commitId = context.payload.pull_request.head.sha;
+
+            const buildUrlsList = buildUrls.map(url => `- [${url}](${url})`).join('\n');
+            const consoleUrlsList = consoleUrls.map(url => `- [${url}](${url})`).join('\n');
+
+            const commentBody = `
+            Supergraph build was successful! 🎉
+
+            **Build URLs:**
+            ${buildUrlsList}
+
+            **Console URLs:**
+            ${consoleUrlsList}
+
+            **Commit ID:** ${commitId}
+            `;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: commentBody
+            })
+
+      - name: Add PR comment with no-op
+        if: env.no_op != 'false'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const commitId = context.payload.pull_request.head.sha;
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `**[no-op] build detected:** No build attempted\n**Commit ID:** ${commitId}`
+            })
