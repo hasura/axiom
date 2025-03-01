@@ -65,6 +65,7 @@ def generate_operators_and_schedule(num_operators=10):
         writer = csv.writer(f)
         writer.writerow(["ops.operator_id", "ops.work_date", "ops.booked_minutes", "ops.max_minutes"])
         over_capacity_operators = ["OP000", "OP001", "OP002", "OP003", "OP004"]
+
         for i in range(num_operators):
             op_id = f"OP{i:03d}"
             for day in range(14):
