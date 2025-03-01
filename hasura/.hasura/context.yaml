@@ -11,6 +11,8 @@ definition:
       cloudEnvFile: ../.env.cloud.aml
     healthcare:
       project: healthcare-dev
+      supergraph: ../supergraph-config/healthcare/2-supergraph.yaml
+      subgraph: ../industry/healthcare/reference/subgraph.yaml
       localEnvFile: ../.env.healthcare
       cloudEnvFile: ../.env.cloud.healthcare
     telco:
@@ -63,9 +65,11 @@ definition:
       bash: for file in compose*.yaml $(find ../.data -type f -name "compose.yaml"); do docker compose -f $file down -v; done
       powershell: docker compose -f compose.yaml down -v; docker compose -f .data/compose.yaml down -v
     docker-start-healthcare:
-      bash: export DATASET=$PROFILE; ../.data/initdb-prepare.sh; docker compose -f ../.data/$PROFILE/compose.yaml --env-file ../.data/$PROFILE/.env up --build --pull always -d
-      powershell: $Env:DATASET = "$PROFILE"; docker compose -f ../.data/$PROFILE/compose.yaml --env-file ../.data/$PROFILE/.env up --build --pull always -d
+      bash: export DATASET=healthcare; docker compose -f ../.data/healthcare/compose.yaml --env-file ../.data/healthcare/.env up --build --pull always -d
+      powershell: $Env:DATASET = "healthcare"; docker compose -f ../.data/healthcare/compose.yaml --env-file ../.data/healthcare/.env up --build --pull always -d
     build-healthcare:
-      bash: ddn supergraph build local --env-file .env.healthcare --env-file .env --supergraph supergraph-config/healthcare/1-supergraph.yaml
+      bash: ddn supergraph build local --supergraph supergraph-config/healthcare/2-supergraph.yaml
+      powershell: ddn supergraph build local  --supergraph supergraph-config/healthcare/2-supergraph.yaml
     demo-healthcare:
-      bash: ddn run docker-start-healthcare; HASURA_DDN_PAT=$(ddn auth print-pat) docker compose -f compose-healthcare.yaml --env-file .env.healthcare --env-file .env up --build --pull always -d
+      bash: ddn run docker-start-healthcare; HASURA_DDN_PAT=$(ddn auth print-pat) docker compose -f compose-healthcare.yaml --env-file .env.healthcare up --build --pull always -d
+      powershell: $Env:HASURA_DDN_PAT = ddn auth print-pat; docker compose -f compose-healthcare.yaml --env-file .env.healthcare up --build --pull always -d

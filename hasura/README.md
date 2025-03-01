@@ -172,17 +172,17 @@ Make any further adjustments to the profile's `compose.yaml` as appropriate to u
 Add a DDN run script for starting the Docker environment. Replace `$PROFILE` with your profile name
 
 > [!NOTE]
-> The initdb-prepare.sh script is used to combine profile datasets with the postgres/mongo datasets from the common directory. This is required if auth/support subgraphs are used. Containers must be configured with volumes in the `../build` location. Use `.data/starter/compose.yaml` for reference.
+> Use `.data/starter/compose.yaml` for reference.
 
 ```yaml
 docker-start-$PROFILE:
-   bash: export DATASET=$PROFILE; ../.data/initdb-prepare.sh; docker compose -f ../.data/$PROFILE/compose.yaml --env-file ../.data/$PROFILE/.env up --build --pull always -d
+   bash: export DATASET=$PROFILE; docker compose -f ../.data/$PROFILE/compose.yaml --env-file ../.data/$PROFILE/.env up --build --pull always -d
    powershell: $Env:DATASET = "$PROFILE"; docker compose -f ../.data/$PROFILE/compose.yaml --env-file ../.data/$PROFILE/.env up --build --pull always -d
 ```
 
 This can be achieved automatically with `yq`
 ```
-yq eval ".definition.scripts[\"docker-start-$PROFILE\"] = {\"bash\": \"export DATASET=\$PROFILE; ../.data/initdb-prepare.sh; docker compose -f ../.data/\$PROFILE/compose.yaml --env-file ../.data/\$PROFILE/.env up --build --pull always -d\", \"powershell\": \"\$Env:DATASET = \\\"\$PROFILE\\\"; docker compose -f ../.data/\$PROFILE/compose.yaml --env-file ../.data/\$PROFILE/.env up --build --pull always -d\"}" -i hasura/.hasura/context.yaml
+yq eval ".definition.scripts[\"docker-start-$PROFILE\"] = {\"bash\": \"export DATASET=\$PROFILE; docker compose -f ../.data/\$PROFILE/compose.yaml --env-file ../.data/\$PROFILE/.env up --build --pull always -d\", \"powershell\": \"\$Env:DATASET = \\\"\$PROFILE\\\"; docker compose -f ../.data/\$PROFILE/compose.yaml --env-file ../.data/\$PROFILE/.env up --build --pull always -d\"}" -i hasura/.hasura/context.yaml
 ```
 
 ### Step 3: Docker Compose
@@ -198,23 +198,25 @@ cp hasura/compose.yaml hasura/compose-$PROFILE.yaml
 1. Build script:
 ```yaml
 build-$PROFILE:
-   bash: ddn supergraph build local --env-file .env.$PROFILE --env-file .env --supergraph supergraph-config/$PROFILE/1-supergraph.yaml
+   bash: ddn supergraph build local --supergraph supergraph-config/$PROFILE$/2-supergraph.yaml
+   powershell: ddn supergraph build local  --supergraph supergraph-config/$PROFILE$/2-supergraph.yaml
 ```
 
 This can be achieved automatically with `yq`
 ```
-yq eval ".definition.scripts[\"build-$PROFILE\"] = {\"bash\": \"ddn supergraph build local --env-file .env.$PROFILE --env-file .env --supergraph supergraph-config/$PROFILE/1-supergraph.yaml\"}" -i hasura/.hasura/context.yaml
+yq eval ".definition.scripts[\"build-$PROFILE\"] = {\"bash\": \"ddn supergraph build local --env-file .env.$PROFILE --env-file .env --supergraph supergraph-config/$PROFILE/2-supergraph.yaml\", \"powershell\": \"ddn supergraph build local --env-file .env.$PROFILE --env-file .env --supergraph supergraph-config/$PROFILE/2-supergraph.yaml\"}" -i hasura/.hasura/context.yaml
 ```
 
 2. Demo script:
 ```yaml
 demo-$PROFILE:
-   bash: ddn run docker-start-$PROFILE; HASURA_DDN_PAT=$(ddn auth print-pat) docker compose -f compose-$PROFILE.yaml --env-file .env.$PROFILE --env-file .env up --build --pull always -d
+   bash: ddn run docker-start-$PROFILE; HASURA_DDN_PAT=$(ddn auth print-pat) docker compose -f compose-$PROFILE$.yaml --env-file .env.$PROFILE$ up --build --pull always -d
+   powershell: $Env:HASURA_DDN_PAT = ddn auth print-pat; docker compose -f compose-$PROFILE.yaml --env-file .env.$PROFILE up --build --pull always -d
 ```
 
 This can be achieved automatically with `yq`
 ```
-yq eval ".definition.scripts[\"demo-$PROFILE\"] = {\"bash\": \"ddn run docker-start-$PROFILE; HASURA_DDN_PAT=\$(ddn auth print-pat) docker compose -f compose-$PROFILE.yaml --env-file .env.$PROFILE --env-file .env up --build --pull always -d\"}" -i hasura/.hasura/context.yaml
+yq eval ".definition.scripts[\"demo-$PROFILE\"] = {\"bash\": \" ddn run docker-start-$PROFILE; HASURA_DDN_PAT=$(ddn auth print-pat) docker compose -f compose-$PROFILE.yaml --env-file .env.$PROFILE up --build --pull always -d\", \"powershell\": \"$Env:HASURA_DDN_PAT = ddn auth print-pat; docker compose -f compose-$PROFILE.yaml --env-file .env.$PROFILE up --build --pull always -d\"}" -i hasura/.hasura/context.yaml
 ```
 
 ---
