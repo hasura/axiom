@@ -1,0 +1,754 @@
+kind: DataConnectorLink
+version: v1
+definition:
+  name: patients
+  url:
+    readWriteUrls:
+      read:
+        valueFromEnv: PATIENT_OPS_PATIENTS_READ_URL
+      write:
+        valueFromEnv: PATIENT_OPS_PATIENTS_WRITE_URL
+  headers:
+    Authorization:
+      valueFromEnv: PATIENT_OPS_PATIENTS_AUTHORIZATION_HEADER
+  schema:
+    version: v0.1
+    schema:
+      scalar_types:
+        date:
+          representation:
+            type: date
+          aggregate_functions:
+            max:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: date
+            min:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: date
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                type: named
+                name: date
+            _gte:
+              type: custom
+              argument_type:
+                type: named
+                name: date
+            _in:
+              type: in
+            _lt:
+              type: custom
+              argument_type:
+                type: named
+                name: date
+            _lte:
+              type: custom
+              argument_type:
+                type: named
+                name: date
+            _neq:
+              type: custom
+              argument_type:
+                type: named
+                name: date
+        int4:
+          representation:
+            type: int32
+          aggregate_functions: {}
+          comparison_operators: {}
+        text:
+          representation:
+            type: string
+          aggregate_functions:
+            max:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: text
+            min:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: text
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _gte:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _ilike:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _in:
+              type: in
+            _iregex:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _like:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _lt:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _lte:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _neq:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _nilike:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _niregex:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _nlike:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _nregex:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _regex:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            starts_with:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            ts_match_tt:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+        varchar:
+          representation:
+            type: string
+          aggregate_functions:
+            max:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: text
+            min:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: text
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _gte:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _ilike:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _in:
+              type: in
+            _iregex:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _like:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _lt:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _lte:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _neq:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _nilike:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _niregex:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _nlike:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _nregex:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _regex:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            starts_with:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            ts_match_tt:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+      object_types:
+        delete_insurance_plans_by_plan_id_response:
+          description: Responses from the 'delete_insurance_plans_by_plan_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: insurance_plans
+        delete_patients_by_patient_id_response:
+          description: Responses from the 'delete_patients_by_patient_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: patients
+        insert_insurance_plans_object:
+          fields:
+            payer_name:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            plan_id:
+              type:
+                type: named
+                name: varchar
+            plan_name:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        insert_insurance_plans_response:
+          description: Responses from the 'insert_insurance_plans' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: insurance_plans
+        insert_patients_object:
+          fields:
+            date_of_birth:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: date
+            first_name:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            insurance_plan_id:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            last_name:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            patient_id:
+              type:
+                type: named
+                name: varchar
+        insert_patients_response:
+          description: Responses from the 'insert_patients' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: patients
+        insurance_plans:
+          fields:
+            payer_name:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            plan_id:
+              type:
+                type: named
+                name: varchar
+            plan_name:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        patients:
+          fields:
+            date_of_birth:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: date
+            first_name:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            insurance_plan_id:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            last_name:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            patient_id:
+              type:
+                type: named
+                name: varchar
+        update_column_insurance_plans_payer_name:
+          description: Update the 'payer_name' column in the 'insurance_plans' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        update_column_insurance_plans_plan_id:
+          description: Update the 'plan_id' column in the 'insurance_plans' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: varchar
+        update_column_insurance_plans_plan_name:
+          description: Update the 'plan_name' column in the 'insurance_plans' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        update_column_patients_date_of_birth:
+          description: Update the 'date_of_birth' column in the 'patients' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: date
+        update_column_patients_first_name:
+          description: Update the 'first_name' column in the 'patients' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        update_column_patients_insurance_plan_id:
+          description: Update the 'insurance_plan_id' column in the 'patients' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        update_column_patients_last_name:
+          description: Update the 'last_name' column in the 'patients' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        update_column_patients_patient_id:
+          description: Update the 'patient_id' column in the 'patients' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: varchar
+        update_insurance_plans_by_plan_id_response:
+          description: Responses from the 'update_insurance_plans_by_plan_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: insurance_plans
+        update_insurance_plans_by_plan_id_update_columns:
+          description: Update the columns of the 'insurance_plans' collection
+          fields:
+            payer_name:
+              description: Update the 'payer_name' column in the 'insurance_plans' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_insurance_plans_payer_name
+            plan_id:
+              description: Update the 'plan_id' column in the 'insurance_plans' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_insurance_plans_plan_id
+            plan_name:
+              description: Update the 'plan_name' column in the 'insurance_plans' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_insurance_plans_plan_name
+        update_patients_by_patient_id_response:
+          description: Responses from the 'update_patients_by_patient_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: patients
+        update_patients_by_patient_id_update_columns:
+          description: Update the columns of the 'patients' collection
+          fields:
+            date_of_birth:
+              description: Update the 'date_of_birth' column in the 'patients' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_patients_date_of_birth
+            first_name:
+              description: Update the 'first_name' column in the 'patients' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_patients_first_name
+            insurance_plan_id:
+              description: Update the 'insurance_plan_id' column in the 'patients' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_patients_insurance_plan_id
+            last_name:
+              description: Update the 'last_name' column in the 'patients' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_patients_last_name
+            patient_id:
+              description: Update the 'patient_id' column in the 'patients' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_patients_patient_id
+      collections:
+        - name: insurance_plans
+          arguments: {}
+          type: insurance_plans
+          uniqueness_constraints:
+            insurance_plans_pkey:
+              unique_columns:
+                - plan_id
+          foreign_keys: {}
+        - name: patients
+          arguments: {}
+          type: patients
+          uniqueness_constraints:
+            patients_pkey:
+              unique_columns:
+                - patient_id
+          foreign_keys:
+            patients_insurance_plan_id_fkey:
+              column_mapping:
+                insurance_plan_id: plan_id
+              foreign_collection: insurance_plans
+      functions: []
+      procedures:
+        - name: delete_insurance_plans_by_plan_id
+          description: Delete any row on the 'insurance_plans' collection using the 'plan_id' key
+          arguments:
+            key_plan_id:
+              type:
+                type: named
+                name: varchar
+            pre_check:
+              description: Delete permission predicate over the 'insurance_plans' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: insurance_plans
+          result_type:
+            type: named
+            name: delete_insurance_plans_by_plan_id_response
+        - name: delete_patients_by_patient_id
+          description: Delete any row on the 'patients' collection using the 'patient_id' key
+          arguments:
+            key_patient_id:
+              type:
+                type: named
+                name: varchar
+            pre_check:
+              description: Delete permission predicate over the 'patients' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: patients
+          result_type:
+            type: named
+            name: delete_patients_by_patient_id_response
+        - name: insert_insurance_plans
+          description: Insert into the insurance_plans table
+          arguments:
+            objects:
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: insert_insurance_plans_object
+            post_check:
+              description: Insert permission predicate over the 'insurance_plans' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: insurance_plans
+          result_type:
+            type: named
+            name: insert_insurance_plans_response
+        - name: insert_patients
+          description: Insert into the patients table
+          arguments:
+            objects:
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: insert_patients_object
+            post_check:
+              description: Insert permission predicate over the 'patients' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: patients
+          result_type:
+            type: named
+            name: insert_patients_response
+        - name: update_insurance_plans_by_plan_id
+          description: Update any row on the 'insurance_plans' collection using the 'plan_id' key
+          arguments:
+            key_plan_id:
+              type:
+                type: named
+                name: varchar
+            post_check:
+              description: Update permission post-condition predicate over the 'insurance_plans' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: insurance_plans
+            pre_check:
+              description: Update permission pre-condition predicate over the 'insurance_plans' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: insurance_plans
+            update_columns:
+              type:
+                type: named
+                name: update_insurance_plans_by_plan_id_update_columns
+          result_type:
+            type: named
+            name: update_insurance_plans_by_plan_id_response
+        - name: update_patients_by_patient_id
+          description: Update any row on the 'patients' collection using the 'patient_id' key
+          arguments:
+            key_patient_id:
+              type:
+                type: named
+                name: varchar
+            post_check:
+              description: Update permission post-condition predicate over the 'patients' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: patients
+            pre_check:
+              description: Update permission pre-condition predicate over the 'patients' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: patients
+            update_columns:
+              type:
+                type: named
+                name: update_patients_by_patient_id_update_columns
+          result_type:
+            type: named
+            name: update_patients_by_patient_id_response
+    capabilities:
+      version: 0.1.6
+      capabilities:
+        query:
+          aggregates: {}
+          variables: {}
+          explain: {}
+          nested_fields:
+            filter_by: {}
+            order_by: {}
+          exists:
+            nested_collections: {}
+        mutation:
+          transactional: {}
+          explain: {}
+        relationships:
+          relation_comparisons: {}
+          order_by_aggregate: {}

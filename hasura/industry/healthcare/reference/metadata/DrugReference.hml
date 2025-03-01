@@ -1,0 +1,227 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: DrugReference
+  fields:
+    - name: activeIngredientsInfo
+      type: Varchar
+    - name: dosageFormName
+      type: Varchar
+    - name: labelerName
+      type: Varchar
+    - name: nonproprietaryName
+      type: Varchar
+    - name: productNdc
+      type: Varchar!
+    - name: proprietaryName
+      type: Varchar
+    - name: routeName
+      type: Varchar
+    - name: substanceName
+      type: Varchar
+  graphql:
+    typeName: DrugReference
+    inputTypeName: DrugReferenceInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: reference
+      dataConnectorObjectType: drug_reference
+      fieldMapping:
+        activeIngredientsInfo:
+          column:
+            name: active_ingredients_info
+        dosageFormName:
+          column:
+            name: dosage_form_name
+        labelerName:
+          column:
+            name: labeler_name
+        nonproprietaryName:
+          column:
+            name: nonproprietary_name
+        productNdc:
+          column:
+            name: product_ndc
+        proprietaryName:
+          column:
+            name: proprietary_name
+        routeName:
+          column:
+            name: route_name
+        substanceName:
+          column:
+            name: substance_name
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: DrugReference
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - activeIngredientsInfo
+          - dosageFormName
+          - labelerName
+          - nonproprietaryName
+          - productNdc
+          - proprietaryName
+          - routeName
+          - substanceName
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: DrugReferenceBoolExp
+  operand:
+    object:
+      type: DrugReference
+      comparableFields:
+        - fieldName: activeIngredientsInfo
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: dosageFormName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: labelerName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: nonproprietaryName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: productNdc
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: proprietaryName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: routeName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: substanceName
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: drugPackagings
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: DrugReferenceBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: DrugReferenceAggExp
+  operand:
+    object:
+      aggregatedType: DrugReference
+      aggregatableFields:
+        - fieldName: activeIngredientsInfo
+          aggregateExpression: VarcharAggExp
+        - fieldName: dosageFormName
+          aggregateExpression: VarcharAggExp
+        - fieldName: labelerName
+          aggregateExpression: VarcharAggExp
+        - fieldName: nonproprietaryName
+          aggregateExpression: VarcharAggExp
+        - fieldName: productNdc
+          aggregateExpression: VarcharAggExp
+        - fieldName: proprietaryName
+          aggregateExpression: VarcharAggExp
+        - fieldName: routeName
+          aggregateExpression: VarcharAggExp
+        - fieldName: substanceName
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: DrugReferenceAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: DrugReferenceOrderByExp
+  operand:
+    object:
+      orderedType: DrugReference
+      orderableFields:
+        - fieldName: activeIngredientsInfo
+          orderByExpression: VarcharOrderByExp
+        - fieldName: dosageFormName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: labelerName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: nonproprietaryName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: productNdc
+          orderByExpression: VarcharOrderByExp
+        - fieldName: proprietaryName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: routeName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: substanceName
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: DrugReferenceOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: DrugReference
+  objectType: DrugReference
+  source:
+    dataConnectorName: reference
+    collection: drug_reference
+  filterExpressionType: DrugReferenceBoolExp
+  aggregateExpression: DrugReferenceAggExp
+  orderByExpression: DrugReferenceOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: drugReference
+      subscription:
+        rootField: drugReference
+    selectUniques:
+      - queryRootField: drugReferenceByProductNdc
+        uniqueIdentifier:
+          - productNdc
+        subscription:
+          rootField: drugReferenceByProductNdc
+    filterInputTypeName: DrugReferenceFilterInput
+    aggregate:
+      queryRootField: drugReferenceAggregate
+      subscription:
+        rootField: drugReferenceAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: DrugReference
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: drugPackagings
+  sourceType: DrugReference
+  target:
+    model:
+      name: DrugPackaging
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: DrugPackagingAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: productNdc
+      target:
+        modelField:
+          - fieldName: productNdc
+  graphql:
+    aggregateFieldName: drugPackagingsAggregate
+

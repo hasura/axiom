@@ -1,0 +1,194 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: OperatorSchedule
+  fields:
+    - name: bookedMinutes
+      type: Int4
+    - name: maxMinutes
+      type: Int4
+    - name: operatorId
+      type: Varchar
+    - name: scheduleId
+      type: Int4!
+    - name: workDate
+      type: Date
+  graphql:
+    typeName: OperatorSchedule
+    inputTypeName: OperatorScheduleInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: operations
+      dataConnectorObjectType: operator_schedule
+      fieldMapping:
+        bookedMinutes:
+          column:
+            name: booked_minutes
+        maxMinutes:
+          column:
+            name: max_minutes
+        operatorId:
+          column:
+            name: operator_id
+        scheduleId:
+          column:
+            name: schedule_id
+        workDate:
+          column:
+            name: work_date
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: OperatorSchedule
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - bookedMinutes
+          - maxMinutes
+          - operatorId
+          - scheduleId
+          - workDate
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: OperatorScheduleBoolExp
+  operand:
+    object:
+      type: OperatorSchedule
+      comparableFields:
+        - fieldName: bookedMinutes
+          booleanExpressionType: Int4BoolExp
+        - fieldName: maxMinutes
+          booleanExpressionType: Int4BoolExp
+        - fieldName: operatorId
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: scheduleId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: workDate
+          booleanExpressionType: DateBoolExp
+      comparableRelationships:
+        - relationshipName: operator
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: OperatorScheduleBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: OperatorScheduleAggExp
+  operand:
+    object:
+      aggregatedType: OperatorSchedule
+      aggregatableFields:
+        - fieldName: bookedMinutes
+          aggregateExpression: Int4AggExp
+        - fieldName: maxMinutes
+          aggregateExpression: Int4AggExp
+        - fieldName: operatorId
+          aggregateExpression: VarcharAggExp
+        - fieldName: scheduleId
+          aggregateExpression: Int4AggExp
+        - fieldName: workDate
+          aggregateExpression: DateAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: OperatorScheduleAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: OperatorScheduleOrderByExp
+  operand:
+    object:
+      orderedType: OperatorSchedule
+      orderableFields:
+        - fieldName: bookedMinutes
+          orderByExpression: Int4OrderByExp
+        - fieldName: maxMinutes
+          orderByExpression: Int4OrderByExp
+        - fieldName: operatorId
+          orderByExpression: VarcharOrderByExp
+        - fieldName: scheduleId
+          orderByExpression: Int4OrderByExp
+        - fieldName: workDate
+          orderByExpression: DateOrderByExp
+      orderableRelationships:
+        - relationshipName: operator
+  graphql:
+    expressionTypeName: OperatorScheduleOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: OperatorSchedule
+  objectType: OperatorSchedule
+  source:
+    dataConnectorName: operations
+    collection: operator_schedule
+  filterExpressionType: OperatorScheduleBoolExp
+  aggregateExpression: OperatorScheduleAggExp
+  orderByExpression: OperatorScheduleOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: operatorSchedule
+      subscription:
+        rootField: operatorSchedule
+    selectUniques:
+      - queryRootField: operatorScheduleByOperatorScheduleOperatorIdWorkDateKey
+        uniqueIdentifier:
+          - operatorId
+          - workDate
+        subscription:
+          rootField: operatorScheduleByOperatorScheduleOperatorIdWorkDateKey
+      - queryRootField: operatorScheduleByScheduleId
+        uniqueIdentifier:
+          - scheduleId
+        subscription:
+          rootField: operatorScheduleByScheduleId
+    filterInputTypeName: OperatorScheduleFilterInput
+    aggregate:
+      queryRootField: operatorScheduleAggregate
+      subscription:
+        rootField: operatorScheduleAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: OperatorSchedule
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: operator
+  sourceType: OperatorSchedule
+  target:
+    model:
+      name: Operators
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: operatorId
+      target:
+        modelField:
+          - fieldName: operatorId
+

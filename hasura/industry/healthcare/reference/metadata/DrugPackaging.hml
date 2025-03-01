@@ -1,0 +1,164 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: DrugPackaging
+  fields:
+    - name: ndcPackageCode
+      type: Varchar!
+    - name: packageDescription
+      type: Varchar
+    - name: productNdc
+      type: Varchar
+  graphql:
+    typeName: DrugPackaging
+    inputTypeName: DrugPackagingInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: reference
+      dataConnectorObjectType: drug_packaging
+      fieldMapping:
+        ndcPackageCode:
+          column:
+            name: ndc_package_code
+        packageDescription:
+          column:
+            name: package_description
+        productNdc:
+          column:
+            name: product_ndc
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: DrugPackaging
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - ndcPackageCode
+          - packageDescription
+          - productNdc
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: DrugPackagingBoolExp
+  operand:
+    object:
+      type: DrugPackaging
+      comparableFields:
+        - fieldName: ndcPackageCode
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: packageDescription
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: productNdc
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: drugReference
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: DrugPackagingBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: DrugPackagingAggExp
+  operand:
+    object:
+      aggregatedType: DrugPackaging
+      aggregatableFields:
+        - fieldName: ndcPackageCode
+          aggregateExpression: VarcharAggExp
+        - fieldName: packageDescription
+          aggregateExpression: VarcharAggExp
+        - fieldName: productNdc
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: DrugPackagingAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: DrugPackagingOrderByExp
+  operand:
+    object:
+      orderedType: DrugPackaging
+      orderableFields:
+        - fieldName: ndcPackageCode
+          orderByExpression: VarcharOrderByExp
+        - fieldName: packageDescription
+          orderByExpression: VarcharOrderByExp
+        - fieldName: productNdc
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: drugReference
+  graphql:
+    expressionTypeName: DrugPackagingOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: DrugPackaging
+  objectType: DrugPackaging
+  source:
+    dataConnectorName: reference
+    collection: drug_packaging
+  filterExpressionType: DrugPackagingBoolExp
+  aggregateExpression: DrugPackagingAggExp
+  orderByExpression: DrugPackagingOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: drugPackaging
+      subscription:
+        rootField: drugPackaging
+    selectUniques:
+      - queryRootField: drugPackagingByNdcPackageCode
+        uniqueIdentifier:
+          - ndcPackageCode
+        subscription:
+          rootField: drugPackagingByNdcPackageCode
+    filterInputTypeName: DrugPackagingFilterInput
+    aggregate:
+      queryRootField: drugPackagingAggregate
+      subscription:
+        rootField: drugPackagingAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: DrugPackaging
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: drugReference
+  sourceType: DrugPackaging
+  target:
+    model:
+      name: DrugReference
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: productNdc
+      target:
+        modelField:
+          - fieldName: productNdc
+
