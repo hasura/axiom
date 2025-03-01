@@ -1,0 +1,14 @@
+services:
+  reference_reference:
+    build:
+      context: .
+      dockerfile: .hasura-connector/Dockerfile.reference
+    environment:
+      CONNECTION_URI: $REFERENCE_REFERENCE_CONNECTION_URI
+      HASURA_SERVICE_TOKEN_SECRET: $REFERENCE_REFERENCE_HASURA_SERVICE_TOKEN_SECRET
+      OTEL_EXPORTER_OTLP_ENDPOINT: $REFERENCE_REFERENCE_OTEL_EXPORTER_OTLP_ENDPOINT
+      OTEL_SERVICE_NAME: $REFERENCE_REFERENCE_OTEL_SERVICE_NAME
+    extra_hosts:
+      - local.hasura.dev:host-gateway
+    ports:
+      - 5655:8080

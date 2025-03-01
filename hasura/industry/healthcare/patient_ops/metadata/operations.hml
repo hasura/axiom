@@ -1,0 +1,1679 @@
+kind: DataConnectorLink
+version: v1
+definition:
+  name: operations
+  url:
+    readWriteUrls:
+      read:
+        valueFromEnv: PATIENT_OPS_OPERATIONS_READ_URL
+      write:
+        valueFromEnv: PATIENT_OPS_OPERATIONS_WRITE_URL
+  headers:
+    Authorization:
+      valueFromEnv: PATIENT_OPS_OPERATIONS_AUTHORIZATION_HEADER
+  schema:
+    version: v0.1
+    schema:
+      scalar_types:
+        date:
+          representation:
+            type: date
+          aggregate_functions:
+            max:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: date
+            min:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: date
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                type: named
+                name: date
+            _gte:
+              type: custom
+              argument_type:
+                type: named
+                name: date
+            _in:
+              type: in
+            _lt:
+              type: custom
+              argument_type:
+                type: named
+                name: date
+            _lte:
+              type: custom
+              argument_type:
+                type: named
+                name: date
+            _neq:
+              type: custom
+              argument_type:
+                type: named
+                name: date
+        int4:
+          representation:
+            type: int32
+          aggregate_functions:
+            avg:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            bit_and:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            bit_or:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            bit_xor:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            max:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            min:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            stddev:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            stddev_pop:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            stddev_samp:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            sum:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int8
+            var_pop:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            var_samp:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            variance:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                type: named
+                name: int4
+            _gte:
+              type: custom
+              argument_type:
+                type: named
+                name: int4
+            _in:
+              type: in
+            _lt:
+              type: custom
+              argument_type:
+                type: named
+                name: int4
+            _lte:
+              type: custom
+              argument_type:
+                type: named
+                name: int4
+            _neq:
+              type: custom
+              argument_type:
+                type: named
+                name: int4
+        int8:
+          representation:
+            type: int64
+          aggregate_functions:
+            avg:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            bit_and:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int8
+            bit_or:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int8
+            bit_xor:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int8
+            max:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int8
+            min:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int8
+            stddev:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            stddev_pop:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            stddev_samp:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            sum:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            var_pop:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            var_samp:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            variance:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                type: named
+                name: int8
+            _gte:
+              type: custom
+              argument_type:
+                type: named
+                name: int8
+            _in:
+              type: in
+            _lt:
+              type: custom
+              argument_type:
+                type: named
+                name: int8
+            _lte:
+              type: custom
+              argument_type:
+                type: named
+                name: int8
+            _neq:
+              type: custom
+              argument_type:
+                type: named
+                name: int8
+        numeric:
+          representation:
+            type: bigdecimal
+          aggregate_functions:
+            avg:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            max:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            min:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            stddev:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            stddev_pop:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            stddev_samp:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            sum:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            var_pop:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            var_samp:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            variance:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                type: named
+                name: numeric
+            _gte:
+              type: custom
+              argument_type:
+                type: named
+                name: numeric
+            _in:
+              type: in
+            _lt:
+              type: custom
+              argument_type:
+                type: named
+                name: numeric
+            _lte:
+              type: custom
+              argument_type:
+                type: named
+                name: numeric
+            _neq:
+              type: custom
+              argument_type:
+                type: named
+                name: numeric
+        text:
+          representation:
+            type: string
+          aggregate_functions:
+            max:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: text
+            min:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: text
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _gte:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _ilike:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _in:
+              type: in
+            _iregex:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _like:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _lt:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _lte:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _neq:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _nilike:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _niregex:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _nlike:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _nregex:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            _regex:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            starts_with:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+            ts_match_tt:
+              type: custom
+              argument_type:
+                type: named
+                name: text
+        timestamp:
+          representation:
+            type: timestamp
+          aggregate_functions:
+            max:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: timestamp
+            min:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: timestamp
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                type: named
+                name: timestamp
+            _gte:
+              type: custom
+              argument_type:
+                type: named
+                name: timestamp
+            _in:
+              type: in
+            _lt:
+              type: custom
+              argument_type:
+                type: named
+                name: timestamp
+            _lte:
+              type: custom
+              argument_type:
+                type: named
+                name: timestamp
+            _neq:
+              type: custom
+              argument_type:
+                type: named
+                name: timestamp
+        varchar:
+          representation:
+            type: string
+          aggregate_functions:
+            max:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: text
+            min:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: text
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _gte:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _ilike:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _in:
+              type: in
+            _iregex:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _like:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _lt:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _lte:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _neq:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _nilike:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _niregex:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _nlike:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _nregex:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            _regex:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            starts_with:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+            ts_match_tt:
+              type: custom
+              argument_type:
+                type: named
+                name: varchar
+      object_types:
+        cases:
+          fields:
+            case_id:
+              type:
+                type: named
+                name: int4
+            clinic_id:
+              type:
+                type: named
+                name: varchar
+            created_at:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: timestamp
+            operator_id:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            patient_id:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            procedure_code:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            recommended_date:
+              type:
+                type: named
+                name: date
+            region:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            status:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            urgency_level:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        delete_cases_by_case_id_response:
+          description: Responses from the 'delete_cases_by_case_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: cases
+        delete_operator_schedule_by_operator_id_and_work_date_response:
+          description: Responses from the 'delete_operator_schedule_by_operator_id_and_work_date' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: operator_schedule
+        delete_operator_schedule_by_schedule_id_response:
+          description: Responses from the 'delete_operator_schedule_by_schedule_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: operator_schedule
+        delete_operators_by_operator_id_response:
+          description: Responses from the 'delete_operators_by_operator_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: operators
+        insert_cases_object:
+          fields:
+            case_id:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            clinic_id:
+              type:
+                type: named
+                name: varchar
+            created_at:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: timestamp
+            operator_id:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            patient_id:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            procedure_code:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            recommended_date:
+              type:
+                type: named
+                name: date
+            region:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            status:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            urgency_level:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        insert_cases_response:
+          description: Responses from the 'insert_cases' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: cases
+        insert_operator_schedule_object:
+          fields:
+            booked_minutes:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            max_minutes:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            operator_id:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            schedule_id:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            work_date:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: date
+        insert_operator_schedule_response:
+          description: Responses from the 'insert_operator_schedule' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: operator_schedule
+        insert_operators_object:
+          fields:
+            full_name:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            operator_id:
+              type:
+                type: named
+                name: varchar
+            region:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            specialty:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        insert_operators_response:
+          description: Responses from the 'insert_operators' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: operators
+        operator_schedule:
+          fields:
+            booked_minutes:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            max_minutes:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            operator_id:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            schedule_id:
+              type:
+                type: named
+                name: int4
+            work_date:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: date
+        operators:
+          fields:
+            full_name:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            operator_id:
+              type:
+                type: named
+                name: varchar
+            region:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            specialty:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        update_cases_by_case_id_response:
+          description: Responses from the 'update_cases_by_case_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: cases
+        update_cases_by_case_id_update_columns:
+          description: Update the columns of the 'cases' collection
+          fields:
+            case_id:
+              description: Update the 'case_id' column in the 'cases' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_cases_case_id
+            clinic_id:
+              description: Update the 'clinic_id' column in the 'cases' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_cases_clinic_id
+            created_at:
+              description: Update the 'created_at' column in the 'cases' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_cases_created_at
+            operator_id:
+              description: Update the 'operator_id' column in the 'cases' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_cases_operator_id
+            patient_id:
+              description: Update the 'patient_id' column in the 'cases' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_cases_patient_id
+            procedure_code:
+              description: Update the 'procedure_code' column in the 'cases' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_cases_procedure_code
+            recommended_date:
+              description: Update the 'recommended_date' column in the 'cases' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_cases_recommended_date
+            region:
+              description: Update the 'region' column in the 'cases' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_cases_region
+            status:
+              description: Update the 'status' column in the 'cases' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_cases_status
+            urgency_level:
+              description: Update the 'urgency_level' column in the 'cases' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_cases_urgency_level
+        update_column_cases_case_id:
+          description: Update the 'case_id' column in the 'cases' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: int4
+        update_column_cases_clinic_id:
+          description: Update the 'clinic_id' column in the 'cases' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: varchar
+        update_column_cases_created_at:
+          description: Update the 'created_at' column in the 'cases' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: timestamp
+        update_column_cases_operator_id:
+          description: Update the 'operator_id' column in the 'cases' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        update_column_cases_patient_id:
+          description: Update the 'patient_id' column in the 'cases' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        update_column_cases_procedure_code:
+          description: Update the 'procedure_code' column in the 'cases' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        update_column_cases_recommended_date:
+          description: Update the 'recommended_date' column in the 'cases' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: date
+        update_column_cases_region:
+          description: Update the 'region' column in the 'cases' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        update_column_cases_status:
+          description: Update the 'status' column in the 'cases' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        update_column_cases_urgency_level:
+          description: Update the 'urgency_level' column in the 'cases' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        update_column_operator_schedule_booked_minutes:
+          description: Update the 'booked_minutes' column in the 'operator_schedule' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+        update_column_operator_schedule_max_minutes:
+          description: Update the 'max_minutes' column in the 'operator_schedule' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+        update_column_operator_schedule_operator_id:
+          description: Update the 'operator_id' column in the 'operator_schedule' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        update_column_operator_schedule_schedule_id:
+          description: Update the 'schedule_id' column in the 'operator_schedule' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: int4
+        update_column_operator_schedule_work_date:
+          description: Update the 'work_date' column in the 'operator_schedule' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: date
+        update_column_operators_full_name:
+          description: Update the 'full_name' column in the 'operators' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        update_column_operators_operator_id:
+          description: Update the 'operator_id' column in the 'operators' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: varchar
+        update_column_operators_region:
+          description: Update the 'region' column in the 'operators' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        update_column_operators_specialty:
+          description: Update the 'specialty' column in the 'operators' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        update_operator_schedule_by_operator_id_and_work_date_response:
+          description: Responses from the 'update_operator_schedule_by_operator_id_and_work_date' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: operator_schedule
+        update_operator_schedule_by_operator_id_and_work_date_update_columns:
+          description: Update the columns of the 'operator_schedule' collection
+          fields:
+            booked_minutes:
+              description: Update the 'booked_minutes' column in the 'operator_schedule' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_operator_schedule_booked_minutes
+            max_minutes:
+              description: Update the 'max_minutes' column in the 'operator_schedule' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_operator_schedule_max_minutes
+            operator_id:
+              description: Update the 'operator_id' column in the 'operator_schedule' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_operator_schedule_operator_id
+            schedule_id:
+              description: Update the 'schedule_id' column in the 'operator_schedule' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_operator_schedule_schedule_id
+            work_date:
+              description: Update the 'work_date' column in the 'operator_schedule' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_operator_schedule_work_date
+        update_operator_schedule_by_schedule_id_response:
+          description: Responses from the 'update_operator_schedule_by_schedule_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: operator_schedule
+        update_operator_schedule_by_schedule_id_update_columns:
+          description: Update the columns of the 'operator_schedule' collection
+          fields:
+            booked_minutes:
+              description: Update the 'booked_minutes' column in the 'operator_schedule' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_operator_schedule_booked_minutes
+            max_minutes:
+              description: Update the 'max_minutes' column in the 'operator_schedule' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_operator_schedule_max_minutes
+            operator_id:
+              description: Update the 'operator_id' column in the 'operator_schedule' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_operator_schedule_operator_id
+            schedule_id:
+              description: Update the 'schedule_id' column in the 'operator_schedule' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_operator_schedule_schedule_id
+            work_date:
+              description: Update the 'work_date' column in the 'operator_schedule' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_operator_schedule_work_date
+        update_operators_by_operator_id_response:
+          description: Responses from the 'update_operators_by_operator_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: operators
+        update_operators_by_operator_id_update_columns:
+          description: Update the columns of the 'operators' collection
+          fields:
+            full_name:
+              description: Update the 'full_name' column in the 'operators' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_operators_full_name
+            operator_id:
+              description: Update the 'operator_id' column in the 'operators' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_operators_operator_id
+            region:
+              description: Update the 'region' column in the 'operators' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_operators_region
+            specialty:
+              description: Update the 'specialty' column in the 'operators' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_operators_specialty
+      collections:
+        - name: cases
+          arguments: {}
+          type: cases
+          uniqueness_constraints:
+            cases_pkey:
+              unique_columns:
+                - case_id
+          foreign_keys:
+            cases_operator_id_fkey:
+              column_mapping:
+                operator_id: operator_id
+              foreign_collection: operators
+        - name: operator_schedule
+          arguments: {}
+          type: operator_schedule
+          uniqueness_constraints:
+            operator_schedule_operator_id_work_date_key:
+              unique_columns:
+                - operator_id
+                - work_date
+            operator_schedule_pkey:
+              unique_columns:
+                - schedule_id
+          foreign_keys:
+            operator_schedule_operator_id_fkey:
+              column_mapping:
+                operator_id: operator_id
+              foreign_collection: operators
+        - name: operators
+          arguments: {}
+          type: operators
+          uniqueness_constraints:
+            operators_pkey:
+              unique_columns:
+                - operator_id
+          foreign_keys: {}
+      functions: []
+      procedures:
+        - name: delete_cases_by_case_id
+          description: Delete any row on the 'cases' collection using the 'case_id' key
+          arguments:
+            key_case_id:
+              type:
+                type: named
+                name: int4
+            pre_check:
+              description: Delete permission predicate over the 'cases' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: cases
+          result_type:
+            type: named
+            name: delete_cases_by_case_id_response
+        - name: delete_operator_schedule_by_operator_id_and_work_date
+          description: Delete any row on the 'operator_schedule' collection using the 'operator_id' and 'work_date' keys
+          arguments:
+            key_operator_id:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            key_work_date:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: date
+            pre_check:
+              description: Delete permission predicate over the 'operator_schedule' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: operator_schedule
+          result_type:
+            type: named
+            name: delete_operator_schedule_by_operator_id_and_work_date_response
+        - name: delete_operator_schedule_by_schedule_id
+          description: Delete any row on the 'operator_schedule' collection using the 'schedule_id' key
+          arguments:
+            key_schedule_id:
+              type:
+                type: named
+                name: int4
+            pre_check:
+              description: Delete permission predicate over the 'operator_schedule' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: operator_schedule
+          result_type:
+            type: named
+            name: delete_operator_schedule_by_schedule_id_response
+        - name: delete_operators_by_operator_id
+          description: Delete any row on the 'operators' collection using the 'operator_id' key
+          arguments:
+            key_operator_id:
+              type:
+                type: named
+                name: varchar
+            pre_check:
+              description: Delete permission predicate over the 'operators' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: operators
+          result_type:
+            type: named
+            name: delete_operators_by_operator_id_response
+        - name: insert_cases
+          description: Insert into the cases table
+          arguments:
+            objects:
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: insert_cases_object
+            post_check:
+              description: Insert permission predicate over the 'cases' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: cases
+          result_type:
+            type: named
+            name: insert_cases_response
+        - name: insert_operator_schedule
+          description: Insert into the operator_schedule table
+          arguments:
+            objects:
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: insert_operator_schedule_object
+            post_check:
+              description: Insert permission predicate over the 'operator_schedule' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: operator_schedule
+          result_type:
+            type: named
+            name: insert_operator_schedule_response
+        - name: insert_operators
+          description: Insert into the operators table
+          arguments:
+            objects:
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: insert_operators_object
+            post_check:
+              description: Insert permission predicate over the 'operators' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: operators
+          result_type:
+            type: named
+            name: insert_operators_response
+        - name: update_cases_by_case_id
+          description: Update any row on the 'cases' collection using the 'case_id' key
+          arguments:
+            key_case_id:
+              type:
+                type: named
+                name: int4
+            post_check:
+              description: Update permission post-condition predicate over the 'cases' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: cases
+            pre_check:
+              description: Update permission pre-condition predicate over the 'cases' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: cases
+            update_columns:
+              type:
+                type: named
+                name: update_cases_by_case_id_update_columns
+          result_type:
+            type: named
+            name: update_cases_by_case_id_response
+        - name: update_operator_schedule_by_operator_id_and_work_date
+          description: Update any row on the 'operator_schedule' collection using the 'operator_id' and 'work_date' keys
+          arguments:
+            key_operator_id:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            key_work_date:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: date
+            post_check:
+              description: Update permission post-condition predicate over the 'operator_schedule' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: operator_schedule
+            pre_check:
+              description: Update permission pre-condition predicate over the 'operator_schedule' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: operator_schedule
+            update_columns:
+              type:
+                type: named
+                name: update_operator_schedule_by_operator_id_and_work_date_update_columns
+          result_type:
+            type: named
+            name: update_operator_schedule_by_operator_id_and_work_date_response
+        - name: update_operator_schedule_by_schedule_id
+          description: Update any row on the 'operator_schedule' collection using the 'schedule_id' key
+          arguments:
+            key_schedule_id:
+              type:
+                type: named
+                name: int4
+            post_check:
+              description: Update permission post-condition predicate over the 'operator_schedule' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: operator_schedule
+            pre_check:
+              description: Update permission pre-condition predicate over the 'operator_schedule' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: operator_schedule
+            update_columns:
+              type:
+                type: named
+                name: update_operator_schedule_by_schedule_id_update_columns
+          result_type:
+            type: named
+            name: update_operator_schedule_by_schedule_id_response
+        - name: update_operators_by_operator_id
+          description: Update any row on the 'operators' collection using the 'operator_id' key
+          arguments:
+            key_operator_id:
+              type:
+                type: named
+                name: varchar
+            post_check:
+              description: Update permission post-condition predicate over the 'operators' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: operators
+            pre_check:
+              description: Update permission pre-condition predicate over the 'operators' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: operators
+            update_columns:
+              type:
+                type: named
+                name: update_operators_by_operator_id_update_columns
+          result_type:
+            type: named
+            name: update_operators_by_operator_id_response
+    capabilities:
+      version: 0.1.6
+      capabilities:
+        query:
+          aggregates: {}
+          variables: {}
+          explain: {}
+          nested_fields:
+            filter_by: {}
+            order_by: {}
+          exists:
+            nested_collections: {}
+        mutation:
+          transactional: {}
+          explain: {}
+        relationships:
+          relation_comparisons: {}
+          order_by_aggregate: {}

@@ -9,7 +9,7 @@ from faker import Faker
 fake = Faker()
 
 # Constants
-CURRENT_DATE = datetime(2025, 2, 28)
+CURRENT_DATE = datetime.today()
 COUNTRIES = ["USA", "Canada", "UK", "Germany", "South Africa", "Cuba", "Iran", "Russia"]
 HIGH_RISK_COUNTRIES = ["Cuba", "Iran", "Russia"]
 CURRENCIES = ["USD", "CAD", "EUR", "ZAR", "BTC"]
