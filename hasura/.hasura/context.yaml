@@ -9,6 +9,10 @@ definition:
       subgraph: ../industry/aml/app/subgraph.yaml
       localEnvFile: ../.env.aml
       cloudEnvFile: ../.env.cloud.aml
+    healthcare:
+      project: healthcare-dev
+      localEnvFile: ../.env.healthcare
+      cloudEnvFile: ../.env.cloud.healthcare
     telco:
       project: telco
       supergraph: ../supergraph-config/telco/4-supergraph-with-mutations.yaml
@@ -28,33 +32,40 @@ definition:
       localEnvFile: ../.env.telco
       cloudEnvFile: ../.env.cloud.telco-test
   scripts:
+    build-aml:
+      bash: ddn supergraph build local --supergraph supergraph-config/aml/2-supergraph.yaml
+      powershell: ddn supergraph build local  --supergraph supergraph-config/aml/2-supergraph.yaml
     build-starter:
       bash: ddn supergraph build local --env-file .env.starter --env-file .env --supergraph supergraph-config/starter/2-supergraph.yaml
       powershell: ddn supergraph build local --env-file .env.starter --env-file .env --supergraph supergraph-config/starter/2-supergraph.yaml
     build-telco:
       bash: ddn supergraph build local --supergraph supergraph-config/telco/4-supergraph-with-mutations.yaml
       powershell: ddn supergraph build local  --supergraph supergraph-config/telco/4-supergraph-with-mutations.yaml
-    build-aml:
-      bash: ddn supergraph build local --supergraph supergraph-config/aml/2-supergraph.yaml
-      powershell: ddn supergraph build local  --supergraph supergraph-config/aml/2-supergraph.yaml
+    demo-aml:
+      bash: ddn run docker-start-aml; HASURA_DDN_PAT=$(ddn auth print-pat) docker compose -f compose-aml.yaml --env-file .env.aml up --build --pull always -d
+      powershell: $Env:HASURA_DDN_PAT = ddn auth print-pat; docker compose -f compose-aml.yaml --env-file .env.aml up --build --pull always -d
     demo-starter:
       bash: ddn run docker-start-starter; HASURA_DDN_PAT=$(ddn auth print-pat) docker compose -f compose-starter.yaml up --build --pull always -d
       powershell: $Env:HASURA_DDN_PAT = ddn auth print-pat; docker compose -f compose-starter.yaml up --build --pull always -d
     demo-telco:
       bash: ddn run docker-start-telco; HASURA_DDN_PAT=$(ddn auth print-pat) docker compose -f compose-telco.yaml --env-file .env.telco up --build --pull always -d
       powershell: $Env:HASURA_DDN_PAT = ddn auth print-pat; docker compose -f compose-telco.yaml --env-file .env.telco up --build --pull always -d
-    demo-aml:
-      bash: ddn run docker-start-aml; HASURA_DDN_PAT=$(ddn auth print-pat) docker compose -f compose-aml.yaml --env-file .env.aml up --build --pull always -d
-      powershell: $Env:HASURA_DDN_PAT = ddn auth print-pat; docker compose -f compose-aml.yaml --env-file .env.aml up --build --pull always -d
+    docker-start-aml:
+      bash: export DATASET=aml; docker compose -f ../.data/aml/compose.yaml --env-file ../.data/aml/.env up --build --pull always -d
+      powershell: $Env:DATASET = "aml"; docker compose -f ../.data/aml/compose.yaml --env-file ../.data/aml/.env up --build --pull always -d
     docker-start-starter:
       bash: export DATASET=starter; docker compose -f ../.data/starter/compose.yaml --env-file ../.data/starter/.env up --build --pull always -d
       powershell: $Env:DATASET = "starter"; docker compose -f ../.data/starter/compose.yaml --env-file ../.data/starter/.env up --build --pull always -d
     docker-start-telco:
       bash: export DATASET=telco; docker compose -f ../.data/telco/compose.yaml --env-file ../.data/telco/.env up --build --pull always -d
       powershell: $Env:DATASET = "telco"; docker compose -f ../.data/telco/compose.yaml --env-file ../.data/telco/.env up --build --pull always -d
-    docker-start-aml:
-      bash: export DATASET=aml; docker compose -f ../.data/aml/compose.yaml --env-file ../.data/aml/.env up --build --pull always -d
-      powershell: $Env:DATASET = "aml"; docker compose -f ../.data/aml/compose.yaml --env-file ../.data/aml/.env up --build --pull always -d
     docker-stop:
       bash: for file in compose*.yaml $(find ../.data -type f -name "compose.yaml"); do docker compose -f $file down -v; done
       powershell: docker compose -f compose.yaml down -v; docker compose -f .data/compose.yaml down -v
+    docker-start-healthcare:
+      bash: export DATASET=$PROFILE; ../.data/initdb-prepare.sh; docker compose -f ../.data/$PROFILE/compose.yaml --env-file ../.data/$PROFILE/.env up --build --pull always -d
+      powershell: $Env:DATASET = "$PROFILE"; docker compose -f ../.data/$PROFILE/compose.yaml --env-file ../.data/$PROFILE/.env up --build --pull always -d
+    build-healthcare:
+      bash: ddn supergraph build local --env-file .env.healthcare --env-file .env --supergraph supergraph-config/healthcare/1-supergraph.yaml
+    demo-healthcare:
+      bash: ddn run docker-start-healthcare; HASURA_DDN_PAT=$(ddn auth print-pat) docker compose -f compose-healthcare.yaml --env-file .env.healthcare --env-file .env up --build --pull always -d
