@@ -2,44 +2,6 @@
 kind: ObjectType
 version: v1
 definition:
-  name: TransactionHoldDetails
-  fields:
-    - name: accountId
-      type: Float!
-    - name: accountName
-      type: String!
-    - name: holdDuration
-      type: Float!
-    - name: reason
-      type: String!
-    - name: thresholdAmount
-      type: Float!
-  graphql:
-    typeName: TransactionHoldDetails
-    inputTypeName: TransactionHoldDetailsInput
-  dataConnectorTypeMapping:
-    - dataConnectorName: account_operations
-      dataConnectorObjectType: TransactionHoldDetails
-
----
-kind: TypePermissions
-version: v1
-definition:
-  typeName: TransactionHoldDetails
-  permissions:
-    - role: admin
-      output:
-        allowedFields:
-          - accountId
-          - accountName
-          - holdDuration
-          - reason
-          - thresholdAmount
-
----
-kind: ObjectType
-version: v1
-definition:
   name: TransactionHoldResponse
   fields:
     - name: accountId
@@ -85,8 +47,16 @@ definition:
   name: HoldTransactions
   outputType: TransactionHoldResponse!
   arguments:
-    - name: details
-      type: TransactionHoldDetails!
+    - name: accountId
+      type: Float!
+    - name: accountName
+      type: String!
+    - name: holdDuration
+      type: Float!
+    - name: reason
+      type: String!
+    - name: thresholdAmount
+      type: Float!
   source:
     dataConnectorName: account_operations
     dataConnectorCommand:

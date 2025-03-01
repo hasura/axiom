@@ -1,0 +1,73 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: CaseRiskMarkingResponse
+  fields:
+    - name: caseId
+      type: Float!
+    - name: riskId
+      type: String
+    - name: status
+      type: String!
+  graphql:
+    typeName: CaseRiskMarkingResponse
+    inputTypeName: CaseRiskMarkingResponseInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: ops_mgmt
+      dataConnectorObjectType: CaseRiskMarkingResponse
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: CaseRiskMarkingResponse
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - caseId
+          - riskId
+          - status
+
+---
+kind: Command
+version: v1
+definition:
+  name: MarkCaseAtRisk
+  outputType: CaseRiskMarkingResponse!
+  arguments:
+    - name: caseId
+      type: Float!
+    - name: reason
+      type: String!
+    - name: riskLevel
+      type: String!
+  source:
+    dataConnectorName: ops_mgmt
+    dataConnectorCommand:
+      procedure: markCaseAtRisk
+  graphql:
+    rootFieldName: markCaseAtRisk
+    rootFieldKind: Mutation
+  description: >-
+    **Description:**
+
+    Marks a case as at-risk due to potential delays, complexity, or patient conditions requiring urgent attention.
+
+
+    **When to Call:**
+
+    - When there is a risk of SLA non-compliance.
+
+    - When a patient’s condition changes, increasing urgency.
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: MarkCaseAtRisk
+  permissions:
+    - role: admin
+      allowExecution: true
+
