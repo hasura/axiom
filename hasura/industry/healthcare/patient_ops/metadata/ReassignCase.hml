@@ -1,0 +1,106 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: CaseReassignmentDetails
+  fields:
+    - name: caseId
+      type: Float!
+    - name: newOperatorId
+      type: Float!
+    - name: previousOperatorId
+      type: Float!
+    - name: reason
+      type: String!
+  graphql:
+    typeName: CaseReassignmentDetails
+    inputTypeName: CaseReassignmentDetailsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: ops_mgmt
+      dataConnectorObjectType: CaseReassignmentDetails
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: CaseReassignmentDetails
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - caseId
+          - newOperatorId
+          - previousOperatorId
+          - reason
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: CaseReassignmentResponse
+  fields:
+    - name: caseId
+      type: Float!
+    - name: reassignmentId
+      type: String
+    - name: status
+      type: String!
+  graphql:
+    typeName: CaseReassignmentResponse
+    inputTypeName: CaseReassignmentResponseInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: ops_mgmt
+      dataConnectorObjectType: CaseReassignmentResponse
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: CaseReassignmentResponse
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - caseId
+          - reassignmentId
+          - status
+
+---
+kind: Command
+version: v1
+definition:
+  name: ReassignCase
+  outputType: CaseReassignmentResponse!
+  arguments:
+    - name: details
+      type: CaseReassignmentDetails!
+  source:
+    dataConnectorName: ops_mgmt
+    dataConnectorCommand:
+      procedure: reassignCase
+  graphql:
+    rootFieldName: reassignCase
+    rootFieldKind: Mutation
+  description: >-
+    **Description:**
+
+    This function reassigns a case to a new operator due to workload balancing, availability, or expertise alignment.
+
+
+    **When to Call:**
+
+    - When an operator is overloaded or unavailable.
+
+    - To optimize case distribution for efficiency.
+
+    - When a specialist is required for a complex case.
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: ReassignCase
+  permissions:
+    - role: admin
+      allowExecution: true
+

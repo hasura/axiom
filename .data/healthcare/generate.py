@@ -10,6 +10,10 @@ OUTPUT_DIR = "postgres"
 CURRENT_DATE = datetime.today()
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
+# Define better region names
+regions = [
+    "Northeast", "Midwest", "South", "West"]
+
 # Load HCPCS codes
 def load_hcpcs_codes(file_path=f"{OUTPUT_DIR}/procedure_codes.csv"):
     with open(file_path, "r") as f:
@@ -42,7 +46,7 @@ def generate_patients_and_insurance(num_patients=1000):
                     "Health Net", "WellCare", "Centene", "Ambetter", "Oscar Health",
                     "Medica", "Priority Health", "Highmark", "Florida Blue", 
                     "Empire BlueCross", "Regence BlueShield", "Premera Blue Cross"
-])
+                ])
             ])
 
 # Generate Operators and Schedule with Variance
@@ -51,8 +55,8 @@ def generate_operators_and_schedule(num_operators=10):
         writer = csv.writer(f)
         writer.writerow(["ops.operator_id", "ops.full_name", "ops.region", "ops.specialty"])
         for i in range(num_operators):
-            writer.writerow([f"OP{i:03d}", fake.name(), "Region1",
-                            random.choice(["Radiology", "Cardiology", "Orthopedics"])])
+            writer.writerow([f"OP{i:03d}", fake.name(), random.choice(regions),
+                            random.choice(["Radiology"])])
 
     busy_operators = ["OP000", "OP001", "OP002"]  # 30% busier
     start_date = CURRENT_DATE
@@ -60,11 +64,15 @@ def generate_operators_and_schedule(num_operators=10):
     with open(f"{OUTPUT_DIR}/operator_schedule.csv", "w", newline="") as f:
         writer = csv.writer(f)
         writer.writerow(["ops.operator_id", "ops.work_date", "ops.booked_minutes", "ops.max_minutes"])
+        over_capacity_operators = ["OP000", "OP001", "OP002", "OP003", "OP004"]
         for i in range(num_operators):
             op_id = f"OP{i:03d}"
             for day in range(14):
                 work_date = start_date + timedelta(days=day)
-                booked = random.randint(200, 400) if op_id in busy_operators else random.randint(0, 150)
+                if op_id in over_capacity_operators:
+                    booked = random.randint(500, 600)  # Over 480 max capacity
+                else:
+                    booked = random.randint(200, 450)  # Everyone is busier
                 writer.writerow([op_id, work_date.date().isoformat(), booked, 480])
 
 # Generate Cases with Variance
@@ -83,27 +91,27 @@ def generate_cases(num_cases=1000):
             hcpc, category, duration = random.choice(hcpcs_codes)
             urgency = random.choices(
                 ["critical", "emergency", "urgent", "semi-urgent", "routine"],
-                weights=[10, 20, 30, 20, 20]
+                weights=[15, 25, 30, 15, 15]
             )[0]
             rec_date = start_date + timedelta(days=random.randint(0, 13))
             status_roll = random.random()
-            if status_roll < 0.6:
+            if status_roll < 0.4:
                 status, op_id = "pending", ""
-            elif status_roll < 0.9:
-                status, op_id = "assigned", random.choice(operators[:3])  # Busier operators
+            elif status_roll < 0.85:
+                status, op_id = "assigned", random.choice(operators)
             else:
                 status, op_id = "completed", random.choice(operators)
             
             writer.writerow([
                 random.choice(patients), "CL001", hcpc, urgency, rec_date.date().isoformat(),
-                status, op_id, "Region1", datetime.now().isoformat()
+                status, op_id, random.choice(regions), datetime.now().isoformat()
             ])
 
 if __name__ == "__main__":
     print("Generating patients and insurance...")
-    generate_patients_and_insurance(5000)
+    generate_patients_and_insurance(2000)
     print("Generating operators and schedule...")
-    generate_operators_and_schedule(20)
+    generate_operators_and_schedule(8)
     print("Generating cases...")
-    generate_cases(10000)
+    generate_cases(8000)
     print(f"Data generation complete. Files saved in {OUTPUT_DIR}/")

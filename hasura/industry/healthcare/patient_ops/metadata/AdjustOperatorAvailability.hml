@@ -1,0 +1,104 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: OperatorAvailabilityAdjustment
+  fields:
+    - name: newEndTime
+      type: String
+    - name: newStartTime
+      type: String
+    - name: operatorId
+      type: Float!
+    - name: reason
+      type: String!
+  graphql:
+    typeName: OperatorAvailabilityAdjustment
+    inputTypeName: OperatorAvailabilityAdjustmentInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: ops_mgmt
+      dataConnectorObjectType: OperatorAvailabilityAdjustment
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: OperatorAvailabilityAdjustment
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - newEndTime
+          - newStartTime
+          - operatorId
+          - reason
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: OperatorAvailabilityResponse
+  fields:
+    - name: adjustmentId
+      type: String
+    - name: operatorId
+      type: Float!
+    - name: status
+      type: String!
+  graphql:
+    typeName: OperatorAvailabilityResponse
+    inputTypeName: OperatorAvailabilityResponseInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: ops_mgmt
+      dataConnectorObjectType: OperatorAvailabilityResponse
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: OperatorAvailabilityResponse
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - adjustmentId
+          - operatorId
+          - status
+
+---
+kind: Command
+version: v1
+definition:
+  name: AdjustOperatorAvailability
+  outputType: OperatorAvailabilityResponse!
+  arguments:
+    - name: details
+      type: OperatorAvailabilityAdjustment!
+  source:
+    dataConnectorName: ops_mgmt
+    dataConnectorCommand:
+      procedure: adjustOperatorAvailability
+  graphql:
+    rootFieldName: adjustOperatorAvailability
+    rootFieldKind: Mutation
+  description: >-
+    **Description:**
+
+    Adjusts an operator's available hours due to schedule changes, emergencies, or workload balancing.
+
+
+    **When to Call:**
+
+    - To accommodate an operator’s shift adjustment.
+
+    - To align available capacity with case demand.
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: AdjustOperatorAvailability
+  permissions:
+    - role: admin
+      allowExecution: true
+
