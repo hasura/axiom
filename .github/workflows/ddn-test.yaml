@@ -5,15 +5,13 @@ permissions:
   pull-requests: write
 
 on:
-  # Manual approval of environment is required
-  pull_request_target:
+  pull_request:
     branches:
       - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: CI
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -148,7 +146,6 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-    environment: CI
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
