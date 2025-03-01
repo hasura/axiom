@@ -8,7 +8,7 @@ export const Config = {
       },
     },
     headers: {
-      "hasura-m-auth": "zZkhKqFjqXR4g5MZCsJUZCcoPyZ",
+      "hasura-m-auth": process.env.RESTIFIED_PLUGIN_SECRET,
     },
     restifiedEndpoints: [
       {
