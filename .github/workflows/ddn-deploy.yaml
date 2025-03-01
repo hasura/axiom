@@ -66,13 +66,17 @@ jobs:
       - name: Build supergraph
         if: env.no_op != 'true'
         run: |
+          shortSha="${{ github.event.pull_request.head.sha }}"
+          shortSha=${shortSha:0:7}
+          description="\"${shortSha} [PR-${{ github.event.pull_request.number }}] ${{ github.event.pull_request.title }} | Build for commit ${{ github.event.pull_request.head.sha }}\""
+          echo "Using description: $description"
           calculatedSha=$(git rev-parse --short ${{ github.event.pull_request.head.sha }})
           if [ "${{ env.connector_changes }}" = "true" ]; then
             echo "Building connectors..."
             ./scripts/deploy/deploy.mjs \
               --context telco-dev \
               --profile telco \
-              --override-description "${calculatedSha} [PR-${{ github.event.pull_request.number }}] ${{ github.event.pull_request.title }} | Build for commit ${{ github.event.pull_request.head.sha }}" \
+              --override-description "$description" \
               --rebuild-connectors \
               --override \
               --log-level FATAL \
@@ -83,7 +87,7 @@ jobs:
             ./scripts/deploy/deploy.mjs \
               --context telco-dev \
               --profile telco \
-              --override-description "${calculatedSha} [PR-${{ github.event.pull_request.number }}] ${{ github.event.pull_request.title }} | Build for commit ${{ github.event.pull_request.head.sha }}" \
+              --override-description "$description" \
               --override \
               --log-level FATAL \
               --quiet \
