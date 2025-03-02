@@ -1,183 +1,204 @@
-# Axiom
-Hasura presales demo kit for showcasing DDN and PromptQL capabilities across various industry verticals.
+# 💚 Axiom: Hasura Industry Demo Toolkit
 
-## Prerequisites
-Before getting started, ensure you have the following installed:
-- [DDN CLI](https://hasura.io/docs/3.0/reference/cli/installation/)
-- Git LFS (`brew install git-lfs` on macOS)
-- Docker and Docker Compose
-- Node.js (for utility scripts)
-- Ansible (for infrastructure management)
+**Showcase the power of Hasura DDN and PromptQL across exciting industry verticals!**
 
-## Overview
-Axiom provides a comprehensive platform for deploying and testing Hasura industry demos. It serves as:
-- A library of industry-specific demo profiles for quick deployment
-- A testing ground for showcasing Hasura features with real-world examples
-- A centralized toolkit for demo deployment and management
+Axiom is your one-stop shop for impressive, ready-to-run demos that highlight Hasura's capabilities in real-world scenarios. Whether you're demonstrating to clients, testing new features, or exploring industry solutions, Axiom has you covered!
 
-| Directory | Purpose |
-|-----------|---------|
-| `hasura` | Contains all DDN configurations including supergraph, subgraph, and connector metadata for industry demo profiles |
-| `infra` | Ansible playbooks for managing demo servers and infrastructure automation |
-| `scripts` | Utility tools for demo management, deployment, and maintenance |
-| `.data` | Seed data and Docker configurations for local demonstrations |
+![Hasura DDN](https://img.shields.io/badge/Hasura-DDN%203.0-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
 
-## Demo Profiles
+## 🏁 Quick Start
 
-Axiom includes the following demo profiles:
-
-- **Telco**: Telecommunications industry capabilities
-- **AML**: Anti-Money Laundering compliance and risk management
-- **Healthcare**: Patient operations and medical reference data
-- **Starter**: Basic example for getting started
-
-### Telco Demo
-Demonstrates telecommunications industry capabilities with features for:
-- Customer management and billing
-- Network operations and monitoring
-- Service provisioning and activation
-- User authentication and authorization
-
-#### Quick Start
-1. Clone the repository:
 ```bash
+# Clone the repo
 git clone git@github.com:hasura/axiom.git
-```
 
-2. Set up environment:
-```bash
-cp hasura/.env.telco.template hasura/.env.telco
-cp .data/.env.template .data/telco/.env
-```
-
-3. Launch the demo:
-```bash
+# Choose a demo (telco, aml, healthcare)
 cd hasura
-ddn run build -- telco
 ddn run demo -- telco
 ```
 
-### Anti-Money Laundering (AML) Demo
-Comprehensive compliance and risk management solution with detailed examples and workflows available in [hasura/docs/aml-demo-guide.md](hasura/docs/aml-demo-guide.md).
+## 🧰 Prerequisites
+Before diving in, you'll need:
+- [DDN CLI](https://hasura.io/docs/3.0/reference/cli/installation/) - The Hasura command line interface
+- Git LFS (`brew install git-lfs` on macOS) - For handling large files
+- Docker and Docker Compose - For running local environments
+- Node.js - For utility scripts
 
-#### Features
-- Customer Risk Management (real-time scoring, KYC validation)
-- Sanctions Screening (global database integration, automated flagging)
-- Transaction Monitoring (ML-based detection, pattern recognition)
-- Compliance Operations (SAR management, account freezing)
+**Optional:**
+- Ansible - Only needed for internal presales team infrastructure management
 
-#### Quick Start
-1. Clone the repository:
+## 🔍 Overview
+Axiom brings Hasura's capabilities to life through industry-specific demos:
+- 🏭 **Ready-to-run industry demos** - Showcase real-world applications with minimal setup
+- 🧪 **Feature testing playground** - See how new Hasura features work in realistic scenarios
+- 🛠️ **Extensible toolkit** - Easily add your own demos and customizations
+
+| Directory | What's Inside | Why It's Awesome |
+|-----------|---------------|------------------|
+| 📁 `hasura` | DDN configurations, supergraphs, subgraphs, and connector metadata | The heart of each demo - where all the GraphQL magic happens! |
+| 📁 `scripts` | Utility tools and helper scripts | Makes deployment and management a breeze |
+| 📁 `.data` | Seed data and Docker configurations | Pre-configured data to make demos work out of the box |
+| 📁 `infra` | Ansible playbooks (optional) | For internal presales team infrastructure management |
+
+## 🌟 Demo Profiles
+
+Axiom comes loaded with exciting industry demos:
+
+### 📱 Telco
+Cutting-edge telecommunications solutions with customer management, network operations, and service provisioning.
+
+### 💰 AML (Anti-Money Laundering)
+Sophisticated compliance and risk management with real-time monitoring and automated flagging.
+
+### 🏥 Healthcare
+Comprehensive patient operations platform with scheduling, case management, and medical reference data.
+
+### 👶 Starter
+Perfect for beginners - a simplified example to help you get up and running quickly.
+
+## 📱 Telco Demo in Action
+
+Experience the future of telecommunications with our comprehensive Telco demo!
+
+### ✨ Features
+- 👤 **Customer 360° View** - Complete customer management and billing
+- 🌐 **Network Operations Center** - Real-time monitoring and analytics
+- 🔌 **Service Activation** - Seamless provisioning and activation workflows
+- 🔐 **Identity Management** - Robust authentication and authorization
+
+### 🔆 Quick Start
 ```bash
-git clone git@github.com:hasura/axiom.git
+# Set up the environment
+cp hasura/.env.telco.template hasura/.env.telco
+cp .data/.env.template .data/telco/.env
+
+# Launch the demo
+cd hasura
+ddn run demo -- telco
 ```
 
-2. Set up environment:
+Once running, explore the GraphQL API at http://localhost:8080/console
+
+## 💰 AML Demo in Action
+
+Supercharge your compliance operations with our sophisticated Anti-Money Laundering solution! Detailed workflows available in [hasura/docs/aml-demo-guide.md](hasura/docs/aml-demo-guide.md).
+
+### ✨ Features
+- 🔍 **Risk Scoring** - Real-time customer risk assessment and KYC validation
+- 🛡️ **Sanctions Screening** - Global database integration with automated flagging
+- 📊 **Smart Monitoring** - ML-powered detection of suspicious patterns
+- 📝 **Compliance Workflows** - Streamlined SAR management and account freezing
+
+### 🔆 Quick Start
 ```bash
+# Set up the environment
 cp hasura/.env.aml.template hasura/.env.aml
 cp .data/.env.template .data/aml/.env
-```
 
-3. Launch the demo:
-```bash
+# Launch the demo
 cd hasura
-ddn run build -- aml
 ddn run demo -- aml
 ```
 
-### Healthcare Demo
-A comprehensive healthcare operations platform demonstrating patient management, clinical workflows, and medical reference data integration.
+Explore a complete compliance solution with powerful GraphQL APIs!
 
-#### Features
-- Patient Operations Management
-- Operator Scheduling and Availability
-- Case Management and Prioritization
-- Medical Reference Data Integration
-- Emergency Slot Management
+## 🏥 Healthcare Demo in Action
 
-#### Quick Start
-1. Clone the repository:
+Transform patient care with our comprehensive healthcare operations platform! See how Hasura can revolutionize healthcare data management.
+
+### ✨ Features
+- 👨‍⚕️ **Patient Ops** - Streamlined patient management and care coordination
+- 📅 **Smart Scheduling** - Intelligent operator scheduling and availability management
+- 🚑 **Case Prioritization** - Dynamic case management with urgency tracking
+- 💊 **Medical Reference** - Integrated drug and procedure reference data
+- 🆘 **Emergency Response** - Efficient emergency slot management system
+
+### 🔆 Quick Start
 ```bash
-git clone git@github.com:hasura/axiom.git
-```
-
-2. Set up environment:
-```bash
+# Set up the environment
 cp hasura/.env.healthcare.template hasura/.env.healthcare
 cp .data/.env.template .data/healthcare/.env
-```
 
-3. Launch the demo:
-```bash
+# Launch the demo
 cd hasura
-ddn run build -- healthcare
 ddn run demo -- healthcare
 ```
 
-## Command Documentation
-The `ddn run` commands in `hasura/.hasura/context.yaml` now use a context parameter to dynamically work with any demo profile. This approach makes it easier to add new profiles without creating profile-specific commands.
+Discover how GraphQL can transform healthcare data management!
 
-| **Command**              | **Description**                                                                                                   |
-|--------------------------|-------------------------------------------------------------------------------------------------------------------|
-| `ddn run build -- <context>`            | Builds the DDN supergraph for the specified context (e.g., telco, aml, foobar)|
-| `ddn run docker-start -- <context>`     | Starts the containers for the specified context's data sources locally|
-| `ddn run demo -- <context>`             | Builds the supergraph and starts the containers for the specified context|
-| `ddn run docker-stop`                   | Stops and removes all Docker containers and volumes related to Axiom|
+## 🛠️ Command Reference
 
-For example, to work with the telco demo:
+Our flexible command system makes it easy to work with any demo profile! Just specify the context parameter and you're good to go.
+
+| **Command** | **What it Does** | **When to Use It** |
+|-------------|------------------|-------------------|
+| `ddn run build -- <context>` | 🏗️ Builds the DDN supergraph | When you've made metadata changes |
+| `ddn run docker-start -- <context>` | 🐳 Starts the Docker containers | When you need the data sources |
+| `ddn run demo -- <context>` | ✨ Does both build & docker-start | The all-in-one command to get started |
+| `ddn run docker-stop` | 🛑 Stops all containers | When you're done or need to switch demos |
+
+### 💡 Examples
+
+**Working with the Telco demo:**
 ```bash
+# One command does it all!
+ddn run demo -- telco
+
+# Or step by step if you prefer
 ddn run build -- telco
 ddn run docker-start -- telco
-ddn run demo -- telco
 ```
 
-To work with a new context (e.g., media):
+**Creating your own demo:**
 ```bash
-ddn run build -- media
-ddn run docker-start -- media
-ddn run demo -- media
+# After setting up your new context (e.g., retail)
+ddn run demo -- retail
 ```
+> [!TIP]
+> Use `ddn run demo` for the fastest path to a running demo!
 
 
-## Deployment
+## 🌟 Deployment & Management
 
-### Deploying new metadata
+Take your demos to the cloud with our streamlined deployment tools!
 
-Any metadata change that has been tested locally and against CI/CD in a pull request may be rolled out in a couple of seconds with the [deploy script](./scripts/deploy/). 
+### 🔄 Deploying Metadata Changes
 
-The deploy script will run a JWT deployment and a No-Auth deployment before applying No-Auth as the project API.
+Roll out your changes in seconds with our powerful deploy script! Full documentation in the [deploy README](./scripts/deploy/README.md).
 
-Full documentation may be found in the deploy [README](./scripts/deploy/README.md)
-
-```
-# Run the deploy script
+```bash
+# Deploy your changes to the cloud
 ./scripts/deploy/deploy.mjs --context axiom-dev --profile telco
 ```
 
-### Deploying new connectors
-New connectors should be deployed after connector configuration/schema is updated.
+The script handles both JWT and No-Auth deployments automatically, making your life easier.
 
-The simplest way to deploy new connectors is to run a new supergraph build in each region. It's important to ensure that the connector regions match the regions you're deploying.
+### 🔌 Managing Connectors
 
-```
-# Deploy new connectors
+#### 🆕 Deploying New Connectors
+
+After updating connector configuration or schema:
+
+```bash
+# Deploy your updated connectors
 node ./scripts/deploy/deploy.mjs --context axiom-dev --profile telco --rebuild-connectors
 ```
 
-> [!IMPORTANT]  
-> Hasura Note: Following a connector update, it's important to update all the `.env.cloud.*` file details in Confluence. These are not stored in the repo for obvious reasons.
+> **Important:** Remember to update the `.env.cloud.*` file details in Confluence after connector updates!
 
-## Connectors
+#### 🧹 Cleaning Up Old Connectors
 
-### Deleting connectors
-Sometimes the number of connectors in cloud will surpass the max (100) and it will be required to clear out old connectors.
+Keep your cloud environment tidy with our connector cleanup tool:
 
-A handy script has been created to quickly and easily delete older connectors from cloud
-
-> [!CAUTION]
-> This is a destructive command and will prevent your cloud supergraph from working correctly. Use with caution!
-
-```
-# Delete the 20 oldest connector builds from the default environment in .hasura/context.yaml
+```bash
+# Remove the 20 oldest connector builds
 ./scripts/connector-delete.sh axiom-dev 20
 ```
+
+> [!CAUTION]
+> ⚠️ **Use with caution!** This will remove connectors from your cloud supergraph.
+
+## 🎉 Ready to Build Your Own Demo?
+
+Check out the [hasura/README.md](hasura/README.md) for detailed instructions on adding your own industry demo!
