@@ -1,0 +1,399 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: AccountsContactInformation
+  fields:
+    - name: address
+      type: String
+    - name: email
+      type: String
+    - name: phoneNumber
+      type: String
+  graphql:
+    typeName: AccountsContactInformation
+    inputTypeName: AccountsContactInformationInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: aml_monitoring
+      dataConnectorObjectType: accounts_contact_information
+      fieldMapping:
+        address:
+          column:
+            name: address
+        email:
+          column:
+            name: email
+        phoneNumber:
+          column:
+            name: phone_number
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: AccountsContactInformation
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - address
+          - email
+          - phoneNumber
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: AccountsTransactionLimits
+  fields:
+    - name: maxNumTransactions
+      type: Int
+    - name: maxTransactionLimit
+      type: Int
+  graphql:
+    typeName: AccountsTransactionLimits
+    inputTypeName: AccountsTransactionLimitsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: aml_monitoring
+      dataConnectorObjectType: accounts_transaction_limits
+      fieldMapping:
+        maxNumTransactions:
+          column:
+            name: max_num_transactions
+        maxTransactionLimit:
+          column:
+            name: max_transaction_limit
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: AccountsTransactionLimits
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - maxNumTransactions
+          - maxTransactionLimit
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: Accounts
+  fields:
+    - name: id
+      type: ObjectId!
+    - name: accountId
+      type: Int
+    - name: contactInformation
+      type: AccountsContactInformation
+    - name: entityType
+      type: String
+    - name: name
+      type: String
+    - name: risk
+      type: String
+    - name: transactionLimits
+      type: AccountsTransactionLimits
+  graphql:
+    typeName: Accounts
+    inputTypeName: AccountsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: aml_monitoring
+      dataConnectorObjectType: accounts
+      fieldMapping:
+        id:
+          column:
+            name: _id
+        accountId:
+          column:
+            name: account_id
+        contactInformation:
+          column:
+            name: contact_information
+        entityType:
+          column:
+            name: entity_type
+        name:
+          column:
+            name: name
+        risk:
+          column:
+            name: risk
+        transactionLimits:
+          column:
+            name: transaction_limits
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: Accounts
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - id
+          - accountId
+          - contactInformation
+          - entityType
+          - name
+          - risk
+          - transactionLimits
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: AccountsContactInformationBoolExp
+  operand:
+    object:
+      type: AccountsContactInformation
+      comparableFields:
+        - fieldName: address
+          booleanExpressionType: StringBoolExp
+        - fieldName: email
+          booleanExpressionType: StringBoolExp
+        - fieldName: phoneNumber
+          booleanExpressionType: StringBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: AccountsContactInformationBoolExp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: AccountsTransactionLimitsBoolExp
+  operand:
+    object:
+      type: AccountsTransactionLimits
+      comparableFields:
+        - fieldName: maxNumTransactions
+          booleanExpressionType: IntBoolExp
+        - fieldName: maxTransactionLimit
+          booleanExpressionType: IntBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: AccountsTransactionLimitsBoolExp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: AccountsBoolExp
+  operand:
+    object:
+      type: Accounts
+      comparableFields:
+        - fieldName: id
+          booleanExpressionType: ObjectIdBoolExp
+        - fieldName: accountId
+          booleanExpressionType: IntBoolExp
+        - fieldName: contactInformation
+          booleanExpressionType: AccountsContactInformationBoolExp
+        - fieldName: entityType
+          booleanExpressionType: StringBoolExp
+        - fieldName: name
+          booleanExpressionType: StringBoolExp
+        - fieldName: risk
+          booleanExpressionType: StringBoolExp
+        - fieldName: transactionLimits
+          booleanExpressionType: AccountsTransactionLimitsBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: AccountsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: AccountsAggExp
+  operand:
+    object:
+      aggregatedType: Accounts
+      aggregatableFields:
+        - fieldName: id
+          aggregateExpression: ObjectIdAggExp
+        - fieldName: accountId
+          aggregateExpression: IntAggExp
+        - fieldName: entityType
+          aggregateExpression: StringAggExp
+        - fieldName: name
+          aggregateExpression: StringAggExp
+        - fieldName: risk
+          aggregateExpression: StringAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: AccountsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: AccountsContactInformationOrderByExp
+  operand:
+    object:
+      orderedType: AccountsContactInformation
+      orderableFields:
+        - fieldName: address
+          orderByExpression: StringOrderByExp
+        - fieldName: email
+          orderByExpression: StringOrderByExp
+        - fieldName: phoneNumber
+          orderByExpression: StringOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: AccountsContactInformationOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: AccountsTransactionLimitsOrderByExp
+  operand:
+    object:
+      orderedType: AccountsTransactionLimits
+      orderableFields:
+        - fieldName: maxNumTransactions
+          orderByExpression: IntOrderByExp
+        - fieldName: maxTransactionLimit
+          orderByExpression: IntOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: AccountsTransactionLimitsOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: AccountsOrderByExp
+  operand:
+    object:
+      orderedType: Accounts
+      orderableFields:
+        - fieldName: id
+          orderByExpression: ObjectIdOrderByExp
+        - fieldName: accountId
+          orderByExpression: IntOrderByExp
+        - fieldName: contactInformation
+          orderByExpression: AccountsContactInformationOrderByExp
+        - fieldName: entityType
+          orderByExpression: StringOrderByExp
+        - fieldName: name
+          orderByExpression: StringOrderByExp
+        - fieldName: risk
+          orderByExpression: StringOrderByExp
+        - fieldName: transactionLimits
+          orderByExpression: AccountsTransactionLimitsOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: AccountsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: Accounts
+  objectType: Accounts
+  source:
+    dataConnectorName: aml_monitoring
+    collection: accounts
+  filterExpressionType: AccountsBoolExp
+  aggregateExpression: AccountsAggExp
+  orderByExpression: AccountsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: accounts
+      subscription:
+        rootField: accounts
+    selectUniques:
+      - queryRootField: accountsById
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: accountsById
+    filterInputTypeName: AccountsFilterInput
+    aggregate:
+      queryRootField: accountsAggregate
+      subscription:
+        rootField: accountsAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: Accounts
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: aml_beneficiary_cases
+  sourceType: Accounts
+  target:
+    model:
+      name: AmlCases
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: accountId
+      target:
+        modelField:
+          - fieldName: beneficiaryId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: aml_originator_cases
+  sourceType: Accounts
+  target:
+    model:
+      name: AmlCases
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: accountId
+      target:
+        modelField:
+          - fieldName: originatorId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer
+  sourceType: Accounts
+  target:
+    model:
+      name: Customers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: accountId
+      target:
+        modelField:
+          - fieldName: account

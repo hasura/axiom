@@ -1,0 +1,443 @@
+---
+kind: ScalarType
+version: v1
+definition:
+  name: ObjectId
+  graphql:
+    typeName: ObjectId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ObjectIdBoolExp
+  operand:
+    scalar:
+      type: ObjectId
+      comparisonOperators:
+        - name: _eq
+          argumentType: ObjectId!
+        - name: _in
+          argumentType: "[ObjectId!]!"
+        - name: _neq
+          argumentType: ObjectId!
+        - name: _nin
+          argumentType: "[ObjectId!]!"
+      dataConnectorOperatorMapping:
+        - dataConnectorName: aml_monitoring
+          dataConnectorScalarType: ObjectId
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ObjectIdBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: aml_monitoring
+  dataConnectorScalarType: ObjectId
+  representation: ObjectId
+  graphql:
+    comparisonExpressionTypeName: ObjectIdComparisonExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: aml_monitoring
+  dataConnectorScalarType: Int
+  representation: Int
+  graphql:
+    comparisonExpressionTypeName: IntComparisonExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: aml_monitoring
+  dataConnectorScalarType: String
+  representation: String
+  graphql:
+    comparisonExpressionTypeName: StringComparisonExp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: IntBoolExp
+  operand:
+    scalar:
+      type: Int
+      comparisonOperators:
+        - name: _eq
+          argumentType: Int!
+        - name: _gt
+          argumentType: Int!
+        - name: _gte
+          argumentType: Int!
+        - name: _in
+          argumentType: "[Int!]!"
+        - name: _lt
+          argumentType: Int!
+        - name: _lte
+          argumentType: Int!
+        - name: _neq
+          argumentType: Int!
+        - name: _nin
+          argumentType: "[Int!]!"
+      dataConnectorOperatorMapping:
+        - dataConnectorName: aml_monitoring
+          dataConnectorScalarType: Int
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: IntBoolExp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: StringBoolExp
+  operand:
+    scalar:
+      type: String
+      comparisonOperators:
+        - name: _eq
+          argumentType: String!
+        - name: _gt
+          argumentType: String!
+        - name: _gte
+          argumentType: String!
+        - name: _in
+          argumentType: "[String!]!"
+        - name: _iregex
+          argumentType: String!
+        - name: _lt
+          argumentType: String!
+        - name: _lte
+          argumentType: String!
+        - name: _neq
+          argumentType: String!
+        - name: _nin
+          argumentType: "[String!]!"
+        - name: _regex
+          argumentType: String!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: aml_monitoring
+          dataConnectorScalarType: String
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: StringBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ObjectIdAggExp
+  operand:
+    scalar:
+      aggregatedType: ObjectId
+      aggregationFunctions:
+        - name: count
+          returnType: Int!
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: aml_monitoring
+          dataConnectorScalarType: ObjectId
+          functionMapping:
+            count:
+              name: count
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ObjectIdAggExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: IntAggExp
+  operand:
+    scalar:
+      aggregatedType: Int
+      aggregationFunctions:
+        - name: avg
+          returnType: Int
+        - name: count
+          returnType: Int!
+        - name: max
+          returnType: Int
+        - name: min
+          returnType: Int
+        - name: sum
+          returnType: Int
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: aml_monitoring
+          dataConnectorScalarType: Int
+          functionMapping:
+            avg:
+              name: avg
+            count:
+              name: count
+            max:
+              name: max
+            min:
+              name: min
+            sum:
+              name: sum
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: IntAggExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: StringAggExp
+  operand:
+    scalar:
+      aggregatedType: String
+      aggregationFunctions:
+        - name: count
+          returnType: Int!
+        - name: max
+          returnType: String
+        - name: min
+          returnType: String
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: aml_monitoring
+          dataConnectorScalarType: String
+          functionMapping:
+            count:
+              name: count
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: StringAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ObjectIdOrderByExp
+  operand:
+    scalar:
+      orderedType: ObjectId
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ObjectIdOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: IntOrderByExp
+  operand:
+    scalar:
+      orderedType: Int
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: IntOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: StringOrderByExp
+  operand:
+    scalar:
+      orderedType: String
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: StringOrderByExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: Bool_1
+  graphql:
+    typeName: Bool1
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: BoolBoolExp_1
+  operand:
+    scalar:
+      type: Bool_1
+      comparisonOperators:
+        - name: _eq
+          argumentType: Bool_1!
+        - name: _in
+          argumentType: "[Bool_1!]!"
+        - name: _neq
+          argumentType: Bool_1!
+        - name: _nin
+          argumentType: "[Bool_1!]!"
+      dataConnectorOperatorMapping:
+        - dataConnectorName: aml_monitoring
+          dataConnectorScalarType: Bool
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: BoolBoolExp1
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: aml_monitoring
+  dataConnectorScalarType: Bool
+  representation: Bool_1
+  graphql:
+    comparisonExpressionTypeName: Bool1ComparisonExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: Double
+  graphql:
+    typeName: Double
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: DoubleBoolExp
+  operand:
+    scalar:
+      type: Double
+      comparisonOperators:
+        - name: _eq
+          argumentType: Double!
+        - name: _gt
+          argumentType: Double!
+        - name: _gte
+          argumentType: Double!
+        - name: _in
+          argumentType: "[Double!]!"
+        - name: _lt
+          argumentType: Double!
+        - name: _lte
+          argumentType: Double!
+        - name: _neq
+          argumentType: Double!
+        - name: _nin
+          argumentType: "[Double!]!"
+      dataConnectorOperatorMapping:
+        - dataConnectorName: aml_monitoring
+          dataConnectorScalarType: Double
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: DoubleBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: aml_monitoring
+  dataConnectorScalarType: Double
+  representation: Double
+  graphql:
+    comparisonExpressionTypeName: DoubleComparisonExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: DoubleAggExp
+  operand:
+    scalar:
+      aggregatedType: Double
+      aggregationFunctions:
+        - name: avg
+          returnType: Double
+        - name: count
+          returnType: Int!
+        - name: max
+          returnType: Double
+        - name: min
+          returnType: Double
+        - name: sum
+          returnType: Double
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: aml_monitoring
+          dataConnectorScalarType: Double
+          functionMapping:
+            avg:
+              name: avg
+            count:
+              name: count
+            max:
+              name: max
+            min:
+              name: min
+            sum:
+              name: sum
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: DoubleAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: Bool1OrderByExp
+  operand:
+    scalar:
+      orderedType: Bool_1
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: Bool1OrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: DoubleOrderByExp
+  operand:
+    scalar:
+      orderedType: Double
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: DoubleOrderByExp
+

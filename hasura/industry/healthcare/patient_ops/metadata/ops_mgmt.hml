@@ -1,0 +1,303 @@
+kind: DataConnectorLink
+version: v1
+definition:
+  name: ops_mgmt
+  url:
+    readWriteUrls:
+      read:
+        valueFromEnv: PATIENT_OPS_OPS_MGMT_READ_URL
+      write:
+        valueFromEnv: PATIENT_OPS_OPS_MGMT_WRITE_URL
+  headers:
+    Authorization:
+      valueFromEnv: PATIENT_OPS_OPS_MGMT_AUTHORIZATION_HEADER
+  schema:
+    version: v0.1
+    schema:
+      scalar_types:
+        Float:
+          representation:
+            type: float64
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+        String:
+          representation:
+            type: string
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+      object_types:
+        CaseReassignmentResponse:
+          fields:
+            caseId:
+              type:
+                type: named
+                name: Float
+            reassignmentId:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
+            status:
+              type:
+                type: named
+                name: String
+        CaseReviewMarkingResponse:
+          fields:
+            caseId:
+              type:
+                type: named
+                name: Float
+            reviewId:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
+            status:
+              type:
+                type: named
+                name: String
+        CaseRiskMarkingResponse:
+          fields:
+            caseId:
+              type:
+                type: named
+                name: Float
+            riskId:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
+            status:
+              type:
+                type: named
+                name: String
+        CaseUrgencyUpdateResponse:
+          fields:
+            caseId:
+              type:
+                type: named
+                name: Float
+            status:
+              type:
+                type: named
+                name: String
+            updateId:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
+        EmergencySlotBlockResponse:
+          fields:
+            blockId:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
+            slotId:
+              type:
+                type: named
+                name: Float
+            status:
+              type:
+                type: named
+                name: String
+        OperatorAvailabilityResponse:
+          fields:
+            adjustmentId:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
+            operatorId:
+              type:
+                type: named
+                name: String
+            status:
+              type:
+                type: named
+                name: String
+      collections: []
+      functions: []
+      procedures:
+        - name: reassignCase
+          description: |-
+            **Description:**
+            This function reassigns a case to a new operator due to workload balancing, availability, or expertise alignment.
+
+            **When to Call:**
+            - When an operator is overloaded or unavailable.
+            - To optimize case distribution for efficiency.
+            - When a specialist is required for a complex case.
+          arguments:
+            caseId:
+              type:
+                type: named
+                name: Float
+            newOperatorId:
+              type:
+                type: named
+                name: String
+            previousOperatorId:
+              type:
+                type: named
+                name: String
+            reason:
+              type:
+                type: named
+                name: String
+          result_type:
+            type: named
+            name: CaseReassignmentResponse
+        - name: blockEmergencySlot
+          description: |-
+            **Description:**
+            Blocks out emergency slots to prioritize urgent procedures or critical patient care.
+
+            **When to Call:**
+            - When an unexpected emergency arises requiring an open time slot.
+            - To manage hospital or clinic workflow more efficiently.
+          arguments:
+            endTime:
+              type:
+                type: named
+                name: String
+            reason:
+              type:
+                type: named
+                name: String
+            slotId:
+              type:
+                type: named
+                name: Float
+            startTime:
+              type:
+                type: named
+                name: String
+          result_type:
+            type: named
+            name: EmergencySlotBlockResponse
+        - name: adjustOperatorAvailability
+          description: |-
+            **Description:**
+            Adjusts an operator's available hours due to schedule changes, emergencies, or workload balancing.
+
+            **When to Call:**
+            - To accommodate an operator’s shift adjustment.
+            - To align available capacity with case demand.
+          arguments:
+            newEndTime:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
+            newStartTime:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
+            operatorId:
+              type:
+                type: named
+                name: String
+            reason:
+              type:
+                type: named
+                name: String
+          result_type:
+            type: named
+            name: OperatorAvailabilityResponse
+        - name: markCaseAtRisk
+          description: |-
+            **Description:**
+            Marks a case as at-risk due to potential delays, complexity, or patient conditions requiring urgent attention.
+
+            **When to Call:**
+            - When there is a risk of SLA non-compliance.
+            - When a patient’s condition changes, increasing urgency.
+          arguments:
+            caseId:
+              type:
+                type: named
+                name: Float
+            reason:
+              type:
+                type: named
+                name: String
+            riskLevel:
+              type:
+                type: named
+                name: String
+          result_type:
+            type: named
+            name: CaseRiskMarkingResponse
+        - name: updateCaseUrgency
+          description: |-
+            **Description:**
+            Updates a case's urgency level to reflect changing patient conditions or operational requirements.
+
+            **When to Call:**
+            - When a case’s urgency escalates or de-escalates due to new information.
+            - To ensure proper prioritization in scheduling.
+          arguments:
+            caseId:
+              type:
+                type: named
+                name: Float
+            newUrgency:
+              type:
+                type: named
+                name: String
+            previousUrgency:
+              type:
+                type: named
+                name: String
+            reason:
+              type:
+                type: named
+                name: String
+          result_type:
+            type: named
+            name: CaseUrgencyUpdateResponse
+        - name: markCaseForReview
+          description: |-
+            **Description:**
+            Marks a case for review by a designated reviewer to ensure compliance, accuracy, or additional assessment.
+
+            **When to Call:**
+            - When a case requires further evaluation.
+            - To confirm that the right decisions and treatments are being followed.
+          arguments:
+            caseId:
+              type:
+                type: named
+                name: Float
+            reason:
+              type:
+                type: named
+                name: String
+            reviewerId:
+              type:
+                type: named
+                name: Float
+          result_type:
+            type: named
+            name: CaseReviewMarkingResponse
+    capabilities:
+      version: 0.1.6
+      capabilities:
+        query:
+          variables: {}
+          nested_fields: {}
+        mutation: {}

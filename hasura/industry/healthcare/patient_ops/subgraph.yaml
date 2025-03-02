@@ -1,0 +1,35 @@
+kind: Subgraph
+version: v2
+definition:
+  name: patient_ops
+  generator:
+    rootPath: .
+    namingConvention: graphql
+  includePaths:
+    - metadata
+  envMapping:
+    PATIENT_OPS_OPERATIONS_AUTHORIZATION_HEADER:
+      fromEnv: PATIENT_OPS_OPERATIONS_AUTHORIZATION_HEADER
+    PATIENT_OPS_OPERATIONS_READ_URL:
+      fromEnv: PATIENT_OPS_OPERATIONS_READ_URL
+    PATIENT_OPS_OPERATIONS_WRITE_URL:
+      fromEnv: PATIENT_OPS_OPERATIONS_WRITE_URL
+    PATIENT_OPS_OPS_MGMT_AUTHORIZATION_HEADER:
+      fromEnv: PATIENT_OPS_OPS_MGMT_AUTHORIZATION_HEADER
+    PATIENT_OPS_OPS_MGMT_READ_URL:
+      fromEnv: PATIENT_OPS_OPS_MGMT_READ_URL
+    PATIENT_OPS_OPS_MGMT_WRITE_URL:
+      fromEnv: PATIENT_OPS_OPS_MGMT_WRITE_URL
+    PATIENT_OPS_PATIENTS_AUTHORIZATION_HEADER:
+      fromEnv: PATIENT_OPS_PATIENTS_AUTHORIZATION_HEADER
+    PATIENT_OPS_PATIENTS_READ_URL:
+      fromEnv: PATIENT_OPS_PATIENTS_READ_URL
+    PATIENT_OPS_PATIENTS_WRITE_URL:
+      fromEnv: PATIENT_OPS_PATIENTS_WRITE_URL
+  connectors:
+    - path: connector/patients/connector.yaml
+      connectorLinkName: patients
+    - path: connector/operations/connector.yaml
+      connectorLinkName: operations
+    - path: connector/ops_mgmt/connector.yaml
+      connectorLinkName: ops_mgmt

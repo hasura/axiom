@@ -1,0 +1,256 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: Customers
+  fields:
+    - name: account
+      type: Int4!
+    - name: address
+      type: Text
+    - name: blacklisted
+      type: Bool
+    - name: customerId
+      type: Int4!
+    - name: dob
+      type: Date
+    - name: name
+      type: Varchar!
+    - name: nationality
+      type: Varchar
+    - name: pepStatus
+      type: Bool
+    - name: riskLevel
+      type: Varchar
+  graphql:
+    typeName: Customers
+    inputTypeName: CustomersInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: banking_core
+      dataConnectorObjectType: customers
+      fieldMapping:
+        account:
+          column:
+            name: account
+        address:
+          column:
+            name: address
+        blacklisted:
+          column:
+            name: blacklisted
+        customerId:
+          column:
+            name: customer_id
+        dob:
+          column:
+            name: dob
+        name:
+          column:
+            name: name
+        nationality:
+          column:
+            name: nationality
+        pepStatus:
+          column:
+            name: pep_status
+        riskLevel:
+          column:
+            name: risk_level
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: Customers
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - account
+          - address
+          - blacklisted
+          - customerId
+          - dob
+          - name
+          - nationality
+          - pepStatus
+          - riskLevel
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: CustomersBoolExp
+  operand:
+    object:
+      type: Customers
+      comparableFields:
+        - fieldName: account
+          booleanExpressionType: Int4BoolExp
+        - fieldName: address
+          booleanExpressionType: TextBoolExp
+        - fieldName: blacklisted
+          booleanExpressionType: BoolBoolExp
+        - fieldName: customerId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: dob
+          booleanExpressionType: DateBoolExp
+        - fieldName: name
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: nationality
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: pepStatus
+          booleanExpressionType: BoolBoolExp
+        - fieldName: riskLevel
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: sars
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: CustomersBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: CustomersAggExp
+  operand:
+    object:
+      aggregatedType: Customers
+      aggregatableFields:
+        - fieldName: account
+          aggregateExpression: Int4AggExp
+        - fieldName: address
+          aggregateExpression: TextAggExp
+        - fieldName: blacklisted
+          aggregateExpression: BoolAggExp
+        - fieldName: customerId
+          aggregateExpression: Int4AggExp
+        - fieldName: dob
+          aggregateExpression: DateAggExp
+        - fieldName: name
+          aggregateExpression: VarcharAggExp
+        - fieldName: nationality
+          aggregateExpression: VarcharAggExp
+        - fieldName: pepStatus
+          aggregateExpression: BoolAggExp
+        - fieldName: riskLevel
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: CustomersAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: CustomersOrderByExp
+  operand:
+    object:
+      orderedType: Customers
+      orderableFields:
+        - fieldName: account
+          orderByExpression: Int4OrderByExp
+        - fieldName: address
+          orderByExpression: TextOrderByExp
+        - fieldName: blacklisted
+          orderByExpression: BoolOrderByExp
+        - fieldName: customerId
+          orderByExpression: Int4OrderByExp
+        - fieldName: dob
+          orderByExpression: DateOrderByExp
+        - fieldName: name
+          orderByExpression: VarcharOrderByExp
+        - fieldName: nationality
+          orderByExpression: VarcharOrderByExp
+        - fieldName: pepStatus
+          orderByExpression: BoolOrderByExp
+        - fieldName: riskLevel
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: CustomersOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: Customers
+  objectType: Customers
+  source:
+    dataConnectorName: banking_core
+    collection: customers
+  filterExpressionType: CustomersBoolExp
+  aggregateExpression: CustomersAggExp
+  orderByExpression: CustomersOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: customers
+      subscription:
+        rootField: customers
+    selectUniques:
+      - queryRootField: customersByCustomerId
+        uniqueIdentifier:
+          - customerId
+        subscription:
+          rootField: customersByCustomerId
+    filterInputTypeName: CustomersFilterInput
+    aggregate:
+      queryRootField: customersAggregate
+      subscription:
+        rootField: customersAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: Customers
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: sars
+  sourceType: Customers
+  target:
+    model:
+      name: Sars
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: SarsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId
+  graphql:
+    aggregateFieldName: sarsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: account_details
+  sourceType: Customers
+  target:
+    model:
+      name: Accounts
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: account
+      target:
+        modelField:
+          - fieldName: accountId

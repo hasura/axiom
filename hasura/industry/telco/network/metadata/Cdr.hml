@@ -4,6 +4,8 @@ version: v1
 definition:
   name: Cdr
   fields:
+    - name: cuid
+      type: Int32!
     - name: callDuration
       type: Int32!
     - name: callType
@@ -19,6 +21,9 @@ definition:
     - dataConnectorName: clickhouse
       dataConnectorObjectType: cdr
       fieldMapping:
+        cuid:
+          column:
+            name: CUID
         callDuration:
           column:
             name: Call_Duration
@@ -45,6 +50,15 @@ definition:
           - callType
           - guid
           - timestamp
+          - cuid
+    - role: customer
+      output:
+        allowedFields:
+          - callDuration
+          - callType
+          - guid
+          - timestamp
+          - cuid
 
 ---
 kind: Model
@@ -79,6 +93,14 @@ definition:
     - role: admin
       select:
         filter: null
+    - role: customer
+      select: 
+        filter: 
+          fieldComparison:
+            field: cuid
+            operator: _eq
+            value: 
+              sessionVariable: x-hasura-user-id
 
 ---
 kind: Relationship
@@ -126,6 +148,8 @@ definition:
     object:
       aggregatedType: Cdr
       aggregatableFields:
+        - fieldName: cuid
+          aggregateExpression: Int32AggExp
         - fieldName: callDuration
           aggregateExpression: Int32AggExp
         - fieldName: callType
@@ -148,6 +172,8 @@ definition:
     object:
       type: Cdr
       comparableFields:
+        - fieldName: cuid
+          booleanExpressionType: Int32BoolExp
         - fieldName: callDuration
           booleanExpressionType: Int32BoolExp
         - fieldName: callType
@@ -173,6 +199,8 @@ definition:
     object:
       orderedType: Cdr
       orderableFields:
+        - fieldName: cuid
+          orderByExpression: Int32OrderByExp
         - fieldName: callDuration
           orderByExpression: Int32OrderByExp
         - fieldName: callType
@@ -181,8 +209,7 @@ definition:
           orderByExpression: StringOrderByExp
         - fieldName: timestamp
           orderByExpression: DateTimeOrderByExp
-      orderableRelationships:
-        - relationshipName: customer
+      orderableRelationships: []
   graphql:
     expressionTypeName: network_CdrOrderByExp
 

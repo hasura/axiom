@@ -1,0 +1,167 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: InsurancePlans
+  fields:
+    - name: payerName
+      type: Varchar_1
+    - name: planId
+      type: Varchar_1!
+    - name: planName
+      type: Varchar_1
+  graphql:
+    typeName: InsurancePlans
+    inputTypeName: InsurancePlansInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: patients
+      dataConnectorObjectType: insurance_plans
+      fieldMapping:
+        payerName:
+          column:
+            name: payer_name
+        planId:
+          column:
+            name: plan_id
+        planName:
+          column:
+            name: plan_name
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: InsurancePlans
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - payerName
+          - planId
+          - planName
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: InsurancePlansBoolExp
+  operand:
+    object:
+      type: InsurancePlans
+      comparableFields:
+        - fieldName: payerName
+          booleanExpressionType: VarcharBoolExp_1
+        - fieldName: planId
+          booleanExpressionType: VarcharBoolExp_1
+        - fieldName: planName
+          booleanExpressionType: VarcharBoolExp_1
+      comparableRelationships:
+        - relationshipName: patients
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: InsurancePlansBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: InsurancePlansAggExp
+  operand:
+    object:
+      aggregatedType: InsurancePlans
+      aggregatableFields:
+        - fieldName: payerName
+          aggregateExpression: VarcharAggExp_1
+        - fieldName: planId
+          aggregateExpression: VarcharAggExp_1
+        - fieldName: planName
+          aggregateExpression: VarcharAggExp_1
+  count:
+    enable: true
+  graphql:
+    selectTypeName: InsurancePlansAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: InsurancePlansOrderByExp
+  operand:
+    object:
+      orderedType: InsurancePlans
+      orderableFields:
+        - fieldName: payerName
+          orderByExpression: Varchar1OrderByExp
+        - fieldName: planId
+          orderByExpression: Varchar1OrderByExp
+        - fieldName: planName
+          orderByExpression: Varchar1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: InsurancePlansOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: InsurancePlans
+  objectType: InsurancePlans
+  source:
+    dataConnectorName: patients
+    collection: insurance_plans
+  filterExpressionType: InsurancePlansBoolExp
+  aggregateExpression: InsurancePlansAggExp
+  orderByExpression: InsurancePlansOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: insurancePlans
+      subscription:
+        rootField: insurancePlans
+    selectUniques:
+      - queryRootField: insurancePlansByPlanId
+        uniqueIdentifier:
+          - planId
+        subscription:
+          rootField: insurancePlansByPlanId
+    filterInputTypeName: InsurancePlansFilterInput
+    aggregate:
+      queryRootField: insurancePlansAggregate
+      subscription:
+        rootField: insurancePlansAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: InsurancePlans
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: patients
+  sourceType: InsurancePlans
+  target:
+    model:
+      name: Patients
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: PatientsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: planId
+      target:
+        modelField:
+          - fieldName: insurancePlanId
+  graphql:
+    aggregateFieldName: patientsAggregate
+

@@ -1,154 +1,17 @@
-name: Axiom auto-test + auto-deploy
+name: Axiom auto-test
 
 permissions:
   contents: read
   pull-requests: write
 
 on:
-  # Manual approval of environment is required
-  pull_request_target:
+  pull_request:
     branches:
       - main
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    environment: CI
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-
-      - name: Check for [no-op] in commit message
-        run: |
-          if [[ "${{ github.event.pull_request.title }}" =~ ^\[no-op\] ]]; then
-            echo "no_op=true" >> $GITHUB_ENV
-          else
-            echo "no_op=false" >> $GITHUB_ENV
-          fi
-
-      - name: Set up DDN CLI and Login
-        if: env.no_op != 'true'
-        uses: hasura/ddn-deployment@main
-        with:
-          hasura-pat: ${{ secrets.HASURA_PAT }}
-
-      - name: Install dependencies
-        if: env.no_op != 'true'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y jq
-
-      - name: Create .env.cloud.dev
-        working-directory: ./hasura
-        if: env.no_op != 'true'
-        run: |
-          echo "${{ secrets.ENV_CLOUD_DEFAULT }}" > .env.cloud.dev
-
-      - name: Detect Connector Changes
-        if: env.no_op != 'true'
-        run: |
-          # Pull the base branch
-          git fetch origin ${{ github.base_ref }}
-
-          # Check if any changes occurred in the connector directories
-          if git diff --name-only origin/${{ github.base_ref }} ${{ github.sha }} | grep -q 'connector/'; then
-            echo "connector_changes=true" >> $GITHUB_ENV
-          else
-            echo "connector_changes=false" >> $GITHUB_ENV
-          fi
-
-      - name: Install deploy script dependencies
-        if: env.no_op != 'true'
-        run: |
-          cd ./scripts/deploy
-          npm i
-
-      - name: Build supergraph
-        if: env.no_op != 'true'
-        run: |
-          calculatedSha=$(git rev-parse --short ${{ github.event.pull_request.head.sha }})
-          if [ "${{ env.connector_changes }}" = "true" ]; then
-            echo "Building connectors..."
-            ./scripts/deploy/deploy.mjs \
-              --context axiom-dev \
-              --profile telco \
-              --override-description "${calculatedSha} [PR-${{ github.event.pull_request.number }}] ${{ github.event.pull_request.title }} | Build for commit ${{ github.event.pull_request.head.sha }}" \
-              --rebuild-connectors \
-              --override \
-              --log-level FATAL \
-              --quiet \
-              --no-interaction > build_output.json
-          else
-            echo "Skipping connector build."
-            ./scripts/deploy/deploy.mjs \
-              --context axiom-dev \
-              --profile telco \
-              --override-description "${calculatedSha} [PR-${{ github.event.pull_request.number }}] ${{ github.event.pull_request.title }} | Build for commit ${{ github.event.pull_request.head.sha }}" \
-              --override \
-              --log-level FATAL \
-              --quiet \
-              --no-interaction > build_output.json
-          fi
-
-      - name: Extract URLs from JSON
-        if: env.no_op != 'true'
-        run: |
-          cat build_output.json
-          BUILD_URLS=$(jq -r '.build_url' build_output.json | tr '\n' ',')
-          CONSOLE_URLS=$(jq -r '.console_url' build_output.json | tr '\n' ',')
-          echo "build_urls=${BUILD_URLS%,}" >> $GITHUB_ENV
-          echo "console_urls=${CONSOLE_URLS%,}" >> $GITHUB_ENV
-
-      - name: Add PR comment with build details
-        if: env.no_op != 'true'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const buildUrls = process.env.build_urls.split(',').map(url => url.trim());
-            const consoleUrls = process.env.console_urls.split(',').map(url => url.trim());
-            const prNumber = context.payload.pull_request.number;
-            const commitId = context.payload.pull_request.head.sha;
-
-            const buildUrlsList = buildUrls.map(url => `- [${url}](${url})`).join('\n');
-            const consoleUrlsList = consoleUrls.map(url => `- [${url}](${url})`).join('\n');
-
-            const commentBody = `
-            Supergraph build was successful! 🎉
-
-            **Build URLs:**
-            ${buildUrlsList}
-
-            **Console URLs:**
-            ${consoleUrlsList}
-
-            **Commit ID:** ${commitId}
-            `;
-
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: commentBody
-            })
-
-      - name: Add PR comment with no-op
-        if: env.no_op != 'false'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const commitId = context.payload.pull_request.head.sha;
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `**[no-op] build detected:** No build attempted\n**Commit ID:** ${commitId}`
-            })
-
   test:
     runs-on: ubuntu-latest
-    environment: CI
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -196,13 +59,13 @@ jobs:
         env:
           HASURA_DDN_PAT: ${{ secrets.HASURA_PAT }}
         run: |
-          ddn run demo-telco
+          ddn run demo -- telco
 
       - name: Wait for DDN to be ready
         if: env.no_op != 'true'
         run: |
           echo "Waiting for GraphQL service to start..."
-          until curl -s http://localhost:3000/graphql -o /dev/null; do
+          until curl -s http://localhost:3280/graphql -o /dev/null; do
             echo "Service not ready, retrying in 5 seconds..."
             sleep 5
           done
@@ -211,37 +74,34 @@ jobs:
       - name: Query DDN endpoint and validate response
         if: env.no_op != 'true'
         run: |
+          # Add a 5s delay here for the pg databases to populate before running the queries
+          sleep 5
           QUERY='{
-            "query": "query getUsers { usersById(id: 1) { email formatCreatedAtTimestamp } customers(limit: 1) { firstName lastName email segment customerLinks { customerPreferences { socialMedia { linkedin } } supportDB { supportHistory { date status } } } creditCards { maskCreditCard expiry cvv } billings { formatBillingDate paymentStatus totalAmount } } calls(limit: 1) { callid } cdr(limit: 1) { guid } documents(limit: 1) { uuid } }"
+            "query": "query getUsers { usersById(id: 1) { email } customers(limit: 1) { firstName lastName email segment customerLinks { customerPreferences { socialMedia { linkedin } } supportDB { supportHistory { date status } } } creditCards { maskCreditCard expiry cvv } billings { formatBillingDate paymentStatus totalAmount } } calls(limit: 1) { callid } cdr(limit: 1) { guid } documents(limit: 1) { uuid } }"
           }'
 
-          EXPECTED_RESPONSE='{
-            "data": {
-              "usersById": { "email": "adam.mcdaniel@bigpond.com", "formatCreatedAtTimestamp": "Sun Aug 18 2024" },
-              "customers": [{
-                "firstName": "Adam",
-                "lastName": "Mcdaniel",
-                "email": "adam.mcdaniel@bigpond.com",
-                "segment": "family",
-                "customerLinks": [{
-                  "customerPreferences": { "socialMedia": { "linkedin": null } },
-                  "supportDB": { "supportHistory": [{ "date": "2020-03-22", "status": "Resolved" }] }
-                }],
-                "creditCards": [{ "maskCreditCard": "***********8922", "expiry": "2028-04-23", "cvv": 651 }],
-                "billings": [{ "formatBillingDate": "Thu Feb 02 2023", "paymentStatus": "overdue", "totalAmount": "50.50" }]
-              }],
-              "calls": [{ "callid": 188359 }],
-              "cdr": [{ "guid": "dd264970-f61f-429f-97f8-4761fea4de2f" }],
-              "documents": [{ "uuid": "a1b2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d" }]
-            }
-          }'
+          EXPECTED_RESPONSE='{"data":{"usersById":{"email":"adam.mcdaniel@bigpond.com"},"customers":[{"firstName":"Adam","lastName":"Mcdaniel","email":"adam.mcdaniel@bigpond.com","segment":"family","customerLinks":[{"customerPreferences":{"socialMedia":{"linkedin":null}},"supportDB":{"supportHistory":[{"date":"2020-03-22","status":"Resolved"}]}}],"creditCards":[{"maskCreditCard":"***********8922","expiry":"2028-04-23","cvv":651}],"billings":[{"formatBillingDate":"Thu Feb 02 2023","paymentStatus":"overdue","totalAmount":"50.50"}]}],"calls":[],"cdr":[{"guid":"96dbde7a-aa94-466e-9480-666220398fff"}],"documents":[{"uuid":"a1b2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d"}]}}'
 
-          RESPONSE=$(curl -s -X POST http://localhost:3000/graphql \
-            -H "Content-Type: application/json" \
-            -d "$QUERY")
+          RESPONSE=$(curl -s -X POST "http://localhost:3280/graphql" -H "Content-Type: application/json" -d "$QUERY")
 
           # Compare the actual response with the expected response
-          if echo "$RESPONSE" | jq --argjson expected "$EXPECTED_RESPONSE" 'if . == $expected then "MATCH" else "MISMATCH" end' | grep -q "MATCH"; then
+          if echo "$RESPONSE" | jq -e --argjson expected "$EXPECTED_RESPONSE" '. == $expected' > /dev/null; then
+            echo "✅ Response matches expected output."
+          else
+            echo "❌ Response does not match expected output."
+            echo "Expected: $EXPECTED_RESPONSE"
+            echo "Got: $RESPONSE"
+            exit 1
+          fi
+
+      - name: Query RESTified endpoint and validate response
+        if: env.no_op != 'true'
+        run: |
+          EXPECTED_RESPONSE='{"data":{"users":[{"id":1,"email":"adam.mcdaniel@bigpond.com","roles":"customer"}]}}'
+          RESPONSE=$(curl -s -X GET "http://localhost:3280/v1/api/rest/users?limit=1" -H "Content-Type: application/json")
+
+          # Compare the actual response with the expected response
+          if echo "$RESPONSE" | jq -e --argjson expected "$EXPECTED_RESPONSE" '. == $expected' > /dev/null; then
             echo "✅ Response matches expected output."
           else
             echo "❌ Response does not match expected output."

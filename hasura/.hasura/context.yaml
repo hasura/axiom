@@ -1,84 +1,51 @@
 kind: Context
 version: v3
 definition:
-  current: axiom-dev
+  current: telco
   contexts:
-    au:
-      project: axiom-au
+    aml:
+      project: aml
+      supergraph: ../supergraph-config/aml/2-supergraph.yaml
+      subgraph: ../industry/aml/app/subgraph.yaml
+      localEnvFile: ../.env.aml
+      cloudEnvFile: ../.env.cloud.aml
+    healthcare:
+      project: healthcare
+      supergraph: ../supergraph-config/healthcare/2-supergraph.yaml
+      subgraph: ../industry/healthcare/reference/subgraph.yaml
+      localEnvFile: ../.env.healthcare
+      cloudEnvFile: ../.env.cloud.healthcare
+    telco:
+      project: telco
       supergraph: ../supergraph-config/telco/4-supergraph-with-mutations.yaml
       subgraph: ../industry/telco/customer/subgraph.yaml
       localEnvFile: ../.env.telco
-      cloudEnvFile: ../.env.cloud.au
-    axiom-dev:
-      project: axiom-dev
+      cloudEnvFile: ../.env.cloud.telco
+    telco-dev:
+      project: telco-dev
       supergraph: ../supergraph-config/telco/4-supergraph-with-mutations.yaml
       subgraph: ../industry/telco/customer/subgraph.yaml
       localEnvFile: ../.env.telco
-      cloudEnvFile: ../.env.cloud.dev
-    axiom-starter:
-      project: axiom-starter
-      supergraph: ../supergraph-config/starter/2-supergraph.yaml
-      subgraph: ../industry/telco/customer/subgraph.yaml
-      localEnvFile: ../.env.starter
-      cloudEnvFile: ../.env.cloud.starter
-    axiom-test:
-      project: axiom-test
+      cloudEnvFile: ../.env.cloud.telco-dev
+    telco-test:
+      project: telco-test
       supergraph: ../supergraph-config/telco/4-supergraph-with-mutations.yaml
       subgraph: ../industry/telco/customer/subgraph.yaml
       localEnvFile: ../.env.telco
-      cloudEnvFile: ../.env.cloud.test
-    eu:
-      project: axiom-eu
-      supergraph: ../supergraph-config/telco/4-supergraph-with-mutations.yaml
-      subgraph: ../industry/telco/customer/subgraph.yaml
-      localEnvFile: ../.env.telco
-      cloudEnvFile: ../.env.cloud.eu
-    sg:
-      project: axiom-sg
-      supergraph: ../supergraph-config/telco/4-supergraph-with-mutations.yaml
-      subgraph: ../industry/telco/customer/subgraph.yaml
-      localEnvFile: ../.env.telco
-      cloudEnvFile: ../.env.cloud.sg
-    us-east:
-      project: axiom-us-east
-      supergraph: ../supergraph-config/telco/4-supergraph-with-mutations.yaml
-      subgraph: ../industry/telco/customer/subgraph.yaml
-      localEnvFile: ../.env.telco
-      cloudEnvFile: ../.env.cloud.us-east
-    us-west:
-      project: axiom-us-west
-      supergraph: ../supergraph-config/telco/4-supergraph-with-mutations.yaml
-      subgraph: ../industry/telco/customer/subgraph.yaml
-      localEnvFile: ../.env.telco
-      cloudEnvFile: ../.env.cloud.us-west
+      cloudEnvFile: ../.env.cloud.telco-test
   scripts:
-    build-starter:
-      bash: ddn supergraph build local --env-file .env.starter --env-file .env --supergraph supergraph-config/starter/2-supergraph.yaml
-      powershell: ddn supergraph build local --env-file .env.starter --env-file .env --supergraph supergraph-config/starter/2-supergraph.yaml
-    build-telco:
-      bash: ddn supergraph build local --supergraph supergraph-config/telco/4-supergraph-with-mutations.yaml
-      powershell: ddn supergraph build local  --supergraph supergraph-config/telco/4-supergraph-with-mutations.yaml
-    demo-fsi:
-      bash: export DATASET=fsi; echo "not yet implemented"
-      powershell: $Env:DATASET = "fsi"; Write-Output "not yet implemented"
-    demo-healthcare:
-      bash: export DATASET=hc; echo "not yet implemented"
-      powershell: $Env:DATASET = "hc"; Write-Output "not yet implemented"
-    demo-starter:
-      bash: ddn run docker-start-starter; HASURA_DDN_PAT=$(ddn auth print-pat) docker compose -f compose-starter.yaml up --build --pull always -d
-      powershell: $Env:HASURA_DDN_PAT = ddn auth print-pat; docker compose -f compose-starter.yaml up --build --pull always -d
-    demo-telco:
-      bash: ddn run docker-start-telco; HASURA_DDN_PAT=$(ddn auth print-pat) docker compose -f compose-telco.yaml --env-file .env.telco up --build --pull always -d
-      powershell: $Env:HASURA_DDN_PAT = ddn auth print-pat; docker compose -f compose-telco.yaml --env-file .env.telco up --build --pull always -d
-    docker-start-starter:
-      bash: export DATASET=starter; ../.data/initdb-prepare.sh; docker compose -f ../.data/starter/compose.yaml --env-file ../.data/starter/.env up --build --pull always -d
-      powershell: $Env:DATASET = "starter"; docker compose -f ../.data/starter/compose.yaml --env-file ../.data/starter/.env up --build --pull always -d
-    docker-start-telco:
-      bash: export DATASET=telco; ../.data/initdb-prepare.sh; docker compose -f ../.data/telco/compose.yaml --env-file ../.data/telco/.env up --build --pull always -d
-      powershell: $Env:DATASET = "starter"; docker compose -f ../.data/telco/compose.yaml --env-file ../.data/telco/.env up --build --pull always -d
+    build:
+      bash: ../scripts/ddn-run/build.sh $CONTEXT
+      powershell: ../scripts/ddn-run/build.ps1 -Context $CONTEXT
+    demo:
+      bash: ../scripts/ddn-run/demo.sh $CONTEXT
+      powershell: ../scripts/ddn-run/demo.ps1 -Context $CONTEXT
+    docker-start:
+      bash: ../scripts/ddn-run/docker-start.sh $CONTEXT
+      powershell: ./scripts/ddn-run/docker-start.ps1 -Context $CONTEXT
     docker-stop:
-      bash: for file in compose*.yaml $(find ../.data -type f -name "compose.yaml"); do docker compose -f $file down -v; done
-      powershell: docker compose -f compose.yaml down -v; docker compose -f .data/compose.yaml down -v
+      bash: ../scripts/ddn-run/docker-stop.sh
+      powershell: ./scripts/ddn-run/docker-stop.ps1
     jwt-gen:
       bash: cd ../scripts/jwt && npm i && node ./jwt.mjs --env $(find ../../ -name '.env.cloud.*' -print -quit) -r customer -u 7
       powershell: cd ../scripts/jwt && npm i && node ./jwt.mjs --env $(find ../../ -name '.env.cloud.*' -print -quit) -r customer -u 7

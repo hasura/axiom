@@ -1,0 +1,17 @@
+packagingDefinition:
+  type: PrebuiltDockerImage
+  dockerImage: ghcr.io/hasura/ndc-mongodb:v1.6.0
+supportedEnvironmentVariables:
+  - name: MONGODB_DATABASE_URI
+    description: The URI for the MongoDB database
+commands:
+  update: hasura-ndc-mongodb update
+cliPlugin:
+  type: null
+  name: ndc-mongodb
+  version: v1.6.0
+dockerComposeWatch:
+  - path: ./
+    action: sync+restart
+    target: /etc/connector
+documentationPage: https://hasura.info/mongodb-getting-started

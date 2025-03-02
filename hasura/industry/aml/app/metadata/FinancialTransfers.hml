@@ -1,0 +1,287 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: FinancialTransfers
+  fields:
+    - name: amount
+      type: Numeric
+    - name: date
+      type: Date
+    - name: isLaundering
+      type: Bool
+    - name: launderingType
+      type: Varchar
+    - name: paymentCurrency
+      type: Varchar
+    - name: paymentType
+      type: Varchar
+    - name: receivedCurrency
+      type: Varchar
+    - name: receiverAccount
+      type: Int4
+    - name: receiverBankLocation
+      type: Varchar
+    - name: senderAccount
+      type: Int4
+    - name: senderBankLocation
+      type: Varchar
+    - name: time
+      type: Varchar
+    - name: transactionId
+      type: Int4!
+  graphql:
+    typeName: FinancialTransfers
+    inputTypeName: FinancialTransfersInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: banking_core
+      dataConnectorObjectType: financial_transfers
+      fieldMapping:
+        amount:
+          column:
+            name: amount
+        date:
+          column:
+            name: date
+        isLaundering:
+          column:
+            name: is_laundering
+        launderingType:
+          column:
+            name: laundering_type
+        paymentCurrency:
+          column:
+            name: payment_currency
+        paymentType:
+          column:
+            name: payment_type
+        receivedCurrency:
+          column:
+            name: received_currency
+        receiverAccount:
+          column:
+            name: receiver_account
+        receiverBankLocation:
+          column:
+            name: receiver_bank_location
+        senderAccount:
+          column:
+            name: sender_account
+        senderBankLocation:
+          column:
+            name: sender_bank_location
+        time:
+          column:
+            name: time
+        transactionId:
+          column:
+            name: transaction_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: FinancialTransfers
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - amount
+          - date
+          - isLaundering
+          - launderingType
+          - paymentCurrency
+          - paymentType
+          - receivedCurrency
+          - receiverAccount
+          - receiverBankLocation
+          - senderAccount
+          - senderBankLocation
+          - time
+          - transactionId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: FinancialTransfersBoolExp
+  operand:
+    object:
+      type: FinancialTransfers
+      comparableFields:
+        - fieldName: amount
+          booleanExpressionType: NumericBoolExp
+        - fieldName: date
+          booleanExpressionType: DateBoolExp
+        - fieldName: isLaundering
+          booleanExpressionType: BoolBoolExp
+        - fieldName: launderingType
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: paymentCurrency
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: paymentType
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: receivedCurrency
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: receiverAccount
+          booleanExpressionType: Int4BoolExp
+        - fieldName: receiverBankLocation
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: senderAccount
+          booleanExpressionType: Int4BoolExp
+        - fieldName: senderBankLocation
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: time
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: transactionId
+          booleanExpressionType: Int4BoolExp
+      comparableRelationships:
+        - relationshipName: sars
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: FinancialTransfersBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: FinancialTransfersAggExp
+  operand:
+    object:
+      aggregatedType: FinancialTransfers
+      aggregatableFields:
+        - fieldName: amount
+          aggregateExpression: NumericAggExp
+        - fieldName: date
+          aggregateExpression: DateAggExp
+        - fieldName: isLaundering
+          aggregateExpression: BoolAggExp
+        - fieldName: launderingType
+          aggregateExpression: VarcharAggExp
+        - fieldName: paymentCurrency
+          aggregateExpression: VarcharAggExp
+        - fieldName: paymentType
+          aggregateExpression: VarcharAggExp
+        - fieldName: receivedCurrency
+          aggregateExpression: VarcharAggExp
+        - fieldName: receiverAccount
+          aggregateExpression: Int4AggExp
+        - fieldName: receiverBankLocation
+          aggregateExpression: VarcharAggExp
+        - fieldName: senderAccount
+          aggregateExpression: Int4AggExp
+        - fieldName: senderBankLocation
+          aggregateExpression: VarcharAggExp
+        - fieldName: time
+          aggregateExpression: VarcharAggExp
+        - fieldName: transactionId
+          aggregateExpression: Int4AggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: FinancialTransfersAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: FinancialTransfersOrderByExp
+  operand:
+    object:
+      orderedType: FinancialTransfers
+      orderableFields:
+        - fieldName: amount
+          orderByExpression: NumericOrderByExp
+        - fieldName: date
+          orderByExpression: DateOrderByExp
+        - fieldName: isLaundering
+          orderByExpression: BoolOrderByExp
+        - fieldName: launderingType
+          orderByExpression: VarcharOrderByExp
+        - fieldName: paymentCurrency
+          orderByExpression: VarcharOrderByExp
+        - fieldName: paymentType
+          orderByExpression: VarcharOrderByExp
+        - fieldName: receivedCurrency
+          orderByExpression: VarcharOrderByExp
+        - fieldName: receiverAccount
+          orderByExpression: Int4OrderByExp
+        - fieldName: receiverBankLocation
+          orderByExpression: VarcharOrderByExp
+        - fieldName: senderAccount
+          orderByExpression: Int4OrderByExp
+        - fieldName: senderBankLocation
+          orderByExpression: VarcharOrderByExp
+        - fieldName: time
+          orderByExpression: VarcharOrderByExp
+        - fieldName: transactionId
+          orderByExpression: Int4OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: FinancialTransfersOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: FinancialTransfers
+  objectType: FinancialTransfers
+  source:
+    dataConnectorName: banking_core
+    collection: financial_transfers
+  filterExpressionType: FinancialTransfersBoolExp
+  aggregateExpression: FinancialTransfersAggExp
+  orderByExpression: FinancialTransfersOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: financialTransfers
+      subscription:
+        rootField: financialTransfers
+    selectUniques:
+      - queryRootField: financialTransfersByTransactionId
+        uniqueIdentifier:
+          - transactionId
+        subscription:
+          rootField: financialTransfersByTransactionId
+    filterInputTypeName: FinancialTransfersFilterInput
+    aggregate:
+      queryRootField: financialTransfersAggregate
+      subscription:
+        rootField: financialTransfersAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: FinancialTransfers
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: sars
+  sourceType: FinancialTransfers
+  target:
+    model:
+      name: Sars
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: SarsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: transactionId
+      target:
+        modelField:
+          - fieldName: transactionId
+  graphql:
+    aggregateFieldName: sarsAggregate
+

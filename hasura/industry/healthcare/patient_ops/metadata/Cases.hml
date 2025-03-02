@@ -1,0 +1,248 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: Cases
+  fields:
+    - name: caseId
+      type: Int4!
+    - name: clinicId
+      type: Varchar!
+    - name: createdAt
+      type: Timestamp
+    - name: operatorId
+      type: Varchar
+    - name: patientId
+      type: Varchar
+    - name: procedureCode
+      type: Varchar
+    - name: recommendedDate
+      type: Timestamp!
+    - name: region
+      type: Varchar
+    - name: status
+      type: Varchar
+    - name: urgencyLevel
+      type: Varchar
+  graphql:
+    typeName: Cases
+    inputTypeName: CasesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: operations
+      dataConnectorObjectType: cases
+      fieldMapping:
+        caseId:
+          column:
+            name: case_id
+        clinicId:
+          column:
+            name: clinic_id
+        createdAt:
+          column:
+            name: created_at
+        operatorId:
+          column:
+            name: operator_id
+        patientId:
+          column:
+            name: patient_id
+        procedureCode:
+          column:
+            name: procedure_code
+        recommendedDate:
+          column:
+            name: recommended_date
+        region:
+          column:
+            name: region
+        status:
+          column:
+            name: status
+        urgencyLevel:
+          column:
+            name: urgency_level
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: Cases
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - caseId
+          - clinicId
+          - createdAt
+          - operatorId
+          - patientId
+          - procedureCode
+          - recommendedDate
+          - region
+          - status
+          - urgencyLevel
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: CasesBoolExp
+  operand:
+    object:
+      type: Cases
+      comparableFields:
+        - fieldName: caseId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: clinicId
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: createdAt
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: operatorId
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: patientId
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: procedureCode
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: recommendedDate
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: region
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: status
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: urgencyLevel
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: operator
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: CasesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: CasesAggExp
+  operand:
+    object:
+      aggregatedType: Cases
+      aggregatableFields:
+        - fieldName: caseId
+          aggregateExpression: Int4AggExp
+        - fieldName: clinicId
+          aggregateExpression: VarcharAggExp
+        - fieldName: createdAt
+          aggregateExpression: TimestampAggExp
+        - fieldName: operatorId
+          aggregateExpression: VarcharAggExp
+        - fieldName: patientId
+          aggregateExpression: VarcharAggExp
+        - fieldName: procedureCode
+          aggregateExpression: VarcharAggExp
+        - fieldName: recommendedDate
+          aggregateExpression: TimestampAggExp
+        - fieldName: region
+          aggregateExpression: VarcharAggExp
+        - fieldName: status
+          aggregateExpression: VarcharAggExp
+        - fieldName: urgencyLevel
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: CasesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: CasesOrderByExp
+  operand:
+    object:
+      orderedType: Cases
+      orderableFields:
+        - fieldName: caseId
+          orderByExpression: Int4OrderByExp
+        - fieldName: clinicId
+          orderByExpression: VarcharOrderByExp
+        - fieldName: createdAt
+          orderByExpression: TimestampOrderByExp
+        - fieldName: operatorId
+          orderByExpression: VarcharOrderByExp
+        - fieldName: patientId
+          orderByExpression: VarcharOrderByExp
+        - fieldName: procedureCode
+          orderByExpression: VarcharOrderByExp
+        - fieldName: recommendedDate
+          orderByExpression: TimestampOrderByExp
+        - fieldName: region
+          orderByExpression: VarcharOrderByExp
+        - fieldName: status
+          orderByExpression: VarcharOrderByExp
+        - fieldName: urgencyLevel
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: operator
+  graphql:
+    expressionTypeName: CasesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: Cases
+  objectType: Cases
+  source:
+    dataConnectorName: operations
+    collection: cases
+  filterExpressionType: CasesBoolExp
+  aggregateExpression: CasesAggExp
+  orderByExpression: CasesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: cases
+      subscription:
+        rootField: cases
+    selectUniques:
+      - queryRootField: casesByCaseId
+        uniqueIdentifier:
+          - caseId
+        subscription:
+          rootField: casesByCaseId
+    filterInputTypeName: CasesFilterInput
+    aggregate:
+      queryRootField: casesAggregate
+      subscription:
+        rootField: casesAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: Cases
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: operator
+  sourceType: Cases
+  target:
+    model:
+      name: Operators
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: operatorId
+      target:
+        modelField:
+          - fieldName: operatorId
+

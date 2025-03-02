@@ -1,30 +1,25 @@
 include:
-  - path: support/connector/atlas/compose.yaml
-  - path: support/connector/vector/compose.yaml
-  - path: auth/connector/auth/compose.yaml
   - path: globals/connector/global_functions/compose.yaml
   - path: industry/starter/example/connector/mypostgres/compose.yaml
 services:
   engine:
     build:
       context: engine
-      dockerfile_inline: |-
-        FROM ghcr.io/hasura/v3-engine
-        COPY ./build /md/
-    develop:
-      watch:
-        - action: sync+restart
-          path: engine/build
-          target: /md/
-    env_file:
-      - engine/.env.engine
+      dockerfile: Dockerfile.engine
+      pull: true
+    environment:
+      AUTHN_CONFIG_PATH: /md/auth_config.json
+      ENABLE_CORS: "true"
+      ENABLE_SQL_INTERFACE: "true"
+      INTROSPECTION_METADATA_FILE: /md/metadata.json
+      METADATA_PATH: /md/open_dd.json
+      OTLP_ENDPOINT: http://local.hasura.dev:4317
     extra_hosts:
-      - local.hasura.dev=host-gateway
+      - local.hasura.dev:host-gateway
+    labels:
+      io.hasura.ddn.service-name: engine
     ports:
-      - mode: ingress
-        protocol: tcp
-        published: "3000"
-        target: 3000
+      - 3280:3000
   otel-collector:
     command:
       - --config=/etc/otel-collector-config.yaml
@@ -32,13 +27,7 @@ services:
       HASURA_DDN_PAT: ${HASURA_DDN_PAT}
     image: otel/opentelemetry-collector:0.104.0
     ports:
-      - mode: ingress
-        protocol: tcp
-        published: "4317"
-        target: 4317
-      - mode: ingress
-        protocol: tcp
-        published: "4318"
-        target: 4318
+      - 4317:4317
+      - 4318:4318
     volumes:
       - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml

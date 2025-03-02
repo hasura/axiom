@@ -1,0 +1,202 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: Operators
+  fields:
+    - name: fullName
+      type: Varchar
+    - name: operatorId
+      type: Varchar!
+    - name: region
+      type: Varchar
+    - name: specialty
+      type: Varchar
+  graphql:
+    typeName: Operators
+    inputTypeName: OperatorsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: operations
+      dataConnectorObjectType: operators
+      fieldMapping:
+        fullName:
+          column:
+            name: full_name
+        operatorId:
+          column:
+            name: operator_id
+        region:
+          column:
+            name: region
+        specialty:
+          column:
+            name: specialty
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: Operators
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - fullName
+          - operatorId
+          - region
+          - specialty
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: OperatorsBoolExp
+  operand:
+    object:
+      type: Operators
+      comparableFields:
+        - fieldName: fullName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: operatorId
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: region
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: specialty
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: cases
+        - relationshipName: operatorSchedules
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: OperatorsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: OperatorsAggExp
+  operand:
+    object:
+      aggregatedType: Operators
+      aggregatableFields:
+        - fieldName: fullName
+          aggregateExpression: VarcharAggExp
+        - fieldName: operatorId
+          aggregateExpression: VarcharAggExp
+        - fieldName: region
+          aggregateExpression: VarcharAggExp
+        - fieldName: specialty
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: OperatorsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: OperatorsOrderByExp
+  operand:
+    object:
+      orderedType: Operators
+      orderableFields:
+        - fieldName: fullName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: operatorId
+          orderByExpression: VarcharOrderByExp
+        - fieldName: region
+          orderByExpression: VarcharOrderByExp
+        - fieldName: specialty
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: OperatorsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: Operators
+  objectType: Operators
+  source:
+    dataConnectorName: operations
+    collection: operators
+  filterExpressionType: OperatorsBoolExp
+  aggregateExpression: OperatorsAggExp
+  orderByExpression: OperatorsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: operators
+      subscription:
+        rootField: operators
+    selectUniques:
+      - queryRootField: operatorsByOperatorId
+        uniqueIdentifier:
+          - operatorId
+        subscription:
+          rootField: operatorsByOperatorId
+    filterInputTypeName: OperatorsFilterInput
+    aggregate:
+      queryRootField: operatorsAggregate
+      subscription:
+        rootField: operatorsAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: Operators
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: cases
+  sourceType: Operators
+  target:
+    model:
+      name: Cases
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: CasesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: operatorId
+      target:
+        modelField:
+          - fieldName: operatorId
+  graphql:
+    aggregateFieldName: casesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: operatorSchedules
+  sourceType: Operators
+  target:
+    model:
+      name: OperatorSchedule
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: OperatorScheduleAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: operatorId
+      target:
+        modelField:
+          - fieldName: operatorId
+  graphql:
+    aggregateFieldName: operatorSchedulesAggregate
+

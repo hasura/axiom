@@ -1,0 +1,192 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: Sanctions
+  fields:
+    - name: id
+      type: String!
+    - name: address
+      type: String
+    - name: entityName
+      type: String
+    - name: entityType
+      type: String
+    - name: listType
+      type: String
+    - name: listedDate
+      type: String
+    - name: program
+      type: String
+  graphql:
+    typeName: Sanctions
+    inputTypeName: SanctionsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: aml_monitoring
+      dataConnectorObjectType: sanctions
+      fieldMapping:
+        id:
+          column:
+            name: _id
+        address:
+          column:
+            name: address
+        entityName:
+          column:
+            name: entity_name
+        entityType:
+          column:
+            name: entity_type
+        listType:
+          column:
+            name: list_type
+        listedDate:
+          column:
+            name: listed_date
+        program:
+          column:
+            name: program
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: Sanctions
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - id
+          - address
+          - entityName
+          - entityType
+          - listType
+          - listedDate
+          - program
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: SanctionsBoolExp
+  operand:
+    object:
+      type: Sanctions
+      comparableFields:
+        - fieldName: id
+          booleanExpressionType: StringBoolExp
+        - fieldName: address
+          booleanExpressionType: StringBoolExp
+        - fieldName: entityName
+          booleanExpressionType: StringBoolExp
+        - fieldName: entityType
+          booleanExpressionType: StringBoolExp
+        - fieldName: listType
+          booleanExpressionType: StringBoolExp
+        - fieldName: listedDate
+          booleanExpressionType: StringBoolExp
+        - fieldName: program
+          booleanExpressionType: StringBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: SanctionsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: SanctionsAggExp
+  operand:
+    object:
+      aggregatedType: Sanctions
+      aggregatableFields:
+        - fieldName: id
+          aggregateExpression: StringAggExp
+        - fieldName: address
+          aggregateExpression: StringAggExp
+        - fieldName: entityName
+          aggregateExpression: StringAggExp
+        - fieldName: entityType
+          aggregateExpression: StringAggExp
+        - fieldName: listType
+          aggregateExpression: StringAggExp
+        - fieldName: listedDate
+          aggregateExpression: StringAggExp
+        - fieldName: program
+          aggregateExpression: StringAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: SanctionsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: SanctionsOrderByExp
+  operand:
+    object:
+      orderedType: Sanctions
+      orderableFields:
+        - fieldName: id
+          orderByExpression: StringOrderByExp
+        - fieldName: address
+          orderByExpression: StringOrderByExp
+        - fieldName: entityName
+          orderByExpression: StringOrderByExp
+        - fieldName: entityType
+          orderByExpression: StringOrderByExp
+        - fieldName: listType
+          orderByExpression: StringOrderByExp
+        - fieldName: listedDate
+          orderByExpression: StringOrderByExp
+        - fieldName: program
+          orderByExpression: StringOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: SanctionsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: Sanctions
+  objectType: Sanctions
+  source:
+    dataConnectorName: aml_monitoring
+    collection: sanctions
+  filterExpressionType: SanctionsBoolExp
+  aggregateExpression: SanctionsAggExp
+  orderByExpression: SanctionsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: sanctions
+      subscription:
+        rootField: sanctions
+    selectUniques:
+      - queryRootField: sanctionsById
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: sanctionsById
+    filterInputTypeName: SanctionsFilterInput
+    aggregate:
+      queryRootField: sanctionsAggregate
+      subscription:
+        rootField: sanctionsAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: Sanctions
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

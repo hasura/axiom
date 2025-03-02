@@ -1,3 +1,4 @@
+---
 - name: Install prerequisites for Axiom
   import_playbook: ddn.yml
 
@@ -8,6 +9,16 @@
   hosts: demo_servers
   become: true
   tasks:
+    - name: Ensure git is installed
+      ansible.builtin.apt:
+        name: git
+        state: present
+
+    - name: Ensure git-lfs is installed
+      ansible.builtin.apt:
+        name: git-lfs
+        state: present
+
     - name: Clone axiom repository
       ansible.builtin.git:
         repo: https://github.com/hasura/axiom.git
@@ -28,12 +39,12 @@
         dest: "{{ env_file_path }}"
         owner: ubuntu
         group: ubuntu
-        mode: '0600'
+        mode: "0600"
       vars:
         env_file_path: "/home/ubuntu/axiom/.data/{{ demo_profile }}/.env"
 
     - name: Turn on the demo
-      ansible.builtin.command: /usr/local/bin/ddn run docker-start-{{ demo_profile }}
+      ansible.builtin.command: /usr/local/bin/ddn run docker-start -- {{ demo_profile }}
       args:
         chdir: /home/ubuntu/axiom/hasura
       register: ddn_demo_start
