@@ -10,12 +10,33 @@ Axiom provides a centralised platform for deploying and testing a variety of Has
 * starter
 * telco
 * aml
+* healthcare
 
 ### How to Use
-To utilise an existing demo profile, run the commands specified in `.hasura/context.yaml`. These commands are abstracted into `ddn run` scripts for simplicity:
-- **`build-telco`**: Builds metadata for the telco demo.
-- **`docker-start-telco`**: Sets up the telco demo's Docker environment.
-- **`demo-telco`**: Executes `docker-start-telco` and launches Hasura locally.
+To utilize an existing demo profile, run the following `ddn run` commands. These commands automatically use the scripts in the background:
+
+- **`build`**: Builds metadata for a specific demo context.
+  ```bash
+  ddn run build -- <context>
+  # Example: ddn run build -- telco
+  ```
+
+- **`docker-start`**: Sets up the demo's Docker environment.
+  ```bash
+  ddn run docker-start -- <context>
+  # Example: ddn run docker-start -- telco
+  ```
+
+- **`demo`**: Executes both build and docker-start, then launches Hasura locally.
+  ```bash
+  ddn run demo -- <context>
+  # Example: ddn run demo -- telco
+  ```
+
+- **`docker-stop`**: Stops all running Docker containers.
+  ```bash
+  ddn run docker-stop
+  ```
 
 ### Deploying to the Cloud
 For deployment instructions, see [scripts/deploy/README.md](../scripts/deploy/README.md).
@@ -44,14 +65,20 @@ cd hasura
 
 ### Step 2: Create the Demo Project
 
-1. Create a new project in DDN cloud and context in `.hasura/context.yaml`:
+1. Create a new project in DDN cloud:
 
 ```bash
-ddn project create axiom-$PROFILE
-ddn context create-context axiom-$PROFILE
-ddn context set localEnvFile .env.$PROFILE
-ddn context set cloudEnvFile .env.cloud.$PROFILE
-ddn context set project axiom-$PROFILE
+ddn project create $PROFILE
+```
+
+2. Add a new context using `ddn context set` commands:
+
+```bash
+# Create a new context with the profile name
+ddn context set project $PROFILE
+ddn context set supergraph ../supergraph-config/$PROFILE/1-supergraph.yaml
+ddn context set localEnvFile ../.env.$PROFILE
+ddn context set cloudEnvFile ../.env.cloud.$PROFILE
 ```
 
 ### Step 2: Copy Subgraphs
@@ -84,47 +111,40 @@ Adjust the paths within `1-supergraph.yaml` to reference the right location for 
 > Add any additional `supergraph.yaml` files you have may be added to the same directory and the [deploy script](../scripts/deploy/) will automatically build them in order.
 
 ### Step 4: Environment Files
-1. Seed environment files:
-```bash
-touch .env.$PROFILE
-touch .env.cloud.$PROFILE
-```
 
-2. Create an .env template for example configuration
+1. Create an .env template for example configuration
 
 ```bash
 touch .env.$PROFILE.template
 git add -f .env.$PROFILE.template
 ```
 
-3. Copy environment files from your own supergraph to populate environments in this repository
+2. Copy environment files from your own supergraph to populate environments in this repository
 
-Remember to include a JWT_SECRET in your `.env` files to allow for JWT builds to proceed. Use the following one-liner to generate a JWT_SECRET
+Remember to include a JWT_SECRET and caching plugin configuration in your `.env` files to allow for builds to proceed:
+
+```bash
+echo 'JWT_SECRET="hptj8supNeslwet7nhGGr5Uu5MombVVjDmcGMOyrWa8"
+CACHING_PLUGIN_PRE_PARSE_URL="http://local.hasura.dev:8787/pre-parse"
+CACHING_PLUGIN_PRE_RESPONSE_URL="http://local.hasura.dev:8787/pre-response"
+CACHING_PLUGIN_REDIS_URL="redis://local.hasura.dev:6379"
+CACHING_PLUGIN_SECRET="zZkhKqFjqXR4g5MZCsJUZCnhCcoPyZ"' > .env.$PROFILE.template
+```
+
+_Optional_ Use the following one-liner to generate a JWT_SECRET
 
 ```bash
 openssl rand -base64 32
 ```
 
+3. Seed environment files:
+```bash
+cp .env.$PROFILE.template .env.$PROFILE
+touch .env.$PROFILE.template .env.cloud.$PROFILE
+```
+
 > [!WARNING]
 > Do not commit any database credentials to the pull request and ensure that the template file that gets force committed uses dummy data
-
-### Step 5: Connectors
-
-1. Add region configurations to connectors
-
-Update `connector.yaml` in industry/$PROFILE/$SUBGRAPH/connector:
-
-
-```yaml
-   regionConfiguration:
-     - mode: ReadWrite
-       region: gcp-us-west2
-```
-
-This can be achieved automatically with `yq`
-```
-yq eval '.definition.regionConfiguration = [{"mode": "ReadWrite", "region": "gcp-us-west2"}]' -i industry/$PROFILE/$SUBGRAPH/connector/$CONNECTOR/connector.yaml
-```
 
 ---
 
@@ -132,7 +152,8 @@ yq eval '.definition.regionConfiguration = [{"mode": "ReadWrite", "region": "gcp
 
 Local docker-based configuration may be used to run demo profiles without cloud dependencies. This is demonstrated within the `telco` profile with a docker compose and database seeds in `.data/telco`.
 
-All below commands should be executed from the root directory of this repository.
+> [!TIP]
+> All below commands should be executed from the root directory of this repository.
 
 ### Step 1: Initial Setup
 Use the starter profile to get bootstrapped sooner with existing/common data sets.
@@ -164,20 +185,17 @@ Make any further adjustments to the profile's `compose.yaml` as appropriate to u
 
 ### Step 2: Local Docker Setup
 
-1. Update `hasura/.hasura/context.yaml`
+No changes to `hasura/.hasura/context.yaml` are needed as ddn run uses a context parameter. The Docker environment will be started using:
 
-Add a DDN run script for starting the Docker environment. Replace `$PROFILE` with your profile name
-
-```yaml
-docker-start-$PROFILE:
-   bash: export DATASET=$PROFILE; docker compose -f ../.data/$PROFILE/compose.yaml --env-file ../.data/$PROFILE/.env up --build --pull always -d
-   powershell: $Env:DATASET = "$PROFILE"; docker compose -f ../.data/$PROFILE/compose.yaml --env-file ../.data/$PROFILE/.env up --build --pull always -d
+```bash
+ddn run docker-start -- $PROFILE
 ```
 
-This can be achieved automatically with `yq`
-```
-yq eval ".definition.scripts[\"docker-start-$PROFILE\"] = {\"bash\": \"export DATASET=\$PROFILE; docker compose -f ../.data/\$PROFILE/compose.yaml --env-file ../.data/\$PROFILE/.env up --build --pull always -d\", \"powershell\": \"\$Env:DATASET = \\\"\$PROFILE\\\"; docker compose -f ../.data/\$PROFILE/compose.yaml --env-file ../.data/\$PROFILE/.env up --build --pull always -d\"}" -i hasura/.hasura/context.yaml
-```
+This command will:
+1. Verify the context exists
+2. Check that the data directory exists at `.data/$PROFILE`
+3. Set the DATASET environment variable
+4. Start the Docker containers using the compose file at `.data/$PROFILE/compose.yaml`
 
 ### Step 3: Docker Compose
 1. Create a profile-specific Docker Compose file
@@ -188,43 +206,18 @@ cp hasura/compose.yaml hasura/compose-$PROFILE.yaml
 > [!IMPORTANT]
 > Do not commit changes to the base `hasura/compose.yaml`.
 
-### Step 4: Add remaining scripts to `hasura/.hasura/context.yaml` 
-1. Build script:
-```yaml
-build-$PROFILE:
-   bash: ddn supergraph build local --supergraph supergraph-config/$PROFILE$/2-supergraph.yaml
-   powershell: ddn supergraph build local  --supergraph supergraph-config/$PROFILE$/2-supergraph.yaml
-```
-
-This can be achieved automatically with `yq`
-```
-yq eval ".definition.scripts[\"build-$PROFILE\"] = {\"bash\": \"ddn supergraph build local --env-file .env.$PROFILE --env-file .env --supergraph supergraph-config/$PROFILE/2-supergraph.yaml\", \"powershell\": \"ddn supergraph build local --env-file .env.$PROFILE --env-file .env --supergraph supergraph-config/$PROFILE/2-supergraph.yaml\"}" -i hasura/.hasura/context.yaml
-```
-
-2. Demo script:
-```yaml
-demo-$PROFILE:
-   bash: ddn run docker-start-$PROFILE; HASURA_DDN_PAT=$(ddn auth print-pat) docker compose -f compose-$PROFILE$.yaml --env-file .env.$PROFILE$ up --build --pull always -d
-   powershell: $Env:HASURA_DDN_PAT = ddn auth print-pat; docker compose -f compose-$PROFILE.yaml --env-file .env.$PROFILE up --build --pull always -d
-```
-
-This can be achieved automatically with `yq`
-```
-yq eval ".definition.scripts[\"demo-$PROFILE\"] = {\"bash\": \" ddn run docker-start-$PROFILE; HASURA_DDN_PAT=$(ddn auth print-pat) docker compose -f compose-$PROFILE.yaml --env-file .env.$PROFILE up --build --pull always -d\", \"powershell\": \"$Env:HASURA_DDN_PAT = ddn auth print-pat; docker compose -f compose-$PROFILE.yaml --env-file .env.$PROFILE up --build --pull always -d\"}" -i hasura/.hasura/context.yaml
-```
-
 ---
 
 ## Testing and Deployment
 
 1. **Test the Build:**
 ```bash
-ddn run build-$PROFILE
+ddn run build -- $PROFILE
 ```
 
 2. **Start the Demo:**
 ```bash
-ddn run demo-$PROFILE
+ddn run demo -- $PROFILE
 ```
 
 3. **Cloud Deployment:**
@@ -232,7 +225,7 @@ ddn run demo-$PROFILE
 - Update `.env.cloud.$PROFILE` with the relevant URLs.
 - Run the deploy script:
 ```bash
-./scripts/deploy/deploy.mjs --context axiom-$PROFILE --profile $PROFILE --log-level  DEBUG --full-metadata-build --override
+./scripts/deploy/deploy.mjs --context $PROFILE --profile $PROFILE --log-level DEBUG --full-metadata-build --override
 ```
 ---
 
