@@ -1,8 +1,6 @@
 # 💚 Axiom: Hasura Industry Demo Toolkit
 
-**Showcase the power of Hasura DDN and PromptQL across exciting industry verticals!**
-
-Axiom is your one-stop shop for impressive, ready-to-run demos that highlight Hasura's capabilities in real-world scenarios. Whether you're demonstrating to clients, testing new features, or exploring industry solutions, Axiom has you covered!
+**Demonstrate API and AI with Hasura DDN and PromptQL**
 
 ![Hasura DDN](https://img.shields.io/badge/Hasura-DDN%203.0-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
@@ -36,7 +34,7 @@ Axiom brings Hasura's capabilities to life through industry-specific demos:
 
 | Directory | What's Inside | Why It's Awesome |
 |-----------|---------------|------------------|
-| 📁 `hasura` | DDN configurations, supergraphs, subgraphs, and connector metadata | The heart of each demo - where all the GraphQL magic happens! |
+| 📁 `hasura` | DDN configurations, supergraphs, subgraphs, and connector metadata | The heart of each demo - where DDN metadata resides |
 | 📁 `scripts` | Utility tools and helper scripts | Makes deployment and management a breeze |
 | 📁 `.data` | Seed data and Docker configurations | Pre-configured data to make demos work out of the box |
 | 📁 `infra` | Ansible playbooks (optional) | For internal presales team infrastructure management |
@@ -59,15 +57,13 @@ Perfect for beginners - a simplified example to help you get up and running quic
 
 ## 📱 Telco Demo in Action
 
-Experience the future of telecommunications with our comprehensive Telco demo!
+### Features
+- **Customer 360° View** - Customer management and billing
+- **Network Operations Center** - Real-time monitoring and analytics
+- **Service Activation** - Provisioning and activation workflows
+- **Identity Management** - Authentication and authorization
 
-### ✨ Features
-- 👤 **Customer 360° View** - Complete customer management and billing
-- 🌐 **Network Operations Center** - Real-time monitoring and analytics
-- 🔌 **Service Activation** - Seamless provisioning and activation workflows
-- 🔐 **Identity Management** - Robust authentication and authorization
-
-### 🔆 Quick Start
+### Quick Start
 ```bash
 # Set up the environment
 cp hasura/.env.telco.template hasura/.env.telco
@@ -78,19 +74,15 @@ cd hasura
 ddn run demo -- telco
 ```
 
-Once running, explore the GraphQL API at http://localhost:8080/console
-
 ## 💰 AML Demo in Action
 
-Supercharge your compliance operations with our sophisticated Anti-Money Laundering solution! Detailed workflows available in [hasura/docs/aml-demo-guide.md](hasura/docs/aml-demo-guide.md).
+### Features
+- **Risk Scoring** - Real-time customer risk assessment and KYC validation
+- **Sanctions Screening** - Automated sanctions flagging
+- **Smart Monitoring** - AI detection of suspicious patterns
+- **Compliance Workflows** - SAR management and account freezing
 
-### ✨ Features
-- 🔍 **Risk Scoring** - Real-time customer risk assessment and KYC validation
-- 🛡️ **Sanctions Screening** - Global database integration with automated flagging
-- 📊 **Smart Monitoring** - ML-powered detection of suspicious patterns
-- 📝 **Compliance Workflows** - Streamlined SAR management and account freezing
-
-### 🔆 Quick Start
+### Quick Start
 ```bash
 # Set up the environment
 cp hasura/.env.aml.template hasura/.env.aml
@@ -101,20 +93,16 @@ cd hasura
 ddn run demo -- aml
 ```
 
-Explore a complete compliance solution with powerful GraphQL APIs!
-
 ## 🏥 Healthcare Demo in Action
 
-Transform patient care with our comprehensive healthcare operations platform! See how Hasura can revolutionize healthcare data management.
+### Features
+- **Patient Ops** - Patient management and care coordination
+- **Smart Scheduling** - Operator scheduling and availability management
+- **Case Prioritization** - Case management with urgency tracking
+- **Medical Reference** - Drug and procedure reference data
+- **Emergency Response** - Emergency slot management system
 
-### ✨ Features
-- 👨‍⚕️ **Patient Ops** - Streamlined patient management and care coordination
-- 📅 **Smart Scheduling** - Intelligent operator scheduling and availability management
-- 🚑 **Case Prioritization** - Dynamic case management with urgency tracking
-- 💊 **Medical Reference** - Integrated drug and procedure reference data
-- 🆘 **Emergency Response** - Efficient emergency slot management system
-
-### 🔆 Quick Start
+### Quick Start
 ```bash
 # Set up the environment
 cp hasura/.env.healthcare.template hasura/.env.healthcare
@@ -129,7 +117,6 @@ Discover how GraphQL can transform healthcare data management!
 
 ## 🛠️ Command Reference
 
-Our flexible command system makes it easy to work with any demo profile! Just specify the context parameter and you're good to go.
 
 | **Command** | **What it Does** | **When to Use It** |
 |-------------|------------------|-------------------|
@@ -138,7 +125,7 @@ Our flexible command system makes it easy to work with any demo profile! Just sp
 | `ddn run demo -- <context>` | ✨ Does both build & docker-start | The all-in-one command to get started |
 | `ddn run docker-stop` | 🛑 Stops all containers | When you're done or need to switch demos |
 
-### 💡 Examples
+### Examples
 
 **Working with the Telco demo:**
 ```bash
@@ -163,41 +150,41 @@ ddn run demo -- retail
 
 Take your demos to the cloud with our streamlined deployment tools!
 
-### 🔄 Deploying Metadata Changes
+### Deploying Metadata Changes
 
 Roll out your changes in seconds with our powerful deploy script! Full documentation in the [deploy README](./scripts/deploy/README.md).
 
 ```bash
 # Deploy your changes to the cloud
-./scripts/deploy/deploy.mjs --context axiom-dev --profile telco
+./scripts/deploy/deploy.mjs --context telco-dev --profile telco
 ```
 
 The script handles both JWT and No-Auth deployments automatically, making your life easier.
 
-### 🔌 Managing Connectors
+### Managing Connectors
 
-#### 🆕 Deploying New Connectors
+#### Deploying New Connectors
 
-After updating connector configuration or schema:
+After updating connector configuration or schema, use the [deploy script](./scripts/deploy/README.md) with the `--rebuild-connectors` flag:
 
 ```bash
 # Deploy your updated connectors
-node ./scripts/deploy/deploy.mjs --context axiom-dev --profile telco --rebuild-connectors
+node ./scripts/deploy/deploy.mjs --context telco-dev --profile telco --rebuild-connectors
 ```
 
 > **Important:** Remember to update the `.env.cloud.*` file details in Confluence after connector updates!
 
-#### 🧹 Cleaning Up Old Connectors
+#### Cleaning Up Old Connectors
 
-Keep your cloud environment tidy with our connector cleanup tool:
+Keep your cloud environment tidy with our [connector cleanup tool](./scripts/connector-delete.sh):
 
 ```bash
 # Remove the 20 oldest connector builds
-./scripts/connector-delete.sh axiom-dev 20
+./scripts/connector-delete.sh telco-dev 20
 ```
 
 > [!CAUTION]
-> ⚠️ **Use with caution!** This will remove connectors from your cloud supergraph.
+> **Use with caution!** This will remove connectors from your cloud supergraph.
 
 ## 🎉 Ready to Build Your Own Demo?
 
