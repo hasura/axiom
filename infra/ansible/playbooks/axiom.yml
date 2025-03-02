@@ -33,6 +33,10 @@
         file: ../.env
         name: env_vars
 
+    - name: Override RESTIFIED_GRAPHQL_SERVER_URL based on server
+      ansible.builtin.set_fact:
+        restified_graphql_server_url: "{{ hostvars[inventory_hostname]['graphql_url'] | default(' http://local.hasura.dev:3280/graphql') }}"
+
     - name: Setup environment variables from Ansible -> Docker
       ansible.builtin.template:
         src: "{{ playbook_dir }}/templates/env_vars.j2"

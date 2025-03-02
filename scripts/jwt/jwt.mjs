@@ -35,7 +35,7 @@ program
 const options = program.opts();
 const roles = options.roles ? options.roles.split(',') : ['customer'];
 const userId = options.userId ? options.userId : 7;
-const context = options.context || 'axiom-dev';
+const context = options.context || 'telco-dev';
 
 const contextDir = path.resolve(__dirname, '../../hasura/.hasura');
 const contextData = yaml.load(fs.readFileSync(`${contextDir}/context.yaml`, 'utf8'));

@@ -35,7 +35,7 @@ INSTANCE_TYPE="t2.medium"
 VOLUME_SIZE=25
 SG_NAME="presales-sg"
 SG_DESCRIPTION="presales sg with required ports"
-PORTS=(22 80 443 5432 5433 8123 8787 9000 27017)
+PORTS=(22 80 443 5432 5433 8123 8787 8788 9000 27017)
 
 # Generate the key name based on region and date
 DATETIME=$(date +%Y%m%d-%H%M%S)
