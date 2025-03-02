@@ -19,10 +19,7 @@ export const Config = {
           users(limit: $limit, offset: $offset) {
             id
             email
-            password
             roles
-            createdAt
-            updatedAt
           }
         }
         `,
