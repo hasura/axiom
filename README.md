@@ -1,6 +1,6 @@
 # 💚 Axiom: Hasura Industry Demo Toolkit
 
-**Demonstrate API and AI with Hasura DDN and PromptQL**
+**API and AI Demonstration with Hasura DDN and PromptQL**
 
 ![Hasura DDN](https://img.shields.io/badge/Hasura-DDN%203.0-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
@@ -8,52 +8,52 @@
 ## 🏁 Quick Start
 
 ```bash
-# Clone the repo
+# Cloning the repository
 git clone git@github.com:hasura/axiom.git
 
-# Choose a demo (telco, aml, healthcare)
+# Running a demo (telco, aml, healthcare)
 cd hasura
 ddn run demo -- telco
 ```
 
 ## 🧰 Prerequisites
-Before diving in, you'll need:
+The following dependencies are required for running the demos:
 - [DDN CLI](https://hasura.io/docs/3.0/reference/cli/installation/) - The Hasura command line interface
-- Git LFS (`brew install git-lfs` on macOS) - For handling large files
-- Docker and Docker Compose - For running local environments
-- Node.js - For utility scripts
+- Git LFS (`brew install git-lfs` on macOS) - Required for handling large files
+- Docker and Docker Compose - Necessary for running local environments
+- Node.js - Needed for utility scripts
 
 **Optional:**
 - Ansible - Only needed for internal presales team infrastructure management
 
 ## 🔍 Overview
 Axiom brings Hasura's capabilities to life through industry-specific demos:
-- 🏭 **Ready-to-run industry demos** - Showcase real-world applications with minimal setup
-- 🧪 **Feature testing playground** - See how new Hasura features work in realistic scenarios
-- 🛠️ **Extensible toolkit** - Easily add your own demos and customizations
+- 🏭 **Ready-to-run industry demos** - Real-world industry use cases with minimal setup
+- 🧪 **Feature testing playground** - New DDN & PromptQL features demonstrated in an example project
+- 🛠️ **Extensible toolkit** - Easy to add new demos and customisations
 
 | Directory | What's Inside | Why It's Awesome |
 |-----------|---------------|------------------|
 | 📁 `hasura` | DDN configurations, supergraphs, subgraphs, and connector metadata | The heart of each demo - where DDN metadata resides |
-| 📁 `scripts` | Utility tools and helper scripts | Makes deployment and management a breeze |
+| 📁 `scripts` | Utility tools and helper scripts | Makes deployment and management simple |
 | 📁 `.data` | Seed data and Docker configurations | Pre-configured data to make demos work out of the box |
 | 📁 `infra` | Ansible playbooks (optional) | For internal presales team infrastructure management |
 
 ## 🌟 Demo Profiles
 
-Axiom comes loaded with exciting industry demos:
+Axiom comes prebuilt with industry demos:
 
 ### 📱 Telco
-Cutting-edge telecommunications solutions with customer management, network operations, and service provisioning.
+Telecommunications solutions with customer management, network operations, and service provisioning.
 
 ### 💰 AML (Anti-Money Laundering)
-Sophisticated compliance and risk management with real-time monitoring and automated flagging.
+Compliance and risk management with real-time monitoring and automated flagging.
 
 ### 🏥 Healthcare
-Comprehensive patient operations platform with scheduling, case management, and medical reference data.
+Patient operations platform with scheduling, case management, and medical reference data.
 
 ### 👶 Starter
-Perfect for beginners - a simplified example to help you get up and running quickly.
+A simplified example to act as a starter kit for new demo use cases.
 
 ## 📱 Telco Demo in Action
 
@@ -61,15 +61,15 @@ Perfect for beginners - a simplified example to help you get up and running quic
 - **Customer 360° View** - Customer management and billing
 - **Network Operations Center** - Real-time monitoring and analytics
 - **Service Activation** - Provisioning and activation workflows
-- **Identity Management** - Authentication and authorization
+- **Identity Management** - Authentication and authorisation
 
 ### Quick Start
 ```bash
-# Set up the environment
+# Setting up the environment
 cp hasura/.env.telco.template hasura/.env.telco
 cp .data/.env.template .data/telco/.env
 
-# Launch the demo
+# Launching the demo
 cd hasura
 ddn run demo -- telco
 ```
@@ -84,11 +84,11 @@ ddn run demo -- telco
 
 ### Quick Start
 ```bash
-# Set up the environment
+# Setting up the environment
 cp hasura/.env.aml.template hasura/.env.aml
 cp .data/.env.template .data/aml/.env
 
-# Launch the demo
+# Launching the demo
 cd hasura
 ddn run demo -- aml
 ```
@@ -98,25 +98,22 @@ ddn run demo -- aml
 ### Features
 - **Patient Ops** - Patient management and care coordination
 - **Smart Scheduling** - Operator scheduling and availability management
-- **Case Prioritization** - Case management with urgency tracking
+- **Case Prioritisation** - Case management with urgency tracking
 - **Medical Reference** - Drug and procedure reference data
 - **Emergency Response** - Emergency slot management system
 
 ### Quick Start
 ```bash
-# Set up the environment
+# Setting up the environment
 cp hasura/.env.healthcare.template hasura/.env.healthcare
 cp .data/.env.template .data/healthcare/.env
 
-# Launch the demo
+# Launching the demo
 cd hasura
 ddn run demo -- healthcare
 ```
 
-Discover how GraphQL can transform healthcare data management!
-
 ## 🛠️ Command Reference
-
 
 | **Command** | **What it Does** | **When to Use It** |
 |-------------|------------------|-------------------|
@@ -129,63 +126,61 @@ Discover how GraphQL can transform healthcare data management!
 
 **Working with the Telco demo:**
 ```bash
-# One command does it all!
+# Complete setup with a single command
 ddn run demo -- telco
 
-# Or step by step if you prefer
+# Step-by-step alternative approach
 ddn run build -- telco
 ddn run docker-start -- telco
 ```
 
 **Creating your own demo:**
 ```bash
-# After setting up your new context (e.g., retail)
+# Running a custom context (e.g., retail)
 ddn run demo -- retail
 ```
 > [!TIP]
-> Use `ddn run demo` for the fastest path to a running demo!
+> The `ddn run demo` command provides the fastest path to a running demo.
 
 
 ## 🌟 Deployment & Management
 
-Take your demos to the cloud with our streamlined deployment tools!
+Demos may be pushed to Hasura Cloud with simple/configurable deployment tools
 
 ### Deploying Metadata Changes
 
-Roll out your changes in seconds with our powerful deploy script! Full documentation in the [deploy README](./scripts/deploy/README.md).
+Changes are released in seconds with _deploy_. Full documentation in the [deploy README](./scripts/deploy/README.md).
 
 ```bash
-# Deploy your changes to the cloud
+# Deploying changes to the cloud
 ./scripts/deploy/deploy.mjs --context telco-dev --profile telco
 ```
 
-The script handles both JWT and No-Auth deployments automatically, making your life easier.
+The script handles both JWT and No-Auth deployments automatically, making deployment easier.
 
 ### Managing Connectors
 
 #### Deploying New Connectors
 
-After updating connector configuration or schema, use the [deploy script](./scripts/deploy/README.md) with the `--rebuild-connectors` flag:
+After updating connector configuration or schema, the [deploy script](./scripts/deploy/README.md) should be used with the `--rebuild-connectors` flag:
 
 ```bash
-# Deploy your updated connectors
+# Deploying updated connectors
 node ./scripts/deploy/deploy.mjs --context telco-dev --profile telco --rebuild-connectors
 ```
 
-> **Important:** Remember to update the `.env.cloud.*` file details in Confluence after connector updates!
-
 #### Cleaning Up Old Connectors
 
-Keep your cloud environment tidy with our [connector cleanup tool](./scripts/connector-delete.sh):
+The [connector cleanup tool](./scripts/connector-delete.sh) helps maintain a tidy cloud environment:
 
 ```bash
-# Remove the 20 oldest connector builds
+# Removing the 20 oldest connector builds
 ./scripts/connector-delete.sh telco-dev 20
 ```
 
 > [!CAUTION]
-> **Use with caution!** This will remove connectors from your cloud supergraph.
+> **Caution advised:** This operation removes connectors from the cloud supergraph.
 
-## 🎉 Ready to Build Your Own Demo?
+## 🎉 Building Custom Demos
 
-Check out the [hasura/README.md](hasura/README.md) for detailed instructions on adding your own industry demo!
+The [hasura/README.md](hasura/README.md) provides detailed instructions on adding new industry demos to the toolkit.
