@@ -24,6 +24,13 @@ Axiom provides a comprehensive platform for deploying and testing Hasura industr
 
 ## Demo Profiles
 
+Axiom includes the following demo profiles:
+
+- **Telco**: Telecommunications industry capabilities
+- **AML**: Anti-Money Laundering compliance and risk management
+- **Healthcare**: Patient operations and medical reference data
+- **Starter**: Basic example for getting started
+
 ### Telco Demo
 Demonstrates telecommunications industry capabilities with features for:
 - Customer management and billing
@@ -46,8 +53,8 @@ cp .data/.env.template .data/telco/.env
 3. Launch the demo:
 ```bash
 cd hasura
-ddn run build-telco
-ddn run demo-telco
+ddn run build -- telco
+ddn run demo -- telco
 ```
 
 ### Anti-Money Laundering (AML) Demo
@@ -74,22 +81,62 @@ cp .data/.env.template .data/aml/.env
 3. Launch the demo:
 ```bash
 cd hasura
-ddn run build-aml
-ddn run demo-aml
+ddn run build -- aml
+ddn run demo -- aml
+```
+
+### Healthcare Demo
+A comprehensive healthcare operations platform demonstrating patient management, clinical workflows, and medical reference data integration.
+
+#### Features
+- Patient Operations Management
+- Operator Scheduling and Availability
+- Case Management and Prioritization
+- Medical Reference Data Integration
+- Emergency Slot Management
+
+#### Quick Start
+1. Clone the repository:
+```bash
+git clone git@github.com:hasura/axiom.git
+```
+
+2. Set up environment:
+```bash
+cp hasura/.env.healthcare.template hasura/.env.healthcare
+cp .data/.env.template .data/healthcare/.env
+```
+
+3. Launch the demo:
+```bash
+cd hasura
+ddn run build -- healthcare
+ddn run demo -- healthcare
 ```
 
 ## Command Documentation
-Each of the `ddn run` commands in `hasura/.hasura/context.yaml` corresponds to both a different way to build your supergraph and which source databases to use
+The `ddn run` commands in `hasura/.hasura/context.yaml` now use a context parameter to dynamically work with any demo profile. This approach makes it easier to add new profiles without creating profile-specific commands.
 
-| **Command**              | **Demo Profile** | **Description**                                                                                                   |
-|--------------------------|-----------------|-------------------------------------------------------------------------------------------------------------------|
-| `docker-start-telco`     | Telco           | Starts the containers for the telco demo data sources locally|
-| `build-telco`            | Telco           | Builds the DDN supergraph for the telco demo|
-| `demo-telco`             | Telco           | Starts the containers for the telco demo data sources locally|
-| `docker-start-aml`     | AML           | Starts the containers for the aml demo data sources locally|
-| `build-aml`            | AML           | Builds the DDN supergraph for the aml demo|
-| `demo-aml`             | AML           | Starts the containers for the aml demo data sources locally|
-| `docker-stop`            | Any             | Stops and removes all Docker containers and volumes related to Axiom|
+| **Command**              | **Description**                                                                                                   |
+|--------------------------|-------------------------------------------------------------------------------------------------------------------|
+| `ddn run build -- <context>`            | Builds the DDN supergraph for the specified context (e.g., telco, aml, foobar)|
+| `ddn run docker-start -- <context>`     | Starts the containers for the specified context's data sources locally|
+| `ddn run demo -- <context>`             | Builds the supergraph and starts the containers for the specified context|
+| `ddn run docker-stop`                   | Stops and removes all Docker containers and volumes related to Axiom|
+
+For example, to work with the telco demo:
+```bash
+ddn run build -- telco
+ddn run docker-start -- telco
+ddn run demo -- telco
+```
+
+To work with a new context (e.g., media):
+```bash
+ddn run build -- media
+ddn run docker-start -- media
+ddn run demo -- media
+```
 
 
 ## Deployment
