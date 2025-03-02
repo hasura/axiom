@@ -104,7 +104,23 @@ jobs:
             -d "$QUERY")
 
           # Compare the actual response with the expected response
-          if echo "$RESPONSE" | jq --argjson expected "$EXPECTED_RESPONSE" 'if . == $expected then "MATCH" else "MISMATCH" end' | grep -q "MATCH"; then
+          if echo "$RESPONSE" | jq -e --argjson expected "$EXPECTED_RESPONSE" '. == $expected' > /dev/null; then
+            echo "✅ Response matches expected output."
+          else
+            echo "❌ Response does not match expected output."
+            echo "Expected: $EXPECTED_RESPONSE"
+            echo "Got: $RESPONSE"
+            exit 1
+          fi
+
+      - name: Query RESTified endpoint and validate response
+        if: env.no_op != 'true'
+        run: |
+          EXPECTED_RESPONSE='{"data":{"users":[{"id":1,"email":"adam.mcdaniel@bigpond.com","password":"$2a$10$DSRHAPZP0fuEFioGOPOdW.kgFWZvQgmMihaBYsUs8rO4cdHFFK7cS","roles":"customer","createdAt":"2025-03-02T04:24:33.583688+00:00","updatedAt":"2025-03-02T04:24:33.583688+00:00"}]}}'
+          RESPONSE=$(curl -s -X GET http://localhost:3280/v1/api/rest/users?limit=1 -H "Content-Type: application/json")
+
+          # Compare the actual response with the expected response
+          if echo "$RESPONSE" | jq -e --argjson expected "$EXPECTED_RESPONSE" '. == $expected' > /dev/null; then
             echo "✅ Response matches expected output."
           else
             echo "❌ Response does not match expected output."
