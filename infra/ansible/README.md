@@ -35,12 +35,22 @@ The Ansible inventory file specifies the servers to manage.
 
 ```bash
 # Create the Ansible inventory file
-cat <<EOF > inventory
-[demo]
-host1 ansible_host=host1.example.com ansible_user=ec2-user ansible_ssh_private_key_file=~/.ssh/id_rsa region=australia ansible_python_interpreter=/usr/bin/python3
-
-[cron]
-host1
+cat <<EOF > inventory.json
+{
+  "hosts": {
+    "vars": {
+      "ansible_user": "ubuntu",
+      "ansible_ssh_private_key_file": "~/.ssh/id_rsa",
+      "ansible_python_interpreter": "/usr/bin/python3"
+    },
+    "hosts": {
+      "telco": {
+        "ansible_host": "telco-server.example.com",
+        "region": "us-east"
+      }
+    }
+  }
+}
 EOF
 ```
 
@@ -51,14 +61,14 @@ As soon as the server is set up, Ansible can be run against them to complete con
 Run the playbook against all hosts in your inventory:
 
 ```bash
-ansible-playbook -i inventory master.yml
+ansible-playbook -i inventory.json master.yml
 ```
 
 ### Run Against Specific Hosts
 To limit execution to specific hosts, use the --limit option:
 
 ```bash
-ansible-playbook -i inventory master.yml --limit host1:host2:host3
+ansible-playbook -i inventory.json master.yml --limit host1:host2:host3
 ```
 
 ### Validate Configuration

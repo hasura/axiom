@@ -33,6 +33,7 @@ To set up a new presales demo instance, run this script to provision one automat
     * 5432 (Postgres 1)
     * 5433 (Postgres 2)
     * 8787 (Cache)
+    * 8788 (RESTified endpoints)
     * 8123 (Clickhouse)
     * 9000 (Clickhouse)
     * 27017 (MongoDB)
