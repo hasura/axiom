@@ -34,7 +34,7 @@ program
 // Extract values from command line options or use default values
 const options = program.opts();
 const roles = options.roles ? options.roles.split(',') : ['customer'];
-const userId = options.userId ? options.userId : 7;
+const userId = options.userId && /^\d+$/.test(options.userId) ? Number(options.userId) : options.userId || 7;
 const context = options.context || 'telco-dev';
 
 const contextDir = path.resolve(__dirname, '../../hasura/.hasura');
@@ -69,7 +69,7 @@ const claims = {
   "x-hasura-allowed-roles": roles,
   "x-hasura-default-role": roles[0],
   "x-hasura-role": roles[0],
-  "x-hasura-user-id": Number(userId)
+  "x-hasura-user-id": userId
 };
 
 // Generate a new JWT token with the private key
