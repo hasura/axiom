@@ -24,5 +24,4 @@ fi
 ../scripts/ddn-run/docker-start.sh "$CONTEXT"
 
 # Set up PAT and run docker compose with appropriate files
-HASURA_DDN_PAT=$(ddn auth print-pat)
-docker compose -f compose-$CONTEXT.yaml --env-file "../hasura/$ENV_FILE" up --build --pull always -d
+HASURA_DDN_PAT=$(ddn auth print-pat) PROMPTQL_SECRET_KEY=$(ddn auth print-promptql-secret-key) docker compose -f compose-$CONTEXT.yaml --env-file "../hasura/$ENV_FILE" up --build --pull always -d
