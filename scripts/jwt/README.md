@@ -33,6 +33,7 @@ ddn run jwt-gen -- -u 8 -r editor
 - `-k, --key <key>`: JWT secret key (can be set via `.env` file).
 - `-e, --env <path>`: Path to `.env` file containing `JWT_SECRET`.
 - `-c, --context <context>`: Context to auto-find `.env` file defined in `.hasura/context.yaml`.
+- `-l, --local`: Use localEnvFile rather than cloudEnvFile from `context.yaml`.
 
 ## Example
 
@@ -40,6 +41,12 @@ Using an alternate context from `.hasura/context.yaml`
 
 ```
 node jwt.mjs -u 8 -r admin,editor -c axiom-test
+```
+
+Using localEnvFile option from context in `.hasura/context.yaml`
+
+```
+node jwt.mjs -u 8 -r admin,editor -c axiom-test --local
 ```
 
 Using a custom `.env` file:

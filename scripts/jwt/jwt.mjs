@@ -29,6 +29,7 @@ program
   .option('-k, --key <key>', 'JWT key')
   .option('-e, --env <env>', 'Path to .env file')
   .option('-c, --context <context>', 'Context from .hasura/context.yaml')
+  .option('-l, --local', 'Use localEnvFile rather than cloudEnvFile from context.yaml')
   .parse(process.argv);
 
 // Extract values from command line options or use default values

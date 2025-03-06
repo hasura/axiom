@@ -9,6 +9,7 @@ if [ -z "$1" ]; then
 fi
 
 CONTEXT=$1
+COUNT=5
 
 # Get environment file
 ENV_FILE=$(ddn context get localEnvFile --context $CONTEXT --out json | jq -r .localEnvFile)
@@ -22,6 +23,9 @@ fi
 # Build the supergraph and start docker first
 ../scripts/ddn-run/build.sh "$CONTEXT"
 ../scripts/ddn-run/docker-start.sh "$CONTEXT"
+
+echo "Waiting $COUNT seconds for containers to start"
+sleep $COUNT
 
 # Set up PAT and run docker compose with appropriate files
 HASURA_DDN_PAT=$(ddn auth print-pat) PROMPTQL_SECRET_KEY=$(ddn auth print-promptql-secret-key --context $CONTEXT) docker compose -f compose-$CONTEXT.yaml --env-file "../hasura/$ENV_FILE" up --build --pull always -d
