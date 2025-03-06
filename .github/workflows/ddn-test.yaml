@@ -53,15 +53,7 @@ jobs:
           ddn supergraph build local --supergraph supergraph-config/telco/3-supergraph.yaml
           ddn supergraph build local --supergraph supergraph-config/telco/4-supergraph-with-mutations.yaml
 
-      - name: Set up demo databases
-        working-directory: ./hasura
-        if: env.no_op != 'true'
-        env:
-          HASURA_DDN_PAT: ${{ secrets.HASURA_PAT }}
-        run: |
-          ddn run docker-start -- telco
-
-      - name: Run DDN demo
+      - name: Set up demo databases & Run DDN
         working-directory: ./hasura
         if: env.no_op != 'true'
         env:

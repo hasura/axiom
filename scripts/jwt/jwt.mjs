@@ -45,11 +45,13 @@ if (!contextData.definition.contexts[context]) {
   console.error(`Error: Context '${context}' does not exist in ${contextDir}/context.yaml.`);
   process.exit(1);
 }
-if (!contextData.definition.contexts[context].localEnvFile) {
-  console.error(`Error: localEnvFile key not found in context '${context}' in ${contextDir}/context.yaml.`);
+
+const envKey = options.local ? 'localEnvFile' : 'cloudEnvFile';
+if (!contextData.definition.contexts[context][envKey]) {
+  console.error(`Error: ${envKey} key not found in context '${context}' in ${contextDir}/context.yaml.`);
   process.exit(1);
 }
-const contextEnv = path.resolve(__dirname, contextDir, contextData.definition.contexts[context].localEnvFile);
+const contextEnv = path.resolve(__dirname, contextDir, contextData.definition.contexts[context][envKey]);
 
 // Determine which .env file to load
 const envFilePath = options.env
