@@ -38,3 +38,17 @@ services:
       - 4318:4318
     volumes:
       - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
+  promptql-playground:
+    environment:
+      CORS_ORIGINS: ${CORS_ORIGINS:-https://console.hasura.io}
+      ENGINE_URL: ${HASURA_DDN_URL:-http://engine:3000/v1/sql}
+      HASURA_LLM_URI: ${HASURA_LLM_URI:-https://llm.promptql.pro.hasura.io}
+      LLM: ${LLM:-hasura}
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT:-http://host.docker.internal:4317}
+      PROMPTQL_SECRET_KEY: ${PROMPTQL_SECRET_KEY}
+      PROMPTQL_URI: ${PROMPTQL_URI:-wss://runtime.promptql.pro.hasura.io}
+    image: us-east4-docker.pkg.dev/promptql-execution-service/promptql-public/promptql-playground-local
+    labels:
+      io.hasura.ddn.service-name: promptql-playground
+    ports:
+      - 3282:5000

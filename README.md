@@ -5,26 +5,31 @@
 ![Hasura DDN](https://img.shields.io/badge/Hasura-DDN%203.0-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
-## 🏁 Quick Start
-
-```bash
-# Cloning the repository
-git clone git@github.com:hasura/axiom.git
-
-# Running a demo (telco, aml, healthcare)
-cd hasura
-ddn run demo -- telco
-```
-
 ## 🧰 Prerequisites
 The following dependencies are required for running the demos:
 - [DDN CLI](https://hasura.io/docs/3.0/reference/cli/installation/) - The Hasura command line interface
 - Git LFS (`brew install git-lfs` on macOS) - Required for handling large files
 - Docker and Docker Compose - Necessary for running local environments
 - Node.js - Needed for utility scripts
+- jq - Required for utility scripts
 
 **Optional:**
 - Ansible - Only needed for internal presales team infrastructure management
+
+## 🏁 Quick Start
+
+```bash
+# Cloning the repository
+git clone git@github.com:hasura/axiom.git
+
+cd axiom/hasura
+
+# Init is only required once for each demo profile
+ddn run init -- telco
+
+# Running a demo (telco, aml, healthcare)
+ddn run demo -- telco
+```
 
 ## 🔍 Overview
 Axiom brings Hasura's capabilities to life through industry-specific demos:
@@ -66,8 +71,7 @@ A simplified example to act as a starter kit for new demo use cases.
 ### Quick Start
 ```bash
 # Setting up the environment
-cp hasura/.env.telco.template hasura/.env.telco
-cp .data/.env.template .data/telco/.env
+ddn run init -- telco
 
 # Launching the demo
 cd hasura
@@ -85,8 +89,7 @@ ddn run demo -- telco
 ### Quick Start
 ```bash
 # Setting up the environment
-cp hasura/.env.aml.template hasura/.env.aml
-cp .data/.env.template .data/aml/.env
+ddn run init -- aml
 
 # Launching the demo
 cd hasura
@@ -105,8 +108,7 @@ ddn run demo -- aml
 ### Quick Start
 ```bash
 # Setting up the environment
-cp hasura/.env.healthcare.template hasura/.env.healthcare
-cp .data/.env.template .data/healthcare/.env
+ddn run init -- healthcare
 
 # Launching the demo
 cd hasura
@@ -117,30 +119,15 @@ ddn run demo -- healthcare
 
 | **Command** | **What it Does** | **When to Use It** |
 |-------------|------------------|-------------------|
+| `ddn run init -- <context>` | 🛠️ Initializes the DDN environment | Run this once before using other commands or when setting up a new demo |
 | `ddn run build -- <context>` | 🏗️ Builds the DDN supergraph | When you've made metadata changes |
 | `ddn run docker-start -- <context>` | 🐳 Starts the Docker containers | When you need the data sources |
-| `ddn run demo -- <context>` | ✨ Does both build & docker-start | The all-in-one command to get started |
+| `ddn run demo -- <context>` | ✨ Does build, docker-start, and starts Hasura/PromptQL | The all-in-one command to get started |
 | `ddn run docker-stop` | 🛑 Stops all containers | When you're done or need to switch demos |
 
-### Examples
-
-**Working with the Telco demo:**
-```bash
-# Complete setup with a single command
-ddn run demo -- telco
-
-# Step-by-step alternative approach
-ddn run build -- telco
-ddn run docker-start -- telco
-```
-
-**Creating your own demo:**
-```bash
-# Running a custom context (e.g., retail)
-ddn run demo -- retail
 ```
 > [!TIP]
-> The `ddn run demo` command provides the fastest path to a running demo.
+> The `ddn run init` & `ddn run demo` commands provide the fastest path to a running demo.
 
 
 ## 🌟 Deployment & Management

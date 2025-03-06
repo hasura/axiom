@@ -39,10 +39,10 @@ jobs:
           sudo apt-get install -y jq
 
       - name: Prep repository
+        working-directory: ./hasura
         if: env.no_op != 'true'
         run: |
-          cp hasura/.env.telco.template hasura/.env.telco
-          cp .data/.env.template .data/telco/.env
+          ddn run init -- telco
 
       - name: Build all supergraphs
         working-directory: ./hasura
@@ -74,8 +74,8 @@ jobs:
       - name: Query DDN endpoint and validate response
         if: env.no_op != 'true'
         run: |
-          # Add a 5s delay here for the pg databases to populate before running the queries
-          sleep 5
+          # Sleep to allow all containers to be ready before we try to query
+          sleep 20
           QUERY='{
             "query": "query getUsers { usersById(id: 1) { email } customers(limit: 1) { firstName lastName email segment customerLinks { customerPreferences { socialMedia { linkedin } } supportDB { supportHistory { date status } } } creditCards { maskCreditCard expiry cvv } billings { formatBillingDate paymentStatus totalAmount } } calls(limit: 1) { callid } cdr(limit: 1) { guid } documents(limit: 1) { uuid } }"
           }'

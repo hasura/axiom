@@ -7,6 +7,7 @@ if (-not $args[0]) {
 }
 
 $CONTEXT = $args[0]
+$COUNT = 5
 
 # Get environment file
 $ENV_FILE = ddn context get localEnvFile --context $CONTEXT --out json | ConvertFrom-Json | Select-Object -ExpandProperty localEnvFile
@@ -21,6 +22,9 @@ if (-not $ENV_FILE) {
 # Build the supergraph and start docker first
 & "../scripts/ddn-run/build.ps1" $CONTEXT
 & "../scripts/ddn-run/docker-start.ps1" $CONTEXT
+
+Write-Host "Waiting $COUNT seconds for containers to start"
+Start-Sleep -Seconds $COUNT
 
 # Set up PAT and run docker compose with appropriate files
 $HASURA_DDN_PAT = ddn auth print-pat
