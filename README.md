@@ -70,11 +70,12 @@ A simplified example to act as a starter kit for new demo use cases.
 
 ### Quick Start
 ```bash
+cd hasura
+
 # Setting up the environment
 ddn run init -- telco
 
 # Launching the demo
-cd hasura
 ddn run demo -- telco
 ```
 
@@ -88,11 +89,12 @@ ddn run demo -- telco
 
 ### Quick Start
 ```bash
+cd hasura
+
 # Setting up the environment
 ddn run init -- aml
 
 # Launching the demo
-cd hasura
 ddn run demo -- aml
 ```
 
@@ -107,11 +109,12 @@ ddn run demo -- aml
 
 ### Quick Start
 ```bash
+cd hasura
+
 # Setting up the environment
 ddn run init -- healthcare
 
 # Launching the demo
-cd hasura
 ddn run demo -- healthcare
 ```
 
