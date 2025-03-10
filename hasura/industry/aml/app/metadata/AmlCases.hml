@@ -129,6 +129,18 @@ definition:
           - originatorName
           - transactionDate
           - transactionId
+    - role: customer
+      output:
+        allowedFields:
+          - amlFlags
+          - amount
+          - beneficiaryId
+          - beneficiaryName
+          - originatorAddress
+          - originatorId
+          - originatorName
+          - transactionDate
+          - transactionId
 
 ---
 kind: BooleanExpressionType
@@ -319,6 +331,14 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
+    - role: customer
+      select:
+        filter:
+          fieldComparison:
+            field: amount
+            operator: _lte
+            value:
+              literal: 1000
 
 ---
 kind: Relationship
