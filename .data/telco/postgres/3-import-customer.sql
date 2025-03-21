@@ -451,7 +451,7 @@ INSERT INTO customer_plans (customer_plan_id, customer_id, plan_id, start_date, 
 (198, 70, 19, '2018-04-24', '2028-09-20', '0413837890', 'active'),
 (199, 94, 7, '2021-07-27', '2025-04-20', '0429291924', 'active'),
 (200, 20, 29, '2020-11-02', '2026-03-16', '0447941707', 'active'),
-(201, 7, 25, '2024-01-01', '2025-12-31', '0468392327', 'active');
+(201, 7, 25, '2024-01-01', '2025-12-31', '0468392327', 'inactive');
 
 INSERT INTO billing (billing_id, customer_id, billing_date, total_amount, payment_status) VALUES
 (1, 1, '2023-02-02', 50.5, 'overdue'),
