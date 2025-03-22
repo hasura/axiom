@@ -19,18 +19,49 @@
         name: git-lfs
         state: present
 
-    - name: Clone axiom repository
-      ansible.builtin.git:
-        repo: https://github.com/hasura/axiom.git
-        dest: /home/ubuntu/axiom
-        version: main
-        accept_hostkey: true
-      become: true
-      become_user: ubuntu
+    - name: Ensure /home/ubuntu/axiom-demo/<profile> exists
+      ansible.builtin.file:
+        path: /home/ubuntu/axiom-data/{{ demo_profile }}
+        owner: ubuntu
+        group: ubuntu
+        mode: "0755"
+        state: directory
+        recurse: true
+
+    - name: Upload demo profile from .data directory
+      ansible.posix.synchronize:
+        src: "{{ playbook_dir }}/../../../.data/{{ demo_profile }}/"
+        dest: "/home/ubuntu/axiom-data/{{ demo_profile }}/"
+        recursive: true
+        delete: true
+        rsync_opts:
+          - "--exclude=.*"
+      delegate_to: localhost
+      become: false
+
+    - name: Ensure /home/ubuntu/axiom-demo/plugins exists
+      ansible.builtin.file:
+        path: /home/ubuntu/axiom-data/plugins
+        owner: ubuntu
+        group: ubuntu
+        mode: "0755"
+        state: directory
+        recurse: true
+
+    - name: Upload demo profile from .data directory
+      ansible.posix.synchronize:
+        src: "{{ playbook_dir }}/../../../.data/plugins/"
+        dest: "/home/ubuntu/axiom-data/plugins/"
+        recursive: true
+        delete: true
+        rsync_opts:
+          - "--exclude=.*"
+      delegate_to: localhost
+      become: false
 
     - name: Load environment variables from .env
       ansible.builtin.include_vars:
-        file: ../.env
+        file: "{{ playbook_dir }}/../.env"
         name: env_vars
 
     - name: Override RESTIFIED_GRAPHQL_SERVER_URL based on server
@@ -45,12 +76,12 @@
         group: ubuntu
         mode: "0600"
       vars:
-        env_file_path: "/home/ubuntu/axiom/.data/{{ demo_profile }}/.env"
+        env_file_path: "/home/ubuntu/axiom-data/{{ demo_profile }}/.env"
 
     - name: Turn on the demo
-      ansible.builtin.command: /usr/local/bin/ddn run docker-start -- {{ demo_profile }}
+      ansible.builtin.command: docker compose -f compose.yaml --env-file .env up --build --pull always -d
       args:
-        chdir: /home/ubuntu/axiom/hasura
+        chdir: /home/ubuntu/axiom-data/{{ demo_profile }}
       register: ddn_demo_start
       changed_when: false
       become: true
