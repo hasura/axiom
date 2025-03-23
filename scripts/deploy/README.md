@@ -27,7 +27,6 @@ node deploy.mjs [options]
 |------------------------------|-----------------------------------------------------------------------------|------------------|
 | `-p, --profile <profile>`    | Deploy from a demo config in `supergraph-config/<profile>`. **Required**.  | N/A              |
 | `-c, --context <context>`    | Deploy specific context from `.hasura/context.yaml`.                       | `default`        |
-| `-g, --gcp-region <gcpRegion>`    | Deploy to specific GCP region`.                       | `gcp-us-west2`        |
 | `-l, --log-level <level>`    | Set the log level (FATAL, ERROR, WARN, INFO, DEBUG).                        | `FATAL`          |
 | `-o, --override`             | Override branch and uncommitted changes checks.                            | `false`          |
 | `-d, --dry-run`              | Simulate the deployment without executing commands.                        | `false`          |
@@ -50,27 +49,22 @@ node deploy.mjs [options]
    node deploy.mjs -p telco -c axiom-test -a
    ```
 
-3. **Deploy to US East**:
-   ```bash
-   node deploy.mjs -p telco -c axiom-test -d -g gcp-us-east4
-   ```
-
-4. **Dry run deployment**:
+3. **Dry run deployment**:
    ```bash
    node deploy.mjs -p telco -c axiom-test -d
    ```
 
-5. **Full metadata rebuild without interaction**:
+4. **Full metadata rebuild without interaction**:
    ```bash
    node deploy.mjs -p telco -c axiom-test -f -n
    ```
 
-6. **Full metadata rebuild AND rebuild all connectors**:
+5. **Full metadata rebuild AND rebuild all connectors**:
    ```bash
    node deploy.mjs -p telco -c axiom-test -f -r
    ```
 
-7. **CI/CD Implementation**:
+6. **CI/CD Implementation**:
 
    ```bash
     deploy.mjs \
