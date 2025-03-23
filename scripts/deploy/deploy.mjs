@@ -35,8 +35,6 @@ class DeploymentManager {
         const __dirname = dirname(fileURLToPath(import.meta.url));
         this.paths = {
             root: resolve(__dirname, '../../hasura/'),
-            jwt: join(__dirname, 'jwtauth.hml'),
-            noauth: join(__dirname, 'noauth.hml')
         };
         this.options = this.program.opts();
         // This line is counter-intuitive but required.
@@ -76,10 +74,7 @@ class DeploymentManager {
         });
     }
 
-    async deploy(context, authFile, tag, supergraph, rebuild) {
-        if (!fs.existsSync(authFile)) throw new Error(`Missing auth config: ${authFile}`);
-
-        !this.options.dryRun && fs.copyFileSync(authFile, join(this.paths.root, '/globals/auth-config.hml'));
+    async deploy(context, tag, supergraph, rebuild) {
 
         const desc = this.options.overrideDescription ||
             (await this.git.raw(['log', '-1', '--pretty=format:"%h [' + tag + '] %s"'])).trim();
@@ -181,24 +176,22 @@ class DeploymentManager {
 
             if (supergraphs.length === 0) throw new Error('No supergraphs found');
 
-            if (fullMetadataBuild && supergraphs.length > 1) {
-                for (let i = 0; i < supergraphs.length - 1; i++) {
-                    await this.deploy(context, this.paths.noauth, `NoAuth S-${i + 1}`,
+            let buildInfo = {};
+
+            if (fullMetadataBuild && supergraphs.length > 2) {
+                for (let i = 0; i < supergraphs.length - 2; i++) {
+                    await this.deploy(context, `NoAuth S-${i + 1}`,
                         supergraphs[i], rebuildConnectors);
                 }
             }
 
-            const fullContext = { ...contextYaml.definition.contexts[context], context };
-            let buildInfo = {};
-
-            if (fullContext.cloudEnvFile &&
-                fs.readFileSync(`.hasura/${fullContext.cloudEnvFile}`, 'utf8').includes('JWT_SECRET=')) {
-                buildInfo = await this.deploy(context, this.paths.jwt, 'JWT',
-                    supergraphs[supergraphs.length - 1], rebuildConnectors);
+            if (supergraphs.length >= 2) {
+                buildInfo = await this.deploy(context, 'JWT',
+                    supergraphs[supergraphs.length - 2], rebuildConnectors);
             }
-
-            buildInfo = await this.deploy(context, this.paths.noauth, 'NoAuth',
+            buildInfo = await this.deploy(context, 'NoAuth',
                 supergraphs[supergraphs.length - 1], rebuildConnectors);
+
 
             if (this.options.applyBuild && !this.options.dryRun && buildInfo.build_version) {
                 await this.execCommand(
@@ -207,7 +200,6 @@ class DeploymentManager {
                 );
             }
 
-            await fs.copyFileSync(this.paths.noauth, join(this.paths.root, '/globals/auth-config.hml'));
             this.log('inverse', 'Deployment completed successfully');
         } catch (error) {
             console.error(chalk.whiteBright.bgRed(`Error: ${error.message}`));
