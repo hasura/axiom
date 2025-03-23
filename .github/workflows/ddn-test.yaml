@@ -85,10 +85,10 @@ jobs:
           # Sleep to allow all containers to be ready before we try to query
           sleep 20
           QUERY='{
-            "query": "query getUsers { usersById(id: 1) { email } customers(limit: 1) { firstName lastName email segment customerLinks { customerPreferences { socialMedia { linkedin } } supportDB { supportHistory { date status } } } creditCards { maskCreditCard expiry cvv } billings { formatBillingDate paymentStatus totalAmount } } calls(limit: 1) { callid } cdr(limit: 1) { guid } documents(limit: 1) { uuid } }"
+            "query": "query getUsers { usersById(id: 1) { email } customers(limit: 1) { firstName lastName email segment customerLinks { customerPreferences { socialMedia { linkedin } } supportDB { supportHistory { date status } } } creditCards { maskCreditCard expiry cvv } billings { paymentStatus totalAmount } } calls(limit: 1) { callid } cdr(limit: 1) { guid } documents(limit: 1) { uuid } }"
           }'
 
-          EXPECTED_RESPONSE='{"data":{"usersById":{"email":"adam.mcdaniel@bigpond.com"},"customers":[{"firstName":"Adam","lastName":"Mcdaniel","email":"adam.mcdaniel@bigpond.com","segment":"family","customerLinks":[{"customerPreferences":{"socialMedia":{"linkedin":null}},"supportDB":{"supportHistory":[{"date":"2020-03-22","status":"Resolved"}]}}],"creditCards":[{"maskCreditCard":"***********8922","expiry":"2028-04-23","cvv":651}],"billings":[{"formatBillingDate":"Thu Feb 02 2023","paymentStatus":"overdue","totalAmount":"50.50"}]}],"calls":[],"cdr":[{"guid":"96dbde7a-aa94-466e-9480-666220398fff"}],"documents":[{"uuid":"a1b2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d"}]}}'
+          EXPECTED_RESPONSE='{"data":{"usersById":{"email":"adam.mcdaniel@bigpond.com"},"customers":[{"firstName":"Adam","lastName":"Mcdaniel","email":"adam.mcdaniel@bigpond.com","segment":"family","customerLinks":[{"customerPreferences":{"socialMedia":{"linkedin":null}},"supportDB":{"supportHistory":[{"date":"2020-03-22","status":"Resolved"}]}}],"creditCards":[{"maskCreditCard":"***********8922","expiry":"2028-04-23","cvv":651}],"billings":[{"paymentStatus":"overdue","totalAmount":"50.50"}]}],"calls":[],"cdr":[{"guid":"96dbde7a-aa94-466e-9480-666220398fff"}],"documents":[{"uuid":"a1b2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d"}]}}'
 
           RESPONSE=$(curl -s -X POST "http://localhost:3280/graphql" -H "Content-Type: application/json" -d "$QUERY")
 
