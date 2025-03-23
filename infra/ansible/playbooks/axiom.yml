@@ -79,10 +79,12 @@
         env_file_path: "/home/ubuntu/axiom-data/{{ demo_profile }}/.env"
 
     - name: Turn on the demo
-      ansible.builtin.command: docker compose -f compose.yaml --env-file .env up --build --pull always -d
-      args:
-        chdir: /home/ubuntu/axiom-data/{{ demo_profile }}
-      register: ddn_demo_start
-      changed_when: false
+      community.docker.docker_compose_v2:
+        project_src: /home/ubuntu/axiom-data/{{ demo_profile }}
+        files:
+          - compose.yaml
+        build: always
+        pull: always
+        state: present
+        remove_orphans: true
       become: true
-      become_user: ubuntu
