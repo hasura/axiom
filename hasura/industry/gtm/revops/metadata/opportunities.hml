@@ -17,7 +17,7 @@ definition:
     - name: name
       type: varchar
     - name: owner_id
-      type: varchar
+      type: int_4
     - name: probability
       type: int_4
     - name: stage
@@ -47,6 +47,16 @@ definition:
           - owner_id
           - probability
           - stage
+    - role: customer
+      output:
+        allowedFields:
+          - amount
+          - close_date
+          - created_date
+          - name
+          - owner_id
+          - probability
+          - stage
 
 ---
 kind: BooleanExpressionType
@@ -70,7 +80,7 @@ definition:
         - fieldName: name
           booleanExpressionType: varchar_bool_exp
         - fieldName: owner_id
-          booleanExpressionType: varchar_bool_exp
+          booleanExpressionType: int_4_bool_exp
         - fieldName: probability
           booleanExpressionType: int_4_bool_exp
         - fieldName: stage
@@ -106,7 +116,7 @@ definition:
         - fieldName: name
           aggregateExpression: varchar_agg_exp
         - fieldName: owner_id
-          aggregateExpression: varchar_agg_exp
+          aggregateExpression: int_4_agg_exp
         - fieldName: probability
           aggregateExpression: int_4_agg_exp
         - fieldName: stage
@@ -138,7 +148,7 @@ definition:
         - fieldName: name
           orderByExpression: varchar_order_by_exp
         - fieldName: owner_id
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: int_4_order_by_exp
         - fieldName: probability
           orderByExpression: int_4_order_by_exp
         - fieldName: stage
@@ -186,6 +196,15 @@ definition:
     - role: admin
       select:
         filter: null
+        allowSubscriptions: true
+    - role: customer
+      select:
+        filter:
+          fieldComparison:
+            field: owner_id
+            operator: _eq
+            value:
+              sessionVariable: x-hasura-user-id
         allowSubscriptions: true
 
 ---

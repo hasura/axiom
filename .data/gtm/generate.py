@@ -34,7 +34,9 @@ def generate_auth_data(num_users: int = 38) -> List[Dict]:
         {'id': 2, 'email': 'liam.analyst@hasura.io', 'roles': 'business_analyst'},
         {'id': 3, 'email': 'sophia.data@hasura.io', 'roles': 'data_steward'},
         {'id': 4, 'email': 'noah.ai@hasura.io', 'roles': 'ai_ops'},
-        {'id': 5, 'email': 'olivia.cs@hasura.io', 'roles': 'customer_success'}
+        {'id': 5, 'email': 'olivia.cs@hasura.io', 'roles': 'customer_success'},
+        {'id': 6, 'email': 'eleanor.cs@hasura.io', 'roles': 'customer_success'},
+        {'id': 7, 'email': 'julian.mayorga@hasura.io', 'roles': 'sales'}
     ]
     
     users.extend([{
@@ -46,7 +48,7 @@ def generate_auth_data(num_users: int = 38) -> List[Dict]:
         'updated_at': format_datetime(CURRENT_DATE)
     } for u in initial_users])
 
-    user_id = 6
+    user_id = 8
     for role, count in user_roles.items():
         remaining = max(0, count - len([u for u in initial_users if u['roles'] == role]))
         for _ in range(remaining):
@@ -82,6 +84,8 @@ def generate_salesforce_data(users: List[Dict]) -> Dict[str, List[Dict]]:
         account_id = f"001{i:04d}"
         industry = random.choice(industries)
         account_name = fake.company()
+        # Set owner_id = 7 for the first account for authz
+        owner_id = 7 if i == 0 else random.choice([u['id'] for u in users if u['roles'] in ['sales_lead', 'customer_success']])
         sf_data['accounts'].append({
             'id': account_id,
             'account_buying_stage_6_sense_c': random.choice(['Awareness', 'Consideration', 'Decision']),
@@ -108,7 +112,7 @@ def generate_salesforce_data(users: List[Dict]) -> Dict[str, List[Dict]]:
             'oss_total_pings_c': str(random.randint(100, 1000)),
             'oss_usage_last_updated_c': format_date(fake.date_time_this_year()),
             'oss_user_c': fake.user_name(),
-            'owner_id': random.choice([u['id'] for u in users if u['roles'] in ['sales_lead', 'customer_success']]),
+            'owner_id': owner_id,
             'primary_churn_score_c': str(random.randint(10, 40)),
             'projects_on_annual_plan_c': str(random.randint(1, 5)),
             'projects_on_monthly_plan_c': str(random.randint(0, 3)),
@@ -219,6 +223,8 @@ def generate_salesforce_data(users: List[Dict]) -> Dict[str, List[Dict]]:
     for i in range(75):
         account = random.choice(sf_data['accounts'])
         opp_id = f"006{i:04d}"
+        # Set owner_id = 7 for the first opportunity for authz
+        owner_id = 7 if i == 0 else random.choice([u['id'] for u in users if u['roles'] == 'sales_lead'])
         sf_data['opportunities'].append({
             'id': opp_id,
             'account_id': account['id'],
@@ -227,7 +233,7 @@ def generate_salesforce_data(users: List[Dict]) -> Dict[str, List[Dict]]:
             'stage': random.choice(['Discovery', 'Evaluation', 'Negotiation', 'Closed Won', 'Closed Lost']),
             'probability': random.randint(20, 90),
             'close_date': format_date(fake.date_time_between(start_date=START_DATE, end_date="+1y")),
-            'owner_id': random.choice([u['id'] for u in users if u['roles'] == 'sales_lead']),
+            'owner_id': owner_id,
             'created_date': format_date(fake.date_time_this_year())
         })
 

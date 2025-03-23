@@ -55,7 +55,7 @@ definition:
     - name: oss_user_c
       type: varchar
     - name: owner_id
-      type: varchar
+      type: int_4
     - name: primary_churn_score_c
       type: varchar
     - name: projects_on_annual_plan_c
@@ -149,6 +149,41 @@ definition:
           - usage_payg_last_invoiced_amount_c
           - usage_payg_models_c
           - website
+    - role: customer
+      output:
+        allowedFields:
+          - account_buying_stage_6_sense_c
+          - account_intent_score_6_sense_c
+          - account_tier_c
+          - annual_revenue
+          - became_customer_date_c
+          - csm_owner_c
+          - customer_subscription_end_date_c
+          - customer_subscription_initial_start_date_c
+          - customer_support_tier_c
+          - customer_type_c
+          - geo_c
+          - industry
+          - name
+          - named_account_c
+          - nps_score_c
+          - owner_id
+          - primary_churn_score_c
+          - projects_on_annual_plan_c
+          - projects_on_monthly_plan_c
+          - purchased_models_v_2_c
+          - record_type_id
+          - region_c
+          - type
+          - ultimate_parent_c
+          - usage_annual_prod_models_v_2_c
+          - usage_annual_v_2_api_last_month_c
+          - usage_annual_v_2_api_yesterday_c
+          - usage_annual_v_2_data_gb_last_month_c
+          - usage_annual_v_2_data_gb_yesterday_c
+          - usage_payg_last_invoiced_amount_c
+          - usage_payg_models_c
+          - website
 
 ---
 kind: BooleanExpressionType
@@ -210,7 +245,7 @@ definition:
         - fieldName: oss_user_c
           booleanExpressionType: varchar_bool_exp
         - fieldName: owner_id
-          booleanExpressionType: varchar_bool_exp
+          booleanExpressionType: int_4_bool_exp
         - fieldName: primary_churn_score_c
           booleanExpressionType: varchar_bool_exp
         - fieldName: projects_on_annual_plan_c
@@ -317,7 +352,7 @@ definition:
         - fieldName: oss_user_c
           aggregateExpression: varchar_agg_exp
         - fieldName: owner_id
-          aggregateExpression: varchar_agg_exp
+          aggregateExpression: int_4_agg_exp
         - fieldName: primary_churn_score_c
           aggregateExpression: varchar_agg_exp
         - fieldName: projects_on_annual_plan_c
@@ -417,7 +452,7 @@ definition:
         - fieldName: oss_user_c
           orderByExpression: varchar_order_by_exp
         - fieldName: owner_id
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: int_4_order_by_exp
         - fieldName: primary_churn_score_c
           orderByExpression: varchar_order_by_exp
         - fieldName: projects_on_annual_plan_c
@@ -494,6 +529,15 @@ definition:
     - role: admin
       select:
         filter: null
+        allowSubscriptions: true
+    - role: customer
+      select:
+        filter:
+          fieldComparison:
+            field: owner_id
+            operator: _eq
+            value:
+              sessionVariable: x-hasura-user-id
         allowSubscriptions: true
 
 ---
