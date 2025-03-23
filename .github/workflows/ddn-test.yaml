@@ -42,16 +42,24 @@ jobs:
         working-directory: ./hasura
         if: env.no_op != 'true'
         run: |
-          ddn run init -- telco
+          find supergraph-config/* -maxdepth 1 -type d ! -name starter | while read -r dir; do
+            profile=$(basename "$dir")
+            echo "Initialising supergraph: $profile"
+            ddn run init -- "$profile"
+          done
 
       - name: Build all supergraphs
         working-directory: ./hasura
         if: env.no_op != 'true'
         run: |
-          ddn supergraph build local --supergraph supergraph-config/telco/1-supergraph-project-queries.yaml
-          ddn supergraph build local --supergraph supergraph-config/telco/2-supergraph-domain.yaml
-          ddn supergraph build local --supergraph supergraph-config/telco/3-supergraph.yaml
-          ddn supergraph build local --supergraph supergraph-config/telco/4-supergraph-with-mutations.yaml
+          find supergraph-config/* -maxdepth 1 -type d ! -name starter | while read -r dir; do
+            profile=$(basename "$dir")
+            for file in "$dir"/*.yaml; do
+              [ -e "$file" ] || continue  # skip if no yaml files
+              echo "Building supergraph: $file with profile: $profile"
+              ddn supergraph build local --supergraph "$file" -c "$profile"
+            done
+          done
 
       - name: Set up demo databases & Run DDN
         working-directory: ./hasura
