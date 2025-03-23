@@ -1,0 +1,194 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: call_action_items
+  fields:
+    - name: action_item
+      type: text_1
+    - name: call_id
+      type: text_1!
+    - name: end_timestamp
+      type: time
+    - name: owner_name
+      type: text_1
+    - name: reasoning
+      type: text_1
+    - name: speaker_name
+      type: text_1
+    - name: start_timestamp
+      type: time
+    - name: timeline
+      type: text_1
+  graphql:
+    typeName: call_action_items
+    inputTypeName: call_action_items_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: clari
+      dataConnectorObjectType: call_action_items
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: call_action_items
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - action_item
+          - call_id
+          - end_timestamp
+          - owner_name
+          - reasoning
+          - speaker_name
+          - start_timestamp
+          - timeline
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: call_action_items_bool_exp
+  operand:
+    object:
+      type: call_action_items
+      comparableFields:
+        - fieldName: action_item
+          booleanExpressionType: text_bool_exp_1
+        - fieldName: call_id
+          booleanExpressionType: text_bool_exp_1
+        - fieldName: end_timestamp
+          booleanExpressionType: time_bool_exp
+        - fieldName: owner_name
+          booleanExpressionType: text_bool_exp_1
+        - fieldName: reasoning
+          booleanExpressionType: text_bool_exp_1
+        - fieldName: speaker_name
+          booleanExpressionType: text_bool_exp_1
+        - fieldName: start_timestamp
+          booleanExpressionType: time_bool_exp
+        - fieldName: timeline
+          booleanExpressionType: text_bool_exp_1
+      comparableRelationships:
+        - relationshipName: call
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: call_action_items_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: call_action_items_agg_exp
+  operand:
+    object:
+      aggregatedType: call_action_items
+      aggregatableFields:
+        - fieldName: action_item
+          aggregateExpression: text_agg_exp_1
+        - fieldName: call_id
+          aggregateExpression: text_agg_exp_1
+        - fieldName: end_timestamp
+          aggregateExpression: time_agg_exp
+        - fieldName: owner_name
+          aggregateExpression: text_agg_exp_1
+        - fieldName: reasoning
+          aggregateExpression: text_agg_exp_1
+        - fieldName: speaker_name
+          aggregateExpression: text_agg_exp_1
+        - fieldName: start_timestamp
+          aggregateExpression: time_agg_exp
+        - fieldName: timeline
+          aggregateExpression: text_agg_exp_1
+  count:
+    enable: true
+  graphql:
+    selectTypeName: call_action_items_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: call_action_items_order_by_exp
+  operand:
+    object:
+      orderedType: call_action_items
+      orderableFields:
+        - fieldName: action_item
+          orderByExpression: text_1_order_by_exp
+        - fieldName: call_id
+          orderByExpression: text_1_order_by_exp
+        - fieldName: end_timestamp
+          orderByExpression: time_order_by_exp
+        - fieldName: owner_name
+          orderByExpression: text_1_order_by_exp
+        - fieldName: reasoning
+          orderByExpression: text_1_order_by_exp
+        - fieldName: speaker_name
+          orderByExpression: text_1_order_by_exp
+        - fieldName: start_timestamp
+          orderByExpression: time_order_by_exp
+        - fieldName: timeline
+          orderByExpression: text_1_order_by_exp
+      orderableRelationships:
+        - relationshipName: call
+  graphql:
+    expressionTypeName: call_action_items_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: call_action_items
+  objectType: call_action_items
+  source:
+    dataConnectorName: clari
+    collection: call_action_items
+  filterExpressionType: call_action_items_bool_exp
+  aggregateExpression: call_action_items_agg_exp
+  orderByExpression: call_action_items_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: call_action_items
+      subscription:
+        rootField: call_action_items
+    selectUniques: []
+    filterInputTypeName: call_action_items_filter_input
+    aggregate:
+      queryRootField: call_action_items_aggregate
+      subscription:
+        rootField: call_action_items_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: call_action_items
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: call
+  sourceType: call_action_items
+  target:
+    model:
+      name: calls
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: call_id
+      target:
+        modelField:
+          - fieldName: id
+

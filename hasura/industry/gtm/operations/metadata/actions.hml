@@ -1,0 +1,127 @@
+kind: DataConnectorLink
+version: v1
+definition:
+  name: actions
+  url:
+    readWriteUrls:
+      read:
+        valueFromEnv: OPERATIONS_ACTIONS_READ_URL
+      write:
+        valueFromEnv: OPERATIONS_ACTIONS_WRITE_URL
+  headers:
+    Authorization:
+      valueFromEnv: OPERATIONS_ACTIONS_AUTHORIZATION_HEADER
+  schema:
+    version: v0.1
+    schema:
+      scalar_types:
+        Boolean:
+          representation:
+            type: boolean
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+        Float:
+          representation:
+            type: float64
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+        String:
+          representation:
+            type: string
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+      object_types:
+        ActionResponse:
+          fields:
+            message:
+              type:
+                type: named
+                name: String
+            success:
+              type:
+                type: named
+                name: Boolean
+      collections: []
+      functions: []
+      procedures:
+        - name: addContactToSequence
+          description: Adds a contact to a sequence (mock)
+          arguments:
+            contactId:
+              type:
+                type: named
+                name: String
+            sequenceId:
+              type:
+                type: named
+                name: Float
+          result_type:
+            type: named
+            name: ActionResponse
+        - name: updateOpportunityStage
+          description: Updates the stage of an opportunity (mock)
+          arguments:
+            opportunityId:
+              type:
+                type: named
+                name: String
+            stage:
+              type:
+                type: named
+                name: String
+          result_type:
+            type: named
+            name: ActionResponse
+        - name: updateForecast
+          description: Updates the forecast for an opportunity (mock)
+          arguments:
+            forecastAmount:
+              type:
+                type: named
+                name: Float
+            opportunityId:
+              type:
+                type: named
+                name: String
+            probability:
+              type:
+                type: named
+                name: Float
+          result_type:
+            type: named
+            name: ActionResponse
+        - name: createSequence
+          description: Creates a new sequence (mock)
+          arguments:
+            created_by:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
+            description:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
+            name:
+              type:
+                type: named
+                name: String
+          result_type:
+            type: named
+            name: ActionResponse
+    capabilities:
+      version: 0.1.6
+      capabilities:
+        query:
+          variables: {}
+          nested_fields: {}
+        mutation: {}

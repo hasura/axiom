@@ -1,0 +1,198 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: sequences
+  fields:
+    - name: created_at
+      type: timestamptz
+    - name: created_by
+      type: varchar
+    - name: description
+      type: text
+    - name: id
+      type: int_4!
+    - name: name
+      type: varchar
+  graphql:
+    typeName: sequences
+    inputTypeName: sequences_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: salesforce
+      dataConnectorObjectType: sequences
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: sequences
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - created_at
+          - created_by
+          - description
+          - id
+          - name
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: sequences_bool_exp
+  operand:
+    object:
+      type: sequences
+      comparableFields:
+        - fieldName: created_at
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: created_by
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: description
+          booleanExpressionType: text_bool_exp
+        - fieldName: id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: name
+          booleanExpressionType: varchar_bool_exp
+      comparableRelationships:
+        - relationshipName: lead_sequences
+        - relationshipName: sequence_steps
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: sequences_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: sequences_agg_exp
+  operand:
+    object:
+      aggregatedType: sequences
+      aggregatableFields:
+        - fieldName: created_at
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: created_by
+          aggregateExpression: varchar_agg_exp
+        - fieldName: description
+          aggregateExpression: text_agg_exp
+        - fieldName: id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: name
+          aggregateExpression: varchar_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: sequences_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: sequences_order_by_exp
+  operand:
+    object:
+      orderedType: sequences
+      orderableFields:
+        - fieldName: created_at
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: created_by
+          orderByExpression: varchar_order_by_exp
+        - fieldName: description
+          orderByExpression: text_order_by_exp
+        - fieldName: id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: name
+          orderByExpression: varchar_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: sequences_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: sequences
+  objectType: sequences
+  source:
+    dataConnectorName: salesforce
+    collection: sequences
+  filterExpressionType: sequences_bool_exp
+  aggregateExpression: sequences_agg_exp
+  orderByExpression: sequences_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: sequences
+      subscription:
+        rootField: sequences
+    selectUniques:
+      - queryRootField: sequences_by_id
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: sequences_by_id
+    filterInputTypeName: sequences_filter_input
+    aggregate:
+      queryRootField: sequences_aggregate
+      subscription:
+        rootField: sequences_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: sequences
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: lead_sequences
+  sourceType: sequences
+  target:
+    model:
+      name: lead_sequences
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: lead_sequences_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: id
+      target:
+        modelField:
+          - fieldName: sequence_id
+  graphql:
+    aggregateFieldName: lead_sequences_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: sequence_steps
+  sourceType: sequences
+  target:
+    model:
+      name: sequence_steps
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: sequence_steps_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: id
+      target:
+        modelField:
+          - fieldName: sequence_id
+  graphql:
+    aggregateFieldName: sequence_steps_aggregate
+

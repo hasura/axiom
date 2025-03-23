@@ -1,0 +1,226 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: contracts
+  fields:
+    - name: account_id
+      type: varchar
+    - name: activated_date
+      type: varchar
+    - name: agreement_status_c
+      type: varchar
+    - name: agreement_type_c
+      type: varchar
+    - name: contract_opportunity_c
+      type: varchar
+    - name: end_date
+      type: varchar
+    - name: id
+      type: varchar!
+    - name: last_status_change_c
+      type: varchar
+    - name: name
+      type: varchar
+    - name: start_date
+      type: varchar
+    - name: status
+      type: varchar
+  graphql:
+    typeName: contracts
+    inputTypeName: contracts_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: salesforce
+      dataConnectorObjectType: contracts
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: contracts
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - account_id
+          - activated_date
+          - agreement_status_c
+          - agreement_type_c
+          - contract_opportunity_c
+          - end_date
+          - id
+          - last_status_change_c
+          - name
+          - start_date
+          - status
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: contracts_bool_exp
+  operand:
+    object:
+      type: contracts
+      comparableFields:
+        - fieldName: account_id
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: activated_date
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: agreement_status_c
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: agreement_type_c
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: contract_opportunity_c
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: end_date
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: id
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: last_status_change_c
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: name
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: start_date
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: status
+          booleanExpressionType: varchar_bool_exp
+      comparableRelationships:
+        - relationshipName: account
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: contracts_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: contracts_agg_exp
+  operand:
+    object:
+      aggregatedType: contracts
+      aggregatableFields:
+        - fieldName: account_id
+          aggregateExpression: varchar_agg_exp
+        - fieldName: activated_date
+          aggregateExpression: varchar_agg_exp
+        - fieldName: agreement_status_c
+          aggregateExpression: varchar_agg_exp
+        - fieldName: agreement_type_c
+          aggregateExpression: varchar_agg_exp
+        - fieldName: contract_opportunity_c
+          aggregateExpression: varchar_agg_exp
+        - fieldName: end_date
+          aggregateExpression: varchar_agg_exp
+        - fieldName: id
+          aggregateExpression: varchar_agg_exp
+        - fieldName: last_status_change_c
+          aggregateExpression: varchar_agg_exp
+        - fieldName: name
+          aggregateExpression: varchar_agg_exp
+        - fieldName: start_date
+          aggregateExpression: varchar_agg_exp
+        - fieldName: status
+          aggregateExpression: varchar_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: contracts_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: contracts_order_by_exp
+  operand:
+    object:
+      orderedType: contracts
+      orderableFields:
+        - fieldName: account_id
+          orderByExpression: varchar_order_by_exp
+        - fieldName: activated_date
+          orderByExpression: varchar_order_by_exp
+        - fieldName: agreement_status_c
+          orderByExpression: varchar_order_by_exp
+        - fieldName: agreement_type_c
+          orderByExpression: varchar_order_by_exp
+        - fieldName: contract_opportunity_c
+          orderByExpression: varchar_order_by_exp
+        - fieldName: end_date
+          orderByExpression: varchar_order_by_exp
+        - fieldName: id
+          orderByExpression: varchar_order_by_exp
+        - fieldName: last_status_change_c
+          orderByExpression: varchar_order_by_exp
+        - fieldName: name
+          orderByExpression: varchar_order_by_exp
+        - fieldName: start_date
+          orderByExpression: varchar_order_by_exp
+        - fieldName: status
+          orderByExpression: varchar_order_by_exp
+      orderableRelationships:
+        - relationshipName: account
+  graphql:
+    expressionTypeName: contracts_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: contracts
+  objectType: contracts
+  source:
+    dataConnectorName: salesforce
+    collection: contracts
+  filterExpressionType: contracts_bool_exp
+  aggregateExpression: contracts_agg_exp
+  orderByExpression: contracts_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: contracts
+      subscription:
+        rootField: contracts
+    selectUniques:
+      - queryRootField: contracts_by_id
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: contracts_by_id
+    filterInputTypeName: contracts_filter_input
+    aggregate:
+      queryRootField: contracts_aggregate
+      subscription:
+        rootField: contracts_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: contracts
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: account
+  sourceType: contracts
+  target:
+    model:
+      name: accounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: account_id
+      target:
+        modelField:
+          - fieldName: id
+

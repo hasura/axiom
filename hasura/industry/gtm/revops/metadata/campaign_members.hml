@@ -1,0 +1,219 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: campaign_members
+  fields:
+    - name: campaign_id
+      type: varchar
+    - name: company_or_account
+      type: varchar
+    - name: contact_id
+      type: varchar
+    - name: created_date
+      type: varchar
+    - name: id
+      type: varchar!
+    - name: lead_id
+      type: varchar
+    - name: net_new_lead_c
+      type: varchar
+    - name: status
+      type: varchar
+  graphql:
+    typeName: campaign_members
+    inputTypeName: campaign_members_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: salesforce
+      dataConnectorObjectType: campaign_members
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: campaign_members
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - campaign_id
+          - company_or_account
+          - contact_id
+          - created_date
+          - id
+          - lead_id
+          - net_new_lead_c
+          - status
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: campaign_members_bool_exp
+  operand:
+    object:
+      type: campaign_members
+      comparableFields:
+        - fieldName: campaign_id
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: company_or_account
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: contact_id
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: created_date
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: id
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: lead_id
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: net_new_lead_c
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: status
+          booleanExpressionType: varchar_bool_exp
+      comparableRelationships:
+        - relationshipName: campaign
+        - relationshipName: contact
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: campaign_members_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: campaign_members_agg_exp
+  operand:
+    object:
+      aggregatedType: campaign_members
+      aggregatableFields:
+        - fieldName: campaign_id
+          aggregateExpression: varchar_agg_exp
+        - fieldName: company_or_account
+          aggregateExpression: varchar_agg_exp
+        - fieldName: contact_id
+          aggregateExpression: varchar_agg_exp
+        - fieldName: created_date
+          aggregateExpression: varchar_agg_exp
+        - fieldName: id
+          aggregateExpression: varchar_agg_exp
+        - fieldName: lead_id
+          aggregateExpression: varchar_agg_exp
+        - fieldName: net_new_lead_c
+          aggregateExpression: varchar_agg_exp
+        - fieldName: status
+          aggregateExpression: varchar_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: campaign_members_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: campaign_members_order_by_exp
+  operand:
+    object:
+      orderedType: campaign_members
+      orderableFields:
+        - fieldName: campaign_id
+          orderByExpression: varchar_order_by_exp
+        - fieldName: company_or_account
+          orderByExpression: varchar_order_by_exp
+        - fieldName: contact_id
+          orderByExpression: varchar_order_by_exp
+        - fieldName: created_date
+          orderByExpression: varchar_order_by_exp
+        - fieldName: id
+          orderByExpression: varchar_order_by_exp
+        - fieldName: lead_id
+          orderByExpression: varchar_order_by_exp
+        - fieldName: net_new_lead_c
+          orderByExpression: varchar_order_by_exp
+        - fieldName: status
+          orderByExpression: varchar_order_by_exp
+      orderableRelationships:
+        - relationshipName: campaign
+        - relationshipName: contact
+  graphql:
+    expressionTypeName: campaign_members_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: campaign_members
+  objectType: campaign_members
+  source:
+    dataConnectorName: salesforce
+    collection: campaign_members
+  filterExpressionType: campaign_members_bool_exp
+  aggregateExpression: campaign_members_agg_exp
+  orderByExpression: campaign_members_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: campaign_members
+      subscription:
+        rootField: campaign_members
+    selectUniques:
+      - queryRootField: campaign_members_by_id
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: campaign_members_by_id
+    filterInputTypeName: campaign_members_filter_input
+    aggregate:
+      queryRootField: campaign_members_aggregate
+      subscription:
+        rootField: campaign_members_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: campaign_members
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: campaign
+  sourceType: campaign_members
+  target:
+    model:
+      name: campaigns
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: campaign_id
+      target:
+        modelField:
+          - fieldName: id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: contact
+  sourceType: campaign_members
+  target:
+    model:
+      name: contacts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: contact_id
+      target:
+        modelField:
+          - fieldName: id
+

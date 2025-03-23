@@ -1,0 +1,125 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: user_role
+  fields:
+    - name: id
+      type: varchar!
+    - name: name
+      type: varchar
+  graphql:
+    typeName: user_role
+    inputTypeName: user_role_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: salesforce
+      dataConnectorObjectType: user_role
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: user_role
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - id
+          - name
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: user_role_bool_exp
+  operand:
+    object:
+      type: user_role
+      comparableFields:
+        - fieldName: id
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: name
+          booleanExpressionType: varchar_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: user_role_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: user_role_agg_exp
+  operand:
+    object:
+      aggregatedType: user_role
+      aggregatableFields:
+        - fieldName: id
+          aggregateExpression: varchar_agg_exp
+        - fieldName: name
+          aggregateExpression: varchar_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: user_role_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: user_role_order_by_exp
+  operand:
+    object:
+      orderedType: user_role
+      orderableFields:
+        - fieldName: id
+          orderByExpression: varchar_order_by_exp
+        - fieldName: name
+          orderByExpression: varchar_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: user_role_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: user_role
+  objectType: user_role
+  source:
+    dataConnectorName: salesforce
+    collection: user_role
+  filterExpressionType: user_role_bool_exp
+  aggregateExpression: user_role_agg_exp
+  orderByExpression: user_role_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: user_role
+      subscription:
+        rootField: user_role
+    selectUniques:
+      - queryRootField: user_role_by_id
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: user_role_by_id
+    filterInputTypeName: user_role_filter_input
+    aggregate:
+      queryRootField: user_role_aggregate
+      subscription:
+        rootField: user_role_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: user_role
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

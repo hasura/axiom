@@ -1,0 +1,167 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: call_topics
+  fields:
+    - name: call_id
+      type: text_1!
+    - name: end_timestamp
+      type: time
+    - name: name
+      type: text_1
+    - name: start_timestamp
+      type: time
+    - name: summary
+      type: text_1
+  graphql:
+    typeName: call_topics
+    inputTypeName: call_topics_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: clari
+      dataConnectorObjectType: call_topics
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: call_topics
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - call_id
+          - end_timestamp
+          - name
+          - start_timestamp
+          - summary
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: call_topics_bool_exp
+  operand:
+    object:
+      type: call_topics
+      comparableFields:
+        - fieldName: call_id
+          booleanExpressionType: text_bool_exp_1
+        - fieldName: end_timestamp
+          booleanExpressionType: time_bool_exp
+        - fieldName: name
+          booleanExpressionType: text_bool_exp_1
+        - fieldName: start_timestamp
+          booleanExpressionType: time_bool_exp
+        - fieldName: summary
+          booleanExpressionType: text_bool_exp_1
+      comparableRelationships:
+        - relationshipName: call
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: call_topics_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: call_topics_agg_exp
+  operand:
+    object:
+      aggregatedType: call_topics
+      aggregatableFields:
+        - fieldName: call_id
+          aggregateExpression: text_agg_exp_1
+        - fieldName: end_timestamp
+          aggregateExpression: time_agg_exp
+        - fieldName: name
+          aggregateExpression: text_agg_exp_1
+        - fieldName: start_timestamp
+          aggregateExpression: time_agg_exp
+        - fieldName: summary
+          aggregateExpression: text_agg_exp_1
+  count:
+    enable: true
+  graphql:
+    selectTypeName: call_topics_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: call_topics_order_by_exp
+  operand:
+    object:
+      orderedType: call_topics
+      orderableFields:
+        - fieldName: call_id
+          orderByExpression: text_1_order_by_exp
+        - fieldName: end_timestamp
+          orderByExpression: time_order_by_exp
+        - fieldName: name
+          orderByExpression: text_1_order_by_exp
+        - fieldName: start_timestamp
+          orderByExpression: time_order_by_exp
+        - fieldName: summary
+          orderByExpression: text_1_order_by_exp
+      orderableRelationships:
+        - relationshipName: call
+  graphql:
+    expressionTypeName: call_topics_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: call_topics
+  objectType: call_topics
+  source:
+    dataConnectorName: clari
+    collection: call_topics
+  filterExpressionType: call_topics_bool_exp
+  aggregateExpression: call_topics_agg_exp
+  orderByExpression: call_topics_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: call_topics
+      subscription:
+        rootField: call_topics
+    selectUniques: []
+    filterInputTypeName: call_topics_filter_input
+    aggregate:
+      queryRootField: call_topics_aggregate
+      subscription:
+        rootField: call_topics_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: call_topics
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: call
+  sourceType: call_topics
+  target:
+    model:
+      name: calls
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: call_id
+      target:
+        modelField:
+          - fieldName: id
+
