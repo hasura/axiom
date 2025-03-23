@@ -1,0 +1,35 @@
+---
+kind: Command
+version: v1
+definition:
+  name: update_forecast
+  outputType: action_response!
+  arguments:
+    - name: forecast_amount
+      type: Float!
+    - name: opportunity_id
+      type: String!
+    - name: probability
+      type: Float!
+  source:
+    dataConnectorName: actions
+    dataConnectorCommand:
+      procedure: updateForecast
+    argumentMapping:
+      forecast_amount: forecastAmount
+      opportunity_id: opportunityId
+      probability: probability
+  graphql:
+    rootFieldName: update_forecast
+    rootFieldKind: Mutation
+  description: Updates the forecast for an opportunity (mock)
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: update_forecast
+  permissions:
+    - role: admin
+      allowExecution: true
+

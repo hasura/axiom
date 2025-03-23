@@ -1,0 +1,915 @@
+---
+kind: ScalarType
+version: v1
+definition:
+  name: text_1
+  graphql:
+    typeName: text_1
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: text_bool_exp_1
+  operand:
+    scalar:
+      type: text_1
+      comparisonOperators:
+        - name: _eq
+          argumentType: text_1!
+        - name: _gt
+          argumentType: text_1!
+        - name: _gte
+          argumentType: text_1!
+        - name: _ilike
+          argumentType: text_1!
+        - name: _in
+          argumentType: "[text_1!]!"
+        - name: _iregex
+          argumentType: text_1!
+        - name: _like
+          argumentType: text_1!
+        - name: _lt
+          argumentType: text_1!
+        - name: _lte
+          argumentType: text_1!
+        - name: _neq
+          argumentType: text_1!
+        - name: _nilike
+          argumentType: text_1!
+        - name: _niregex
+          argumentType: text_1!
+        - name: _nlike
+          argumentType: text_1!
+        - name: _nregex
+          argumentType: text_1!
+        - name: _regex
+          argumentType: text_1!
+        - name: starts_with
+          argumentType: text_1!
+        - name: ts_match_tt
+          argumentType: text_1!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: clari
+          dataConnectorScalarType: text
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: text_bool_exp_1
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: clari
+  dataConnectorScalarType: text
+  representation: text_1
+  graphql:
+    comparisonExpressionTypeName: text_1_comparison_exp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: time
+  graphql:
+    typeName: time
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: time_bool_exp
+  operand:
+    scalar:
+      type: time
+      comparisonOperators:
+        - name: _eq
+          argumentType: time!
+        - name: _gt
+          argumentType: time!
+        - name: _gte
+          argumentType: time!
+        - name: _in
+          argumentType: "[time!]!"
+        - name: _lt
+          argumentType: time!
+        - name: _lte
+          argumentType: time!
+        - name: _neq
+          argumentType: time!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: clari
+          dataConnectorScalarType: time
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: time_bool_exp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: clari
+  dataConnectorScalarType: time
+  representation: time
+  graphql:
+    comparisonExpressionTypeName: time_comparison_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: text_agg_exp_1
+  operand:
+    scalar:
+      aggregatedType: text_1
+      aggregationFunctions:
+        - name: max
+          returnType: text_1
+        - name: min
+          returnType: text_1
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: clari
+          dataConnectorScalarType: text
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: text_agg_exp_1
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: interval
+  graphql:
+    typeName: interval
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: interval_bool_exp
+  operand:
+    scalar:
+      type: interval
+      comparisonOperators:
+        - name: _eq
+          argumentType: interval!
+        - name: _gt
+          argumentType: interval!
+        - name: _gte
+          argumentType: interval!
+        - name: _in
+          argumentType: "[interval!]!"
+        - name: _lt
+          argumentType: interval!
+        - name: _lte
+          argumentType: interval!
+        - name: _neq
+          argumentType: interval!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: clari
+          dataConnectorScalarType: interval
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: interval_bool_exp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: clari
+  dataConnectorScalarType: interval
+  representation: interval
+  graphql:
+    comparisonExpressionTypeName: interval_comparison_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: time_agg_exp
+  operand:
+    scalar:
+      aggregatedType: time
+      aggregationFunctions:
+        - name: avg
+          returnType: interval
+        - name: max
+          returnType: time
+        - name: min
+          returnType: time
+        - name: sum
+          returnType: interval
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: clari
+          dataConnectorScalarType: time
+          functionMapping:
+            avg:
+              name: avg
+            max:
+              name: max
+            min:
+              name: min
+            sum:
+              name: sum
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: time_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: text_1_order_by_exp
+  operand:
+    scalar:
+      orderedType: text_1
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: text_1_order_by_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: time_order_by_exp
+  operand:
+    scalar:
+      orderedType: time
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: time_order_by_exp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: bool
+  graphql:
+    typeName: bool
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: bool_bool_exp
+  operand:
+    scalar:
+      type: bool
+      comparisonOperators:
+        - name: _eq
+          argumentType: bool!
+        - name: _gt
+          argumentType: bool!
+        - name: _gte
+          argumentType: bool!
+        - name: _in
+          argumentType: "[bool!]!"
+        - name: _lt
+          argumentType: bool!
+        - name: _lte
+          argumentType: bool!
+        - name: _neq
+          argumentType: bool!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: clari
+          dataConnectorScalarType: bool
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: bool_bool_exp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: clari
+  dataConnectorScalarType: bool
+  representation: bool
+  graphql:
+    comparisonExpressionTypeName: bool_comparison_exp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: int_4_1
+  graphql:
+    typeName: int_4_1
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: int_4_bool_exp_1
+  operand:
+    scalar:
+      type: int_4_1
+      comparisonOperators:
+        - name: _eq
+          argumentType: int_4_1!
+        - name: _gt
+          argumentType: int_4_1!
+        - name: _gte
+          argumentType: int_4_1!
+        - name: _in
+          argumentType: "[int_4_1!]!"
+        - name: _lt
+          argumentType: int_4_1!
+        - name: _lte
+          argumentType: int_4_1!
+        - name: _neq
+          argumentType: int_4_1!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: clari
+          dataConnectorScalarType: int4
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: int_4_bool_exp_1
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: clari
+  dataConnectorScalarType: int4
+  representation: int_4_1
+  graphql:
+    comparisonExpressionTypeName: int_4_1_comparison_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: bool_agg_exp
+  operand:
+    scalar:
+      aggregatedType: bool
+      aggregationFunctions:
+        - name: bool_and
+          returnType: bool
+        - name: bool_or
+          returnType: bool
+        - name: every
+          returnType: bool
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: clari
+          dataConnectorScalarType: bool
+          functionMapping:
+            bool_and:
+              name: bool_and
+            bool_or:
+              name: bool_or
+            every:
+              name: every
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: bool_agg_exp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: numeric_1
+  graphql:
+    typeName: numeric_1
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: numeric_bool_exp_1
+  operand:
+    scalar:
+      type: numeric_1
+      comparisonOperators:
+        - name: _eq
+          argumentType: numeric_1!
+        - name: _gt
+          argumentType: numeric_1!
+        - name: _gte
+          argumentType: numeric_1!
+        - name: _in
+          argumentType: "[numeric_1!]!"
+        - name: _lt
+          argumentType: numeric_1!
+        - name: _lte
+          argumentType: numeric_1!
+        - name: _neq
+          argumentType: numeric_1!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: clari
+          dataConnectorScalarType: numeric
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: numeric_bool_exp_1
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: clari
+  dataConnectorScalarType: numeric
+  representation: numeric_1
+  graphql:
+    comparisonExpressionTypeName: numeric_1_comparison_exp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: int_8_1
+  graphql:
+    typeName: int_8_1
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: int_8_bool_exp_1
+  operand:
+    scalar:
+      type: int_8_1
+      comparisonOperators:
+        - name: _eq
+          argumentType: int_8_1!
+        - name: _gt
+          argumentType: int_8_1!
+        - name: _gte
+          argumentType: int_8_1!
+        - name: _in
+          argumentType: "[int_8_1!]!"
+        - name: _lt
+          argumentType: int_8_1!
+        - name: _lte
+          argumentType: int_8_1!
+        - name: _neq
+          argumentType: int_8_1!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: clari
+          dataConnectorScalarType: int8
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: int_8_bool_exp_1
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: clari
+  dataConnectorScalarType: int8
+  representation: int_8_1
+  graphql:
+    comparisonExpressionTypeName: int_8_1_comparison_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: int_4_agg_exp_1
+  operand:
+    scalar:
+      aggregatedType: int_4_1
+      aggregationFunctions:
+        - name: avg
+          returnType: numeric_1
+        - name: bit_and
+          returnType: int_4_1
+        - name: bit_or
+          returnType: int_4_1
+        - name: bit_xor
+          returnType: int_4_1
+        - name: max
+          returnType: int_4_1
+        - name: min
+          returnType: int_4_1
+        - name: stddev
+          returnType: numeric_1
+        - name: stddev_pop
+          returnType: numeric_1
+        - name: stddev_samp
+          returnType: numeric_1
+        - name: sum
+          returnType: int_8_1
+        - name: var_pop
+          returnType: numeric_1
+        - name: var_samp
+          returnType: numeric_1
+        - name: variance
+          returnType: numeric_1
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: clari
+          dataConnectorScalarType: int4
+          functionMapping:
+            avg:
+              name: avg
+            bit_and:
+              name: bit_and
+            bit_or:
+              name: bit_or
+            bit_xor:
+              name: bit_xor
+            max:
+              name: max
+            min:
+              name: min
+            stddev:
+              name: stddev
+            stddev_pop:
+              name: stddev_pop
+            stddev_samp:
+              name: stddev_samp
+            sum:
+              name: sum
+            var_pop:
+              name: var_pop
+            var_samp:
+              name: var_samp
+            variance:
+              name: variance
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: int_4_agg_exp_1
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: bool_order_by_exp
+  operand:
+    scalar:
+      orderedType: bool
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: bool_order_by_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: int_4_1_order_by_exp
+  operand:
+    scalar:
+      orderedType: int_4_1
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: int_4_1_order_by_exp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: float_8
+  graphql:
+    typeName: float_8
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: float_8_bool_exp
+  operand:
+    scalar:
+      type: float_8
+      comparisonOperators:
+        - name: _eq
+          argumentType: float_8!
+        - name: _gt
+          argumentType: float_8!
+        - name: _gte
+          argumentType: float_8!
+        - name: _in
+          argumentType: "[float_8!]!"
+        - name: _lt
+          argumentType: float_8!
+        - name: _lte
+          argumentType: float_8!
+        - name: _neq
+          argumentType: float_8!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: clari
+          dataConnectorScalarType: float8
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: float_8_bool_exp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: clari
+  dataConnectorScalarType: float8
+  representation: float_8
+  graphql:
+    comparisonExpressionTypeName: float_8_comparison_exp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: vector
+  graphql:
+    typeName: vector
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: vector_bool_exp
+  operand:
+    scalar:
+      type: vector
+      comparisonOperators:
+        - name: _eq
+          argumentType: vector!
+        - name: _gt
+          argumentType: vector!
+        - name: _gte
+          argumentType: vector!
+        - name: _in
+          argumentType: "[vector!]!"
+        - name: _lt
+          argumentType: vector!
+        - name: _lte
+          argumentType: vector!
+        - name: _neq
+          argumentType: vector!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: clari
+          dataConnectorScalarType: vector
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: vector_bool_exp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: clari
+  dataConnectorScalarType: vector
+  representation: vector
+  graphql:
+    comparisonExpressionTypeName: vector_comparison_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: float_8_agg_exp
+  operand:
+    scalar:
+      aggregatedType: float_8
+      aggregationFunctions:
+        - name: avg
+          returnType: float_8
+        - name: max
+          returnType: float_8
+        - name: min
+          returnType: float_8
+        - name: stddev
+          returnType: float_8
+        - name: stddev_pop
+          returnType: float_8
+        - name: stddev_samp
+          returnType: float_8
+        - name: sum
+          returnType: float_8
+        - name: var_pop
+          returnType: float_8
+        - name: var_samp
+          returnType: float_8
+        - name: variance
+          returnType: float_8
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: clari
+          dataConnectorScalarType: float8
+          functionMapping:
+            avg:
+              name: avg
+            max:
+              name: max
+            min:
+              name: min
+            stddev:
+              name: stddev
+            stddev_pop:
+              name: stddev_pop
+            stddev_samp:
+              name: stddev_samp
+            sum:
+              name: sum
+            var_pop:
+              name: var_pop
+            var_samp:
+              name: var_samp
+            variance:
+              name: variance
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: float_8_agg_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: vector_agg_exp
+  operand:
+    scalar:
+      aggregatedType: vector
+      aggregationFunctions:
+        - name: avg
+          returnType: vector
+        - name: sum
+          returnType: vector
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: clari
+          dataConnectorScalarType: vector
+          functionMapping:
+            avg:
+              name: avg
+            sum:
+              name: sum
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: vector_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: float_8_order_by_exp
+  operand:
+    scalar:
+      orderedType: float_8
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: float_8_order_by_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: vector_order_by_exp
+  operand:
+    scalar:
+      orderedType: vector
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: vector_order_by_exp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: timestamp
+  graphql:
+    typeName: timestamp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: timestamp_bool_exp
+  operand:
+    scalar:
+      type: timestamp
+      comparisonOperators:
+        - name: _eq
+          argumentType: timestamp!
+        - name: _gt
+          argumentType: timestamp!
+        - name: _gte
+          argumentType: timestamp!
+        - name: _in
+          argumentType: "[timestamp!]!"
+        - name: _lt
+          argumentType: timestamp!
+        - name: _lte
+          argumentType: timestamp!
+        - name: _neq
+          argumentType: timestamp!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: clari
+          dataConnectorScalarType: timestamp
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: timestamp_bool_exp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: clari
+  dataConnectorScalarType: timestamp
+  representation: timestamp
+  graphql:
+    comparisonExpressionTypeName: timestamp_comparison_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: timestamp_agg_exp
+  operand:
+    scalar:
+      aggregatedType: timestamp
+      aggregationFunctions:
+        - name: max
+          returnType: timestamp
+        - name: min
+          returnType: timestamp
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: clari
+          dataConnectorScalarType: timestamp
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: timestamp_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: timestamp_order_by_exp
+  operand:
+    scalar:
+      orderedType: timestamp
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: timestamp_order_by_exp
+

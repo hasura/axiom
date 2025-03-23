@@ -1,0 +1,227 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: opportunities
+  fields:
+    - name: account_id
+      type: varchar
+    - name: amount
+      type: varchar
+    - name: close_date
+      type: varchar
+    - name: created_date
+      type: varchar
+    - name: id
+      type: varchar!
+    - name: name
+      type: varchar
+    - name: owner_id
+      type: int_4
+    - name: probability
+      type: int_4
+    - name: stage
+      type: varchar
+  graphql:
+    typeName: opportunities
+    inputTypeName: opportunities_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: salesforce
+      dataConnectorObjectType: opportunities
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: opportunities
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - account_id
+          - amount
+          - close_date
+          - created_date
+          - id
+          - name
+          - owner_id
+          - probability
+          - stage
+    - role: customer
+      output:
+        allowedFields:
+          - amount
+          - close_date
+          - created_date
+          - name
+          - owner_id
+          - probability
+          - stage
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: opportunities_bool_exp
+  operand:
+    object:
+      type: opportunities
+      comparableFields:
+        - fieldName: account_id
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: amount
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: close_date
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: created_date
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: id
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: name
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: owner_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: probability
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: stage
+          booleanExpressionType: varchar_bool_exp
+      comparableRelationships:
+        - relationshipName: account
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: opportunities_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: opportunities_agg_exp
+  operand:
+    object:
+      aggregatedType: opportunities
+      aggregatableFields:
+        - fieldName: account_id
+          aggregateExpression: varchar_agg_exp
+        - fieldName: amount
+          aggregateExpression: varchar_agg_exp
+        - fieldName: close_date
+          aggregateExpression: varchar_agg_exp
+        - fieldName: created_date
+          aggregateExpression: varchar_agg_exp
+        - fieldName: id
+          aggregateExpression: varchar_agg_exp
+        - fieldName: name
+          aggregateExpression: varchar_agg_exp
+        - fieldName: owner_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: probability
+          aggregateExpression: int_4_agg_exp
+        - fieldName: stage
+          aggregateExpression: varchar_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: opportunities_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: opportunities_order_by_exp
+  operand:
+    object:
+      orderedType: opportunities
+      orderableFields:
+        - fieldName: account_id
+          orderByExpression: varchar_order_by_exp
+        - fieldName: amount
+          orderByExpression: varchar_order_by_exp
+        - fieldName: close_date
+          orderByExpression: varchar_order_by_exp
+        - fieldName: created_date
+          orderByExpression: varchar_order_by_exp
+        - fieldName: id
+          orderByExpression: varchar_order_by_exp
+        - fieldName: name
+          orderByExpression: varchar_order_by_exp
+        - fieldName: owner_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: probability
+          orderByExpression: int_4_order_by_exp
+        - fieldName: stage
+          orderByExpression: varchar_order_by_exp
+      orderableRelationships:
+        - relationshipName: account
+  graphql:
+    expressionTypeName: opportunities_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: opportunities
+  objectType: opportunities
+  source:
+    dataConnectorName: salesforce
+    collection: opportunities
+  filterExpressionType: opportunities_bool_exp
+  aggregateExpression: opportunities_agg_exp
+  orderByExpression: opportunities_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: opportunities
+      subscription:
+        rootField: opportunities
+    selectUniques:
+      - queryRootField: opportunities_by_id
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: opportunities_by_id
+    filterInputTypeName: opportunities_filter_input
+    aggregate:
+      queryRootField: opportunities_aggregate
+      subscription:
+        rootField: opportunities_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: opportunities
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+    - role: customer
+      select:
+        filter:
+          fieldComparison:
+            field: owner_id
+            operator: _eq
+            value:
+              sessionVariable: x-hasura-user-id
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: account
+  sourceType: opportunities
+  target:
+    model:
+      name: accounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: account_id
+      target:
+        modelField:
+          - fieldName: id
+

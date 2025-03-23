@@ -1,0 +1,157 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: campaigns
+  fields:
+    - name: id
+      type: varchar!
+    - name: name
+      type: varchar
+    - name: type
+      type: varchar
+  graphql:
+    typeName: campaigns
+    inputTypeName: campaigns_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: salesforce
+      dataConnectorObjectType: campaigns
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: campaigns
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - id
+          - name
+          - type
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: campaigns_bool_exp
+  operand:
+    object:
+      type: campaigns
+      comparableFields:
+        - fieldName: id
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: name
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: type
+          booleanExpressionType: varchar_bool_exp
+      comparableRelationships:
+        - relationshipName: campaign_members
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: campaigns_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: campaigns_agg_exp
+  operand:
+    object:
+      aggregatedType: campaigns
+      aggregatableFields:
+        - fieldName: id
+          aggregateExpression: varchar_agg_exp
+        - fieldName: name
+          aggregateExpression: varchar_agg_exp
+        - fieldName: type
+          aggregateExpression: varchar_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: campaigns_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: campaigns_order_by_exp
+  operand:
+    object:
+      orderedType: campaigns
+      orderableFields:
+        - fieldName: id
+          orderByExpression: varchar_order_by_exp
+        - fieldName: name
+          orderByExpression: varchar_order_by_exp
+        - fieldName: type
+          orderByExpression: varchar_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: campaigns_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: campaigns
+  objectType: campaigns
+  source:
+    dataConnectorName: salesforce
+    collection: campaigns
+  filterExpressionType: campaigns_bool_exp
+  aggregateExpression: campaigns_agg_exp
+  orderByExpression: campaigns_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: campaigns
+      subscription:
+        rootField: campaigns
+    selectUniques:
+      - queryRootField: campaigns_by_id
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: campaigns_by_id
+    filterInputTypeName: campaigns_filter_input
+    aggregate:
+      queryRootField: campaigns_aggregate
+      subscription:
+        rootField: campaigns_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: campaigns
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: campaign_members
+  sourceType: campaigns
+  target:
+    model:
+      name: campaign_members
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: campaign_members_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: id
+      target:
+        modelField:
+          - fieldName: campaign_id
+  graphql:
+    aggregateFieldName: campaign_members_aggregate
+
