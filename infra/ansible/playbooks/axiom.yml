@@ -19,14 +19,21 @@
         name: git-lfs
         state: present
 
-    - name: Ensure /home/ubuntu/axiom-demo/<profile> exists
+    - name: Ensure /home/ubuntu/axiom-data base directory exists
+      ansible.builtin.file:
+        path: /home/ubuntu/axiom-data
+        owner: ubuntu
+        group: ubuntu
+        mode: "0755"
+        state: directory
+
+    - name: Ensure /home/ubuntu/axiom-data/<profile> exists
       ansible.builtin.file:
         path: /home/ubuntu/axiom-data/{{ demo_profile }}
         owner: ubuntu
         group: ubuntu
         mode: "0755"
         state: directory
-        recurse: true
 
     - name: Upload demo profile from .data directory
       ansible.posix.synchronize:
@@ -34,26 +41,27 @@
         dest: "/home/ubuntu/axiom-data/{{ demo_profile }}/"
         recursive: true
         delete: true
+        checksum: true
         rsync_opts:
           - "--exclude=.*"
       delegate_to: localhost
       become: false
 
-    - name: Ensure /home/ubuntu/axiom-demo/plugins exists
+    - name: Ensure /home/ubuntu/axiom-data/plugins exists
       ansible.builtin.file:
         path: /home/ubuntu/axiom-data/plugins
         owner: ubuntu
         group: ubuntu
         mode: "0755"
         state: directory
-        recurse: true
 
-    - name: Upload demo profile from .data directory
+    - name: Upload plugins from .data directory
       ansible.posix.synchronize:
         src: "{{ playbook_dir }}/../../../.data/plugins/"
         dest: "/home/ubuntu/axiom-data/plugins/"
         recursive: true
         delete: true
+        checksum: true
         rsync_opts:
           - "--exclude=.*"
       delegate_to: localhost
@@ -66,7 +74,7 @@
 
     - name: Override RESTIFIED_GRAPHQL_SERVER_URL based on server
       ansible.builtin.set_fact:
-        restified_graphql_server_url: "{{ hostvars[inventory_hostname]['graphql_url'] | default(' http://local.hasura.dev:3280/graphql') }}"
+        restified_graphql_server_url: "{{ hostvars[inventory_hostname]['graphql_url'] | default('http://local.hasura.dev:3280/graphql') }}"
 
     - name: Setup environment variables from Ansible -> Docker
       ansible.builtin.template:
