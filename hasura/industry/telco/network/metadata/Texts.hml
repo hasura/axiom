@@ -8,6 +8,10 @@ definition:
       type: Int4!
     - name: deviceid
       type: Int4!
+    - name: latitude
+      type: Numeric
+    - name: longitude
+      type: Numeric
     - name: messagetype
       type: Varchar
     - name: nodeid
@@ -19,8 +23,8 @@ definition:
     - name: timestamp
       type: Timestamptz!
   graphql:
-    typeName: Network_Texts
-    inputTypeName: Network_TextsInput
+    typeName: network_Texts
+    inputTypeName: network_TextsInput
   dataConnectorTypeMapping:
     - dataConnectorName: kafka_sink
       dataConnectorObjectType: texts
@@ -36,54 +40,13 @@ definition:
         allowedFields:
           - customerid
           - deviceid
+          - latitude
+          - longitude
           - messagetype
           - nodeid
           - receivernumber
           - textid
           - timestamp
-    - role: customer
-      output:
-        allowedFields:
-          - customerid
-          - deviceid
-          - messagetype
-          - nodeid
-          - receivernumber
-          - textid
-          - timestamp
-
----
-kind: Model
-version: v2
-definition:
-  name: Texts
-  objectType: Texts
-  source:
-    dataConnectorName: kafka_sink
-    collection: texts
-  filterExpressionType: TextsBoolExp
-  graphql:
-    selectMany:
-      queryRootField: texts
-    selectUniques:
-      - queryRootField: textsByTextid
-        uniqueIdentifier:
-          - textid
-    filterInputTypeName: TextsFilterInput
-    aggregate:
-      queryRootField: textsAggregate
-  aggregateExpression: TextsAggExp
-  orderByExpression: TextsOrderByExp
-
----
-kind: ModelPermissions
-version: v1
-definition:
-  modelName: Texts
-  permissions:
-    - role: admin
-      select:
-        filter: null
 
 ---
 kind: BooleanExpressionType
@@ -98,6 +61,10 @@ definition:
           booleanExpressionType: Int4BoolExp
         - fieldName: deviceid
           booleanExpressionType: Int4BoolExp
+        - fieldName: latitude
+          booleanExpressionType: NumericBoolExp
+        - fieldName: longitude
+          booleanExpressionType: NumericBoolExp
         - fieldName: messagetype
           booleanExpressionType: VarcharBoolExp
         - fieldName: nodeid
@@ -114,7 +81,7 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: Network_TextsBoolExp
+    typeName: network_TextsBoolExp
 
 ---
 kind: AggregateExpression
@@ -129,6 +96,10 @@ definition:
           aggregateExpression: Int4AggExp
         - fieldName: deviceid
           aggregateExpression: Int4AggExp
+        - fieldName: latitude
+          aggregateExpression: NumericAggExp
+        - fieldName: longitude
+          aggregateExpression: NumericAggExp
         - fieldName: messagetype
           aggregateExpression: VarcharAggExp
         - fieldName: nodeid
@@ -142,7 +113,7 @@ definition:
   count:
     enable: true
   graphql:
-    selectTypeName: TextsAggExp
+    selectTypeName: network_TextsAggExp
 
 ---
 kind: OrderByExpression
@@ -157,6 +128,10 @@ definition:
           orderByExpression: Int4OrderByExp
         - fieldName: deviceid
           orderByExpression: Int4OrderByExp
+        - fieldName: latitude
+          orderByExpression: NumericOrderByExp
+        - fieldName: longitude
+          orderByExpression: NumericOrderByExp
         - fieldName: messagetype
           orderByExpression: VarcharOrderByExp
         - fieldName: nodeid
@@ -170,4 +145,44 @@ definition:
       orderableRelationships: []
   graphql:
     expressionTypeName: network_TextsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: Texts
+  objectType: Texts
+  source:
+    dataConnectorName: kafka_sink
+    collection: texts
+  filterExpressionType: TextsBoolExp
+  aggregateExpression: TextsAggExp
+  orderByExpression: TextsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: texts
+      subscription:
+        rootField: texts
+    selectUniques:
+      - queryRootField: textsByTextid
+        uniqueIdentifier:
+          - textid
+        subscription:
+          rootField: textsByTextid
+    filterInputTypeName: network_TextsFilterInput
+    aggregate:
+      queryRootField: textsAggregate
+      subscription:
+        rootField: textsAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: Texts
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
 

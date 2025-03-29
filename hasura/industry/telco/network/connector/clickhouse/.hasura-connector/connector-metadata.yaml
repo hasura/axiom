@@ -1,21 +1,28 @@
 packagingDefinition:
   type: PrebuiltDockerImage
-  dockerImage: "ghcr.io/hasura/ndc-clickhouse:v1.0.5"
+  dockerImage: ghcr.io/hasura/ndc-clickhouse:v1.1.0
 supportedEnvironmentVariables:
   - name: CLICKHOUSE_URL
     description: The ClickHouse connection URL
+    defaultValue: ""
+    required: true
   - name: CLICKHOUSE_USERNAME
     description: The ClickHouse connection username
+    defaultValue: ""
+    required: true
   - name: CLICKHOUSE_PASSWORD
     description: The ClickHouse connection password
+    defaultValue: ""
+    required: true
 commands:
   update: hasura-clickhouse update
+  printSchemaAndCapabilities: hasura-clickhouse print-schema-and-capabilities
 cliPlugin:
+  type: null
   name: clickhouse
-  version: "v1.0.5"
+  version: v1.1.0
 dockerComposeWatch:
   - path: ./
-    target: /etc/connector
     action: sync+restart
-
-
+    target: /etc/connector
+documentationPage: https://hasura.info/clickhouse-getting-started

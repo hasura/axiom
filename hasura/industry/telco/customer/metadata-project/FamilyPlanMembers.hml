@@ -1,0 +1,211 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: FamilyPlanMembers
+  fields:
+    - name: customerId
+      type: Int4!
+    - name: dataAllocationPercentage
+      type: Int4
+    - name: familyPlanId
+      type: Int4!
+    - name: role
+      type: Varchar
+  graphql:
+    typeName: customer_FamilyPlanMembers
+    inputTypeName: customer_FamilyPlanMembersInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: family_plan_members
+      fieldMapping:
+        customerId:
+          column:
+            name: customer_id
+        dataAllocationPercentage:
+          column:
+            name: data_allocation_percentage
+        familyPlanId:
+          column:
+            name: family_plan_id
+        role:
+          column:
+            name: role
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: FamilyPlanMembers
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - customerId
+          - dataAllocationPercentage
+          - familyPlanId
+          - role
+    - role: customer
+      output:
+        allowedFields:
+          - customerId
+          - dataAllocationPercentage
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: FamilyPlanMembersBoolExp
+  operand:
+    object:
+      type: FamilyPlanMembers
+      comparableFields:
+        - fieldName: customerId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: dataAllocationPercentage
+          booleanExpressionType: Int4BoolExp
+        - fieldName: familyPlanId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: role
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: customer
+        - relationshipName: familyPlan
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customer_FamilyPlanMembersBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: FamilyPlanMembersAggExp
+  operand:
+    object:
+      aggregatedType: FamilyPlanMembers
+      aggregatableFields:
+        - fieldName: customerId
+          aggregateExpression: Int4AggExp
+        - fieldName: dataAllocationPercentage
+          aggregateExpression: Int4AggExp
+        - fieldName: familyPlanId
+          aggregateExpression: Int4AggExp
+        - fieldName: role
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: customer_FamilyPlanMembersAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: FamilyPlanMembersOrderByExp
+  operand:
+    object:
+      orderedType: FamilyPlanMembers
+      orderableFields:
+        - fieldName: customerId
+          orderByExpression: Int4OrderByExp
+        - fieldName: dataAllocationPercentage
+          orderByExpression: Int4OrderByExp
+        - fieldName: familyPlanId
+          orderByExpression: Int4OrderByExp
+        - fieldName: role
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: customer
+        - relationshipName: familyPlan
+  graphql:
+    expressionTypeName: customer_FamilyPlanMembersOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: FamilyPlanMembers
+  objectType: FamilyPlanMembers
+  source:
+    dataConnectorName: aurora
+    collection: family_plan_members
+  filterExpressionType: FamilyPlanMembersBoolExp
+  aggregateExpression: FamilyPlanMembersAggExp
+  orderByExpression: FamilyPlanMembersOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: familyPlanMembers
+      subscription:
+        rootField: familyPlanMembers
+    selectUniques:
+      - queryRootField: familyPlanMembersByFamilyPlanMembersPkey
+        uniqueIdentifier:
+          - customerId
+          - familyPlanId
+        subscription:
+          rootField: familyPlanMembersByFamilyPlanMembersPkey
+    filterInputTypeName: customer_FamilyPlanMembersFilterInput
+    aggregate:
+      queryRootField: familyPlanMembersAggregate
+      subscription:
+        rootField: familyPlanMembersAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: FamilyPlanMembers
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+    - role: customer
+      select:
+        filter: 
+          fieldComparison:
+            field: customerId
+            operator: _eq
+            value: 
+              sessionVariable: x-hasura-user-id
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer
+  sourceType: FamilyPlanMembers
+  target:
+    model:
+      name: Customers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: familyPlan
+  sourceType: FamilyPlanMembers
+  target:
+    model:
+      name: FamilyPlans
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: familyPlanId
+      target:
+        modelField:
+          - fieldName: familyPlanId
+

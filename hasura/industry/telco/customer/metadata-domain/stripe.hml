@@ -1,0 +1,472 @@
+kind: DataConnectorLink
+version: v1
+definition:
+  name: stripe
+  url:
+    readWriteUrls:
+      read:
+        valueFromEnv: CUSTOMER_STRIPE_READ_URL
+      write:
+        valueFromEnv: CUSTOMER_STRIPE_WRITE_URL
+  headers:
+    Authorization:
+      valueFromEnv: CUSTOMER_STRIPE_AUTHORIZATION_HEADER
+  schema:
+    version: v0.1
+    schema:
+      scalar_types:
+        Boolean:
+          representation:
+            type: boolean
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+        Float:
+          representation:
+            type: float64
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+        String:
+          representation:
+            type: string
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+      object_types:
+        TelcoCustomer:
+          fields:
+            email:
+              type:
+                name: String
+                type: named
+            id:
+              type:
+                name: String
+                type: named
+            metadata:
+              type:
+                name: TelcoCustomer_metadata
+                type: named
+            name:
+              type:
+                name: String
+                type: named
+            phone:
+              type:
+                name: String
+                type: named
+        TelcoCustomer_metadata:
+          fields:
+            accountType:
+              type:
+                name: String
+                type: named
+            customerId:
+              type:
+                name: String
+                type: named
+            segment:
+              type:
+                name: String
+                type: named
+        TelcoInvoice:
+          fields:
+            amount_due:
+              type:
+                name: Float
+                type: named
+            amount_paid:
+              type:
+                name: Float
+                type: named
+            customer:
+              type:
+                name: String
+                type: named
+            id:
+              type:
+                name: String
+                type: named
+            lines:
+              type:
+                name: TelcoInvoice_lines
+                type: named
+            metadata:
+              type:
+                name: TelcoInvoice_metadata
+                type: named
+            status:
+              type:
+                name: String
+                type: named
+            subscription:
+              type:
+                name: String
+                type: named
+        TelcoInvoice_lines:
+          fields:
+            data:
+              type:
+                element_type:
+                  name: functions_array23
+                  type: named
+                type: array
+        TelcoInvoice_metadata:
+          fields:
+            billingCycle:
+              type:
+                name: String
+                type: named
+            statementDate:
+              type:
+                name: String
+                type: named
+        TelcoProduct:
+          fields:
+            active:
+              type:
+                name: Boolean
+                type: named
+            id:
+              type:
+                name: String
+                type: named
+            metadata:
+              type:
+                name: TelcoProduct_metadata
+                type: named
+            name:
+              type:
+                name: String
+                type: named
+        TelcoProduct_metadata:
+          fields:
+            marketingName:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            networkType:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            serviceType:
+              type:
+                name: String
+                type: named
+        TelcoSubscription:
+          fields:
+            current_period_end:
+              type:
+                name: Float
+                type: named
+            current_period_start:
+              type:
+                name: Float
+                type: named
+            customer:
+              type:
+                name: String
+                type: named
+            id:
+              type:
+                name: String
+                type: named
+            items:
+              type:
+                name: TelcoSubscription_items
+                type: named
+            metadata:
+              type:
+                name: TelcoSubscription_metadata
+                type: named
+            status:
+              type:
+                name: String
+                type: named
+        TelcoSubscription_items:
+          fields:
+            data:
+              type:
+                element_type:
+                  name: functions_array2
+                  type: named
+                type: array
+        TelcoSubscription_metadata:
+          fields:
+            contractEndDate:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            planCode:
+              type:
+                name: String
+                type: named
+            promoCode:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+        TelcoUsageRecord:
+          fields:
+            action:
+              type:
+                name: String
+                type: named
+            id:
+              type:
+                name: String
+                type: named
+            quantity:
+              type:
+                name: Float
+                type: named
+            subscription_item:
+              type:
+                name: String
+                type: named
+            timestamp:
+              type:
+                name: Float
+                type: named
+        array_period:
+          fields:
+            end:
+              type:
+                name: Float
+                type: named
+            start:
+              type:
+                name: Float
+                type: named
+        array_price:
+          fields:
+            id:
+              type:
+                name: String
+                type: named
+            nickname:
+              type:
+                name: String
+                type: named
+            product:
+              type:
+                name: String
+                type: named
+            unit_amount:
+              type:
+                name: Float
+                type: named
+        createTelcoCustomer_customerData:
+          fields:
+            accountType:
+              type:
+                name: String
+                type: named
+            customerId:
+              type:
+                name: String
+                type: named
+            email:
+              type:
+                name: String
+                type: named
+            name:
+              type:
+                name: String
+                type: named
+            phone:
+              type:
+                name: String
+                type: named
+            segment:
+              type:
+                name: String
+                type: named
+        createTelcoProduct_productData:
+          fields:
+            marketingName:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            name:
+              type:
+                name: String
+                type: named
+            networkType:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            serviceType:
+              type:
+                name: String
+                type: named
+        createTelcoSubscription_subscriptionData:
+          fields:
+            contractMonths:
+              type:
+                type: nullable
+                underlying_type:
+                  name: Float
+                  type: named
+            customerId:
+              type:
+                name: String
+                type: named
+            planCode:
+              type:
+                name: String
+                type: named
+            planItems:
+              type:
+                element_type:
+                  name: functions_array
+                  type: named
+                type: array
+            promoCode:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+        functions_array:
+          fields:
+            priceId:
+              type:
+                name: String
+                type: named
+            quantity:
+              type:
+                type: nullable
+                underlying_type:
+                  name: Float
+                  type: named
+        functions_array2:
+          fields:
+            id:
+              type:
+                name: String
+                type: named
+            price:
+              type:
+                name: array_price
+                type: named
+        functions_array23:
+          fields:
+            amount:
+              type:
+                name: Float
+                type: named
+            description:
+              type:
+                name: String
+                type: named
+            id:
+              type:
+                name: String
+                type: named
+            period:
+              type:
+                name: array_period
+                type: named
+        recordTelcoUsage_usageData:
+          fields:
+            action:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            quantity:
+              type:
+                name: Float
+                type: named
+            subscriptionItemId:
+              type:
+                name: String
+                type: named
+            timestamp:
+              type:
+                type: nullable
+                underlying_type:
+                  name: Float
+                  type: named
+      collections: []
+      functions: []
+      procedures:
+        - name: createTelcoCustomer
+          description: Simulates creating a new telecommunications customer in Stripe
+          arguments:
+            customerData:
+              description: Data for the new customer
+              type:
+                name: createTelcoCustomer_customerData
+                type: named
+          result_type:
+            name: TelcoCustomer
+            type: named
+        - name: createTelcoSubscription
+          description: Simulates creating a telecommunications service subscription
+          arguments:
+            subscriptionData:
+              description: Data for the new subscription
+              type:
+                name: createTelcoSubscription_subscriptionData
+                type: named
+          result_type:
+            name: TelcoSubscription
+            type: named
+        - name: recordTelcoUsage
+          description: Records usage for metered telecommunications services like data overages
+          arguments:
+            usageData:
+              description: Data about the usage to record
+              type:
+                name: recordTelcoUsage_usageData
+                type: named
+          result_type:
+            name: TelcoUsageRecord
+            type: named
+        - name: getLatestTelcoInvoice
+          description: Retrieves a customer's latest invoice
+          arguments:
+            customerId:
+              description: Stripe customer ID
+              type:
+                name: String
+                type: named
+          result_type:
+            name: TelcoInvoice
+            type: named
+        - name: createTelcoProduct
+          description: Creates a new telecommunications service product in Stripe
+          arguments:
+            productData:
+              description: Data for the new product
+              type:
+                name: createTelcoProduct_productData
+                type: named
+          result_type:
+            name: TelcoProduct
+            type: named
+    capabilities:
+      version: 0.1.6
+      capabilities:
+        query:
+          variables: {}
+          nested_fields: {}
+        mutation: {}

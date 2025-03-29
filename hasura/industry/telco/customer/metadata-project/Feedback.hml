@@ -1,0 +1,249 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: Feedback
+  fields:
+    - name: category
+      type: Varchar
+    - name: comments
+      type: Text
+    - name: customerId
+      type: Int4
+    - name: feedbackDate
+      type: Timestamptz
+    - name: feedbackId
+      type: Int4!
+    - name: followupDate
+      type: Timestamptz
+    - name: followupNotes
+      type: Text
+    - name: rating
+      type: Int4
+    - name: requiresFollowup
+      type: Bool
+  graphql:
+    typeName: customer_Feedback
+    inputTypeName: customer_FeedbackInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: feedback
+      fieldMapping:
+        category:
+          column:
+            name: category
+        comments:
+          column:
+            name: comments
+        customerId:
+          column:
+            name: customer_id
+        feedbackDate:
+          column:
+            name: feedback_date
+        feedbackId:
+          column:
+            name: feedback_id
+        followupDate:
+          column:
+            name: followup_date
+        followupNotes:
+          column:
+            name: followup_notes
+        rating:
+          column:
+            name: rating
+        requiresFollowup:
+          column:
+            name: requires_followup
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: Feedback
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - category
+          - comments
+          - customerId
+          - feedbackDate
+          - feedbackId
+          - followupDate
+          - followupNotes
+          - rating
+          - requiresFollowup
+    - role: customer
+      output:
+        allowedFields:
+          - comments
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: FeedbackBoolExp
+  operand:
+    object:
+      type: Feedback
+      comparableFields:
+        - fieldName: category
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: comments
+          booleanExpressionType: TextBoolExp
+        - fieldName: customerId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: feedbackDate
+          booleanExpressionType: TimestamptzBoolExp
+        - fieldName: feedbackId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: followupDate
+          booleanExpressionType: TimestamptzBoolExp
+        - fieldName: followupNotes
+          booleanExpressionType: TextBoolExp
+        - fieldName: rating
+          booleanExpressionType: Int4BoolExp
+        - fieldName: requiresFollowup
+          booleanExpressionType: BoolBoolExp
+      comparableRelationships:
+        - relationshipName: customer
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customer_FeedbackBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: FeedbackAggExp
+  operand:
+    object:
+      aggregatedType: Feedback
+      aggregatableFields:
+        - fieldName: category
+          aggregateExpression: VarcharAggExp
+        - fieldName: comments
+          aggregateExpression: TextAggExp
+        - fieldName: customerId
+          aggregateExpression: Int4AggExp
+        - fieldName: feedbackDate
+          aggregateExpression: TimestamptzAggExp
+        - fieldName: feedbackId
+          aggregateExpression: Int4AggExp
+        - fieldName: followupDate
+          aggregateExpression: TimestamptzAggExp
+        - fieldName: followupNotes
+          aggregateExpression: TextAggExp
+        - fieldName: rating
+          aggregateExpression: Int4AggExp
+        - fieldName: requiresFollowup
+          aggregateExpression: BoolAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: customer_FeedbackAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: FeedbackOrderByExp
+  operand:
+    object:
+      orderedType: Feedback
+      orderableFields:
+        - fieldName: category
+          orderByExpression: VarcharOrderByExp
+        - fieldName: comments
+          orderByExpression: TextOrderByExp
+        - fieldName: customerId
+          orderByExpression: Int4OrderByExp
+        - fieldName: feedbackDate
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: feedbackId
+          orderByExpression: Int4OrderByExp
+        - fieldName: followupDate
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: followupNotes
+          orderByExpression: TextOrderByExp
+        - fieldName: rating
+          orderByExpression: Int4OrderByExp
+        - fieldName: requiresFollowup
+          orderByExpression: BoolOrderByExp
+      orderableRelationships:
+        - relationshipName: customer
+  graphql:
+    expressionTypeName: customer_FeedbackOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: Feedback
+  objectType: Feedback
+  source:
+    dataConnectorName: aurora
+    collection: feedback
+  filterExpressionType: FeedbackBoolExp
+  aggregateExpression: FeedbackAggExp
+  orderByExpression: FeedbackOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: feedback
+      subscription:
+        rootField: feedback
+    selectUniques:
+      - queryRootField: feedbackByFeedbackId
+        uniqueIdentifier:
+          - feedbackId
+        subscription:
+          rootField: feedbackByFeedbackId
+    filterInputTypeName: customer_FeedbackFilterInput
+    aggregate:
+      queryRootField: feedbackAggregate
+      subscription:
+        rootField: feedbackAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: Feedback
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+    - role: customer
+      select:
+        filter: 
+          fieldComparison:
+            field: customerId
+            operator: _eq
+            value: 
+              sessionVariable: x-hasura-user-id
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer
+  sourceType: Feedback
+  target:
+    model:
+      name: Customers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId
+

@@ -1,0 +1,296 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: FunctionsArray
+  fields:
+    - name: priceId
+      type: String!
+    - name: quantity
+      type: Float
+  graphql:
+    typeName: customer_FunctionsArray
+    inputTypeName: customer_FunctionsArrayInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: stripe
+      dataConnectorObjectType: functions_array
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: FunctionsArray
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - priceId
+          - quantity
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: CreateTelcoSubscriptionSubscriptionData
+  fields:
+    - name: contractMonths
+      type: Float
+    - name: customerId
+      type: String!
+    - name: planCode
+      type: String!
+    - name: planItems
+      type: "[FunctionsArray!]!"
+    - name: promoCode
+      type: String
+  graphql:
+    typeName: customer_CreateTelcoSubscriptionSubscriptionData
+    inputTypeName: customer_CreateTelcoSubscriptionSubscriptionDataInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: stripe
+      dataConnectorObjectType: createTelcoSubscription_subscriptionData
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: CreateTelcoSubscriptionSubscriptionData
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - contractMonths
+          - customerId
+          - planCode
+          - planItems
+          - promoCode
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ArrayPrice
+  fields:
+    - name: id
+      type: String!
+    - name: nickname
+      type: String!
+    - name: product
+      type: String!
+    - name: unitAmount
+      type: Float!
+  graphql:
+    typeName: customer_ArrayPrice
+    inputTypeName: customer_ArrayPriceInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: stripe
+      dataConnectorObjectType: array_price
+      fieldMapping:
+        id:
+          column:
+            name: id
+        nickname:
+          column:
+            name: nickname
+        product:
+          column:
+            name: product
+        unitAmount:
+          column:
+            name: unit_amount
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ArrayPrice
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - id
+          - nickname
+          - product
+          - unitAmount
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: FunctionsArray2
+  fields:
+    - name: id
+      type: String!
+    - name: price
+      type: ArrayPrice!
+  graphql:
+    typeName: customer_FunctionsArray2
+    inputTypeName: customer_FunctionsArray2Input
+  dataConnectorTypeMapping:
+    - dataConnectorName: stripe
+      dataConnectorObjectType: functions_array2
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: FunctionsArray2
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - id
+          - price
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: TelcoSubscriptionItems
+  fields:
+    - name: data
+      type: "[FunctionsArray2!]!"
+  graphql:
+    typeName: customer_TelcoSubscriptionItems
+    inputTypeName: customer_TelcoSubscriptionItemsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: stripe
+      dataConnectorObjectType: TelcoSubscription_items
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: TelcoSubscriptionItems
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - data
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: TelcoSubscriptionMetadata
+  fields:
+    - name: contractEndDate
+      type: String
+    - name: planCode
+      type: String!
+    - name: promoCode
+      type: String
+  graphql:
+    typeName: customer_TelcoSubscriptionMetadata
+    inputTypeName: customer_TelcoSubscriptionMetadataInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: stripe
+      dataConnectorObjectType: TelcoSubscription_metadata
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: TelcoSubscriptionMetadata
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - contractEndDate
+          - planCode
+          - promoCode
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: TelcoSubscription
+  fields:
+    - name: currentPeriodEnd
+      type: Float!
+    - name: currentPeriodStart
+      type: Float!
+    - name: customer
+      type: String!
+    - name: id
+      type: String!
+    - name: items
+      type: TelcoSubscriptionItems!
+    - name: metadata
+      type: TelcoSubscriptionMetadata!
+    - name: status
+      type: String!
+  graphql:
+    typeName: customer_TelcoSubscription
+    inputTypeName: customer_TelcoSubscriptionInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: stripe
+      dataConnectorObjectType: TelcoSubscription
+      fieldMapping:
+        currentPeriodEnd:
+          column:
+            name: current_period_end
+        currentPeriodStart:
+          column:
+            name: current_period_start
+        customer:
+          column:
+            name: customer
+        id:
+          column:
+            name: id
+        items:
+          column:
+            name: items
+        metadata:
+          column:
+            name: metadata
+        status:
+          column:
+            name: status
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: TelcoSubscription
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - currentPeriodEnd
+          - currentPeriodStart
+          - customer
+          - id
+          - items
+          - metadata
+          - status
+
+---
+kind: Command
+version: v1
+definition:
+  name: CreateTelcoSubscription
+  outputType: TelcoSubscription!
+  arguments:
+    - name: subscriptionData
+      type: CreateTelcoSubscriptionSubscriptionData!
+      description: Data for the new subscription
+  source:
+    dataConnectorName: stripe
+    dataConnectorCommand:
+      procedure: createTelcoSubscription
+  graphql:
+    rootFieldName: createTelcoSubscription
+    rootFieldKind: Mutation
+  description: Simulates creating a telecommunications service subscription
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: CreateTelcoSubscription
+  permissions:
+    - role: admin
+      allowExecution: true
+

@@ -24,11 +24,20 @@ definition:
           comparison_operators:
             _eq:
               type: equal
+            _in:
+              type: in
             _neq:
               type: custom
               argument_type:
                 type: named
                 name: BinData
+            _nin:
+              type: custom
+              argument_type:
+                type: array
+                element_type:
+                  type: named
+                  name: BinData
         Bool:
           representation:
             type: boolean
@@ -40,11 +49,20 @@ definition:
           comparison_operators:
             _eq:
               type: equal
+            _in:
+              type: in
             _neq:
               type: custom
               argument_type:
                 type: named
                 name: Bool
+            _nin:
+              type: custom
+              argument_type:
+                type: array
+                element_type:
+                  type: named
+                  name: Bool
         Date:
           representation:
             type: timestamp
@@ -55,12 +73,16 @@ definition:
                 name: Int
             max:
               result_type:
-                type: named
-                name: Date
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Date
             min:
               result_type:
-                type: named
-                name: Date
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Date
           comparison_operators:
             _eq:
               type: equal
@@ -74,6 +96,8 @@ definition:
               argument_type:
                 type: named
                 name: Date
+            _in:
+              type: in
             _lt:
               type: custom
               argument_type:
@@ -89,6 +113,13 @@ definition:
               argument_type:
                 type: named
                 name: Date
+            _nin:
+              type: custom
+              argument_type:
+                type: array
+                element_type:
+                  type: named
+                  name: Date
         DbPointer:
           aggregate_functions:
             count:
@@ -98,35 +129,52 @@ definition:
           comparison_operators:
             _eq:
               type: equal
+            _in:
+              type: in
             _neq:
               type: custom
               argument_type:
                 type: named
                 name: DbPointer
+            _nin:
+              type: custom
+              argument_type:
+                type: array
+                element_type:
+                  type: named
+                  name: DbPointer
         Decimal:
           representation:
             type: bigdecimal
           aggregate_functions:
             avg:
               result_type:
-                type: named
-                name: Decimal
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Decimal
             count:
               result_type:
                 type: named
                 name: Int
             max:
               result_type:
-                type: named
-                name: Decimal
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Decimal
             min:
               result_type:
-                type: named
-                name: Decimal
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Decimal
             sum:
               result_type:
-                type: named
-                name: Decimal
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Decimal
           comparison_operators:
             _eq:
               type: equal
@@ -140,6 +188,8 @@ definition:
               argument_type:
                 type: named
                 name: Decimal
+            _in:
+              type: in
             _lt:
               type: custom
               argument_type:
@@ -155,30 +205,45 @@ definition:
               argument_type:
                 type: named
                 name: Decimal
+            _nin:
+              type: custom
+              argument_type:
+                type: array
+                element_type:
+                  type: named
+                  name: Decimal
         Double:
           representation:
             type: float64
           aggregate_functions:
             avg:
               result_type:
-                type: named
-                name: Double
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Double
             count:
               result_type:
                 type: named
                 name: Int
             max:
               result_type:
-                type: named
-                name: Double
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Double
             min:
               result_type:
-                type: named
-                name: Double
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Double
             sum:
               result_type:
-                type: named
-                name: Double
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Double
           comparison_operators:
             _eq:
               type: equal
@@ -192,6 +257,8 @@ definition:
               argument_type:
                 type: named
                 name: Double
+            _in:
+              type: in
             _lt:
               type: custom
               argument_type:
@@ -207,6 +274,13 @@ definition:
               argument_type:
                 type: named
                 name: Double
+            _nin:
+              type: custom
+              argument_type:
+                type: array
+                element_type:
+                  type: named
+                  name: Double
         ExtendedJSON:
           representation:
             type: json
@@ -269,6 +343,11 @@ definition:
               argument_type:
                 type: named
                 name: ExtendedJSON
+            _nin:
+              type: custom
+              argument_type:
+                type: named
+                name: ExtendedJSON
             _regex:
               type: custom
               argument_type:
@@ -280,24 +359,32 @@ definition:
           aggregate_functions:
             avg:
               result_type:
-                type: named
-                name: Int
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Int
             count:
               result_type:
                 type: named
                 name: Int
             max:
               result_type:
-                type: named
-                name: Int
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Int
             min:
               result_type:
-                type: named
-                name: Int
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Int
             sum:
               result_type:
-                type: named
-                name: Int
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Int
           comparison_operators:
             _eq:
               type: equal
@@ -311,6 +398,8 @@ definition:
               argument_type:
                 type: named
                 name: Int
+            _in:
+              type: in
             _lt:
               type: custom
               argument_type:
@@ -326,6 +415,13 @@ definition:
               argument_type:
                 type: named
                 name: Int
+            _nin:
+              type: custom
+              argument_type:
+                type: array
+                element_type:
+                  type: named
+                  name: Int
         Javascript:
           aggregate_functions:
             count:
@@ -346,24 +442,32 @@ definition:
           aggregate_functions:
             avg:
               result_type:
-                type: named
-                name: Long
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Long
             count:
               result_type:
                 type: named
                 name: Int
             max:
               result_type:
-                type: named
-                name: Long
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Long
             min:
               result_type:
-                type: named
-                name: Long
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Long
             sum:
               result_type:
-                type: named
-                name: Long
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Long
           comparison_operators:
             _eq:
               type: equal
@@ -377,6 +481,8 @@ definition:
               argument_type:
                 type: named
                 name: Long
+            _in:
+              type: in
             _lt:
               type: custom
               argument_type:
@@ -392,6 +498,13 @@ definition:
               argument_type:
                 type: named
                 name: Long
+            _nin:
+              type: custom
+              argument_type:
+                type: array
+                element_type:
+                  type: named
+                  name: Long
         MaxKey:
           aggregate_functions:
             count:
@@ -401,11 +514,20 @@ definition:
           comparison_operators:
             _eq:
               type: equal
+            _in:
+              type: in
             _neq:
               type: custom
               argument_type:
                 type: named
                 name: MaxKey
+            _nin:
+              type: custom
+              argument_type:
+                type: array
+                element_type:
+                  type: named
+                  name: MaxKey
         MinKey:
           aggregate_functions:
             count:
@@ -415,11 +537,20 @@ definition:
           comparison_operators:
             _eq:
               type: equal
+            _in:
+              type: in
             _neq:
               type: custom
               argument_type:
                 type: named
                 name: MinKey
+            _nin:
+              type: custom
+              argument_type:
+                type: array
+                element_type:
+                  type: named
+                  name: MinKey
         "Null":
           aggregate_functions:
             count:
@@ -429,11 +560,20 @@ definition:
           comparison_operators:
             _eq:
               type: equal
+            _in:
+              type: in
             _neq:
               type: custom
               argument_type:
                 type: named
                 name: "Null"
+            _nin:
+              type: custom
+              argument_type:
+                type: array
+                element_type:
+                  type: named
+                  name: "Null"
         ObjectId:
           representation:
             type: string
@@ -445,11 +585,20 @@ definition:
           comparison_operators:
             _eq:
               type: equal
+            _in:
+              type: in
             _neq:
               type: custom
               argument_type:
                 type: named
                 name: ObjectId
+            _nin:
+              type: custom
+              argument_type:
+                type: array
+                element_type:
+                  type: named
+                  name: ObjectId
         Regex:
           aggregate_functions:
             count:
@@ -467,12 +616,16 @@ definition:
                 name: Int
             max:
               result_type:
-                type: named
-                name: String
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
             min:
               result_type:
-                type: named
-                name: String
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
           comparison_operators:
             _eq:
               type: equal
@@ -486,6 +639,8 @@ definition:
               argument_type:
                 type: named
                 name: String
+            _in:
+              type: in
             _iregex:
               type: custom
               argument_type:
@@ -506,6 +661,13 @@ definition:
               argument_type:
                 type: named
                 name: String
+            _nin:
+              type: custom
+              argument_type:
+                type: array
+                element_type:
+                  type: named
+                  name: String
             _regex:
               type: custom
               argument_type:
@@ -520,11 +682,20 @@ definition:
           comparison_operators:
             _eq:
               type: equal
+            _in:
+              type: in
             _neq:
               type: custom
               argument_type:
                 type: named
                 name: Symbol
+            _nin:
+              type: custom
+              argument_type:
+                type: array
+                element_type:
+                  type: named
+                  name: Symbol
         Timestamp:
           aggregate_functions:
             count:
@@ -533,12 +704,16 @@ definition:
                 name: Int
             max:
               result_type:
-                type: named
-                name: Timestamp
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Timestamp
             min:
               result_type:
-                type: named
-                name: Timestamp
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Timestamp
           comparison_operators:
             _eq:
               type: equal
@@ -552,6 +727,8 @@ definition:
               argument_type:
                 type: named
                 name: Timestamp
+            _in:
+              type: in
             _lt:
               type: custom
               argument_type:
@@ -567,6 +744,38 @@ definition:
               argument_type:
                 type: named
                 name: Timestamp
+            _nin:
+              type: custom
+              argument_type:
+                type: array
+                element_type:
+                  type: named
+                  name: Timestamp
+        UUID:
+          representation:
+            type: string
+          aggregate_functions:
+            count:
+              result_type:
+                type: named
+                name: Int
+          comparison_operators:
+            _eq:
+              type: equal
+            _in:
+              type: in
+            _neq:
+              type: custom
+              argument_type:
+                type: named
+                name: UUID
+            _nin:
+              type: custom
+              argument_type:
+                type: array
+                element_type:
+                  type: named
+                  name: UUID
         Undefined:
           aggregate_functions:
             count:
@@ -576,118 +785,128 @@ definition:
           comparison_operators:
             _eq:
               type: equal
+            _in:
+              type: in
             _neq:
               type: custom
               argument_type:
                 type: named
                 name: Undefined
+            _nin:
+              type: custom
+              argument_type:
+                type: array
+                element_type:
+                  type: named
+                  name: Undefined
       object_types:
         customerPreferences:
-          description: Object type for collection customerPreferences
           fields:
             _id:
-              description: primary key _id
               type:
                 type: named
                 name: ObjectId
             behavioralData:
-              description: behavioralData is an object containing behavioral metrics
               type:
-                type: named
-                name: customerPreferences_behavioralData
-            customer_guid:
-              description: must be a string and is required
-              type:
-                type: named
-                name: String
-            customerNotes:
-              description: customerNotes is an array of note objects with author, date, and content
-              type:
-                type: array
-                element_type:
+                type: nullable
+                underlying_type:
                   type: named
-                  name: customerPreferences_customerNotes
+                  name: customerPreferences_behavioralData
+            customer_guid:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
+            customerNotes:
+              type:
+                type: nullable
+                underlying_type:
+                  type: array
+                  element_type:
+                    type: named
+                    name: customerPreferences_customerNotes
             preferences:
               type:
-                type: named
-                name: customerPreferences_preferences
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: customerPreferences_preferences
             socialMedia:
-              description: socialMedia is an object containing social media profile URLs
               type:
                 type: nullable
                 underlying_type:
                   type: named
                   name: customerPreferences_socialMedia
         customerPreferences_behavioralData:
-          description: generated from MongoDB validation schema
           fields:
             lastAppLogin:
-              description: must be a valid ISO date and is required
               type:
-                type: named
-                name: String
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
             lastWebsiteVisit:
-              description: must be a valid ISO date and is required
               type:
-                type: named
-                name: String
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
         customerPreferences_customerNotes:
-          description: generated from MongoDB validation schema
           fields:
             author:
-              description: must be a string and is required
               type:
-                type: named
-                name: String
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
             content:
-              description: must be a string and is required
               type:
-                type: named
-                name: String
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
             date:
-              description: must be a valid ISO date and is required
               type:
-                type: named
-                name: String
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
         customerPreferences_preferences:
-          description: generated from MongoDB validation schema
           fields:
             contactMethod:
-              description: must be one of 'email', 'phone', or 'SMS' and is required
               type:
-                type: named
-                name: String
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
             marketingOptIn:
-              description: must be a boolean value and is required
               type:
-                type: named
-                name: Bool
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Bool
         customerPreferences_socialMedia:
-          description: generated from MongoDB validation schema
           fields:
             facebook:
-              description: must be a valid Facebook URL
               type:
                 type: nullable
                 underlying_type:
                   type: named
                   name: String
             linkedin:
-              description: must be a valid LinkedIn URL
               type:
                 type: nullable
                 underlying_type:
                   type: named
                   name: String
             twitter:
-              description: must be a valid Twitter URL
               type:
                 type: nullable
                 underlying_type:
                   type: named
                   name: String
         userProfiles:
-          description: Object type for collection userProfiles
           fields:
             _id:
               type:
@@ -695,241 +914,330 @@ definition:
                 name: String
             accountDetails:
               type:
-                type: named
-                name: userProfiles_accountDetails
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: userProfiles_accountDetails
+            customer_id:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Int
             identification:
               type:
-                type: named
-                name: userProfiles_identification
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: userProfiles_identification
             memberID:
               type:
-                type: named
-                name: String
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
             notes:
               type:
-                type: named
-                name: String
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
             preferences:
               type:
-                type: named
-                name: userProfiles_preferences
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: userProfiles_preferences
             supportHistory:
               type:
-                type: array
-                element_type:
-                  type: named
-                  name: userProfiles_supportHistory
+                type: nullable
+                underlying_type:
+                  type: array
+                  element_type:
+                    type: named
+                    name: userProfiles_supportHistory
             usageStats:
               type:
-                type: named
-                name: userProfiles_usageStats
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: userProfiles_usageStats
         userProfiles_accountDetails:
-          description: generated from MongoDB validation schema
           fields:
             accountNumber:
               type:
-                type: named
-                name: String
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
             registrationDate:
               type:
-                type: named
-                name: String
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
         userProfiles_identification:
-          description: generated from MongoDB validation schema
           fields:
             expiryDate:
               type:
-                type: named
-                name: String
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
             issuedBy:
               type:
-                type: named
-                name: String
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
             number:
               type:
-                type: named
-                name: String
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
             type:
               type:
-                type: named
-                name: String
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
         userProfiles_preferences:
-          description: generated from MongoDB validation schema
           fields:
             communication:
               type:
-                type: named
-                name: userProfiles_preferences_communication
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: userProfiles_preferences_communication
             privacySettings:
               type:
-                type: named
-                name: userProfiles_preferences_privacySettings
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: userProfiles_preferences_privacySettings
             servicePreferences:
               type:
-                type: named
-                name: userProfiles_preferences_servicePreferences
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: userProfiles_preferences_servicePreferences
         userProfiles_preferences_communication:
-          description: generated from MongoDB validation schema
           fields:
             appNotifications:
               type:
-                type: named
-                name: userProfiles_preferences_communication_appNotifications
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: userProfiles_preferences_communication_appNotifications
             emailUpdates:
               type:
-                type: named
-                name: Bool
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Bool
             smsNotifications:
               type:
-                type: named
-                name: Bool
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Bool
         userProfiles_preferences_communication_appNotifications:
-          description: generated from MongoDB validation schema
           fields:
             enabled:
               type:
-                type: named
-                name: Bool
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Bool
             frequency:
               type:
-                type: named
-                name: String
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
         userProfiles_preferences_privacySettings:
-          description: generated from MongoDB validation schema
           fields:
             adPersonalization:
               type:
-                type: named
-                name: Bool
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Bool
             shareDataForImprovements:
               type:
-                type: named
-                name: Bool
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Bool
         userProfiles_preferences_servicePreferences:
-          description: generated from MongoDB validation schema
           fields:
             favoriteLocations:
               type:
-                type: array
-                element_type:
-                  type: named
-                  name: userProfiles_preferences_servicePreferences_favoriteLocations
+                type: nullable
+                underlying_type:
+                  type: array
+                  element_type:
+                    type: named
+                    name: userProfiles_preferences_servicePreferences_favoriteLocations
             networkSettings:
               type:
-                type: named
-                name: userProfiles_preferences_servicePreferences_networkSettings
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: userProfiles_preferences_servicePreferences_networkSettings
         userProfiles_preferences_servicePreferences_favoriteLocations:
-          description: generated from MongoDB validation schema
           fields:
             coordinates:
               type:
-                type: named
-                name: userProfiles_preferences_servicePreferences_favoriteLocations_coordinates
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: userProfiles_preferences_servicePreferences_favoriteLocations_coordinates
             name:
               type:
-                type: named
-                name: String
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
         userProfiles_preferences_servicePreferences_favoriteLocations_coordinates:
-          description: generated from MongoDB validation schema
           fields:
             lat:
               type:
-                type: named
-                name: Double
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Double
             long:
               type:
-                type: named
-                name: Double
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Double
         userProfiles_preferences_servicePreferences_networkSettings:
-          description: generated from MongoDB validation schema
           fields:
             dataSaverMode:
               type:
-                type: named
-                name: Bool
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Bool
             preferredNetworkType:
               type:
-                type: named
-                name: String
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
         userProfiles_supportHistory:
-          description: generated from MongoDB validation schema
           fields:
             date:
               type:
-                type: named
-                name: String
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
             issue:
               type:
-                type: named
-                name: String
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
             resolutionNotes:
               type:
-                type: named
-                name: String
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
             status:
               type:
-                type: named
-                name: String
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
             ticketId:
               type:
-                type: named
-                name: String
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
         userProfiles_usageStats:
-          description: generated from MongoDB validation schema
           fields:
             appUsage:
               type:
-                type: array
-                element_type:
-                  type: named
-                  name: userProfiles_usageStats_appUsage
+                type: nullable
+                underlying_type:
+                  type: array
+                  element_type:
+                    type: named
+                    name: userProfiles_usageStats_appUsage
             callStats:
               type:
-                type: named
-                name: userProfiles_usageStats_callStats
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: userProfiles_usageStats_callStats
             dataUsage:
               type:
-                type: named
-                name: userProfiles_usageStats_dataUsage
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: userProfiles_usageStats_dataUsage
         userProfiles_usageStats_appUsage:
-          description: generated from MongoDB validation schema
           fields:
             name:
               type:
-                type: named
-                name: String
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
             usage:
               type:
-                type: named
-                name: String
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
         userProfiles_usageStats_callStats:
-          description: generated from MongoDB validation schema
           fields:
             internationalMinutes:
               type:
-                type: named
-                name: Int
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Int
             totalMinutes:
               type:
-                type: named
-                name: Int
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Int
         userProfiles_usageStats_dataUsage:
-          description: generated from MongoDB validation schema
           fields:
             currentMonth:
               type:
-                type: named
-                name: String
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
             total:
               type:
-                type: named
-                name: String
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
       collections:
         - name: customerPreferences
           arguments: {}
           type: customerPreferences
           uniqueness_constraints:
             customerPreferences_id:
+              unique_columns:
+                - _id
+          foreign_keys: {}
+        - name: userProfiles
+          arguments: {}
+          type: userProfiles
+          uniqueness_constraints:
+            userProfiles_id:
               unique_columns:
                 - _id
           foreign_keys: {}
@@ -945,6 +1253,9 @@ definition:
           nested_fields:
             filter_by: {}
             order_by: {}
+            aggregates: {}
+          exists:
+            nested_collections: {}
         mutation: {}
         relationships:
           relation_comparisons: {}

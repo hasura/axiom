@@ -6,7 +6,7 @@ definition:
     rootPath: .
     graphqlTypeNamePrefix: customer_
   includePaths:
-    - metadata-project-queries
+    - metadata-project
     - metadata-domain
   envMapping:
     CUSTOMER_AURORA_AUTHORIZATION_HEADER:
@@ -27,6 +27,12 @@ definition:
       fromEnv: CUSTOMER_MONGO_READ_URL
     CUSTOMER_MONGO_WRITE_URL:
       fromEnv: CUSTOMER_MONGO_WRITE_URL
+    CUSTOMER_STRIPE_AUTHORIZATION_HEADER:
+      fromEnv: CUSTOMER_STRIPE_AUTHORIZATION_HEADER
+    CUSTOMER_STRIPE_READ_URL:
+      fromEnv: CUSTOMER_STRIPE_READ_URL
+    CUSTOMER_STRIPE_WRITE_URL:
+      fromEnv: CUSTOMER_STRIPE_WRITE_URL
   connectors:
     - path: connector/aurora/connector.yaml
       connectorLinkName: aurora
@@ -34,3 +40,5 @@ definition:
       connectorLinkName: logic
     - path: connector/mongo/connector.yaml
       connectorLinkName: mongo
+    - path: connector/stripe/connector.yaml
+      connectorLinkName: stripe
