@@ -106,9 +106,9 @@ def generate_customers(auth_users: List[Dict]) -> List[Dict]:
             country = "United States"
             state = "California"
             segment = "Premium"  # Tech savvy user would likely be on a premium plan
-            satisfaction_score = 9  # High satisfaction
-            churn_risk = 0.05  # Low churn risk
-            churn_risk_factors = None  # No risk factors
+            satisfaction_score = 5  # Medium satisfaction
+            churn_risk = 0.55  # Medium churn risk
+            churn_risk_factors = "{Service quality issues}"
         else:
             first_name = fake.first_name()
             last_name = fake.last_name()
