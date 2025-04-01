@@ -775,19 +775,50 @@ def generate_billing(customers: List[Dict], customer_plans: List[Dict], plans: L
     return billing_records
 
 def generate_credit_cards(customers: List[Dict]) -> List[Dict]:
-    """Generate credit card information."""
+    """Generate realistic but fictitious credit card information."""
     credit_cards = []
     credit_card_id = 1
     
+    # Common credit card prefixes by provider
+    card_prefixes = {
+        "Visa": ["4"],
+        "Mastercard": ["51", "52", "53", "54", "55"],
+        "Amex": ["34", "37"],
+        "Discover": ["6011", "644", "645", "646", "647", "648", "649", "65"]
+    }
+    
     for customer in customers:
         # Some customers have multiple cards
-        num_cards = random.choices([1, 2], weights=[0.8, 0.2])[0]
+        num_cards = random.choices([1, 3], weights=[0.8, 0.2])[0]
         
         for _ in range(num_cards):
+            # Choose card type and corresponding prefix
+            card_type = random.choice(list(card_prefixes.keys()))
+            prefix = random.choice(card_prefixes[card_type])
+            
+            # Generate card number based on type
+            if card_type == "Amex":
+                # Amex: 15 digits
+                remaining_digits = 15 - len(prefix)
+                suffix = ''.join([str(random.randint(0, 9)) for _ in range(remaining_digits)])
+                number = prefix + suffix
+                # Format with proper spacing (XXXX XXXXXX XXXXX)
+                formatted_number = f"{number[0:4]} {number[4:10]} {number[10:15]}"
+            else:
+                # Other cards: 16 digits
+                remaining_digits = 16 - len(prefix)
+                suffix = ''.join([str(random.randint(0, 9)) for _ in range(remaining_digits)])
+                number = prefix + suffix
+                # Format with proper spacing (XXXX XXXX XXXX XXXX)
+                formatted_number = f"{number[0:4]} {number[4:8]} {number[8:12]} {number[12:16]}"
+            
             # Generate a future expiry date
             expiry_year = datetime.datetime.now().year + random.randint(1, 5)
             expiry_month = random.randint(1, 12)
             expiry_date = datetime.date(expiry_year, expiry_month, 1)
+            
+            # Format expiry as MM/YY
+            expiry_formatted = f"{expiry_month:02d}/{str(expiry_year)[2:]}"
             
             credit_cards.append({
                 "credit_card_id": credit_card_id,
@@ -795,7 +826,7 @@ def generate_credit_cards(customers: List[Dict]) -> List[Dict]:
                 "updated_at": fake.date_time_between(start_date="-1y", end_date="now").isoformat(),
                 "expiry": expiry_date.isoformat(),
                 "cvv": random.randint(100, 999),
-                "number": f"XXXX-XXXX-XXXX-{random.randint(1000, 9999)}",  # Masked for privacy
+                "number": formatted_number,
                 "customer_id": customer["customer_id"]
             })
             credit_card_id += 1
