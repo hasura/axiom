@@ -3,107 +3,157 @@ kind: ObjectType
 version: v1
 definition:
   name: Customers
-  description: |
-    Master customer/user datastore for the telecommunications system. Contains all subscriber 
+  description: >
+    Master customer/user datastore for the telecommunications system. Contains
+    all subscriber 
+
     information including service eligibility, network preferences, billing details, and 
+
     churn risk analytics. This model should be the primary source for any customer-facing 
+
     applications, call center systems, network provisioning, and business intelligence queries 
+
     related to subscriber base management.
   fields:
     - name: address
       type: Varchar
-      description: |
-        Subscriber's physical service address where telecommunications hardware may be 
+      description: >
+        Subscriber's physical service address where telecommunications hardware
+        may be 
+
         installed. Used for service qualification, network planning, and coverage analysis.
     - name: authUserId
       type: Int4
-      description: |
-        Foreign key to authentication system. Links subscriber credentials for customer 
+      description: >
+        Foreign key to authentication system. Links subscriber credentials for
+        customer 
+
         portal access, mobile app sign-in, and self-service kiosk authentication.
     - name: churnRisk
       type: Numeric
-      description: |
-        Predictive analytics score (0.0-1.0) indicating subscriber's likelihood to cancel 
+      description: >
+        Predictive analytics score (0.0-1.0) indicating subscriber's likelihood
+        to cancel 
+
         services or port number to competitor. Used for retention campaigns, loyalty program 
+
         targeting, and proactive service intervention strategies.
     - name: churnRiskFactors
       type: "[Text]"
-      description: |
-        Array of specific risk indicators identified by predictive models such as 'frequent 
+      description: >
+        Array of specific risk indicators identified by predictive models such
+        as 'frequent 
+
         dropped calls', 'billing disputes', 'competitor promotion inquiries', 'data usage 
+
         pattern change', or 'payment delinquency trends'.
     - name: city
       type: Varchar
-      description: |
-        Subscriber's city for service address. Critical for local network planning, 
+      description: >
+        Subscriber's city for service address. Critical for local network
+        planning, 
+
         regulatory compliance reporting, and market penetration analysis.
     - name: country
       type: Varchar
-      description: |
-        Subscriber's country. Determines applicable telecommunications regulations, 
+      description: >
+        Subscriber's country. Determines applicable telecommunications
+        regulations, 
+
         roaming agreements, and international calling rate structures.
     - name: customerId
       type: Int4!
-      description: |
-        Unique subscriber identifier across all telecommunications platforms and services.
+      description: >
+        Unique subscriber identifier across all telecommunications platforms and
+        services.
+
         Referenced by billing systems, network provisioning, customer support ticketing,
+
         and device management systems.
     - name: email
       type: Varchar
-      description: |
-        Subscriber's verified email address. Used for e-billing notifications, service 
+      description: >
+        Subscriber's verified email address. Used for e-billing notifications,
+        service 
+
         alerts, promotional communications, and account recovery. Validated during 
+
         activation with a 6-digit verification code.
     - name: firstName
       type: Varchar
-      description: |
-        Subscriber's given name used for personalized communications, account verification
+      description: >
+        Subscriber's given name used for personalized communications, account
+        verification
+
         during customer support calls, and regulatory identity verification requirements.
     - name: image
       type: Varchar
-      description: |
-        Path to subscriber's profile image (format: 'avatar_X.jpg') displayed in customer 
+      description: >
+        Path to subscriber's profile image (format: 'avatar_X.jpg') displayed in
+        customer 
+
         service systems, mobile app, and web portal. Helps agents personalize interactions.
     - name: lastName
       type: Varchar
-      description: |
-        Subscriber's family name used alongside firstName for account verification and
+      description: >
+        Subscriber's family name used alongside firstName for account
+        verification and
+
         personalized communications. Essential for regulatory compliance and billing identity.
     - name: lastSurveyDate
       type: Date
-      description: |
-        Date of most recent Net Promoter Score or customer satisfaction survey completion.
+      description: >
+        Date of most recent Net Promoter Score or customer satisfaction survey
+        completion.
+
         Influences when subscriber is eligible for follow-up surveys and determines survey
+
         campaign targeting eligibility.
     - name: phoneNumber
       type: Varchar
-      description: |
-        Subscriber's primary contact number, which may be different from their subscribed
+      description: >
+        Subscriber's primary contact number, which may be different from their
+        subscribed
+
         service numbers. Used for account verification, service notifications, and two-factor
+
         authentication. Critical for contacting subscriber during service disruptions.
     - name: postcode
       type: Varchar
-      description: |
-        Postal code for service qualification, network planning, and spectrum licensing
+      description: >
+        Postal code for service qualification, network planning, and spectrum
+        licensing
+
         compliance. Used in analytics for market penetration by geographic segment.
     - name: satisfactionScore
       type: Int4
-      description: |
-        Net Promoter Score (1-10) indicating subscriber's likelihood to recommend services.
+      description: >
+        Net Promoter Score (1-10) indicating subscriber's likelihood to
+        recommend services.
+
         Tracks customer experience across touchpoints, predicts renewal likelihood, and
+
         identifies potential brand advocates for referral programs.
     - name: segment
       type: Varchar
-      description: |
-        Subscriber classification category ('Business', 'Family', 'Premium', etc.) determining
+      description: >
+        Subscriber classification category ('Business', 'Family', 'Premium',
+        etc.) determining
+
         service SLAs, priority support routing, specialized retention strategies, and
+
         applicable promotional offerings. Influences network QoS prioritization.
     - name: state
       type: Varchar
-      description: |
-        State or province of subscriber's service address. Determines applicable local
+      description: >
+        State or province of subscriber's service address. Determines applicable
+        local
+
         telecommunications taxes, regulatory requirements, and emergency services routing
+
         configurations.
+    - name: dob
+      type: Date
   graphql:
     typeName: customer_Customers
     inputTypeName: customer_CustomersInput
@@ -162,6 +212,9 @@ definition:
         state:
           column:
             name: state
+        dob:
+          column:
+            name: dob
 
 ---
 kind: TypePermissions
@@ -189,6 +242,7 @@ definition:
           - satisfactionScore
           - segment
           - state
+          - dob
     - role: customer
       output:
         allowedFields:
@@ -245,6 +299,8 @@ definition:
           booleanExpressionType: VarcharBoolExp
         - fieldName: state
           booleanExpressionType: VarcharBoolExp
+        - fieldName: dob
+          booleanExpressionType: DateBoolExp
       comparableRelationships:
         - relationshipName: billings
         - relationshipName: creditCards
@@ -311,6 +367,8 @@ definition:
           aggregateExpression: VarcharAggExp
         - fieldName: state
           aggregateExpression: VarcharAggExp
+        - fieldName: dob
+          aggregateExpression: DateAggExp
   count:
     enable: true
   graphql:
@@ -357,6 +415,8 @@ definition:
           orderByExpression: VarcharOrderByExp
         - fieldName: state
           orderByExpression: VarcharOrderByExp
+        - fieldName: dob
+          orderByExpression: DateOrderByExp
       orderableRelationships: []
   graphql:
     expressionTypeName: customer_CustomersOrderByExp
@@ -368,18 +428,18 @@ definition:
   name: Customers
   description: |
     # Telecommunications Customer Master Repository
-    
+
     Central subscriber datastore for the integrated telecommunications system. This is the authoritative
     source of truth for all customer data across the organization including:
-    
+
     * **Service eligibility** and qualification status
     * **Network preferences** and technical configurations
     * **Billing profiles** and payment history references
     * **Risk analytics** including churn prediction models
     * **Customer journey** tracking across all touchpoints
-    
+
     ## Usage Guidelines
-    
+
     This model should be the primary reference for:
     - Customer-facing applications and self-service portals
     - Call center and technical support systems
@@ -427,11 +487,11 @@ definition:
         allowSubscriptions: true
     - role: customer
       select:
-        filter: 
+        filter:
           fieldComparison:
             field: customerId
             operator: _eq
-            value: 
+            value:
               sessionVariable: x-hasura-user-id
         allowSubscriptions: true
 
@@ -808,3 +868,4 @@ definition:
           - fieldName: customerId
   graphql:
     aggregateFieldName: voipServicesAggregate
+

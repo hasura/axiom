@@ -272,7 +272,7 @@ def main():
     customer_plans = generate_customer_plans(customers, plans)
     write_csv(customer_plans, "customer_plans.csv")
 
-    customer_plan_devices = generate_customer_plan_devices(customer_plans, devices)
+    customer_plan_devices = generate_customer_plan_devices(customer_plans, devices, customers)
     write_csv(customer_plan_devices, "customer_plan_devices.csv")
 
     customer_network = generate_customer_network(customers, network_nodes)
@@ -290,10 +290,10 @@ def main():
     deals = generate_deals(NUM_DEALS)
     write_csv(deals, "deals.csv")
 
-    calls = generate_calls(customer_plans, network_nodes)
+    calls = generate_calls(customer_plans, network_nodes, customers, customer_plan_devices)
     write_csv(calls, "calls.csv")
 
-    texts = generate_texts(customer_plans, network_nodes)
+    texts = generate_texts(customer_plans, network_nodes, customers, customer_plan_devices)
     write_csv(texts, "texts.csv")
 
     # Generate service interactions and customer feedback data
@@ -350,7 +350,7 @@ def main():
     user_profiles = generate_user_profiles(customers, customer_link)
     write_json(user_profiles, "user_profiles.json", "mongo_seed")
 
-    customer_preferences = generate_customer_preferences(customer_link)
+    customer_preferences = generate_customer_preferences(customers, customer_link)
     write_json(customer_preferences, "customer_preferences.json", "mongo_seed")
 
     # Generate ClickHouse data

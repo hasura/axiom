@@ -16,6 +16,8 @@ definition:
       type: Varchar
     - name: status
       type: Varchar
+    - name: quality
+      type: Varchar
   graphql:
     typeName: customer_Network
     inputTypeName: customer_NetworkInput
@@ -41,6 +43,9 @@ definition:
         status:
           column:
             name: status
+        quality:
+          column:
+            name: quality
 
 ---
 kind: TypePermissions
@@ -57,6 +62,7 @@ definition:
           - nodeId
           - nodeName
           - status
+          - quality
 
 ---
 kind: BooleanExpressionType
@@ -78,6 +84,8 @@ definition:
         - fieldName: nodeName
           booleanExpressionType: VarcharBoolExp
         - fieldName: status
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: quality
           booleanExpressionType: VarcharBoolExp
       comparableRelationships:
         - relationshipName: customerNetworks
@@ -109,6 +117,8 @@ definition:
           aggregateExpression: VarcharAggExp
         - fieldName: status
           aggregateExpression: VarcharAggExp
+        - fieldName: quality
+          aggregateExpression: VarcharAggExp
   count:
     enable: true
   graphql:
@@ -134,6 +144,8 @@ definition:
         - fieldName: nodeName
           orderByExpression: VarcharOrderByExp
         - fieldName: status
+          orderByExpression: VarcharOrderByExp
+        - fieldName: quality
           orderByExpression: VarcharOrderByExp
       orderableRelationships: []
   graphql:
