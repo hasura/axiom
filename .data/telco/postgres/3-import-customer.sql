@@ -14,6 +14,7 @@ CREATE TABLE customers (
     state VARCHAR(255),
     postcode VARCHAR(255),
     country VARCHAR(255),
+    dob DATE,
     image VARCHAR(30),
     segment VARCHAR(30),
     auth_user_id INTEGER,
@@ -70,7 +71,8 @@ CREATE TABLE network (
     latitude DECIMAL(9,6),
     longitude DECIMAL(9,6),
     capacity INTEGER,
-    status VARCHAR(50)
+    status VARCHAR(50),
+    quality VARCHAR(50)
 );
 
 -- Table for associating customers with network nodes
