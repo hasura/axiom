@@ -15,28 +15,70 @@ definition:
     version: v0.1
     schema:
       scalar_types:
-        bool:
+        float8:
           representation:
-            type: boolean
+            type: float64
           aggregate_functions:
-            bool_and:
+            avg:
               result_type:
                 type: nullable
                 underlying_type:
                   type: named
-                  name: bool
-            bool_or:
+                  name: float8
+            max:
               result_type:
                 type: nullable
                 underlying_type:
                   type: named
-                  name: bool
-            every:
+                  name: float8
+            min:
               result_type:
                 type: nullable
                 underlying_type:
                   type: named
-                  name: bool
+                  name: float8
+            stddev:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: float8
+            stddev_pop:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: float8
+            stddev_samp:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: float8
+            sum:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: float8
+            var_pop:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: float8
+            var_samp:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: float8
+            variance:
+              result_type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: float8
           comparison_operators:
             _eq:
               type: equal
@@ -44,29 +86,29 @@ definition:
               type: custom
               argument_type:
                 type: named
-                name: bool
+                name: float8
             _gte:
               type: custom
               argument_type:
                 type: named
-                name: bool
+                name: float8
             _in:
               type: in
             _lt:
               type: custom
               argument_type:
                 type: named
-                name: bool
+                name: float8
             _lte:
               type: custom
               argument_type:
                 type: named
-                name: bool
+                name: float8
             _neq:
               type: custom
               argument_type:
                 type: named
-                name: bool
+                name: float8
         int4:
           representation:
             type: int32
@@ -291,58 +333,6 @@ definition:
               argument_type:
                 type: named
                 name: int8
-        json:
-          aggregate_functions: {}
-          comparison_operators:
-            _in:
-              type: in
-        jsonb:
-          aggregate_functions: {}
-          comparison_operators:
-            _eq:
-              type: equal
-            _gt:
-              type: custom
-              argument_type:
-                type: named
-                name: jsonb
-            _gte:
-              type: custom
-              argument_type:
-                type: named
-                name: jsonb
-            _in:
-              type: in
-            _lt:
-              type: custom
-              argument_type:
-                type: named
-                name: jsonb
-            _lte:
-              type: custom
-              argument_type:
-                type: named
-                name: jsonb
-            _neq:
-              type: custom
-              argument_type:
-                type: named
-                name: jsonb
-            jsonb_contained:
-              type: custom
-              argument_type:
-                type: named
-                name: jsonb
-            jsonb_contains:
-              type: custom
-              argument_type:
-                type: named
-                name: jsonb
-            jsonb_exists:
-              type: custom
-              argument_type:
-                type: named
-                name: text
         numeric:
           representation:
             type: bigdecimal
@@ -533,52 +523,6 @@ definition:
               argument_type:
                 type: named
                 name: text
-        timestamp:
-          representation:
-            type: timestamp
-          aggregate_functions:
-            max:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: timestamp
-            min:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: timestamp
-          comparison_operators:
-            _eq:
-              type: equal
-            _gt:
-              type: custom
-              argument_type:
-                type: named
-                name: timestamp
-            _gte:
-              type: custom
-              argument_type:
-                type: named
-                name: timestamp
-            _in:
-              type: in
-            _lt:
-              type: custom
-              argument_type:
-                type: named
-                name: timestamp
-            _lte:
-              type: custom
-              argument_type:
-                type: named
-                name: timestamp
-            _neq:
-              type: custom
-              argument_type:
-                type: named
-                name: timestamp
         timestamptz:
           representation:
             type: timestamptz
@@ -704,6 +648,36 @@ definition:
                 type: named
                 name: vector
       object_types:
+        delete_document_embeddings_by_document_uuid_response:
+          description: Responses from the 'delete_document_embeddings_by_document_uuid' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: document_embeddings
+        delete_documents_by_uuid_response:
+          description: Responses from the 'delete_documents_by_uuid' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: documents
         document_embeddings:
           fields:
             document_uuid:
@@ -716,6 +690,18 @@ definition:
                 underlying_type:
                   type: named
                   name: vector
+        document_vector_search:
+          fields:
+            distance:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: float8
+            document_uuid:
+              type:
+                type: named
+                name: uuid
         documents:
           fields:
             body:
@@ -776,6 +762,110 @@ definition:
                 underlying_type:
                   type: named
                   name: int4
+        insert_document_embeddings_object:
+          fields:
+            document_uuid:
+              type:
+                type: named
+                name: uuid
+            embeddings:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: vector
+        insert_document_embeddings_response:
+          description: Responses from the 'insert_document_embeddings' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: document_embeddings
+        insert_documents_object:
+          fields:
+            body:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: text
+            created_at:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: timestamptz
+            language:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: text
+            rating:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            status:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: text
+            tags:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: text
+            title:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: text
+            updated_at:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: timestamptz
+            uuid:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: uuid
+            view_count:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+        insert_documents_response:
+          description: Responses from the 'insert_documents' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: documents
         update_column_document_embeddings_document_uuid:
           description: Update the 'document_uuid' column in the 'document_embeddings' collection
           fields:
@@ -892,8 +982,8 @@ definition:
                 underlying_type:
                   type: named
                   name: int4
-        v2_delete_document_embeddings_by_document_uuid_response:
-          description: Responses from the 'v2_delete_document_embeddings_by_document_uuid' procedure
+        update_document_embeddings_by_document_uuid_response:
+          description: Responses from the 'update_document_embeddings_by_document_uuid' procedure
           fields:
             affected_rows:
               description: The number of rows affected by the mutation
@@ -907,141 +997,7 @@ definition:
                 element_type:
                   type: named
                   name: document_embeddings
-        v2_delete_documents_by_uuid_response:
-          description: Responses from the 'v2_delete_documents_by_uuid' procedure
-          fields:
-            affected_rows:
-              description: The number of rows affected by the mutation
-              type:
-                type: named
-                name: int4
-            returning:
-              description: Data from rows affected by the mutation
-              type:
-                type: array
-                element_type:
-                  type: named
-                  name: documents
-        v2_insert_document_embeddings_object:
-          fields:
-            document_uuid:
-              type:
-                type: named
-                name: uuid
-            embeddings:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: vector
-        v2_insert_document_embeddings_response:
-          description: Responses from the 'v2_insert_document_embeddings' procedure
-          fields:
-            affected_rows:
-              description: The number of rows affected by the mutation
-              type:
-                type: named
-                name: int4
-            returning:
-              description: Data from rows affected by the mutation
-              type:
-                type: array
-                element_type:
-                  type: named
-                  name: document_embeddings
-        v2_insert_documents_object:
-          fields:
-            body:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-            created_at:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: timestamptz
-            language:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-            rating:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: int4
-            status:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-            tags:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-            title:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-            updated_at:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: timestamptz
-            uuid:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: uuid
-            view_count:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: int4
-        v2_insert_documents_response:
-          description: Responses from the 'v2_insert_documents' procedure
-          fields:
-            affected_rows:
-              description: The number of rows affected by the mutation
-              type:
-                type: named
-                name: int4
-            returning:
-              description: Data from rows affected by the mutation
-              type:
-                type: array
-                element_type:
-                  type: named
-                  name: documents
-        v2_update_document_embeddings_by_document_uuid_response:
-          description: Responses from the 'v2_update_document_embeddings_by_document_uuid' procedure
-          fields:
-            affected_rows:
-              description: The number of rows affected by the mutation
-              type:
-                type: named
-                name: int4
-            returning:
-              description: Data from rows affected by the mutation
-              type:
-                type: array
-                element_type:
-                  type: named
-                  name: document_embeddings
-        v2_update_document_embeddings_by_document_uuid_update_columns:
+        update_document_embeddings_by_document_uuid_update_columns:
           description: Update the columns of the 'document_embeddings' collection
           fields:
             document_uuid:
@@ -1058,8 +1014,8 @@ definition:
                 underlying_type:
                   type: named
                   name: update_column_document_embeddings_embeddings
-        v2_update_documents_by_uuid_response:
-          description: Responses from the 'v2_update_documents_by_uuid' procedure
+        update_documents_by_uuid_response:
+          description: Responses from the 'update_documents_by_uuid' procedure
           fields:
             affected_rows:
               description: The number of rows affected by the mutation
@@ -1073,7 +1029,7 @@ definition:
                 element_type:
                   type: named
                   name: documents
-        v2_update_documents_by_uuid_update_columns:
+        update_documents_by_uuid_update_columns:
           description: Update the columns of the 'documents' collection
           fields:
             body:
@@ -1167,9 +1123,18 @@ definition:
               unique_columns:
                 - uuid
           foreign_keys: {}
+        - name: document_vector_search
+          arguments:
+            query_vector:
+              type:
+                type: named
+                name: vector
+          type: document_vector_search
+          uniqueness_constraints: {}
+          foreign_keys: {}
       functions: []
       procedures:
-        - name: v2_delete_document_embeddings_by_document_uuid
+        - name: delete_document_embeddings_by_document_uuid
           description: Delete any row on the 'document_embeddings' collection using the 'document_uuid' key
           arguments:
             key_document_uuid:
@@ -1179,12 +1144,14 @@ definition:
             pre_check:
               description: Delete permission predicate over the 'document_embeddings' collection
               type:
-                type: predicate
-                object_type_name: document_embeddings
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: document_embeddings
           result_type:
             type: named
-            name: v2_delete_document_embeddings_by_document_uuid_response
-        - name: v2_delete_documents_by_uuid
+            name: delete_document_embeddings_by_document_uuid_response
+        - name: delete_documents_by_uuid
           description: Delete any row on the 'documents' collection using the 'uuid' key
           arguments:
             key_uuid:
@@ -1194,12 +1161,14 @@ definition:
             pre_check:
               description: Delete permission predicate over the 'documents' collection
               type:
-                type: predicate
-                object_type_name: documents
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: documents
           result_type:
             type: named
-            name: v2_delete_documents_by_uuid_response
-        - name: v2_insert_document_embeddings
+            name: delete_documents_by_uuid_response
+        - name: insert_document_embeddings
           description: Insert into the document_embeddings table
           arguments:
             objects:
@@ -1207,16 +1176,18 @@ definition:
                 type: array
                 element_type:
                   type: named
-                  name: v2_insert_document_embeddings_object
+                  name: insert_document_embeddings_object
             post_check:
               description: Insert permission predicate over the 'document_embeddings' collection
               type:
-                type: predicate
-                object_type_name: document_embeddings
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: document_embeddings
           result_type:
             type: named
-            name: v2_insert_document_embeddings_response
-        - name: v2_insert_documents
+            name: insert_document_embeddings_response
+        - name: insert_documents
           description: Insert into the documents table
           arguments:
             objects:
@@ -1224,16 +1195,18 @@ definition:
                 type: array
                 element_type:
                   type: named
-                  name: v2_insert_documents_object
+                  name: insert_documents_object
             post_check:
               description: Insert permission predicate over the 'documents' collection
               type:
-                type: predicate
-                object_type_name: documents
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: documents
           result_type:
             type: named
-            name: v2_insert_documents_response
-        - name: v2_update_document_embeddings_by_document_uuid
+            name: insert_documents_response
+        - name: update_document_embeddings_by_document_uuid
           description: Update any row on the 'document_embeddings' collection using the 'document_uuid' key
           arguments:
             key_document_uuid:
@@ -1243,21 +1216,25 @@ definition:
             post_check:
               description: Update permission post-condition predicate over the 'document_embeddings' collection
               type:
-                type: predicate
-                object_type_name: document_embeddings
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: document_embeddings
             pre_check:
               description: Update permission pre-condition predicate over the 'document_embeddings' collection
               type:
-                type: predicate
-                object_type_name: document_embeddings
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: document_embeddings
             update_columns:
               type:
                 type: named
-                name: v2_update_document_embeddings_by_document_uuid_update_columns
+                name: update_document_embeddings_by_document_uuid_update_columns
           result_type:
             type: named
-            name: v2_update_document_embeddings_by_document_uuid_response
-        - name: v2_update_documents_by_uuid
+            name: update_document_embeddings_by_document_uuid_response
+        - name: update_documents_by_uuid
           description: Update any row on the 'documents' collection using the 'uuid' key
           arguments:
             key_uuid:
@@ -1267,20 +1244,24 @@ definition:
             post_check:
               description: Update permission post-condition predicate over the 'documents' collection
               type:
-                type: predicate
-                object_type_name: documents
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: documents
             pre_check:
               description: Update permission pre-condition predicate over the 'documents' collection
               type:
-                type: predicate
-                object_type_name: documents
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: documents
             update_columns:
               type:
                 type: named
-                name: v2_update_documents_by_uuid_update_columns
+                name: update_documents_by_uuid_update_columns
           result_type:
             type: named
-            name: v2_update_documents_by_uuid_response
+            name: update_documents_by_uuid_response
     capabilities:
       version: 0.1.6
       capabilities:
@@ -1291,6 +1272,8 @@ definition:
           nested_fields:
             filter_by: {}
             order_by: {}
+          exists:
+            nested_collections: {}
         mutation:
           transactional: {}
           explain: {}

@@ -1,0 +1,151 @@
+kind: DataConnectorLink
+version: v1
+definition:
+  name: vector_search_service
+  url:
+    readWriteUrls:
+      read:
+        valueFromEnv: SUPPORT_VECTOR_SEARCH_SERVICE_READ_URL
+      write:
+        valueFromEnv: SUPPORT_VECTOR_SEARCH_SERVICE_WRITE_URL
+  headers:
+    Authorization:
+      valueFromEnv: SUPPORT_VECTOR_SEARCH_SERVICE_AUTHORIZATION_HEADER
+  schema:
+    version: v0.1
+    schema:
+      scalar_types:
+        Float:
+          representation:
+            type: float64
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+        String:
+          representation:
+            type: string
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+      object_types:
+        DocumentEmbeddingResponse:
+          description: Interface for document embedding response
+          fields:
+            document_uuid:
+              type:
+                name: String
+                type: named
+            embeddings:
+              type:
+                element_type:
+                  name: Float
+                  type: named
+                type: array
+        DocumentMetadata:
+          description: Interface for document metadata
+          fields:
+            body:
+              type:
+                name: String
+                type: named
+            created_at:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            language:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            rating:
+              type:
+                type: nullable
+                underlying_type:
+                  name: Float
+                  type: named
+            status:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            tags:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            title:
+              type:
+                name: String
+                type: named
+            updated_at:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            uuid:
+              type:
+                name: String
+                type: named
+            view_count:
+              type:
+                type: nullable
+                underlying_type:
+                  name: Float
+                  type: named
+        TextEmbeddingResponse:
+          description: Interface for text embedding response
+          fields:
+            embedding:
+              type:
+                element_type:
+                  name: Float
+                  type: named
+                type: array
+            text:
+              type:
+                name: String
+                type: named
+      collections: []
+      functions:
+        - name: generateEmbedding
+          description: Generate embeddings for a collection of documents
+          arguments:
+            text:
+              description: String input for converting into embedding
+              type:
+                name: String
+                type: named
+          result_type:
+            name: TextEmbeddingResponse
+            type: named
+        - name: generateDocumentEmbeddings
+          description: Generate embeddings for a collection of documents
+          arguments:
+            documents:
+              description: Array of document metadata
+              type:
+                element_type:
+                  name: DocumentMetadata
+                  type: named
+                type: array
+          result_type:
+            element_type:
+              name: DocumentEmbeddingResponse
+              type: named
+            type: array
+      procedures: []
+    capabilities:
+      version: 0.1.6
+      capabilities:
+        query:
+          variables: {}
+          nested_fields: {}
+        mutation: {}

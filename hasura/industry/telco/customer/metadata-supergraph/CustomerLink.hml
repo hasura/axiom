@@ -2,25 +2,6 @@
 kind: Relationship
 version: v1
 definition:
-  name: supportDB
-  sourceType: CustomerLink
-  target:
-    model:
-      name: UserProfiles
-      relationshipType: Object
-      subgraph: support
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: customerGuid
-      target:
-        modelField:
-          - fieldName: memberId
-
----
-kind: Relationship
-version: v1
-definition:
   name: CDR
   sourceType: CustomerLink
   target:
@@ -73,3 +54,21 @@ definition:
       target:
         modelField:
           - fieldName: guid
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: prefs
+  sourceType: CustomerLink
+  target:
+    model:
+      name: CustomerPreferences
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerGuid
+      target:
+        modelField:
+          - fieldName: customerGuid

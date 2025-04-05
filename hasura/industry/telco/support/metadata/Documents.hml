@@ -25,8 +25,8 @@ definition:
     - name: viewCount
       type: Int4
   graphql:
-    typeName: Support_Documents
-    inputTypeName: Support_DocumentsInput
+    typeName: support_Documents
+    inputTypeName: support_DocumentsInput
   dataConnectorTypeMapping:
     - dataConnectorName: vector
       dataConnectorObjectType: documents
@@ -87,74 +87,8 @@ definition:
           - body
           - createdAt
           - language
-          - rating
-          - status
           - tags
           - title
-          - updatedAt
-          - uuid
-          - viewCount
-
----
-kind: Model
-version: v2
-definition:
-  name: Documents
-  objectType: Documents
-  source:
-    dataConnectorName: vector
-    collection: documents
-  filterExpressionType: DocumentsBoolExp
-  graphql:
-    selectMany:
-      queryRootField: documents
-      subscription:
-        rootField: documents
-    selectUniques:
-      - queryRootField: documentsByUuid
-        uniqueIdentifier:
-          - uuid
-        subscription:
-          rootField: documentsByUuid
-    filterInputTypeName: DocumentsFilterInput
-    aggregate:
-      queryRootField: documentsAggregate
-      subscription:
-        rootField: documentsAggregate
-  aggregateExpression: DocumentsAggExp
-  orderByExpression: DocumentsOrderByExp
-
----
-kind: ModelPermissions
-version: v1
-definition:
-  modelName: Documents
-  permissions:
-    - role: admin
-      select:
-        filter: null
-        allowSubscriptions: true
-    - role: customer
-      select:
-        filter: null
-
----
-kind: Relationship
-version: v1
-definition:
-  name: documentEmbeddings
-  sourceType: Documents
-  target:
-    model:
-      name: DocumentEmbeddings
-      relationshipType: Array
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: uuid
-      target:
-        modelField:
-          - fieldName: documentUuid
 
 ---
 kind: BooleanExpressionType
@@ -185,13 +119,14 @@ definition:
           booleanExpressionType: UuidBoolExp
         - fieldName: viewCount
           booleanExpressionType: Int4BoolExp
-      comparableRelationships: []
+      comparableRelationships:
+        - relationshipName: documentEmbeddings
   logicalOperators:
     enable: true
   isNull:
     enable: true
   graphql:
-    typeName: Support_DocumentsBoolExp
+    typeName: support_DocumentsBoolExp
 
 ---
 kind: AggregateExpression
@@ -225,7 +160,7 @@ definition:
   count:
     enable: true
   graphql:
-    selectTypeName: DocumentsAggExp
+    selectTypeName: support_DocumentsAggExp
 
 ---
 kind: OrderByExpression
@@ -259,4 +194,70 @@ definition:
       orderableRelationships: []
   graphql:
     expressionTypeName: support_DocumentsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: Documents
+  objectType: Documents
+  source:
+    dataConnectorName: vector
+    collection: documents
+  filterExpressionType: DocumentsBoolExp
+  aggregateExpression: DocumentsAggExp
+  orderByExpression: DocumentsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: documents
+      subscription:
+        rootField: documents
+    selectUniques:
+      - queryRootField: documentsByUuid
+        uniqueIdentifier:
+          - uuid
+        subscription:
+          rootField: documentsByUuid
+    filterInputTypeName: support_DocumentsFilterInput
+    aggregate:
+      queryRootField: documentsAggregate
+      subscription:
+        rootField: documentsAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: Documents
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+    - role: customer
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: documentEmbeddings
+  sourceType: Documents
+  target:
+    model:
+      name: DocumentEmbeddings
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: DocumentEmbeddingsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: uuid
+      target:
+        modelField:
+          - fieldName: documentUuid
+  graphql:
+    aggregateFieldName: documentEmbeddingsAggregate
 

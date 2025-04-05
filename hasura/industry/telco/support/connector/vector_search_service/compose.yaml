@@ -1,0 +1,14 @@
+services:
+  support_vector_search_service:
+    build:
+      context: .
+      dockerfile: .hasura-connector/Dockerfile
+    environment:
+      HASURA_SERVICE_TOKEN_SECRET: $SUPPORT_VECTOR_SEARCH_SERVICE_HASURA_SERVICE_TOKEN_SECRET
+      OTEL_EXPORTER_OTLP_ENDPOINT: $SUPPORT_VECTOR_SEARCH_SERVICE_OTEL_EXPORTER_OTLP_ENDPOINT
+      OTEL_SERVICE_NAME: $SUPPORT_VECTOR_SEARCH_SERVICE_OTEL_SERVICE_NAME
+      OPENAI_API_KEY: $SUPPORT_VECTOR_SEARCH_SERVICE_OPENAI_API_KEY
+    extra_hosts:
+      - local.hasura.dev:host-gateway
+    ports:
+      - 6633:8080

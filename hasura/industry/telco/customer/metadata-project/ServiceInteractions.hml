@@ -1,0 +1,265 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ServiceInteractions
+  description: Interactions that a customer has with a member of service staff (not support interactions)
+  fields:
+    - name: agentId
+      type: Int4
+    - name: category
+      type: Varchar
+    - name: channel
+      type: Varchar
+    - name: customerId
+      type: Int4
+    - name: interactionDate
+      type: Timestamptz
+    - name: interactionId
+      type: Int4!
+    - name: notes
+      type: Text
+    - name: resolutionStatus
+      type: Varchar
+    - name: resolutionTimeMinutes
+      type: Int4
+    - name: satisfactionScore
+      type: Int4
+  graphql:
+    typeName: customer_ServiceInteractions
+    inputTypeName: customer_ServiceInteractionsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: service_interactions
+      fieldMapping:
+        agentId:
+          column:
+            name: agent_id
+        category:
+          column:
+            name: category
+        channel:
+          column:
+            name: channel
+        customerId:
+          column:
+            name: customer_id
+        interactionDate:
+          column:
+            name: interaction_date
+        interactionId:
+          column:
+            name: interaction_id
+        notes:
+          column:
+            name: notes
+        resolutionStatus:
+          column:
+            name: resolution_status
+        resolutionTimeMinutes:
+          column:
+            name: resolution_time_minutes
+        satisfactionScore:
+          column:
+            name: satisfaction_score
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ServiceInteractions
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - agentId
+          - category
+          - channel
+          - customerId
+          - interactionDate
+          - interactionId
+          - notes
+          - resolutionStatus
+          - resolutionTimeMinutes
+          - satisfactionScore
+    - role: customer
+      output:
+        allowedFields:
+          - category
+          - interactionDate
+          - resolutionStatus
+          - resolutionTimeMinutes
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ServiceInteractionsBoolExp
+  operand:
+    object:
+      type: ServiceInteractions
+      comparableFields:
+        - fieldName: agentId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: category
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: channel
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: customerId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: interactionDate
+          booleanExpressionType: TimestamptzBoolExp
+        - fieldName: interactionId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: notes
+          booleanExpressionType: TextBoolExp
+        - fieldName: resolutionStatus
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: resolutionTimeMinutes
+          booleanExpressionType: Int4BoolExp
+        - fieldName: satisfactionScore
+          booleanExpressionType: Int4BoolExp
+      comparableRelationships:
+        - relationshipName: customer
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customer_ServiceInteractionsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ServiceInteractionsAggExp
+  operand:
+    object:
+      aggregatedType: ServiceInteractions
+      aggregatableFields:
+        - fieldName: agentId
+          aggregateExpression: Int4AggExp
+        - fieldName: category
+          aggregateExpression: VarcharAggExp
+        - fieldName: channel
+          aggregateExpression: VarcharAggExp
+        - fieldName: customerId
+          aggregateExpression: Int4AggExp
+        - fieldName: interactionDate
+          aggregateExpression: TimestamptzAggExp
+        - fieldName: interactionId
+          aggregateExpression: Int4AggExp
+        - fieldName: notes
+          aggregateExpression: TextAggExp
+        - fieldName: resolutionStatus
+          aggregateExpression: VarcharAggExp
+        - fieldName: resolutionTimeMinutes
+          aggregateExpression: Int4AggExp
+        - fieldName: satisfactionScore
+          aggregateExpression: Int4AggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: customer_ServiceInteractionsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ServiceInteractionsOrderByExp
+  operand:
+    object:
+      orderedType: ServiceInteractions
+      orderableFields:
+        - fieldName: agentId
+          orderByExpression: Int4OrderByExp
+        - fieldName: category
+          orderByExpression: VarcharOrderByExp
+        - fieldName: channel
+          orderByExpression: VarcharOrderByExp
+        - fieldName: customerId
+          orderByExpression: Int4OrderByExp
+        - fieldName: interactionDate
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: interactionId
+          orderByExpression: Int4OrderByExp
+        - fieldName: notes
+          orderByExpression: TextOrderByExp
+        - fieldName: resolutionStatus
+          orderByExpression: VarcharOrderByExp
+        - fieldName: resolutionTimeMinutes
+          orderByExpression: Int4OrderByExp
+        - fieldName: satisfactionScore
+          orderByExpression: Int4OrderByExp
+      orderableRelationships:
+        - relationshipName: customer
+  graphql:
+    expressionTypeName: customer_ServiceInteractionsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ServiceInteractions
+  objectType: ServiceInteractions
+  source:
+    dataConnectorName: aurora
+    collection: service_interactions
+  filterExpressionType: ServiceInteractionsBoolExp
+  aggregateExpression: ServiceInteractionsAggExp
+  orderByExpression: ServiceInteractionsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: serviceInteractions
+      subscription:
+        rootField: serviceInteractions
+    selectUniques:
+      - queryRootField: serviceInteractionsByInteractionId
+        uniqueIdentifier:
+          - interactionId
+        subscription:
+          rootField: serviceInteractionsByInteractionId
+    filterInputTypeName: customer_ServiceInteractionsFilterInput
+    aggregate:
+      queryRootField: serviceInteractionsAggregate
+      subscription:
+        rootField: serviceInteractionsAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ServiceInteractions
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+    - role: customer
+      select:
+        filter: 
+          fieldComparison:
+            field: customerId
+            operator: _eq
+            value: 
+              sessionVariable: x-hasura-user-id
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer
+  sourceType: ServiceInteractions
+  target:
+    model:
+      name: Customers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId
+

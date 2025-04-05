@@ -53,6 +53,26 @@ services:
       - MONGO_INITDB_DATABASE=holotel
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
+    healthcheck:
+      test: "mongosh --quiet --eval 'db.adminCommand(\"ping\")'"
+      interval: 10s
+      timeout: 5s
+      retries: 30
+
+  mongo-seed:
+    env_file:
+        - .env
+    build:
+        context: ./mongo_seed
+        dockerfile: Dockerfile
+        args:
+            - DATABASE_URI=mongodb://local.hasura.dev:27017/holotel
+            - USERNAME=presales
+            - PASSWORD=${MONGO_PASSWORD}
+    depends_on:
+        - mongodb
+    extra_hosts:
+      - local.hasura.dev=host-gateway
 
   clickhouse:
     image: clickhouse/clickhouse-server
@@ -68,6 +88,7 @@ services:
     volumes:
       - ./clickhouse/config.d/config.xml:/etc/clickhouse-server/config.d/config.xml
       - ./clickhouse/users.d/users.xml:/etc/clickhouse-server/users.d/users.xml
+      - ./clickhouse/csv:/etc/clickhouse-server/csv
       - clickhouse_data:/var/lib/clickhouse
       - ./clickhouse/scripts/:/docker-entrypoint-initdb.d/
 

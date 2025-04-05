@@ -4,73 +4,7 @@ version: v1
 definition:
   name: ObjectId
   graphql:
-    typeName: ObjectId
-
----
-kind: ScalarType
-version: v1
-definition:
-  name: Bool
-  graphql:
-    typeName: Bool
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: mongo
-  dataConnectorScalarType: ObjectId
-  representation: ObjectId
-  graphql:
-    comparisonExpressionTypeName: ObjectIdComparisonExp
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: mongo
-  dataConnectorScalarType: String
-  representation: String
-  graphql:
-    comparisonExpressionTypeName: StringComparisonExp
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: mongo
-  dataConnectorScalarType: Bool
-  representation: Bool
-  graphql:
-    comparisonExpressionTypeName: BoolComparisonExp
-
----
-kind: ScalarType
-version: v1
-definition:
-  name: Double
-  graphql:
-    typeName: Double
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: mongo
-  dataConnectorScalarType: Double
-  representation: Double
-  graphql:
-    comparisonExpressionTypeName: DoubleComparisonExp
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: mongo
-  dataConnectorScalarType: Int
-  representation: Int
-  graphql:
-    comparisonExpressionTypeName: IntComparisonExp
+    typeName: customer_ObjectId
 
 ---
 kind: BooleanExpressionType
@@ -83,8 +17,12 @@ definition:
       comparisonOperators:
         - name: _eq
           argumentType: ObjectId!
+        - name: _in
+          argumentType: "[ObjectId!]!"
         - name: _neq
           argumentType: ObjectId!
+        - name: _nin
+          argumentType: "[ObjectId!]!"
       dataConnectorOperatorMapping:
         - dataConnectorName: mongo
           dataConnectorScalarType: ObjectId
@@ -94,21 +32,53 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: ObjectIdBoolExp
+    typeName: customer_ObjectIdBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: mongo
+  dataConnectorScalarType: ObjectId
+  representation: ObjectId
+  graphql:
+    comparisonExpressionTypeName: customer_ObjectIdComparisonExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: mongo
+  dataConnectorScalarType: String
+  representation: String
+  graphql:
+    comparisonExpressionTypeName: customer_StringComparisonExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: Bool_1
+  graphql:
+    typeName: customer_Bool1
 
 ---
 kind: BooleanExpressionType
 version: v1
 definition:
-  name: BoolBoolExp
+  name: BoolBoolExp_1
   operand:
     scalar:
-      type: Bool
+      type: Bool_1
       comparisonOperators:
         - name: _eq
-          argumentType: Bool!
+          argumentType: Bool_1!
+        - name: _in
+          argumentType: "[Bool_1!]!"
         - name: _neq
-          argumentType: Bool!
+          argumentType: Bool_1!
+        - name: _nin
+          argumentType: "[Bool_1!]!"
       dataConnectorOperatorMapping:
         - dataConnectorName: mongo
           dataConnectorScalarType: Bool
@@ -118,7 +88,67 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: BoolBoolExp
+    typeName: customer_BoolBoolExp1
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: mongo
+  dataConnectorScalarType: Bool
+  representation: Bool_1
+  graphql:
+    comparisonExpressionTypeName: customer_Bool1ComparisonExp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: StringBoolExp
+  operand:
+    scalar:
+      type: String
+      comparisonOperators:
+        - name: _eq
+          argumentType: String!
+        - name: _gt
+          argumentType: String!
+        - name: _gte
+          argumentType: String!
+        - name: _in
+          argumentType: "[String!]!"
+        - name: _iregex
+          argumentType: String!
+        - name: _lt
+          argumentType: String!
+        - name: _lte
+          argumentType: String!
+        - name: _neq
+          argumentType: String!
+        - name: _nin
+          argumentType: "[String!]!"
+        - name: _regex
+          argumentType: String!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: mongo
+          dataConnectorScalarType: String
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customer_StringBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: mongo
+  dataConnectorScalarType: Int
+  representation: Int
+  graphql:
+    comparisonExpressionTypeName: customer_IntComparisonExp
 
 ---
 kind: AggregateExpression
@@ -142,13 +172,13 @@ definition:
   countDistinct:
     enable: true
   graphql:
-    selectTypeName: ObjectIdAggExp
+    selectTypeName: customer_ObjectIdAggExp
 
 ---
 kind: AggregateExpression
 version: v1
 definition:
-  name: Customer_StringAggExp
+  name: StringAggExp
   operand:
     scalar:
       aggregatedType: String
@@ -156,9 +186,9 @@ definition:
         - name: count
           returnType: Int!
         - name: max
-          returnType: String!
+          returnType: String
         - name: min
-          returnType: String!
+          returnType: String
       dataConnectorAggregationFunctionMapping:
         - dataConnectorName: mongo
           dataConnectorScalarType: String
@@ -174,107 +204,7 @@ definition:
   countDistinct:
     enable: true
   graphql:
-    selectTypeName: Customer_StringAggExp
-
----
-kind: BooleanExpressionType
-version: v1
-definition:
-  name: DoubleBoolExp
-  operand:
-    scalar:
-      type: Double
-      comparisonOperators:
-        - name: _eq
-          argumentType: Double!
-        - name: _gt
-          argumentType: Double!
-        - name: _gte
-          argumentType: Double!
-        - name: _lt
-          argumentType: Double!
-        - name: _lte
-          argumentType: Double!
-        - name: _neq
-          argumentType: Double!
-      dataConnectorOperatorMapping:
-        - dataConnectorName: mongo
-          dataConnectorScalarType: Double
-          operatorMapping: {}
-  logicalOperators:
-    enable: true
-  isNull:
-    enable: true
-  graphql:
-    typeName: DoubleBoolExp
-
----
-kind: BooleanExpressionType
-version: v1
-definition:
-  name: StringBoolExp
-  operand:
-    scalar:
-      type: String
-      comparisonOperators:
-        - name: _eq
-          argumentType: String!
-        - name: _gt
-          argumentType: String!
-        - name: _gte
-          argumentType: String!
-        - name: _iregex
-          argumentType: String!
-        - name: _lt
-          argumentType: String!
-        - name: _lte
-          argumentType: String!
-        - name: _neq
-          argumentType: String!
-        - name: _regex
-          argumentType: String!
-      dataConnectorOperatorMapping:
-        - dataConnectorName: mongo
-          dataConnectorScalarType: String
-          operatorMapping: {}
-  logicalOperators:
-    enable: true
-  isNull:
-    enable: true
-  graphql:
-    typeName: StringBoolExp
-
----
-kind: BooleanExpressionType
-version: v1
-definition:
-  name: IntBoolExp
-  operand:
-    scalar:
-      type: Int
-      comparisonOperators:
-        - name: _eq
-          argumentType: Int!
-        - name: _gt
-          argumentType: Int!
-        - name: _gte
-          argumentType: Int!
-        - name: _lt
-          argumentType: Int!
-        - name: _lte
-          argumentType: Int!
-        - name: _neq
-          argumentType: Int!
-      dataConnectorOperatorMapping:
-        - dataConnectorName: mongo
-          dataConnectorScalarType: Int
-          operatorMapping: {}
-  logicalOperators:
-    enable: true
-  isNull:
-    enable: true
-  graphql:
-    typeName: IntBoolExp
+    selectTypeName: customer_StringAggExp
 
 ---
 kind: OrderByExpression
@@ -306,12 +236,155 @@ definition:
 kind: OrderByExpression
 version: v1
 definition:
-  name: BoolOrderByExp
+  name: Bool1OrderByExp
   operand:
     scalar:
-      orderedType: Bool
+      orderedType: Bool_1
       enableOrderByDirections:
         enableAll: true
   graphql:
-    expressionTypeName: customer_BoolOrderByExp
+    expressionTypeName: customer_Bool1OrderByExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: Double
+  graphql:
+    typeName: customer_Double
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: DoubleBoolExp
+  operand:
+    scalar:
+      type: Double
+      comparisonOperators:
+        - name: _eq
+          argumentType: Double!
+        - name: _gt
+          argumentType: Double!
+        - name: _gte
+          argumentType: Double!
+        - name: _in
+          argumentType: "[Double!]!"
+        - name: _lt
+          argumentType: Double!
+        - name: _lte
+          argumentType: Double!
+        - name: _neq
+          argumentType: Double!
+        - name: _nin
+          argumentType: "[Double!]!"
+      dataConnectorOperatorMapping:
+        - dataConnectorName: mongo
+          dataConnectorScalarType: Double
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customer_DoubleBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: mongo
+  dataConnectorScalarType: Double
+  representation: Double
+  graphql:
+    comparisonExpressionTypeName: customer_DoubleComparisonExp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: IntBoolExp
+  operand:
+    scalar:
+      type: Int
+      comparisonOperators:
+        - name: _eq
+          argumentType: Int!
+        - name: _gt
+          argumentType: Int!
+        - name: _gte
+          argumentType: Int!
+        - name: _in
+          argumentType: "[Int!]!"
+        - name: _lt
+          argumentType: Int!
+        - name: _lte
+          argumentType: Int!
+        - name: _neq
+          argumentType: Int!
+        - name: _nin
+          argumentType: "[Int!]!"
+      dataConnectorOperatorMapping:
+        - dataConnectorName: mongo
+          dataConnectorScalarType: Int
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customer_IntBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: IntAggExp
+  operand:
+    scalar:
+      aggregatedType: Int
+      aggregationFunctions:
+        - name: avg
+          returnType: Int
+        - name: count
+          returnType: Int!
+        - name: max
+          returnType: Int
+        - name: min
+          returnType: Int
+        - name: sum
+          returnType: Int
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: mongo
+          dataConnectorScalarType: Int
+          functionMapping:
+            avg:
+              name: avg
+            count:
+              name: count
+            max:
+              name: max
+            min:
+              name: min
+            sum:
+              name: sum
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: customer_IntAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: IntOrderByExp
+  operand:
+    scalar:
+      orderedType: Int
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: customer_IntOrderByExp
 

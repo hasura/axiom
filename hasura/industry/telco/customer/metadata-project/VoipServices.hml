@@ -1,0 +1,218 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: VoipServices
+  fields:
+    - name: activationDate
+      type: Date
+    - name: customerId
+      type: Int4
+    - name: features
+      type: "[Text]"
+    - name: monthlyFee
+      type: Numeric
+    - name: serviceNumber
+      type: Varchar
+    - name: serviceType
+      type: Varchar
+    - name: status
+      type: Varchar
+    - name: voipId
+      type: Int4!
+  graphql:
+    typeName: customer_VoipServices
+    inputTypeName: customer_VoipServicesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: voip_services
+      fieldMapping:
+        activationDate:
+          column:
+            name: activation_date
+        customerId:
+          column:
+            name: customer_id
+        features:
+          column:
+            name: features
+        monthlyFee:
+          column:
+            name: monthly_fee
+        serviceNumber:
+          column:
+            name: service_number
+        serviceType:
+          column:
+            name: service_type
+        status:
+          column:
+            name: status
+        voipId:
+          column:
+            name: voip_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: VoipServices
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - activationDate
+          - customerId
+          - features
+          - monthlyFee
+          - serviceNumber
+          - serviceType
+          - status
+          - voipId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: VoipServicesBoolExp
+  operand:
+    object:
+      type: VoipServices
+      comparableFields:
+        - fieldName: activationDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: customerId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: monthlyFee
+          booleanExpressionType: NumericBoolExp
+        - fieldName: serviceNumber
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: serviceType
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: status
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: voipId
+          booleanExpressionType: Int4BoolExp
+      comparableRelationships:
+        - relationshipName: customer
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customer_VoipServicesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: VoipServicesAggExp
+  operand:
+    object:
+      aggregatedType: VoipServices
+      aggregatableFields:
+        - fieldName: activationDate
+          aggregateExpression: DateAggExp
+        - fieldName: customerId
+          aggregateExpression: Int4AggExp
+        - fieldName: monthlyFee
+          aggregateExpression: NumericAggExp
+        - fieldName: serviceNumber
+          aggregateExpression: VarcharAggExp
+        - fieldName: serviceType
+          aggregateExpression: VarcharAggExp
+        - fieldName: status
+          aggregateExpression: VarcharAggExp
+        - fieldName: voipId
+          aggregateExpression: Int4AggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: customer_VoipServicesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: VoipServicesOrderByExp
+  operand:
+    object:
+      orderedType: VoipServices
+      orderableFields:
+        - fieldName: activationDate
+          orderByExpression: DateOrderByExp
+        - fieldName: customerId
+          orderByExpression: Int4OrderByExp
+        - fieldName: monthlyFee
+          orderByExpression: NumericOrderByExp
+        - fieldName: serviceNumber
+          orderByExpression: VarcharOrderByExp
+        - fieldName: serviceType
+          orderByExpression: VarcharOrderByExp
+        - fieldName: status
+          orderByExpression: VarcharOrderByExp
+        - fieldName: voipId
+          orderByExpression: Int4OrderByExp
+      orderableRelationships:
+        - relationshipName: customer
+  graphql:
+    expressionTypeName: customer_VoipServicesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: VoipServices
+  objectType: VoipServices
+  source:
+    dataConnectorName: aurora
+    collection: voip_services
+  filterExpressionType: VoipServicesBoolExp
+  aggregateExpression: VoipServicesAggExp
+  orderByExpression: VoipServicesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: voipServices
+      subscription:
+        rootField: voipServices
+    selectUniques:
+      - queryRootField: voipServicesByVoipId
+        uniqueIdentifier:
+          - voipId
+        subscription:
+          rootField: voipServicesByVoipId
+    filterInputTypeName: customer_VoipServicesFilterInput
+    aggregate:
+      queryRootField: voipServicesAggregate
+      subscription:
+        rootField: voipServicesAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: VoipServices
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer
+  sourceType: VoipServices
+  target:
+    model:
+      name: Customers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId
+

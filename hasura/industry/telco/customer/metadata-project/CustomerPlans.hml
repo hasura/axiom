@@ -1,0 +1,312 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: CustomerPlans
+  fields:
+    - name: cellNumber
+      type: Varchar
+    - name: customerId
+      type: Int4
+    - name: customerPlanId
+      type: Int4!
+    - name: dataAllocationGb
+      type: Int4
+    - name: dataUsedGb
+      type: Numeric
+    - name: endDate
+      type: Date
+    - name: planId
+      type: Int4
+    - name: rolloverDataGb
+      type: Numeric
+    - name: startDate
+      type: Date
+    - name: status
+      type: Varchar
+  graphql:
+    typeName: customer_CustomerPlans
+    inputTypeName: customer_CustomerPlansInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: customer_plans
+      fieldMapping:
+        cellNumber:
+          column:
+            name: cell_number
+        customerId:
+          column:
+            name: customer_id
+        customerPlanId:
+          column:
+            name: customer_plan_id
+        dataAllocationGb:
+          column:
+            name: data_allocation_gb
+        dataUsedGb:
+          column:
+            name: data_used_gb
+        endDate:
+          column:
+            name: end_date
+        planId:
+          column:
+            name: plan_id
+        rolloverDataGb:
+          column:
+            name: rollover_data_gb
+        startDate:
+          column:
+            name: start_date
+        status:
+          column:
+            name: status
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: CustomerPlans
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - cellNumber
+          - customerId
+          - customerPlanId
+          - dataAllocationGb
+          - dataUsedGb
+          - endDate
+          - planId
+          - rolloverDataGb
+          - startDate
+          - status
+    - role: customer
+      output:
+        allowedFields:
+          - cellNumber
+          - customerId
+          - dataAllocationGb
+          - dataUsedGb
+          - endDate
+          - planId
+          - rolloverDataGb
+          - startDate
+          - status
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: CustomerPlansBoolExp
+  operand:
+    object:
+      type: CustomerPlans
+      comparableFields:
+        - fieldName: cellNumber
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: customerId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: customerPlanId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: dataAllocationGb
+          booleanExpressionType: Int4BoolExp
+        - fieldName: dataUsedGb
+          booleanExpressionType: NumericBoolExp
+        - fieldName: endDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: planId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: rolloverDataGb
+          booleanExpressionType: NumericBoolExp
+        - fieldName: startDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: status
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: customerPlanDevices
+        - relationshipName: customer
+        - relationshipName: plan
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customer_CustomerPlansBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: CustomerPlansAggExp
+  operand:
+    object:
+      aggregatedType: CustomerPlans
+      aggregatableFields:
+        - fieldName: cellNumber
+          aggregateExpression: VarcharAggExp
+        - fieldName: customerId
+          aggregateExpression: Int4AggExp
+        - fieldName: customerPlanId
+          aggregateExpression: Int4AggExp
+        - fieldName: dataAllocationGb
+          aggregateExpression: Int4AggExp
+        - fieldName: dataUsedGb
+          aggregateExpression: NumericAggExp
+        - fieldName: endDate
+          aggregateExpression: DateAggExp
+        - fieldName: planId
+          aggregateExpression: Int4AggExp
+        - fieldName: rolloverDataGb
+          aggregateExpression: NumericAggExp
+        - fieldName: startDate
+          aggregateExpression: DateAggExp
+        - fieldName: status
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: customer_CustomerPlansAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: CustomerPlansOrderByExp
+  operand:
+    object:
+      orderedType: CustomerPlans
+      orderableFields:
+        - fieldName: cellNumber
+          orderByExpression: VarcharOrderByExp
+        - fieldName: customerId
+          orderByExpression: Int4OrderByExp
+        - fieldName: customerPlanId
+          orderByExpression: Int4OrderByExp
+        - fieldName: dataAllocationGb
+          orderByExpression: Int4OrderByExp
+        - fieldName: dataUsedGb
+          orderByExpression: NumericOrderByExp
+        - fieldName: endDate
+          orderByExpression: DateOrderByExp
+        - fieldName: planId
+          orderByExpression: Int4OrderByExp
+        - fieldName: rolloverDataGb
+          orderByExpression: NumericOrderByExp
+        - fieldName: startDate
+          orderByExpression: DateOrderByExp
+        - fieldName: status
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: customer
+        - relationshipName: plan
+  graphql:
+    expressionTypeName: customer_CustomerPlansOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: CustomerPlans
+  objectType: CustomerPlans
+  source:
+    dataConnectorName: aurora
+    collection: customer_plans
+  filterExpressionType: CustomerPlansBoolExp
+  aggregateExpression: CustomerPlansAggExp
+  orderByExpression: CustomerPlansOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: customerPlans
+      subscription:
+        rootField: customerPlans
+    selectUniques:
+      - queryRootField: customerPlansByCustomerPlanId
+        uniqueIdentifier:
+          - customerPlanId
+        subscription:
+          rootField: customerPlansByCustomerPlanId
+    filterInputTypeName: customer_CustomerPlansFilterInput
+    aggregate:
+      queryRootField: customerPlansAggregate
+      subscription:
+        rootField: customerPlansAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: CustomerPlans
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+    - role: customer
+      select:
+        filter: 
+          fieldComparison:
+            field: customerId
+            operator: _eq
+            value: 
+              sessionVariable: x-hasura-user-id
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customerPlanDevices
+  sourceType: CustomerPlans
+  target:
+    model:
+      name: CustomerPlanDevices
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: CustomerPlanDevicesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerPlanId
+      target:
+        modelField:
+          - fieldName: customerPlanId
+  graphql:
+    aggregateFieldName: customerPlanDevicesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer
+  sourceType: CustomerPlans
+  target:
+    model:
+      name: Customers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: plan
+  sourceType: CustomerPlans
+  target:
+    model:
+      name: Plans
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: planId
+      target:
+        modelField:
+          - fieldName: planId
+

@@ -24,11 +24,20 @@ definition:
           comparison_operators:
             _eq:
               type: equal
+            _in:
+              type: in
             _neq:
               type: custom
               argument_type:
                 type: named
                 name: BinData
+            _nin:
+              type: custom
+              argument_type:
+                type: array
+                element_type:
+                  type: named
+                  name: BinData
         Bool:
           representation:
             type: boolean
@@ -40,11 +49,20 @@ definition:
           comparison_operators:
             _eq:
               type: equal
+            _in:
+              type: in
             _neq:
               type: custom
               argument_type:
                 type: named
                 name: Bool
+            _nin:
+              type: custom
+              argument_type:
+                type: array
+                element_type:
+                  type: named
+                  name: Bool
         Date:
           representation:
             type: timestamp
@@ -55,12 +73,16 @@ definition:
                 name: Int
             max:
               result_type:
-                type: named
-                name: Date
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Date
             min:
               result_type:
-                type: named
-                name: Date
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Date
           comparison_operators:
             _eq:
               type: equal
@@ -74,6 +96,8 @@ definition:
               argument_type:
                 type: named
                 name: Date
+            _in:
+              type: in
             _lt:
               type: custom
               argument_type:
@@ -89,6 +113,13 @@ definition:
               argument_type:
                 type: named
                 name: Date
+            _nin:
+              type: custom
+              argument_type:
+                type: array
+                element_type:
+                  type: named
+                  name: Date
         DbPointer:
           aggregate_functions:
             count:
@@ -98,35 +129,52 @@ definition:
           comparison_operators:
             _eq:
               type: equal
+            _in:
+              type: in
             _neq:
               type: custom
               argument_type:
                 type: named
                 name: DbPointer
+            _nin:
+              type: custom
+              argument_type:
+                type: array
+                element_type:
+                  type: named
+                  name: DbPointer
         Decimal:
           representation:
             type: bigdecimal
           aggregate_functions:
             avg:
               result_type:
-                type: named
-                name: Decimal
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Decimal
             count:
               result_type:
                 type: named
                 name: Int
             max:
               result_type:
-                type: named
-                name: Decimal
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Decimal
             min:
               result_type:
-                type: named
-                name: Decimal
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Decimal
             sum:
               result_type:
-                type: named
-                name: Decimal
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Decimal
           comparison_operators:
             _eq:
               type: equal
@@ -140,6 +188,8 @@ definition:
               argument_type:
                 type: named
                 name: Decimal
+            _in:
+              type: in
             _lt:
               type: custom
               argument_type:
@@ -155,30 +205,45 @@ definition:
               argument_type:
                 type: named
                 name: Decimal
+            _nin:
+              type: custom
+              argument_type:
+                type: array
+                element_type:
+                  type: named
+                  name: Decimal
         Double:
           representation:
             type: float64
           aggregate_functions:
             avg:
               result_type:
-                type: named
-                name: Double
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Double
             count:
               result_type:
                 type: named
                 name: Int
             max:
               result_type:
-                type: named
-                name: Double
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Double
             min:
               result_type:
-                type: named
-                name: Double
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Double
             sum:
               result_type:
-                type: named
-                name: Double
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Double
           comparison_operators:
             _eq:
               type: equal
@@ -192,6 +257,8 @@ definition:
               argument_type:
                 type: named
                 name: Double
+            _in:
+              type: in
             _lt:
               type: custom
               argument_type:
@@ -207,6 +274,13 @@ definition:
               argument_type:
                 type: named
                 name: Double
+            _nin:
+              type: custom
+              argument_type:
+                type: array
+                element_type:
+                  type: named
+                  name: Double
         ExtendedJSON:
           representation:
             type: json
@@ -269,6 +343,11 @@ definition:
               argument_type:
                 type: named
                 name: ExtendedJSON
+            _nin:
+              type: custom
+              argument_type:
+                type: named
+                name: ExtendedJSON
             _regex:
               type: custom
               argument_type:
@@ -280,24 +359,32 @@ definition:
           aggregate_functions:
             avg:
               result_type:
-                type: named
-                name: Int
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Int
             count:
               result_type:
                 type: named
                 name: Int
             max:
               result_type:
-                type: named
-                name: Int
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Int
             min:
               result_type:
-                type: named
-                name: Int
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Int
             sum:
               result_type:
-                type: named
-                name: Int
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Int
           comparison_operators:
             _eq:
               type: equal
@@ -311,6 +398,8 @@ definition:
               argument_type:
                 type: named
                 name: Int
+            _in:
+              type: in
             _lt:
               type: custom
               argument_type:
@@ -326,6 +415,13 @@ definition:
               argument_type:
                 type: named
                 name: Int
+            _nin:
+              type: custom
+              argument_type:
+                type: array
+                element_type:
+                  type: named
+                  name: Int
         Javascript:
           aggregate_functions:
             count:
@@ -346,24 +442,32 @@ definition:
           aggregate_functions:
             avg:
               result_type:
-                type: named
-                name: Long
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Long
             count:
               result_type:
                 type: named
                 name: Int
             max:
               result_type:
-                type: named
-                name: Long
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Long
             min:
               result_type:
-                type: named
-                name: Long
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Long
             sum:
               result_type:
-                type: named
-                name: Long
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Long
           comparison_operators:
             _eq:
               type: equal
@@ -377,6 +481,8 @@ definition:
               argument_type:
                 type: named
                 name: Long
+            _in:
+              type: in
             _lt:
               type: custom
               argument_type:
@@ -392,6 +498,13 @@ definition:
               argument_type:
                 type: named
                 name: Long
+            _nin:
+              type: custom
+              argument_type:
+                type: array
+                element_type:
+                  type: named
+                  name: Long
         MaxKey:
           aggregate_functions:
             count:
@@ -401,11 +514,20 @@ definition:
           comparison_operators:
             _eq:
               type: equal
+            _in:
+              type: in
             _neq:
               type: custom
               argument_type:
                 type: named
                 name: MaxKey
+            _nin:
+              type: custom
+              argument_type:
+                type: array
+                element_type:
+                  type: named
+                  name: MaxKey
         MinKey:
           aggregate_functions:
             count:
@@ -415,11 +537,20 @@ definition:
           comparison_operators:
             _eq:
               type: equal
+            _in:
+              type: in
             _neq:
               type: custom
               argument_type:
                 type: named
                 name: MinKey
+            _nin:
+              type: custom
+              argument_type:
+                type: array
+                element_type:
+                  type: named
+                  name: MinKey
         "Null":
           aggregate_functions:
             count:
@@ -429,11 +560,20 @@ definition:
           comparison_operators:
             _eq:
               type: equal
+            _in:
+              type: in
             _neq:
               type: custom
               argument_type:
                 type: named
                 name: "Null"
+            _nin:
+              type: custom
+              argument_type:
+                type: array
+                element_type:
+                  type: named
+                  name: "Null"
         ObjectId:
           representation:
             type: string
@@ -445,11 +585,20 @@ definition:
           comparison_operators:
             _eq:
               type: equal
+            _in:
+              type: in
             _neq:
               type: custom
               argument_type:
                 type: named
                 name: ObjectId
+            _nin:
+              type: custom
+              argument_type:
+                type: array
+                element_type:
+                  type: named
+                  name: ObjectId
         Regex:
           aggregate_functions:
             count:
@@ -467,12 +616,16 @@ definition:
                 name: Int
             max:
               result_type:
-                type: named
-                name: String
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
             min:
               result_type:
-                type: named
-                name: String
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
           comparison_operators:
             _eq:
               type: equal
@@ -486,6 +639,8 @@ definition:
               argument_type:
                 type: named
                 name: String
+            _in:
+              type: in
             _iregex:
               type: custom
               argument_type:
@@ -506,6 +661,13 @@ definition:
               argument_type:
                 type: named
                 name: String
+            _nin:
+              type: custom
+              argument_type:
+                type: array
+                element_type:
+                  type: named
+                  name: String
             _regex:
               type: custom
               argument_type:
@@ -520,11 +682,20 @@ definition:
           comparison_operators:
             _eq:
               type: equal
+            _in:
+              type: in
             _neq:
               type: custom
               argument_type:
                 type: named
                 name: Symbol
+            _nin:
+              type: custom
+              argument_type:
+                type: array
+                element_type:
+                  type: named
+                  name: Symbol
         Timestamp:
           aggregate_functions:
             count:
@@ -533,12 +704,16 @@ definition:
                 name: Int
             max:
               result_type:
-                type: named
-                name: Timestamp
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Timestamp
             min:
               result_type:
-                type: named
-                name: Timestamp
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Timestamp
           comparison_operators:
             _eq:
               type: equal
@@ -552,6 +727,8 @@ definition:
               argument_type:
                 type: named
                 name: Timestamp
+            _in:
+              type: in
             _lt:
               type: custom
               argument_type:
@@ -567,6 +744,38 @@ definition:
               argument_type:
                 type: named
                 name: Timestamp
+            _nin:
+              type: custom
+              argument_type:
+                type: array
+                element_type:
+                  type: named
+                  name: Timestamp
+        UUID:
+          representation:
+            type: string
+          aggregate_functions:
+            count:
+              result_type:
+                type: named
+                name: Int
+          comparison_operators:
+            _eq:
+              type: equal
+            _in:
+              type: in
+            _neq:
+              type: custom
+              argument_type:
+                type: named
+                name: UUID
+            _nin:
+              type: custom
+              argument_type:
+                type: array
+                element_type:
+                  type: named
+                  name: UUID
         Undefined:
           aggregate_functions:
             count:
@@ -576,11 +785,20 @@ definition:
           comparison_operators:
             _eq:
               type: equal
+            _in:
+              type: in
             _neq:
               type: custom
               argument_type:
                 type: named
                 name: Undefined
+            _nin:
+              type: custom
+              argument_type:
+                type: array
+                element_type:
+                  type: named
+                  name: Undefined
       object_types:
         customerPreferences:
           fields:
@@ -1035,6 +1253,7 @@ definition:
           nested_fields:
             filter_by: {}
             order_by: {}
+            aggregates: {}
           exists:
             nested_collections: {}
         mutation: {}

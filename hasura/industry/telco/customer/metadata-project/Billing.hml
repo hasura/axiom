@@ -1,0 +1,204 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: Billing
+  fields:
+    - name: billingDate
+      type: Date
+    - name: billingId
+      type: Int4!
+    - name: customerId
+      type: Int4
+    - name: paymentStatus
+      type: Varchar
+    - name: totalAmount
+      type: Numeric
+  graphql:
+    typeName: customer_Billing
+    inputTypeName: customer_BillingInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: billing
+      fieldMapping:
+        billingDate:
+          column:
+            name: billing_date
+        billingId:
+          column:
+            name: billing_id
+        customerId:
+          column:
+            name: customer_id
+        paymentStatus:
+          column:
+            name: payment_status
+        totalAmount:
+          column:
+            name: total_amount
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: Billing
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - billingDate
+          - billingId
+          - customerId
+          - paymentStatus
+          - totalAmount
+    - role: customer
+      output:
+        allowedFields:
+          - billingDate
+          - customerId
+          - paymentStatus
+          - totalAmount
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: BillingBoolExp
+  operand:
+    object:
+      type: Billing
+      comparableFields:
+        - fieldName: billingDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: billingId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: customerId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: paymentStatus
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: totalAmount
+          booleanExpressionType: NumericBoolExp
+      comparableRelationships:
+        - relationshipName: customer
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customer_BillingBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: BillingAggExp
+  operand:
+    object:
+      aggregatedType: Billing
+      aggregatableFields:
+        - fieldName: billingDate
+          aggregateExpression: DateAggExp
+        - fieldName: billingId
+          aggregateExpression: Int4AggExp
+        - fieldName: customerId
+          aggregateExpression: Int4AggExp
+        - fieldName: paymentStatus
+          aggregateExpression: VarcharAggExp
+        - fieldName: totalAmount
+          aggregateExpression: NumericAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: customer_BillingAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: BillingOrderByExp
+  operand:
+    object:
+      orderedType: Billing
+      orderableFields:
+        - fieldName: billingDate
+          orderByExpression: DateOrderByExp
+        - fieldName: billingId
+          orderByExpression: Int4OrderByExp
+        - fieldName: customerId
+          orderByExpression: Int4OrderByExp
+        - fieldName: paymentStatus
+          orderByExpression: VarcharOrderByExp
+        - fieldName: totalAmount
+          orderByExpression: NumericOrderByExp
+      orderableRelationships:
+        - relationshipName: customer
+  graphql:
+    expressionTypeName: customer_BillingOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: Billing
+  objectType: Billing
+  source:
+    dataConnectorName: aurora
+    collection: billing
+  filterExpressionType: BillingBoolExp
+  aggregateExpression: BillingAggExp
+  orderByExpression: BillingOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: billing
+      subscription:
+        rootField: billing
+    selectUniques:
+      - queryRootField: billingByBillingId
+        uniqueIdentifier:
+          - billingId
+        subscription:
+          rootField: billingByBillingId
+    filterInputTypeName: customer_BillingFilterInput
+    aggregate:
+      queryRootField: billingAggregate
+      subscription:
+        rootField: billingAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: Billing
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+    - role: customer
+      select:
+        filter: 
+          fieldComparison:
+            field: customerId
+            operator: _eq
+            value: 
+              sessionVariable: x-hasura-user-id
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer
+  sourceType: Billing
+  target:
+    model:
+      name: Customers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId
+

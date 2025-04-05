@@ -1,0 +1,216 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: SpectrumLicenses
+  fields:
+    - name: acquisitionDate
+      type: Date
+    - name: bandwidthMhz
+      type: Numeric
+    - name: costMillionUsd
+      type: Numeric
+    - name: expirationDate
+      type: Date
+    - name: frequencyBand
+      type: Varchar
+    - name: geographicArea
+      type: Varchar
+    - name: licenseId
+      type: Int4!
+    - name: licenseNumber
+      type: Varchar
+    - name: regulatoryAuthority
+      type: Varchar
+  graphql:
+    typeName: network_SpectrumLicenses
+    inputTypeName: network_SpectrumLicensesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: kafka_sink
+      dataConnectorObjectType: spectrum_licenses
+      fieldMapping:
+        acquisitionDate:
+          column:
+            name: acquisition_date
+        bandwidthMhz:
+          column:
+            name: bandwidth_mhz
+        costMillionUsd:
+          column:
+            name: cost_million_usd
+        expirationDate:
+          column:
+            name: expiration_date
+        frequencyBand:
+          column:
+            name: frequency_band
+        geographicArea:
+          column:
+            name: geographic_area
+        licenseId:
+          column:
+            name: license_id
+        licenseNumber:
+          column:
+            name: license_number
+        regulatoryAuthority:
+          column:
+            name: regulatory_authority
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: SpectrumLicenses
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - acquisitionDate
+          - bandwidthMhz
+          - costMillionUsd
+          - expirationDate
+          - frequencyBand
+          - geographicArea
+          - licenseId
+          - licenseNumber
+          - regulatoryAuthority
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: SpectrumLicensesBoolExp
+  operand:
+    object:
+      type: SpectrumLicenses
+      comparableFields:
+        - fieldName: acquisitionDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: bandwidthMhz
+          booleanExpressionType: NumericBoolExp
+        - fieldName: costMillionUsd
+          booleanExpressionType: NumericBoolExp
+        - fieldName: expirationDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: frequencyBand
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: geographicArea
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: licenseId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: licenseNumber
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: regulatoryAuthority
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: network_SpectrumLicensesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: SpectrumLicensesAggExp
+  operand:
+    object:
+      aggregatedType: SpectrumLicenses
+      aggregatableFields:
+        - fieldName: acquisitionDate
+          aggregateExpression: DateAggExp
+        - fieldName: bandwidthMhz
+          aggregateExpression: NumericAggExp
+        - fieldName: costMillionUsd
+          aggregateExpression: NumericAggExp
+        - fieldName: expirationDate
+          aggregateExpression: DateAggExp
+        - fieldName: frequencyBand
+          aggregateExpression: VarcharAggExp
+        - fieldName: geographicArea
+          aggregateExpression: VarcharAggExp
+        - fieldName: licenseId
+          aggregateExpression: Int4AggExp
+        - fieldName: licenseNumber
+          aggregateExpression: VarcharAggExp
+        - fieldName: regulatoryAuthority
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: network_SpectrumLicensesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: SpectrumLicensesOrderByExp
+  operand:
+    object:
+      orderedType: SpectrumLicenses
+      orderableFields:
+        - fieldName: acquisitionDate
+          orderByExpression: DateOrderByExp
+        - fieldName: bandwidthMhz
+          orderByExpression: NumericOrderByExp
+        - fieldName: costMillionUsd
+          orderByExpression: NumericOrderByExp
+        - fieldName: expirationDate
+          orderByExpression: DateOrderByExp
+        - fieldName: frequencyBand
+          orderByExpression: VarcharOrderByExp
+        - fieldName: geographicArea
+          orderByExpression: VarcharOrderByExp
+        - fieldName: licenseId
+          orderByExpression: Int4OrderByExp
+        - fieldName: licenseNumber
+          orderByExpression: VarcharOrderByExp
+        - fieldName: regulatoryAuthority
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: network_SpectrumLicensesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: SpectrumLicenses
+  objectType: SpectrumLicenses
+  source:
+    dataConnectorName: kafka_sink
+    collection: spectrum_licenses
+  filterExpressionType: SpectrumLicensesBoolExp
+  aggregateExpression: SpectrumLicensesAggExp
+  orderByExpression: SpectrumLicensesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: spectrumLicenses
+      subscription:
+        rootField: spectrumLicenses
+    selectUniques:
+      - queryRootField: spectrumLicensesByLicenseId
+        uniqueIdentifier:
+          - licenseId
+        subscription:
+          rootField: spectrumLicensesByLicenseId
+    filterInputTypeName: network_SpectrumLicensesFilterInput
+    aggregate:
+      queryRootField: spectrumLicensesAggregate
+      subscription:
+        rootField: spectrumLicensesAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: SpectrumLicenses
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

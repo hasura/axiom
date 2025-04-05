@@ -2,23 +2,13 @@ services:
   network_kafka_sink:
     build:
       context: .
-      dockerfile_inline: |-
-        FROM ghcr.io/hasura/ndc-postgres:v1.1.1
-        COPY ./ /etc/connector
-    develop:
-      watch:
-        - path: ./
-          action: sync+restart
-          target: /etc/connector
+      dockerfile: .hasura-connector/Dockerfile.kafka_sink
     environment:
       CONNECTION_URI: $NETWORK_KAFKA_SINK_CONNECTION_URI
       HASURA_SERVICE_TOKEN_SECRET: $NETWORK_KAFKA_SINK_HASURA_SERVICE_TOKEN_SECRET
-      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: $NETWORK_KAFKA_SINK_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+      OTEL_EXPORTER_OTLP_ENDPOINT: $NETWORK_KAFKA_SINK_OTEL_EXPORTER_OTLP_ENDPOINT
       OTEL_SERVICE_NAME: $NETWORK_KAFKA_SINK_OTEL_SERVICE_NAME
     extra_hosts:
-      - local.hasura.dev=host-gateway
+      - local.hasura.dev:host-gateway
     ports:
-      - mode: ingress
-        target: 8080
-        published: "8034"
-        protocol: tcp
+      - 4040:8080

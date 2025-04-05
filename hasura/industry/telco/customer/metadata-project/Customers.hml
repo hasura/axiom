@@ -1,0 +1,871 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: Customers
+  description: >
+    Master customer/user datastore for the telecommunications system. Contains
+    all subscriber 
+
+    information including service eligibility, network preferences, billing details, and 
+
+    churn risk analytics. This model should be the primary source for any customer-facing 
+
+    applications, call center systems, network provisioning, and business intelligence queries 
+
+    related to subscriber base management.
+  fields:
+    - name: address
+      type: Varchar
+      description: >
+        Subscriber's physical service address where telecommunications hardware
+        may be 
+
+        installed. Used for service qualification, network planning, and coverage analysis.
+    - name: authUserId
+      type: Int4
+      description: >
+        Foreign key to authentication system. Links subscriber credentials for
+        customer 
+
+        portal access, mobile app sign-in, and self-service kiosk authentication.
+    - name: churnRisk
+      type: Numeric
+      description: >
+        Predictive analytics score (0.0-1.0) indicating subscriber's likelihood
+        to cancel 
+
+        services or port number to competitor. Used for retention campaigns, loyalty program 
+
+        targeting, and proactive service intervention strategies.
+    - name: churnRiskFactors
+      type: "[Text]"
+      description: >
+        Array of specific risk indicators identified by predictive models such
+        as 'frequent 
+
+        dropped calls', 'billing disputes', 'competitor promotion inquiries', 'data usage 
+
+        pattern change', or 'payment delinquency trends'.
+    - name: city
+      type: Varchar
+      description: >
+        Subscriber's city for service address. Critical for local network
+        planning, 
+
+        regulatory compliance reporting, and market penetration analysis.
+    - name: country
+      type: Varchar
+      description: >
+        Subscriber's country. Determines applicable telecommunications
+        regulations, 
+
+        roaming agreements, and international calling rate structures.
+    - name: customerId
+      type: Int4!
+      description: >
+        Unique subscriber identifier across all telecommunications platforms and
+        services.
+
+        Referenced by billing systems, network provisioning, customer support ticketing,
+
+        and device management systems.
+    - name: email
+      type: Varchar
+      description: >
+        Subscriber's verified email address. Used for e-billing notifications,
+        service 
+
+        alerts, promotional communications, and account recovery. Validated during 
+
+        activation with a 6-digit verification code.
+    - name: firstName
+      type: Varchar
+      description: >
+        Subscriber's given name used for personalized communications, account
+        verification
+
+        during customer support calls, and regulatory identity verification requirements.
+    - name: image
+      type: Varchar
+      description: >
+        Path to subscriber's profile image (format: 'avatar_X.jpg') displayed in
+        customer 
+
+        service systems, mobile app, and web portal. Helps agents personalize interactions.
+    - name: lastName
+      type: Varchar
+      description: >
+        Subscriber's family name used alongside firstName for account
+        verification and
+
+        personalized communications. Essential for regulatory compliance and billing identity.
+    - name: lastSurveyDate
+      type: Date
+      description: >
+        Date of most recent Net Promoter Score or customer satisfaction survey
+        completion.
+
+        Influences when subscriber is eligible for follow-up surveys and determines survey
+
+        campaign targeting eligibility.
+    - name: phoneNumber
+      type: Varchar
+      description: >
+        Subscriber's primary contact number, which may be different from their
+        subscribed
+
+        service numbers. Used for account verification, service notifications, and two-factor
+
+        authentication. Critical for contacting subscriber during service disruptions.
+    - name: postcode
+      type: Varchar
+      description: >
+        Postal code for service qualification, network planning, and spectrum
+        licensing
+
+        compliance. Used in analytics for market penetration by geographic segment.
+    - name: satisfactionScore
+      type: Int4
+      description: >
+        Net Promoter Score (1-10) indicating subscriber's likelihood to
+        recommend services.
+
+        Tracks customer experience across touchpoints, predicts renewal likelihood, and
+
+        identifies potential brand advocates for referral programs.
+    - name: segment
+      type: Varchar
+      description: >
+        Subscriber classification category ('Business', 'Family', 'Premium',
+        etc.) determining
+
+        service SLAs, priority support routing, specialized retention strategies, and
+
+        applicable promotional offerings. Influences network QoS prioritization.
+    - name: state
+      type: Varchar
+      description: >
+        State or province of subscriber's service address. Determines applicable
+        local
+
+        telecommunications taxes, regulatory requirements, and emergency services routing
+
+        configurations.
+    - name: dob
+      type: Date
+  graphql:
+    typeName: customer_Customers
+    inputTypeName: customer_CustomersInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: customers
+      fieldMapping:
+        address:
+          column:
+            name: address
+        authUserId:
+          column:
+            name: auth_user_id
+        churnRisk:
+          column:
+            name: churn_risk
+        churnRiskFactors:
+          column:
+            name: churn_risk_factors
+        city:
+          column:
+            name: city
+        country:
+          column:
+            name: country
+        customerId:
+          column:
+            name: customer_id
+        email:
+          column:
+            name: email
+        firstName:
+          column:
+            name: first_name
+        image:
+          column:
+            name: image
+        lastName:
+          column:
+            name: last_name
+        lastSurveyDate:
+          column:
+            name: last_survey_date
+        phoneNumber:
+          column:
+            name: phone_number
+        postcode:
+          column:
+            name: postcode
+        satisfactionScore:
+          column:
+            name: satisfaction_score
+        segment:
+          column:
+            name: segment
+        state:
+          column:
+            name: state
+        dob:
+          column:
+            name: dob
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: Customers
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - address
+          - authUserId
+          - churnRisk
+          - churnRiskFactors
+          - city
+          - country
+          - customerId
+          - email
+          - firstName
+          - image
+          - lastName
+          - lastSurveyDate
+          - phoneNumber
+          - postcode
+          - satisfactionScore
+          - segment
+          - state
+          - dob
+    - role: customer
+      output:
+        allowedFields:
+          - address
+          - city
+          - country
+          - customerId
+          - email
+          - firstName
+          - image
+          - lastName
+          - phoneNumber
+          - postcode
+          - state
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: CustomersBoolExp
+  operand:
+    object:
+      type: Customers
+      comparableFields:
+        - fieldName: address
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: authUserId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: churnRisk
+          booleanExpressionType: NumericBoolExp
+        - fieldName: city
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: country
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: customerId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: email
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: firstName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: image
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: lastName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: lastSurveyDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: phoneNumber
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: postcode
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: satisfactionScore
+          booleanExpressionType: Int4BoolExp
+        - fieldName: segment
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: state
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: dob
+          booleanExpressionType: DateBoolExp
+      comparableRelationships:
+        - relationshipName: billings
+        - relationshipName: creditCards
+        - relationshipName: customerLinks
+        - relationshipName: customerNetworks
+        - relationshipName: customerPlans
+        - relationshipName: deviceUpgrades
+        - relationshipName: familyPlanMembers
+        - relationshipName: familyPlans
+        - relationshipName: feedbacks
+        - relationshipName: interactions
+        - relationshipName: iotDevices
+        - relationshipName: loyaltyRewards
+        - relationshipName: numberPortabilities
+        - relationshipName: referrals
+        - relationshipName: referralsByReferrerId
+        - relationshipName: serviceInteractions
+        - relationshipName: voipServices
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customer_CustomersBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: CustomersAggExp
+  operand:
+    object:
+      aggregatedType: Customers
+      aggregatableFields:
+        - fieldName: address
+          aggregateExpression: VarcharAggExp
+        - fieldName: authUserId
+          aggregateExpression: Int4AggExp
+        - fieldName: churnRisk
+          aggregateExpression: NumericAggExp
+        - fieldName: city
+          aggregateExpression: VarcharAggExp
+        - fieldName: country
+          aggregateExpression: VarcharAggExp
+        - fieldName: customerId
+          aggregateExpression: Int4AggExp
+        - fieldName: email
+          aggregateExpression: VarcharAggExp
+        - fieldName: firstName
+          aggregateExpression: VarcharAggExp
+        - fieldName: image
+          aggregateExpression: VarcharAggExp
+        - fieldName: lastName
+          aggregateExpression: VarcharAggExp
+        - fieldName: lastSurveyDate
+          aggregateExpression: DateAggExp
+        - fieldName: phoneNumber
+          aggregateExpression: VarcharAggExp
+        - fieldName: postcode
+          aggregateExpression: VarcharAggExp
+        - fieldName: satisfactionScore
+          aggregateExpression: Int4AggExp
+        - fieldName: segment
+          aggregateExpression: VarcharAggExp
+        - fieldName: state
+          aggregateExpression: VarcharAggExp
+        - fieldName: dob
+          aggregateExpression: DateAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: customer_CustomersAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: CustomersOrderByExp
+  operand:
+    object:
+      orderedType: Customers
+      orderableFields:
+        - fieldName: address
+          orderByExpression: VarcharOrderByExp
+        - fieldName: authUserId
+          orderByExpression: Int4OrderByExp
+        - fieldName: churnRisk
+          orderByExpression: NumericOrderByExp
+        - fieldName: city
+          orderByExpression: VarcharOrderByExp
+        - fieldName: country
+          orderByExpression: VarcharOrderByExp
+        - fieldName: customerId
+          orderByExpression: Int4OrderByExp
+        - fieldName: email
+          orderByExpression: VarcharOrderByExp
+        - fieldName: firstName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: image
+          orderByExpression: VarcharOrderByExp
+        - fieldName: lastName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: lastSurveyDate
+          orderByExpression: DateOrderByExp
+        - fieldName: phoneNumber
+          orderByExpression: VarcharOrderByExp
+        - fieldName: postcode
+          orderByExpression: VarcharOrderByExp
+        - fieldName: satisfactionScore
+          orderByExpression: Int4OrderByExp
+        - fieldName: segment
+          orderByExpression: VarcharOrderByExp
+        - fieldName: state
+          orderByExpression: VarcharOrderByExp
+        - fieldName: dob
+          orderByExpression: DateOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: customer_CustomersOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: Customers
+  description: |
+    # Telecommunications Customer Master Repository
+
+    Central subscriber datastore for the integrated telecommunications system. This is the authoritative
+    source of truth for all customer data across the organization including:
+
+    * **Service eligibility** and qualification status
+    * **Network preferences** and technical configurations
+    * **Billing profiles** and payment history references
+    * **Risk analytics** including churn prediction models
+    * **Customer journey** tracking across all touchpoints
+
+    ## Usage Guidelines
+
+    This model should be the primary reference for:
+    - Customer-facing applications and self-service portals
+    - Call center and technical support systems
+    - Network provisioning and service activation workflows
+    - Business intelligence and executive reporting dashboards
+    - Regulatory compliance and data governance processes
+  objectType: Customers
+  source:
+    dataConnectorName: aurora
+    collection: customers
+  filterExpressionType: CustomersBoolExp
+  aggregateExpression: CustomersAggExp
+  orderByExpression: CustomersOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: customers
+      subscription:
+        rootField: customers
+    selectUniques:
+      - queryRootField: customersByPhoneNumber
+        uniqueIdentifier:
+          - phoneNumber
+        subscription:
+          rootField: customersByPhoneNumber
+      - queryRootField: customersByCustomerId
+        uniqueIdentifier:
+          - customerId
+        subscription:
+          rootField: customersByCustomerId
+    filterInputTypeName: customer_CustomersFilterInput
+    aggregate:
+      queryRootField: customersAggregate
+      subscription:
+        rootField: customersAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: Customers
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+    - role: customer
+      select:
+        filter:
+          fieldComparison:
+            field: customerId
+            operator: _eq
+            value:
+              sessionVariable: x-hasura-user-id
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: billings
+  sourceType: Customers
+  target:
+    model:
+      name: Billing
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: BillingAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId
+  graphql:
+    aggregateFieldName: billingsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: creditCards
+  sourceType: Customers
+  target:
+    model:
+      name: CreditCards
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: CreditCardsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId
+  graphql:
+    aggregateFieldName: creditCardsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customerLinks
+  sourceType: Customers
+  target:
+    model:
+      name: CustomerLink
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: CustomerLinkAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId
+  graphql:
+    aggregateFieldName: customerLinksAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customerNetworks
+  sourceType: Customers
+  target:
+    model:
+      name: CustomerNetwork
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: CustomerNetworkAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId
+  graphql:
+    aggregateFieldName: customerNetworksAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customerPlans
+  sourceType: Customers
+  target:
+    model:
+      name: CustomerPlans
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: CustomerPlansAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId
+  graphql:
+    aggregateFieldName: customerPlansAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: deviceUpgrades
+  sourceType: Customers
+  target:
+    model:
+      name: DeviceUpgrades
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: DeviceUpgradesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId
+  graphql:
+    aggregateFieldName: deviceUpgradesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: familyPlanMembers
+  sourceType: Customers
+  target:
+    model:
+      name: FamilyPlanMembers
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: FamilyPlanMembersAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId
+  graphql:
+    aggregateFieldName: familyPlanMembersAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: familyPlans
+  sourceType: Customers
+  target:
+    model:
+      name: FamilyPlans
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: FamilyPlansAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: primaryCustomerId
+  graphql:
+    aggregateFieldName: familyPlansAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: feedbacks
+  sourceType: Customers
+  target:
+    model:
+      name: Feedback
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: FeedbackAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId
+  graphql:
+    aggregateFieldName: feedbacksAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: interactions
+  sourceType: Customers
+  target:
+    model:
+      name: Interactions
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: InteractionsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId
+  graphql:
+    aggregateFieldName: interactionsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: iotDevices
+  sourceType: Customers
+  target:
+    model:
+      name: IotDevices
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: IotDevicesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId
+  graphql:
+    aggregateFieldName: iotDevicesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: loyaltyRewards
+  sourceType: Customers
+  target:
+    model:
+      name: LoyaltyRewards
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: LoyaltyRewardsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId
+  graphql:
+    aggregateFieldName: loyaltyRewardsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: numberPortabilities
+  sourceType: Customers
+  target:
+    model:
+      name: NumberPortability
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: NumberPortabilityAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId
+  graphql:
+    aggregateFieldName: numberPortabilitiesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: referrals
+  sourceType: Customers
+  target:
+    model:
+      name: Referrals
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ReferralsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: referredId
+  graphql:
+    aggregateFieldName: referralsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: referralsByReferrerId
+  sourceType: Customers
+  target:
+    model:
+      name: Referrals
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ReferralsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: referrerId
+  graphql:
+    aggregateFieldName: referralsByReferrerIdAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: serviceInteractions
+  sourceType: Customers
+  target:
+    model:
+      name: ServiceInteractions
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ServiceInteractionsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId
+  graphql:
+    aggregateFieldName: serviceInteractionsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: voipServices
+  sourceType: Customers
+  target:
+    model:
+      name: VoipServices
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: VoipServicesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId
+  graphql:
+    aggregateFieldName: voipServicesAggregate
+

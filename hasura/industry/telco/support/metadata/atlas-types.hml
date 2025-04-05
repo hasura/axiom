@@ -2,75 +2,9 @@
 kind: ScalarType
 version: v1
 definition:
-  name: Bool
-  graphql:
-    typeName: Support_Bool
-
----
-kind: ScalarType
-version: v1
-definition:
-  name: Double
-  graphql:
-    typeName: Support_Double
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: atlas
-  dataConnectorScalarType: String
-  representation: String
-  graphql:
-    comparisonExpressionTypeName: Support_StringComparisonExp
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: atlas
-  dataConnectorScalarType: Bool
-  representation: Bool
-  graphql:
-    comparisonExpressionTypeName: Support_BoolComparisonExp
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: atlas
-  dataConnectorScalarType: Double
-  representation: Double
-  graphql:
-    comparisonExpressionTypeName: Support_DoubleComparisonExp
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: atlas
-  dataConnectorScalarType: Int
-  representation: Int
-  graphql:
-    comparisonExpressionTypeName: Support_IntComparisonExp
-
----
-kind: ScalarType
-version: v1
-definition:
   name: ObjectId
   graphql:
-    typeName: Support_ObjectId
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: atlas
-  dataConnectorScalarType: ObjectId
-  representation: ObjectId
-  graphql:
-    comparisonExpressionTypeName: Support_ObjectIdComparisonExp
+    typeName: support_ObjectId
 
 ---
 kind: BooleanExpressionType
@@ -83,8 +17,12 @@ definition:
       comparisonOperators:
         - name: _eq
           argumentType: ObjectId!
+        - name: _in
+          argumentType: "[ObjectId!]!"
         - name: _neq
           argumentType: ObjectId!
+        - name: _nin
+          argumentType: "[ObjectId!]!"
       dataConnectorOperatorMapping:
         - dataConnectorName: atlas
           dataConnectorScalarType: ObjectId
@@ -94,7 +32,35 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: Support_ObjectIdBoolExp
+    typeName: support_ObjectIdBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: atlas
+  dataConnectorScalarType: ObjectId
+  representation: ObjectId
+  graphql:
+    comparisonExpressionTypeName: support_ObjectIdComparisonExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: atlas
+  dataConnectorScalarType: String
+  representation: String
+  graphql:
+    comparisonExpressionTypeName: support_StringComparisonExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: Bool
+  graphql:
+    typeName: support_Bool
 
 ---
 kind: BooleanExpressionType
@@ -107,8 +73,12 @@ definition:
       comparisonOperators:
         - name: _eq
           argumentType: Bool!
+        - name: _in
+          argumentType: "[Bool!]!"
         - name: _neq
           argumentType: Bool!
+        - name: _nin
+          argumentType: "[Bool!]!"
       dataConnectorOperatorMapping:
         - dataConnectorName: atlas
           dataConnectorScalarType: Bool
@@ -118,7 +88,17 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: Support_BoolBoolExp
+    typeName: support_BoolBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: atlas
+  dataConnectorScalarType: Bool
+  representation: Bool
+  graphql:
+    comparisonExpressionTypeName: support_BoolComparisonExp
 
 ---
 kind: BooleanExpressionType
@@ -135,6 +115,8 @@ definition:
           argumentType: String!
         - name: _gte
           argumentType: String!
+        - name: _in
+          argumentType: "[String!]!"
         - name: _iregex
           argumentType: String!
         - name: _lt
@@ -143,6 +125,8 @@ definition:
           argumentType: String!
         - name: _neq
           argumentType: String!
+        - name: _nin
+          argumentType: "[String!]!"
         - name: _regex
           argumentType: String!
       dataConnectorOperatorMapping:
@@ -154,7 +138,17 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: Support_StringBoolExp
+    typeName: support_StringBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: atlas
+  dataConnectorScalarType: Int
+  representation: Int
+  graphql:
+    comparisonExpressionTypeName: support_IntComparisonExp
 
 ---
 kind: AggregateExpression
@@ -178,7 +172,7 @@ definition:
   countDistinct:
     enable: true
   graphql:
-    selectTypeName: Support_ObjectIdAggExp
+    selectTypeName: support_ObjectIdAggExp
 
 ---
 kind: AggregateExpression
@@ -192,9 +186,9 @@ definition:
         - name: count
           returnType: Int!
         - name: max
-          returnType: String!
+          returnType: String
         - name: min
-          returnType: String!
+          returnType: String
       dataConnectorAggregationFunctionMapping:
         - dataConnectorName: atlas
           dataConnectorScalarType: String
@@ -210,71 +204,20 @@ definition:
   countDistinct:
     enable: true
   graphql:
-    selectTypeName: Support_StringAggExp
+    selectTypeName: support_StringAggExp
 
 ---
-kind: BooleanExpressionType
+kind: OrderByExpression
 version: v1
 definition:
-  name: DoubleBoolExp
+  name: ObjectIdOrderByExp
   operand:
     scalar:
-      type: Double
-      comparisonOperators:
-        - name: _eq
-          argumentType: Double!
-        - name: _gt
-          argumentType: Double!
-        - name: _gte
-          argumentType: Double!
-        - name: _lt
-          argumentType: Double!
-        - name: _lte
-          argumentType: Double!
-        - name: _neq
-          argumentType: Double!
-      dataConnectorOperatorMapping:
-        - dataConnectorName: atlas
-          dataConnectorScalarType: Double
-          operatorMapping: {}
-  logicalOperators:
-    enable: true
-  isNull:
-    enable: true
+      orderedType: ObjectId
+      enableOrderByDirections:
+        enableAll: true
   graphql:
-    typeName: Support_DoubleBoolExp
-
----
-kind: BooleanExpressionType
-version: v1
-definition:
-  name: IntBoolExp
-  operand:
-    scalar:
-      type: Int
-      comparisonOperators:
-        - name: _eq
-          argumentType: Int!
-        - name: _gt
-          argumentType: Int!
-        - name: _gte
-          argumentType: Int!
-        - name: _lt
-          argumentType: Int!
-        - name: _lte
-          argumentType: Int!
-        - name: _neq
-          argumentType: Int!
-      dataConnectorOperatorMapping:
-        - dataConnectorName: atlas
-          dataConnectorScalarType: Int
-          operatorMapping: {}
-  logicalOperators:
-    enable: true
-  isNull:
-    enable: true
-  graphql:
-    typeName: IntBoolExp_1
+    expressionTypeName: support_ObjectIdOrderByExp
 
 ---
 kind: OrderByExpression
@@ -303,30 +246,94 @@ definition:
     expressionTypeName: support_BoolOrderByExp
 
 ---
-kind: OrderByExpression
+kind: ScalarType
 version: v1
 definition:
-  name: IntOrderByExp
-  operand:
-    scalar:
-      orderedType: Int
-      enableOrderByDirections:
-        enableAll: true
+  name: Double
   graphql:
-    expressionTypeName: support_IntOrderByExp
+    typeName: support_Double
 
 ---
-kind: OrderByExpression
+kind: BooleanExpressionType
 version: v1
 definition:
-  name: ObjectIdOrderByExp
+  name: DoubleBoolExp
   operand:
     scalar:
-      orderedType: ObjectId
-      enableOrderByDirections:
-        enableAll: true
+      type: Double
+      comparisonOperators:
+        - name: _eq
+          argumentType: Double!
+        - name: _gt
+          argumentType: Double!
+        - name: _gte
+          argumentType: Double!
+        - name: _in
+          argumentType: "[Double!]!"
+        - name: _lt
+          argumentType: Double!
+        - name: _lte
+          argumentType: Double!
+        - name: _neq
+          argumentType: Double!
+        - name: _nin
+          argumentType: "[Double!]!"
+      dataConnectorOperatorMapping:
+        - dataConnectorName: atlas
+          dataConnectorScalarType: Double
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
   graphql:
-    expressionTypeName: support_ObjectIdOrderByExp
+    typeName: support_DoubleBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: atlas
+  dataConnectorScalarType: Double
+  representation: Double
+  graphql:
+    comparisonExpressionTypeName: support_DoubleComparisonExp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: IntBoolExp
+  operand:
+    scalar:
+      type: Int
+      comparisonOperators:
+        - name: _eq
+          argumentType: Int!
+        - name: _gt
+          argumentType: Int!
+        - name: _gte
+          argumentType: Int!
+        - name: _in
+          argumentType: "[Int!]!"
+        - name: _lt
+          argumentType: Int!
+        - name: _lte
+          argumentType: Int!
+        - name: _neq
+          argumentType: Int!
+        - name: _nin
+          argumentType: "[Int!]!"
+      dataConnectorOperatorMapping:
+        - dataConnectorName: atlas
+          dataConnectorScalarType: Int
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: support_IntBoolExp
 
 ---
 kind: AggregateExpression
@@ -338,15 +345,15 @@ definition:
       aggregatedType: Int
       aggregationFunctions:
         - name: avg
-          returnType: Int!
+          returnType: Int
         - name: count
           returnType: Int!
         - name: max
-          returnType: Int!
+          returnType: Int
         - name: min
-          returnType: Int!
+          returnType: Int
         - name: sum
-          returnType: Int!
+          returnType: Int
       dataConnectorAggregationFunctionMapping:
         - dataConnectorName: atlas
           dataConnectorScalarType: Int
@@ -367,4 +374,17 @@ definition:
     enable: true
   graphql:
     selectTypeName: support_IntAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: IntOrderByExp
+  operand:
+    scalar:
+      orderedType: Int
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: support_IntOrderByExp
 

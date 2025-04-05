@@ -11,10 +11,10 @@ definition:
     - name: guid
       type: String!
     - name: timestamp
-      type: DateTime!
+      type: DateTime646!
   graphql:
-    typeName: Network_DataUsage
-    inputTypeName: Network_DataUsageInput
+    typeName: network_DataUsage
+    inputTypeName: network_DataUsageInput
   dataConnectorTypeMapping:
     - dataConnectorName: clickhouse
       dataConnectorObjectType: data_usage
@@ -41,100 +41,10 @@ definition:
     - role: admin
       output:
         allowedFields:
+          - cuid
           - dataUsage
           - guid
           - timestamp
-          - cuid
-    - role: customer
-      output:
-        allowedFields:
-          - dataUsage
-          - guid
-          - timestamp
-          - cuid
-
----
-kind: Model
-version: v2
-definition:
-  name: DataUsage
-  objectType: DataUsage
-  source:
-    dataConnectorName: clickhouse
-    collection: data_usage
-  filterExpressionType: DataUsageBoolExp
-  graphql:
-    selectMany:
-      queryRootField: dataUsage
-    selectUniques:
-      - queryRootField: dataUsageByTimestampGuid
-        uniqueIdentifier:
-          - guid
-          - timestamp
-    filterInputTypeName: DataUsageFilterInput
-    aggregate:
-      queryRootField: dataUsageAggregate
-  aggregateExpression: DataUsageAggExp
-  orderByExpression: DataUsageOrderByExp
-
----
-kind: ModelPermissions
-version: v1
-definition:
-  modelName: DataUsage
-  permissions:
-    - role: admin
-      select:
-        filter: null
-    - role: customer
-      select: 
-        filter: 
-          fieldComparison:
-            field: cuid
-            operator: _eq
-            value: 
-              sessionVariable: x-hasura-user-id
-
----
-kind: Relationship
-version: v1
-definition:
-  name: customer
-  sourceType: DataUsage
-  target:
-    model:
-      subgraph: customer
-      name: CustomerLink
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: guid
-      target:
-        modelField:
-          - fieldName: customerGuid
-
----
-kind: AggregateExpression
-version: v1
-definition:
-  name: DataUsageAggExp
-  operand:
-    object:
-      aggregatedType: DataUsage
-      aggregatableFields:
-        - fieldName: cuid
-          aggregateExpression: Int32AggExp
-        - fieldName: dataUsage
-          aggregateExpression: Float32AggExp
-        - fieldName: guid
-          aggregateExpression: StringAggExp
-        - fieldName: timestamp
-          aggregateExpression: DateTimeAggExp
-  count:
-    enable: true
-  graphql:
-    selectTypeName: DataUsageAggExp
 
 ---
 kind: BooleanExpressionType
@@ -152,14 +62,36 @@ definition:
         - fieldName: guid
           booleanExpressionType: StringBoolExp
         - fieldName: timestamp
-          booleanExpressionType: DateTimeBoolExp
+          booleanExpressionType: DateTime646BoolExp
       comparableRelationships: []
   logicalOperators:
     enable: true
   isNull:
     enable: true
   graphql:
-    typeName: Network_DataUsageBoolExp
+    typeName: network_DataUsageBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: DataUsageAggExp
+  operand:
+    object:
+      aggregatedType: DataUsage
+      aggregatableFields:
+        - fieldName: cuid
+          aggregateExpression: Int32AggExp
+        - fieldName: dataUsage
+          aggregateExpression: Float32AggExp
+        - fieldName: guid
+          aggregateExpression: StringAggExp
+        - fieldName: timestamp
+          aggregateExpression: DateTime646AggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: network_DataUsageAggExp
 
 ---
 kind: OrderByExpression
@@ -177,8 +109,49 @@ definition:
         - fieldName: guid
           orderByExpression: StringOrderByExp
         - fieldName: timestamp
-          orderByExpression: DateTimeOrderByExp
+          orderByExpression: DateTime646OrderByExp
       orderableRelationships: []
   graphql:
     expressionTypeName: network_DataUsageOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: DataUsage
+  objectType: DataUsage
+  source:
+    dataConnectorName: clickhouse
+    collection: data_usage
+  filterExpressionType: DataUsageBoolExp
+  aggregateExpression: DataUsageAggExp
+  orderByExpression: DataUsageOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: dataUsage
+      subscription:
+        rootField: dataUsage
+    selectUniques:
+      - queryRootField: dataUsageByTimestampGuid
+        uniqueIdentifier:
+          - guid
+          - timestamp
+        subscription:
+          rootField: dataUsageByTimestampGuid
+    filterInputTypeName: network_DataUsageFilterInput
+    aggregate:
+      queryRootField: dataUsageAggregate
+      subscription:
+        rootField: dataUsageAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: DataUsage
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
 

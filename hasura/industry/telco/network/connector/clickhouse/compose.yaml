@@ -2,25 +2,15 @@ services:
   network_clickhouse:
     build:
       context: .
-      dockerfile_inline: |-
-        FROM ghcr.io/hasura/ndc-clickhouse:v1.0.5
-        COPY ./ /etc/connector
-    develop:
-      watch:
-        - path: ./
-          action: sync+restart
-          target: /etc/connector
+      dockerfile: .hasura-connector/Dockerfile.clickhouse
     environment:
+      CLICKHOUSE_PASSWORD: $NETWORK_CLICKHOUSE_CLICKHOUSE_PASSWORD
       CLICKHOUSE_URL: $NETWORK_CLICKHOUSE_CLICKHOUSE_URL
       CLICKHOUSE_USERNAME: $NETWORK_CLICKHOUSE_CLICKHOUSE_USERNAME
-      CLICKHOUSE_PASSWORD: $NETWORK_CLICKHOUSE_CLICKHOUSE_PASSWORD
       HASURA_SERVICE_TOKEN_SECRET: $NETWORK_CLICKHOUSE_HASURA_SERVICE_TOKEN_SECRET
-      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: $NETWORK_CLICKHOUSE_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+      OTEL_EXPORTER_OTLP_ENDPOINT: $NETWORK_CLICKHOUSE_OTEL_EXPORTER_OTLP_ENDPOINT
       OTEL_SERVICE_NAME: $NETWORK_CLICKHOUSE_OTEL_SERVICE_NAME
     extra_hosts:
-      - local.hasura.dev=host-gateway
+      - local.hasura.dev:host-gateway
     ports:
-      - mode: ingress
-        target: 8080
-        published: "5052"
-        protocol: tcp
+      - 4842:8080
