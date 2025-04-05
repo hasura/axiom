@@ -1,0 +1,104 @@
+kind: DataConnectorLink
+version: v1
+definition:
+  name: search
+  url:
+    readWriteUrls:
+      read:
+        valueFromEnv: AUTH_SEARCH_READ_URL
+      write:
+        valueFromEnv: AUTH_SEARCH_WRITE_URL
+  headers:
+    Authorization:
+      valueFromEnv: AUTH_SEARCH_AUTHORIZATION_HEADER
+  schema:
+    version: v0.1
+    schema:
+      scalar_types:
+        String:
+          representation:
+            type: string
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+      object_types:
+        GeminiSearchResponse:
+          fields:
+            response:
+              type:
+                name: String
+                type: named
+        PerplexityResponse:
+          fields:
+            references:
+              type:
+                element_type:
+                  name: String
+                  type: named
+                type: array
+            text:
+              type:
+                name: String
+                type: named
+        SearchResult:
+          fields:
+            description:
+              type:
+                name: String
+                type: named
+            link:
+              type:
+                name: String
+                type: named
+            published:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            title:
+              type:
+                name: String
+                type: named
+      collections: []
+      functions:
+        - name: braveSearch
+          description: Make a web search with brave, returns 10 results
+          arguments:
+            query:
+              description: Search query string
+              type:
+                name: String
+                type: named
+          result_type:
+            element_type:
+              name: SearchResult
+              type: named
+            type: array
+        - name: searchWithPerplexity
+          arguments:
+            query:
+              type:
+                name: String
+                type: named
+          result_type:
+            name: PerplexityResponse
+            type: named
+        - name: geminiSearch
+          arguments:
+            query:
+              type:
+                name: String
+                type: named
+          result_type:
+            name: GeminiSearchResponse
+            type: named
+      procedures: []
+    capabilities:
+      version: 0.1.6
+      capabilities:
+        query:
+          variables: {}
+          nested_fields: {}
+        mutation: {}

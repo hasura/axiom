@@ -14,6 +14,10 @@ definition:
       type: Int4!
     - name: duration
       type: Int4!
+    - name: latitude
+      type: Numeric
+    - name: longitude
+      type: Numeric
     - name: nodeid
       type: Int4
     - name: receivernumber
@@ -21,8 +25,8 @@ definition:
     - name: timestamp
       type: Timestamptz!
   graphql:
-    typeName: Network_Calls
-    inputTypeName: Network_CallsInput
+    typeName: network_Calls
+    inputTypeName: network_CallsInput
   dataConnectorTypeMapping:
     - dataConnectorName: kafka_sink
       dataConnectorObjectType: calls
@@ -41,53 +45,11 @@ definition:
           - customerid
           - deviceid
           - duration
+          - latitude
+          - longitude
           - nodeid
           - receivernumber
           - timestamp
-    - role: customer
-      output:
-        allowedFields:
-          - callid
-          - calltype
-          - customerid
-          - deviceid
-          - duration
-          - nodeid
-          - receivernumber
-          - timestamp
-
----
-kind: Model
-version: v2
-definition:
-  name: Calls
-  objectType: Calls
-  source:
-    dataConnectorName: kafka_sink
-    collection: calls
-  filterExpressionType: CallsBoolExp
-  graphql:
-    selectMany:
-      queryRootField: calls
-    selectUniques:
-      - queryRootField: callsByCallid
-        uniqueIdentifier:
-          - callid
-    filterInputTypeName: CallsFilterInput
-    aggregate:
-      queryRootField: callsAggregate
-  aggregateExpression: CallsAggExp
-  orderByExpression: CallsOrderByExp
-
----
-kind: ModelPermissions
-version: v1
-definition:
-  modelName: Calls
-  permissions:
-    - role: admin
-      select:
-        filter: null
 
 ---
 kind: BooleanExpressionType
@@ -108,6 +70,10 @@ definition:
           booleanExpressionType: Int4BoolExp
         - fieldName: duration
           booleanExpressionType: Int4BoolExp
+        - fieldName: latitude
+          booleanExpressionType: NumericBoolExp
+        - fieldName: longitude
+          booleanExpressionType: NumericBoolExp
         - fieldName: nodeid
           booleanExpressionType: Int4BoolExp
         - fieldName: receivernumber
@@ -120,7 +86,7 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: Network_CallsBoolExp
+    typeName: network_CallsBoolExp
 
 ---
 kind: AggregateExpression
@@ -141,6 +107,10 @@ definition:
           aggregateExpression: Int4AggExp
         - fieldName: duration
           aggregateExpression: Int4AggExp
+        - fieldName: latitude
+          aggregateExpression: NumericAggExp
+        - fieldName: longitude
+          aggregateExpression: NumericAggExp
         - fieldName: nodeid
           aggregateExpression: Int4AggExp
         - fieldName: receivernumber
@@ -150,7 +120,7 @@ definition:
   count:
     enable: true
   graphql:
-    selectTypeName: CallsAggExp
+    selectTypeName: network_CallsAggExp
 
 ---
 kind: OrderByExpression
@@ -171,6 +141,10 @@ definition:
           orderByExpression: Int4OrderByExp
         - fieldName: duration
           orderByExpression: Int4OrderByExp
+        - fieldName: latitude
+          orderByExpression: NumericOrderByExp
+        - fieldName: longitude
+          orderByExpression: NumericOrderByExp
         - fieldName: nodeid
           orderByExpression: Int4OrderByExp
         - fieldName: receivernumber
@@ -180,4 +154,44 @@ definition:
       orderableRelationships: []
   graphql:
     expressionTypeName: network_CallsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: Calls
+  objectType: Calls
+  source:
+    dataConnectorName: kafka_sink
+    collection: calls
+  filterExpressionType: CallsBoolExp
+  aggregateExpression: CallsAggExp
+  orderByExpression: CallsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: calls
+      subscription:
+        rootField: calls
+    selectUniques:
+      - queryRootField: callsByCallid
+        uniqueIdentifier:
+          - callid
+        subscription:
+          rootField: callsByCallid
+    filterInputTypeName: network_CallsFilterInput
+    aggregate:
+      queryRootField: callsAggregate
+      subscription:
+        rootField: callsAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: Calls
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
 

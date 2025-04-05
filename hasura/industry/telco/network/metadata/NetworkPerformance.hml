@@ -13,17 +13,17 @@ definition:
     - name: latency
       type: Int32!
     - name: timestamp
-      type: DateTime!
+      type: DateTime646!
     - name: uploadSpeed
       type: Float32!
   graphql:
-    typeName: Network_NetworkPerformance
-    inputTypeName: Network_NetworkPerformanceInput
+    typeName: network_NetworkPerformance
+    inputTypeName: network_NetworkPerformanceInput
   dataConnectorTypeMapping:
     - dataConnectorName: clickhouse
       dataConnectorObjectType: network_performance
       fieldMapping:
-        cuid: 
+        cuid:
           column:
             name: CUID
         downloadSpeed:
@@ -51,108 +51,12 @@ definition:
     - role: admin
       output:
         allowedFields:
+          - cuid
           - downloadSpeed
           - guid
           - latency
           - timestamp
           - uploadSpeed
-          - cuid
-    - role: customer
-      output:
-        allowedFields:
-          - downloadSpeed
-          - guid
-          - latency
-          - timestamp
-          - uploadSpeed
-          - cuid
-
----
-kind: Model
-version: v2
-definition:
-  name: NetworkPerformance
-  objectType: NetworkPerformance
-  source:
-    dataConnectorName: clickhouse
-    collection: network_performance
-  filterExpressionType: NetworkPerformanceBoolExp
-  graphql:
-    selectMany:
-      queryRootField: networkPerformance
-    selectUniques:
-      - queryRootField: networkPerformanceByTimestampGuid
-        uniqueIdentifier:
-          - guid
-          - timestamp
-    filterInputTypeName: NetworkPerformanceFilterInput
-    aggregate:
-      queryRootField: networkPerformanceAggregate
-  aggregateExpression: NetworkPerformanceAggExp
-  orderByExpression: NetworkPerformanceOrderByExp
-
----
-kind: ModelPermissions
-version: v1
-definition:
-  modelName: NetworkPerformance
-  permissions:
-    - role: admin
-      select:
-        filter: null
-    - role: customer
-      select: 
-        filter: 
-          fieldComparison:
-            field: cuid
-            operator: _eq
-            value: 
-              sessionVariable: x-hasura-user-id
-
----
-kind: Relationship
-version: v1
-definition:
-  name: customer
-  sourceType: NetworkPerformance
-  target:
-    model:
-      subgraph: customer
-      name: CustomerLink
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: guid
-      target:
-        modelField:
-          - fieldName: customerGuid
-
----
-kind: AggregateExpression
-version: v1
-definition:
-  name: NetworkPerformanceAggExp
-  operand:
-    object:
-      aggregatedType: NetworkPerformance
-      aggregatableFields:
-        - fieldName: cuid
-          aggregateExpression: Int32AggExp
-        - fieldName: downloadSpeed
-          aggregateExpression: Float32AggExp
-        - fieldName: guid
-          aggregateExpression: StringAggExp
-        - fieldName: latency
-          aggregateExpression: Int32AggExp
-        - fieldName: timestamp
-          aggregateExpression: DateTimeAggExp
-        - fieldName: uploadSpeed
-          aggregateExpression: Float32AggExp
-  count:
-    enable: true
-  graphql:
-    selectTypeName: NetworkPerformanceAggExp
 
 ---
 kind: BooleanExpressionType
@@ -172,7 +76,7 @@ definition:
         - fieldName: latency
           booleanExpressionType: Int32BoolExp
         - fieldName: timestamp
-          booleanExpressionType: DateTimeBoolExp
+          booleanExpressionType: DateTime646BoolExp
         - fieldName: uploadSpeed
           booleanExpressionType: Float32BoolExp
       comparableRelationships: []
@@ -181,7 +85,33 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: Network_NetworkPerformanceBoolExp
+    typeName: network_NetworkPerformanceBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: NetworkPerformanceAggExp
+  operand:
+    object:
+      aggregatedType: NetworkPerformance
+      aggregatableFields:
+        - fieldName: cuid
+          aggregateExpression: Int32AggExp
+        - fieldName: downloadSpeed
+          aggregateExpression: Float32AggExp
+        - fieldName: guid
+          aggregateExpression: StringAggExp
+        - fieldName: latency
+          aggregateExpression: Int32AggExp
+        - fieldName: timestamp
+          aggregateExpression: DateTime646AggExp
+        - fieldName: uploadSpeed
+          aggregateExpression: Float32AggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: network_NetworkPerformanceAggExp
 
 ---
 kind: OrderByExpression
@@ -201,10 +131,51 @@ definition:
         - fieldName: latency
           orderByExpression: Int32OrderByExp
         - fieldName: timestamp
-          orderByExpression: DateTimeOrderByExp
+          orderByExpression: DateTime646OrderByExp
         - fieldName: uploadSpeed
           orderByExpression: Float32OrderByExp
       orderableRelationships: []
   graphql:
     expressionTypeName: network_NetworkPerformanceOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: NetworkPerformance
+  objectType: NetworkPerformance
+  source:
+    dataConnectorName: clickhouse
+    collection: network_performance
+  filterExpressionType: NetworkPerformanceBoolExp
+  aggregateExpression: NetworkPerformanceAggExp
+  orderByExpression: NetworkPerformanceOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: networkPerformance
+      subscription:
+        rootField: networkPerformance
+    selectUniques:
+      - queryRootField: networkPerformanceByTimestampGuid
+        uniqueIdentifier:
+          - guid
+          - timestamp
+        subscription:
+          rootField: networkPerformanceByTimestampGuid
+    filterInputTypeName: network_NetworkPerformanceFilterInput
+    aggregate:
+      queryRootField: networkPerformanceAggregate
+      subscription:
+        rootField: networkPerformanceAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: NetworkPerformance
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
 

@@ -15,28 +15,22 @@ definition:
     version: v0.1
     schema:
       scalar_types:
-        bool:
+        date:
           representation:
-            type: boolean
+            type: date
           aggregate_functions:
-            bool_and:
+            max:
               result_type:
                 type: nullable
                 underlying_type:
                   type: named
-                  name: bool
-            bool_or:
+                  name: date
+            min:
               result_type:
                 type: nullable
                 underlying_type:
                   type: named
-                  name: bool
-            every:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: bool
+                  name: date
           comparison_operators:
             _eq:
               type: equal
@@ -44,29 +38,29 @@ definition:
               type: custom
               argument_type:
                 type: named
-                name: bool
+                name: date
             _gte:
               type: custom
               argument_type:
                 type: named
-                name: bool
+                name: date
             _in:
               type: in
             _lt:
               type: custom
               argument_type:
                 type: named
-                name: bool
+                name: date
             _lte:
               type: custom
               argument_type:
                 type: named
-                name: bool
+                name: date
             _neq:
               type: custom
               argument_type:
                 type: named
-                name: bool
+                name: date
         int4:
           representation:
             type: int32
@@ -291,58 +285,6 @@ definition:
               argument_type:
                 type: named
                 name: int8
-        json:
-          aggregate_functions: {}
-          comparison_operators:
-            _in:
-              type: in
-        jsonb:
-          aggregate_functions: {}
-          comparison_operators:
-            _eq:
-              type: equal
-            _gt:
-              type: custom
-              argument_type:
-                type: named
-                name: jsonb
-            _gte:
-              type: custom
-              argument_type:
-                type: named
-                name: jsonb
-            _in:
-              type: in
-            _lt:
-              type: custom
-              argument_type:
-                type: named
-                name: jsonb
-            _lte:
-              type: custom
-              argument_type:
-                type: named
-                name: jsonb
-            _neq:
-              type: custom
-              argument_type:
-                type: named
-                name: jsonb
-            jsonb_contained:
-              type: custom
-              argument_type:
-                type: named
-                name: jsonb
-            jsonb_contains:
-              type: custom
-              argument_type:
-                type: named
-                name: jsonb
-            jsonb_exists:
-              type: custom
-              argument_type:
-                type: named
-                name: text
         numeric:
           representation:
             type: bigdecimal
@@ -533,52 +475,6 @@ definition:
               argument_type:
                 type: named
                 name: text
-        timestamp:
-          representation:
-            type: timestamp
-          aggregate_functions:
-            max:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: timestamp
-            min:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: timestamp
-          comparison_operators:
-            _eq:
-              type: equal
-            _gt:
-              type: custom
-              argument_type:
-                type: named
-                name: timestamp
-            _gte:
-              type: custom
-              argument_type:
-                type: named
-                name: timestamp
-            _in:
-              type: in
-            _lt:
-              type: custom
-              argument_type:
-                type: named
-                name: timestamp
-            _lte:
-              type: custom
-              argument_type:
-                type: named
-                name: timestamp
-            _neq:
-              type: custom
-              argument_type:
-                type: named
-                name: timestamp
         timestamptz:
           representation:
             type: timestamptz
@@ -746,6 +642,18 @@ definition:
               type:
                 type: named
                 name: int4
+            latitude:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            longitude:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
             nodeid:
               type:
                 type: nullable
@@ -762,6 +670,738 @@ definition:
               type:
                 type: named
                 name: timestamptz
+        coverage_areas:
+          fields:
+            coverage_id:
+              type:
+                type: named
+                name: int4
+            coverage_radius_km:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            last_upgraded:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: date
+            node_id:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            population_covered:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            signal_strength_dbm:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            technology:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            terrain_type:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        delete_calls_by_callid_response:
+          description: Responses from the 'delete_calls_by_callid' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: calls
+        delete_coverage_areas_by_coverage_id_response:
+          description: Responses from the 'delete_coverage_areas_by_coverage_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: coverage_areas
+        delete_equipment_by_equipment_id_response:
+          description: Responses from the 'delete_equipment_by_equipment_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: equipment
+        delete_outages_by_outage_id_response:
+          description: Responses from the 'delete_outages_by_outage_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: outages
+        delete_spectrum_licenses_by_license_id_response:
+          description: Responses from the 'delete_spectrum_licenses_by_license_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: spectrum_licenses
+        delete_texts_by_textid_response:
+          description: Responses from the 'delete_texts_by_textid' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: texts
+        equipment:
+          fields:
+            capacity_mbps:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            equipment_id:
+              type:
+                type: named
+                name: int4
+            equipment_type:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            firmware_version:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            installation_date:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: date
+            last_maintenance_date:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: date
+            manufacturer:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            model:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            node_id:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            power_consumption_watts:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            serial_number:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            status:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        insert_calls_object:
+          fields:
+            callid:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            calltype:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            customerid:
+              type:
+                type: named
+                name: int4
+            deviceid:
+              type:
+                type: named
+                name: int4
+            duration:
+              type:
+                type: named
+                name: int4
+            latitude:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            longitude:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            nodeid:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            receivernumber:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            timestamp:
+              type:
+                type: named
+                name: timestamptz
+        insert_calls_response:
+          description: Responses from the 'insert_calls' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: calls
+        insert_coverage_areas_object:
+          fields:
+            coverage_id:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            coverage_radius_km:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            last_upgraded:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: date
+            node_id:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            population_covered:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            signal_strength_dbm:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            technology:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            terrain_type:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        insert_coverage_areas_response:
+          description: Responses from the 'insert_coverage_areas' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: coverage_areas
+        insert_equipment_object:
+          fields:
+            capacity_mbps:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            equipment_id:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            equipment_type:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            firmware_version:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            installation_date:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: date
+            last_maintenance_date:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: date
+            manufacturer:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            model:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            node_id:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            power_consumption_watts:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            serial_number:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            status:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        insert_equipment_response:
+          description: Responses from the 'insert_equipment' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: equipment
+        insert_outages_object:
+          fields:
+            affected_customers:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            cause:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            end_time:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: timestamptz
+            node_id:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            outage_id:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            resolution:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: text
+            severity:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            start_time:
+              type:
+                type: named
+                name: timestamptz
+        insert_outages_response:
+          description: Responses from the 'insert_outages' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: outages
+        insert_spectrum_licenses_object:
+          fields:
+            acquisition_date:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: date
+            bandwidth_mhz:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            cost_million_usd:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            expiration_date:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: date
+            frequency_band:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            geographic_area:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            license_id:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            license_number:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            regulatory_authority:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        insert_spectrum_licenses_response:
+          description: Responses from the 'insert_spectrum_licenses' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: spectrum_licenses
+        insert_texts_object:
+          fields:
+            customerid:
+              type:
+                type: named
+                name: int4
+            deviceid:
+              type:
+                type: named
+                name: int4
+            latitude:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            longitude:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            messagetype:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            nodeid:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            receivernumber:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            textid:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            timestamp:
+              type:
+                type: named
+                name: timestamptz
+        insert_texts_response:
+          description: Responses from the 'insert_texts' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: texts
+        outages:
+          fields:
+            affected_customers:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            cause:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            end_time:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: timestamptz
+            node_id:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            outage_id:
+              type:
+                type: named
+                name: int4
+            resolution:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: text
+            severity:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            start_time:
+              type:
+                type: named
+                name: timestamptz
+        spectrum_licenses:
+          fields:
+            acquisition_date:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: date
+            bandwidth_mhz:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            cost_million_usd:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            expiration_date:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: date
+            frequency_band:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            geographic_area:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            license_id:
+              type:
+                type: named
+                name: int4
+            license_number:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            regulatory_authority:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
         texts:
           fields:
             customerid:
@@ -772,6 +1412,18 @@ definition:
               type:
                 type: named
                 name: int4
+            latitude:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+            longitude:
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
             messagetype:
               type:
                 type: nullable
@@ -798,6 +1450,94 @@ definition:
               type:
                 type: named
                 name: timestamptz
+        update_calls_by_callid_response:
+          description: Responses from the 'update_calls_by_callid' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: calls
+        update_calls_by_callid_update_columns:
+          description: Update the columns of the 'calls' collection
+          fields:
+            callid:
+              description: Update the 'callid' column in the 'calls' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_calls_callid
+            calltype:
+              description: Update the 'calltype' column in the 'calls' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_calls_calltype
+            customerid:
+              description: Update the 'customerid' column in the 'calls' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_calls_customerid
+            deviceid:
+              description: Update the 'deviceid' column in the 'calls' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_calls_deviceid
+            duration:
+              description: Update the 'duration' column in the 'calls' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_calls_duration
+            latitude:
+              description: Update the 'latitude' column in the 'calls' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_calls_latitude
+            longitude:
+              description: Update the 'longitude' column in the 'calls' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_calls_longitude
+            nodeid:
+              description: Update the 'nodeid' column in the 'calls' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_calls_nodeid
+            receivernumber:
+              description: Update the 'receivernumber' column in the 'calls' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_calls_receivernumber
+            timestamp:
+              description: Update the 'timestamp' column in the 'calls' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_calls_timestamp
         update_column_calls_callid:
           description: Update the 'callid' column in the 'calls' collection
           fields:
@@ -840,6 +1580,26 @@ definition:
               type:
                 type: named
                 name: int4
+        update_column_calls_latitude:
+          description: Update the 'latitude' column in the 'calls' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+        update_column_calls_longitude:
+          description: Update the 'longitude' column in the 'calls' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
         update_column_calls_nodeid:
           description: Update the 'nodeid' column in the 'calls' collection
           fields:
@@ -868,6 +1628,366 @@ definition:
               type:
                 type: named
                 name: timestamptz
+        update_column_coverage_areas_coverage_id:
+          description: Update the 'coverage_id' column in the 'coverage_areas' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: int4
+        update_column_coverage_areas_coverage_radius_km:
+          description: Update the 'coverage_radius_km' column in the 'coverage_areas' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+        update_column_coverage_areas_last_upgraded:
+          description: Update the 'last_upgraded' column in the 'coverage_areas' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: date
+        update_column_coverage_areas_node_id:
+          description: Update the 'node_id' column in the 'coverage_areas' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+        update_column_coverage_areas_population_covered:
+          description: Update the 'population_covered' column in the 'coverage_areas' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+        update_column_coverage_areas_signal_strength_dbm:
+          description: Update the 'signal_strength_dbm' column in the 'coverage_areas' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+        update_column_coverage_areas_technology:
+          description: Update the 'technology' column in the 'coverage_areas' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        update_column_coverage_areas_terrain_type:
+          description: Update the 'terrain_type' column in the 'coverage_areas' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        update_column_equipment_capacity_mbps:
+          description: Update the 'capacity_mbps' column in the 'equipment' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+        update_column_equipment_equipment_id:
+          description: Update the 'equipment_id' column in the 'equipment' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: int4
+        update_column_equipment_equipment_type:
+          description: Update the 'equipment_type' column in the 'equipment' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        update_column_equipment_firmware_version:
+          description: Update the 'firmware_version' column in the 'equipment' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        update_column_equipment_installation_date:
+          description: Update the 'installation_date' column in the 'equipment' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: date
+        update_column_equipment_last_maintenance_date:
+          description: Update the 'last_maintenance_date' column in the 'equipment' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: date
+        update_column_equipment_manufacturer:
+          description: Update the 'manufacturer' column in the 'equipment' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        update_column_equipment_model:
+          description: Update the 'model' column in the 'equipment' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        update_column_equipment_node_id:
+          description: Update the 'node_id' column in the 'equipment' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+        update_column_equipment_power_consumption_watts:
+          description: Update the 'power_consumption_watts' column in the 'equipment' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+        update_column_equipment_serial_number:
+          description: Update the 'serial_number' column in the 'equipment' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        update_column_equipment_status:
+          description: Update the 'status' column in the 'equipment' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        update_column_outages_affected_customers:
+          description: Update the 'affected_customers' column in the 'outages' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+        update_column_outages_cause:
+          description: Update the 'cause' column in the 'outages' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        update_column_outages_end_time:
+          description: Update the 'end_time' column in the 'outages' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: timestamptz
+        update_column_outages_node_id:
+          description: Update the 'node_id' column in the 'outages' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+        update_column_outages_outage_id:
+          description: Update the 'outage_id' column in the 'outages' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: int4
+        update_column_outages_resolution:
+          description: Update the 'resolution' column in the 'outages' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: text
+        update_column_outages_severity:
+          description: Update the 'severity' column in the 'outages' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        update_column_outages_start_time:
+          description: Update the 'start_time' column in the 'outages' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: timestamptz
+        update_column_spectrum_licenses_acquisition_date:
+          description: Update the 'acquisition_date' column in the 'spectrum_licenses' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: date
+        update_column_spectrum_licenses_bandwidth_mhz:
+          description: Update the 'bandwidth_mhz' column in the 'spectrum_licenses' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+        update_column_spectrum_licenses_cost_million_usd:
+          description: Update the 'cost_million_usd' column in the 'spectrum_licenses' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+        update_column_spectrum_licenses_expiration_date:
+          description: Update the 'expiration_date' column in the 'spectrum_licenses' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: date
+        update_column_spectrum_licenses_frequency_band:
+          description: Update the 'frequency_band' column in the 'spectrum_licenses' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        update_column_spectrum_licenses_geographic_area:
+          description: Update the 'geographic_area' column in the 'spectrum_licenses' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        update_column_spectrum_licenses_license_id:
+          description: Update the 'license_id' column in the 'spectrum_licenses' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: int4
+        update_column_spectrum_licenses_license_number:
+          description: Update the 'license_number' column in the 'spectrum_licenses' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        update_column_spectrum_licenses_regulatory_authority:
+          description: Update the 'regulatory_authority' column in the 'spectrum_licenses' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
         update_column_texts_customerid:
           description: Update the 'customerid' column in the 'texts' collection
           fields:
@@ -884,6 +2004,26 @@ definition:
               type:
                 type: named
                 name: int4
+        update_column_texts_latitude:
+          description: Update the 'latitude' column in the 'texts' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
+        update_column_texts_longitude:
+          description: Update the 'longitude' column in the 'texts' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: numeric
         update_column_texts_messagetype:
           description: Update the 'messagetype' column in the 'texts' collection
           fields:
@@ -930,8 +2070,8 @@ definition:
               type:
                 type: named
                 name: timestamptz
-        v2_delete_calls_by_callid_response:
-          description: Responses from the 'v2_delete_calls_by_callid' procedure
+        update_coverage_areas_by_coverage_id_response:
+          description: Responses from the 'update_coverage_areas_by_coverage_id' procedure
           fields:
             affected_rows:
               description: The number of rows affected by the mutation
@@ -944,9 +2084,325 @@ definition:
                 type: array
                 element_type:
                   type: named
-                  name: calls
-        v2_delete_texts_by_textid_response:
-          description: Responses from the 'v2_delete_texts_by_textid' procedure
+                  name: coverage_areas
+        update_coverage_areas_by_coverage_id_update_columns:
+          description: Update the columns of the 'coverage_areas' collection
+          fields:
+            coverage_id:
+              description: Update the 'coverage_id' column in the 'coverage_areas' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_coverage_areas_coverage_id
+            coverage_radius_km:
+              description: Update the 'coverage_radius_km' column in the 'coverage_areas' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_coverage_areas_coverage_radius_km
+            last_upgraded:
+              description: Update the 'last_upgraded' column in the 'coverage_areas' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_coverage_areas_last_upgraded
+            node_id:
+              description: Update the 'node_id' column in the 'coverage_areas' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_coverage_areas_node_id
+            population_covered:
+              description: Update the 'population_covered' column in the 'coverage_areas' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_coverage_areas_population_covered
+            signal_strength_dbm:
+              description: Update the 'signal_strength_dbm' column in the 'coverage_areas' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_coverage_areas_signal_strength_dbm
+            technology:
+              description: Update the 'technology' column in the 'coverage_areas' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_coverage_areas_technology
+            terrain_type:
+              description: Update the 'terrain_type' column in the 'coverage_areas' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_coverage_areas_terrain_type
+        update_equipment_by_equipment_id_response:
+          description: Responses from the 'update_equipment_by_equipment_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: equipment
+        update_equipment_by_equipment_id_update_columns:
+          description: Update the columns of the 'equipment' collection
+          fields:
+            capacity_mbps:
+              description: Update the 'capacity_mbps' column in the 'equipment' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_equipment_capacity_mbps
+            equipment_id:
+              description: Update the 'equipment_id' column in the 'equipment' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_equipment_equipment_id
+            equipment_type:
+              description: Update the 'equipment_type' column in the 'equipment' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_equipment_equipment_type
+            firmware_version:
+              description: Update the 'firmware_version' column in the 'equipment' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_equipment_firmware_version
+            installation_date:
+              description: Update the 'installation_date' column in the 'equipment' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_equipment_installation_date
+            last_maintenance_date:
+              description: Update the 'last_maintenance_date' column in the 'equipment' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_equipment_last_maintenance_date
+            manufacturer:
+              description: Update the 'manufacturer' column in the 'equipment' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_equipment_manufacturer
+            model:
+              description: Update the 'model' column in the 'equipment' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_equipment_model
+            node_id:
+              description: Update the 'node_id' column in the 'equipment' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_equipment_node_id
+            power_consumption_watts:
+              description: Update the 'power_consumption_watts' column in the 'equipment' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_equipment_power_consumption_watts
+            serial_number:
+              description: Update the 'serial_number' column in the 'equipment' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_equipment_serial_number
+            status:
+              description: Update the 'status' column in the 'equipment' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_equipment_status
+        update_outages_by_outage_id_response:
+          description: Responses from the 'update_outages_by_outage_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: outages
+        update_outages_by_outage_id_update_columns:
+          description: Update the columns of the 'outages' collection
+          fields:
+            affected_customers:
+              description: Update the 'affected_customers' column in the 'outages' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_outages_affected_customers
+            cause:
+              description: Update the 'cause' column in the 'outages' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_outages_cause
+            end_time:
+              description: Update the 'end_time' column in the 'outages' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_outages_end_time
+            node_id:
+              description: Update the 'node_id' column in the 'outages' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_outages_node_id
+            outage_id:
+              description: Update the 'outage_id' column in the 'outages' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_outages_outage_id
+            resolution:
+              description: Update the 'resolution' column in the 'outages' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_outages_resolution
+            severity:
+              description: Update the 'severity' column in the 'outages' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_outages_severity
+            start_time:
+              description: Update the 'start_time' column in the 'outages' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_outages_start_time
+        update_spectrum_licenses_by_license_id_response:
+          description: Responses from the 'update_spectrum_licenses_by_license_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: spectrum_licenses
+        update_spectrum_licenses_by_license_id_update_columns:
+          description: Update the columns of the 'spectrum_licenses' collection
+          fields:
+            acquisition_date:
+              description: Update the 'acquisition_date' column in the 'spectrum_licenses' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_spectrum_licenses_acquisition_date
+            bandwidth_mhz:
+              description: Update the 'bandwidth_mhz' column in the 'spectrum_licenses' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_spectrum_licenses_bandwidth_mhz
+            cost_million_usd:
+              description: Update the 'cost_million_usd' column in the 'spectrum_licenses' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_spectrum_licenses_cost_million_usd
+            expiration_date:
+              description: Update the 'expiration_date' column in the 'spectrum_licenses' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_spectrum_licenses_expiration_date
+            frequency_band:
+              description: Update the 'frequency_band' column in the 'spectrum_licenses' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_spectrum_licenses_frequency_band
+            geographic_area:
+              description: Update the 'geographic_area' column in the 'spectrum_licenses' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_spectrum_licenses_geographic_area
+            license_id:
+              description: Update the 'license_id' column in the 'spectrum_licenses' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_spectrum_licenses_license_id
+            license_number:
+              description: Update the 'license_number' column in the 'spectrum_licenses' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_spectrum_licenses_license_number
+            regulatory_authority:
+              description: Update the 'regulatory_authority' column in the 'spectrum_licenses' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_spectrum_licenses_regulatory_authority
+        update_texts_by_textid_response:
+          description: Responses from the 'update_texts_by_textid' procedure
           fields:
             affected_rows:
               description: The number of rows affected by the mutation
@@ -960,206 +2416,7 @@ definition:
                 element_type:
                   type: named
                   name: texts
-        v2_insert_calls_object:
-          fields:
-            callid:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: int4
-            calltype:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: varchar
-            customerid:
-              type:
-                type: named
-                name: int4
-            deviceid:
-              type:
-                type: named
-                name: int4
-            duration:
-              type:
-                type: named
-                name: int4
-            nodeid:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: int4
-            receivernumber:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: varchar
-            timestamp:
-              type:
-                type: named
-                name: timestamptz
-        v2_insert_calls_response:
-          description: Responses from the 'v2_insert_calls' procedure
-          fields:
-            affected_rows:
-              description: The number of rows affected by the mutation
-              type:
-                type: named
-                name: int4
-            returning:
-              description: Data from rows affected by the mutation
-              type:
-                type: array
-                element_type:
-                  type: named
-                  name: calls
-        v2_insert_texts_object:
-          fields:
-            customerid:
-              type:
-                type: named
-                name: int4
-            deviceid:
-              type:
-                type: named
-                name: int4
-            messagetype:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: varchar
-            nodeid:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: int4
-            receivernumber:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: varchar
-            textid:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: int4
-            timestamp:
-              type:
-                type: named
-                name: timestamptz
-        v2_insert_texts_response:
-          description: Responses from the 'v2_insert_texts' procedure
-          fields:
-            affected_rows:
-              description: The number of rows affected by the mutation
-              type:
-                type: named
-                name: int4
-            returning:
-              description: Data from rows affected by the mutation
-              type:
-                type: array
-                element_type:
-                  type: named
-                  name: texts
-        v2_update_calls_by_callid_response:
-          description: Responses from the 'v2_update_calls_by_callid' procedure
-          fields:
-            affected_rows:
-              description: The number of rows affected by the mutation
-              type:
-                type: named
-                name: int4
-            returning:
-              description: Data from rows affected by the mutation
-              type:
-                type: array
-                element_type:
-                  type: named
-                  name: calls
-        v2_update_calls_by_callid_update_columns:
-          description: Update the columns of the 'calls' collection
-          fields:
-            callid:
-              description: Update the 'callid' column in the 'calls' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_calls_callid
-            calltype:
-              description: Update the 'calltype' column in the 'calls' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_calls_calltype
-            customerid:
-              description: Update the 'customerid' column in the 'calls' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_calls_customerid
-            deviceid:
-              description: Update the 'deviceid' column in the 'calls' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_calls_deviceid
-            duration:
-              description: Update the 'duration' column in the 'calls' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_calls_duration
-            nodeid:
-              description: Update the 'nodeid' column in the 'calls' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_calls_nodeid
-            receivernumber:
-              description: Update the 'receivernumber' column in the 'calls' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_calls_receivernumber
-            timestamp:
-              description: Update the 'timestamp' column in the 'calls' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_calls_timestamp
-        v2_update_texts_by_textid_response:
-          description: Responses from the 'v2_update_texts_by_textid' procedure
-          fields:
-            affected_rows:
-              description: The number of rows affected by the mutation
-              type:
-                type: named
-                name: int4
-            returning:
-              description: Data from rows affected by the mutation
-              type:
-                type: array
-                element_type:
-                  type: named
-                  name: texts
-        v2_update_texts_by_textid_update_columns:
+        update_texts_by_textid_update_columns:
           description: Update the columns of the 'texts' collection
           fields:
             customerid:
@@ -1176,6 +2433,20 @@ definition:
                 underlying_type:
                   type: named
                   name: update_column_texts_deviceid
+            latitude:
+              description: Update the 'latitude' column in the 'texts' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_texts_latitude
+            longitude:
+              description: Update the 'longitude' column in the 'texts' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_texts_longitude
             messagetype:
               description: Update the 'messagetype' column in the 'texts' collection.
               type:
@@ -1220,6 +2491,38 @@ definition:
               unique_columns:
                 - callid
           foreign_keys: {}
+        - name: coverage_areas
+          arguments: {}
+          type: coverage_areas
+          uniqueness_constraints:
+            coverage_areas_pkey:
+              unique_columns:
+                - coverage_id
+          foreign_keys: {}
+        - name: equipment
+          arguments: {}
+          type: equipment
+          uniqueness_constraints:
+            equipment_pkey:
+              unique_columns:
+                - equipment_id
+          foreign_keys: {}
+        - name: outages
+          arguments: {}
+          type: outages
+          uniqueness_constraints:
+            outages_pkey:
+              unique_columns:
+                - outage_id
+          foreign_keys: {}
+        - name: spectrum_licenses
+          arguments: {}
+          type: spectrum_licenses
+          uniqueness_constraints:
+            spectrum_licenses_pkey:
+              unique_columns:
+                - license_id
+          foreign_keys: {}
         - name: texts
           arguments: {}
           type: texts
@@ -1230,7 +2533,7 @@ definition:
           foreign_keys: {}
       functions: []
       procedures:
-        - name: v2_delete_calls_by_callid
+        - name: delete_calls_by_callid
           description: Delete any row on the 'calls' collection using the 'callid' key
           arguments:
             key_callid:
@@ -1240,12 +2543,82 @@ definition:
             pre_check:
               description: Delete permission predicate over the 'calls' collection
               type:
-                type: predicate
-                object_type_name: calls
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: calls
           result_type:
             type: named
-            name: v2_delete_calls_by_callid_response
-        - name: v2_delete_texts_by_textid
+            name: delete_calls_by_callid_response
+        - name: delete_coverage_areas_by_coverage_id
+          description: Delete any row on the 'coverage_areas' collection using the 'coverage_id' key
+          arguments:
+            key_coverage_id:
+              type:
+                type: named
+                name: int4
+            pre_check:
+              description: Delete permission predicate over the 'coverage_areas' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: coverage_areas
+          result_type:
+            type: named
+            name: delete_coverage_areas_by_coverage_id_response
+        - name: delete_equipment_by_equipment_id
+          description: Delete any row on the 'equipment' collection using the 'equipment_id' key
+          arguments:
+            key_equipment_id:
+              type:
+                type: named
+                name: int4
+            pre_check:
+              description: Delete permission predicate over the 'equipment' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: equipment
+          result_type:
+            type: named
+            name: delete_equipment_by_equipment_id_response
+        - name: delete_outages_by_outage_id
+          description: Delete any row on the 'outages' collection using the 'outage_id' key
+          arguments:
+            key_outage_id:
+              type:
+                type: named
+                name: int4
+            pre_check:
+              description: Delete permission predicate over the 'outages' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: outages
+          result_type:
+            type: named
+            name: delete_outages_by_outage_id_response
+        - name: delete_spectrum_licenses_by_license_id
+          description: Delete any row on the 'spectrum_licenses' collection using the 'license_id' key
+          arguments:
+            key_license_id:
+              type:
+                type: named
+                name: int4
+            pre_check:
+              description: Delete permission predicate over the 'spectrum_licenses' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: spectrum_licenses
+          result_type:
+            type: named
+            name: delete_spectrum_licenses_by_license_id_response
+        - name: delete_texts_by_textid
           description: Delete any row on the 'texts' collection using the 'textid' key
           arguments:
             key_textid:
@@ -1255,12 +2628,14 @@ definition:
             pre_check:
               description: Delete permission predicate over the 'texts' collection
               type:
-                type: predicate
-                object_type_name: texts
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: texts
           result_type:
             type: named
-            name: v2_delete_texts_by_textid_response
-        - name: v2_insert_calls
+            name: delete_texts_by_textid_response
+        - name: insert_calls
           description: Insert into the calls table
           arguments:
             objects:
@@ -1268,16 +2643,94 @@ definition:
                 type: array
                 element_type:
                   type: named
-                  name: v2_insert_calls_object
+                  name: insert_calls_object
             post_check:
               description: Insert permission predicate over the 'calls' collection
               type:
-                type: predicate
-                object_type_name: calls
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: calls
           result_type:
             type: named
-            name: v2_insert_calls_response
-        - name: v2_insert_texts
+            name: insert_calls_response
+        - name: insert_coverage_areas
+          description: Insert into the coverage_areas table
+          arguments:
+            objects:
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: insert_coverage_areas_object
+            post_check:
+              description: Insert permission predicate over the 'coverage_areas' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: coverage_areas
+          result_type:
+            type: named
+            name: insert_coverage_areas_response
+        - name: insert_equipment
+          description: Insert into the equipment table
+          arguments:
+            objects:
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: insert_equipment_object
+            post_check:
+              description: Insert permission predicate over the 'equipment' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: equipment
+          result_type:
+            type: named
+            name: insert_equipment_response
+        - name: insert_outages
+          description: Insert into the outages table
+          arguments:
+            objects:
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: insert_outages_object
+            post_check:
+              description: Insert permission predicate over the 'outages' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: outages
+          result_type:
+            type: named
+            name: insert_outages_response
+        - name: insert_spectrum_licenses
+          description: Insert into the spectrum_licenses table
+          arguments:
+            objects:
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: insert_spectrum_licenses_object
+            post_check:
+              description: Insert permission predicate over the 'spectrum_licenses' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: spectrum_licenses
+          result_type:
+            type: named
+            name: insert_spectrum_licenses_response
+        - name: insert_texts
           description: Insert into the texts table
           arguments:
             objects:
@@ -1285,16 +2738,18 @@ definition:
                 type: array
                 element_type:
                   type: named
-                  name: v2_insert_texts_object
+                  name: insert_texts_object
             post_check:
               description: Insert permission predicate over the 'texts' collection
               type:
-                type: predicate
-                object_type_name: texts
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: texts
           result_type:
             type: named
-            name: v2_insert_texts_response
-        - name: v2_update_calls_by_callid
+            name: insert_texts_response
+        - name: update_calls_by_callid
           description: Update any row on the 'calls' collection using the 'callid' key
           arguments:
             key_callid:
@@ -1304,21 +2759,137 @@ definition:
             post_check:
               description: Update permission post-condition predicate over the 'calls' collection
               type:
-                type: predicate
-                object_type_name: calls
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: calls
             pre_check:
               description: Update permission pre-condition predicate over the 'calls' collection
               type:
-                type: predicate
-                object_type_name: calls
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: calls
             update_columns:
               type:
                 type: named
-                name: v2_update_calls_by_callid_update_columns
+                name: update_calls_by_callid_update_columns
           result_type:
             type: named
-            name: v2_update_calls_by_callid_response
-        - name: v2_update_texts_by_textid
+            name: update_calls_by_callid_response
+        - name: update_coverage_areas_by_coverage_id
+          description: Update any row on the 'coverage_areas' collection using the 'coverage_id' key
+          arguments:
+            key_coverage_id:
+              type:
+                type: named
+                name: int4
+            post_check:
+              description: Update permission post-condition predicate over the 'coverage_areas' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: coverage_areas
+            pre_check:
+              description: Update permission pre-condition predicate over the 'coverage_areas' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: coverage_areas
+            update_columns:
+              type:
+                type: named
+                name: update_coverage_areas_by_coverage_id_update_columns
+          result_type:
+            type: named
+            name: update_coverage_areas_by_coverage_id_response
+        - name: update_equipment_by_equipment_id
+          description: Update any row on the 'equipment' collection using the 'equipment_id' key
+          arguments:
+            key_equipment_id:
+              type:
+                type: named
+                name: int4
+            post_check:
+              description: Update permission post-condition predicate over the 'equipment' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: equipment
+            pre_check:
+              description: Update permission pre-condition predicate over the 'equipment' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: equipment
+            update_columns:
+              type:
+                type: named
+                name: update_equipment_by_equipment_id_update_columns
+          result_type:
+            type: named
+            name: update_equipment_by_equipment_id_response
+        - name: update_outages_by_outage_id
+          description: Update any row on the 'outages' collection using the 'outage_id' key
+          arguments:
+            key_outage_id:
+              type:
+                type: named
+                name: int4
+            post_check:
+              description: Update permission post-condition predicate over the 'outages' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: outages
+            pre_check:
+              description: Update permission pre-condition predicate over the 'outages' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: outages
+            update_columns:
+              type:
+                type: named
+                name: update_outages_by_outage_id_update_columns
+          result_type:
+            type: named
+            name: update_outages_by_outage_id_response
+        - name: update_spectrum_licenses_by_license_id
+          description: Update any row on the 'spectrum_licenses' collection using the 'license_id' key
+          arguments:
+            key_license_id:
+              type:
+                type: named
+                name: int4
+            post_check:
+              description: Update permission post-condition predicate over the 'spectrum_licenses' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: spectrum_licenses
+            pre_check:
+              description: Update permission pre-condition predicate over the 'spectrum_licenses' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: spectrum_licenses
+            update_columns:
+              type:
+                type: named
+                name: update_spectrum_licenses_by_license_id_update_columns
+          result_type:
+            type: named
+            name: update_spectrum_licenses_by_license_id_response
+        - name: update_texts_by_textid
           description: Update any row on the 'texts' collection using the 'textid' key
           arguments:
             key_textid:
@@ -1328,20 +2899,24 @@ definition:
             post_check:
               description: Update permission post-condition predicate over the 'texts' collection
               type:
-                type: predicate
-                object_type_name: texts
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: texts
             pre_check:
               description: Update permission pre-condition predicate over the 'texts' collection
               type:
-                type: predicate
-                object_type_name: texts
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: texts
             update_columns:
               type:
                 type: named
-                name: v2_update_texts_by_textid_update_columns
+                name: update_texts_by_textid_update_columns
           result_type:
             type: named
-            name: v2_update_texts_by_textid_response
+            name: update_texts_by_textid_response
     capabilities:
       version: 0.1.6
       capabilities:
@@ -1352,6 +2927,8 @@ definition:
           nested_fields:
             filter_by: {}
             order_by: {}
+          exists:
+            nested_collections: {}
         mutation:
           transactional: {}
           explain: {}

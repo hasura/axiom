@@ -1,0 +1,204 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: Outages
+  fields:
+    - name: affectedCustomers
+      type: Int4
+    - name: cause
+      type: Varchar
+    - name: endTime
+      type: Timestamptz
+    - name: nodeId
+      type: Int4
+    - name: outageId
+      type: Int4!
+    - name: resolution
+      type: Text
+    - name: severity
+      type: Varchar
+    - name: startTime
+      type: Timestamptz!
+  graphql:
+    typeName: network_Outages
+    inputTypeName: network_OutagesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: kafka_sink
+      dataConnectorObjectType: outages
+      fieldMapping:
+        affectedCustomers:
+          column:
+            name: affected_customers
+        cause:
+          column:
+            name: cause
+        endTime:
+          column:
+            name: end_time
+        nodeId:
+          column:
+            name: node_id
+        outageId:
+          column:
+            name: outage_id
+        resolution:
+          column:
+            name: resolution
+        severity:
+          column:
+            name: severity
+        startTime:
+          column:
+            name: start_time
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: Outages
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedCustomers
+          - cause
+          - endTime
+          - nodeId
+          - outageId
+          - resolution
+          - severity
+          - startTime
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: OutagesBoolExp
+  operand:
+    object:
+      type: Outages
+      comparableFields:
+        - fieldName: affectedCustomers
+          booleanExpressionType: Int4BoolExp
+        - fieldName: cause
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: endTime
+          booleanExpressionType: TimestamptzBoolExp
+        - fieldName: nodeId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: outageId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: resolution
+          booleanExpressionType: TextBoolExp
+        - fieldName: severity
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: startTime
+          booleanExpressionType: TimestamptzBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: network_OutagesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: OutagesAggExp
+  operand:
+    object:
+      aggregatedType: Outages
+      aggregatableFields:
+        - fieldName: affectedCustomers
+          aggregateExpression: Int4AggExp
+        - fieldName: cause
+          aggregateExpression: VarcharAggExp
+        - fieldName: endTime
+          aggregateExpression: TimestamptzAggExp
+        - fieldName: nodeId
+          aggregateExpression: Int4AggExp
+        - fieldName: outageId
+          aggregateExpression: Int4AggExp
+        - fieldName: resolution
+          aggregateExpression: TextAggExp
+        - fieldName: severity
+          aggregateExpression: VarcharAggExp
+        - fieldName: startTime
+          aggregateExpression: TimestamptzAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: network_OutagesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: OutagesOrderByExp
+  operand:
+    object:
+      orderedType: Outages
+      orderableFields:
+        - fieldName: affectedCustomers
+          orderByExpression: Int4OrderByExp
+        - fieldName: cause
+          orderByExpression: VarcharOrderByExp
+        - fieldName: endTime
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: nodeId
+          orderByExpression: Int4OrderByExp
+        - fieldName: outageId
+          orderByExpression: Int4OrderByExp
+        - fieldName: resolution
+          orderByExpression: TextOrderByExp
+        - fieldName: severity
+          orderByExpression: VarcharOrderByExp
+        - fieldName: startTime
+          orderByExpression: TimestamptzOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: network_OutagesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: Outages
+  objectType: Outages
+  source:
+    dataConnectorName: kafka_sink
+    collection: outages
+  filterExpressionType: OutagesBoolExp
+  aggregateExpression: OutagesAggExp
+  orderByExpression: OutagesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: outages
+      subscription:
+        rootField: outages
+    selectUniques:
+      - queryRootField: outagesByOutageId
+        uniqueIdentifier:
+          - outageId
+        subscription:
+          rootField: outagesByOutageId
+    filterInputTypeName: network_OutagesFilterInput
+    aggregate:
+      queryRootField: outagesAggregate
+      subscription:
+        rootField: outagesAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: Outages
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

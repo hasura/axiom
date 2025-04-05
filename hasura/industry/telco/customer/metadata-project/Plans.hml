@@ -1,0 +1,334 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: Plans
+  fields:
+    - name: dataLimitGb
+      type: Int4
+    - name: description
+      type: Text
+    - name: internationalRoaming
+      type: Bool
+    - name: monthlyFee
+      type: Numeric
+    - name: planId
+      type: Int4!
+    - name: planName
+      type: Varchar
+    - name: roamingCountries
+      type: "[Text]"
+    - name: roamingDataGb
+      type: Numeric
+    - name: roamingVoiceMinutes
+      type: Int4
+    - name: sfRecord
+      type: Varchar
+    - name: smsLimit
+      type: Int4
+    - name: type
+      type: Text
+    - name: voiceLimitMinutes
+      type: Int4
+  graphql:
+    typeName: customer_Plans
+    inputTypeName: customer_PlansInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: plans
+      fieldMapping:
+        dataLimitGb:
+          column:
+            name: data_limit_gb
+        description:
+          column:
+            name: description
+        internationalRoaming:
+          column:
+            name: international_roaming
+        monthlyFee:
+          column:
+            name: monthly_fee
+        planId:
+          column:
+            name: plan_id
+        planName:
+          column:
+            name: plan_name
+        roamingCountries:
+          column:
+            name: roaming_countries
+        roamingDataGb:
+          column:
+            name: roaming_data_gb
+        roamingVoiceMinutes:
+          column:
+            name: roaming_voice_minutes
+        sfRecord:
+          column:
+            name: sf_record
+        smsLimit:
+          column:
+            name: sms_limit
+        type:
+          column:
+            name: type
+        voiceLimitMinutes:
+          column:
+            name: voice_limit_minutes
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: Plans
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - dataLimitGb
+          - description
+          - internationalRoaming
+          - monthlyFee
+          - planId
+          - planName
+          - roamingCountries
+          - roamingDataGb
+          - roamingVoiceMinutes
+          - sfRecord
+          - smsLimit
+          - type
+          - voiceLimitMinutes
+    - role: customer
+      output:
+        allowedFields:
+          - dataLimitGb
+          - description
+          - internationalRoaming
+          - monthlyFee
+          - planName
+          - roamingCountries
+          - roamingDataGb
+          - roamingVoiceMinutes
+          - smsLimit
+          - voiceLimitMinutes
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PlansBoolExp
+  operand:
+    object:
+      type: Plans
+      comparableFields:
+        - fieldName: dataLimitGb
+          booleanExpressionType: Int4BoolExp
+        - fieldName: description
+          booleanExpressionType: TextBoolExp
+        - fieldName: internationalRoaming
+          booleanExpressionType: BoolBoolExp
+        - fieldName: monthlyFee
+          booleanExpressionType: NumericBoolExp
+        - fieldName: planId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: planName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: roamingDataGb
+          booleanExpressionType: NumericBoolExp
+        - fieldName: roamingVoiceMinutes
+          booleanExpressionType: Int4BoolExp
+        - fieldName: sfRecord
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: smsLimit
+          booleanExpressionType: Int4BoolExp
+        - fieldName: type
+          booleanExpressionType: TextBoolExp
+        - fieldName: voiceLimitMinutes
+          booleanExpressionType: Int4BoolExp
+      comparableRelationships:
+        - relationshipName: customerPlans
+        - relationshipName: iotDevices
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customer_PlansBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PlansAggExp
+  operand:
+    object:
+      aggregatedType: Plans
+      aggregatableFields:
+        - fieldName: dataLimitGb
+          aggregateExpression: Int4AggExp
+        - fieldName: description
+          aggregateExpression: TextAggExp
+        - fieldName: internationalRoaming
+          aggregateExpression: BoolAggExp
+        - fieldName: monthlyFee
+          aggregateExpression: NumericAggExp
+        - fieldName: planId
+          aggregateExpression: Int4AggExp
+        - fieldName: planName
+          aggregateExpression: VarcharAggExp
+        - fieldName: roamingDataGb
+          aggregateExpression: NumericAggExp
+        - fieldName: roamingVoiceMinutes
+          aggregateExpression: Int4AggExp
+        - fieldName: sfRecord
+          aggregateExpression: VarcharAggExp
+        - fieldName: smsLimit
+          aggregateExpression: Int4AggExp
+        - fieldName: type
+          aggregateExpression: TextAggExp
+        - fieldName: voiceLimitMinutes
+          aggregateExpression: Int4AggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: customer_PlansAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PlansOrderByExp
+  operand:
+    object:
+      orderedType: Plans
+      orderableFields:
+        - fieldName: dataLimitGb
+          orderByExpression: Int4OrderByExp
+        - fieldName: description
+          orderByExpression: TextOrderByExp
+        - fieldName: internationalRoaming
+          orderByExpression: BoolOrderByExp
+        - fieldName: monthlyFee
+          orderByExpression: NumericOrderByExp
+        - fieldName: planId
+          orderByExpression: Int4OrderByExp
+        - fieldName: planName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: roamingDataGb
+          orderByExpression: NumericOrderByExp
+        - fieldName: roamingVoiceMinutes
+          orderByExpression: Int4OrderByExp
+        - fieldName: sfRecord
+          orderByExpression: VarcharOrderByExp
+        - fieldName: smsLimit
+          orderByExpression: Int4OrderByExp
+        - fieldName: type
+          orderByExpression: TextOrderByExp
+        - fieldName: voiceLimitMinutes
+          orderByExpression: Int4OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: customer_PlansOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: Plans
+  objectType: Plans
+  source:
+    dataConnectorName: aurora
+    collection: plans
+  filterExpressionType: PlansBoolExp
+  aggregateExpression: PlansAggExp
+  orderByExpression: PlansOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: plans
+      subscription:
+        rootField: plans
+    selectUniques:
+      - queryRootField: plansByPlanId
+        uniqueIdentifier:
+          - planId
+        subscription:
+          rootField: plansByPlanId
+      - queryRootField: plansByPlanName
+        uniqueIdentifier:
+          - planName
+        subscription:
+          rootField: plansByPlanName
+    filterInputTypeName: customer_PlansFilterInput
+    aggregate:
+      queryRootField: plansAggregate
+      subscription:
+        rootField: plansAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: Plans
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+    - role: customer
+      select:
+        filter: 
+          relationship:
+            name: customerPlans
+            predicate: 
+              fieldComparison:
+                field: customerId
+                operator: _eq
+                value: 
+                  sessionVariable: x-hasura-user-id
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customerPlans
+  sourceType: Plans
+  target:
+    model:
+      name: CustomerPlans
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: CustomerPlansAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: planId
+      target:
+        modelField:
+          - fieldName: planId
+  graphql:
+    aggregateFieldName: customerPlansAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: iotDevices
+  sourceType: Plans
+  target:
+    model:
+      name: IotDevices
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: IotDevicesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: planId
+      target:
+        modelField:
+          - fieldName: dataPlanId
+  graphql:
+    aggregateFieldName: iotDevicesAggregate
+

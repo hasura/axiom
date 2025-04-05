@@ -9,8 +9,8 @@ definition:
     - name: embeddings
       type: Vector
   graphql:
-    typeName: Support_DocumentEmbeddings
-    inputTypeName: Support_DocumentEmbeddingsInput
+    typeName: support_DocumentEmbeddings
+    inputTypeName: support_DocumentEmbeddingsInput
   dataConnectorTypeMapping:
     - dataConnectorName: vector
       dataConnectorObjectType: document_embeddings
@@ -35,6 +35,64 @@ definition:
           - embeddings
 
 ---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: DocumentEmbeddingsBoolExp
+  operand:
+    object:
+      type: DocumentEmbeddings
+      comparableFields:
+        - fieldName: documentUuid
+          booleanExpressionType: UuidBoolExp
+        - fieldName: embeddings
+          booleanExpressionType: VectorBoolExp
+      comparableRelationships:
+        - relationshipName: document
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: support_DocumentEmbeddingsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: DocumentEmbeddingsAggExp
+  operand:
+    object:
+      aggregatedType: DocumentEmbeddings
+      aggregatableFields:
+        - fieldName: documentUuid
+          aggregateExpression: UuidAggExp
+        - fieldName: embeddings
+          aggregateExpression: VectorAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: support_DocumentEmbeddingsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: DocumentEmbeddingsOrderByExp
+  operand:
+    object:
+      orderedType: DocumentEmbeddings
+      orderableFields:
+        - fieldName: documentUuid
+          orderByExpression: UuidOrderByExp
+        - fieldName: embeddings
+          orderByExpression: VectorOrderByExp
+      orderableRelationships:
+        - relationshipName: document
+  graphql:
+    expressionTypeName: support_DocumentEmbeddingsOrderByExp
+
+---
 kind: Model
 version: v2
 definition:
@@ -44,6 +102,8 @@ definition:
     dataConnectorName: vector
     collection: document_embeddings
   filterExpressionType: DocumentEmbeddingsBoolExp
+  aggregateExpression: DocumentEmbeddingsAggExp
+  orderByExpression: DocumentEmbeddingsOrderByExp
   graphql:
     selectMany:
       queryRootField: documentEmbeddings
@@ -55,13 +115,11 @@ definition:
           - documentUuid
         subscription:
           rootField: documentEmbeddingsByDocumentUuid
-    filterInputTypeName: DocumentEmbeddingsFilterInput
+    filterInputTypeName: support_DocumentEmbeddingsFilterInput
     aggregate:
       queryRootField: documentEmbeddingsAggregate
       subscription:
         rootField: documentEmbeddingsAggregate
-  aggregateExpression: DocumentEmbeddingsAggExp
-  orderByExpression: DocumentEmbeddingsOrderByExp
 
 ---
 kind: ModelPermissions
@@ -91,61 +149,4 @@ definition:
       target:
         modelField:
           - fieldName: uuid
-
----
-kind: BooleanExpressionType
-version: v1
-definition:
-  name: DocumentEmbeddingsBoolExp
-  operand:
-    object:
-      type: DocumentEmbeddings
-      comparableFields:
-        - fieldName: documentUuid
-          booleanExpressionType: UuidBoolExp
-        - fieldName: embeddings
-          booleanExpressionType: VectorBoolExp
-      comparableRelationships: []
-  logicalOperators:
-    enable: true
-  isNull:
-    enable: true
-  graphql:
-    typeName: Support_DocumentEmbeddingsBoolExp
-
----
-kind: AggregateExpression
-version: v1
-definition:
-  name: DocumentEmbeddingsAggExp
-  operand:
-    object:
-      aggregatedType: DocumentEmbeddings
-      aggregatableFields:
-        - fieldName: documentUuid
-          aggregateExpression: UuidAggExp
-        - fieldName: embeddings
-          aggregateExpression: VectorAggExp
-  count:
-    enable: true
-  graphql:
-    selectTypeName: DocumentEmbeddingsAggExp
-
----
-kind: OrderByExpression
-version: v1
-definition:
-  name: DocumentEmbeddingsOrderByExp
-  operand:
-    object:
-      orderedType: DocumentEmbeddings
-      orderableFields:
-        - fieldName: documentUuid
-          orderByExpression: UuidOrderByExp
-        - fieldName: embeddings
-          orderByExpression: VectorOrderByExp
-      orderableRelationships:
-        - relationshipName: document
-  graphql:
-    expressionTypeName: support_DocumentEmbeddingsOrderByExp
 

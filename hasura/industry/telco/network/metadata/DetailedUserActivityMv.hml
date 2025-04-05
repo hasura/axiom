@@ -7,7 +7,7 @@ definition:
     - name: cdrGuid
       type: String!
     - name: cdrTimestamp
-      type: DateTime!
+      type: DateTime646!
     - name: callDuration
       type: Int32!
     - name: callType
@@ -15,7 +15,7 @@ definition:
     - name: duGuid
       type: String!
     - name: duTimestamp
-      type: DateTime!
+      type: DateTime646!
     - name: dataUsage
       type: Float32!
     - name: downloadSpeed
@@ -25,12 +25,12 @@ definition:
     - name: npGuid
       type: String!
     - name: npTimestamp
-      type: DateTime!
+      type: DateTime646!
     - name: uploadSpeed
       type: Float32!
   graphql:
-    typeName: Network_DetailedUserActivityMv
-    inputTypeName: Network_DetailedUserActivityMvInput
+    typeName: network_DetailedUserActivityMv
+    inputTypeName: network_DetailedUserActivityMvInput
   dataConnectorTypeMapping:
     - dataConnectorName: clickhouse
       dataConnectorObjectType: detailed_user_activity_mv
@@ -95,53 +95,45 @@ definition:
           - uploadSpeed
 
 ---
-kind: Model
-version: v2
+kind: BooleanExpressionType
+version: v1
 definition:
-  name: DetailedUserActivityMv
-  objectType: DetailedUserActivityMv
-  source:
-    dataConnectorName: clickhouse
-    collection: detailed_user_activity_mv
-  filterExpressionType: DetailedUserActivityMvBoolExp
+  name: DetailedUserActivityMvBoolExp
+  operand:
+    object:
+      type: DetailedUserActivityMv
+      comparableFields:
+        - fieldName: cdrGuid
+          booleanExpressionType: StringBoolExp
+        - fieldName: cdrTimestamp
+          booleanExpressionType: DateTime646BoolExp
+        - fieldName: callDuration
+          booleanExpressionType: Int32BoolExp
+        - fieldName: callType
+          booleanExpressionType: StringBoolExp
+        - fieldName: duGuid
+          booleanExpressionType: StringBoolExp
+        - fieldName: duTimestamp
+          booleanExpressionType: DateTime646BoolExp
+        - fieldName: dataUsage
+          booleanExpressionType: Float32BoolExp
+        - fieldName: downloadSpeed
+          booleanExpressionType: Float32BoolExp
+        - fieldName: latency
+          booleanExpressionType: Int32BoolExp
+        - fieldName: npGuid
+          booleanExpressionType: StringBoolExp
+        - fieldName: npTimestamp
+          booleanExpressionType: DateTime646BoolExp
+        - fieldName: uploadSpeed
+          booleanExpressionType: Float32BoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
   graphql:
-    selectMany:
-      queryRootField: detailedUserActivityMv
-    selectUniques: []
-    filterInputTypeName: DetailedUserActivityMvFilterInput
-    aggregate:
-      queryRootField: detailedUserActivityMvAggregate
-  aggregateExpression: DetailedUserActivityMvAggExp
-  orderByExpression: DetailedUserActivityMvOrderByExp
-
----
-kind: ModelPermissions
-version: v1
-definition:
-  modelName: DetailedUserActivityMv
-  permissions:
-    - role: admin
-      select:
-        filter: null
-
----
-kind: Relationship
-version: v1
-definition:
-  name: customer
-  sourceType: DetailedUserActivityMv
-  target:
-    model:
-      subgraph: customer
-      name: CustomerLink
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: cdrGuid
-      target:
-        modelField:
-          - fieldName: customerGuid
+    typeName: network_DetailedUserActivityMvBoolExp
 
 ---
 kind: AggregateExpression
@@ -155,7 +147,7 @@ definition:
         - fieldName: cdrGuid
           aggregateExpression: StringAggExp
         - fieldName: cdrTimestamp
-          aggregateExpression: DateTimeAggExp
+          aggregateExpression: DateTime646AggExp
         - fieldName: callDuration
           aggregateExpression: Int32AggExp
         - fieldName: callType
@@ -163,7 +155,7 @@ definition:
         - fieldName: duGuid
           aggregateExpression: StringAggExp
         - fieldName: duTimestamp
-          aggregateExpression: DateTimeAggExp
+          aggregateExpression: DateTime646AggExp
         - fieldName: dataUsage
           aggregateExpression: Float32AggExp
         - fieldName: downloadSpeed
@@ -173,54 +165,13 @@ definition:
         - fieldName: npGuid
           aggregateExpression: StringAggExp
         - fieldName: npTimestamp
-          aggregateExpression: DateTimeAggExp
+          aggregateExpression: DateTime646AggExp
         - fieldName: uploadSpeed
           aggregateExpression: Float32AggExp
   count:
     enable: true
   graphql:
-    selectTypeName: DetailedUserActivityMvAggExp
-
----
-kind: BooleanExpressionType
-version: v1
-definition:
-  name: DetailedUserActivityMvBoolExp
-  operand:
-    object:
-      type: DetailedUserActivityMv
-      comparableFields:
-        - fieldName: cdrGuid
-          booleanExpressionType: StringBoolExp
-        - fieldName: cdrTimestamp
-          booleanExpressionType: DateTimeBoolExp
-        - fieldName: callDuration
-          booleanExpressionType: Int32BoolExp
-        - fieldName: callType
-          booleanExpressionType: StringBoolExp
-        - fieldName: duGuid
-          booleanExpressionType: StringBoolExp
-        - fieldName: duTimestamp
-          booleanExpressionType: DateTimeBoolExp
-        - fieldName: dataUsage
-          booleanExpressionType: Float32BoolExp
-        - fieldName: downloadSpeed
-          booleanExpressionType: Float32BoolExp
-        - fieldName: latency
-          booleanExpressionType: Int32BoolExp
-        - fieldName: npGuid
-          booleanExpressionType: StringBoolExp
-        - fieldName: npTimestamp
-          booleanExpressionType: DateTimeBoolExp
-        - fieldName: uploadSpeed
-          booleanExpressionType: Float32BoolExp
-      comparableRelationships: []
-  logicalOperators:
-    enable: true
-  isNull:
-    enable: true
-  graphql:
-    typeName: Network_DetailedUserActivityMvBoolExp
+    selectTypeName: network_DetailedUserActivityMvAggExp
 
 ---
 kind: OrderByExpression
@@ -234,7 +185,7 @@ definition:
         - fieldName: cdrGuid
           orderByExpression: StringOrderByExp
         - fieldName: cdrTimestamp
-          orderByExpression: DateTimeOrderByExp
+          orderByExpression: DateTime646OrderByExp
         - fieldName: callDuration
           orderByExpression: Int32OrderByExp
         - fieldName: callType
@@ -242,7 +193,7 @@ definition:
         - fieldName: duGuid
           orderByExpression: StringOrderByExp
         - fieldName: duTimestamp
-          orderByExpression: DateTimeOrderByExp
+          orderByExpression: DateTime646OrderByExp
         - fieldName: dataUsage
           orderByExpression: Float32OrderByExp
         - fieldName: downloadSpeed
@@ -252,10 +203,45 @@ definition:
         - fieldName: npGuid
           orderByExpression: StringOrderByExp
         - fieldName: npTimestamp
-          orderByExpression: DateTimeOrderByExp
+          orderByExpression: DateTime646OrderByExp
         - fieldName: uploadSpeed
           orderByExpression: Float32OrderByExp
       orderableRelationships: []
   graphql:
     expressionTypeName: network_DetailedUserActivityMvOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: DetailedUserActivityMv
+  objectType: DetailedUserActivityMv
+  source:
+    dataConnectorName: clickhouse
+    collection: detailed_user_activity_mv
+  filterExpressionType: DetailedUserActivityMvBoolExp
+  aggregateExpression: DetailedUserActivityMvAggExp
+  orderByExpression: DetailedUserActivityMvOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: detailedUserActivityMv
+      subscription:
+        rootField: detailedUserActivityMv
+    selectUniques: []
+    filterInputTypeName: network_DetailedUserActivityMvFilterInput
+    aggregate:
+      queryRootField: detailedUserActivityMvAggregate
+      subscription:
+        rootField: detailedUserActivityMvAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: DetailedUserActivityMv
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
 

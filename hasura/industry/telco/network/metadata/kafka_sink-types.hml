@@ -4,143 +4,7 @@ version: v1
 definition:
   name: Int4
   graphql:
-    typeName: Network_Int4
-
----
-kind: ScalarType
-version: v1
-definition:
-  name: Varchar
-  graphql:
-    typeName: Network_Varchar
-
----
-kind: ScalarType
-version: v1
-definition:
-  name: Timestamptz
-  graphql:
-    typeName: Network_Timestamptz
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: kafka_sink
-  dataConnectorScalarType: int4
-  representation: Int4
-  graphql:
-    comparisonExpressionTypeName: Network_Int4ComparisonExp
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: kafka_sink
-  dataConnectorScalarType: varchar
-  representation: Varchar
-  graphql:
-    comparisonExpressionTypeName: Network_VarcharComparisonExp
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: kafka_sink
-  dataConnectorScalarType: timestamptz
-  representation: Timestamptz
-  graphql:
-    comparisonExpressionTypeName: Network_TimestamptzComparisonExp
-
----
-kind: ScalarType
-version: v1
-definition:
-  name: Timestamp
-  graphql:
-    typeName: Network_Timestamp
-
----
-kind: ScalarType
-version: v1
-definition:
-  name: Text
-  graphql:
-    typeName: Network_Text
-
----
-kind: ScalarType
-version: v1
-definition:
-  name: Json
-  graphql:
-    typeName: Network_Json
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: kafka_sink
-  dataConnectorScalarType: timestamp
-  representation: Timestamp
-  graphql:
-    comparisonExpressionTypeName: Network_TimestampComparisonExp
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: kafka_sink
-  dataConnectorScalarType: text
-  representation: Text
-  graphql:
-    comparisonExpressionTypeName: Network_TextComparisonExp
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: kafka_sink
-  dataConnectorScalarType: json
-  representation: Json
-  graphql:
-    comparisonExpressionTypeName: Network_JsonComparisonExp
-
----
-kind: ScalarType
-version: v1
-definition:
-  name: Bool
-  graphql:
-    typeName: Network_Bool
-
----
-kind: ScalarType
-version: v1
-definition:
-  name: Jsonb
-  graphql:
-    typeName: Network_Jsonb
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: kafka_sink
-  dataConnectorScalarType: bool
-  representation: Bool
-  graphql:
-    comparisonExpressionTypeName: Network_BoolComparisonExp
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: kafka_sink
-  dataConnectorScalarType: jsonb
-  representation: Jsonb
-  graphql:
-    comparisonExpressionTypeName: Network_JsonbComparisonExp
+    typeName: network_Int4
 
 ---
 kind: BooleanExpressionType
@@ -174,7 +38,25 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: Int4BoolExp_3
+    typeName: network_Int4BoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: kafka_sink
+  dataConnectorScalarType: int4
+  representation: Int4
+  graphql:
+    comparisonExpressionTypeName: network_Int4ComparisonExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: Varchar
+  graphql:
+    typeName: network_Varchar
 
 ---
 kind: BooleanExpressionType
@@ -228,41 +110,17 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: VarcharBoolExp_2
+    typeName: network_VarcharBoolExp
 
 ---
-kind: BooleanExpressionType
+kind: DataConnectorScalarRepresentation
 version: v1
 definition:
-  name: TimestamptzBoolExp
-  operand:
-    scalar:
-      type: Timestamptz
-      comparisonOperators:
-        - name: _eq
-          argumentType: Timestamptz!
-        - name: _gt
-          argumentType: Timestamptz!
-        - name: _gte
-          argumentType: Timestamptz!
-        - name: _in
-          argumentType: "[Timestamptz!]!"
-        - name: _lt
-          argumentType: Timestamptz!
-        - name: _lte
-          argumentType: Timestamptz!
-        - name: _neq
-          argumentType: Timestamptz!
-      dataConnectorOperatorMapping:
-        - dataConnectorName: kafka_sink
-          dataConnectorScalarType: timestamptz
-          operatorMapping: {}
-  logicalOperators:
-    enable: true
-  isNull:
-    enable: true
+  dataConnectorName: kafka_sink
+  dataConnectorScalarType: varchar
+  representation: Varchar
   graphql:
-    typeName: TimestamptzBoolExp_3
+    comparisonExpressionTypeName: network_VarcharComparisonExp
 
 ---
 kind: ScalarType
@@ -270,17 +128,7 @@ version: v1
 definition:
   name: Numeric
   graphql:
-    typeName: Numeric_3
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: kafka_sink
-  dataConnectorScalarType: numeric
-  representation: Numeric
-  graphql:
-    comparisonExpressionTypeName: NumericComparisonExp_2
+    typeName: network_Numeric
 
 ---
 kind: BooleanExpressionType
@@ -314,7 +162,69 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: NumericBoolExp_3
+    typeName: network_NumericBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: kafka_sink
+  dataConnectorScalarType: numeric
+  representation: Numeric
+  graphql:
+    comparisonExpressionTypeName: network_NumericComparisonExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: Timestamptz
+  graphql:
+    typeName: network_Timestamptz
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: TimestamptzBoolExp
+  operand:
+    scalar:
+      type: Timestamptz
+      comparisonOperators:
+        - name: _eq
+          argumentType: Timestamptz!
+        - name: _gt
+          argumentType: Timestamptz!
+        - name: _gte
+          argumentType: Timestamptz!
+        - name: _in
+          argumentType: "[Timestamptz!]!"
+        - name: _lt
+          argumentType: Timestamptz!
+        - name: _lte
+          argumentType: Timestamptz!
+        - name: _neq
+          argumentType: Timestamptz!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: kafka_sink
+          dataConnectorScalarType: timestamptz
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: network_TimestamptzBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: kafka_sink
+  dataConnectorScalarType: timestamptz
+  representation: Timestamptz
+  graphql:
+    comparisonExpressionTypeName: network_TimestamptzComparisonExp
 
 ---
 kind: ScalarType
@@ -322,17 +232,7 @@ version: v1
 definition:
   name: Int8
   graphql:
-    typeName: Int8_3
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: kafka_sink
-  dataConnectorScalarType: int8
-  representation: Int8
-  graphql:
-    comparisonExpressionTypeName: Int8ComparisonExp_3
+    typeName: network_Int8
 
 ---
 kind: BooleanExpressionType
@@ -366,7 +266,17 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: Int8BoolExp_3
+    typeName: network_Int8BoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: kafka_sink
+  dataConnectorScalarType: int8
+  representation: Int8
+  graphql:
+    comparisonExpressionTypeName: network_Int8ComparisonExp
 
 ---
 kind: AggregateExpression
@@ -438,7 +348,15 @@ definition:
   countDistinct:
     enable: true
   graphql:
-    selectTypeName: Int4AggExp_3
+    selectTypeName: network_Int4AggExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: Text
+  graphql:
+    typeName: network_Text
 
 ---
 kind: BooleanExpressionType
@@ -492,7 +410,17 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: TextBoolExp_3
+    typeName: network_TextBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: kafka_sink
+  dataConnectorScalarType: text
+  representation: Text
+  graphql:
+    comparisonExpressionTypeName: network_TextComparisonExp
 
 ---
 kind: AggregateExpression
@@ -520,7 +448,67 @@ definition:
   countDistinct:
     enable: true
   graphql:
-    selectTypeName: VarcharAggExp_2
+    selectTypeName: network_VarcharAggExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: NumericAggExp
+  operand:
+    scalar:
+      aggregatedType: Numeric
+      aggregationFunctions:
+        - name: avg
+          returnType: Numeric
+        - name: max
+          returnType: Numeric
+        - name: min
+          returnType: Numeric
+        - name: stddev
+          returnType: Numeric
+        - name: stddev_pop
+          returnType: Numeric
+        - name: stddev_samp
+          returnType: Numeric
+        - name: sum
+          returnType: Numeric
+        - name: var_pop
+          returnType: Numeric
+        - name: var_samp
+          returnType: Numeric
+        - name: variance
+          returnType: Numeric
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: kafka_sink
+          dataConnectorScalarType: numeric
+          functionMapping:
+            avg:
+              name: avg
+            max:
+              name: max
+            min:
+              name: min
+            stddev:
+              name: stddev
+            stddev_pop:
+              name: stddev_pop
+            stddev_samp:
+              name: stddev_samp
+            sum:
+              name: sum
+            var_pop:
+              name: var_pop
+            var_samp:
+              name: var_samp
+            variance:
+              name: variance
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: network_NumericAggExp
 
 ---
 kind: AggregateExpression
@@ -548,7 +536,7 @@ definition:
   countDistinct:
     enable: true
   graphql:
-    selectTypeName: TimestamptzAggExp_3
+    selectTypeName: network_TimestamptzAggExp
 
 ---
 kind: OrderByExpression
@@ -580,6 +568,19 @@ definition:
 kind: OrderByExpression
 version: v1
 definition:
+  name: NumericOrderByExp
+  operand:
+    scalar:
+      orderedType: Numeric
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: network_NumericOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
   name: TimestamptzOrderByExp
   operand:
     scalar:
@@ -588,4 +589,138 @@ definition:
         enableAll: true
   graphql:
     expressionTypeName: network_TimestamptzOrderByExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: Date
+  graphql:
+    typeName: network_Date
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: DateBoolExp
+  operand:
+    scalar:
+      type: Date
+      comparisonOperators:
+        - name: _eq
+          argumentType: Date!
+        - name: _gt
+          argumentType: Date!
+        - name: _gte
+          argumentType: Date!
+        - name: _in
+          argumentType: "[Date!]!"
+        - name: _lt
+          argumentType: Date!
+        - name: _lte
+          argumentType: Date!
+        - name: _neq
+          argumentType: Date!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: kafka_sink
+          dataConnectorScalarType: date
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: network_DateBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: kafka_sink
+  dataConnectorScalarType: date
+  representation: Date
+  graphql:
+    comparisonExpressionTypeName: network_DateComparisonExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: DateAggExp
+  operand:
+    scalar:
+      aggregatedType: Date
+      aggregationFunctions:
+        - name: max
+          returnType: Date
+        - name: min
+          returnType: Date
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: kafka_sink
+          dataConnectorScalarType: date
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: network_DateAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: DateOrderByExp
+  operand:
+    scalar:
+      orderedType: Date
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: network_DateOrderByExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: TextAggExp
+  operand:
+    scalar:
+      aggregatedType: Text
+      aggregationFunctions:
+        - name: max
+          returnType: Text
+        - name: min
+          returnType: Text
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: kafka_sink
+          dataConnectorScalarType: text
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: network_TextAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: TextOrderByExp
+  operand:
+    scalar:
+      orderedType: Text
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: network_TextOrderByExp
 

@@ -25,5 +25,20 @@ definition:
   permissions:
     - role: admin
       allowExecution: true
-    - role: customer
-      allowExecution: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: maskCreditCard
+  sourceType: CreditCards
+  target:
+    command:
+      name: MaskCardNumber
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: number
+      target:
+        argument:
+          argumentName: cardNumber

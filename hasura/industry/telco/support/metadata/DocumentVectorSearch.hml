@@ -1,0 +1,150 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: DocumentVectorSearch
+  fields:
+    - name: distance
+      type: Float8
+    - name: documentUuid
+      type: Uuid!
+  graphql:
+    typeName: support_DocumentVectorSearch
+    inputTypeName: support_DocumentVectorSearchInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: vector
+      dataConnectorObjectType: document_vector_search
+      fieldMapping:
+        distance:
+          column:
+            name: distance
+        documentUuid:
+          column:
+            name: document_uuid
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: DocumentVectorSearch
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - distance
+          - documentUuid
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: DocumentVectorSearchBoolExp
+  operand:
+    object:
+      type: DocumentVectorSearch
+      comparableFields:
+        - fieldName: distance
+          booleanExpressionType: Float8BoolExp
+        - fieldName: documentUuid
+          booleanExpressionType: UuidBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: support_DocumentVectorSearchBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: DocumentVectorSearchAggExp
+  operand:
+    object:
+      aggregatedType: DocumentVectorSearch
+      aggregatableFields:
+        - fieldName: distance
+          aggregateExpression: Float8AggExp
+        - fieldName: documentUuid
+          aggregateExpression: UuidAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: support_DocumentVectorSearchAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: DocumentVectorSearchOrderByExp
+  operand:
+    object:
+      orderedType: DocumentVectorSearch
+      orderableFields:
+        - fieldName: distance
+          orderByExpression: Float8OrderByExp
+        - fieldName: documentUuid
+          orderByExpression: UuidOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: support_DocumentVectorSearchOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: DocumentVectorSearch
+  objectType: DocumentVectorSearch
+  arguments:
+    - name: queryVector
+      type: Vector!
+  source:
+    dataConnectorName: vector
+    collection: document_vector_search
+    argumentMapping:
+      queryVector: query_vector
+  filterExpressionType: DocumentVectorSearchBoolExp
+  aggregateExpression: DocumentVectorSearchAggExp
+  orderByExpression: DocumentVectorSearchOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: documentVectorSearch
+      subscription:
+        rootField: documentVectorSearch
+    selectUniques: []
+    argumentsInputType: support_DocumentVectorSearchArguments
+    filterInputTypeName: support_DocumentVectorSearchFilterInput
+    aggregate:
+      queryRootField: documentVectorSearchAggregate
+      subscription:
+        rootField: documentVectorSearchAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: DocumentVectorSearch
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: document
+  sourceType: DocumentVectorSearch
+  target:
+    model:
+      name: Documents
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: documentUuid
+      target:
+        modelField:
+          - fieldName: uuid

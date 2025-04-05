@@ -15,18 +15,18 @@ definition:
     version: v0.1
     schema:
       scalar_types:
-        DateTime:
+        DateTime64(6):
           representation:
             type: string
           aggregate_functions:
             max:
               result_type:
                 type: named
-                name: DateTime
+                name: DateTime64(6)
             min:
               result_type:
                 type: named
-                name: DateTime
+                name: DateTime64(6)
           comparison_operators:
             _eq:
               type: equal
@@ -34,36 +34,36 @@ definition:
               type: custom
               argument_type:
                 type: named
-                name: DateTime
+                name: DateTime64(6)
             _gte:
               type: custom
               argument_type:
                 type: named
-                name: DateTime
+                name: DateTime64(6)
             _in:
               type: in
             _lt:
               type: custom
               argument_type:
                 type: named
-                name: DateTime
+                name: DateTime64(6)
             _lte:
               type: custom
               argument_type:
                 type: named
-                name: DateTime
+                name: DateTime64(6)
             _neq:
               type: custom
               argument_type:
                 type: named
-                name: DateTime
+                name: DateTime64(6)
             _nin:
               type: custom
               argument_type:
                 type: array
                 element_type:
                   type: named
-                  name: DateTime
+                  name: DateTime64(6)
         Float32:
           representation:
             type: float32
@@ -423,7 +423,7 @@ definition:
                 type: named
                 name: String
       object_types:
-        .inner_id.ebe5f199-643d-44a5-9775-d2babedc4a8f:
+        .inner_id.b838e2e6-8196-4082-9223-99af95ed95a2:
           description: ""
           fields:
             CDR_GUID:
@@ -433,11 +433,7 @@ definition:
             CDR_Timestamp:
               type:
                 type: named
-                name: DateTime
-            CUID:
-              type:
-                type: named
-                name: Int32
+                name: DateTime64(6)
             Call_Duration:
               type:
                 type: named
@@ -453,7 +449,7 @@ definition:
             DU_Timestamp:
               type:
                 type: named
-                name: DateTime
+                name: DateTime64(6)
             Data_Usage:
               type:
                 type: named
@@ -473,7 +469,7 @@ definition:
             NP_Timestamp:
               type:
                 type: named
-                name: DateTime
+                name: DateTime64(6)
             Upload_Speed:
               type:
                 type: named
@@ -500,7 +496,7 @@ definition:
             Timestamp:
               type:
                 type: named
-                name: DateTime
+                name: DateTime64(6)
         data_usage:
           description: ""
           fields:
@@ -519,7 +515,7 @@ definition:
             Timestamp:
               type:
                 type: named
-                name: DateTime
+                name: DateTime64(6)
         detailed_user_activity_mv:
           description: ""
           fields:
@@ -530,11 +526,7 @@ definition:
             CDR_Timestamp:
               type:
                 type: named
-                name: DateTime
-            CUID:
-              type:
-                type: named
-                name: Int32
+                name: DateTime64(6)
             Call_Duration:
               type:
                 type: named
@@ -550,7 +542,7 @@ definition:
             DU_Timestamp:
               type:
                 type: named
-                name: DateTime
+                name: DateTime64(6)
             Data_Usage:
               type:
                 type: named
@@ -570,7 +562,7 @@ definition:
             NP_Timestamp:
               type:
                 type: named
-                name: DateTime
+                name: DateTime64(6)
             Upload_Speed:
               type:
                 type: named
@@ -597,12 +589,22 @@ definition:
             Timestamp:
               type:
                 type: named
-                name: DateTime
+                name: DateTime64(6)
             Upload_Speed:
               type:
                 type: named
                 name: Float32
       collections:
+        - name: .inner_id.b838e2e6-8196-4082-9223-99af95ed95a2
+          description: ""
+          arguments: {}
+          type: .inner_id.b838e2e6-8196-4082-9223-99af95ed95a2
+          uniqueness_constraints:
+            CDR_Timestamp, CDR_GUID:
+              unique_columns:
+                - CDR_GUID
+                - CDR_Timestamp
+          foreign_keys: {}
         - name: cdr
           description: ""
           arguments: {}
@@ -649,6 +651,7 @@ definition:
           variables: {}
           explain: {}
           nested_fields: {}
+          exists: {}
         mutation: {}
         relationships:
           relation_comparisons: {}

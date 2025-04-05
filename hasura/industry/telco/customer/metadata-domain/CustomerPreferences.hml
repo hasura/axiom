@@ -3,17 +3,14 @@ kind: ObjectType
 version: v1
 definition:
   name: CustomerPreferencesBehavioralData
-  description: generated from MongoDB validation schema
   fields:
     - name: lastAppLogin
-      type: String!
-      description: must be a valid ISO date and is required
+      type: String
     - name: lastWebsiteVisit
-      type: String!
-      description: must be a valid ISO date and is required
+      type: String
   graphql:
-    typeName: CustomerPreferencesBehavioralData
-    inputTypeName: CustomerPreferencesBehavioralDataInput
+    typeName: customer_CustomerPreferencesBehavioralData
+    inputTypeName: customer_CustomerPreferencesBehavioralDataInput
   dataConnectorTypeMapping:
     - dataConnectorName: mongo
       dataConnectorObjectType: customerPreferences_behavioralData
@@ -29,31 +26,22 @@ definition:
         allowedFields:
           - lastAppLogin
           - lastWebsiteVisit
-    - role: customer
-      output:
-        allowedFields:
-          - lastAppLogin
-          - lastWebsiteVisit
 
 ---
 kind: ObjectType
 version: v1
 definition:
   name: CustomerPreferencesCustomerNotes
-  description: generated from MongoDB validation schema
   fields:
     - name: author
-      type: String!
-      description: must be a string and is required
+      type: String
     - name: content
-      type: String!
-      description: must be a string and is required
+      type: String
     - name: date
-      type: String!
-      description: must be a valid ISO date and is required
+      type: String
   graphql:
-    typeName: CustomerPreferencesCustomerNotes
-    inputTypeName: CustomerPreferencesCustomerNotesInput
+    typeName: customer_CustomerPreferencesCustomerNotes
+    inputTypeName: customer_CustomerPreferencesCustomerNotesInput
   dataConnectorTypeMapping:
     - dataConnectorName: mongo
       dataConnectorObjectType: customerPreferences_customerNotes
@@ -76,17 +64,14 @@ kind: ObjectType
 version: v1
 definition:
   name: CustomerPreferencesPreferences
-  description: generated from MongoDB validation schema
   fields:
     - name: contactMethod
-      type: String!
-      description: must be one of 'email', 'phone', or 'SMS' and is required
+      type: String
     - name: marketingOptIn
-      type: Bool!
-      description: must be a boolean value and is required
+      type: Bool_1
   graphql:
-    typeName: CustomerPreferencesPreferences
-    inputTypeName: CustomerPreferencesPreferencesInput
+    typeName: customer_CustomerPreferencesPreferences
+    inputTypeName: customer_CustomerPreferencesPreferencesInput
   dataConnectorTypeMapping:
     - dataConnectorName: mongo
       dataConnectorObjectType: customerPreferences_preferences
@@ -108,20 +93,16 @@ kind: ObjectType
 version: v1
 definition:
   name: CustomerPreferencesSocialMedia
-  description: generated from MongoDB validation schema
   fields:
     - name: facebook
       type: String
-      description: must be a valid Facebook URL
     - name: linkedin
       type: String
-      description: must be a valid LinkedIn URL
     - name: twitter
       type: String
-      description: must be a valid Twitter URL
   graphql:
-    typeName: CustomerPreferencesSocialMedia
-    inputTypeName: CustomerPreferencesSocialMediaInput
+    typeName: customer_CustomerPreferencesSocialMedia
+    inputTypeName: customer_CustomerPreferencesSocialMediaInput
   dataConnectorTypeMapping:
     - dataConnectorName: mongo
       dataConnectorObjectType: customerPreferences_socialMedia
@@ -144,28 +125,22 @@ kind: ObjectType
 version: v1
 definition:
   name: CustomerPreferences
-  description: Object type for collection customerPreferences
   fields:
     - name: id
       type: ObjectId!
-      description: primary key _id
     - name: behavioralData
-      type: CustomerPreferencesBehavioralData!
-      description: behavioralData is an object containing behavioral metrics
+      type: CustomerPreferencesBehavioralData
     - name: customerGuid
-      type: String!
-      description: must be a string and is required
+      type: String
     - name: customerNotes
-      type: "[CustomerPreferencesCustomerNotes!]!"
-      description: customerNotes is an array of note objects with author, date, and content
+      type: "[CustomerPreferencesCustomerNotes!]"
     - name: preferences
-      type: CustomerPreferencesPreferences!
+      type: CustomerPreferencesPreferences
     - name: socialMedia
       type: CustomerPreferencesSocialMedia
-      description: socialMedia is an object containing social media profile URLs
   graphql:
-    typeName: CustomerPreferences
-    inputTypeName: CustomerPreferencesInput
+    typeName: customer_CustomerPreferences
+    inputTypeName: customer_CustomerPreferencesInput
   dataConnectorTypeMapping:
     - dataConnectorName: mongo
       dataConnectorObjectType: customerPreferences
@@ -204,93 +179,6 @@ definition:
           - customerNotes
           - preferences
           - socialMedia
-    - role: customer
-      output:
-        allowedFields:
-          - id
-          - behavioralData
-          - customerGuid
-          - customerNotes
-          - preferences
-          - socialMedia
-
----
-kind: Model
-version: v2
-definition:
-  name: CustomerPreferences
-  objectType: CustomerPreferences
-  source:
-    dataConnectorName: mongo
-    collection: customerPreferences
-  filterExpressionType: CustomerPreferencesBoolExp
-  graphql:
-    selectMany:
-      queryRootField: customerPreferences
-      subscription:
-        rootField: customer_preferences
-        description: Subscribe to customere preferences model
-    selectUniques:
-      - queryRootField: customerPreferencesById
-        uniqueIdentifier:
-          - id
-    filterInputTypeName: CustomerPreferencesFilterInput
-    aggregate:
-      queryRootField: customerPreferencesAggregate
-      subscription:
-        rootField: customerPreferencesAggregate
-  aggregateExpression: CustomerPreferencesAggExp
-  orderByExpression: CustomerPreferencesOrderByExp
-
----
-kind: ModelPermissions
-version: v1
-definition:
-  modelName: CustomerPreferences
-  permissions:
-    - role: admin
-      select:
-        filter: null
-        allowSubscriptions: true
-    - role: customer
-      select:
-        filter: null
-
----
-kind: Relationship
-version: v1
-definition:
-  name: customerlink
-  sourceType: CustomerPreferences
-  target:
-    model:
-      name: CustomerLink
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: customerGuid
-      target:
-        modelField:
-          - fieldName: customerGuid
-
----
-kind: AggregateExpression
-version: v1
-definition:
-  name: CustomerPreferencesAggExp
-  operand:
-    object:
-      aggregatedType: CustomerPreferences
-      aggregatableFields:
-        - fieldName: id
-          aggregateExpression: ObjectIdAggExp
-        - fieldName: customerGuid
-          aggregateExpression: Customer_StringAggExp
-  count:
-    enable: true
-  graphql:
-    selectTypeName: CustomerPreferencesAggExp
 
 ---
 kind: BooleanExpressionType
@@ -311,7 +199,30 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: CustomerPreferencesBehavioralDataBoolExp
+    typeName: customer_CustomerPreferencesBehavioralDataBoolExp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: CustomerPreferencesCustomerNotesBoolExp
+  operand:
+    object:
+      type: CustomerPreferencesCustomerNotes
+      comparableFields:
+        - fieldName: author
+          booleanExpressionType: StringBoolExp
+        - fieldName: content
+          booleanExpressionType: StringBoolExp
+        - fieldName: date
+          booleanExpressionType: StringBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customer_CustomerPreferencesCustomerNotesBoolExp
 
 ---
 kind: BooleanExpressionType
@@ -325,14 +236,14 @@ definition:
         - fieldName: contactMethod
           booleanExpressionType: StringBoolExp
         - fieldName: marketingOptIn
-          booleanExpressionType: BoolBoolExp
+          booleanExpressionType: BoolBoolExp_1
       comparableRelationships: []
   logicalOperators:
     enable: true
   isNull:
     enable: true
   graphql:
-    typeName: CustomerPreferencesPreferencesBoolExp
+    typeName: customer_CustomerPreferencesPreferencesBoolExp
 
 ---
 kind: BooleanExpressionType
@@ -355,7 +266,7 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: CustomerPreferencesSocialMediaBoolExp
+    typeName: customer_CustomerPreferencesSocialMediaBoolExp
 
 ---
 kind: BooleanExpressionType
@@ -372,6 +283,8 @@ definition:
           booleanExpressionType: CustomerPreferencesBehavioralDataBoolExp
         - fieldName: customerGuid
           booleanExpressionType: StringBoolExp
+        - fieldName: customerNotes
+          booleanExpressionType: CustomerPreferencesCustomerNotesBoolExp
         - fieldName: preferences
           booleanExpressionType: CustomerPreferencesPreferencesBoolExp
         - fieldName: socialMedia
@@ -382,7 +295,25 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: CustomerPreferencesBoolExp
+    typeName: customer_CustomerPreferencesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: CustomerPreferencesAggExp
+  operand:
+    object:
+      aggregatedType: CustomerPreferences
+      aggregatableFields:
+        - fieldName: id
+          aggregateExpression: ObjectIdAggExp
+        - fieldName: customerGuid
+          aggregateExpression: StringAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: customer_CustomerPreferencesAggExp
 
 ---
 kind: OrderByExpression
@@ -413,7 +344,7 @@ definition:
         - fieldName: contactMethod
           orderByExpression: StringOrderByExp
         - fieldName: marketingOptIn
-          orderByExpression: BoolOrderByExp
+          orderByExpression: Bool1OrderByExp
       orderableRelationships: []
   graphql:
     expressionTypeName: customer_CustomerPreferencesPreferencesOrderByExp
@@ -460,3 +391,42 @@ definition:
   graphql:
     expressionTypeName: customer_CustomerPreferencesOrderByExp
 
+---
+kind: Model
+version: v2
+definition:
+  name: CustomerPreferences
+  objectType: CustomerPreferences
+  source:
+    dataConnectorName: mongo
+    collection: customerPreferences
+  filterExpressionType: CustomerPreferencesBoolExp
+  aggregateExpression: CustomerPreferencesAggExp
+  orderByExpression: CustomerPreferencesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: customerPreferences
+      subscription:
+        rootField: customerPreferences
+    selectUniques:
+      - queryRootField: customerPreferencesById
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: customerPreferencesById
+    filterInputTypeName: customer_CustomerPreferencesFilterInput
+    aggregate:
+      queryRootField: customerPreferencesAggregate
+      subscription:
+        rootField: customerPreferencesAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: CustomerPreferences
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true

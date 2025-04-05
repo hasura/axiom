@@ -1,0 +1,139 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: CreateTelcoCustomerCustomerData
+  fields:
+    - name: accountType
+      type: String!
+    - name: customerId
+      type: String!
+    - name: email
+      type: String!
+    - name: name
+      type: String!
+    - name: phone
+      type: String!
+    - name: segment
+      type: String!
+  graphql:
+    typeName: customer_CreateTelcoCustomerCustomerData
+    inputTypeName: customer_CreateTelcoCustomerCustomerDataInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: stripe
+      dataConnectorObjectType: createTelcoCustomer_customerData
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: CreateTelcoCustomerCustomerData
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - accountType
+          - customerId
+          - email
+          - name
+          - phone
+          - segment
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: TelcoCustomerMetadata
+  fields:
+    - name: accountType
+      type: String!
+    - name: customerId
+      type: String!
+    - name: segment
+      type: String!
+  graphql:
+    typeName: customer_TelcoCustomerMetadata
+    inputTypeName: customer_TelcoCustomerMetadataInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: stripe
+      dataConnectorObjectType: TelcoCustomer_metadata
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: TelcoCustomerMetadata
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - accountType
+          - customerId
+          - segment
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: TelcoCustomer
+  fields:
+    - name: email
+      type: String!
+    - name: id
+      type: String!
+    - name: metadata
+      type: TelcoCustomerMetadata!
+    - name: name
+      type: String!
+    - name: phone
+      type: String!
+  graphql:
+    typeName: customer_TelcoCustomer
+    inputTypeName: customer_TelcoCustomerInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: stripe
+      dataConnectorObjectType: TelcoCustomer
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: TelcoCustomer
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - email
+          - id
+          - metadata
+          - name
+          - phone
+
+---
+kind: Command
+version: v1
+definition:
+  name: CreateTelcoCustomer
+  outputType: TelcoCustomer!
+  arguments:
+    - name: customerData
+      type: CreateTelcoCustomerCustomerData!
+      description: Data for the new customer
+  source:
+    dataConnectorName: stripe
+    dataConnectorCommand:
+      procedure: createTelcoCustomer
+  graphql:
+    rootFieldName: createTelcoCustomer
+    rootFieldKind: Mutation
+  description: Simulates creating a new telecommunications customer in Stripe
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: CreateTelcoCustomer
+  permissions:
+    - role: admin
+      allowExecution: true
+
