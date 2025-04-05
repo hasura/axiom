@@ -1,0 +1,26 @@
+{
+    "redis_url": "redis://local.hasura.dev:6379",
+    "rate_limit": {
+      "default_limit": 10,
+      "time_window": 60,
+      "excluded_roles": ["admin"],
+      "key_config": {
+        "from_headers": ["x-hasura-user-id"],
+        "from_session_variables": ["user.id"],
+        "from_role": true
+      },
+      "unavailable_behavior": {
+        "fallback_mode": "deny"
+      },
+      "role_based_limits": [
+        {
+          "role": "customer",
+          "limit": 1
+        },
+        {
+          "role": "user",
+          "limit": 1
+        }
+      ]
+    }
+  }
