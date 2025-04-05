@@ -64,3 +64,22 @@ definition:
         additional:
           content-type:
             value: application/json
+
+---
+kind: LifecyclePluginHook
+version: v1
+definition:
+  pre: parse
+  name: rate-limit
+  url:
+    valueFromEnv: RATELIMIT_PLUGIN_URL
+  config:
+    request:
+      headers:
+        additional:
+          hasura-m-auth:
+            valueFromEnv: RATELIMIT_PLUGIN_SECRET
+      session: {}
+      rawRequest:
+        query: {}
+        variables: {}

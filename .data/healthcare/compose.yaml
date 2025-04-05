@@ -25,6 +25,11 @@ services:
     restart: unless-stopped
     ports:
       - 6379:6379
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
 
   caching:
     build:
@@ -58,6 +63,31 @@ services:
     volumes:
       - ../plugins/restified/healthcare-config.ts:/app/src/config.ts
     command: ["bash", "-c", "npm run build && npm run serve"]
+
+  rate-limit:
+    container_name: ${CONTAINER_PREFIX}_ratelimit
+    build:
+      context: https://github.com/hasura/engine-plugin-rate-limit.git
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      PORT: 3001
+      DEBUG: ratelimit*
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${RATELIMIT_EXPORTER_OTLP_ENDPOINT}
+      HASURA_DDN_PLUGIN_CONFIG_PATH: /app/src/ratelimit
+    extra_hosts:
+      - local.hasura.dev=host-gateway
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://local.hasura.dev:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    volumes:
+        - ../plugins/ratelimit:/app/src/ratelimit
 
 volumes:
   postgres-data:
