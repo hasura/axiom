@@ -20,6 +20,28 @@ async function processDeviceAction(
   };
 }
 
+interface CampaignResponse {
+  campaignId?: string;
+  status: string;
+}
+
+export function createCampaign(
+  action: string,
+  budget: number,
+  campaignName: string,
+  channel: string,
+  offerDetails: string,
+  startDate: Date,
+  targetSegment: string
+): CampaignResponse {
+  const status = action === "create" ? "Campaign Created" : "Campaign Updated";
+
+  return {
+    campaignId: `${Math.floor(Math.random() * 10000)}`,
+    status
+  };
+}
+
 export async function activateDevice(
   email: string,
   customer_id: string,

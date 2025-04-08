@@ -3,8 +3,48 @@ kind: DataConnectorScalarRepresentation
 version: v1
 definition:
   dataConnectorName: logic
-  dataConnectorScalarType: String
-  representation: String
+  dataConnectorScalarType: Float
+  representation: Float
   graphql:
-    comparisonExpressionTypeName: customer_StringComparisonExp_1
+    comparisonExpressionTypeName: customer_FloatComparisonExp_1
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: DateTime
+  graphql:
+    typeName: customer_DateTime
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: DateTimeBoolExp
+  operand:
+    scalar:
+      type: DateTime
+      comparisonOperators:
+        - name: _eq
+          argumentType: DateTime!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: logic
+          dataConnectorScalarType: DateTime
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customer_DateTimeBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: logic
+  dataConnectorScalarType: DateTime
+  representation: DateTime
+  graphql:
+    comparisonExpressionTypeName: customer_DateTimeComparisonExp
 

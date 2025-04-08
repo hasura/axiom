@@ -1,0 +1,67 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: CampaignResponse
+  fields:
+    - name: campaignId
+      type: String
+    - name: status
+      type: String!
+  graphql:
+    typeName: customer_CampaignResponse
+    inputTypeName: customer_CampaignResponseInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: logic
+      dataConnectorObjectType: CampaignResponse
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: CampaignResponse
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - campaignId
+          - status
+
+---
+kind: Command
+version: v1
+definition:
+  name: CreateCampaign
+  outputType: CampaignResponse!
+  arguments:
+    - name: action
+      type: String!
+    - name: budget
+      type: Float!
+    - name: campaignName
+      type: String!
+    - name: channel
+      type: String!
+    - name: offerDetails
+      type: String!
+    - name: startDate
+      type: DateTime!
+    - name: targetSegment
+      type: String!
+  source:
+    dataConnectorName: logic
+    dataConnectorCommand:
+      procedure: createCampaign
+  graphql:
+    rootFieldName: createCampaign
+    rootFieldKind: Mutation
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: CreateCampaign
+  permissions:
+    - role: admin
+      allowExecution: true
+
