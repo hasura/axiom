@@ -79,9 +79,9 @@ jobs:
               --override-description "$description" \
               --rebuild-connectors \
               --override \
-              --log-level FATAL \
-              --quiet \
-              --no-interaction > build_output.json
+              --log-level DEBUG \
+              --json-output $RUNNER_TEMP/axiom.json \
+              --no-interaction
           else
             echo "Skipping connector build."
             ./scripts/deploy/deploy.mjs \
@@ -89,17 +89,17 @@ jobs:
               --profile telco \
               --override-description "$description" \
               --override \
-              --log-level FATAL \
-              --quiet \
-              --no-interaction > build_output.json
+              --log-level DEBUG \
+              --json-output $RUNNER_TEMP/axiom.json \
+              --no-interaction
           fi
 
       - name: Extract URLs from JSON
         if: env.no_op != 'true'
         run: |
-          cat build_output.json
-          BUILD_URLS=$(jq -r '.build_url' build_output.json | tr '\n' ',')
-          CONSOLE_URLS=$(jq -r '.console_url' build_output.json | tr '\n' ',')
+          cat $RUNNER_TEMP/axiom.json
+          BUILD_URLS=$(jq -r '.build_url' $RUNNER_TEMP/axiom.json | tr '\n' ',')
+          CONSOLE_URLS=$(jq -r '.console_url' $RUNNER_TEMP/axiom.json | tr '\n' ',')
           echo "build_urls=${BUILD_URLS%,}" >> $GITHUB_ENV
           echo "console_urls=${CONSOLE_URLS%,}" >> $GITHUB_ENV
 

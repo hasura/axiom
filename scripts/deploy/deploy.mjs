@@ -30,6 +30,7 @@ class DeploymentManager {
             .option('-x, --override-description <desc>', 'Override description')
             .option('-q, --quiet', 'Quiet mode')
             .option('-a, --apply-build', 'Auto-apply build', false)
+            .option('-j, --json-output <file>', 'Output build info to JSON file')
             .parse(process.argv);
 
         const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -85,6 +86,13 @@ class DeploymentManager {
             const output = await this.execCommand(cmd, context);
             const buildInfo = JSON.parse(output);
             this.options.quiet && console.log(output);
+            if (this.options.jsonOutput) {
+                try {
+                    fs.writeFileSync(this.options.jsonOutput, output);
+                } catch (err) {
+                    console.error(`Failed to write to JSON output file: ${err.message}`);
+                }
+            }
             return buildInfo;
         }
     }
