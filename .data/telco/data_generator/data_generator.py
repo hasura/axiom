@@ -336,13 +336,13 @@ def main():
     coverage_areas = generate_coverage_areas(network_nodes)
     write_csv(coverage_areas, "coverage_areas.csv")
 
-    equipment = generate_equipment(network_nodes)
+    equipment, node_equipment = generate_equipment(network_nodes)
     write_csv(equipment, "equipment.csv")
 
     spectrum_licenses = generate_spectrum_licenses()
     write_csv(spectrum_licenses, "spectrum_licenses.csv")
 
-    outages = generate_outages(network_nodes)
+    outages = generate_outages(network_nodes, node_equipment)
     write_csv(outages, "outages.csv")
 
     # Generate MongoDB data
