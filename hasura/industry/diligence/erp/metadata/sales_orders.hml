@@ -1,0 +1,346 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: sales_orders
+  fields:
+    - name: created_at
+      type: timestamp_1
+    - name: customer_id
+      type: int_4_1!
+    - name: discount_amount
+      type: numeric_1
+    - name: order_date
+      type: date_1!
+    - name: order_id
+      type: int_4_1!
+    - name: order_number
+      type: varchar_1!
+    - name: payment_status
+      type: varchar_1
+    - name: required_date
+      type: date_1
+    - name: sales_rep
+      type: varchar_1
+    - name: ship_to_address
+      type: text_1
+    - name: shipped_date
+      type: date_1
+    - name: shipping_cost
+      type: numeric_1
+    - name: shipping_method
+      type: varchar_1
+    - name: status
+      type: varchar_1
+    - name: subtotal
+      type: numeric_1!
+    - name: tax_amount
+      type: numeric_1
+    - name: total_amount
+      type: numeric_1!
+    - name: unit_id
+      type: int_4_1!
+    - name: updated_at
+      type: timestamp_1
+  graphql:
+    typeName: sales_orders
+    inputTypeName: sales_orders_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: operations
+      dataConnectorObjectType: sales_orders
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: sales_orders
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - created_at
+          - customer_id
+          - discount_amount
+          - order_date
+          - order_id
+          - order_number
+          - payment_status
+          - required_date
+          - sales_rep
+          - ship_to_address
+          - shipped_date
+          - shipping_cost
+          - shipping_method
+          - status
+          - subtotal
+          - tax_amount
+          - total_amount
+          - unit_id
+          - updated_at
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: sales_orders_bool_exp
+  operand:
+    object:
+      type: sales_orders
+      comparableFields:
+        - fieldName: created_at
+          booleanExpressionType: timestamp_bool_exp_1
+        - fieldName: customer_id
+          booleanExpressionType: int_4_bool_exp_1
+        - fieldName: discount_amount
+          booleanExpressionType: numeric_bool_exp_1
+        - fieldName: order_date
+          booleanExpressionType: date_bool_exp_1
+        - fieldName: order_id
+          booleanExpressionType: int_4_bool_exp_1
+        - fieldName: order_number
+          booleanExpressionType: varchar_bool_exp_1
+        - fieldName: payment_status
+          booleanExpressionType: varchar_bool_exp_1
+        - fieldName: required_date
+          booleanExpressionType: date_bool_exp_1
+        - fieldName: sales_rep
+          booleanExpressionType: varchar_bool_exp_1
+        - fieldName: ship_to_address
+          booleanExpressionType: text_bool_exp_1
+        - fieldName: shipped_date
+          booleanExpressionType: date_bool_exp_1
+        - fieldName: shipping_cost
+          booleanExpressionType: numeric_bool_exp_1
+        - fieldName: shipping_method
+          booleanExpressionType: varchar_bool_exp_1
+        - fieldName: status
+          booleanExpressionType: varchar_bool_exp_1
+        - fieldName: subtotal
+          booleanExpressionType: numeric_bool_exp_1
+        - fieldName: tax_amount
+          booleanExpressionType: numeric_bool_exp_1
+        - fieldName: total_amount
+          booleanExpressionType: numeric_bool_exp_1
+        - fieldName: unit_id
+          booleanExpressionType: int_4_bool_exp_1
+        - fieldName: updated_at
+          booleanExpressionType: timestamp_bool_exp_1
+      comparableRelationships:
+        - relationshipName: order_items
+        - relationshipName: customer
+        - relationshipName: business_unit
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: sales_orders_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: sales_orders_agg_exp
+  operand:
+    object:
+      aggregatedType: sales_orders
+      aggregatableFields:
+        - fieldName: created_at
+          aggregateExpression: timestamp_agg_exp_1
+        - fieldName: customer_id
+          aggregateExpression: int_4_agg_exp_1
+        - fieldName: discount_amount
+          aggregateExpression: numeric_agg_exp_1
+        - fieldName: order_date
+          aggregateExpression: date_agg_exp_1
+        - fieldName: order_id
+          aggregateExpression: int_4_agg_exp_1
+        - fieldName: order_number
+          aggregateExpression: varchar_agg_exp_1
+        - fieldName: payment_status
+          aggregateExpression: varchar_agg_exp_1
+        - fieldName: required_date
+          aggregateExpression: date_agg_exp_1
+        - fieldName: sales_rep
+          aggregateExpression: varchar_agg_exp_1
+        - fieldName: ship_to_address
+          aggregateExpression: text_agg_exp_1
+        - fieldName: shipped_date
+          aggregateExpression: date_agg_exp_1
+        - fieldName: shipping_cost
+          aggregateExpression: numeric_agg_exp_1
+        - fieldName: shipping_method
+          aggregateExpression: varchar_agg_exp_1
+        - fieldName: status
+          aggregateExpression: varchar_agg_exp_1
+        - fieldName: subtotal
+          aggregateExpression: numeric_agg_exp_1
+        - fieldName: tax_amount
+          aggregateExpression: numeric_agg_exp_1
+        - fieldName: total_amount
+          aggregateExpression: numeric_agg_exp_1
+        - fieldName: unit_id
+          aggregateExpression: int_4_agg_exp_1
+        - fieldName: updated_at
+          aggregateExpression: timestamp_agg_exp_1
+  count:
+    enable: true
+  graphql:
+    selectTypeName: sales_orders_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: sales_orders_order_by_exp
+  operand:
+    object:
+      orderedType: sales_orders
+      orderableFields:
+        - fieldName: created_at
+          orderByExpression: timestamp_1_order_by_exp
+        - fieldName: customer_id
+          orderByExpression: int_4_1_order_by_exp
+        - fieldName: discount_amount
+          orderByExpression: numeric_1_order_by_exp
+        - fieldName: order_date
+          orderByExpression: date_1_order_by_exp
+        - fieldName: order_id
+          orderByExpression: int_4_1_order_by_exp
+        - fieldName: order_number
+          orderByExpression: varchar_1_order_by_exp
+        - fieldName: payment_status
+          orderByExpression: varchar_1_order_by_exp
+        - fieldName: required_date
+          orderByExpression: date_1_order_by_exp
+        - fieldName: sales_rep
+          orderByExpression: varchar_1_order_by_exp
+        - fieldName: ship_to_address
+          orderByExpression: text_1_order_by_exp
+        - fieldName: shipped_date
+          orderByExpression: date_1_order_by_exp
+        - fieldName: shipping_cost
+          orderByExpression: numeric_1_order_by_exp
+        - fieldName: shipping_method
+          orderByExpression: varchar_1_order_by_exp
+        - fieldName: status
+          orderByExpression: varchar_1_order_by_exp
+        - fieldName: subtotal
+          orderByExpression: numeric_1_order_by_exp
+        - fieldName: tax_amount
+          orderByExpression: numeric_1_order_by_exp
+        - fieldName: total_amount
+          orderByExpression: numeric_1_order_by_exp
+        - fieldName: unit_id
+          orderByExpression: int_4_1_order_by_exp
+        - fieldName: updated_at
+          orderByExpression: timestamp_1_order_by_exp
+      orderableRelationships:
+        - relationshipName: customer
+        - relationshipName: business_unit
+  graphql:
+    expressionTypeName: sales_orders_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: sales_orders
+  objectType: sales_orders
+  source:
+    dataConnectorName: operations
+    collection: sales_orders
+  filterExpressionType: sales_orders_bool_exp
+  aggregateExpression: sales_orders_agg_exp
+  orderByExpression: sales_orders_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: sales_orders
+      subscription:
+        rootField: sales_orders
+    selectUniques:
+      - queryRootField: sales_orders_by_order_number
+        uniqueIdentifier:
+          - order_number
+        subscription:
+          rootField: sales_orders_by_order_number
+      - queryRootField: sales_orders_by_order_id
+        uniqueIdentifier:
+          - order_id
+        subscription:
+          rootField: sales_orders_by_order_id
+    filterInputTypeName: sales_orders_filter_input
+    aggregate:
+      queryRootField: sales_orders_aggregate
+      subscription:
+        rootField: sales_orders_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: sales_orders
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: order_items
+  sourceType: sales_orders
+  target:
+    model:
+      name: order_items
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: order_items_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: order_id
+      target:
+        modelField:
+          - fieldName: order_id
+  graphql:
+    aggregateFieldName: order_items_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer
+  sourceType: sales_orders
+  target:
+    model:
+      name: customers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customer_id
+      target:
+        modelField:
+          - fieldName: customer_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: business_unit
+  sourceType: sales_orders
+  target:
+    model:
+      name: business_units
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: unit_id
+      target:
+        modelField:
+          - fieldName: unit_id
+

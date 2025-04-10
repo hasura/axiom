@@ -1,0 +1,227 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: departments
+  fields:
+    - name: cost_center
+      type: bool
+    - name: created_at
+      type: timestamp
+    - name: department_code
+      type: varchar!
+    - name: department_id
+      type: int_4!
+    - name: department_name
+      type: varchar!
+    - name: manager_name
+      type: varchar
+    - name: parent_department_id
+      type: int_4
+    - name: updated_at
+      type: timestamp
+  graphql:
+    typeName: departments
+    inputTypeName: departments_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: financials
+      dataConnectorObjectType: departments
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: departments
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - cost_center
+          - created_at
+          - department_code
+          - department_id
+          - department_name
+          - manager_name
+          - parent_department_id
+          - updated_at
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: departments_bool_exp
+  operand:
+    object:
+      type: departments
+      comparableFields:
+        - fieldName: cost_center
+          booleanExpressionType: bool_bool_exp
+        - fieldName: created_at
+          booleanExpressionType: timestamp_bool_exp
+        - fieldName: department_code
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: department_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: department_name
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: manager_name
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: parent_department_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: updated_at
+          booleanExpressionType: timestamp_bool_exp
+      comparableRelationships:
+        - relationshipName: department
+        - relationshipName: departments
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: departments_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: departments_agg_exp
+  operand:
+    object:
+      aggregatedType: departments
+      aggregatableFields:
+        - fieldName: cost_center
+          aggregateExpression: bool_agg_exp
+        - fieldName: created_at
+          aggregateExpression: timestamp_agg_exp
+        - fieldName: department_code
+          aggregateExpression: varchar_agg_exp
+        - fieldName: department_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: department_name
+          aggregateExpression: varchar_agg_exp
+        - fieldName: manager_name
+          aggregateExpression: varchar_agg_exp
+        - fieldName: parent_department_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: updated_at
+          aggregateExpression: timestamp_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: departments_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: departments_order_by_exp
+  operand:
+    object:
+      orderedType: departments
+      orderableFields:
+        - fieldName: cost_center
+          orderByExpression: bool_order_by_exp
+        - fieldName: created_at
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: department_code
+          orderByExpression: varchar_order_by_exp
+        - fieldName: department_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: department_name
+          orderByExpression: varchar_order_by_exp
+        - fieldName: manager_name
+          orderByExpression: varchar_order_by_exp
+        - fieldName: parent_department_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: updated_at
+          orderByExpression: timestamp_order_by_exp
+      orderableRelationships:
+        - relationshipName: department
+  graphql:
+    expressionTypeName: departments_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: departments
+  objectType: departments
+  source:
+    dataConnectorName: financials
+    collection: departments
+  filterExpressionType: departments_bool_exp
+  aggregateExpression: departments_agg_exp
+  orderByExpression: departments_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: departments
+      subscription:
+        rootField: departments
+    selectUniques:
+      - queryRootField: departments_by_department_code
+        uniqueIdentifier:
+          - department_code
+        subscription:
+          rootField: departments_by_department_code
+      - queryRootField: departments_by_department_id
+        uniqueIdentifier:
+          - department_id
+        subscription:
+          rootField: departments_by_department_id
+    filterInputTypeName: departments_filter_input
+    aggregate:
+      queryRootField: departments_aggregate
+      subscription:
+        rootField: departments_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: departments
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: department
+  sourceType: departments
+  target:
+    model:
+      name: departments
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: parent_department_id
+      target:
+        modelField:
+          - fieldName: department_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: departments
+  sourceType: departments
+  target:
+    model:
+      name: departments
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: departments_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: department_id
+      target:
+        modelField:
+          - fieldName: parent_department_id
+  graphql:
+    aggregateFieldName: departments_aggregate
+

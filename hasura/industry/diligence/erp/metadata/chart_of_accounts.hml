@@ -1,0 +1,239 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: chart_of_accounts
+  fields:
+    - name: account_id
+      type: int_4!
+    - name: account_name
+      type: varchar!
+    - name: account_number
+      type: varchar!
+    - name: account_subtype
+      type: varchar
+    - name: account_type
+      type: varchar!
+    - name: created_at
+      type: timestamp
+    - name: description
+      type: text
+    - name: is_active
+      type: bool
+    - name: updated_at
+      type: timestamp
+  graphql:
+    typeName: chart_of_accounts
+    inputTypeName: chart_of_accounts_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: financials
+      dataConnectorObjectType: chart_of_accounts
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: chart_of_accounts
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - account_id
+          - account_name
+          - account_number
+          - account_subtype
+          - account_type
+          - created_at
+          - description
+          - is_active
+          - updated_at
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: chart_of_accounts_bool_exp
+  operand:
+    object:
+      type: chart_of_accounts
+      comparableFields:
+        - fieldName: account_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: account_name
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: account_number
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: account_subtype
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: account_type
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: created_at
+          booleanExpressionType: timestamp_bool_exp
+        - fieldName: description
+          booleanExpressionType: text_bool_exp
+        - fieldName: is_active
+          booleanExpressionType: bool_bool_exp
+        - fieldName: updated_at
+          booleanExpressionType: timestamp_bool_exp
+      comparableRelationships:
+        - relationshipName: budget_vs_actuals
+        - relationshipName: cash_flows
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: chart_of_accounts_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: chart_of_accounts_agg_exp
+  operand:
+    object:
+      aggregatedType: chart_of_accounts
+      aggregatableFields:
+        - fieldName: account_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: account_name
+          aggregateExpression: varchar_agg_exp
+        - fieldName: account_number
+          aggregateExpression: varchar_agg_exp
+        - fieldName: account_subtype
+          aggregateExpression: varchar_agg_exp
+        - fieldName: account_type
+          aggregateExpression: varchar_agg_exp
+        - fieldName: created_at
+          aggregateExpression: timestamp_agg_exp
+        - fieldName: description
+          aggregateExpression: text_agg_exp
+        - fieldName: is_active
+          aggregateExpression: bool_agg_exp
+        - fieldName: updated_at
+          aggregateExpression: timestamp_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: chart_of_accounts_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: chart_of_accounts_order_by_exp
+  operand:
+    object:
+      orderedType: chart_of_accounts
+      orderableFields:
+        - fieldName: account_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: account_name
+          orderByExpression: varchar_order_by_exp
+        - fieldName: account_number
+          orderByExpression: varchar_order_by_exp
+        - fieldName: account_subtype
+          orderByExpression: varchar_order_by_exp
+        - fieldName: account_type
+          orderByExpression: varchar_order_by_exp
+        - fieldName: created_at
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: description
+          orderByExpression: text_order_by_exp
+        - fieldName: is_active
+          orderByExpression: bool_order_by_exp
+        - fieldName: updated_at
+          orderByExpression: timestamp_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: chart_of_accounts_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: chart_of_accounts
+  objectType: chart_of_accounts
+  source:
+    dataConnectorName: financials
+    collection: chart_of_accounts
+  filterExpressionType: chart_of_accounts_bool_exp
+  aggregateExpression: chart_of_accounts_agg_exp
+  orderByExpression: chart_of_accounts_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: chart_of_accounts
+      subscription:
+        rootField: chart_of_accounts
+    selectUniques:
+      - queryRootField: chart_of_accounts_by_account_number
+        uniqueIdentifier:
+          - account_number
+        subscription:
+          rootField: chart_of_accounts_by_account_number
+      - queryRootField: chart_of_accounts_by_account_id
+        uniqueIdentifier:
+          - account_id
+        subscription:
+          rootField: chart_of_accounts_by_account_id
+    filterInputTypeName: chart_of_accounts_filter_input
+    aggregate:
+      queryRootField: chart_of_accounts_aggregate
+      subscription:
+        rootField: chart_of_accounts_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: chart_of_accounts
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: budget_vs_actuals
+  sourceType: chart_of_accounts
+  target:
+    model:
+      name: budget_vs_actual
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: budget_vs_actual_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: account_id
+      target:
+        modelField:
+          - fieldName: account_id
+  graphql:
+    aggregateFieldName: budget_vs_actuals_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: cash_flows
+  sourceType: chart_of_accounts
+  target:
+    model:
+      name: cash_flow
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: cash_flow_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: account_id
+      target:
+        modelField:
+          - fieldName: account_id
+  graphql:
+    aggregateFieldName: cash_flows_aggregate
+

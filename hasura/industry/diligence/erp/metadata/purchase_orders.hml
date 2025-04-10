@@ -1,0 +1,263 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: purchase_orders
+  fields:
+    - name: actual_delivery_date
+      type: date_1
+    - name: created_at
+      type: timestamp_1
+    - name: expected_delivery_date
+      type: date_1
+    - name: notes
+      type: text_1
+    - name: order_date
+      type: date_1!
+    - name: payment_status
+      type: varchar_1
+    - name: po_id
+      type: int_4_1!
+    - name: po_number
+      type: varchar_1!
+    - name: status
+      type: varchar_1
+    - name: supplier_id
+      type: int_4_1!
+    - name: total_amount
+      type: numeric_1!
+    - name: updated_at
+      type: timestamp_1
+  graphql:
+    typeName: purchase_orders
+    inputTypeName: purchase_orders_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: operations
+      dataConnectorObjectType: purchase_orders
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: purchase_orders
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - actual_delivery_date
+          - created_at
+          - expected_delivery_date
+          - notes
+          - order_date
+          - payment_status
+          - po_id
+          - po_number
+          - status
+          - supplier_id
+          - total_amount
+          - updated_at
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: purchase_orders_bool_exp
+  operand:
+    object:
+      type: purchase_orders
+      comparableFields:
+        - fieldName: actual_delivery_date
+          booleanExpressionType: date_bool_exp_1
+        - fieldName: created_at
+          booleanExpressionType: timestamp_bool_exp_1
+        - fieldName: expected_delivery_date
+          booleanExpressionType: date_bool_exp_1
+        - fieldName: notes
+          booleanExpressionType: text_bool_exp_1
+        - fieldName: order_date
+          booleanExpressionType: date_bool_exp_1
+        - fieldName: payment_status
+          booleanExpressionType: varchar_bool_exp_1
+        - fieldName: po_id
+          booleanExpressionType: int_4_bool_exp_1
+        - fieldName: po_number
+          booleanExpressionType: varchar_bool_exp_1
+        - fieldName: status
+          booleanExpressionType: varchar_bool_exp_1
+        - fieldName: supplier_id
+          booleanExpressionType: int_4_bool_exp_1
+        - fieldName: total_amount
+          booleanExpressionType: numeric_bool_exp_1
+        - fieldName: updated_at
+          booleanExpressionType: timestamp_bool_exp_1
+      comparableRelationships:
+        - relationshipName: po_items
+        - relationshipName: supplier
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: purchase_orders_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: purchase_orders_agg_exp
+  operand:
+    object:
+      aggregatedType: purchase_orders
+      aggregatableFields:
+        - fieldName: actual_delivery_date
+          aggregateExpression: date_agg_exp_1
+        - fieldName: created_at
+          aggregateExpression: timestamp_agg_exp_1
+        - fieldName: expected_delivery_date
+          aggregateExpression: date_agg_exp_1
+        - fieldName: notes
+          aggregateExpression: text_agg_exp_1
+        - fieldName: order_date
+          aggregateExpression: date_agg_exp_1
+        - fieldName: payment_status
+          aggregateExpression: varchar_agg_exp_1
+        - fieldName: po_id
+          aggregateExpression: int_4_agg_exp_1
+        - fieldName: po_number
+          aggregateExpression: varchar_agg_exp_1
+        - fieldName: status
+          aggregateExpression: varchar_agg_exp_1
+        - fieldName: supplier_id
+          aggregateExpression: int_4_agg_exp_1
+        - fieldName: total_amount
+          aggregateExpression: numeric_agg_exp_1
+        - fieldName: updated_at
+          aggregateExpression: timestamp_agg_exp_1
+  count:
+    enable: true
+  graphql:
+    selectTypeName: purchase_orders_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: purchase_orders_order_by_exp
+  operand:
+    object:
+      orderedType: purchase_orders
+      orderableFields:
+        - fieldName: actual_delivery_date
+          orderByExpression: date_1_order_by_exp
+        - fieldName: created_at
+          orderByExpression: timestamp_1_order_by_exp
+        - fieldName: expected_delivery_date
+          orderByExpression: date_1_order_by_exp
+        - fieldName: notes
+          orderByExpression: text_1_order_by_exp
+        - fieldName: order_date
+          orderByExpression: date_1_order_by_exp
+        - fieldName: payment_status
+          orderByExpression: varchar_1_order_by_exp
+        - fieldName: po_id
+          orderByExpression: int_4_1_order_by_exp
+        - fieldName: po_number
+          orderByExpression: varchar_1_order_by_exp
+        - fieldName: status
+          orderByExpression: varchar_1_order_by_exp
+        - fieldName: supplier_id
+          orderByExpression: int_4_1_order_by_exp
+        - fieldName: total_amount
+          orderByExpression: numeric_1_order_by_exp
+        - fieldName: updated_at
+          orderByExpression: timestamp_1_order_by_exp
+      orderableRelationships:
+        - relationshipName: supplier
+  graphql:
+    expressionTypeName: purchase_orders_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: purchase_orders
+  objectType: purchase_orders
+  source:
+    dataConnectorName: operations
+    collection: purchase_orders
+  filterExpressionType: purchase_orders_bool_exp
+  aggregateExpression: purchase_orders_agg_exp
+  orderByExpression: purchase_orders_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: purchase_orders
+      subscription:
+        rootField: purchase_orders
+    selectUniques:
+      - queryRootField: purchase_orders_by_po_id
+        uniqueIdentifier:
+          - po_id
+        subscription:
+          rootField: purchase_orders_by_po_id
+      - queryRootField: purchase_orders_by_po_number
+        uniqueIdentifier:
+          - po_number
+        subscription:
+          rootField: purchase_orders_by_po_number
+    filterInputTypeName: purchase_orders_filter_input
+    aggregate:
+      queryRootField: purchase_orders_aggregate
+      subscription:
+        rootField: purchase_orders_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: purchase_orders
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: po_items
+  sourceType: purchase_orders
+  target:
+    model:
+      name: po_items
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: po_items_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: po_id
+      target:
+        modelField:
+          - fieldName: po_id
+  graphql:
+    aggregateFieldName: po_items_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: supplier
+  sourceType: purchase_orders
+  target:
+    model:
+      name: suppliers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: supplier_id
+      target:
+        modelField:
+          - fieldName: supplier_id
+

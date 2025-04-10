@@ -1,0 +1,264 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: budget_vs_actual
+  fields:
+    - name: account_id
+      type: int_4!
+    - name: actual_amount
+      type: numeric
+    - name: budget_amount
+      type: numeric!
+    - name: budget_id
+      type: int_4!
+    - name: created_at
+      type: timestamp
+    - name: fiscal_month
+      type: int_4
+    - name: fiscal_quarter
+      type: int_4
+    - name: fiscal_year
+      type: int_4!
+    - name: id
+      type: int_4!
+    - name: updated_at
+      type: timestamp
+    - name: variance_amount
+      type: numeric
+    - name: variance_percentage
+      type: numeric
+  graphql:
+    typeName: budget_vs_actual
+    inputTypeName: budget_vs_actual_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: financials
+      dataConnectorObjectType: budget_vs_actual
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: budget_vs_actual
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - account_id
+          - actual_amount
+          - budget_amount
+          - budget_id
+          - created_at
+          - fiscal_month
+          - fiscal_quarter
+          - fiscal_year
+          - id
+          - updated_at
+          - variance_amount
+          - variance_percentage
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: budget_vs_actual_bool_exp
+  operand:
+    object:
+      type: budget_vs_actual
+      comparableFields:
+        - fieldName: account_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: actual_amount
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: budget_amount
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: budget_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: created_at
+          booleanExpressionType: timestamp_bool_exp
+        - fieldName: fiscal_month
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: fiscal_quarter
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: fiscal_year
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: updated_at
+          booleanExpressionType: timestamp_bool_exp
+        - fieldName: variance_amount
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: variance_percentage
+          booleanExpressionType: numeric_bool_exp
+      comparableRelationships:
+        - relationshipName: chart_of_account
+        - relationshipName: budget_plan
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: budget_vs_actual_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: budget_vs_actual_agg_exp
+  operand:
+    object:
+      aggregatedType: budget_vs_actual
+      aggregatableFields:
+        - fieldName: account_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: actual_amount
+          aggregateExpression: numeric_agg_exp
+        - fieldName: budget_amount
+          aggregateExpression: numeric_agg_exp
+        - fieldName: budget_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: created_at
+          aggregateExpression: timestamp_agg_exp
+        - fieldName: fiscal_month
+          aggregateExpression: int_4_agg_exp
+        - fieldName: fiscal_quarter
+          aggregateExpression: int_4_agg_exp
+        - fieldName: fiscal_year
+          aggregateExpression: int_4_agg_exp
+        - fieldName: id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: updated_at
+          aggregateExpression: timestamp_agg_exp
+        - fieldName: variance_amount
+          aggregateExpression: numeric_agg_exp
+        - fieldName: variance_percentage
+          aggregateExpression: numeric_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: budget_vs_actual_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: budget_vs_actual_order_by_exp
+  operand:
+    object:
+      orderedType: budget_vs_actual
+      orderableFields:
+        - fieldName: account_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: actual_amount
+          orderByExpression: numeric_order_by_exp
+        - fieldName: budget_amount
+          orderByExpression: numeric_order_by_exp
+        - fieldName: budget_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: created_at
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: fiscal_month
+          orderByExpression: int_4_order_by_exp
+        - fieldName: fiscal_quarter
+          orderByExpression: int_4_order_by_exp
+        - fieldName: fiscal_year
+          orderByExpression: int_4_order_by_exp
+        - fieldName: id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: updated_at
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: variance_amount
+          orderByExpression: numeric_order_by_exp
+        - fieldName: variance_percentage
+          orderByExpression: numeric_order_by_exp
+      orderableRelationships:
+        - relationshipName: chart_of_account
+        - relationshipName: budget_plan
+  graphql:
+    expressionTypeName: budget_vs_actual_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: budget_vs_actual
+  objectType: budget_vs_actual
+  source:
+    dataConnectorName: financials
+    collection: budget_vs_actual
+  filterExpressionType: budget_vs_actual_bool_exp
+  aggregateExpression: budget_vs_actual_agg_exp
+  orderByExpression: budget_vs_actual_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: budget_vs_actual
+      subscription:
+        rootField: budget_vs_actual
+    selectUniques:
+      - queryRootField: budget_vs_actual_by_budget_vs_actual_budget_id_account_id_fiscal_year_fiscal_qu_key
+        uniqueIdentifier:
+          - account_id
+          - budget_id
+          - fiscal_month
+          - fiscal_quarter
+          - fiscal_year
+        subscription:
+          rootField: budget_vs_actual_by_budget_vs_actual_budget_id_account_id_fiscal_year_fiscal_qu_key
+      - queryRootField: budget_vs_actual_by_id
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: budget_vs_actual_by_id
+    filterInputTypeName: budget_vs_actual_filter_input
+    aggregate:
+      queryRootField: budget_vs_actual_aggregate
+      subscription:
+        rootField: budget_vs_actual_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: budget_vs_actual
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: chart_of_account
+  sourceType: budget_vs_actual
+  target:
+    model:
+      name: chart_of_accounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: account_id
+      target:
+        modelField:
+          - fieldName: account_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: budget_plan
+  sourceType: budget_vs_actual
+  target:
+    model:
+      name: budget_plans
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: budget_id
+      target:
+        modelField:
+          - fieldName: budget_id
+

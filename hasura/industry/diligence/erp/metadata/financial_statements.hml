@@ -1,0 +1,228 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: financial_statements
+  fields:
+    - name: approved_by
+      type: varchar
+    - name: created_at
+      type: timestamp
+    - name: fiscal_month
+      type: int_4
+    - name: fiscal_quarter
+      type: int_4
+    - name: fiscal_year
+      type: int_4!
+    - name: is_audited
+      type: bool
+    - name: prepared_by
+      type: varchar
+    - name: statement_id
+      type: int_4!
+    - name: statement_type
+      type: varchar!
+    - name: updated_at
+      type: timestamp
+  graphql:
+    typeName: financial_statements
+    inputTypeName: financial_statements_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: financials
+      dataConnectorObjectType: financial_statements
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: financial_statements
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - approved_by
+          - created_at
+          - fiscal_month
+          - fiscal_quarter
+          - fiscal_year
+          - is_audited
+          - prepared_by
+          - statement_id
+          - statement_type
+          - updated_at
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: financial_statements_bool_exp
+  operand:
+    object:
+      type: financial_statements
+      comparableFields:
+        - fieldName: approved_by
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: created_at
+          booleanExpressionType: timestamp_bool_exp
+        - fieldName: fiscal_month
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: fiscal_quarter
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: fiscal_year
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: is_audited
+          booleanExpressionType: bool_bool_exp
+        - fieldName: prepared_by
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: statement_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: statement_type
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: updated_at
+          booleanExpressionType: timestamp_bool_exp
+      comparableRelationships:
+        - relationshipName: financial_statement_items
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: financial_statements_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: financial_statements_agg_exp
+  operand:
+    object:
+      aggregatedType: financial_statements
+      aggregatableFields:
+        - fieldName: approved_by
+          aggregateExpression: varchar_agg_exp
+        - fieldName: created_at
+          aggregateExpression: timestamp_agg_exp
+        - fieldName: fiscal_month
+          aggregateExpression: int_4_agg_exp
+        - fieldName: fiscal_quarter
+          aggregateExpression: int_4_agg_exp
+        - fieldName: fiscal_year
+          aggregateExpression: int_4_agg_exp
+        - fieldName: is_audited
+          aggregateExpression: bool_agg_exp
+        - fieldName: prepared_by
+          aggregateExpression: varchar_agg_exp
+        - fieldName: statement_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: statement_type
+          aggregateExpression: varchar_agg_exp
+        - fieldName: updated_at
+          aggregateExpression: timestamp_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: financial_statements_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: financial_statements_order_by_exp
+  operand:
+    object:
+      orderedType: financial_statements
+      orderableFields:
+        - fieldName: approved_by
+          orderByExpression: varchar_order_by_exp
+        - fieldName: created_at
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: fiscal_month
+          orderByExpression: int_4_order_by_exp
+        - fieldName: fiscal_quarter
+          orderByExpression: int_4_order_by_exp
+        - fieldName: fiscal_year
+          orderByExpression: int_4_order_by_exp
+        - fieldName: is_audited
+          orderByExpression: bool_order_by_exp
+        - fieldName: prepared_by
+          orderByExpression: varchar_order_by_exp
+        - fieldName: statement_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: statement_type
+          orderByExpression: varchar_order_by_exp
+        - fieldName: updated_at
+          orderByExpression: timestamp_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: financial_statements_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: financial_statements
+  objectType: financial_statements
+  source:
+    dataConnectorName: financials
+    collection: financial_statements
+  filterExpressionType: financial_statements_bool_exp
+  aggregateExpression: financial_statements_agg_exp
+  orderByExpression: financial_statements_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: financial_statements
+      subscription:
+        rootField: financial_statements
+    selectUniques:
+      - queryRootField: financial_statements_by_statement_id
+        uniqueIdentifier:
+          - statement_id
+        subscription:
+          rootField: financial_statements_by_statement_id
+      - queryRootField: financial_statements_by_financial_statements_statement_type_fiscal_year_fiscal_quar_key
+        uniqueIdentifier:
+          - fiscal_month
+          - fiscal_quarter
+          - fiscal_year
+          - statement_type
+        subscription:
+          rootField: financial_statements_by_financial_statements_statement_type_fiscal_year_fiscal_quar_key
+    filterInputTypeName: financial_statements_filter_input
+    aggregate:
+      queryRootField: financial_statements_aggregate
+      subscription:
+        rootField: financial_statements_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: financial_statements
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: financial_statement_items
+  sourceType: financial_statements
+  target:
+    model:
+      name: financial_statement_items
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: financial_statement_items_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: statement_id
+      target:
+        modelField:
+          - fieldName: statement_id
+  graphql:
+    aggregateFieldName: financial_statement_items_aggregate
+
