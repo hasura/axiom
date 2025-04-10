@@ -15,6 +15,13 @@ definition:
     version: v0.1
     schema:
       scalar_types:
+        DateTime:
+          representation:
+            type: timestamp
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
         String:
           representation:
             type: string
@@ -23,30 +30,66 @@ definition:
             _eq:
               type: equal
       object_types:
+        CreateCampaignObj:
+          fields:
+            budget:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            campaignId:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            campaignName:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            channel:
+              type:
+                name: String
+                type: named
+            endDate:
+              type:
+                name: DateTime
+                type: named
+            offerDetails:
+              type:
+                name: String
+                type: named
+            targetSegment:
+              type:
+                name: String
+                type: named
         DeviceActionResponse:
           fields:
             activation_id:
               type:
                 type: nullable
                 underlying_type:
-                  type: named
                   name: String
+                  type: named
             deactivation_id:
               type:
                 type: nullable
                 underlying_type:
-                  type: named
                   name: String
+                  type: named
             device_id:
               type:
                 type: nullable
                 underlying_type:
-                  type: named
                   name: String
+                  type: named
             status:
               type:
-                type: named
                 name: String
+                type: named
       collections: []
       functions:
         - name: maskCardNumber
@@ -57,46 +100,55 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  type: named
                   name: String
+                  type: named
           result_type:
-            type: named
             name: String
+            type: named
       procedures:
+        - name: CreateCampaign
+          arguments:
+            camp:
+              type:
+                name: CreateCampaignObj
+                type: named
+          result_type:
+            name: CreateCampaignObj
+            type: named
         - name: activateDevice
           arguments:
             customer_id:
               type:
-                type: named
                 name: String
+                type: named
             device_id:
               type:
-                type: named
                 name: String
+                type: named
             email:
               type:
-                type: named
                 name: String
+                type: named
           result_type:
-            type: named
             name: DeviceActionResponse
+            type: named
         - name: deactivateDevice
           arguments:
             customer_id:
               type:
-                type: named
                 name: String
+                type: named
             device_id:
               type:
-                type: named
                 name: String
+                type: named
             email:
               type:
-                type: named
                 name: String
+                type: named
           result_type:
-            type: named
             name: DeviceActionResponse
+            type: named
     capabilities:
       version: 0.1.6
       capabilities:
