@@ -1,2741 +1,1843 @@
 {
-  "version": "5",
-  "$schema": "schema.json",
-  "connectionSettings": {
-    "connectionUri": {
-      "variable": "CONNECTION_URI"
+    "version": "v2",
+    "connection_uri": {
+        "variable": "JDBC_URL"
     },
-    "poolSettings": {
-      "maxConnections": 50,
-      "poolTimeout": 30,
-      "idleTimeout": 180,
-      "checkConnectionAfterIdle": 60,
-      "connectionLifetime": 600
-    },
-    "isolationLevel": "ReadCommitted"
-  },
-  "metadata": {
-    "tables": {
-      "business_units": {
-        "schemaName": "public",
-        "tableName": "business_units",
-        "columns": {
-          "created_at": {
-            "name": "created_at",
-            "type": {
-              "scalarType": "timestamp"
-            },
-            "nullable": "nullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "director": {
-            "name": "director",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "established_date": {
-            "name": "established_date",
-            "type": {
-              "scalarType": "date"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "is_active": {
-            "name": "is_active",
-            "type": {
-              "scalarType": "bool"
-            },
-            "nullable": "nullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "region_id": {
-            "name": "region_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "unit_code": {
-            "name": "unit_code",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "unit_id": {
-            "name": "unit_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "unit_name": {
-            "name": "unit_name",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "updated_at": {
-            "name": "updated_at",
-            "type": {
-              "scalarType": "timestamp"
-            },
-            "nullable": "nullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          }
+    "tables": [
+        {
+            "name": "public.business_units",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "unit_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "unit_name",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 100
+                        }
+                    }
+                },
+                {
+                    "name": "unit_code",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 20
+                        }
+                    }
+                },
+                {
+                    "name": "region_id",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "director",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 100
+                        }
+                    }
+                },
+                {
+                    "name": "is_active",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "boolean"
+                    }
+                },
+                {
+                    "name": "established_date",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "date"
+                    }
+                },
+                {
+                    "name": "created_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                },
+                {
+                    "name": "updated_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                }
+            ],
+            "primary_keys": [
+                "unit_id"
+            ],
+            "foreign_keys": {}
         },
-        "uniquenessConstraints": {
-          "business_units_pkey": [
-            "unit_id"
-          ],
-          "business_units_unit_code_key": [
-            "unit_code"
-          ]
+        {
+            "name": "public.customer_contacts",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "contact_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "customer_id",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "first_name",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 50
+                        }
+                    }
+                },
+                {
+                    "name": "last_name",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 50
+                        }
+                    }
+                },
+                {
+                    "name": "job_title",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 100
+                        }
+                    }
+                },
+                {
+                    "name": "email",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 100
+                        }
+                    }
+                },
+                {
+                    "name": "phone",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 30
+                        }
+                    }
+                },
+                {
+                    "name": "is_primary",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "boolean"
+                    }
+                },
+                {
+                    "name": "created_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                },
+                {
+                    "name": "updated_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                }
+            ],
+            "primary_keys": [
+                "contact_id"
+            ],
+            "foreign_keys": {}
         },
-        "foreignRelations": {
-          "business_units_region_id_fkey": {
-            "foreignSchema": "public",
-            "foreignTable": "regions",
-            "columnMapping": {
-              "region_id": "region_id"
-            }
-          }
+        {
+            "name": "public.customers",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "customer_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "business_name",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 100
+                        }
+                    }
+                },
+                {
+                    "name": "industry",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 50
+                        }
+                    }
+                },
+                {
+                    "name": "business_type",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 30
+                        }
+                    }
+                },
+                {
+                    "name": "region_id",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "acquisition_date",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "date"
+                    }
+                },
+                {
+                    "name": "account_manager",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 100
+                        }
+                    }
+                },
+                {
+                    "name": "credit_limit",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 15,
+                            "scale": 2
+                        }
+                    }
+                },
+                {
+                    "name": "payment_terms",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 50
+                        }
+                    }
+                },
+                {
+                    "name": "is_active",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "boolean"
+                    }
+                },
+                {
+                    "name": "total_lifetime_value",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 15,
+                            "scale": 2
+                        }
+                    }
+                },
+                {
+                    "name": "created_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                },
+                {
+                    "name": "updated_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                }
+            ],
+            "primary_keys": [
+                "customer_id"
+            ],
+            "foreign_keys": {}
         },
-        "description": null
-      },
-      "customer_contacts": {
-        "schemaName": "public",
-        "tableName": "customer_contacts",
-        "columns": {
-          "contact_id": {
-            "name": "contact_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "created_at": {
-            "name": "created_at",
-            "type": {
-              "scalarType": "timestamp"
-            },
-            "nullable": "nullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "customer_id": {
-            "name": "customer_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "email": {
-            "name": "email",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "first_name": {
-            "name": "first_name",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "is_primary": {
-            "name": "is_primary",
-            "type": {
-              "scalarType": "bool"
-            },
-            "nullable": "nullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "job_title": {
-            "name": "job_title",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "last_name": {
-            "name": "last_name",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "phone": {
-            "name": "phone",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "updated_at": {
-            "name": "updated_at",
-            "type": {
-              "scalarType": "timestamp"
-            },
-            "nullable": "nullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          }
+        {
+            "name": "public.inventory",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "inventory_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "product_id",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "warehouse_location",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 100
+                        }
+                    }
+                },
+                {
+                    "name": "quantity_on_hand",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "quantity_allocated",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "restock_threshold",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "last_restock_date",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "date"
+                    }
+                },
+                {
+                    "name": "next_restock_date",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "date"
+                    }
+                },
+                {
+                    "name": "created_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                },
+                {
+                    "name": "updated_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                }
+            ],
+            "primary_keys": [
+                "inventory_id"
+            ],
+            "foreign_keys": {}
         },
-        "uniquenessConstraints": {
-          "customer_contacts_pkey": [
-            "contact_id"
-          ]
+        {
+            "name": "public.inventory_movements",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "movement_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "inventory_id",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "transaction_date",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                },
+                {
+                    "name": "transaction_type",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 20
+                        }
+                    }
+                },
+                {
+                    "name": "quantity",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "reference_document",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 50
+                        }
+                    }
+                },
+                {
+                    "name": "notes",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "text"
+                    }
+                },
+                {
+                    "name": "created_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                }
+            ],
+            "primary_keys": [
+                "movement_id"
+            ],
+            "foreign_keys": {}
         },
-        "foreignRelations": {
-          "customer_contacts_customer_id_fkey": {
-            "foreignSchema": "public",
-            "foreignTable": "customers",
-            "columnMapping": {
-              "customer_id": "customer_id"
-            }
-          }
+        {
+            "name": "public.marketing_campaigns",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "campaign_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "campaign_name",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 100
+                        }
+                    }
+                },
+                {
+                    "name": "campaign_type",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 50
+                        }
+                    }
+                },
+                {
+                    "name": "start_date",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "date"
+                    }
+                },
+                {
+                    "name": "end_date",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "date"
+                    }
+                },
+                {
+                    "name": "budget",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 15,
+                            "scale": 2
+                        }
+                    }
+                },
+                {
+                    "name": "actual_spend",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 15,
+                            "scale": 2
+                        }
+                    }
+                },
+                {
+                    "name": "target_audience",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 100
+                        }
+                    }
+                },
+                {
+                    "name": "target_region",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "target_products",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "text"
+                    }
+                },
+                {
+                    "name": "expected_revenue",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 15,
+                            "scale": 2
+                        }
+                    }
+                },
+                {
+                    "name": "actual_revenue",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 15,
+                            "scale": 2
+                        }
+                    }
+                },
+                {
+                    "name": "roi_percentage",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 8,
+                            "scale": 2
+                        }
+                    }
+                },
+                {
+                    "name": "status",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 20
+                        }
+                    }
+                },
+                {
+                    "name": "created_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                },
+                {
+                    "name": "updated_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                }
+            ],
+            "primary_keys": [
+                "campaign_id"
+            ],
+            "foreign_keys": {}
         },
-        "description": null
-      },
-      "customers": {
-        "schemaName": "public",
-        "tableName": "customers",
-        "columns": {
-          "account_manager": {
-            "name": "account_manager",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "acquisition_date": {
-            "name": "acquisition_date",
-            "type": {
-              "scalarType": "date"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "business_name": {
-            "name": "business_name",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "business_type": {
-            "name": "business_type",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "created_at": {
-            "name": "created_at",
-            "type": {
-              "scalarType": "timestamp"
-            },
-            "nullable": "nullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "credit_limit": {
-            "name": "credit_limit",
-            "type": {
-              "scalarType": "numeric"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "customer_id": {
-            "name": "customer_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "industry": {
-            "name": "industry",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "is_active": {
-            "name": "is_active",
-            "type": {
-              "scalarType": "bool"
-            },
-            "nullable": "nullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "payment_terms": {
-            "name": "payment_terms",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "region_id": {
-            "name": "region_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "total_lifetime_value": {
-            "name": "total_lifetime_value",
-            "type": {
-              "scalarType": "numeric"
-            },
-            "nullable": "nullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "updated_at": {
-            "name": "updated_at",
-            "type": {
-              "scalarType": "timestamp"
-            },
-            "nullable": "nullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          }
+        {
+            "name": "public.order_items",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "item_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "order_id",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "product_id",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "quantity",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "unit_price",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 15,
+                            "scale": 2
+                        }
+                    }
+                },
+                {
+                    "name": "discount_percentage",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 5,
+                            "scale": 2
+                        }
+                    }
+                },
+                {
+                    "name": "line_total",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 15,
+                            "scale": 2
+                        }
+                    }
+                },
+                {
+                    "name": "created_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                },
+                {
+                    "name": "updated_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                }
+            ],
+            "primary_keys": [
+                "item_id"
+            ],
+            "foreign_keys": {}
         },
-        "uniquenessConstraints": {
-          "customers_pkey": [
-            "customer_id"
-          ]
+        {
+            "name": "public.po_items",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "item_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "po_id",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "product_id",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "quantity",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "unit_price",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 15,
+                            "scale": 2
+                        }
+                    }
+                },
+                {
+                    "name": "line_total",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 15,
+                            "scale": 2
+                        }
+                    }
+                },
+                {
+                    "name": "received_quantity",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "created_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                },
+                {
+                    "name": "updated_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                }
+            ],
+            "primary_keys": [
+                "item_id"
+            ],
+            "foreign_keys": {}
         },
-        "foreignRelations": {
-          "customers_region_id_fkey": {
-            "foreignSchema": "public",
-            "foreignTable": "regions",
-            "columnMapping": {
-              "region_id": "region_id"
-            }
-          }
+        {
+            "name": "public.product_categories",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "category_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "category_name",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 100
+                        }
+                    }
+                },
+                {
+                    "name": "parent_category_id",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "description",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "text"
+                    }
+                },
+                {
+                    "name": "created_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                },
+                {
+                    "name": "updated_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                }
+            ],
+            "primary_keys": [
+                "category_id"
+            ],
+            "foreign_keys": {}
         },
-        "description": null
-      },
-      "inventory": {
-        "schemaName": "public",
-        "tableName": "inventory",
-        "columns": {
-          "created_at": {
-            "name": "created_at",
-            "type": {
-              "scalarType": "timestamp"
-            },
-            "nullable": "nullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "inventory_id": {
-            "name": "inventory_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "last_restock_date": {
-            "name": "last_restock_date",
-            "type": {
-              "scalarType": "date"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "next_restock_date": {
-            "name": "next_restock_date",
-            "type": {
-              "scalarType": "date"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "product_id": {
-            "name": "product_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "quantity_allocated": {
-            "name": "quantity_allocated",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "quantity_on_hand": {
-            "name": "quantity_on_hand",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "restock_threshold": {
-            "name": "restock_threshold",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "updated_at": {
-            "name": "updated_at",
-            "type": {
-              "scalarType": "timestamp"
-            },
-            "nullable": "nullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "warehouse_location": {
-            "name": "warehouse_location",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          }
+        {
+            "name": "public.products",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "product_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "product_code",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 30
+                        }
+                    }
+                },
+                {
+                    "name": "product_name",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 100
+                        }
+                    }
+                },
+                {
+                    "name": "category_id",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "unit_id",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "description",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "text"
+                    }
+                },
+                {
+                    "name": "launch_date",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "date"
+                    }
+                },
+                {
+                    "name": "base_cost",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 15,
+                            "scale": 2
+                        }
+                    }
+                },
+                {
+                    "name": "list_price",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 15,
+                            "scale": 2
+                        }
+                    }
+                },
+                {
+                    "name": "status",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 20
+                        }
+                    }
+                },
+                {
+                    "name": "minimum_order_quantity",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "reorder_point",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "target_inventory_level",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "lead_time_days",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "created_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                },
+                {
+                    "name": "updated_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                }
+            ],
+            "primary_keys": [
+                "product_id"
+            ],
+            "foreign_keys": {}
         },
-        "uniquenessConstraints": {
-          "inventory_pkey": [
-            "inventory_id"
-          ],
-          "inventory_product_id_warehouse_location_key": [
-            "product_id",
-            "warehouse_location"
-          ]
+        {
+            "name": "public.purchase_orders",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "po_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "po_number",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 30
+                        }
+                    }
+                },
+                {
+                    "name": "supplier_id",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "order_date",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "date"
+                    }
+                },
+                {
+                    "name": "expected_delivery_date",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "date"
+                    }
+                },
+                {
+                    "name": "actual_delivery_date",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "date"
+                    }
+                },
+                {
+                    "name": "total_amount",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 15,
+                            "scale": 2
+                        }
+                    }
+                },
+                {
+                    "name": "status",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 20
+                        }
+                    }
+                },
+                {
+                    "name": "payment_status",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 20
+                        }
+                    }
+                },
+                {
+                    "name": "notes",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "text"
+                    }
+                },
+                {
+                    "name": "created_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                },
+                {
+                    "name": "updated_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                }
+            ],
+            "primary_keys": [
+                "po_id"
+            ],
+            "foreign_keys": {}
         },
-        "foreignRelations": {
-          "inventory_product_id_fkey": {
-            "foreignSchema": "public",
-            "foreignTable": "products",
-            "columnMapping": {
-              "product_id": "product_id"
-            }
-          }
+        {
+            "name": "public.regions",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "region_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "region_name",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 50
+                        }
+                    }
+                },
+                {
+                    "name": "country",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 50
+                        }
+                    }
+                },
+                {
+                    "name": "currency_code",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character",
+                        "metadata": {
+                            "type": "length",
+                            "length": 3
+                        }
+                    }
+                },
+                {
+                    "name": "created_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                },
+                {
+                    "name": "updated_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                }
+            ],
+            "primary_keys": [
+                "region_id"
+            ],
+            "foreign_keys": {}
         },
-        "description": null
-      },
-      "inventory_movements": {
-        "schemaName": "public",
-        "tableName": "inventory_movements",
-        "columns": {
-          "created_at": {
-            "name": "created_at",
-            "type": {
-              "scalarType": "timestamp"
-            },
-            "nullable": "nullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "inventory_id": {
-            "name": "inventory_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "movement_id": {
-            "name": "movement_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "notes": {
-            "name": "notes",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "quantity": {
-            "name": "quantity",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "reference_document": {
-            "name": "reference_document",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "transaction_date": {
-            "name": "transaction_date",
-            "type": {
-              "scalarType": "timestamp"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "transaction_type": {
-            "name": "transaction_type",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          }
+        {
+            "name": "public.sales_orders",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "order_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "order_number",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 30
+                        }
+                    }
+                },
+                {
+                    "name": "customer_id",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "order_date",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "date"
+                    }
+                },
+                {
+                    "name": "required_date",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "date"
+                    }
+                },
+                {
+                    "name": "shipped_date",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "date"
+                    }
+                },
+                {
+                    "name": "ship_to_address",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "text"
+                    }
+                },
+                {
+                    "name": "shipping_method",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 50
+                        }
+                    }
+                },
+                {
+                    "name": "shipping_cost",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 15,
+                            "scale": 2
+                        }
+                    }
+                },
+                {
+                    "name": "sales_rep",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 100
+                        }
+                    }
+                },
+                {
+                    "name": "unit_id",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "subtotal",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 15,
+                            "scale": 2
+                        }
+                    }
+                },
+                {
+                    "name": "tax_amount",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 15,
+                            "scale": 2
+                        }
+                    }
+                },
+                {
+                    "name": "discount_amount",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 15,
+                            "scale": 2
+                        }
+                    }
+                },
+                {
+                    "name": "total_amount",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 15,
+                            "scale": 2
+                        }
+                    }
+                },
+                {
+                    "name": "status",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 20
+                        }
+                    }
+                },
+                {
+                    "name": "payment_status",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 20
+                        }
+                    }
+                },
+                {
+                    "name": "created_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                },
+                {
+                    "name": "updated_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                }
+            ],
+            "primary_keys": [
+                "order_id"
+            ],
+            "foreign_keys": {}
         },
-        "uniquenessConstraints": {
-          "inventory_movements_pkey": [
-            "movement_id"
-          ]
-        },
-        "foreignRelations": {
-          "inventory_movements_inventory_id_fkey": {
-            "foreignSchema": "public",
-            "foreignTable": "inventory",
-            "columnMapping": {
-              "inventory_id": "inventory_id"
-            }
-          }
-        },
-        "description": null
-      },
-      "marketing_campaigns": {
-        "schemaName": "public",
-        "tableName": "marketing_campaigns",
-        "columns": {
-          "actual_revenue": {
-            "name": "actual_revenue",
-            "type": {
-              "scalarType": "numeric"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "actual_spend": {
-            "name": "actual_spend",
-            "type": {
-              "scalarType": "numeric"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "budget": {
-            "name": "budget",
-            "type": {
-              "scalarType": "numeric"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "campaign_id": {
-            "name": "campaign_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "campaign_name": {
-            "name": "campaign_name",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "campaign_type": {
-            "name": "campaign_type",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "created_at": {
-            "name": "created_at",
-            "type": {
-              "scalarType": "timestamp"
-            },
-            "nullable": "nullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "end_date": {
-            "name": "end_date",
-            "type": {
-              "scalarType": "date"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "expected_revenue": {
-            "name": "expected_revenue",
-            "type": {
-              "scalarType": "numeric"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "roi_percentage": {
-            "name": "roi_percentage",
-            "type": {
-              "scalarType": "numeric"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "start_date": {
-            "name": "start_date",
-            "type": {
-              "scalarType": "date"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "status": {
-            "name": "status",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "target_audience": {
-            "name": "target_audience",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "target_products": {
-            "name": "target_products",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "target_region": {
-            "name": "target_region",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "updated_at": {
-            "name": "updated_at",
-            "type": {
-              "scalarType": "timestamp"
-            },
-            "nullable": "nullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          }
-        },
-        "uniquenessConstraints": {
-          "marketing_campaigns_pkey": [
-            "campaign_id"
-          ]
-        },
-        "foreignRelations": {
-          "marketing_campaigns_target_region_fkey": {
-            "foreignSchema": "public",
-            "foreignTable": "regions",
-            "columnMapping": {
-              "target_region": "region_id"
-            }
-          }
-        },
-        "description": null
-      },
-      "order_items": {
-        "schemaName": "public",
-        "tableName": "order_items",
-        "columns": {
-          "created_at": {
-            "name": "created_at",
-            "type": {
-              "scalarType": "timestamp"
-            },
-            "nullable": "nullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "discount_percentage": {
-            "name": "discount_percentage",
-            "type": {
-              "scalarType": "numeric"
-            },
-            "nullable": "nullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "item_id": {
-            "name": "item_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "line_total": {
-            "name": "line_total",
-            "type": {
-              "scalarType": "numeric"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "order_id": {
-            "name": "order_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "product_id": {
-            "name": "product_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "quantity": {
-            "name": "quantity",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "unit_price": {
-            "name": "unit_price",
-            "type": {
-              "scalarType": "numeric"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "updated_at": {
-            "name": "updated_at",
-            "type": {
-              "scalarType": "timestamp"
-            },
-            "nullable": "nullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          }
-        },
-        "uniquenessConstraints": {
-          "order_items_pkey": [
-            "item_id"
-          ]
-        },
-        "foreignRelations": {
-          "order_items_order_id_fkey": {
-            "foreignSchema": "public",
-            "foreignTable": "sales_orders",
-            "columnMapping": {
-              "order_id": "order_id"
-            }
-          },
-          "order_items_product_id_fkey": {
-            "foreignSchema": "public",
-            "foreignTable": "products",
-            "columnMapping": {
-              "product_id": "product_id"
-            }
-          }
-        },
-        "description": null
-      },
-      "po_items": {
-        "schemaName": "public",
-        "tableName": "po_items",
-        "columns": {
-          "created_at": {
-            "name": "created_at",
-            "type": {
-              "scalarType": "timestamp"
-            },
-            "nullable": "nullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "item_id": {
-            "name": "item_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "line_total": {
-            "name": "line_total",
-            "type": {
-              "scalarType": "numeric"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "po_id": {
-            "name": "po_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "product_id": {
-            "name": "product_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "quantity": {
-            "name": "quantity",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "received_quantity": {
-            "name": "received_quantity",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "unit_price": {
-            "name": "unit_price",
-            "type": {
-              "scalarType": "numeric"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "updated_at": {
-            "name": "updated_at",
-            "type": {
-              "scalarType": "timestamp"
-            },
-            "nullable": "nullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          }
-        },
-        "uniquenessConstraints": {
-          "po_items_pkey": [
-            "item_id"
-          ]
-        },
-        "foreignRelations": {
-          "po_items_po_id_fkey": {
-            "foreignSchema": "public",
-            "foreignTable": "purchase_orders",
-            "columnMapping": {
-              "po_id": "po_id"
-            }
-          },
-          "po_items_product_id_fkey": {
-            "foreignSchema": "public",
-            "foreignTable": "products",
-            "columnMapping": {
-              "product_id": "product_id"
-            }
-          }
-        },
-        "description": null
-      },
-      "product_categories": {
-        "schemaName": "public",
-        "tableName": "product_categories",
-        "columns": {
-          "category_id": {
-            "name": "category_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "category_name": {
-            "name": "category_name",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "created_at": {
-            "name": "created_at",
-            "type": {
-              "scalarType": "timestamp"
-            },
-            "nullable": "nullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "description": {
-            "name": "description",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "parent_category_id": {
-            "name": "parent_category_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "updated_at": {
-            "name": "updated_at",
-            "type": {
-              "scalarType": "timestamp"
-            },
-            "nullable": "nullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          }
-        },
-        "uniquenessConstraints": {
-          "product_categories_pkey": [
-            "category_id"
-          ]
-        },
-        "foreignRelations": {
-          "product_categories_parent_category_id_fkey": {
-            "foreignSchema": "public",
-            "foreignTable": "product_categories",
-            "columnMapping": {
-              "parent_category_id": "category_id"
-            }
-          }
-        },
-        "description": null
-      },
-      "products": {
-        "schemaName": "public",
-        "tableName": "products",
-        "columns": {
-          "base_cost": {
-            "name": "base_cost",
-            "type": {
-              "scalarType": "numeric"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "category_id": {
-            "name": "category_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "created_at": {
-            "name": "created_at",
-            "type": {
-              "scalarType": "timestamp"
-            },
-            "nullable": "nullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "description": {
-            "name": "description",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "launch_date": {
-            "name": "launch_date",
-            "type": {
-              "scalarType": "date"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "lead_time_days": {
-            "name": "lead_time_days",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "list_price": {
-            "name": "list_price",
-            "type": {
-              "scalarType": "numeric"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "minimum_order_quantity": {
-            "name": "minimum_order_quantity",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "product_code": {
-            "name": "product_code",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "product_id": {
-            "name": "product_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "product_name": {
-            "name": "product_name",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "reorder_point": {
-            "name": "reorder_point",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "status": {
-            "name": "status",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "target_inventory_level": {
-            "name": "target_inventory_level",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "unit_id": {
-            "name": "unit_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "updated_at": {
-            "name": "updated_at",
-            "type": {
-              "scalarType": "timestamp"
-            },
-            "nullable": "nullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          }
-        },
-        "uniquenessConstraints": {
-          "products_pkey": [
-            "product_id"
-          ],
-          "products_product_code_key": [
-            "product_code"
-          ]
-        },
-        "foreignRelations": {
-          "products_category_id_fkey": {
-            "foreignSchema": "public",
-            "foreignTable": "product_categories",
-            "columnMapping": {
-              "category_id": "category_id"
-            }
-          },
-          "products_unit_id_fkey": {
-            "foreignSchema": "public",
-            "foreignTable": "business_units",
-            "columnMapping": {
-              "unit_id": "unit_id"
-            }
-          }
-        },
-        "description": null
-      },
-      "purchase_orders": {
-        "schemaName": "public",
-        "tableName": "purchase_orders",
-        "columns": {
-          "actual_delivery_date": {
-            "name": "actual_delivery_date",
-            "type": {
-              "scalarType": "date"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "created_at": {
-            "name": "created_at",
-            "type": {
-              "scalarType": "timestamp"
-            },
-            "nullable": "nullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "expected_delivery_date": {
-            "name": "expected_delivery_date",
-            "type": {
-              "scalarType": "date"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "notes": {
-            "name": "notes",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "order_date": {
-            "name": "order_date",
-            "type": {
-              "scalarType": "date"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "payment_status": {
-            "name": "payment_status",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "po_id": {
-            "name": "po_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "po_number": {
-            "name": "po_number",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "status": {
-            "name": "status",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "supplier_id": {
-            "name": "supplier_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "total_amount": {
-            "name": "total_amount",
-            "type": {
-              "scalarType": "numeric"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "updated_at": {
-            "name": "updated_at",
-            "type": {
-              "scalarType": "timestamp"
-            },
-            "nullable": "nullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          }
-        },
-        "uniquenessConstraints": {
-          "purchase_orders_pkey": [
-            "po_id"
-          ],
-          "purchase_orders_po_number_key": [
-            "po_number"
-          ]
-        },
-        "foreignRelations": {
-          "purchase_orders_supplier_id_fkey": {
-            "foreignSchema": "public",
-            "foreignTable": "suppliers",
-            "columnMapping": {
-              "supplier_id": "supplier_id"
-            }
-          }
-        },
-        "description": null
-      },
-      "regions": {
-        "schemaName": "public",
-        "tableName": "regions",
-        "columns": {
-          "country": {
-            "name": "country",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "created_at": {
-            "name": "created_at",
-            "type": {
-              "scalarType": "timestamp"
-            },
-            "nullable": "nullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "currency_code": {
-            "name": "currency_code",
-            "type": {
-              "scalarType": "bpchar"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "region_id": {
-            "name": "region_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "region_name": {
-            "name": "region_name",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "updated_at": {
-            "name": "updated_at",
-            "type": {
-              "scalarType": "timestamp"
-            },
-            "nullable": "nullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          }
-        },
-        "uniquenessConstraints": {
-          "regions_pkey": [
-            "region_id"
-          ]
-        },
-        "foreignRelations": {},
-        "description": null
-      },
-      "sales_orders": {
-        "schemaName": "public",
-        "tableName": "sales_orders",
-        "columns": {
-          "created_at": {
-            "name": "created_at",
-            "type": {
-              "scalarType": "timestamp"
-            },
-            "nullable": "nullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "customer_id": {
-            "name": "customer_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "discount_amount": {
-            "name": "discount_amount",
-            "type": {
-              "scalarType": "numeric"
-            },
-            "nullable": "nullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "order_date": {
-            "name": "order_date",
-            "type": {
-              "scalarType": "date"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "order_id": {
-            "name": "order_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "order_number": {
-            "name": "order_number",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "payment_status": {
-            "name": "payment_status",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "required_date": {
-            "name": "required_date",
-            "type": {
-              "scalarType": "date"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "sales_rep": {
-            "name": "sales_rep",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "ship_to_address": {
-            "name": "ship_to_address",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "shipped_date": {
-            "name": "shipped_date",
-            "type": {
-              "scalarType": "date"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "shipping_cost": {
-            "name": "shipping_cost",
-            "type": {
-              "scalarType": "numeric"
-            },
-            "nullable": "nullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "shipping_method": {
-            "name": "shipping_method",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "status": {
-            "name": "status",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "subtotal": {
-            "name": "subtotal",
-            "type": {
-              "scalarType": "numeric"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "tax_amount": {
-            "name": "tax_amount",
-            "type": {
-              "scalarType": "numeric"
-            },
-            "nullable": "nullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "total_amount": {
-            "name": "total_amount",
-            "type": {
-              "scalarType": "numeric"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "unit_id": {
-            "name": "unit_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "updated_at": {
-            "name": "updated_at",
-            "type": {
-              "scalarType": "timestamp"
-            },
-            "nullable": "nullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          }
-        },
-        "uniquenessConstraints": {
-          "sales_orders_order_number_key": [
-            "order_number"
-          ],
-          "sales_orders_pkey": [
-            "order_id"
-          ]
-        },
-        "foreignRelations": {
-          "sales_orders_customer_id_fkey": {
-            "foreignSchema": "public",
-            "foreignTable": "customers",
-            "columnMapping": {
-              "customer_id": "customer_id"
-            }
-          },
-          "sales_orders_unit_id_fkey": {
-            "foreignSchema": "public",
-            "foreignTable": "business_units",
-            "columnMapping": {
-              "unit_id": "unit_id"
-            }
-          }
-        },
-        "description": null
-      },
-      "suppliers": {
-        "schemaName": "public",
-        "tableName": "suppliers",
-        "columns": {
-          "address": {
-            "name": "address",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "contact_email": {
-            "name": "contact_email",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "contact_name": {
-            "name": "contact_name",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "contact_phone": {
-            "name": "contact_phone",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "country": {
-            "name": "country",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "created_at": {
-            "name": "created_at",
-            "type": {
-              "scalarType": "timestamp"
-            },
-            "nullable": "nullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "is_active": {
-            "name": "is_active",
-            "type": {
-              "scalarType": "bool"
-            },
-            "nullable": "nullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "lead_time_days": {
-            "name": "lead_time_days",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "payment_terms": {
-            "name": "payment_terms",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "primary_category": {
-            "name": "primary_category",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "supplier_id": {
-            "name": "supplier_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "supplier_name": {
-            "name": "supplier_name",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "supplier_rating": {
-            "name": "supplier_rating",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "updated_at": {
-            "name": "updated_at",
-            "type": {
-              "scalarType": "timestamp"
-            },
-            "nullable": "nullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          }
-        },
-        "uniquenessConstraints": {
-          "suppliers_pkey": [
-            "supplier_id"
-          ]
-        },
-        "foreignRelations": {},
-        "description": null
-      }
-    },
-    "types": {
-      "scalar": {
-        "bool": {
-          "typeName": "bool",
-          "schemaName": "pg_catalog",
-          "description": null,
-          "aggregateFunctions": {
-            "bool_and": {
-              "returnType": "bool"
-            },
-            "bool_or": {
-              "returnType": "bool"
-            },
-            "every": {
-              "returnType": "bool"
-            }
-          },
-          "comparisonOperators": {
-            "_eq": {
-              "operatorName": "=",
-              "operatorKind": "equal",
-              "argumentType": "bool",
-              "isInfix": true
-            },
-            "_gt": {
-              "operatorName": ">",
-              "operatorKind": "custom",
-              "argumentType": "bool",
-              "isInfix": true
-            },
-            "_gte": {
-              "operatorName": ">=",
-              "operatorKind": "custom",
-              "argumentType": "bool",
-              "isInfix": true
-            },
-            "_in": {
-              "operatorName": "IN",
-              "operatorKind": "in",
-              "argumentType": "bool",
-              "isInfix": true
-            },
-            "_lt": {
-              "operatorName": "<",
-              "operatorKind": "custom",
-              "argumentType": "bool",
-              "isInfix": true
-            },
-            "_lte": {
-              "operatorName": "<=",
-              "operatorKind": "custom",
-              "argumentType": "bool",
-              "isInfix": true
-            },
-            "_neq": {
-              "operatorName": "<>",
-              "operatorKind": "custom",
-              "argumentType": "bool",
-              "isInfix": true
-            }
-          },
-          "typeRepresentation": "boolean"
-        },
-        "bpchar": {
-          "typeName": "bpchar",
-          "schemaName": "pg_catalog",
-          "description": null,
-          "aggregateFunctions": {
-            "max": {
-              "returnType": "bpchar"
-            },
-            "min": {
-              "returnType": "bpchar"
-            }
-          },
-          "comparisonOperators": {
-            "_eq": {
-              "operatorName": "=",
-              "operatorKind": "equal",
-              "argumentType": "bpchar",
-              "isInfix": true
-            },
-            "_gt": {
-              "operatorName": ">",
-              "operatorKind": "custom",
-              "argumentType": "bpchar",
-              "isInfix": true
-            },
-            "_gte": {
-              "operatorName": ">=",
-              "operatorKind": "custom",
-              "argumentType": "bpchar",
-              "isInfix": true
-            },
-            "_ilike": {
-              "operatorName": "~~*",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_in": {
-              "operatorName": "IN",
-              "operatorKind": "in",
-              "argumentType": "bpchar",
-              "isInfix": true
-            },
-            "_iregex": {
-              "operatorName": "~*",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_like": {
-              "operatorName": "~~",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_lt": {
-              "operatorName": "<",
-              "operatorKind": "custom",
-              "argumentType": "bpchar",
-              "isInfix": true
-            },
-            "_lte": {
-              "operatorName": "<=",
-              "operatorKind": "custom",
-              "argumentType": "bpchar",
-              "isInfix": true
-            },
-            "_neq": {
-              "operatorName": "<>",
-              "operatorKind": "custom",
-              "argumentType": "bpchar",
-              "isInfix": true
-            },
-            "_nilike": {
-              "operatorName": "!~~*",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_niregex": {
-              "operatorName": "!~*",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_nlike": {
-              "operatorName": "!~~",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_nregex": {
-              "operatorName": "!~",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_regex": {
-              "operatorName": "~",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "starts_with": {
-              "operatorName": "starts_with",
-              "operatorKind": "custom",
-              "argumentType": "bpchar",
-              "isInfix": false
-            },
-            "ts_match_tt": {
-              "operatorName": "ts_match_tt",
-              "operatorKind": "custom",
-              "argumentType": "bpchar",
-              "isInfix": false
-            }
-          },
-          "typeRepresentation": "string"
-        },
-        "date": {
-          "typeName": "date",
-          "schemaName": "pg_catalog",
-          "description": null,
-          "aggregateFunctions": {
-            "max": {
-              "returnType": "date"
-            },
-            "min": {
-              "returnType": "date"
-            }
-          },
-          "comparisonOperators": {
-            "_eq": {
-              "operatorName": "=",
-              "operatorKind": "equal",
-              "argumentType": "date",
-              "isInfix": true
-            },
-            "_gt": {
-              "operatorName": ">",
-              "operatorKind": "custom",
-              "argumentType": "date",
-              "isInfix": true
-            },
-            "_gte": {
-              "operatorName": ">=",
-              "operatorKind": "custom",
-              "argumentType": "date",
-              "isInfix": true
-            },
-            "_in": {
-              "operatorName": "IN",
-              "operatorKind": "in",
-              "argumentType": "date",
-              "isInfix": true
-            },
-            "_lt": {
-              "operatorName": "<",
-              "operatorKind": "custom",
-              "argumentType": "date",
-              "isInfix": true
-            },
-            "_lte": {
-              "operatorName": "<=",
-              "operatorKind": "custom",
-              "argumentType": "date",
-              "isInfix": true
-            },
-            "_neq": {
-              "operatorName": "<>",
-              "operatorKind": "custom",
-              "argumentType": "date",
-              "isInfix": true
-            }
-          },
-          "typeRepresentation": "date"
-        },
-        "int4": {
-          "typeName": "int4",
-          "schemaName": "pg_catalog",
-          "description": null,
-          "aggregateFunctions": {
-            "avg": {
-              "returnType": "numeric"
-            },
-            "bit_and": {
-              "returnType": "int4"
-            },
-            "bit_or": {
-              "returnType": "int4"
-            },
-            "bit_xor": {
-              "returnType": "int4"
-            },
-            "max": {
-              "returnType": "int4"
-            },
-            "min": {
-              "returnType": "int4"
-            },
-            "stddev": {
-              "returnType": "numeric"
-            },
-            "stddev_pop": {
-              "returnType": "numeric"
-            },
-            "stddev_samp": {
-              "returnType": "numeric"
-            },
-            "sum": {
-              "returnType": "int8"
-            },
-            "var_pop": {
-              "returnType": "numeric"
-            },
-            "var_samp": {
-              "returnType": "numeric"
-            },
-            "variance": {
-              "returnType": "numeric"
-            }
-          },
-          "comparisonOperators": {
-            "_eq": {
-              "operatorName": "=",
-              "operatorKind": "equal",
-              "argumentType": "int4",
-              "isInfix": true
-            },
-            "_gt": {
-              "operatorName": ">",
-              "operatorKind": "custom",
-              "argumentType": "int4",
-              "isInfix": true
-            },
-            "_gte": {
-              "operatorName": ">=",
-              "operatorKind": "custom",
-              "argumentType": "int4",
-              "isInfix": true
-            },
-            "_in": {
-              "operatorName": "IN",
-              "operatorKind": "in",
-              "argumentType": "int4",
-              "isInfix": true
-            },
-            "_lt": {
-              "operatorName": "<",
-              "operatorKind": "custom",
-              "argumentType": "int4",
-              "isInfix": true
-            },
-            "_lte": {
-              "operatorName": "<=",
-              "operatorKind": "custom",
-              "argumentType": "int4",
-              "isInfix": true
-            },
-            "_neq": {
-              "operatorName": "<>",
-              "operatorKind": "custom",
-              "argumentType": "int4",
-              "isInfix": true
-            }
-          },
-          "typeRepresentation": "int32"
-        },
-        "int8": {
-          "typeName": "int8",
-          "schemaName": "pg_catalog",
-          "description": null,
-          "aggregateFunctions": {
-            "avg": {
-              "returnType": "numeric"
-            },
-            "bit_and": {
-              "returnType": "int8"
-            },
-            "bit_or": {
-              "returnType": "int8"
-            },
-            "bit_xor": {
-              "returnType": "int8"
-            },
-            "max": {
-              "returnType": "int8"
-            },
-            "min": {
-              "returnType": "int8"
-            },
-            "stddev": {
-              "returnType": "numeric"
-            },
-            "stddev_pop": {
-              "returnType": "numeric"
-            },
-            "stddev_samp": {
-              "returnType": "numeric"
-            },
-            "sum": {
-              "returnType": "numeric"
-            },
-            "var_pop": {
-              "returnType": "numeric"
-            },
-            "var_samp": {
-              "returnType": "numeric"
-            },
-            "variance": {
-              "returnType": "numeric"
-            }
-          },
-          "comparisonOperators": {
-            "_eq": {
-              "operatorName": "=",
-              "operatorKind": "equal",
-              "argumentType": "int8",
-              "isInfix": true
-            },
-            "_gt": {
-              "operatorName": ">",
-              "operatorKind": "custom",
-              "argumentType": "int8",
-              "isInfix": true
-            },
-            "_gte": {
-              "operatorName": ">=",
-              "operatorKind": "custom",
-              "argumentType": "int8",
-              "isInfix": true
-            },
-            "_in": {
-              "operatorName": "IN",
-              "operatorKind": "in",
-              "argumentType": "int8",
-              "isInfix": true
-            },
-            "_lt": {
-              "operatorName": "<",
-              "operatorKind": "custom",
-              "argumentType": "int8",
-              "isInfix": true
-            },
-            "_lte": {
-              "operatorName": "<=",
-              "operatorKind": "custom",
-              "argumentType": "int8",
-              "isInfix": true
-            },
-            "_neq": {
-              "operatorName": "<>",
-              "operatorKind": "custom",
-              "argumentType": "int8",
-              "isInfix": true
-            }
-          },
-          "typeRepresentation": "int64AsString"
-        },
-        "numeric": {
-          "typeName": "numeric",
-          "schemaName": "pg_catalog",
-          "description": null,
-          "aggregateFunctions": {
-            "avg": {
-              "returnType": "numeric"
-            },
-            "max": {
-              "returnType": "numeric"
-            },
-            "min": {
-              "returnType": "numeric"
-            },
-            "stddev": {
-              "returnType": "numeric"
-            },
-            "stddev_pop": {
-              "returnType": "numeric"
-            },
-            "stddev_samp": {
-              "returnType": "numeric"
-            },
-            "sum": {
-              "returnType": "numeric"
-            },
-            "var_pop": {
-              "returnType": "numeric"
-            },
-            "var_samp": {
-              "returnType": "numeric"
-            },
-            "variance": {
-              "returnType": "numeric"
-            }
-          },
-          "comparisonOperators": {
-            "_eq": {
-              "operatorName": "=",
-              "operatorKind": "equal",
-              "argumentType": "numeric",
-              "isInfix": true
-            },
-            "_gt": {
-              "operatorName": ">",
-              "operatorKind": "custom",
-              "argumentType": "numeric",
-              "isInfix": true
-            },
-            "_gte": {
-              "operatorName": ">=",
-              "operatorKind": "custom",
-              "argumentType": "numeric",
-              "isInfix": true
-            },
-            "_in": {
-              "operatorName": "IN",
-              "operatorKind": "in",
-              "argumentType": "numeric",
-              "isInfix": true
-            },
-            "_lt": {
-              "operatorName": "<",
-              "operatorKind": "custom",
-              "argumentType": "numeric",
-              "isInfix": true
-            },
-            "_lte": {
-              "operatorName": "<=",
-              "operatorKind": "custom",
-              "argumentType": "numeric",
-              "isInfix": true
-            },
-            "_neq": {
-              "operatorName": "<>",
-              "operatorKind": "custom",
-              "argumentType": "numeric",
-              "isInfix": true
-            }
-          },
-          "typeRepresentation": "bigDecimalAsString"
-        },
-        "text": {
-          "typeName": "text",
-          "schemaName": "pg_catalog",
-          "description": null,
-          "aggregateFunctions": {
-            "max": {
-              "returnType": "text"
-            },
-            "min": {
-              "returnType": "text"
-            }
-          },
-          "comparisonOperators": {
-            "_eq": {
-              "operatorName": "=",
-              "operatorKind": "equal",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_gt": {
-              "operatorName": ">",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_gte": {
-              "operatorName": ">=",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_ilike": {
-              "operatorName": "~~*",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_in": {
-              "operatorName": "IN",
-              "operatorKind": "in",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_iregex": {
-              "operatorName": "~*",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_like": {
-              "operatorName": "~~",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_lt": {
-              "operatorName": "<",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_lte": {
-              "operatorName": "<=",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_neq": {
-              "operatorName": "<>",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_nilike": {
-              "operatorName": "!~~*",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_niregex": {
-              "operatorName": "!~*",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_nlike": {
-              "operatorName": "!~~",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_nregex": {
-              "operatorName": "!~",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_regex": {
-              "operatorName": "~",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "starts_with": {
-              "operatorName": "starts_with",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": false
-            },
-            "ts_match_tt": {
-              "operatorName": "ts_match_tt",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": false
-            }
-          },
-          "typeRepresentation": "string"
-        },
-        "timestamp": {
-          "typeName": "timestamp",
-          "schemaName": "pg_catalog",
-          "description": null,
-          "aggregateFunctions": {
-            "max": {
-              "returnType": "timestamp"
-            },
-            "min": {
-              "returnType": "timestamp"
-            }
-          },
-          "comparisonOperators": {
-            "_eq": {
-              "operatorName": "=",
-              "operatorKind": "equal",
-              "argumentType": "timestamp",
-              "isInfix": true
-            },
-            "_gt": {
-              "operatorName": ">",
-              "operatorKind": "custom",
-              "argumentType": "timestamp",
-              "isInfix": true
-            },
-            "_gte": {
-              "operatorName": ">=",
-              "operatorKind": "custom",
-              "argumentType": "timestamp",
-              "isInfix": true
-            },
-            "_in": {
-              "operatorName": "IN",
-              "operatorKind": "in",
-              "argumentType": "timestamp",
-              "isInfix": true
-            },
-            "_lt": {
-              "operatorName": "<",
-              "operatorKind": "custom",
-              "argumentType": "timestamp",
-              "isInfix": true
-            },
-            "_lte": {
-              "operatorName": "<=",
-              "operatorKind": "custom",
-              "argumentType": "timestamp",
-              "isInfix": true
-            },
-            "_neq": {
-              "operatorName": "<>",
-              "operatorKind": "custom",
-              "argumentType": "timestamp",
-              "isInfix": true
-            }
-          },
-          "typeRepresentation": "timestamp"
-        },
-        "varchar": {
-          "typeName": "varchar",
-          "schemaName": "pg_catalog",
-          "description": null,
-          "aggregateFunctions": {
-            "max": {
-              "returnType": "text"
-            },
-            "min": {
-              "returnType": "text"
-            }
-          },
-          "comparisonOperators": {
-            "_eq": {
-              "operatorName": "=",
-              "operatorKind": "equal",
-              "argumentType": "varchar",
-              "isInfix": true
-            },
-            "_gt": {
-              "operatorName": ">",
-              "operatorKind": "custom",
-              "argumentType": "varchar",
-              "isInfix": true
-            },
-            "_gte": {
-              "operatorName": ">=",
-              "operatorKind": "custom",
-              "argumentType": "varchar",
-              "isInfix": true
-            },
-            "_ilike": {
-              "operatorName": "~~*",
-              "operatorKind": "custom",
-              "argumentType": "varchar",
-              "isInfix": true
-            },
-            "_in": {
-              "operatorName": "IN",
-              "operatorKind": "in",
-              "argumentType": "varchar",
-              "isInfix": true
-            },
-            "_iregex": {
-              "operatorName": "~*",
-              "operatorKind": "custom",
-              "argumentType": "varchar",
-              "isInfix": true
-            },
-            "_like": {
-              "operatorName": "~~",
-              "operatorKind": "custom",
-              "argumentType": "varchar",
-              "isInfix": true
-            },
-            "_lt": {
-              "operatorName": "<",
-              "operatorKind": "custom",
-              "argumentType": "varchar",
-              "isInfix": true
-            },
-            "_lte": {
-              "operatorName": "<=",
-              "operatorKind": "custom",
-              "argumentType": "varchar",
-              "isInfix": true
-            },
-            "_neq": {
-              "operatorName": "<>",
-              "operatorKind": "custom",
-              "argumentType": "varchar",
-              "isInfix": true
-            },
-            "_nilike": {
-              "operatorName": "!~~*",
-              "operatorKind": "custom",
-              "argumentType": "varchar",
-              "isInfix": true
-            },
-            "_niregex": {
-              "operatorName": "!~*",
-              "operatorKind": "custom",
-              "argumentType": "varchar",
-              "isInfix": true
-            },
-            "_nlike": {
-              "operatorName": "!~~",
-              "operatorKind": "custom",
-              "argumentType": "varchar",
-              "isInfix": true
-            },
-            "_nregex": {
-              "operatorName": "!~",
-              "operatorKind": "custom",
-              "argumentType": "varchar",
-              "isInfix": true
-            },
-            "_regex": {
-              "operatorName": "~",
-              "operatorKind": "custom",
-              "argumentType": "varchar",
-              "isInfix": true
-            },
-            "starts_with": {
-              "operatorName": "starts_with",
-              "operatorKind": "custom",
-              "argumentType": "varchar",
-              "isInfix": false
-            },
-            "ts_match_tt": {
-              "operatorName": "ts_match_tt",
-              "operatorKind": "custom",
-              "argumentType": "varchar",
-              "isInfix": false
-            }
-          },
-          "typeRepresentation": "string"
+        {
+            "name": "public.suppliers",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "supplier_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "supplier_name",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 100
+                        }
+                    }
+                },
+                {
+                    "name": "contact_name",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 100
+                        }
+                    }
+                },
+                {
+                    "name": "contact_email",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 100
+                        }
+                    }
+                },
+                {
+                    "name": "contact_phone",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 30
+                        }
+                    }
+                },
+                {
+                    "name": "address",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "text"
+                    }
+                },
+                {
+                    "name": "country",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 50
+                        }
+                    }
+                },
+                {
+                    "name": "supplier_rating",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "primary_category",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 50
+                        }
+                    }
+                },
+                {
+                    "name": "payment_terms",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 50
+                        }
+                    }
+                },
+                {
+                    "name": "lead_time_days",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "is_active",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "boolean"
+                    }
+                },
+                {
+                    "name": "created_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                },
+                {
+                    "name": "updated_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                }
+            ],
+            "primary_keys": [
+                "supplier_id"
+            ],
+            "foreign_keys": {}
         }
-      },
-      "composite": {}
-    },
-    "nativeOperations": {
-      "queries": {},
-      "mutations": {}
-    }
-  },
-  "introspectionOptions": {
-    "excludedSchemas": [
-      "information_schema",
-      "pg_catalog",
-      "tiger",
-      "crdb_internal",
-      "columnar",
-      "columnar_internal",
-      "_timescaledb_catalog",
-      "_timescaledb_functions",
-      "_timescaledb_internal",
-      "_timescaledb_cache",
-      "_timescaledb_config",
-      "timescaledb_experimental",
-      "timescaledb_information",
-      "_timescaledb_debug"
-    ],
-    "unqualifiedSchemasForTables": [
-      "public"
-    ],
-    "unqualifiedSchemasForTypesAndProcedures": [
-      "public",
-      "pg_catalog",
-      "tiger"
-    ],
-    "comparisonOperatorMapping": [
-      {
-        "operatorName": "=",
-        "exposedName": "_eq",
-        "operatorKind": "equal"
-      },
-      {
-        "operatorName": "<=",
-        "exposedName": "_lte",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": ">",
-        "exposedName": "_gt",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": ">=",
-        "exposedName": "_gte",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "<",
-        "exposedName": "_lt",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "<>",
-        "exposedName": "_neq",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "!=",
-        "exposedName": "_neq",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "LIKE",
-        "exposedName": "_like",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "NOT LIKE",
-        "exposedName": "_nlike",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "ILIKE",
-        "exposedName": "_ilike",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "NOT ILIKE",
-        "exposedName": "_nilike",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "SIMILAR TO",
-        "exposedName": "_similar",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "NOT SIMILAR TO",
-        "exposedName": "_nsimilar",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "~~",
-        "exposedName": "_like",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "!~~",
-        "exposedName": "_nlike",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "~~*",
-        "exposedName": "_ilike",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "!~~*",
-        "exposedName": "_nilike",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "~",
-        "exposedName": "_regex",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "!~",
-        "exposedName": "_nregex",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "~*",
-        "exposedName": "_iregex",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "!~*",
-        "exposedName": "_niregex",
-        "operatorKind": "custom"
-      }
-    ],
-    "introspectPrefixFunctionComparisonOperators": [
-      "box_above",
-      "box_below",
-      "box_contain",
-      "box_contain_pt",
-      "box_contained",
-      "box_left",
-      "box_overabove",
-      "box_overbelow",
-      "box_overlap",
-      "box_overleft",
-      "box_overright",
-      "box_right",
-      "box_same",
-      "circle_above",
-      "circle_below",
-      "circle_contain",
-      "circle_contain_pt",
-      "circle_contained",
-      "circle_left",
-      "circle_overabove",
-      "circle_overbelow",
-      "circle_overlap",
-      "circle_overleft",
-      "circle_overright",
-      "circle_right",
-      "circle_same",
-      "contains_2d",
-      "equals",
-      "geography_overlaps",
-      "geometry_above",
-      "geometry_below",
-      "geometry_contained_3d",
-      "geometry_contains",
-      "geometry_contains_3d",
-      "geometry_contains_nd",
-      "geometry_left",
-      "geometry_overabove",
-      "geometry_overbelow",
-      "geometry_overlaps",
-      "geometry_overlaps_3d",
-      "geometry_overlaps_nd",
-      "geometry_overleft",
-      "geometry_overright",
-      "geometry_right",
-      "geometry_same",
-      "geometry_same_3d",
-      "geometry_same_nd",
-      "geometry_within",
-      "geometry_within_nd",
-      "inet_same_family",
-      "inter_lb",
-      "inter_sb",
-      "inter_sl",
-      "is_contained_2d",
-      "ishorizontal",
-      "isparallel",
-      "isperp",
-      "isvertical",
-      "jsonb_contained",
-      "jsonb_contains",
-      "jsonb_exists",
-      "jsonb_path_exists_opr",
-      "jsonb_path_match_opr",
-      "line_intersect",
-      "line_parallel",
-      "line_perp",
-      "lseg_intersect",
-      "lseg_parallel",
-      "lseg_perp",
-      "network_overlap",
-      "network_sub",
-      "network_subeq",
-      "network_sup",
-      "network_supeq",
-      "on_pb",
-      "on_pl",
-      "on_ppath",
-      "on_ps",
-      "on_sb",
-      "on_sl",
-      "overlaps_2d",
-      "path_contain_pt",
-      "path_inter",
-      "point_above",
-      "point_below",
-      "point_horiz",
-      "point_left",
-      "point_right",
-      "point_vert",
-      "poly_above",
-      "poly_below",
-      "poly_contain",
-      "poly_contain_pt",
-      "poly_contained",
-      "poly_left",
-      "poly_overabove",
-      "poly_overbelow",
-      "poly_overlap",
-      "poly_overleft",
-      "poly_overright",
-      "poly_right",
-      "poly_same",
-      "pt_contained_poly",
-      "st_3dintersects",
-      "st_contains",
-      "st_containsproperly",
-      "st_coveredby",
-      "st_covers",
-      "st_crosses",
-      "st_disjoint",
-      "st_equals",
-      "st_intersects",
-      "st_isvalid",
-      "st_orderingequals",
-      "st_overlaps",
-      "st_relatematch",
-      "st_touches",
-      "st_within",
-      "starts_with",
-      "ts_match_qv",
-      "ts_match_tq",
-      "ts_match_tt",
-      "ts_match_vq",
-      "tsq_mcontained",
-      "tsq_mcontains",
-      "xmlexists",
-      "xmlvalidate",
-      "xpath_exists"
-    ],
-    "typeRepresentations": {
-      "bit": "string",
-      "bool": "boolean",
-      "bpchar": "string",
-      "char": "string",
-      "date": "date",
-      "float4": "float32",
-      "float8": "float64",
-      "int2": "int16",
-      "int4": "int32",
-      "int8": "int64AsString",
-      "numeric": "bigDecimalAsString",
-      "text": "string",
-      "time": "time",
-      "timestamp": "timestamp",
-      "timestamptz": "timestamptz",
-      "timetz": "timetz",
-      "uuid": "uUID",
-      "varchar": "string"
-    }
-  },
-  "mutationsVersion": "v2",
-  "mutationsPrefix": ""
+    ]
 }

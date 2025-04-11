@@ -4,11 +4,11 @@ services:
       context: .
       dockerfile: .hasura-connector/Dockerfile.financials
     environment:
-      CONNECTION_URI: $ERP_FINANCIALS_CONNECTION_URI
       HASURA_SERVICE_TOKEN_SECRET: $ERP_FINANCIALS_HASURA_SERVICE_TOKEN_SECRET
+      JDBC_URL: $ERP_FINANCIALS_JDBC_URL
       OTEL_EXPORTER_OTLP_ENDPOINT: $ERP_FINANCIALS_OTEL_EXPORTER_OTLP_ENDPOINT
       OTEL_SERVICE_NAME: $ERP_FINANCIALS_OTEL_SERVICE_NAME
     extra_hosts:
       - local.hasura.dev:host-gateway
     ports:
-      - 4194:8080
+      - 4322:8080
