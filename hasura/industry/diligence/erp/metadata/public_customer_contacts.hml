@@ -1,0 +1,197 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_customer_contacts
+  fields:
+    - name: contact_id
+      type: integer!
+    - name: created_at
+      type: timestamp_without_time_zone
+    - name: customer_id
+      type: integer!
+    - name: email
+      type: character_varying!
+    - name: first_name
+      type: character_varying!
+    - name: is_primary
+      type: boolean
+    - name: job_title
+      type: character_varying
+    - name: last_name
+      type: character_varying!
+    - name: phone
+      type: character_varying
+    - name: updated_at
+      type: timestamp_without_time_zone
+  graphql:
+    typeName: public_customer_contacts
+    inputTypeName: public_customer_contacts_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: operations
+      dataConnectorObjectType: public.customer_contacts
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_customer_contacts
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - contact_id
+          - created_at
+          - customer_id
+          - email
+          - first_name
+          - is_primary
+          - job_title
+          - last_name
+          - phone
+          - updated_at
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_customer_contacts_bool_exp
+  operand:
+    object:
+      type: public_customer_contacts
+      comparableFields:
+        - fieldName: contact_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: created_at
+          booleanExpressionType: timestamp_without_time_zone_bool_exp
+        - fieldName: customer_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: email
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: first_name
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: is_primary
+          booleanExpressionType: boolean_bool_exp
+        - fieldName: job_title
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: last_name
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: phone
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: updated_at
+          booleanExpressionType: timestamp_without_time_zone_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_customer_contacts_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_customer_contacts_agg_exp
+  operand:
+    object:
+      aggregatedType: public_customer_contacts
+      aggregatableFields:
+        - fieldName: contact_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: created_at
+          aggregateExpression: timestamp_without_time_zone_agg_exp
+        - fieldName: customer_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: email
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: first_name
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: is_primary
+          aggregateExpression: boolean_agg_exp
+        - fieldName: job_title
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: last_name
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: phone
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: updated_at
+          aggregateExpression: timestamp_without_time_zone_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_customer_contacts_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_customer_contacts_order_by_exp
+  operand:
+    object:
+      orderedType: public_customer_contacts
+      orderableFields:
+        - fieldName: contact_id
+          orderByExpression: integer_order_by_exp
+        - fieldName: created_at
+          orderByExpression: timestamp_without_time_zone_order_by_exp
+        - fieldName: customer_id
+          orderByExpression: integer_order_by_exp
+        - fieldName: email
+          orderByExpression: character_varying_order_by_exp
+        - fieldName: first_name
+          orderByExpression: character_varying_order_by_exp
+        - fieldName: is_primary
+          orderByExpression: boolean_order_by_exp
+        - fieldName: job_title
+          orderByExpression: character_varying_order_by_exp
+        - fieldName: last_name
+          orderByExpression: character_varying_order_by_exp
+        - fieldName: phone
+          orderByExpression: character_varying_order_by_exp
+        - fieldName: updated_at
+          orderByExpression: timestamp_without_time_zone_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_customer_contacts_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_customer_contacts
+  objectType: public_customer_contacts
+  source:
+    dataConnectorName: operations
+    collection: public.customer_contacts
+  filterExpressionType: public_customer_contacts_bool_exp
+  aggregateExpression: public_customer_contacts_agg_exp
+  orderByExpression: public_customer_contacts_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_customer_contacts
+      subscription:
+        rootField: public_customer_contacts
+    selectUniques:
+      - queryRootField: public_customer_contacts_by_contact_id
+        uniqueIdentifier:
+          - contact_id
+        subscription:
+          rootField: public_customer_contacts_by_contact_id
+    filterInputTypeName: public_customer_contacts_filter_input
+    aggregate:
+      queryRootField: public_customer_contacts_aggregate
+      subscription:
+        rootField: public_customer_contacts_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_customer_contacts
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

@@ -1,0 +1,102 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: finding_response
+  fields:
+    - name: assigned_to
+      type: String
+    - name: finding_id
+      type: String
+    - name: severity
+      type: String!
+    - name: status
+      type: String!
+    - name: workstream
+      type: String!
+  graphql:
+    typeName: finding_response
+    inputTypeName: finding_response_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: valuation_operations
+      dataConnectorObjectType: FindingResponse
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: finding_response
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - assigned_to
+          - finding_id
+          - severity
+          - status
+          - workstream
+
+---
+kind: Command
+version: v1
+definition:
+  name: create_finding
+  outputType: finding_response!
+  arguments:
+    - name: assigned_analyst
+      type: String
+    - name: description
+      type: String!
+    - name: impact
+      type: String!
+    - name: recommendation
+      type: String!
+    - name: severity
+      type: String!
+    - name: supporting_evidence
+      type: "[String!]!"
+    - name: title
+      type: String!
+    - name: workstream
+      type: String!
+  source:
+    dataConnectorName: valuation_operations
+    dataConnectorCommand:
+      procedure: createFinding
+    argumentMapping:
+      assigned_analyst: assignedAnalyst
+      description: description
+      impact: impact
+      recommendation: recommendation
+      severity: severity
+      supporting_evidence: supportingEvidence
+      title: title
+      workstream: workstream
+  graphql:
+    rootFieldName: create_finding
+    rootFieldKind: Mutation
+  description: >-
+    **Description:**
+
+    This function creates and manages findings during the due diligence process. It documents key issues discovered, categorizes them by severity and workstream, and tracks their resolution status. The findings register serves as a comprehensive record of all identified issues that may impact transaction terms, purchase price, or post-acquisition integration.
+
+
+    **When to Call:**
+
+    - When identifying material risks that could affect deal valuation
+
+    - Upon discovering compliance or regulatory issues
+
+    - When uncovering operational inefficiencies or process weaknesses
+
+    - To document quality of earnings observations that support valuation adjustments
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: create_finding
+  permissions:
+    - role: admin
+      allowExecution: true
+

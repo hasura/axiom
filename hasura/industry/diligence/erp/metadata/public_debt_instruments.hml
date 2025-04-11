@@ -1,0 +1,260 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_debt_instruments
+  fields:
+    - name: collateral_description
+      type: text_1
+    - name: covenant_details
+      type: text_1
+    - name: created_at
+      type: timestamp_without_time_zone_1
+    - name: debt_id
+      type: integer_1!
+    - name: instrument_name
+      type: character_varying_1!
+    - name: instrument_type
+      type: character_varying_1!
+    - name: interest_rate
+      type: numeric_1!
+    - name: interest_type
+      type: character_varying_1
+    - name: is_secured
+      type: boolean_1
+    - name: lender_name
+      type: character_varying_1!
+    - name: maturity_date
+      type: date_1!
+    - name: origination_date
+      type: date_1!
+    - name: outstanding_balance
+      type: numeric_1!
+    - name: payment_amount
+      type: numeric_1
+    - name: payment_frequency
+      type: character_varying_1
+    - name: principal_amount
+      type: numeric_1!
+    - name: updated_at
+      type: timestamp_without_time_zone_1
+  graphql:
+    typeName: public_debt_instruments
+    inputTypeName: public_debt_instruments_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: financials
+      dataConnectorObjectType: public.debt_instruments
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_debt_instruments
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - collateral_description
+          - covenant_details
+          - created_at
+          - debt_id
+          - instrument_name
+          - instrument_type
+          - interest_rate
+          - interest_type
+          - is_secured
+          - lender_name
+          - maturity_date
+          - origination_date
+          - outstanding_balance
+          - payment_amount
+          - payment_frequency
+          - principal_amount
+          - updated_at
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_debt_instruments_bool_exp
+  operand:
+    object:
+      type: public_debt_instruments
+      comparableFields:
+        - fieldName: collateral_description
+          booleanExpressionType: text_bool_exp_1
+        - fieldName: covenant_details
+          booleanExpressionType: text_bool_exp_1
+        - fieldName: created_at
+          booleanExpressionType: timestamp_without_time_zone_bool_exp_1
+        - fieldName: debt_id
+          booleanExpressionType: integer_bool_exp_1
+        - fieldName: instrument_name
+          booleanExpressionType: character_varying_bool_exp_1
+        - fieldName: instrument_type
+          booleanExpressionType: character_varying_bool_exp_1
+        - fieldName: interest_rate
+          booleanExpressionType: numeric_bool_exp_1
+        - fieldName: interest_type
+          booleanExpressionType: character_varying_bool_exp_1
+        - fieldName: is_secured
+          booleanExpressionType: boolean_bool_exp_1
+        - fieldName: lender_name
+          booleanExpressionType: character_varying_bool_exp_1
+        - fieldName: maturity_date
+          booleanExpressionType: date_bool_exp_1
+        - fieldName: origination_date
+          booleanExpressionType: date_bool_exp_1
+        - fieldName: outstanding_balance
+          booleanExpressionType: numeric_bool_exp_1
+        - fieldName: payment_amount
+          booleanExpressionType: numeric_bool_exp_1
+        - fieldName: payment_frequency
+          booleanExpressionType: character_varying_bool_exp_1
+        - fieldName: principal_amount
+          booleanExpressionType: numeric_bool_exp_1
+        - fieldName: updated_at
+          booleanExpressionType: timestamp_without_time_zone_bool_exp_1
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_debt_instruments_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_debt_instruments_agg_exp
+  operand:
+    object:
+      aggregatedType: public_debt_instruments
+      aggregatableFields:
+        - fieldName: collateral_description
+          aggregateExpression: text_agg_exp_1
+        - fieldName: covenant_details
+          aggregateExpression: text_agg_exp_1
+        - fieldName: created_at
+          aggregateExpression: timestamp_without_time_zone_agg_exp_1
+        - fieldName: debt_id
+          aggregateExpression: integer_agg_exp_1
+        - fieldName: instrument_name
+          aggregateExpression: character_varying_agg_exp_1
+        - fieldName: instrument_type
+          aggregateExpression: character_varying_agg_exp_1
+        - fieldName: interest_rate
+          aggregateExpression: numeric_agg_exp_1
+        - fieldName: interest_type
+          aggregateExpression: character_varying_agg_exp_1
+        - fieldName: is_secured
+          aggregateExpression: boolean_agg_exp_1
+        - fieldName: lender_name
+          aggregateExpression: character_varying_agg_exp_1
+        - fieldName: maturity_date
+          aggregateExpression: date_agg_exp_1
+        - fieldName: origination_date
+          aggregateExpression: date_agg_exp_1
+        - fieldName: outstanding_balance
+          aggregateExpression: numeric_agg_exp_1
+        - fieldName: payment_amount
+          aggregateExpression: numeric_agg_exp_1
+        - fieldName: payment_frequency
+          aggregateExpression: character_varying_agg_exp_1
+        - fieldName: principal_amount
+          aggregateExpression: numeric_agg_exp_1
+        - fieldName: updated_at
+          aggregateExpression: timestamp_without_time_zone_agg_exp_1
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_debt_instruments_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_debt_instruments_order_by_exp
+  operand:
+    object:
+      orderedType: public_debt_instruments
+      orderableFields:
+        - fieldName: collateral_description
+          orderByExpression: text_1_order_by_exp
+        - fieldName: covenant_details
+          orderByExpression: text_1_order_by_exp
+        - fieldName: created_at
+          orderByExpression: timestamp_without_time_zone_1_order_by_exp
+        - fieldName: debt_id
+          orderByExpression: integer_1_order_by_exp
+        - fieldName: instrument_name
+          orderByExpression: character_varying_1_order_by_exp
+        - fieldName: instrument_type
+          orderByExpression: character_varying_1_order_by_exp
+        - fieldName: interest_rate
+          orderByExpression: numeric_1_order_by_exp
+        - fieldName: interest_type
+          orderByExpression: character_varying_1_order_by_exp
+        - fieldName: is_secured
+          orderByExpression: boolean_1_order_by_exp
+        - fieldName: lender_name
+          orderByExpression: character_varying_1_order_by_exp
+        - fieldName: maturity_date
+          orderByExpression: date_1_order_by_exp
+        - fieldName: origination_date
+          orderByExpression: date_1_order_by_exp
+        - fieldName: outstanding_balance
+          orderByExpression: numeric_1_order_by_exp
+        - fieldName: payment_amount
+          orderByExpression: numeric_1_order_by_exp
+        - fieldName: payment_frequency
+          orderByExpression: character_varying_1_order_by_exp
+        - fieldName: principal_amount
+          orderByExpression: numeric_1_order_by_exp
+        - fieldName: updated_at
+          orderByExpression: timestamp_without_time_zone_1_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_debt_instruments_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_debt_instruments
+  objectType: public_debt_instruments
+  source:
+    dataConnectorName: financials
+    collection: public.debt_instruments
+  filterExpressionType: public_debt_instruments_bool_exp
+  aggregateExpression: public_debt_instruments_agg_exp
+  orderByExpression: public_debt_instruments_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_debt_instruments
+      subscription:
+        rootField: public_debt_instruments
+    selectUniques:
+      - queryRootField: public_debt_instruments_by_debt_id
+        uniqueIdentifier:
+          - debt_id
+        subscription:
+          rootField: public_debt_instruments_by_debt_id
+    filterInputTypeName: public_debt_instruments_filter_input
+    aggregate:
+      queryRootField: public_debt_instruments_aggregate
+      subscription:
+        rootField: public_debt_instruments_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_debt_instruments
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

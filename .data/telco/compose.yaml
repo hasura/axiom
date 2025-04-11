@@ -34,7 +34,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     healthcheck:
-      test: "pg_isready -q -h postgres"
+      test: "pg_isready -q -h pgvector"
       interval: 10s
       timeout: 5s
       retries: 30
@@ -54,7 +54,7 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
     healthcheck:
-      test: "mongosh --quiet --eval 'db.adminCommand(\"ping\")'"
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
       interval: 10s
       timeout: 5s
       retries: 30
