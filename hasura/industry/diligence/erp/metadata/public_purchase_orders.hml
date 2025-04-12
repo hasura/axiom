@@ -213,3 +213,38 @@ definition:
         filter: null
         allowSubscriptions: true
 
+---
+kind: Relationship
+version: v1
+definition:
+  name: po_items
+  sourceType: public_purchase_orders
+  target:
+    model:
+      name: public_po_items
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: po_id
+      target:
+        modelField:
+          - fieldName: po_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: supplier
+  sourceType: public_purchase_orders
+  target:
+    model:
+      name: public_suppliers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: supplier_id
+      target:
+        modelField:
+          - fieldName: supplier_id

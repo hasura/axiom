@@ -159,3 +159,56 @@ definition:
         filter: null
         allowSubscriptions: true
 
+---
+kind: Relationship
+version: v1
+definition:
+  name: product_category
+  sourceType: public_product_categories
+  target:
+    model:
+      name: public_product_categories
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: parent_category_id
+      target:
+        modelField:
+          - fieldName: category_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: product_categories
+  sourceType: public_product_categories
+  target:
+    model:
+      name: public_product_categories
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: category_id
+      target:
+        modelField:
+          - fieldName: parent_category_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: products
+  sourceType: public_product_categories
+  target:
+    model:
+      name: public_products
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: category_id
+      target:
+        modelField:
+          - fieldName: category_id

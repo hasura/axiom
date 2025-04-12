@@ -195,3 +195,38 @@ definition:
         filter: null
         allowSubscriptions: true
 
+---
+kind: Relationship
+version: v1
+definition:
+  name: product
+  sourceType: public_inventory
+  target:
+    model:
+      name: public_products
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: product_id
+      target:
+        modelField:
+          - fieldName: product_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: inventory_movements
+  sourceType: public_inventory
+  target:
+    model:
+      name: public_inventory_movements
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: inventory_id
+      target:
+        modelField:
+          - fieldName: inventory_id

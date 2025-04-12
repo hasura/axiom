@@ -276,3 +276,56 @@ definition:
         filter: null
         allowSubscriptions: true
 
+---
+kind: Relationship
+version: v1
+definition:
+  name: order_items
+  sourceType: public_sales_orders
+  target:
+    model:
+      name: public_order_items
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: order_id
+      target:
+        modelField:
+          - fieldName: order_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer
+  sourceType: public_sales_orders
+  target:
+    model:
+      name: public_customers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customer_id
+      target:
+        modelField:
+          - fieldName: customer_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: business_unit
+  sourceType: public_sales_orders
+  target:
+    model:
+      name: public_business_units
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: unit_id
+      target:
+        modelField:
+          - fieldName: unit_id

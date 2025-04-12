@@ -222,3 +222,56 @@ definition:
         filter: null
         allowSubscriptions: true
 
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer_contacts
+  sourceType: public_customers
+  target:
+    model:
+      name: public_customer_contacts
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customer_id
+      target:
+        modelField:
+          - fieldName: customer_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: region
+  sourceType: public_customers
+  target:
+    model:
+      name: public_regions
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: region_id
+      target:
+        modelField:
+          - fieldName: region_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: sales_orders
+  sourceType: public_customers
+  target:
+    model:
+      name: public_sales_orders
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customer_id
+      target:
+        modelField:
+          - fieldName: customer_id

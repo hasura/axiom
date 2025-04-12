@@ -186,3 +186,38 @@ definition:
         filter: null
         allowSubscriptions: true
 
+---
+kind: Relationship
+version: v1
+definition:
+  name: purchase_order
+  sourceType: public_po_items
+  target:
+    model:
+      name: public_purchase_orders
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: po_id
+      target:
+        modelField:
+          - fieldName: po_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: product
+  sourceType: public_po_items
+  target:
+    model:
+      name: public_products
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: product_id
+      target:
+        modelField:
+          - fieldName: product_id
