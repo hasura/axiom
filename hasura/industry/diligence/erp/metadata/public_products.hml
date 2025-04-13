@@ -3,39 +3,125 @@ kind: ObjectType
 version: v1
 definition:
   name: public_products
+  description: >
+    Offering catalog framework that provides externally shareable information about the
+    organization's products and services. This model represents the publicly accessible product
+    directory used for market communications, customer engagement, and stakeholder reporting
+    while maintaining appropriate confidentiality boundaries around proprietary product
+    strategies, pricing structures, and competitive positioning.
   fields:
     - name: base_cost
       type: numeric!
+      description: >
+        Standard production or acquisition cost that has been authorized for external disclosure.
+        Represents the consolidated cost basis appropriate for stakeholder communications while
+        abstracting proprietary cost structures, margin calculations, and competitive pricing
+        strategies. Supports transparent financial reporting.
     - name: category_id
       type: integer!
+      description: >
+        Reference to the product classification within the organization's public taxonomy.
+        Links the offering to its appropriate category for consistent organization in catalogs,
+        marketing materials, and stakeholder communications. Essential for portfolio analysis
+        and market segmentation reporting.
     - name: created_at
       type: timestamp_without_time_zone
+      description: >
+        System timestamp recording when the product record was initially created in the public
+        catalog. Supports audit trails, offering history tracking, and chronological documentation
+        of portfolio evolution. Helps establish the sequence of product development for innovation
+        reporting and market communications.
     - name: description
       type: text
+      description: >
+        Narrative explanation of the product that has been authorized for external disclosure.
+        Provides context about the offering's purpose, features, and benefits while maintaining
+        appropriate confidentiality around detailed specifications, proprietary technologies,
+        and competitive differentiation strategies.
     - name: launch_date
       type: date
+      description: >
+        Calendar date when the product was or will be officially released to the market.
+        Establishes the chronological placement of offerings within the organization's innovation
+        timeline for stakeholder communications, market positioning, and portfolio evolution
+        reporting. Supports product lifecycle transparency.
     - name: lead_time_days
       type: integer
+      description: >
+        Standard fulfillment timeframe from order to delivery that has been authorized for
+        external disclosure. Provides transparency into supply chain capabilities and delivery
+        expectations while maintaining appropriate confidentiality around detailed operational
+        processes and logistics arrangements.
     - name: list_price
       type: numeric!
+      description: >
+        Standard retail or published price that has been authorized for external disclosure.
+        Represents the consolidated pricing appropriate for stakeholder communications while
+        abstracting proprietary pricing strategies, discount structures, and competitive
+        positioning tactics. Supports transparent market communications.
     - name: minimum_order_quantity
       type: integer
+      description: >
+        Smallest purchase volume accepted for the product that has been authorized for external
+        disclosure. Provides transparency into ordering requirements and business terms while
+        maintaining appropriate confidentiality around customer-specific arrangements and
+        volume-based pricing strategies.
     - name: product_code
       type: character_varying!
+      description: >
+        Unique alphanumeric identifier for the product used in external communications and
+        catalogs. Provides a concise way to reference specific offerings in documentation,
+        orders, and stakeholder communications. Ensures consistent product identification
+        across all market-facing interactions.
     - name: product_id
       type: integer!
+      description: >
+        Primary system identifier for each product. Serves as the unique reference key for
+        data integration with external systems, catalog platforms, and stakeholder communications.
+        Ensures consistent tracking of offerings across all market-facing communications and
+        portfolio analysis.
     - name: product_name
       type: character_varying!
+      description: >
+        Official designation of the offering used in external communications. Provides
+        human-readable identification of products for stakeholders, customers, and market
+        analysts. Forms the basis for brand recognition and product identity in public
+        catalogs, marketing materials, and industry reporting.
     - name: reorder_point
       type: integer
+      description: >
+        Inventory threshold that triggers replenishment activities that has been authorized
+        for external disclosure. Provides transparency into supply chain management practices
+        while maintaining appropriate confidentiality around detailed inventory strategies
+        and proprietary forecasting methodologies.
     - name: status
       type: character_varying
+      description: >
+        Current state of the product within its lifecycle (Active, Discontinued, Planned, etc.)
+        that has been authorized for external disclosure. Provides stakeholders with visibility
+        into offering availability and portfolio evolution while maintaining appropriate
+        confidentiality around detailed product roadmaps and strategic planning.
     - name: target_inventory_level
       type: integer
+      description: >
+        Optimal stock quantity for the product that has been authorized for external disclosure.
+        Provides transparency into supply chain planning and availability management while
+        maintaining appropriate confidentiality around detailed inventory strategies and
+        proprietary forecasting methodologies.
     - name: unit_id
       type: integer!
+      description: >
+        Reference to the business unit responsible for the product. Links the offering to the
+        organization's public business structure, enabling consistent attribution in external
+        communications, portfolio analysis, and stakeholder reporting about organizational
+        responsibilities and market focus areas.
     - name: updated_at
       type: timestamp_without_time_zone
+      description: >
+        System timestamp recording the most recent modification to the product information in
+        the public catalog. Essential for tracking revision history, documenting when offering
+        data was refreshed, and maintaining currency of product information for effective
+        stakeholder communications and market positioning.
   graphql:
     typeName: public_products
     inputTypeName: public_products_input
@@ -214,6 +300,42 @@ kind: Model
 version: v2
 definition:
   name: public_products
+  description: |
+    # Offering Catalog Framework
+
+    The Public Products model represents the organization's externally shareable directory of
+    offerings available to the market. This model provides a structured framework for
+    communicating product information while maintaining appropriate confidentiality boundaries
+    around proprietary strategies and competitive positioning, supporting:
+
+    * **Market Communications** - Enabling consistent, accurate representation of the
+      organization's offerings across all customer and stakeholder touchpoints
+    * **Portfolio Transparency** - Providing appropriate visibility into product characteristics,
+      availability, and positioning for market analysis and investment decisions
+    * **Catalog Management** - Supporting organized, navigable presentation of offerings with
+      appropriate categorization and relationship mapping
+    * **Supply Chain Visibility** - Offering insights into product availability, lead times,
+      and fulfillment capabilities at an appropriate level of detail
+    * **Pricing Disclosure** - Communicating standard pricing information while protecting
+      proprietary discount structures and customer-specific arrangements
+
+    ## Implementation Guidelines
+
+    The public product catalog system follows these key principles:
+    - Only offering information authorized for external disclosure is included
+    - Pricing and cost data maintains appropriate abstraction of proprietary strategies
+    - Product descriptions balance transparency with protection of intellectual property
+    - Status indicators clearly communicate lifecycle position and availability
+    - Business unit attribution supports organizational context for offerings
+
+    ## Integration Context
+
+    The Public Products model connects to multiple external-facing systems:
+    - Powers product listings in Digital Catalogs and E-commerce Platforms
+    - Structures offering information in Marketing Materials and Sales Collateral
+    - Provides portfolio details for Investor Communications and Annual Reports
+    - Supports product specifications in Technical Documentation and User Guides
+    - Enables offering visualization in Product Roadmaps and Strategic Communications
   objectType: public_products
   source:
     dataConnectorName: operations

@@ -3,33 +3,104 @@ kind: ObjectType
 version: v1
 definition:
   name: public_customers
+  description: >
+    Client organization registry framework that provides externally shareable information about
+    the company's customer base and business relationships. This model represents the publicly
+    accessible customer directory used for authorized communications, relationship management,
+    and stakeholder reporting while maintaining appropriate confidentiality boundaries around
+    sensitive commercial information.
   fields:
     - name: account_manager
       type: character_varying
+      description: >
+        Designated relationship owner responsible for the overall client engagement strategy.
+        Provides external stakeholders with a consistent point of contact for relationship
+        management, while maintaining appropriate privacy boundaries around internal team
+        structures. Supports transparent accountability in customer communications.
     - name: acquisition_date
       type: date!
+      description: >
+        Calendar date when the formal business relationship with the customer was established.
+        Provides chronological context for relationship tenure, historical engagement patterns,
+        and customer lifecycle positioning. Supports relationship milestone tracking and
+        anniversary recognition in customer engagement programs.
     - name: business_name
       type: character_varying!
+      description: >
+        Official legal or trading name of the customer organization as it appears in public
+        records and formal communications. Serves as the primary identifier for the client
+        entity in external documentation, contracts, and relationship management. Essential
+        for proper attribution in stakeholder communications and reporting.
     - name: business_type
       type: character_varying
+      description: >
+        Classification of the customer's organizational structure (Corporation, LLC, Partnership,
+        Non-profit, Government, etc.). Provides context for appropriate engagement protocols,
+        compliance requirements, and relationship management strategies. Supports proper
+        addressing and documentation in formal communications.
     - name: created_at
       type: timestamp_without_time_zone
+      description: >
+        System timestamp recording when the customer record was initially created in the public
+        directory. Supports audit trails, relationship history tracking, and chronological
+        documentation of customer engagement timelines. Helps establish the sequence of
+        customer acquisition for market penetration and growth reporting.
     - name: credit_limit
       type: numeric
+      description: >
+        Maximum approved financial exposure for the customer relationship that has been
+        authorized for external disclosure. Represents the consolidated credit threshold
+        appropriate for stakeholder communications while abstracting proprietary risk
+        assessment details. Supports transparent financial relationship boundaries.
     - name: customer_id
       type: integer!
+      description: >
+        Primary system identifier for each customer organization. Serves as the unique reference
+        key for data integration with external communication systems, customer portals, and
+        stakeholder engagement platforms. Ensures consistent tracking of organizational
+        relationships across all customer-facing interactions.
     - name: industry
       type: character_varying
+      description: >
+        Standardized classification of the customer's primary business sector or vertical market.
+        Provides context for the organization's market positioning, competitive landscape, and
+        regulatory environment. Supports industry-specific engagement strategies and appropriate
+        solution alignment in customer communications.
     - name: is_active
       type: boolean
+      description: >
+        Flag indicating whether the customer relationship is currently operational. Enables
+        stakeholders to distinguish between active clients and historical or dormant relationships
+        that remain relevant for reference, analysis, or potential reactivation. Essential for
+        accurate representation of the active customer base.
     - name: payment_terms
       type: character_varying
+      description: >
+        Standard financial arrangement conditions established for the customer relationship
+        that have been authorized for external disclosure. Represents the consolidated payment
+        policy appropriate for stakeholder communications while abstracting confidential
+        commercial terms. Supports transparent financial relationship parameters.
     - name: region_id
       type: integer!
+      description: >
+        Reference to the geographic region where the customer is primarily located or serviced.
+        Links to the public regions taxonomy to provide spatial context for the client's
+        location, market characteristics, and regulatory environment. Essential for geographic
+        distribution analysis and regional performance reporting.
     - name: total_lifetime_value
       type: numeric
+      description: >
+        Aggregated historical value of the customer relationship that has been authorized for
+        external disclosure. Represents the consolidated economic impact appropriate for
+        stakeholder communications while abstracting confidential transaction details. Supports
+        transparent relationship significance assessment and portfolio analysis.
     - name: updated_at
       type: timestamp_without_time_zone
+      description: >
+        System timestamp recording the most recent modification to the customer information in
+        the public directory. Essential for tracking revision history, documenting when relationship
+        data was refreshed, and maintaining currency of customer information for effective
+        stakeholder communications and compliance with data accuracy requirements.
   graphql:
     typeName: public_customers
     inputTypeName: public_customers_input
@@ -187,6 +258,42 @@ kind: Model
 version: v2
 definition:
   name: public_customers
+  description: |
+    # Client Relationship Management Framework
+
+    The Public Customers model represents the organization's externally shareable directory
+    of client organizations and business relationships. This model provides a structured
+    framework for managing customer information while maintaining appropriate confidentiality
+    boundaries around sensitive commercial details, supporting:
+
+    * **Relationship Management** - Enabling consistent engagement with client organizations
+      across all customer-facing functions and communication channels
+    * **Market Segmentation** - Supporting strategic analysis of customer demographics,
+      industry distribution, and geographic presence for stakeholder reporting
+    * **Revenue Attribution** - Providing the organizational context for financial performance
+      reporting, customer lifetime value analysis, and portfolio management
+    * **Compliance Management** - Ensuring proper documentation of business relationships
+      for regulatory reporting, tax compliance, and corporate governance
+    * **Business Development** - Facilitating reference management, case study development,
+      and strategic account planning for growth initiatives
+
+    ## Implementation Guidelines
+
+    The public customer directory follows these key principles:
+    - Only business information authorized for external use is included
+    - Customer records maintain appropriate abstraction of confidential commercial terms
+    - Active status indicators clearly distinguish current from historical relationships
+    - Industry and regional classifications use standardized taxonomies
+    - Relationship value metrics are appropriately aggregated for external consumption
+
+    ## Integration Context
+
+    The Public Customers model connects to multiple external-facing systems:
+    - Structures customer segmentation in Annual Reports and Investor Presentations
+    - Powers account hierarchies in Customer Portals and Self-Service Platforms
+    - Provides organizational context for Case Studies and Success Stories
+    - Supports territory mapping in Sales Coverage Models and Market Analysis
+    - Enables relationship visualization in Executive Dashboards and Stakeholder Reports
   objectType: public_customers
   source:
     dataConnectorName: operations

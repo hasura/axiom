@@ -3,25 +3,76 @@ kind: ObjectType
 version: v1
 definition:
   name: public_po_items
+  description: >
+    Procurement transaction detail framework that provides externally shareable information about
+    individual line items within purchase orders. This model represents the publicly accessible
+    record of supplier product acquisitions used for spend analysis, supply chain reporting, and
+    stakeholder communications while maintaining appropriate confidentiality boundaries around
+    proprietary vendor relationships and pricing arrangements.
   fields:
     - name: created_at
       type: timestamp_without_time_zone
+      description: >
+        System timestamp recording when the purchase order item record was initially created in
+        the public directory. Supports audit trails, procurement history tracking, and chronological
+        documentation of sourcing activities. Helps establish the sequence of supplier engagements
+        for spend analysis and procurement transparency reporting.
     - name: item_id
       type: integer!
+      description: >
+        Primary system identifier for each purchase order line item record. Serves as the unique
+        reference key for data integration with external systems, reporting platforms, and
+        stakeholder communications. Ensures consistent tracking of procurement activities across
+        all spend reporting and supplier relationship analysis.
     - name: line_total
       type: numeric!
+      description: >
+        Extended monetary value of the line item (quantity × unit price) in the organization's
+        reporting currency. Represents the consolidated spend amount appropriate for external
+        stakeholder consumption while maintaining appropriate confidentiality around detailed
+        cost structures and negotiated pricing arrangements.
     - name: po_id
       type: integer!
+      description: >
+        Reference to the parent purchase order containing this line item. Links the product
+        acquisition to the organization's public procurement transaction records, enabling
+        consistent traceability in external communications, spend reporting, and stakeholder
+        disclosures about supplier engagement patterns.
     - name: product_id
       type: integer!
+      description: >
+        Reference to the specific product being acquired in this line item. Links to the public
+        product catalog to provide context about the item's characteristics, category, and purpose.
+        Essential for spend category analysis, procurement reporting, and cost attribution by
+        offering in stakeholder communications.
     - name: quantity
       type: integer!
+      description: >
+        Number of units of the specified product ordered in this line item. Quantifies the volume
+        of items being procured in a format appropriate for external stakeholder consumption.
+        Supports supply planning transparency, procurement volume reporting, and scale-based
+        performance metrics in stakeholder communications.
     - name: received_quantity
       type: integer
+      description: >
+        Number of units that have been delivered against this purchase order line item. Provides
+        transparency into order fulfillment status and supply chain performance while maintaining
+        appropriate confidentiality around detailed delivery schedules and supplier performance
+        metrics. Supports procurement execution reporting.
     - name: unit_price
       type: numeric!
+      description: >
+        Per-unit monetary value for the product in this transaction that has been authorized for
+        external disclosure. Represents the consolidated pricing appropriate for stakeholder
+        communications while abstracting proprietary cost structures, supplier-specific
+        arrangements, and competitive rate negotiations.
     - name: updated_at
       type: timestamp_without_time_zone
+      description: >
+        System timestamp recording the most recent modification to the purchase order item
+        information in the public directory. Essential for tracking revision history, documenting
+        when procurement data was refreshed, and maintaining currency of sourcing information for
+        effective stakeholder communications and spend reporting transparency.
   graphql:
     typeName: public_po_items
     inputTypeName: public_po_items_input
@@ -151,6 +202,42 @@ kind: Model
 version: v2
 definition:
   name: public_po_items
+  description: |
+    # Procurement Transaction Detail Framework
+
+    The Public Purchase Order Items model represents the organization's externally shareable
+    record of individual product acquisitions from suppliers. This model provides a structured
+    framework for documenting procurement transaction details while maintaining appropriate
+    confidentiality boundaries around proprietary vendor relationships, supporting:
+
+    * **Spend Analysis** - Enabling transparent reporting of procurement composition, product
+      categories, and transaction details at an appropriate level of granularity
+    * **Supply Chain Visibility** - Providing insights into sourcing patterns, procurement
+      volumes, and supplier engagement for stakeholder communications
+    * **Cost Transparency** - Offering appropriate disclosure of transaction values while
+      protecting proprietary pricing arrangements and supplier-specific negotiations
+    * **Procurement Performance** - Supporting analysis of sourcing activities and spend
+      management for investor communications and governance reporting
+    * **Fulfillment Tracking** - Demonstrating supply chain execution through receipt status
+      and delivery performance metrics at an appropriate level of detail
+
+    ## Implementation Guidelines
+
+    The public purchase order item tracking system follows these key principles:
+    - Only procurement details authorized for external disclosure are included
+    - Pricing information maintains appropriate abstraction of proprietary arrangements
+    - Volume data balances transparency with competitive confidentiality
+    - Product references link to public catalog items for consistent identification
+    - Supplier relationships support transparent spend traceability without compromising vendor privacy
+
+    ## Integration Context
+
+    The Public Purchase Order Items model connects to multiple external-facing systems:
+    - Supports spend composition analysis in Financial Reports and Investor Presentations
+    - Provides supplier engagement evidence in ESG Reporting and Sustainability Disclosures
+    - Enables procurement detail visibility in Supply Chain Transparency Reporting
+    - Feeds category spend metrics in Stakeholder Communications and Governance Reporting
+    - Demonstrates sourcing patterns in Business Reviews and Industry Benchmarking
   objectType: public_po_items
   source:
     dataConnectorName: operations

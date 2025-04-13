@@ -3,27 +3,83 @@ kind: ObjectType
 version: v1
 definition:
   name: public_customer_contacts
+  description: >
+    Customer relationship management framework that provides externally shareable information
+    about designated points of contact within client organizations. This model represents the
+    publicly accessible contact directory used for authorized communications, relationship
+    management, and stakeholder engagement while maintaining appropriate privacy boundaries
+    and compliance with data protection regulations.
   fields:
     - name: contact_id
       type: integer!
+      description: >
+        Primary system identifier for each customer contact record. Serves as the unique reference
+        key for data integration with external communication systems, customer portals, and
+        stakeholder engagement platforms. Ensures consistent tracking of contact relationships
+        across all customer-facing interactions.
     - name: created_at
       type: timestamp_without_time_zone
+      description: >
+        System timestamp recording when the contact record was initially created in the public
+        directory. Supports audit trails, relationship history tracking, and chronological
+        documentation of customer engagement timelines. Helps establish the sequence of
+        relationship development for account management and customer success reporting.
     - name: customer_id
       type: integer!
+      description: >
+        Reference to the parent customer organization in the public customer directory.
+        Establishes the hierarchical relationship between individuals and their affiliated
+        organizations, enabling consistent attribution of communications and relationship
+        management activities to the appropriate corporate entity.
     - name: email
       type: character_varying!
+      description: >
+        Business electronic mail address for the contact that has been authorized for external
+        communications. Serves as the primary digital communication channel for relationship
+        management, information sharing, and service delivery. Subject to privacy regulations
+        and appropriate use policies for stakeholder engagement.
     - name: first_name
       type: character_varying!
+      description: >
+        Given name of the customer contact as provided for business communications. Used for
+        personalized engagement in customer-facing interactions, relationship development, and
+        formal communications. Supports professional relationship management and appropriate
+        addressing in external correspondence.
     - name: is_primary
       type: boolean
+      description: >
+        Flag indicating whether the contact is designated as the principal relationship owner
+        within their organization. Identifies the primary decision-maker or authorized representative
+        for official communications, contractual matters, and escalation paths. Essential for
+        establishing clear communication hierarchies in customer engagement.
     - name: job_title
       type: character_varying
+      description: >
+        Professional position or role designation within the customer organization as disclosed
+        for business purposes. Provides context for the contact's authority, responsibilities,
+        and domain expertise to inform appropriate engagement strategies and communication content.
+        Supports relationship mapping and stakeholder analysis.
     - name: last_name
       type: character_varying!
+      description: >
+        Family name of the customer contact as provided for business communications. Used in
+        conjunction with first name for complete identification in formal correspondence,
+        relationship management systems, and customer-facing documentation. Supports professional
+        addressing conventions in external engagement.
     - name: phone
       type: character_varying
+      description: >
+        Business telephone number authorized for external communications with the contact.
+        Provides an alternative communication channel for time-sensitive matters, formal
+        discussions, or situations requiring direct verbal engagement. Subject to privacy
+        regulations and appropriate use policies for stakeholder contact.
     - name: updated_at
       type: timestamp_without_time_zone
+      description: >
+        System timestamp recording the most recent modification to the contact information in
+        the public directory. Essential for tracking revision history, documenting when relationship
+        data was refreshed, and maintaining currency of contact information for effective
+        stakeholder communications and compliance with data accuracy requirements.
   graphql:
     typeName: public_customer_contacts
     inputTypeName: public_customer_contacts_input
@@ -160,6 +216,42 @@ kind: Model
 version: v2
 definition:
   name: public_customer_contacts
+  description: |
+    # Customer Relationship Directory Framework
+
+    The Public Customer Contacts model represents the organization's externally shareable
+    directory of authorized points of contact within client organizations. This model provides
+    a structured framework for managing relationship touchpoints while maintaining appropriate
+    privacy boundaries and regulatory compliance, supporting:
+
+    * **Relationship Management** - Enabling consistent, personalized engagement with designated
+      client representatives across all customer-facing functions
+    * **Communication Governance** - Ensuring outreach is directed to appropriate, authorized
+      individuals with documented consent for business communications
+    * **Account Continuity** - Maintaining institutional knowledge of client relationships
+      independent of internal staff changes or organizational restructuring
+    * **Privacy Compliance** - Supporting GDPR, CCPA, and other data protection requirements
+      through proper handling of personal contact information
+    * **Stakeholder Engagement** - Facilitating targeted, relevant communications based on
+      contact roles, responsibilities, and relationship history
+
+    ## Implementation Guidelines
+
+    The public customer contact directory follows these key principles:
+    - Only business contact information authorized for external use is included
+    - Contact records are linked to formal customer organizations for proper attribution
+    - Primary contacts are clearly designated for critical communications
+    - Professional role information is maintained for appropriate engagement context
+    - Contact data is regularly validated for accuracy and continued authorization
+
+    ## Integration Context
+
+    The Public Customer Contacts model connects to multiple external-facing systems:
+    - Powers personalization in Customer Communication Platforms and Marketing Automation
+    - Structures recipient targeting in Newsletter Distribution and Event Invitations
+    - Provides authentication verification for Customer Portal Access Management
+    - Supports relationship mapping in Account Management and Customer Success systems
+    - Enables appropriate escalation paths in Support Ticket Management and Issue Resolution
   objectType: public_customer_contacts
   source:
     dataConnectorName: operations

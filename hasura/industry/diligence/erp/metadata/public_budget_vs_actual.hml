@@ -3,31 +3,98 @@ kind: ObjectType
 version: v1
 definition:
   name: public_budget_vs_actual
+  description: >
+    Transparent financial performance comparison framework that provides stakeholders with 
+    visibility into the organization's execution against published financial plans. This model 
+    delivers externally accessible variance analysis between planned allocations and actual 
+    results, supporting governance transparency, accountability reporting, and disclosure 
+    requirements while maintaining appropriate confidentiality boundaries.
   fields:
     - name: account_id
       type: integer_1!
+      description: >
+        Reference to the specific financial account classification from the public chart of 
+        accounts. Links the variance record to the organization's public financial taxonomy, 
+        enabling consistent categorization in external reporting, stakeholder communications, 
+        and comparative analysis of financial performance across reporting periods.
     - name: actual_amount
       type: numeric_1
+      description: >
+        Publicly disclosed financial outcome for the specific account and fiscal period. 
+        Represents the consolidated value of actual financial activities appropriate for 
+        external stakeholder consumption. May reflect timing adjustments or aggregation 
+        to protect competitively sensitive transactional details while maintaining accuracy.
     - name: budget_amount
       type: numeric_1!
+      description: >
+        Publicly committed financial allocation established in the approved and disclosed 
+        budget plan. Represents the organization's formal financial target or limit that was 
+        communicated to external stakeholders. Serves as the baseline for transparent 
+        performance measurement and accountability reporting to investors, regulators, and 
+        oversight entities.
     - name: budget_id
       type: integer_1!
+      description: >
+        Reference to the parent public budget plan that established the original financial 
+        allocation. Creates traceability between variance analysis and the source budget 
+        disclosures, ensuring consistent narrative across all public financial communications 
+        and providing context for performance evaluation.
     - name: created_at
       type: timestamp_without_time_zone_1
+      description: >
+        System timestamp when the public variance record was initially created. Supports audit 
+        trails of disclosure timing, data provenance tracking, and chronological documentation 
+        of the organization's transparent reporting practices. Essential for verifying compliance 
+        with disclosure timeliness requirements.
     - name: fiscal_month
       type: integer_1
+      description: >
+        Specific month (1-12) within the fiscal year for which budget performance is being 
+        publicly reported. Provides granular temporal context for stakeholders to understand 
+        seasonal patterns, identify timing variances, and assess the organization's execution 
+        rhythm throughout the fiscal cycle.
     - name: fiscal_quarter
       type: integer_1
+      description: >
+        Quarter (1-4) within the fiscal year for aggregating monthly performance data into 
+        intermediate reporting periods aligned with public disclosure schedules. Supports 
+        quarterly earnings reports, investor communications, and regulatory filings that 
+        require standardized fiscal period boundaries.
     - name: fiscal_year
       type: integer_1!
+      description: >
+        Financial reporting year using the organization's defined fiscal calendar in public 
+        communications. Establishes the primary time boundary for annual performance reporting, 
+        statutory disclosures, and year-over-year comparative analysis accessible to external 
+        stakeholders and compliance authorities.
     - name: id
       type: integer_1!
+      description: >
+        Unique identifier for each public budget variance record. Serves as the primary reference 
+        key for external reporting systems, disclosure platforms, and data integrations with 
+        investor relations portals or regulatory filing mechanisms. Ensures precise addressability 
+        of specific performance data points.
     - name: updated_at
       type: timestamp_without_time_zone_1
+      description: >
+        System timestamp recording the most recent modification to the public variance record. 
+        Essential for tracking revision history in external disclosures, documenting when 
+        financial reporting was refreshed or restated, and maintaining transparency about 
+        data currency in stakeholder communications.
     - name: variance_amount
       type: numeric_1
+      description: >
+        Publicly reported difference between actual and budgeted amounts (Actual - Budget). 
+        Quantifies the absolute magnitude of deviation from financial commitments in a format 
+        accessible to external stakeholders. Provides transparent insight into financial 
+        execution while maintaining appropriate confidentiality of underlying transactional details.
     - name: variance_percentage
       type: numeric_1
+      description: >
+        Relative measure of variance expressed as a percentage of the budget amount 
+        ((Actual - Budget) / |Budget| * 100) for public consumption. Normalizes performance 
+        data for meaningful comparison across accounts of different magnitudes, enabling 
+        stakeholders to assess relative significance of variances regardless of absolute size.
   graphql:
     typeName: public_budget_vs_actual
     inputTypeName: public_budget_vs_actual_input
@@ -178,6 +245,43 @@ kind: Model
 version: v2
 definition:
   name: public_budget_vs_actual
+  description: |
+    # Financial Accountability Reporting Framework
+
+    The Public Budget vs Actual model enables transparent communication of the organization's 
+    financial performance against published commitments. This externally accessible variance 
+    analysis framework balances stakeholder transparency with appropriate confidentiality to 
+    support:
+
+    * **Performance Accountability** - Demonstrating responsible stewardship through measured 
+      outcomes against public financial commitments
+    * **Disclosure Compliance** - Meeting regulatory requirements for transparent reporting 
+      of material variances from published financial plans
+    * **Stakeholder Communication** - Providing investors, customers, and partners with insight 
+      into execution quality and financial discipline
+    * **Governance Verification** - Evidencing that financial oversight mechanisms are functioning 
+      to monitor and manage budget adherence
+    * **Reputational Management** - Building market confidence through proactive transparency 
+      about both positive and negative financial variances
+
+    ## Implementation Guidelines
+
+    The public variance reporting system follows these key principles:
+    - Disclosure thresholds are established to report material variances while avoiding 
+      unnecessary market speculation
+    - Financial outcomes are reviewed by disclosure committee before public release
+    - Contextual narrative is provided alongside numerical data to explain significant variances
+    - Historical variance data remains accessible to support long-term performance analysis
+    - Standardized fiscal periods align with public financial reporting calendar
+
+    ## Integration Context
+
+    This model connects with multiple external-facing systems:
+    - Provides performance data for Annual Reports and Quarterly Earnings Releases
+    - Supplies content for ESG and Corporate Responsibility reporting
+    - Feeds regulatory filings and statutory disclosure requirements
+    - Supports investor presentations and analyst communications
+    - Enables benchmarking against industry performance standards and peer reporting
   objectType: public_budget_vs_actual
   source:
     dataConnectorName: financials

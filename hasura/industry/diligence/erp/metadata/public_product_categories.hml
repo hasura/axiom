@@ -3,19 +3,55 @@ kind: ObjectType
 version: v1
 definition:
   name: public_product_categories
+  description: >
+    Product classification framework that provides externally shareable information about the
+    organization's offering taxonomy and market segmentation. This model represents the publicly
+    accessible categorization system used for catalog organization, market positioning, and
+    stakeholder communications while maintaining appropriate confidentiality boundaries around
+    proprietary product strategies and competitive positioning.
   fields:
     - name: category_id
       type: integer!
+      description: >
+        Primary system identifier for each product category. Serves as the unique reference key
+        for data integration with external systems, catalog platforms, and stakeholder communications.
+        Ensures consistent tracking of product classifications across all market-facing communications
+        and offering analysis.
     - name: category_name
       type: character_varying!
+      description: >
+        Official designation of the product grouping used in external communications. Provides
+        human-readable identification of offering categories for stakeholders, customers, and
+        market analysts. Forms the basis for product classification in public catalogs, marketing
+        materials, and industry reporting.
     - name: created_at
       type: timestamp_without_time_zone
+      description: >
+        System timestamp recording when the product category was initially created in the public
+        taxonomy. Supports audit trails, catalog history tracking, and chronological documentation
+        of offering evolution. Helps establish the sequence of product portfolio development for
+        market positioning and innovation reporting.
     - name: description
       type: text
+      description: >
+        Narrative explanation of the product category that has been authorized for external
+        disclosure. Provides context about the grouping's purpose, characteristics, and market
+        positioning while maintaining appropriate confidentiality around detailed product strategies
+        and competitive differentiation tactics.
     - name: parent_category_id
       type: integer
+      description: >
+        Reference to the broader product classification that contains this category. Establishes
+        the hierarchical taxonomy structure for the organization's offerings, enabling consistent
+        navigation and logical organization in public catalogs, market communications, and
+        stakeholder reporting about product portfolio composition.
     - name: updated_at
       type: timestamp_without_time_zone
+      description: >
+        System timestamp recording the most recent modification to the product category information
+        in the public taxonomy. Essential for tracking revision history, documenting when
+        classification data was refreshed, and maintaining currency of offering information for
+        effective stakeholder communications and market positioning.
   graphql:
     typeName: public_product_categories
     inputTypeName: public_product_categories_input
@@ -124,6 +160,42 @@ kind: Model
 version: v2
 definition:
   name: public_product_categories
+  description: |
+    # Product Classification Framework
+
+    The Public Product Categories model represents the organization's externally shareable
+    taxonomy of offerings and market segments. This model provides a structured framework for
+    organizing and classifying products while maintaining appropriate confidentiality boundaries
+    around proprietary portfolio strategies, supporting:
+
+    * **Catalog Organization** - Enabling logical, navigable grouping of offerings for customers,
+      partners, and market participants
+    * **Market Positioning** - Providing clear segmentation and classification of the organization's
+      products within industry standard taxonomies
+    * **Portfolio Communication** - Supporting consistent messaging about product families,
+      solution areas, and offering relationships
+    * **Competitive Analysis** - Facilitating appropriate market comparisons and industry
+      benchmarking at the category level
+    * **Investment Narrative** - Demonstrating strategic focus areas and portfolio evolution
+      for investor communications
+
+    ## Implementation Guidelines
+
+    The public product classification system follows these key principles:
+    - Only category information authorized for external disclosure is included
+    - Hierarchical relationships enable intuitive navigation of the offering portfolio
+    - Category naming follows industry-standard conventions for market clarity
+    - Descriptions balance transparency with protection of proprietary strategies
+    - Classification evolution supports historical analysis of portfolio development
+
+    ## Integration Context
+
+    The Public Product Categories model connects to multiple external-facing systems:
+    - Structures navigation in Digital Catalogs and E-commerce Platforms
+    - Organizes offerings in Marketing Materials and Sales Collateral
+    - Provides segmentation for Investor Communications and Annual Reports
+    - Supports industry classification in Analyst Briefings and Market Research
+    - Enables portfolio visualization in Product Roadmaps and Strategic Communications
   objectType: public_product_categories
   source:
     dataConnectorName: operations

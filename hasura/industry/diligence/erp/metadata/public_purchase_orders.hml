@@ -3,31 +3,98 @@ kind: ObjectType
 version: v1
 definition:
   name: public_purchase_orders
+  description: >
+    External procurement documentation framework that provides visibility into the organization's
+    supplier engagement, materials acquisition, and vendor relationship management. This model
+    represents the formalized purchasing commitments made to external parties, supporting
+    transparency in supply chain operations, financial obligations tracking, and procurement
+    governance for stakeholder reporting and compliance verification.
   fields:
     - name: actual_delivery_date
       type: date
+      description: >
+        Confirmed date when ordered goods or services were physically received or completed.
+        Provides critical data for supply chain performance analysis, vendor compliance
+        monitoring, and operational efficiency metrics. Supports stakeholder visibility into
+        procurement execution and helps identify delivery reliability patterns across suppliers.
     - name: created_at
       type: timestamp_without_time_zone
+      description: >
+        System timestamp recording when the purchase order record was initially created in the
+        system. Supports audit trails, data lineage tracking, and procurement process monitoring.
+        Enables stakeholders to understand the chronology of purchasing activities and establish
+        timelines for procurement cycle analysis.
     - name: expected_delivery_date
       type: date
+      description: >
+        Anticipated date for receipt of ordered goods or services as agreed with the supplier.
+        Critical for inventory planning, production scheduling, and operational resource allocation.
+        Provides stakeholders with visibility into future resource availability and supports
+        proactive management of supply chain dependencies.
     - name: notes
       type: text
+      description: >
+        Supplementary information and special instructions related to the purchase order.
+        Captures non-standard requirements, delivery specifications, quality expectations,
+        or contextual details relevant to procurement execution. Provides important qualitative
+        context for stakeholders reviewing purchasing activities and supplier relationships.
     - name: order_date
       type: date!
+      description: >
+        Official date when the purchase order was issued and communicated to the supplier.
+        Establishes the formal commencement of the procurement commitment and serves as the
+        reference point for contractual timelines. Essential for financial period allocation,
+        procurement cycle time analysis, and supplier performance evaluation.
     - name: payment_status
       type: character_varying
+      description: >
+        Current state of financial settlement for the purchase order (e.g., Unpaid, Partially Paid,
+        Paid, Disputed). Provides visibility into the organization's vendor payment execution and
+        financial obligation status. Supports cash flow management, accounts payable monitoring,
+        and vendor relationship management for stakeholders.
     - name: po_id
       type: integer!
+      description: >
+        Primary system identifier for each purchase order. Serves as the unique reference key
+        for data integration with procurement systems, financial platforms, and supplier portals.
+        Ensures consistent tracking across all procurement-related processes and supports
+        unambiguous reference in stakeholder communications.
     - name: po_number
       type: character_varying!
+      description: >
+        Human-readable identifier assigned to the purchase order for business reference.
+        Typically follows organizational numbering conventions and serves as the primary
+        reference in communications with suppliers and internal stakeholders. Supports
+        document tracking, filing systems, and cross-reference with related procurement
+        documentation.
     - name: status
       type: character_varying
+      description: >
+        Current state of the purchase order in the procurement lifecycle (e.g., Draft, Issued,
+        Partially Received, Completed, Cancelled). Provides visibility into procurement execution
+        progress and helps stakeholders understand the current stage of each purchasing commitment.
+        Essential for procurement process monitoring and supply chain status reporting.
     - name: supplier_id
       type: integer!
+      description: >
+        Reference to the vendor or service provider fulfilling the purchase order. Links to the
+        supplier master data to provide context about the organization's vendor relationships and
+        procurement partnerships. Enables stakeholder analysis of supplier concentration, vendor
+        performance, and supply chain diversity across purchasing activities.
     - name: total_amount
       type: numeric!
+      description: >
+        Aggregate financial value of all items and services included in the purchase order.
+        Represents the organization's financial commitment to the supplier and provides a key
+        metric for procurement spend analysis, budget utilization tracking, and financial
+        obligation monitoring. Critical for stakeholder understanding of procurement economics.
     - name: updated_at
       type: timestamp_without_time_zone
+      description: >
+        System timestamp recording the most recent modification to the purchase order information.
+        Essential for tracking revision history, documenting when procurement details were refreshed,
+        and maintaining transparency about data currency. Supports audit trails and change management
+        processes for procurement governance.
   graphql:
     typeName: public_purchase_orders
     inputTypeName: public_purchase_orders_input
@@ -178,6 +245,41 @@ kind: Model
 version: v2
 definition:
   name: public_purchase_orders
+  description: |
+    # Supplier Commitment and Procurement Transparency Framework
+
+    The Public Purchase Orders model represents the organization's formalized procurement
+    commitments with external suppliers, providing a structured view of purchasing activities,
+    vendor relationships, and supply chain operations. This model supports:
+
+    * **Procurement Governance** - Documenting authorized purchasing commitments with clear
+      approval trails, financial controls, and policy compliance verification
+    * **Supply Chain Visibility** - Providing transparency into material and service acquisition
+      activities, delivery timelines, and vendor performance
+    * **Financial Obligation Management** - Tracking committed expenditures, payment status,
+      and financial liabilities to external parties
+    * **Vendor Relationship Monitoring** - Supporting systematic engagement with suppliers
+      through formalized purchasing processes and performance measurement
+    * **Operational Resource Planning** - Enabling visibility into incoming materials and
+      services to support production scheduling and resource allocation
+
+    ## Implementation Guidelines
+
+    The public purchase order framework follows these key principles:
+    - Purchase documentation follows standardized procurement protocols and approval workflows
+    - Order status tracking provides real-time visibility into procurement execution
+    - Financial information aligns with accounting systems and budgetary controls
+    - Supplier references connect to vendor master data for relationship context
+    - Delivery timelines support operational planning and performance monitoring
+
+    ## Integration Context
+
+    The Public Purchase Orders model connects to multiple operational and financial systems:
+    - Drives accounts payable processes and payment scheduling in Financial Systems
+    - Informs inventory planning and materials management in Warehouse Operations
+    - Supports supplier performance evaluation in Vendor Management Systems
+    - Provides procurement commitment data for Budget Monitoring and Spend Analysis
+    - Enables supply chain visibility in Production Planning and Resource Allocation
   objectType: public_purchase_orders
   source:
     dataConnectorName: operations

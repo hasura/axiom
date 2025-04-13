@@ -3,25 +3,76 @@ kind: ObjectType
 version: v1
 definition:
   name: public_financial_statement_items
+  description: >
+    Financial disclosure component framework that provides externally shareable information about 
+    individual line entries within published financial statements. This model represents the 
+    granular financial data points used in regulatory filings, investor communications, and 
+    stakeholder reporting while maintaining appropriate confidentiality boundaries around 
+    proprietary financial details and competitive information.
   fields:
     - name: account_id
       type: integer_1
+      description: >
+        Reference to the specific financial account classification from the public chart of 
+        accounts. Links the statement line item to the organization's public financial taxonomy, 
+        enabling consistent categorization in external reporting, financial statement preparation, 
+        and stakeholder communications about financial performance.
     - name: created_at
       type: timestamp_without_time_zone_1
+      description: >
+        System timestamp recording when the financial statement line item was initially created 
+        in the public directory. Supports audit trails, disclosure timelines, and regulatory 
+        compliance documentation. Essential for establishing the chronology of public financial 
+        information releases and version control in external communications.
     - name: item_id
       type: integer_1!
+      description: >
+        Unique identifier for each financial statement line item. Serves as the primary reference 
+        key for data integration with external reporting systems, regulatory filing platforms, and 
+        investor relations portals. Ensures consistent tracking and version control across all 
+        public financial disclosures and stakeholder communications.
     - name: line_item_name
       type: character_varying_1!
+      description: >
+        Standardized descriptive title of the financial statement component used in external 
+        financial reporting. Provides human-readable identification of financial elements for 
+        investors, regulators, and other stakeholders. Forms the basis for financial statement 
+        presentation, disclosure notes, and financial analysis references.
     - name: line_item_order
       type: integer_1!
+      description: >
+        Sequential position of the line item within the financial statement presentation structure. 
+        Determines the visual arrangement and logical flow of financial information in published 
+        statements, ensuring consistent formatting across reporting periods and compliance with 
+        standard financial statement presentation requirements.
     - name: line_item_value
       type: numeric_1!
+      description: >
+        Monetary amount associated with the financial statement component in the organization's 
+        reporting currency. Represents the consolidated value appropriate for external stakeholder 
+        consumption, which may reflect aggregation to protect competitively sensitive financial 
+        details while maintaining accuracy in financial reporting.
     - name: parent_item_id
       type: integer_1
+      description: >
+        Reference to a higher-level line item in the financial statement hierarchy. Establishes 
+        the nested structure of financial information, enabling subtotals, category groupings, and 
+        logical organization of financial data in published statements. Supports proper financial 
+        statement formatting and analytical interpretation.
     - name: statement_id
       type: integer_1!
+      description: >
+        Reference to the parent financial statement containing this line item. Links the individual 
+        financial component to its appropriate statement context (Balance Sheet, Income Statement, 
+        etc.), ensuring proper classification and interpretation in regulatory filings, investor 
+        communications, and financial analysis.
     - name: updated_at
       type: timestamp_without_time_zone_1
+      description: >
+        System timestamp recording the most recent modification to the financial statement line 
+        item in the public directory. Essential for tracking revision history, documenting when 
+        financial data was refreshed or restated, and maintaining transparency about data currency 
+        in stakeholder communications and regulatory filings.
   graphql:
     typeName: public_financial_statement_items
     inputTypeName: public_financial_statement_items_input
@@ -151,6 +202,43 @@ kind: Model
 version: v2
 definition:
   name: public_financial_statement_items
+  description: |
+    # Financial Disclosure Component Framework
+
+    The Public Financial Statement Items model represents the organization's externally shareable 
+    granular financial data points that compose published financial statements. This model provides 
+    a structured framework for detailed financial disclosure while maintaining appropriate 
+    confidentiality boundaries around proprietary information, supporting:
+
+    * **Regulatory Compliance** - Meeting detailed disclosure requirements from securities 
+      regulators, tax authorities, and industry oversight bodies through structured financial 
+      reporting components
+    * **Financial Transparency** - Providing appropriate granularity in financial statements to 
+      enable stakeholders to understand the composition of financial results and position
+    * **Comparative Analysis** - Supporting period-over-period comparison, trend analysis, and 
+      performance evaluation through consistently structured financial components
+    * **Audit Verification** - Enabling independent verification of financial statement components 
+      through clear linkage to accounting classifications and hierarchical organization
+    * **Investor Due Diligence** - Facilitating detailed financial analysis by investors, analysts, 
+      and financial institutions through structured, navigable financial data points
+
+    ## Implementation Guidelines
+
+    The public financial statement item framework follows these key principles:
+    - Line items adhere to applicable accounting standards (GAAP/IFRS) for consistent interpretation
+    - Hierarchical relationships enable proper subtotaling and financial statement organization
+    - Naming conventions follow standard financial statement terminology for clarity
+    - Presentation order ensures logical flow of financial information in published statements
+    - Account linkages provide traceability to the organization's financial classification system
+
+    ## Integration Context
+
+    The Public Financial Statement Items model connects to multiple external-facing systems:
+    - Populates detailed financial tables in Annual Reports and Quarterly Filings
+    - Feeds XBRL tagging systems for machine-readable regulatory submissions
+    - Provides granular data for Interactive Data tools in Investor Relations portals
+    - Supports financial ratio calculations and trend analysis in Analyst Briefings
+    - Enables detailed financial disclosure in Notes to Financial Statements and MD&A sections
   objectType: public_financial_statement_items
   source:
     dataConnectorName: financials

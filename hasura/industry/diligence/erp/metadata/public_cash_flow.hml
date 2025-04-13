@@ -3,33 +3,104 @@ kind: ObjectType
 version: v1
 definition:
   name: public_cash_flow
+  description: >
+    Liquidity movement transparency framework that provides stakeholders with visibility into
+    the organization's cash position, sources, and uses of funds. This model represents the
+    externally disclosed cash flow activities appropriate for investor communications, regulatory
+    filings, and financial statement preparation, while maintaining appropriate confidentiality
+    boundaries around proprietary financial strategies and competitive information.
   fields:
     - name: account_id
       type: integer_1!
+      description: >
+        Reference to the specific financial account classification from the public chart of
+        accounts. Links the cash flow record to the organization's public financial taxonomy,
+        enabling consistent categorization in external reporting, cash flow statements, and
+        stakeholder communications about liquidity management.
     - name: amount
       type: numeric_1!
+      description: >
+        Monetary value of the cash flow transaction in the organization's reporting currency.
+        Represents the consolidated value appropriate for external stakeholder consumption,
+        which may reflect aggregation to protect competitively sensitive transactional details
+        while maintaining accuracy in financial reporting.
     - name: cash_flow_id
       type: integer_1!
+      description: >
+        Unique identifier for each public cash flow record. Serves as the primary reference key
+        for external reporting systems, disclosure platforms, and data integrations with investor
+        relations portals or regulatory filing mechanisms. Ensures precise addressability of
+        specific cash flow data points.
     - name: category
       type: character_varying_1!
+      description: >
+        Classification of the cash flow activity according to standard financial reporting
+        categories (Operating, Investing, Financing). Aligns with GAAP/IFRS requirements for
+        cash flow statement presentation and enables stakeholders to understand the nature and
+        purpose of liquidity movements in standardized reporting formats.
     - name: created_at
       type: timestamp_without_time_zone_1
+      description: >
+        System timestamp when the public cash flow record was initially created. Supports audit
+        trails of disclosure timing, data provenance tracking, and chronological documentation
+        of the organization's transparent reporting practices. Essential for verifying compliance
+        with disclosure timeliness requirements.
     - name: description
       type: text_1
+      description: >
+        Narrative explanation of the cash flow activity suitable for external stakeholder
+        consumption. Provides context about the purpose, significance, and implications of the
+        liquidity movement while maintaining appropriate confidentiality. Supports footnote
+        disclosures and narrative reporting in financial statements.
     - name: fiscal_month
       type: integer_1!
+      description: >
+        Specific month (1-12) within the fiscal year for which the cash flow activity is being
+        publicly reported. Provides granular temporal context for stakeholders to understand
+        seasonal patterns, identify timing of significant liquidity events, and assess the
+        organization's cash management throughout the fiscal cycle.
     - name: fiscal_quarter
       type: integer_1!
+      description: >
+        Quarter (1-4) within the fiscal year for aggregating monthly cash flow data into
+        intermediate reporting periods aligned with public disclosure schedules. Supports
+        quarterly earnings reports, investor communications, and regulatory filings that
+        require standardized fiscal period boundaries for cash flow reporting.
     - name: fiscal_year
       type: integer_1!
+      description: >
+        Financial reporting year using the organization's defined fiscal calendar in public
+        communications. Establishes the primary time boundary for annual cash flow reporting,
+        statutory disclosures, and year-over-year comparative analysis of liquidity trends
+        accessible to external stakeholders and compliance authorities.
     - name: flow_type
       type: character_varying_1!
+      description: >
+        Directional indicator specifying whether the transaction represents an inflow or outflow
+        of cash. Essential for proper presentation in cash flow statements, liquidity analysis,
+        and financial modeling by external stakeholders. Determines the arithmetic treatment of
+        the amount in consolidated financial reporting.
     - name: reference_number
       type: character_varying_1
+      description: >
+        External tracking identifier that links the cash flow record to publicly disclosed
+        transactions, financial events, or corporate actions. Provides traceability between
+        cash movements and their originating activities in investor communications, while
+        maintaining appropriate abstraction from internal transaction identifiers.
     - name: transaction_date
       type: date_1!
+      description: >
+        Calendar date when the cash flow activity occurred or was recognized for external
+        reporting purposes. Establishes the chronological placement of liquidity events for
+        stakeholder communications, regulatory filings, and financial statement preparation.
+        May reflect settlement date rather than trade date for certain transaction types.
     - name: updated_at
       type: timestamp_without_time_zone_1
+      description: >
+        System timestamp recording the most recent modification to the public cash flow record.
+        Essential for tracking revision history in external disclosures, documenting when
+        financial reporting was refreshed or restated, and maintaining transparency about
+        data currency in stakeholder communications and regulatory filings.
   graphql:
     typeName: public_cash_flow
     inputTypeName: public_cash_flow_input
@@ -187,6 +258,42 @@ kind: Model
 version: v2
 definition:
   name: public_cash_flow
+  description: |
+    # Liquidity Transparency Framework
+
+    The Public Cash Flow model represents the organization's externally disclosed liquidity
+    movements, providing stakeholders with visibility into sources and uses of funds while
+    maintaining appropriate confidentiality boundaries. This model supports transparent
+    communication about the company's cash position and financial activities, enabling:
+
+    * **Financial Statement Preparation** - Providing the foundation for cash flow statements
+      in quarterly and annual financial reporting
+    * **Liquidity Analysis** - Enabling investors and analysts to assess the organization's
+      cash generation capacity, funding requirements, and financial flexibility
+    * **Regulatory Compliance** - Meeting disclosure requirements for material cash movements,
+      significant transactions, and changes in financial position
+    * **Investment Decision Support** - Offering insights into operational cash efficiency,
+      capital allocation priorities, and financing activities
+    * **Financial Health Assessment** - Demonstrating the organization's ability to meet
+      obligations, fund operations, and pursue strategic opportunities
+
+    ## Implementation Guidelines
+
+    The public cash flow reporting system follows these key principles:
+    - Cash movements are categorized according to standard financial reporting frameworks
+    - Transactional details are appropriately aggregated to protect competitive information
+    - Material non-recurring cash events receive additional contextual disclosure
+    - Historical cash flow data remains accessible for trend analysis and performance evaluation
+    - Reporting periods align with the organization's public financial disclosure calendar
+
+    ## Integration Context
+
+    The Public Cash Flow model connects to multiple external-facing systems:
+    - Structures the Cash Flow Statement in Annual Reports and Quarterly Filings
+    - Provides liquidity data for Investor Presentations and Earnings Calls
+    - Supports financial ratio calculations in Analyst Coverage and Credit Ratings
+    - Feeds regulatory disclosures about material financial events and transactions
+    - Enables cash-based performance metrics in Executive Compensation Disclosures
   objectType: public_cash_flow
   source:
     dataConnectorName: financials

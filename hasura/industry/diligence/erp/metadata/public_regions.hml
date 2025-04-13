@@ -3,19 +3,56 @@ kind: ObjectType
 version: v1
 definition:
   name: public_regions
+  description: >
+    Geographic classification framework that provides a standardized taxonomy for spatial
+    organization of business operations, market presence, and territorial coverage. This model
+    represents the externally visible geographic segmentation used in corporate communications,
+    financial reporting, and stakeholder disclosures to explain regional performance, market
+    penetration, and operational footprint across different territories.
   fields:
     - name: country
       type: character_varying!
+      description: >
+        Sovereign nation or recognized territory where the region is located. Provides
+        geopolitical context for business operations, regulatory environments, and market
+        characteristics. Essential for stakeholder understanding of the organization's
+        international presence, compliance requirements, and exposure to country-specific
+        economic and political factors.
     - name: created_at
       type: timestamp_without_time_zone
+      description: >
+        System timestamp recording when the region record was initially created in the geographic
+        taxonomy. Supports audit trails, organizational history tracking, and chronological
+        documentation of geographic expansion. Helps establish the timeline of market entry and
+        territorial development for stakeholder communications.
     - name: currency_code
       type: character!
+      description: >
+        Standard ISO currency identifier used for financial transactions and reporting in the
+        region. Provides essential context for monetary values in financial statements, market
+        performance metrics, and economic indicators. Supports transparent multi-currency
+        reporting and exchange rate impact analysis for stakeholders.
     - name: region_id
       type: integer!
+      description: >
+        Primary system identifier for each geographic region. Serves as the unique reference key
+        for data integration with reporting systems, analytics platforms, and stakeholder
+        communications. Ensures consistent geographic attribution across all business operations
+        and external disclosures.
     - name: region_name
       type: character_varying!
+      description: >
+        Official designation of the geographic territory used in external communications.
+        Provides human-readable identification of spatial divisions for stakeholders, customers,
+        investors, and partners. Forms the basis for regional attribution in financial reporting,
+        market analysis, and performance disclosures.
     - name: updated_at
       type: timestamp_without_time_zone
+      description: >
+        System timestamp recording the most recent modification to the region information.
+        Essential for tracking revision history in geographic classifications, documenting when
+        territorial definitions were refreshed, and maintaining transparency about data currency
+        in stakeholder communications about global operations.
   graphql:
     typeName: public_regions
     inputTypeName: public_regions_input
@@ -124,6 +161,42 @@ kind: Model
 version: v2
 definition:
   name: public_regions
+  description: |
+    # Geographic Organization Framework
+
+    The Public Regions model represents the organization's standardized taxonomy for spatial
+    classification of business activities, market presence, and operational footprint. This model
+    provides a consistent framework for communicating about the company's geographic distribution
+    with external stakeholders, supporting:
+
+    * **Financial Reporting** - Enabling regional segmentation of performance metrics, revenue
+      attribution, and market analysis for investor communications
+    * **Market Coverage** - Communicating the organization's territorial presence, service areas,
+      and geographic penetration to customers and partners
+    * **Regulatory Compliance** - Supporting jurisdiction-specific reporting requirements, tax
+      filings, and statutory disclosures across different territories
+    * **Currency Management** - Providing context for monetary values, exchange rate impacts, and
+      multi-currency consolidation in financial statements
+    * **Strategic Communications** - Enabling consistent geographic references in corporate
+      narratives about expansion, market focus, and operational distribution
+
+    ## Implementation Guidelines
+
+    The public regions framework follows these key principles:
+    - Geographic classifications align with recognized international standards
+    - Regional boundaries remain stable for consistent period-over-period comparison
+    - Currency designations follow ISO standards for financial transparency
+    - Country attributions reflect official international recognition status
+    - Regional naming conventions prioritize clarity for external stakeholders
+
+    ## Integration Context
+
+    The Public Regions model connects to multiple stakeholder-facing systems:
+    - Structures geographic segments in Annual Reports and Financial Statements
+    - Organizes territorial performance in Executive Dashboards and Investor Presentations
+    - Provides spatial context for Market Analysis and Competitive Positioning
+    - Supports location-based filtering in Customer Portals and Service Directories
+    - Enables geographic visualization in Corporate Communications and ESG Reporting
   objectType: public_regions
   source:
     dataConnectorName: operations
@@ -158,7 +231,6 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
-
 
 ---
 kind: Relationship

@@ -3,23 +3,70 @@ kind: ObjectType
 version: v1
 definition:
   name: public_departments
+  description: >
+    Organizational structure framework that provides externally shareable information about the 
+    company's functional divisions and operational units. This model represents the publicly 
+    accessible departmental taxonomy used in financial reporting, resource allocation disclosures, 
+    and stakeholder communications while maintaining appropriate confidentiality boundaries around 
+    proprietary organizational strategies and internal management structures.
   fields:
     - name: cost_center
       type: boolean_1
+      description: >
+        Flag indicating whether the department functions as a financial allocation unit for 
+        budgeting and expense tracking purposes. Provides context for understanding the 
+        department's role in financial reporting, resource allocation, and performance 
+        measurement frameworks used in stakeholder communications about organizational 
+        efficiency and financial management.
     - name: created_at
       type: timestamp_without_time_zone_1
+      description: >
+        System timestamp recording when the department record was initially created in the 
+        public directory. Supports audit trails, organizational history tracking, and chronological 
+        documentation of structural evolution. Helps establish the sequence of organizational 
+        development for corporate governance reporting and stakeholder communications.
     - name: department_code
       type: character_varying_1!
+      description: >
+        Standardized alphanumeric identifier for the department used in external communications 
+        and financial reporting. Provides a concise reference for organizational units in 
+        stakeholder communications, segment disclosures, and corporate documentation. Ensures 
+        consistent departmental attribution across all public-facing materials.
     - name: department_id
       type: integer_1!
+      description: >
+        Primary system identifier for each department. Serves as the unique reference key for 
+        data integration with external reporting systems, financial platforms, and stakeholder 
+        communications. Ensures consistent tracking of organizational units across all corporate 
+        structure reporting and financial analysis.
     - name: department_name
       type: character_varying_1!
+      description: >
+        Official designation of the organizational unit used in external communications. Provides 
+        human-readable identification of functional divisions for stakeholders, investors, and 
+        regulatory authorities. Forms the basis for departmental attribution in financial 
+        reporting, corporate communications, and organizational disclosures.
     - name: manager_name
       type: character_varying_1
+      description: >
+        Designated leadership position responsible for the department that has been authorized 
+        for external disclosure. Provides accountability attribution in stakeholder communications 
+        while maintaining appropriate confidentiality around specific personnel details and 
+        internal reporting relationships that may be competitively sensitive.
     - name: parent_department_id
       type: integer_1
+      description: >
+        Reference to the broader organizational unit that contains this department. Establishes 
+        the hierarchical structure of the organization, enabling consistent representation of 
+        reporting relationships in corporate communications, organizational charts, and 
+        stakeholder disclosures about management structure.
     - name: updated_at
       type: timestamp_without_time_zone_1
+      description: >
+        System timestamp recording the most recent modification to the department information 
+        in the public directory. Essential for tracking revision history, documenting when 
+        organizational data was refreshed, and maintaining currency of structural information 
+        for effective stakeholder communications and corporate governance reporting.
   graphql:
     typeName: public_departments
     inputTypeName: public_departments_input
@@ -142,6 +189,42 @@ kind: Model
 version: v2
 definition:
   name: public_departments
+  description: |
+    # Organizational Structure Framework
+
+    The Public Departments model represents the organization's externally shareable taxonomy of 
+    functional divisions and operational units. This model provides a structured framework for 
+    communicating organizational design while maintaining appropriate confidentiality boundaries 
+    around proprietary management structures, supporting:
+
+    * **Financial Reporting** - Enabling segment reporting, cost center attribution, and 
+      resource allocation transparency in financial disclosures
+    * **Corporate Governance** - Providing clear organizational boundaries, management 
+      accountability, and structural transparency for stakeholder oversight
+    * **Operational Clarity** - Communicating functional specialization, organizational 
+      capabilities, and business unit focus areas to external stakeholders
+    * **Resource Allocation** - Supporting transparent disclosure of how the organization 
+      distributes resources across different functional areas and business priorities
+    * **Management Structure** - Demonstrating organizational design principles, reporting 
+      relationships, and accountability frameworks in corporate communications
+
+    ## Implementation Guidelines
+
+    The public departmental structure framework follows these key principles:
+    - Only organizational units authorized for external disclosure are included
+    - Hierarchical relationships enable proper representation of reporting structures
+    - Management attribution balances transparency with appropriate personnel privacy
+    - Functional classifications follow standard business terminology for clarity
+    - Cost center designations support financial reporting and resource allocation transparency
+
+    ## Integration Context
+
+    The Public Departments model connects to multiple external-facing systems:
+    - Structures organizational charts in Annual Reports and Corporate Communications
+    - Provides segmentation for Financial Statements and Management Discussion & Analysis
+    - Supports attribution in Budget Disclosures and Resource Allocation Reporting
+    - Enables organizational context in Corporate Governance Documentation
+    - Facilitates functional mapping in Stakeholder Communications and Investor Relations
   objectType: public_departments
   source:
     dataConnectorName: financials
@@ -176,4 +259,3 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
-

@@ -3,23 +3,69 @@ kind: ObjectType
 version: v1
 definition:
   name: public_inventory_movements
+  description: >
+    Supply chain activity tracking framework that provides externally shareable information about
+    inventory transactions and stock level changes. This model represents the publicly accessible
+    record of product movements used for supply chain transparency, audit trails, and stakeholder
+    reporting while maintaining appropriate confidentiality boundaries around proprietary
+    operational details.
   fields:
     - name: created_at
       type: timestamp_without_time_zone
+      description: >
+        System timestamp recording when the inventory movement record was initially created in
+        the public directory. Supports audit trails, transaction history tracking, and chronological
+        documentation of supply chain activities. Helps establish the sequence of inventory
+        changes for transparency and compliance reporting.
     - name: inventory_id
       type: integer!
+      description: >
+        Reference to the specific inventory position affected by this movement. Links the
+        transaction to the organization's public inventory records, enabling consistent
+        traceability in external communications, supply chain transparency reporting, and
+        stakeholder disclosures about product availability changes.
     - name: movement_id
       type: integer!
+      description: >
+        Primary system identifier for each inventory transaction record. Serves as the unique
+        reference key for data integration with external systems, audit platforms, and traceability
+        solutions. Ensures consistent tracking of inventory changes across all supply chain
+        communications and stakeholder interactions.
     - name: notes
       type: text
+      description: >
+        Explanatory information about the inventory movement that has been authorized for external
+        disclosure. Provides context for the transaction while maintaining appropriate confidentiality
+        around proprietary operational details. Supports transparent communication about significant
+        inventory changes in stakeholder reporting.
     - name: quantity
       type: integer!
+      description: >
+        Number of units involved in the inventory transaction. Quantifies the magnitude of the
+        stock level change in a format appropriate for external stakeholder consumption. Positive
+        values typically represent increases (receipts) while negative values represent decreases
+        (shipments or adjustments) to inventory levels.
     - name: reference_document
       type: character_varying
+      description: >
+        External identifier linking the inventory movement to a publicly referenceable document
+        or transaction. Provides traceability to authorized source documentation such as purchase
+        orders, sales orders, or adjustment authorizations while maintaining appropriate
+        confidentiality around internal document details.
     - name: transaction_date
       type: timestamp_without_time_zone!
+      description: >
+        Date and time when the inventory movement occurred or was recognized for external
+        reporting purposes. Establishes the chronological placement of stock changes for
+        stakeholder communications, audit trails, and supply chain transparency reporting.
+        Essential for time-based analysis of inventory activities.
     - name: transaction_type
       type: character_varying
+      description: >
+        Classification of the inventory movement according to standardized transaction categories
+        (Receipt, Shipment, Adjustment, Transfer, etc.). Provides context for understanding the
+        nature and purpose of the stock level change in a format appropriate for external
+        stakeholder consumption and supply chain transparency reporting.
   graphql:
     typeName: public_inventory_movements
     inputTypeName: public_inventory_movements_input
@@ -142,6 +188,42 @@ kind: Model
 version: v2
 definition:
   name: public_inventory_movements
+  description: |
+    # Supply Chain Activity Tracking Framework
+
+    The Public Inventory Movements model represents the organization's externally shareable
+    record of stock transactions and inventory changes. This model provides a structured
+    framework for documenting product flow while maintaining appropriate confidentiality
+    boundaries around proprietary operational details, supporting:
+
+    * **Supply Chain Transparency** - Enabling visibility into inventory activities, stock
+      level changes, and product movement patterns for stakeholders
+    * **Audit Trail Documentation** - Providing chronological evidence of inventory transactions
+      for compliance verification and governance reporting
+    * **Traceability Implementation** - Supporting product tracking from receipt through
+      distribution for quality assurance and recall management
+    * **Operational Accountability** - Demonstrating responsible inventory management through
+      documented transaction history and change control
+    * **Regulatory Compliance** - Meeting requirements for record-keeping, chain of custody,
+      and product movement documentation in regulated industries
+
+    ## Implementation Guidelines
+
+    The public inventory movement tracking system follows these key principles:
+    - Only transaction information authorized for external disclosure is included
+    - Movement records maintain appropriate abstraction of proprietary operational details
+    - Transaction types use standardized classifications for consistent reporting
+    - Reference documents provide traceability while protecting sensitive information
+    - Quantity and timing information supports transparency without compromising competitive position
+
+    ## Integration Context
+
+    The Public Inventory Movements model connects to multiple external-facing systems:
+    - Supports product history tracking in Customer Service and Support Platforms
+    - Feeds traceability reporting in Quality Assurance and Compliance Systems
+    - Provides activity evidence for Audit Platforms and Certification Programs
+    - Enables movement visualization in Supply Chain Transparency Portals
+    - Supports chain of custody documentation in Regulatory Reporting Systems
   objectType: public_inventory_movements
   source:
     dataConnectorName: operations

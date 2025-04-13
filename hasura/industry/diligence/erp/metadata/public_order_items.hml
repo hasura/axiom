@@ -3,25 +3,76 @@ kind: ObjectType
 version: v1
 definition:
   name: public_order_items
+  description: >
+    Sales transaction detail framework that provides externally shareable information about
+    individual line items within customer orders. This model represents the publicly accessible
+    record of product purchases used for revenue reporting, demand analysis, and stakeholder
+    communications while maintaining appropriate confidentiality boundaries around proprietary
+    commercial relationships and pricing strategies.
   fields:
     - name: created_at
       type: timestamp_without_time_zone
+      description: >
+        System timestamp recording when the order item record was initially created in the public
+        directory. Supports audit trails, transaction history tracking, and chronological documentation
+        of sales activities. Helps establish the sequence of product purchases for demand analysis
+        and revenue recognition reporting.
     - name: discount_percentage
       type: numeric
+      description: >
+        Percentage reduction applied to the standard price that has been authorized for external
+        disclosure. Provides transparency into pricing adjustments while maintaining appropriate
+        confidentiality around specific discount strategies, customer-specific arrangements, and
+        proprietary pricing methodologies.
     - name: item_id
       type: integer!
+      description: >
+        Primary system identifier for each order line item record. Serves as the unique reference
+        key for data integration with external systems, reporting platforms, and stakeholder
+        communications. Ensures consistent tracking of product purchases across all sales
+        reporting and revenue analysis.
     - name: line_total
       type: numeric!
+      description: >
+        Extended monetary value of the line item (quantity × unit price - discounts) in the
+        organization's reporting currency. Represents the consolidated revenue contribution
+        appropriate for external stakeholder consumption while maintaining appropriate
+        confidentiality around detailed margin calculations and profitability metrics.
     - name: order_id
       type: integer!
+      description: >
+        Reference to the parent sales order containing this line item. Links the product purchase
+        to the organization's public sales transaction records, enabling consistent traceability
+        in external communications, revenue reporting, and stakeholder disclosures about customer
+        demand patterns.
     - name: product_id
       type: integer!
+      description: >
+        Reference to the specific product purchased in this line item. Links to the public product
+        catalog to provide context about the item's characteristics, category, and purpose.
+        Essential for product mix analysis, demand reporting, and revenue attribution by offering
+        in stakeholder communications.
     - name: quantity
       type: integer!
+      description: >
+        Number of units of the specified product included in this line item. Quantifies the volume
+        of items purchased in a format appropriate for external stakeholder consumption. Supports
+        demand analysis, product popularity reporting, and volume-based performance metrics in
+        market communications.
     - name: unit_price
       type: numeric!
+      description: >
+        Per-unit monetary value for the product in this transaction that has been authorized for
+        external disclosure. Represents the consolidated pricing appropriate for stakeholder
+        communications while abstracting proprietary pricing strategies, customer-specific
+        arrangements, and competitive rate structures.
     - name: updated_at
       type: timestamp_without_time_zone
+      description: >
+        System timestamp recording the most recent modification to the order item information in
+        the public directory. Essential for tracking revision history, documenting when transaction
+        data was refreshed, and maintaining currency of sales information for effective stakeholder
+        communications and revenue reporting transparency.
   graphql:
     typeName: public_order_items
     inputTypeName: public_order_items_input
@@ -151,6 +202,42 @@ kind: Model
 version: v2
 definition:
   name: public_order_items
+  description: |
+    # Sales Transaction Detail Framework
+
+    The Public Order Items model represents the organization's externally shareable record of
+    individual product purchases within customer orders. This model provides a structured
+    framework for documenting sales transaction details while maintaining appropriate
+    confidentiality boundaries around proprietary commercial relationships, supporting:
+
+    * **Revenue Analysis** - Enabling transparent reporting of sales composition, product mix,
+      and transaction details at an appropriate level of granularity
+    * **Demand Visibility** - Providing insights into product popularity, purchase volumes, and
+      customer preferences for stakeholder communications
+    * **Price Transparency** - Offering appropriate disclosure of transaction values while
+      protecting proprietary pricing strategies and customer-specific arrangements
+    * **Product Performance** - Supporting analysis of individual offering contribution to
+      overall sales results for investor communications and market reporting
+    * **Order Composition** - Demonstrating typical transaction structures, basket sizes, and
+      purchase patterns for market analysis and stakeholder understanding
+
+    ## Implementation Guidelines
+
+    The public order item tracking system follows these key principles:
+    - Only transaction details authorized for external disclosure are included
+    - Pricing information maintains appropriate abstraction of proprietary methodologies
+    - Discount structures protect detailed promotional strategies and customer arrangements
+    - Product references link to public catalog items for consistent identification
+    - Order relationships support transparent transaction traceability without compromising customer privacy
+
+    ## Integration Context
+
+    The Public Order Items model connects to multiple external-facing systems:
+    - Supports revenue composition analysis in Financial Reports and Investor Presentations
+    - Provides product demand evidence in Market Analysis and Industry Benchmarking
+    - Enables transaction detail visibility in Sales Performance Reporting
+    - Feeds product popularity metrics in Marketing Communications and Brand Positioning
+    - Demonstrates purchase patterns in Business Reviews and Stakeholder Communications
   objectType: public_order_items
   source:
     dataConnectorName: operations
