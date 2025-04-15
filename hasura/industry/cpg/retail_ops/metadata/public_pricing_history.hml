@@ -1,0 +1,291 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_pricing_history
+  description: >
+    Pricing analytics system tracking historical price points across products and retailers.
+    Contains detailed information about regular pricing, promotional pricing, and competitive
+    positioning. This model is critical for pricing strategy, promotion planning, and
+    price elasticity analysis across the CPG product portfolio.
+  fields:
+    - name: actual_price
+      description: >
+        Final price charged to consumers after all discounts and promotions. Core data point
+        for revenue analysis, price elasticity modeling, and promotional effectiveness tracking.
+      type: numeric!
+    - name: base_price
+      description: >
+        Regular non-promotional price point in standard currency. Baseline for promotional
+        discount calculation, margin analysis, and long-term pricing strategy development.
+      type: numeric!
+    - name: effective_date
+      description: >
+        Date when price point became active. Essential for time-series analysis,
+        price change tracking, and historical performance evaluation.
+      type: date!
+    - name: end_date
+      description: >
+        Date when price point was discontinued. Defines the validity period for
+        price points and enables accurate historical analysis of pricing strategies.
+      type: date
+    - name: pricing_id
+      description: >
+        Unique identifier for each price record. Primary key referenced by
+        pricing analytics, promotion planning, and revenue management systems.
+      type: integer!
+    - name: product_id
+      description: >
+        Foreign key to products table. Identifies the specific product being tracked
+        for pricing analysis and competitive positioning.
+      type: integer
+    - name: promotion_id
+      description: >
+        Foreign key to promotions table. Links promotional pricing to specific
+        promotional events for ROI analysis and promotional effectiveness tracking.
+      type: integer
+    - name: retailer_id
+      description: >
+        Foreign key to retailers table. Identifies the specific retailer where
+        pricing is being tracked for account-specific pricing strategies.
+      type: integer
+  graphql:
+    typeName: public_pricing_history
+    inputTypeName: public_pricing_history_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: sales
+      dataConnectorObjectType: public.pricing_history
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_pricing_history
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - actual_price
+          - base_price
+          - effective_date
+          - end_date
+          - pricing_id
+          - product_id
+          - promotion_id
+          - retailer_id
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_pricing_history_bool_exp
+  operand:
+    object:
+      type: public_pricing_history
+      comparableFields:
+        - fieldName: actual_price
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: base_price
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: effective_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: end_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: pricing_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: product_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: promotion_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: retailer_id
+          booleanExpressionType: integer_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_pricing_history_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_pricing_history_agg_exp
+  operand:
+    object:
+      aggregatedType: public_pricing_history
+      aggregatableFields:
+        - fieldName: actual_price
+          aggregateExpression: numeric_agg_exp
+        - fieldName: base_price
+          aggregateExpression: numeric_agg_exp
+        - fieldName: effective_date
+          aggregateExpression: date_agg_exp
+        - fieldName: end_date
+          aggregateExpression: date_agg_exp
+        - fieldName: pricing_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: product_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: promotion_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: retailer_id
+          aggregateExpression: integer_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_pricing_history_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_pricing_history_order_by_exp
+  operand:
+    object:
+      orderedType: public_pricing_history
+      orderableFields:
+        - fieldName: actual_price
+          orderByExpression: numeric_order_by_exp
+        - fieldName: base_price
+          orderByExpression: numeric_order_by_exp
+        - fieldName: effective_date
+          orderByExpression: date_order_by_exp
+        - fieldName: end_date
+          orderByExpression: date_order_by_exp
+        - fieldName: pricing_id
+          orderByExpression: integer_order_by_exp
+        - fieldName: product_id
+          orderByExpression: integer_order_by_exp
+        - fieldName: promotion_id
+          orderByExpression: integer_order_by_exp
+        - fieldName: retailer_id
+          orderByExpression: integer_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_pricing_history_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_pricing_history
+  description: |
+    # Consumer Packaged Goods Pricing Analytics Repository
+
+    Comprehensive historical database of product pricing across retail partners.
+    This model serves as the authoritative source for pricing information including:
+
+    * **Price points** across regular and promotional periods
+    * **Competitive pricing** for market positioning analysis
+    * **Price change history** showing pricing strategy evolution
+    * **Promotional pricing** linked to specific promotional events
+    * **Unit pricing** for standardized cross-product comparison
+
+    ## Usage Guidelines
+
+    This model should be the primary reference for:
+    - Pricing strategy development and execution
+    - Promotion planning and effectiveness analysis
+    - Price elasticity modeling and revenue optimization
+    - Competitive positioning and price gap analysis
+    - Historical performance analysis and forecasting
+  objectType: public_pricing_history
+  source:
+    dataConnectorName: sales
+    collection: public.pricing_history
+  filterExpressionType: public_pricing_history_bool_exp
+  aggregateExpression: public_pricing_history_agg_exp
+  orderByExpression: public_pricing_history_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_pricing_history
+      subscription:
+        rootField: public_pricing_history
+    selectUniques:
+      - queryRootField: public_pricing_history_by_pricing_id
+        uniqueIdentifier:
+          - pricing_id
+        subscription:
+          rootField: public_pricing_history_by_pricing_id
+    filterInputTypeName: public_pricing_history_filter_input
+    aggregate:
+      queryRootField: public_pricing_history_aggregate
+      subscription:
+        rootField: public_pricing_history_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_pricing_history
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: product
+  description: >
+    Relationship connecting pricing records to their associated products. Essential for
+    product-level pricing analysis, elasticity modeling, and competitive positioning.
+  sourceType: public_pricing_history
+  target:
+    model:
+      name: public_products
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: product_id
+      target:
+        modelField:
+          - fieldName: product_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: retailer
+  description: >
+    Relationship connecting pricing records to their associated retailers. Enables
+    retailer-specific pricing strategies, competitive analysis, and account-level pricing programs.
+  sourceType: public_pricing_history
+  target:
+    model:
+      name: public_retailers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: retailer_id
+      target:
+        modelField:
+          - fieldName: retailer_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: promotion
+  description: >
+    Relationship linking pricing records to their associated promotional events. Critical for
+    promotional pricing analysis, ROI calculation, and promotional effectiveness evaluation.
+  sourceType: public_pricing_history
+  target:
+    model:
+      name: public_promotions
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: promotion_id
+      target:
+        modelField:
+          - fieldName: promotion_id
+

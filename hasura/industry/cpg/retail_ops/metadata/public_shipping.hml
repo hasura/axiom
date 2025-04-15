@@ -1,0 +1,330 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_shipping
+  description: >
+    Shipping and logistics database tracking product movement across the supply chain.
+    Contains detailed information about shipments, carriers, origins, destinations,
+    and status. This model is critical for logistics management, delivery tracking,
+    and supply chain visibility across the CPG distribution network.
+  fields:
+    - name: actual_arrival_date
+      description: >
+        Date when shipment actually arrived at destination. Used for delivery performance
+        tracking, carrier evaluation, and on-time delivery metrics.
+      type: date_1
+    - name: carrier
+      description: >
+        Transportation provider handling the shipment. Important for carrier performance
+        analysis, cost management, and logistics partner evaluation.
+      type: character_varying_1
+    - name: destination_id
+      description: >
+        Identifier for shipment destination (retailer or warehouse). Critical for
+        delivery routing, logistics planning, and destination-specific performance tracking.
+      type: integer_1
+    - name: destination_type
+      description: >
+        Classification of destination ('Retailer', 'Warehouse', 'Distribution Center').
+        Determines handling requirements, delivery protocols, and performance benchmarks.
+      type: character_varying_1
+    - name: expected_arrival_date
+      description: >
+        Scheduled date for shipment arrival at destination. Foundation for delivery
+        planning, performance measurement, and exception management.
+      type: date_1!
+    - name: origin_warehouse_id
+      description: >
+        Foreign key to warehouses table. Identifies the specific facility where shipment
+        originated for origin-specific performance tracking and inventory management.
+      type: integer_1
+    - name: product_id
+      description: >
+        Foreign key to products_copy table. Identifies the specific product being shipped
+        for product-level logistics analysis and supply chain performance tracking.
+      type: integer_1
+    - name: quantity
+      description: >
+        Number of product units in the shipment. Core volume metric for logistics
+        planning, capacity utilization, and inventory movement tracking.
+      type: integer_1!
+    - name: ship_date
+      description: >
+        Date when shipment departed from origin. Essential for transit time calculation,
+        shipment tracking, and origin performance measurement.
+      type: date_1!
+    - name: shipping_cost
+      description: >
+        Total cost of transportation in standard currency. Critical for logistics
+        cost analysis, carrier rate negotiation, and transportation budget management.
+      type: numeric_1
+    - name: shipping_id
+      description: >
+        Unique identifier for each shipment. Primary key referenced by logistics
+        management, tracking systems, and supply chain visibility platforms.
+      type: integer_1!
+    - name: status
+      description: >
+        Current shipment status ('In Transit', 'Delivered', 'Delayed', 'Exception').
+        Core tracking data for shipment monitoring, exception management, and performance reporting.
+      type: character_varying_1
+    - name: tracking_number
+      description: >
+        Carrier-provided tracking identifier. Enables external tracking integration,
+        proof of delivery documentation, and carrier system synchronization.
+      type: character_varying_1
+  graphql:
+    typeName: public_shipping
+    inputTypeName: public_shipping_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: inventory
+      dataConnectorObjectType: public.shipping
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_shipping
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - actual_arrival_date
+          - carrier
+          - destination_id
+          - destination_type
+          - expected_arrival_date
+          - origin_warehouse_id
+          - product_id
+          - quantity
+          - ship_date
+          - shipping_cost
+          - shipping_id
+          - status
+          - tracking_number
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_shipping_bool_exp
+  operand:
+    object:
+      type: public_shipping
+      comparableFields:
+        - fieldName: actual_arrival_date
+          booleanExpressionType: date_bool_exp_1
+        - fieldName: carrier
+          booleanExpressionType: character_varying_bool_exp_1
+        - fieldName: destination_id
+          booleanExpressionType: integer_bool_exp_1
+        - fieldName: destination_type
+          booleanExpressionType: character_varying_bool_exp_1
+        - fieldName: expected_arrival_date
+          booleanExpressionType: date_bool_exp_1
+        - fieldName: origin_warehouse_id
+          booleanExpressionType: integer_bool_exp_1
+        - fieldName: product_id
+          booleanExpressionType: integer_bool_exp_1
+        - fieldName: quantity
+          booleanExpressionType: integer_bool_exp_1
+        - fieldName: ship_date
+          booleanExpressionType: date_bool_exp_1
+        - fieldName: shipping_cost
+          booleanExpressionType: numeric_bool_exp_1
+        - fieldName: shipping_id
+          booleanExpressionType: integer_bool_exp_1
+        - fieldName: status
+          booleanExpressionType: character_varying_bool_exp_1
+        - fieldName: tracking_number
+          booleanExpressionType: character_varying_bool_exp_1
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_shipping_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_shipping_agg_exp
+  operand:
+    object:
+      aggregatedType: public_shipping
+      aggregatableFields:
+        - fieldName: actual_arrival_date
+          aggregateExpression: date_agg_exp_1
+        - fieldName: carrier
+          aggregateExpression: character_varying_agg_exp_1
+        - fieldName: destination_id
+          aggregateExpression: integer_agg_exp_1
+        - fieldName: destination_type
+          aggregateExpression: character_varying_agg_exp_1
+        - fieldName: expected_arrival_date
+          aggregateExpression: date_agg_exp_1
+        - fieldName: origin_warehouse_id
+          aggregateExpression: integer_agg_exp_1
+        - fieldName: product_id
+          aggregateExpression: integer_agg_exp_1
+        - fieldName: quantity
+          aggregateExpression: integer_agg_exp_1
+        - fieldName: ship_date
+          aggregateExpression: date_agg_exp_1
+        - fieldName: shipping_cost
+          aggregateExpression: numeric_agg_exp_1
+        - fieldName: shipping_id
+          aggregateExpression: integer_agg_exp_1
+        - fieldName: status
+          aggregateExpression: character_varying_agg_exp_1
+        - fieldName: tracking_number
+          aggregateExpression: character_varying_agg_exp_1
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_shipping_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_shipping_order_by_exp
+  operand:
+    object:
+      orderedType: public_shipping
+      orderableFields:
+        - fieldName: actual_arrival_date
+          orderByExpression: date_1_order_by_exp
+        - fieldName: carrier
+          orderByExpression: character_varying_1_order_by_exp
+        - fieldName: destination_id
+          orderByExpression: integer_1_order_by_exp
+        - fieldName: destination_type
+          orderByExpression: character_varying_1_order_by_exp
+        - fieldName: expected_arrival_date
+          orderByExpression: date_1_order_by_exp
+        - fieldName: origin_warehouse_id
+          orderByExpression: integer_1_order_by_exp
+        - fieldName: product_id
+          orderByExpression: integer_1_order_by_exp
+        - fieldName: quantity
+          orderByExpression: integer_1_order_by_exp
+        - fieldName: ship_date
+          orderByExpression: date_1_order_by_exp
+        - fieldName: shipping_cost
+          orderByExpression: numeric_1_order_by_exp
+        - fieldName: shipping_id
+          orderByExpression: integer_1_order_by_exp
+        - fieldName: status
+          orderByExpression: character_varying_1_order_by_exp
+        - fieldName: tracking_number
+          orderByExpression: character_varying_1_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_shipping_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_shipping
+  description: |
+    # Consumer Packaged Goods Shipping and Logistics Repository
+
+    Comprehensive tracking system for product movement across the supply chain network.
+    This model serves as the authoritative source for shipping information including:
+
+    * **Shipment details** with origins, destinations, and quantities
+    * **Carrier information** and transportation providers
+    * **Timing data** for expected and actual deliveries
+    * **Status tracking** for in-transit visibility
+    * **Cost information** for transportation expense management
+
+    ## Usage Guidelines
+
+    This model should be the primary reference for:
+    - Logistics planning and execution
+    - Carrier performance management
+    - Delivery tracking and exception handling
+    - Transportation cost analysis
+    - Supply chain visibility and performance measurement
+  objectType: public_shipping
+  source:
+    dataConnectorName: inventory
+    collection: public.shipping
+  filterExpressionType: public_shipping_bool_exp
+  aggregateExpression: public_shipping_agg_exp
+  orderByExpression: public_shipping_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_shipping
+      subscription:
+        rootField: public_shipping
+    selectUniques:
+      - queryRootField: public_shipping_by_shipping_id
+        uniqueIdentifier:
+          - shipping_id
+        subscription:
+          rootField: public_shipping_by_shipping_id
+    filterInputTypeName: public_shipping_filter_input
+    aggregate:
+      queryRootField: public_shipping_aggregate
+      subscription:
+        rootField: public_shipping_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_shipping
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: origin_warehouse
+  description: >
+    Relationship connecting shipments to their origin warehouse locations. Essential for
+    facility-specific shipping performance, outbound logistics management, and origin analysis.
+  sourceType: public_shipping
+  target:
+    model:
+      name: public_warehouses
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: origin_warehouse_id
+      target:
+        modelField:
+          - fieldName: warehouse_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: product
+  description: >
+    Relationship linking shipments to their associated products. Critical for
+    product-level logistics analysis, transportation planning, and supply chain visibility.
+  sourceType: public_shipping
+  target:
+    model:
+      name: public_products_copy
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: product_id
+      target:
+        modelField:
+          - fieldName: product_id
+

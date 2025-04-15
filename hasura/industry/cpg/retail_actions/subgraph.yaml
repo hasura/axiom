@@ -1,0 +1,19 @@
+kind: Subgraph
+version: v2
+definition:
+  name: retail_actions
+  generator:
+    rootPath: .
+    namingConvention: snake_case
+  includePaths:
+    - metadata
+  envMapping:
+    RETAIL_ACTIONS_RETAIL_EXECUTION_AUTHORIZATION_HEADER:
+      fromEnv: RETAIL_ACTIONS_RETAIL_EXECUTION_AUTHORIZATION_HEADER
+    RETAIL_ACTIONS_RETAIL_EXECUTION_READ_URL:
+      fromEnv: RETAIL_ACTIONS_RETAIL_EXECUTION_READ_URL
+    RETAIL_ACTIONS_RETAIL_EXECUTION_WRITE_URL:
+      fromEnv: RETAIL_ACTIONS_RETAIL_EXECUTION_WRITE_URL
+  connectors:
+    - path: connector/retail_execution/connector.yaml
+      connectorLinkName: retail_execution
