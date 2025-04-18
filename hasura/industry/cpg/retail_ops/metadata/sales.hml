@@ -1,0 +1,1145 @@
+kind: DataConnectorLink
+version: v1
+definition:
+  name: sales
+  url:
+    readWriteUrls:
+      read:
+        valueFromEnv: RETAIL_OPS_SALES_READ_URL
+      write:
+        valueFromEnv: RETAIL_OPS_SALES_WRITE_URL
+  headers:
+    Authorization:
+      valueFromEnv: RETAIL_OPS_SALES_AUTHORIZATION_HEADER
+  schema:
+    version: v0.1
+    schema:
+      scalar_types:
+        array:
+          representation:
+            type: json
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+            _in:
+              type: in
+            _neq:
+              type: custom
+              argument_type:
+                name: array
+                type: named
+        boolean:
+          representation:
+            type: boolean
+          aggregate_functions:
+            max:
+              result_type:
+                name: boolean
+                type: named
+            min:
+              result_type:
+                name: boolean
+                type: named
+          comparison_operators:
+            _eq:
+              type: equal
+            _in:
+              type: in
+            _neq:
+              type: custom
+              argument_type:
+                name: boolean
+                type: named
+        character_varying:
+          representation:
+            type: string
+          aggregate_functions:
+            max:
+              result_type:
+                name: character_varying
+                type: named
+            min:
+              result_type:
+                name: character_varying
+                type: named
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                name: character_varying
+                type: named
+            _gte:
+              type: custom
+              argument_type:
+                name: character_varying
+                type: named
+            _ilike:
+              type: custom
+              argument_type:
+                name: character_varying
+                type: named
+            _in:
+              type: in
+            _iregex:
+              type: custom
+              argument_type:
+                name: character_varying
+                type: named
+            _like:
+              type: custom
+              argument_type:
+                name: character_varying
+                type: named
+            _lt:
+              type: custom
+              argument_type:
+                name: character_varying
+                type: named
+            _lte:
+              type: custom
+              argument_type:
+                name: character_varying
+                type: named
+            _neq:
+              type: custom
+              argument_type:
+                name: character_varying
+                type: named
+            _nilike:
+              type: custom
+              argument_type:
+                name: character_varying
+                type: named
+            _niregex:
+              type: custom
+              argument_type:
+                name: character_varying
+                type: named
+            _nlike:
+              type: custom
+              argument_type:
+                name: character_varying
+                type: named
+            _nregex:
+              type: custom
+              argument_type:
+                name: character_varying
+                type: named
+            _regex:
+              type: custom
+              argument_type:
+                name: character_varying
+                type: named
+        date:
+          representation:
+            type: date
+          aggregate_functions:
+            max:
+              result_type:
+                name: date
+                type: named
+            min:
+              result_type:
+                name: date
+                type: named
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                name: date
+                type: named
+            _gte:
+              type: custom
+              argument_type:
+                name: date
+                type: named
+            _in:
+              type: in
+            _lt:
+              type: custom
+              argument_type:
+                name: date
+                type: named
+            _lte:
+              type: custom
+              argument_type:
+                name: date
+                type: named
+            _neq:
+              type: custom
+              argument_type:
+                name: date
+                type: named
+        integer:
+          representation:
+            type: int32
+          aggregate_functions:
+            avg:
+              result_type:
+                name: integer
+                type: named
+            max:
+              result_type:
+                name: integer
+                type: named
+            min:
+              result_type:
+                name: integer
+                type: named
+            stddev_pop:
+              result_type:
+                name: integer
+                type: named
+            stddev_samp:
+              result_type:
+                name: integer
+                type: named
+            sum:
+              result_type:
+                name: integer
+                type: named
+            var_pop:
+              result_type:
+                name: integer
+                type: named
+            var_samp:
+              result_type:
+                name: integer
+                type: named
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                name: integer
+                type: named
+            _gte:
+              type: custom
+              argument_type:
+                name: integer
+                type: named
+            _in:
+              type: in
+            _lt:
+              type: custom
+              argument_type:
+                name: integer
+                type: named
+            _lte:
+              type: custom
+              argument_type:
+                name: integer
+                type: named
+            _neq:
+              type: custom
+              argument_type:
+                name: integer
+                type: named
+        numeric:
+          representation:
+            type: bigdecimal
+          aggregate_functions:
+            avg:
+              result_type:
+                name: numeric
+                type: named
+            max:
+              result_type:
+                name: numeric
+                type: named
+            min:
+              result_type:
+                name: numeric
+                type: named
+            stddev_pop:
+              result_type:
+                name: numeric
+                type: named
+            stddev_samp:
+              result_type:
+                name: numeric
+                type: named
+            sum:
+              result_type:
+                name: numeric
+                type: named
+            var_pop:
+              result_type:
+                name: numeric
+                type: named
+            var_samp:
+              result_type:
+                name: numeric
+                type: named
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                name: numeric
+                type: named
+            _gte:
+              type: custom
+              argument_type:
+                name: numeric
+                type: named
+            _in:
+              type: in
+            _lt:
+              type: custom
+              argument_type:
+                name: numeric
+                type: named
+            _lte:
+              type: custom
+              argument_type:
+                name: numeric
+                type: named
+            _neq:
+              type: custom
+              argument_type:
+                name: numeric
+                type: named
+        text:
+          representation:
+            type: string
+          aggregate_functions:
+            max:
+              result_type:
+                name: text
+                type: named
+            min:
+              result_type:
+                name: text
+                type: named
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                name: text
+                type: named
+            _gte:
+              type: custom
+              argument_type:
+                name: text
+                type: named
+            _ilike:
+              type: custom
+              argument_type:
+                name: text
+                type: named
+            _in:
+              type: in
+            _iregex:
+              type: custom
+              argument_type:
+                name: text
+                type: named
+            _like:
+              type: custom
+              argument_type:
+                name: text
+                type: named
+            _lt:
+              type: custom
+              argument_type:
+                name: text
+                type: named
+            _lte:
+              type: custom
+              argument_type:
+                name: text
+                type: named
+            _neq:
+              type: custom
+              argument_type:
+                name: text
+                type: named
+            _nilike:
+              type: custom
+              argument_type:
+                name: text
+                type: named
+            _niregex:
+              type: custom
+              argument_type:
+                name: text
+                type: named
+            _nlike:
+              type: custom
+              argument_type:
+                name: text
+                type: named
+            _nregex:
+              type: custom
+              argument_type:
+                name: text
+                type: named
+            _regex:
+              type: custom
+              argument_type:
+                name: text
+                type: named
+      object_types:
+        public.brands:
+          fields:
+            brand_id:
+              type:
+                name: integer
+                type: named
+              arguments: {}
+            brand_name:
+              type:
+                name: character_varying
+                type: named
+              arguments: {}
+            brand_tier:
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+              arguments: {}
+            category_focus:
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+              arguments: {}
+            is_active:
+              type:
+                type: nullable
+                underlying_type:
+                  name: boolean
+                  type: named
+              arguments: {}
+            parent_company:
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+              arguments: {}
+            year_established:
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+              arguments: {}
+        public.channels:
+          fields:
+            channel_id:
+              type:
+                name: integer
+                type: named
+              arguments: {}
+            channel_name:
+              type:
+                name: character_varying
+                type: named
+              arguments: {}
+            channel_type:
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+              arguments: {}
+            distribution_cost_percentage:
+              type:
+                type: nullable
+                underlying_type:
+                  name: numeric
+                  type: named
+              arguments: {}
+            is_direct_to_consumer:
+              type:
+                type: nullable
+                underlying_type:
+                  name: boolean
+                  type: named
+              arguments: {}
+            is_online:
+              type:
+                type: nullable
+                underlying_type:
+                  name: boolean
+                  type: named
+              arguments: {}
+            region:
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+              arguments: {}
+        public.competitor_products:
+          fields:
+            category_id:
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+              arguments: {}
+            competitor_id:
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+              arguments: {}
+            competitor_product_id:
+              type:
+                name: integer
+                type: named
+              arguments: {}
+            estimated_price:
+              type:
+                type: nullable
+                underlying_type:
+                  name: numeric
+                  type: named
+              arguments: {}
+            notes:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+              arguments: {}
+            product_name:
+              type:
+                name: character_varying
+                type: named
+              arguments: {}
+        public.competitors:
+          fields:
+            competitor_id:
+              type:
+                name: integer
+                type: named
+              arguments: {}
+            competitor_name:
+              type:
+                name: character_varying
+                type: named
+              arguments: {}
+            competitor_type:
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+              arguments: {}
+            notes:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+              arguments: {}
+            primary_categories:
+              type:
+                type: nullable
+                underlying_type:
+                  name: array
+                  type: named
+              arguments: {}
+        public.market_shares:
+          fields:
+            brand_id:
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+              arguments: {}
+            category_id:
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+              arguments: {}
+            channel_id:
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+              arguments: {}
+            data_source:
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+              arguments: {}
+            dollar_sales:
+              type:
+                type: nullable
+                underlying_type:
+                  name: numeric
+                  type: named
+              arguments: {}
+            measurement_period:
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+              arguments: {}
+            report_date:
+              type:
+                name: date
+                type: named
+              arguments: {}
+            share_id:
+              type:
+                name: integer
+                type: named
+              arguments: {}
+            share_percentage:
+              type:
+                name: numeric
+                type: named
+              arguments: {}
+            volume_sales:
+              type:
+                type: nullable
+                underlying_type:
+                  name: numeric
+                  type: named
+              arguments: {}
+            volume_share_percentage:
+              type:
+                type: nullable
+                underlying_type:
+                  name: numeric
+                  type: named
+              arguments: {}
+        public.pricing_history:
+          fields:
+            actual_price:
+              type:
+                name: numeric
+                type: named
+              arguments: {}
+            base_price:
+              type:
+                name: numeric
+                type: named
+              arguments: {}
+            effective_date:
+              type:
+                name: date
+                type: named
+              arguments: {}
+            end_date:
+              type:
+                type: nullable
+                underlying_type:
+                  name: date
+                  type: named
+              arguments: {}
+            pricing_id:
+              type:
+                name: integer
+                type: named
+              arguments: {}
+            product_id:
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+              arguments: {}
+            promotion_id:
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+              arguments: {}
+            retailer_id:
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+              arguments: {}
+        public.product_categories:
+          fields:
+            category_description:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+              arguments: {}
+            category_id:
+              type:
+                name: integer
+                type: named
+              arguments: {}
+            category_name:
+              type:
+                name: character_varying
+                type: named
+              arguments: {}
+            is_seasonal:
+              type:
+                type: nullable
+                underlying_type:
+                  name: boolean
+                  type: named
+              arguments: {}
+            parent_category_id:
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+              arguments: {}
+            typical_margin_percentage:
+              type:
+                type: nullable
+                underlying_type:
+                  name: numeric
+                  type: named
+              arguments: {}
+        public.products:
+          fields:
+            brand_id:
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+              arguments: {}
+            case_pack:
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+              arguments: {}
+            category_id:
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+              arguments: {}
+            discontinue_date:
+              type:
+                type: nullable
+                underlying_type:
+                  name: date
+                  type: named
+              arguments: {}
+            high_velocity:
+              type:
+                type: nullable
+                underlying_type:
+                  name: boolean
+                  type: named
+              arguments: {}
+            is_glutenfree:
+              type:
+                type: nullable
+                underlying_type:
+                  name: boolean
+                  type: named
+              arguments: {}
+            is_organic:
+              type:
+                type: nullable
+                underlying_type:
+                  name: boolean
+                  type: named
+              arguments: {}
+            is_seasonal:
+              type:
+                type: nullable
+                underlying_type:
+                  name: boolean
+                  type: named
+              arguments: {}
+            launch_date:
+              type:
+                type: nullable
+                underlying_type:
+                  name: date
+                  type: named
+              arguments: {}
+            msrp:
+              type:
+                type: nullable
+                underlying_type:
+                  name: numeric
+                  type: named
+              arguments: {}
+            product_id:
+              type:
+                name: integer
+                type: named
+              arguments: {}
+            product_name:
+              type:
+                name: character_varying
+                type: named
+              arguments: {}
+            product_sku:
+              type:
+                name: character_varying
+                type: named
+              arguments: {}
+            subcategory_id:
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+              arguments: {}
+            unit_measure:
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+              arguments: {}
+            unit_size:
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+              arguments: {}
+            weight_oz:
+              type:
+                type: nullable
+                underlying_type:
+                  name: numeric
+                  type: named
+              arguments: {}
+            wholesale_price:
+              type:
+                type: nullable
+                underlying_type:
+                  name: numeric
+                  type: named
+              arguments: {}
+        public.promotion_products:
+          fields:
+            product_id:
+              type:
+                name: integer
+                type: named
+              arguments: {}
+            promotion_id:
+              type:
+                name: integer
+                type: named
+              arguments: {}
+        public.promotions:
+          fields:
+            budget:
+              type:
+                type: nullable
+                underlying_type:
+                  name: numeric
+                  type: named
+              arguments: {}
+            channel_id:
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+              arguments: {}
+            discount_type:
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+              arguments: {}
+            discount_value:
+              type:
+                type: nullable
+                underlying_type:
+                  name: numeric
+                  type: named
+              arguments: {}
+            end_date:
+              type:
+                name: date
+                type: named
+              arguments: {}
+            min_purchase_qty:
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+              arguments: {}
+            notes:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+              arguments: {}
+            promotion_id:
+              type:
+                name: integer
+                type: named
+              arguments: {}
+            promotion_name:
+              type:
+                name: character_varying
+                type: named
+              arguments: {}
+            promotion_type:
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+              arguments: {}
+            start_date:
+              type:
+                name: date
+                type: named
+              arguments: {}
+        public.retailers:
+          fields:
+            account_tier:
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+              arguments: {}
+            annual_revenue_tier:
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+              arguments: {}
+            channel_id:
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+              arguments: {}
+            has_ecommerce:
+              type:
+                type: nullable
+                underlying_type:
+                  name: boolean
+                  type: named
+              arguments: {}
+            retailer_id:
+              type:
+                name: integer
+                type: named
+              arguments: {}
+            retailer_name:
+              type:
+                name: character_varying
+                type: named
+              arguments: {}
+            sales_region:
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+              arguments: {}
+        public.sales_transactions:
+          fields:
+            discount_percentage:
+              type:
+                type: nullable
+                underlying_type:
+                  name: numeric
+                  type: named
+              arguments: {}
+            is_online_sale:
+              type:
+                type: nullable
+                underlying_type:
+                  name: boolean
+                  type: named
+              arguments: {}
+            is_promoted:
+              type:
+                type: nullable
+                underlying_type:
+                  name: boolean
+                  type: named
+              arguments: {}
+            product_id:
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+              arguments: {}
+            quantity:
+              type:
+                name: integer
+                type: named
+              arguments: {}
+            retailer_id:
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+              arguments: {}
+            total_amount:
+              type:
+                name: numeric
+                type: named
+              arguments: {}
+            transaction_date:
+              type:
+                name: date
+                type: named
+              arguments: {}
+            transaction_id:
+              type:
+                name: integer
+                type: named
+              arguments: {}
+            unit_price:
+              type:
+                name: numeric
+                type: named
+              arguments: {}
+      collections:
+        - name: public.brands
+          arguments: {}
+          type: public.brands
+          uniqueness_constraints:
+            brand_id:
+              unique_columns:
+                - brand_id
+          foreign_keys: {}
+        - name: public.channels
+          arguments: {}
+          type: public.channels
+          uniqueness_constraints:
+            channel_id:
+              unique_columns:
+                - channel_id
+          foreign_keys: {}
+        - name: public.competitor_products
+          arguments: {}
+          type: public.competitor_products
+          uniqueness_constraints:
+            competitor_product_id:
+              unique_columns:
+                - competitor_product_id
+          foreign_keys: {}
+        - name: public.competitors
+          arguments: {}
+          type: public.competitors
+          uniqueness_constraints:
+            competitor_id:
+              unique_columns:
+                - competitor_id
+          foreign_keys: {}
+        - name: public.market_shares
+          arguments: {}
+          type: public.market_shares
+          uniqueness_constraints:
+            share_id:
+              unique_columns:
+                - share_id
+          foreign_keys: {}
+        - name: public.pricing_history
+          arguments: {}
+          type: public.pricing_history
+          uniqueness_constraints:
+            pricing_id:
+              unique_columns:
+                - pricing_id
+          foreign_keys: {}
+        - name: public.product_categories
+          arguments: {}
+          type: public.product_categories
+          uniqueness_constraints:
+            category_id:
+              unique_columns:
+                - category_id
+          foreign_keys: {}
+        - name: public.products
+          arguments: {}
+          type: public.products
+          uniqueness_constraints:
+            product_id:
+              unique_columns:
+                - product_id
+          foreign_keys: {}
+        - name: public.promotion_products
+          arguments: {}
+          type: public.promotion_products
+          uniqueness_constraints:
+            product_id:
+              unique_columns:
+                - product_id
+            promotion_id:
+              unique_columns:
+                - promotion_id
+          foreign_keys: {}
+        - name: public.promotions
+          arguments: {}
+          type: public.promotions
+          uniqueness_constraints:
+            promotion_id:
+              unique_columns:
+                - promotion_id
+          foreign_keys: {}
+        - name: public.retailers
+          arguments: {}
+          type: public.retailers
+          uniqueness_constraints:
+            retailer_id:
+              unique_columns:
+                - retailer_id
+          foreign_keys: {}
+        - name: public.sales_transactions
+          arguments: {}
+          type: public.sales_transactions
+          uniqueness_constraints:
+            transaction_id:
+              unique_columns:
+                - transaction_id
+          foreign_keys: {}
+      functions: []
+      procedures: []
+    capabilities:
+      version: 0.1.6
+      capabilities:
+        query:
+          aggregates: {}
+          variables: {}
+        mutation: {}

@@ -1,0 +1,237 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_retailers
+  description: >
+    Master retailer database for the Consumer Packaged Goods (CPG) organization. Contains
+    comprehensive information about retail partners including classification, geographic
+    presence, and commercial capabilities. This model serves as the authoritative source
+    for all retailer-related data across sales, trade marketing, and supply chain systems.
+  fields:
+    - name: account_tier
+      description: >
+        Classification of retailer importance ('Strategic', 'Key', 'Core', 'Small') determining
+        service levels, trade spending allocation, and sales team coverage models.
+      type: character_varying
+    - name: annual_revenue_tier
+      description: >
+        Revenue classification bracket for the retailer. Influences account prioritization,
+        trade investment strategies, and performance benchmarking across similar retailers.
+      type: character_varying
+    - name: channel_id
+      description: >
+        Foreign key to channels table. Identifies the retail channel type (Grocery, Mass, Club, etc.)
+        for specialized merchandising strategies, pricing structures, and distribution models.
+      type: integer
+    - name: has_ecommerce
+      description: >
+        Flag indicating retailer's e-commerce capabilities. Determines eligibility for
+        digital content programs, online promotional strategies, and specialized packaging needs.
+      type: boolean
+    - name: retailer_id
+      description: >
+        Unique identifier for each retail partner across all systems. Primary key referenced
+        by sales, trade promotion, assortment, and supply chain planning platforms.
+      type: integer!
+    - name: retailer_name
+      description: >
+        Official retailer name used in reports, contracts, and business communications.
+        Critical for account identification, search functionality, and reporting systems.
+      type: character_varying!
+    - name: sales_region
+      description: >
+        Geographic sales territory where retailer operates. Determines sales team assignment,
+        regional promotional calendars, and localized marketing strategy development.
+      type: character_varying
+  graphql:
+    typeName: public_retailers
+    inputTypeName: public_retailers_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: sales
+      dataConnectorObjectType: public.retailers
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_retailers
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - account_tier
+          - annual_revenue_tier
+          - channel_id
+          - has_ecommerce
+          - retailer_id
+          - retailer_name
+          - sales_region
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_retailers_bool_exp
+  operand:
+    object:
+      type: public_retailers
+      comparableFields:
+        - fieldName: account_tier
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: annual_revenue_tier
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: channel_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: has_ecommerce
+          booleanExpressionType: boolean_bool_exp
+        - fieldName: retailer_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: retailer_name
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: sales_region
+          booleanExpressionType: character_varying_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_retailers_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_retailers_agg_exp
+  operand:
+    object:
+      aggregatedType: public_retailers
+      aggregatableFields:
+        - fieldName: account_tier
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: annual_revenue_tier
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: channel_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: has_ecommerce
+          aggregateExpression: boolean_agg_exp
+        - fieldName: retailer_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: retailer_name
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: sales_region
+          aggregateExpression: character_varying_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_retailers_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_retailers_order_by_exp
+  operand:
+    object:
+      orderedType: public_retailers
+      orderableFields:
+        - fieldName: account_tier
+          orderByExpression: character_varying_order_by_exp
+        - fieldName: annual_revenue_tier
+          orderByExpression: character_varying_order_by_exp
+        - fieldName: channel_id
+          orderByExpression: integer_order_by_exp
+        - fieldName: has_ecommerce
+          orderByExpression: boolean_order_by_exp
+        - fieldName: retailer_id
+          orderByExpression: integer_order_by_exp
+        - fieldName: retailer_name
+          orderByExpression: character_varying_order_by_exp
+        - fieldName: sales_region
+          orderByExpression: character_varying_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_retailers_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_retailers
+  description: |
+    # Consumer Packaged Goods Retailer Master Repository
+
+    Comprehensive retailer information database serving as the authoritative source for all
+    retail partner data across the CPG organization. This model contains detailed information
+    about retail customers including:
+
+    * **Retailer identification** and classification data
+    * **Channel and format** specifications for targeted strategies
+    * **Geographic presence** and regional operations details
+    * **Commercial capabilities** including e-commerce and fulfillment options
+    * **Account prioritization** tiers for resource allocation
+
+    ## Usage Guidelines
+
+    This model should be the primary reference for:
+    - Sales team account planning and coverage models
+    - Trade promotion planning and investment allocation
+    - Retail execution and merchandising strategies
+    - Supply chain and distribution planning
+    - Performance analytics and retailer benchmarking
+  objectType: public_retailers
+  source:
+    dataConnectorName: sales
+    collection: public.retailers
+  filterExpressionType: public_retailers_bool_exp
+  aggregateExpression: public_retailers_agg_exp
+  orderByExpression: public_retailers_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_retailers
+      subscription:
+        rootField: public_retailers
+    selectUniques:
+      - queryRootField: public_retailers_by_retailer_id
+        uniqueIdentifier:
+          - retailer_id
+        subscription:
+          rootField: public_retailers_by_retailer_id
+    filterInputTypeName: public_retailers_filter_input
+    aggregate:
+      queryRootField: public_retailers_aggregate
+      subscription:
+        rootField: public_retailers_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_retailers
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+---
+kind: Relationship
+version: v1
+definition:
+  name: channel
+  description: >
+    Relationship connecting retailers to their primary channel classification. Essential for
+    channel-specific strategies, pricing structures, and promotional programming.
+  sourceType: public_retailers
+  target:
+    model:
+      name: public_channels
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: channel_id
+      target:
+        modelField:
+          - fieldName: channel_id
+
