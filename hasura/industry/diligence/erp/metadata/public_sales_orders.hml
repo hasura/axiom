@@ -1,0 +1,468 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_sales_orders
+  description: >
+    Customer transaction framework that provides externally shareable information about the 
+    organization's sales activities and client engagements. This model represents the publicly 
+    accessible record of customer orders used for revenue reporting, market analysis, and 
+    stakeholder communications while maintaining appropriate confidentiality boundaries around 
+    proprietary client relationships and commercial arrangements.
+  fields:
+    - name: created_at
+      type: timestamp_without_time_zone
+      description: >
+        System timestamp recording when the sales order record was initially created in the 
+        public directory. Supports audit trails, transaction history tracking, and chronological 
+        documentation of customer engagement. Helps establish the sequence of revenue events 
+        for financial reporting and market activity analysis.
+    - name: customer_id
+      type: integer!
+      description: >
+        Reference to the client organization that placed the order. Links to the public customer 
+        directory to provide context about the business relationship and market segment. Essential 
+        for customer attribution in revenue reporting, market analysis, and stakeholder 
+        communications about client engagement patterns.
+    - name: discount_amount
+      type: numeric
+      description: >
+        Monetary value of price reductions applied to the order that has been authorized for 
+        external disclosure. Represents the consolidated discount appropriate for stakeholder 
+        communications while abstracting proprietary pricing strategies, customer-specific 
+        arrangements, and competitive positioning tactics.
+    - name: order_date
+      type: date!
+      description: >
+        Calendar date when the sales transaction was formally initiated. Establishes the 
+        chronological placement of revenue events within the organization's financial timeline 
+        for stakeholder communications, market activity reporting, and period-based performance 
+        analysis. Supports revenue recognition transparency.
+    - name: order_id
+      type: integer!
+      description: >
+        Primary system identifier for each sales transaction. Serves as the unique reference key 
+        for data integration with external reporting systems, analytics platforms, and stakeholder 
+        communications. Ensures consistent tracking of customer engagements across all revenue 
+        reporting and market analysis.
+    - name: order_number
+      type: character_varying!
+      description: >
+        Human-readable identifier assigned to the sales transaction for business reference. 
+        Typically follows organizational numbering conventions and serves as the primary 
+        reference in communications with customers and stakeholders. Supports transaction 
+        tracking, filing systems, and cross-reference with related documentation.
+    - name: payment_status
+      type: character_varying
+      description: >
+        Current state of financial settlement for the order (e.g., Unpaid, Partially Paid, 
+        Paid, Disputed). Provides visibility into the organization's revenue collection execution 
+        and accounts receivable status. Supports cash flow reporting, financial health monitoring, 
+        and customer relationship management for stakeholders.
+    - name: required_date
+      type: date
+      description: >
+        Requested delivery or completion date specified by the customer. Provides insight into 
+        client expectations, service level commitments, and operational delivery timelines. 
+        Supports transparency in customer engagement quality, fulfillment capabilities, and 
+        service performance metrics for stakeholder communications.
+    - name: sales_rep
+      type: character_varying
+      description: >
+        Designated account representative responsible for the customer relationship and transaction. 
+        Provides external stakeholders with a consistent point of contact for client engagement, 
+        while maintaining appropriate privacy boundaries around internal team structures. Supports 
+        transparent accountability in customer communications.
+    - name: ship_to_address
+      type: text
+      description: >
+        Delivery location for physical products associated with the order that has been authorized 
+        for external disclosure. Provides geographic context for fulfillment operations while 
+        maintaining appropriate confidentiality around detailed customer location information. 
+        Supports logistics transparency and territorial analysis.
+    - name: shipped_date
+      type: date
+      description: >
+        Calendar date when ordered products were dispatched to the customer. Documents the 
+        actual execution of delivery commitments and provides transparency into fulfillment 
+        performance. Supports operational efficiency reporting, service level analysis, and 
+        customer satisfaction metrics for stakeholder communications.
+    - name: shipping_cost
+      type: numeric
+      description: >
+        Monetary value of delivery charges associated with the order that has been authorized 
+        for external disclosure. Represents the consolidated logistics expense appropriate for 
+        stakeholder communications while abstracting proprietary cost structures, carrier 
+        arrangements, and competitive rate negotiations.
+    - name: shipping_method
+      type: character_varying
+      description: >
+        Transportation or delivery approach used for fulfilling the order. Provides insight 
+        into logistics operations, service levels, and fulfillment capabilities at an appropriate 
+        level of detail for external stakeholders. Supports transparency in operational execution 
+        without compromising carrier-specific arrangements.
+    - name: status
+      type: character_varying
+      description: >
+        Current state of the sales order in the fulfillment lifecycle (e.g., New, Processing, 
+        Shipped, Completed, Cancelled). Provides visibility into transaction execution progress 
+        and helps stakeholders understand the current stage of each customer engagement. Essential 
+        for operational performance monitoring and service quality reporting.
+    - name: subtotal
+      type: numeric!
+      description: >
+        Base monetary value of all products and services in the order before adjustments, in 
+        the organization's reporting currency. Represents the consolidated revenue amount 
+        appropriate for external stakeholder consumption while maintaining appropriate 
+        confidentiality around detailed pricing structures and customer-specific arrangements.
+    - name: tax_amount
+      type: numeric
+      description: >
+        Monetary value of applicable taxes and regulatory fees associated with the transaction. 
+        Provides transparency into compliance with tax regulations and statutory requirements 
+        while maintaining appropriate confidentiality around tax strategies and jurisdictional 
+        arrangements. Supports financial reporting accuracy.
+    - name: total_amount
+      type: numeric!
+      description: >
+        Aggregate monetary value of the complete transaction including all products, services, 
+        taxes, shipping, and adjustments. Represents the final revenue impact in the organization's 
+        reporting currency. Critical for stakeholder understanding of transaction economics and 
+        financial performance reporting.
+    - name: unit_id
+      type: integer!
+      description: >
+        Reference to the business unit responsible for the sales transaction. Links the revenue 
+        event to the organization's public business structure, enabling consistent attribution 
+        in external communications, financial reporting, and stakeholder disclosures about 
+        organizational performance and market focus areas.
+    - name: updated_at
+      type: timestamp_without_time_zone
+      description: >
+        System timestamp recording the most recent modification to the sales order information 
+        in the public directory. Essential for tracking revision history, documenting when 
+        transaction data was refreshed, and maintaining currency of revenue information for 
+        effective stakeholder communications and financial reporting.
+  graphql:
+    typeName: public_sales_orders
+    inputTypeName: public_sales_orders_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: operations
+      dataConnectorObjectType: public.sales_orders
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_sales_orders
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - created_at
+          - customer_id
+          - discount_amount
+          - order_date
+          - order_id
+          - order_number
+          - payment_status
+          - required_date
+          - sales_rep
+          - ship_to_address
+          - shipped_date
+          - shipping_cost
+          - shipping_method
+          - status
+          - subtotal
+          - tax_amount
+          - total_amount
+          - unit_id
+          - updated_at
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_sales_orders_bool_exp
+  operand:
+    object:
+      type: public_sales_orders
+      comparableFields:
+        - fieldName: created_at
+          booleanExpressionType: timestamp_without_time_zone_bool_exp
+        - fieldName: customer_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: discount_amount
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: order_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: order_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: order_number
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: payment_status
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: required_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: sales_rep
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: ship_to_address
+          booleanExpressionType: text_bool_exp
+        - fieldName: shipped_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: shipping_cost
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: shipping_method
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: status
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: subtotal
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: tax_amount
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: total_amount
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: unit_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: updated_at
+          booleanExpressionType: timestamp_without_time_zone_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_sales_orders_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_sales_orders_agg_exp
+  operand:
+    object:
+      aggregatedType: public_sales_orders
+      aggregatableFields:
+        - fieldName: created_at
+          aggregateExpression: timestamp_without_time_zone_agg_exp
+        - fieldName: customer_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: discount_amount
+          aggregateExpression: numeric_agg_exp
+        - fieldName: order_date
+          aggregateExpression: date_agg_exp
+        - fieldName: order_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: order_number
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: payment_status
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: required_date
+          aggregateExpression: date_agg_exp
+        - fieldName: sales_rep
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: ship_to_address
+          aggregateExpression: text_agg_exp
+        - fieldName: shipped_date
+          aggregateExpression: date_agg_exp
+        - fieldName: shipping_cost
+          aggregateExpression: numeric_agg_exp
+        - fieldName: shipping_method
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: status
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: subtotal
+          aggregateExpression: numeric_agg_exp
+        - fieldName: tax_amount
+          aggregateExpression: numeric_agg_exp
+        - fieldName: total_amount
+          aggregateExpression: numeric_agg_exp
+        - fieldName: unit_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: updated_at
+          aggregateExpression: timestamp_without_time_zone_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_sales_orders_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_sales_orders_order_by_exp
+  operand:
+    object:
+      orderedType: public_sales_orders
+      orderableFields:
+        - fieldName: created_at
+          orderByExpression: timestamp_without_time_zone_order_by_exp
+        - fieldName: customer_id
+          orderByExpression: integer_order_by_exp
+        - fieldName: discount_amount
+          orderByExpression: numeric_order_by_exp
+        - fieldName: order_date
+          orderByExpression: date_order_by_exp
+        - fieldName: order_id
+          orderByExpression: integer_order_by_exp
+        - fieldName: order_number
+          orderByExpression: character_varying_order_by_exp
+        - fieldName: payment_status
+          orderByExpression: character_varying_order_by_exp
+        - fieldName: required_date
+          orderByExpression: date_order_by_exp
+        - fieldName: sales_rep
+          orderByExpression: character_varying_order_by_exp
+        - fieldName: ship_to_address
+          orderByExpression: text_order_by_exp
+        - fieldName: shipped_date
+          orderByExpression: date_order_by_exp
+        - fieldName: shipping_cost
+          orderByExpression: numeric_order_by_exp
+        - fieldName: shipping_method
+          orderByExpression: character_varying_order_by_exp
+        - fieldName: status
+          orderByExpression: character_varying_order_by_exp
+        - fieldName: subtotal
+          orderByExpression: numeric_order_by_exp
+        - fieldName: tax_amount
+          orderByExpression: numeric_order_by_exp
+        - fieldName: total_amount
+          orderByExpression: numeric_order_by_exp
+        - fieldName: unit_id
+          orderByExpression: integer_order_by_exp
+        - fieldName: updated_at
+          orderByExpression: timestamp_without_time_zone_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_sales_orders_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_sales_orders
+  description: |
+    # Revenue Transaction Framework
+
+    The Public Sales Orders model represents the organization's externally shareable record of 
+    customer transactions and revenue events. This model provides a structured framework for 
+    documenting sales activities while maintaining appropriate confidentiality boundaries around 
+    proprietary client relationships and commercial arrangements, supporting:
+
+    * **Revenue Reporting** - Enabling transparent communication of sales performance, order 
+      volumes, and financial outcomes at an appropriate level of detail
+    * **Customer Engagement** - Providing visibility into client relationships, transaction 
+      patterns, and market penetration for stakeholder communications
+    * **Fulfillment Transparency** - Offering insights into operational execution, delivery 
+      performance, and service level achievement for external reporting
+    * **Financial Analysis** - Supporting revenue composition analysis, payment status monitoring, 
+      and cash flow visibility for investor communications
+    * **Market Activity** - Demonstrating business momentum, transaction volumes, and commercial 
+      traction for stakeholder confidence building
+
+    ## Implementation Guidelines
+
+    The public sales order tracking system follows these key principles:
+    - Only transaction details authorized for external disclosure are included
+    - Pricing information maintains appropriate abstraction of proprietary arrangements
+    - Customer references link to public directory entries for consistent identification
+    - Status indicators clearly communicate fulfillment progress and transaction lifecycle
+    - Business unit attribution supports organizational performance reporting
+
+    ## Integration Context
+
+    The Public Sales Orders model connects to multiple external-facing systems:
+    - Drives revenue reporting in Financial Statements and Investor Communications
+    - Provides transaction evidence in Annual Reports and Regulatory Filings
+    - Supports market activity visualization in Executive Dashboards and Stakeholder Presentations
+    - Enables customer engagement metrics in Business Reviews and Performance Reporting
+    - Demonstrates operational execution in Service Level Reporting and Quality Metrics
+  objectType: public_sales_orders
+  source:
+    dataConnectorName: operations
+    collection: public.sales_orders
+  filterExpressionType: public_sales_orders_bool_exp
+  aggregateExpression: public_sales_orders_agg_exp
+  orderByExpression: public_sales_orders_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_sales_orders
+      subscription:
+        rootField: public_sales_orders
+    selectUniques:
+      - queryRootField: public_sales_orders_by_order_id
+        uniqueIdentifier:
+          - order_id
+        subscription:
+          rootField: public_sales_orders_by_order_id
+    filterInputTypeName: public_sales_orders_filter_input
+    aggregate:
+      queryRootField: public_sales_orders_aggregate
+      subscription:
+        rootField: public_sales_orders_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_sales_orders
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: order_items
+  sourceType: public_sales_orders
+  target:
+    model:
+      name: public_order_items
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: order_id
+      target:
+        modelField:
+          - fieldName: order_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer
+  sourceType: public_sales_orders
+  target:
+    model:
+      name: public_customers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customer_id
+      target:
+        modelField:
+          - fieldName: customer_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: business_unit
+  sourceType: public_sales_orders
+  target:
+    model:
+      name: public_business_units
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: unit_id
+      target:
+        modelField:
+          - fieldName: unit_id
