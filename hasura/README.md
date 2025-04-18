@@ -1,229 +1,266 @@
-# Axiom Hasura Installation Guide
+# Axiom Hasura Demo Development Guide
 
-Axiom provides a centralised platform for deploying and testing a variety of Hasura industry demos. It serves as:
-- A library of demo profiles for quick deployment.
-- A testing ground for showcasing new Hasura features with real-world examples.
+Axiom provides a centralized platform for deploying and testing a variety of Hasura industry demos. This guide will help you understand how to use existing demos and create new ones.
 
----
+## 🌟 Existing Demo Profiles
 
-## Existing Demo Profiles
-* starter
-* telco
-* aml
-* healthcare
+* starter - Basic example for new demo development
+* telco - Telecommunications industry demo
+* aml - Anti-Money Laundering compliance demo
+* healthcare - Patient operations and medical reference demo
+* cpg - Consumer Packaged Goods retail operations demo
+* gtm - Go-to-Market sales and marketing operations demo
 
-### How to Use
-To utilize an existing demo profile, run the following `ddn run` commands. These commands automatically use the scripts in the background:
+## 🚀 Using Existing Demos
 
-- **`build`**: Builds metadata for a specific demo context.
+To utilize an existing demo profile, run the following `ddn run` commands:
+
+- **`init`**: Initialize the environment for a specific demo (only needed once per profile).
   ```bash
-  ddn run build -- <context>
+  ddn run init -- <profile>
+  # Example: ddn run init -- telco
+  ```
+
+- **`build`**: Build metadata for a specific demo context.
+  ```bash
+  ddn run build -- <profile>
   # Example: ddn run build -- telco
   ```
 
-- **`docker-start`**: Sets up the demo's Docker environment.
+- **`docker-start`**: Set up the demo's Docker environment.
   ```bash
-  ddn run docker-start -- <context>
+  ddn run docker-start -- <profile>
   # Example: ddn run docker-start -- telco
   ```
 
-- **`demo`**: Executes both build and docker-start, then launches Hasura locally.
+- **`demo`**: Execute both build and docker-start, then launch Hasura locally.
   ```bash
-  ddn run demo -- <context>
+  ddn run demo -- <profile>
   # Example: ddn run demo -- telco
   ```
 
-- **`docker-stop`**: Stops all running Docker containers.
+- **`docker-stop`**: Stop all running Docker containers.
   ```bash
   ddn run docker-stop
   ```
 
-### Deploying to the Cloud
-For deployment instructions, see [scripts/deploy/README.md](../scripts/deploy/README.md).
+## 🏗️ Creating a New Demo Profile
 
----
+This section provides a comprehensive guide for creating a new industry demo profile. Each demo requires specific files and configurations in multiple directories.
 
-## Adding a New Demo Profile
+### Required Components Overview
 
-New profiles can be added with minimal effort, enabling streamlined testing and cloud deployment. 
+A complete demo profile requires:
 
-The simplest way to initialise a new industry demo profile within `axiom` is to create and configure supergraph, subgraph(s), and metadata elsewhere before merging it with the following instructions.
+1. **In the `.data` directory**: Docker configuration and seed data
+2. **In the `hasura` directory**:
+   - Environment files
+   - Compose configuration
+   - Supergraph configuration
+   - Industry-specific subgraphs and metadata
 
-Creating a new supergraph from scratch is beyond the scope of this documentation and the [DDN quickstart](https://hasura.io/docs/3.0/getting-started/quickstart/) should be followed
-
-### Step 1: Name Your Profile
-Decide on a name for your profile. This name (e.g., `telco`, `starter`) will be referenced throughout the repo.
+### Step 1: Set Up Your Profile Name
 
 ```bash
-# Set the $PROFILE variable for reuse
+# Set the profile variable for reuse
 PROFILE=<your_profile_name>
 echo $PROFILE
 
-# Change directory into hasura supergraph directory
+# Change directory into hasura
 cd hasura
 ```
 
-### Step 2: Create the Demo Project
-
-1. Create a new project in DDN cloud:
+### Step 2: Create Required Directory Structure
 
 ```bash
-ddn project create $PROFILE
-```
+# Create industry directory
+mkdir -p industry/$PROFILE
 
-2. Add a new context using `ddn context set` commands:
-
-```bash
-# Create a new context with the profile name
-ddn context set project $PROFILE
-ddn context set supergraph ../supergraph-config/$PROFILE/1-supergraph.yaml
-ddn context set localEnvFile ../.env.$PROFILE
-ddn context set cloudEnvFile ../.env.cloud.$PROFILE
-```
-
-### Step 2: Copy Subgraphs
-1. Copy subgraphs 
-
-Copy any subgraph directories from the source repository into `industry/$PROFILE`.
-
-2. Create subgraphs on DDN:
-
-Add subgraphs to the DDN project.
-
-   ```bash
-   ddn project subgraph create globals
-   ddn project subgraph create <your subgraph>
-   ```
-
-### Step 3: Copy Supergraph
-1. Set up a supergraph directory:
-```bash
+# Create supergraph config directory
 mkdir -p supergraph-config/$PROFILE
+
+# Create data directory
+mkdir -p ../.data/$PROFILE
 ```
 
-2. Copy `supergraph.yaml`
+### Step 3: Set Up Data Directory (`.data/$PROFILE`)
 
-Copy the `supergraph.yaml` from the source supergraph into `supergraph-config/$PROFILE/1-supergraph.yaml`.
-
-Adjust the paths within `1-supergraph.yaml` to reference the right location for subgraphs within `industry/$PROFILE`.
-
-> [!NOTE]
-> Add any additional `supergraph.yaml` files you have may be added to the same directory and the [deploy script](../scripts/deploy/) will automatically build them in order.
-
-### Step 4: Environment Files
-
-1. Create an .env template for example configuration
+The `.data` directory contains Docker configurations and seed data for local development.
 
 ```bash
-touch .env.$PROFILE.template
-git add -f .env.$PROFILE.template
+# Create the data directory structure
+mkdir -p ../.data/$PROFILE/postgres
+
+# Copy the starter compose.yaml as a template
+cp ../.data/starter/compose.yaml ../.data/$PROFILE/compose.yaml
+
+# Copy environment template and customize it
+cp ../.data/.env.template ../.data/$PROFILE/.env
+sed "s/CONTAINER_PREFIX=axiomdata/CONTAINER_PREFIX=axiom${PROFILE}/g" ../.data/$PROFILE/.env > ../.data/$PROFILE/.env.tmp && mv ../.data/$PROFILE/.env.tmp ../.data/$PROFILE/.env
 ```
 
-2. Copy environment files from your own supergraph to populate environments in this repository
+**Required files in `.data/$PROFILE`:**
 
+<<<<<<< Updated upstream
 Remember to include a JWT_SECRET configuration in your `.env` files to allow for builds to proceed:
 
 ```bash
 echo 'JWT_SECRET="hptj8supNeslwet7nhGGr5Uu5MombVVjDmcGMOyrWa8"' > .env.$PROFILE.template
 ```
+=======
+1. **`compose.yaml`**: Docker Compose configuration defining:
+   - Database containers (PostgreSQL, MongoDB, etc.)
+   - Redis for caching
+   - Caching plugin configuration
+   - Any other services needed for your demo
 
-_Optional_ Use the following one-liner to generate a JWT_SECRET
+2. **`postgres/`**: Directory containing SQL initialization scripts that will run when the container starts
+   - SQL files should be named with numerical prefixes (e.g., `1-schema.sql`, `2-data.sql`)
+   - These scripts create tables and populate them with seed data
+
+3. **`.env`**: Environment variables for Docker Compose
+   - Contains passwords and configuration for containers
+   - Should include `CONTAINER_PREFIX` to identify your demo's containers
+
+### Step 4: Set Up Hasura Directory Components
+
+#### 4.1: Create Environment Files
 
 ```bash
-openssl rand -base64 32
-```
+# Create environment files
+touch .env.$PROFILE.template .env.$PROFILE .env.cloud.$PROFILE
 
-3. Seed environment files:
-```bash
+# Add basic configuration to template
+cat > .env.$PROFILE.template << EOF
+JWT_SECRET="hptj8supNeslwet7nhGGr5Uu5MombVVjDmcGMOyrWa8"
+CACHING_PLUGIN_PRE_PARSE_URL="http://local.hasura.dev:8787/pre-parse"
+CACHING_PLUGIN_PRE_RESPONSE_URL="http://local.hasura.dev:8787/pre-response"
+CACHING_PLUGIN_REDIS_URL="redis://local.hasura.dev:6379"
+CACHING_PLUGIN_SECRET="zZkhKqFjqXR4g5MZCsJUZCnhCcoPyZ"
+>>>>>>> Stashed changes
+
+# Add your connector environment variables here
+${PROFILE^^}_MYPOSTGRES_READ_URL="postgres://postgres:hbGciOiJIUzI1NiIsInR5cCI6IkpX@local.hasura.dev:5432/postgres"
+${PROFILE^^}_MYPOSTGRES_WRITE_URL="postgres://postgres:hbGciOiJIUzI1NiIsInR5cCI6IkpX@local.hasura.dev:5432/postgres"
+${PROFILE^^}_MYPOSTGRES_AUTHORIZATION_HEADER="Bearer example-token"
+EOF
+
+# Copy template to actual env file
 cp .env.$PROFILE.template .env.$PROFILE
-touch .env.$PROFILE.template .env.cloud.$PROFILE
+
+# Add git tracking for template only
+git add -f .env.$PROFILE.template
 ```
 
-> [!WARNING]
-> Do not commit any database credentials to the pull request and ensure that the template file that gets force committed uses dummy data
-
----
-
-## [_Optional_] Set up local data
-
-Local docker-based configuration may be used to run demo profiles without cloud dependencies. This is demonstrated within the `telco` profile with a docker compose and database seeds in `.data/telco`.
-
-> [!TIP]
-> All below commands should be executed from the root directory of this repository.
-
-### Step 1: Initial Setup
-Use the starter profile to get bootstrapped sooner with existing/common data sets.
-
-Custom `compose.yaml` and `.env` may be used. Their location must be in `.data/$PROFILE`.
-
-1. Set up the data structure of the profile
-
-Run the following commands to set up your profile.
+#### 4.2: Create Docker Compose Configuration
 
 ```bash
-# Create the directory structure
-mkdir -p .data/$PROFILE
-
-# [Optional] Add the starter compose.yaml
-cp .data/starter/compose.yaml .data/$PROFILE/compose.yaml
-
-# [Optional] Add starter postgres dataset
-cp -r .data/starter/postgres .data/$PROFILE/
-
-# Copy and customise the environment file to show the name of your profile in docker
-cp .data/.env.template .data/$PROFILE/.env
-sed "s/CONTAINER_PREFIX=axiomdata/CONTAINER_PREFIX=axiom${PROFILE}/g" .data/$PROFILE/.env > .data/$PROFILE/.env.tmp && mv .data/$PROFILE/.env.tmp .data/$PROFILE/.env
+# Create profile-specific Docker Compose file
+cp compose.yaml compose-$PROFILE.yaml
 ```
 
-2. Customise `.data/$PROFILE/compose.yaml`
-
-Make any further adjustments to the profile's `compose.yaml` as appropriate to use different containers, data sources and seed data.
-
-### Step 2: Local Docker Setup
-
-No changes to `hasura/.hasura/context.yaml` are needed as ddn run uses a context parameter. The Docker environment will be started using:
+#### 4.3: Set Up Industry Directory Structure
 
 ```bash
-ddn run docker-start -- $PROFILE
+# Create a basic subgraph directory structure
+mkdir -p industry/$PROFILE/example/{connector/mypostgres,metadata}
+
+# Create a basic subgraph.yaml
+cat > industry/$PROFILE/example/subgraph.yaml << EOF
+kind: Subgraph
+version: v2
+definition:
+  name: example
+  generator:
+    rootPath: .
+    namingConvention: graphql
+  includePaths:
+    - metadata
+  envMapping:
+    ${PROFILE^^}_MYPOSTGRES_AUTHORIZATION_HEADER:
+      fromEnv: ${PROFILE^^}_MYPOSTGRES_AUTHORIZATION_HEADER
+    ${PROFILE^^}_MYPOSTGRES_READ_URL:
+      fromEnv: ${PROFILE^^}_MYPOSTGRES_READ_URL
+    ${PROFILE^^}_MYPOSTGRES_WRITE_URL:
+      fromEnv: ${PROFILE^^}_MYPOSTGRES_WRITE_URL
+  connectors:
+    - path: connector/mypostgres/connector.yaml
+      connectorLinkName: mypostgres
+EOF
+
+# Create a placeholder for metadata
+touch industry/$PROFILE/example/metadata/.keep
 ```
 
-This command will:
-1. Verify the context exists
-2. Check that the data directory exists at `.data/$PROFILE`
-3. Set the DATASET environment variable
-4. Start the Docker containers using the compose file at `.data/$PROFILE/compose.yaml`
+#### 4.4: Create Supergraph Configuration
 
-### Step 3: Docker Compose
-1. Create a profile-specific Docker Compose file
 ```bash
-cp hasura/compose.yaml hasura/compose-$PROFILE.yaml
+# Create supergraph configuration
+cat > supergraph-config/$PROFILE/1-supergraph.yaml << EOF
+kind: Supergraph
+version: v2
+definition:
+  subgraphs:
+    - ../../globals/subgraph-jwt.yaml
+    - ../../industry/$PROFILE/example/subgraph.yaml
+EOF
 ```
 
-> [!IMPORTANT]
-> Do not commit changes to the base `hasura/compose.yaml`.
+### Step 5: Develop Your Demo Content
 
----
+1. **Create connector configuration** in `industry/$PROFILE/example/connector/mypostgres/connector.yaml`
+2. **Add metadata files** in `industry/$PROFILE/example/metadata/` (HML files defining models, relationships, etc.)
+3. **Create SQL seed data** in `.data/$PROFILE/postgres/` to populate your database
+4. **Update environment variables** in `.env.$PROFILE` with actual connection details
 
-## Testing and Deployment
+### Step 6: Test Your Demo
 
-1. **Test the Build:**
 ```bash
+# Test the build
 ddn run build -- $PROFILE
-```
 
-2. **Start the Demo:**
-```bash
+# Start the demo
 ddn run demo -- $PROFILE
 ```
 
-3. **Cloud Deployment:**
-- Ensure data sources are internet-accessible.
-- Update `.env.cloud.$PROFILE` with the relevant URLs.
-- Run the deploy script:
-```bash
-./scripts/deploy/deploy.mjs --context $PROFILE --profile $PROFILE --log-level DEBUG --full-metadata-build --override
-```
----
+### Step 7: Prepare for Deployment
 
-## Notes
-- **Auto Deployments:** Ensure changes to Ansible playbooks and `.data` are committed to the `main` branch to allow them to be automatically deployed.
+For cloud deployment:
+
+1. Update `.env.cloud.$PROFILE` with internet-accessible data source URLs
+2. Deploy using the deploy script:
+
+```bash
+../scripts/deploy/deploy.mjs --context $PROFILE --profile $PROFILE --log-level DEBUG --full-metadata-build --override
+```
+
+## 📋 Demo Profile Checklist
+
+Ensure your demo profile includes:
+
+### In `.data/$PROFILE/`:
+- [ ] `compose.yaml` - Docker Compose configuration
+- [ ] `.env` - Environment variables for Docker
+- [ ] `postgres/` (or other database) - SQL initialization scripts
+
+### In `hasura/`:
+- [ ] `.env.$PROFILE.template` - Template environment file (safe to commit)
+- [ ] `.env.$PROFILE` - Local environment file (do not commit)
+- [ ] `.env.cloud.$PROFILE` - Cloud environment file
+- [ ] `compose-$PROFILE.yaml` - Profile-specific Docker Compose
+
+### In `hasura/industry/$PROFILE/`:
+- [ ] Subgraph directories with:
+  - [ ] `subgraph.yaml` - Subgraph configuration
+  - [ ] `connector/` - Connector configurations
+  - [ ] `metadata/` - HML metadata files
+
+### In `hasura/supergraph-config/$PROFILE/`:
+- [ ] `1-supergraph.yaml` - Primary supergraph configuration
+- [ ] Additional supergraph files if needed
+
+## 📚 Additional Resources
+
+- [DDN Documentation](https://hasura.io/docs/3.0/)
+- [Deployment Guide](../scripts/deploy/README.md)
+- [Connector Development Guide](https://hasura.io/docs/3.0/data-connectors/build/overview/)
