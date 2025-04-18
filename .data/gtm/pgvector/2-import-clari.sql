@@ -116,5 +116,5 @@ $$ LANGUAGE plpgsql;
 \COPY calls FROM '/docker-entrypoint-initdb.d/clari_calls.csv' WITH (FORMAT csv, HEADER true);
 \COPY call_action_items FROM '/docker-entrypoint-initdb.d/clari_call_action_items.csv' WITH (FORMAT csv, HEADER true);
 \COPY call_participants FROM '/docker-entrypoint-initdb.d/clari_call_participants.csv' WITH (FORMAT csv, HEADER true);
-\COPY transcriptions FROM '/docker-entrypoint-initdb.d/clari_transcriptions.csv' WITH (FORMAT csv, HEADER true);
-\COPY topics FROM '/docker-entrypoint-initdb.d/clari_topics.csv' WITH (FORMAT csv, HEADER true);
+\COPY call_transcriptions FROM '/docker-entrypoint-initdb.d/clari_call_transcriptions.csv' WITH (FORMAT csv, HEADER true);
+\COPY call_topics FROM '/docker-entrypoint-initdb.d/clari_call_topics.csv' WITH (FORMAT csv, HEADER true);

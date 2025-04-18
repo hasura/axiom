@@ -20,6 +20,21 @@ async function processDeviceAction(
   };
 }
 
+interface CreateCampaignObj {
+  campaignId?: string;
+  budget?: string;
+  campaignName?: string;
+  channel: string;
+  endDate: Date,
+  offerDetails: string,
+  targetSegment: string
+}
+
+export function CreateCampaign(camp: CreateCampaignObj): CreateCampaignObj {
+  camp.campaignId = `${Math.floor(Math.random() * 10000)}`;
+  return camp;
+}
+
 export async function activateDevice(
   email: string,
   customer_id: string,

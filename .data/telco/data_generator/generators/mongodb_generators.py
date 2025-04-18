@@ -747,13 +747,15 @@ def generate_user_profiles(customers: List[Dict], customer_links: List[Dict]) ->
         # Special case for Alexis Smith (customer ID 7)
         if customer_id == 7:
             # Ensure Alexis has a ticket about activating her iPhone
-            iphone_activation_ticket = generate_support_ticket(
-                customer_id=7,
-                issue_category="Device Issues",
-                status="New",
-                ticket_date=fake.date_time_between(start_date="-3m", end_date="-2m").strftime("%Y-%m-%d")
-            )
-            support_history.append(iphone_activation_ticket)
+            support_history.append({
+                "ticketId": f"TKT-{random.randint(10000, 99999)}",
+                "date": datetime.datetime.today().strftime("%Y-%m-%d"),
+                "issue": "iPhone activation trouble",
+                "category": "Device Issues",
+                "description": "Alexis is unable to activate her iPhone. Escalated for urgent assistance.",
+                "status": "New",
+                "resolutionNotes": "Escalated to Tier 2 support for immediate attention."
+            })
             
             # Add network issues ticket
             network_issue_ticket = generate_support_ticket(
