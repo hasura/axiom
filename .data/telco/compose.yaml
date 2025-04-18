@@ -1,9 +1,9 @@
-name: ${CONTAINER_PREFIX}
+name: axiomtelco
 services:
   # Databases
   postgres:
     image: postgres
-    container_name: ${CONTAINER_PREFIX}_postgres
+    container_name: axiomtelco_postgres
     restart: unless-stopped
     volumes:
       - postgres-data:/var/lib/postgresql/data
@@ -22,7 +22,7 @@ services:
 
   pgvector:
     image: ankane/pgvector:latest
-    container_name: ${CONTAINER_PREFIX}_pgvector
+    container_name: axiomtelco_pgvector
     restart: unless-stopped
     ports:
       - "5433:5432"
@@ -41,7 +41,7 @@ services:
 
   mongodb:
     image: mongo
-    container_name: ${CONTAINER_PREFIX}_mongodb
+    container_name: axiomtelco_mongodb
     restart: unless-stopped
     ports:
       - "27017:27017"
@@ -62,6 +62,7 @@ services:
   mongo-seed:
     env_file:
         - .env
+    container_name: axiomtelco_mongo_seed
     build:
         context: ./mongo_seed
         dockerfile: Dockerfile
@@ -76,7 +77,7 @@ services:
 
   clickhouse:
     image: clickhouse/clickhouse-server
-    container_name: ${CONTAINER_PREFIX}_clickhouse
+    container_name: axiomtelco_clickhouse
     restart: unless-stopped
     user: "101:101"
     ports:

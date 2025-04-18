@@ -1,9 +1,9 @@
-name: ${CONTAINER_PREFIX}
+name: axiomaml
 services:
   # Databases
   postgres:
     image: postgres
-    container_name: ${CONTAINER_PREFIX}_postgres
+    container_name: axiomaml_postgres
     restart: unless-stopped
     volumes:
       - postgres-data:/var/lib/postgresql/data
@@ -22,7 +22,7 @@ services:
 
   mongodb:
     image: mongo
-    container_name: ${CONTAINER_PREFIX}_mongodb
+    container_name: axiomaml_mongodb
     restart: unless-stopped
     ports:
       - "27017:27017"
@@ -39,6 +39,7 @@ services:
   mongo-seed:
     env_file:
         - .env
+    container_name: axiomaml_mongo_seed
     build:
         context: ./mongo_seed
         dockerfile: Dockerfile
