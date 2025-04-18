@@ -63,6 +63,9 @@ Retail operations and execution platform for CPG companies with product manageme
 ### 📊 GTM (Go-to-Market)
 Sales and marketing operations platform with opportunity management, campaign execution, and revenue forecasting.
 
+### 🔍 Due Diligence
+Financial due diligence platform with valuation operations, financial analysis, and ERP data integration.
+
 ### 👶 Starter
 A simplified example to act as a starter kit for new demo use cases.
 
@@ -144,6 +147,26 @@ ddn run init -- cpg
 ddn run demo -- cpg
 ```
 
+## 🔍 Due Diligence Demo in Action
+
+### Features
+- **Financial Analysis** - Comprehensive financial statement analysis and validation
+- **Valuation Operations** - Scenario modeling and adjustment calculations
+- **Inconsistency Detection** - Automated flagging of financial inconsistencies
+- **ERP Integration** - Complete access to enterprise resource planning data
+- **Finding Management** - Creation and tracking of due diligence findings
+
+### Quick Start
+```bash
+cd hasura
+
+# Setting up the environment
+ddn run init -- diligence
+
+# Launching the demo
+ddn run demo -- diligence
+```
+
 ## 📊 GTM Demo in Action
 
 ### Features
@@ -162,6 +185,8 @@ ddn run init -- gtm
 
 # Launching the demo
 ddn run demo -- gtm
+```
+
 ## 🛠️ Command Reference
 
 | **Command** | **What it Does** | **When to Use It** |

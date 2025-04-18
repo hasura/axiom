@@ -1,0 +1,324 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_inventory
+  description: >
+    Supply chain visibility framework that provides externally shareable information about
+    product availability, stock levels, and distribution capabilities. This model represents
+    the publicly accessible inventory status used for customer communications, partner
+    integrations, and stakeholder reporting while maintaining appropriate confidentiality
+    boundaries around proprietary supply chain operations.
+  fields:
+    - name: created_at
+      type: timestamp_without_time_zone
+      description: >
+        System timestamp recording when the inventory record was initially created in the public
+        directory. Supports audit trails, stock history tracking, and chronological documentation
+        of inventory management timelines. Helps establish the sequence of product availability
+        for supply chain transparency and performance reporting.
+    - name: inventory_id
+      type: integer!
+      description: >
+        Primary system identifier for each inventory position record. Serves as the unique reference
+        key for data integration with external systems, customer portals, and partner platforms.
+        Ensures consistent tracking of product availability across all supply chain communications
+        and stakeholder interactions.
+    - name: last_restock_date
+      type: date
+      description: >
+        Calendar date when the most recent replenishment of the product occurred. Provides
+        chronological context for inventory freshness, stock rotation patterns, and supply chain
+        activity. Supports transparency in product availability communications and inventory
+        age assessment for stakeholders.
+    - name: next_restock_date
+      type: date
+      description: >
+        Projected calendar date for the upcoming inventory replenishment that has been authorized
+        for external disclosure. Provides forward-looking visibility into product availability
+        for customers, partners, and stakeholders while maintaining appropriate confidentiality
+        around detailed supply chain planning.
+    - name: product_id
+      type: integer!
+      description: >
+        Reference to the specific product in the public product catalog. Links the inventory
+        position to the organization's public product taxonomy, enabling consistent identification
+        in external communications, availability reporting, and supply chain transparency
+        disclosures to stakeholders.
+    - name: quantity_allocated
+      type: integer
+      description: >
+        Number of units that have been reserved for confirmed orders but not yet shipped.
+        Provides transparency into near-term availability constraints while maintaining
+        appropriate confidentiality around specific customer allocations. Supports accurate
+        availability communications in customer-facing systems.
+    - name: quantity_on_hand
+      type: integer!
+      description: >
+        Current available stock level that has been authorized for external disclosure.
+        Represents the consolidated inventory position appropriate for stakeholder communications
+        while abstracting proprietary details about specific storage locations or internal
+        allocations. Supports transparent product availability reporting.
+    - name: restock_threshold
+      type: integer!
+      description: >
+        Minimum inventory level that triggers replenishment activities, disclosed for supply
+        chain transparency. Provides context for inventory management policies and availability
+        expectations while maintaining appropriate confidentiality around detailed operational
+        parameters and proprietary supply chain strategies.
+    - name: updated_at
+      type: timestamp_without_time_zone
+      description: >
+        System timestamp recording the most recent modification to the inventory information in
+        the public directory. Essential for tracking revision history, documenting when availability
+        data was refreshed, and maintaining currency of inventory information for effective
+        stakeholder communications and supply chain transparency.
+    - name: warehouse_location
+      type: character_varying!
+      description: >
+        Generalized geographic identifier for the physical storage location that has been authorized
+        for external disclosure. Provides spatial context for product availability and fulfillment
+        capabilities while maintaining appropriate security boundaries around specific facility
+        details. Supports logistics planning and delivery expectations.
+  graphql:
+    typeName: public_inventory
+    inputTypeName: public_inventory_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: operations
+      dataConnectorObjectType: public.inventory
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_inventory
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - created_at
+          - inventory_id
+          - last_restock_date
+          - next_restock_date
+          - product_id
+          - quantity_allocated
+          - quantity_on_hand
+          - restock_threshold
+          - updated_at
+          - warehouse_location
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_inventory_bool_exp
+  operand:
+    object:
+      type: public_inventory
+      comparableFields:
+        - fieldName: created_at
+          booleanExpressionType: timestamp_without_time_zone_bool_exp
+        - fieldName: inventory_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: last_restock_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: next_restock_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: product_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: quantity_allocated
+          booleanExpressionType: integer_bool_exp
+        - fieldName: quantity_on_hand
+          booleanExpressionType: integer_bool_exp
+        - fieldName: restock_threshold
+          booleanExpressionType: integer_bool_exp
+        - fieldName: updated_at
+          booleanExpressionType: timestamp_without_time_zone_bool_exp
+        - fieldName: warehouse_location
+          booleanExpressionType: character_varying_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_inventory_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_inventory_agg_exp
+  operand:
+    object:
+      aggregatedType: public_inventory
+      aggregatableFields:
+        - fieldName: created_at
+          aggregateExpression: timestamp_without_time_zone_agg_exp
+        - fieldName: inventory_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: last_restock_date
+          aggregateExpression: date_agg_exp
+        - fieldName: next_restock_date
+          aggregateExpression: date_agg_exp
+        - fieldName: product_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: quantity_allocated
+          aggregateExpression: integer_agg_exp
+        - fieldName: quantity_on_hand
+          aggregateExpression: integer_agg_exp
+        - fieldName: restock_threshold
+          aggregateExpression: integer_agg_exp
+        - fieldName: updated_at
+          aggregateExpression: timestamp_without_time_zone_agg_exp
+        - fieldName: warehouse_location
+          aggregateExpression: character_varying_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_inventory_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_inventory_order_by_exp
+  operand:
+    object:
+      orderedType: public_inventory
+      orderableFields:
+        - fieldName: created_at
+          orderByExpression: timestamp_without_time_zone_order_by_exp
+        - fieldName: inventory_id
+          orderByExpression: integer_order_by_exp
+        - fieldName: last_restock_date
+          orderByExpression: date_order_by_exp
+        - fieldName: next_restock_date
+          orderByExpression: date_order_by_exp
+        - fieldName: product_id
+          orderByExpression: integer_order_by_exp
+        - fieldName: quantity_allocated
+          orderByExpression: integer_order_by_exp
+        - fieldName: quantity_on_hand
+          orderByExpression: integer_order_by_exp
+        - fieldName: restock_threshold
+          orderByExpression: integer_order_by_exp
+        - fieldName: updated_at
+          orderByExpression: timestamp_without_time_zone_order_by_exp
+        - fieldName: warehouse_location
+          orderByExpression: character_varying_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_inventory_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_inventory
+  description: |
+    # Supply Chain Transparency Framework
+
+    The Public Inventory model represents the organization's externally shareable view of
+    product availability and stock positions. This model provides a structured framework for
+    communicating inventory status while maintaining appropriate confidentiality boundaries
+    around proprietary supply chain operations, supporting:
+
+    * **Availability Communication** - Enabling accurate, timely information about product
+      stock levels for customers, partners, and sales channels
+    * **Fulfillment Transparency** - Providing visibility into distribution capabilities,
+      warehouse locations, and delivery expectations for stakeholders
+    * **Supply Chain Resilience** - Demonstrating inventory management practices, stock
+      rotation patterns, and replenishment disciplines to investors and analysts
+    * **Partner Integration** - Supporting API connections with distributors, resellers, and
+      marketplace platforms for synchronized inventory visibility
+    * **Operational Accountability** - Evidencing responsible inventory management practices
+      for regulatory compliance and corporate governance
+
+    ## Implementation Guidelines
+
+    The public inventory transparency framework follows these key principles:
+    - Only stock information authorized for external disclosure is included
+    - Inventory positions maintain appropriate abstraction of proprietary supply chain details
+    - Warehouse locations are generalized to protect specific facility information
+    - Replenishment schedules balance transparency with competitive confidentiality
+    - Allocation information protects customer-specific details while providing availability context
+
+    ## Integration Context
+
+    The Public Inventory model connects to multiple external-facing systems:
+    - Powers availability indicators in E-commerce Platforms and Digital Catalogs
+    - Feeds stock level reporting in Partner Portals and Reseller Dashboards
+    - Supports delivery time estimates in Customer Service Systems
+    - Provides supply chain metrics for Investor Relations and Annual Reports
+    - Enables inventory transparency in ESG Reporting and Corporate Responsibility Disclosures
+  objectType: public_inventory
+  source:
+    dataConnectorName: operations
+    collection: public.inventory
+  filterExpressionType: public_inventory_bool_exp
+  aggregateExpression: public_inventory_agg_exp
+  orderByExpression: public_inventory_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_inventory
+      subscription:
+        rootField: public_inventory
+    selectUniques:
+      - queryRootField: public_inventory_by_inventory_id
+        uniqueIdentifier:
+          - inventory_id
+        subscription:
+          rootField: public_inventory_by_inventory_id
+    filterInputTypeName: public_inventory_filter_input
+    aggregate:
+      queryRootField: public_inventory_aggregate
+      subscription:
+        rootField: public_inventory_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_inventory
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: product
+  sourceType: public_inventory
+  target:
+    model:
+      name: public_products
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: product_id
+      target:
+        modelField:
+          - fieldName: product_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: inventory_movements
+  sourceType: public_inventory
+  target:
+    model:
+      name: public_inventory_movements
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: inventory_id
+      target:
+        modelField:
+          - fieldName: inventory_id
