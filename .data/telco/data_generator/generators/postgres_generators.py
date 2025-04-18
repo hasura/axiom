@@ -119,7 +119,7 @@ def generate_auth_users(num_customers: int) -> List[Dict]:
     for i in range(1, num_customers + 1):
         # Special case for user ID 7 - Alexis Smith
         if i == 7:
-            email = "alexis.smith@gmail.com"
+            email = "alexis.marchand@gmail.com"
             role = "customer"
         else:
             email = fake_email()
@@ -180,15 +180,21 @@ def generate_customers(auth_users: List[Dict]) -> List[Dict]:
         # Special case for customer ID 7 - Alexis Smith
         if i == 7:
             first_name = "Alexis"
-            last_name = "Smith"
+            last_name = "Marchand"
             country = "United States"
             state = "California"
+            city = "San Francisco"
+            address = "576 Folsom Street"
+            postcode = "94105"
+            phone_number = "+14158214231"
             segment = "Premium"
             satisfaction_score = 5
             churn_risk = 0.55
             churn_risk_factors = "{Service quality issues}"
             target_age = 34  # Mid-30s tech-savvy user
             dob = generate_dob(target_age)
+            image = "avatar_20.jpg"
+            last_survey_date_str = "2025-04-03"
         else:
             first_name = fake.first_name()
             last_name = fake.last_name()
