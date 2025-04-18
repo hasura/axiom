@@ -1,0 +1,362 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_suppliers
+  description: >
+    Vendor relationship framework that provides externally shareable information about the 
+    organization's supply chain partners and procurement sources. This model represents the 
+    publicly accessible supplier directory used for vendor communications, supply chain 
+    reporting, and stakeholder disclosures while maintaining appropriate confidentiality 
+    boundaries around proprietary commercial arrangements and strategic sourcing relationships.
+  fields:
+    - name: address
+      type: text
+      description: >
+        Location information for the supplier that has been authorized for external disclosure. 
+        Provides geographic context for supply chain mapping, logistics planning, and vendor 
+        distribution analysis while maintaining appropriate confidentiality around detailed 
+        facility information and proprietary location strategies.
+    - name: contact_email
+      type: character_varying
+      description: >
+        Primary electronic communication channel for the supplier relationship that has been 
+        authorized for external disclosure. Enables appropriate vendor engagement while 
+        maintaining confidentiality of specific personnel details and internal communication 
+        protocols. Supports transparent supply chain communication channels.
+    - name: contact_name
+      type: character_varying
+      description: >
+        Primary relationship owner or designated representative for the supplier that has been 
+        authorized for external disclosure. Provides a human point of reference for vendor 
+        engagement while maintaining appropriate confidentiality around detailed organizational 
+        structures and specific personnel assignments.
+    - name: contact_phone
+      type: character_varying
+      description: >
+        Primary voice communication channel for the supplier relationship that has been 
+        authorized for external disclosure. Enables appropriate vendor engagement while 
+        maintaining confidentiality of specific personnel details and internal communication 
+        protocols. Supports transparent supply chain communication channels.
+    - name: country
+      type: character_varying
+      description: >
+        Sovereign nation or recognized territory where the supplier is primarily located or 
+        registered. Provides geopolitical context for supply chain risk assessment, regulatory 
+        compliance, and geographic diversification analysis. Essential for stakeholder 
+        understanding of the organization's international sourcing footprint.
+    - name: created_at
+      type: timestamp_without_time_zone
+      description: >
+        System timestamp recording when the supplier record was initially created in the public 
+        directory. Supports audit trails, relationship history tracking, and chronological 
+        documentation of vendor engagement timelines. Helps establish the sequence of supplier 
+        onboarding for supply chain development reporting.
+    - name: is_active
+      type: boolean
+      description: >
+        Flag indicating whether the supplier relationship is currently operational. Enables 
+        stakeholders to distinguish between active vendors and historical or dormant relationships 
+        that remain relevant for reference, analysis, or potential reactivation. Essential for 
+        accurate representation of the active supply base.
+    - name: lead_time_days
+      type: integer
+      description: >
+        Standard fulfillment timeframe from order placement to delivery that has been authorized 
+        for external disclosure. Provides transparency into supply chain capabilities and 
+        operational planning parameters while maintaining appropriate confidentiality around 
+        detailed logistics arrangements and proprietary delivery commitments.
+    - name: payment_terms
+      type: character_varying
+      description: >
+        Standard financial arrangement conditions established for the supplier relationship 
+        that have been authorized for external disclosure. Represents the consolidated payment 
+        policy appropriate for stakeholder communications while abstracting confidential 
+        commercial terms. Supports transparent financial relationship parameters.
+    - name: primary_category
+      type: character_varying
+      description: >
+        Main product or service classification for the supplier's offerings that has been 
+        authorized for external disclosure. Provides context for the vendor's role in the 
+        supply chain and enables category-based analysis of procurement strategies and 
+        supplier diversification. Supports transparent spend categorization.
+    - name: supplier_id
+      type: integer!
+      description: >
+        Primary system identifier for each supplier organization. Serves as the unique reference 
+        key for data integration with external systems, reporting platforms, and stakeholder 
+        communications. Ensures consistent tracking of vendor relationships across all supply 
+        chain reporting and procurement analysis.
+    - name: supplier_name
+      type: character_varying!
+      description: >
+        Official designation of the vendor organization used in external communications. 
+        Provides human-readable identification of suppliers for stakeholders, partners, and 
+        regulatory authorities. Forms the basis for vendor attribution in supply chain reporting, 
+        procurement disclosures, and sustainability documentation.
+    - name: supplier_rating
+      type: integer
+      description: >
+        Standardized performance assessment score for the supplier that has been authorized 
+        for external disclosure. Represents the consolidated evaluation appropriate for 
+        stakeholder communications while abstracting proprietary assessment methodologies, 
+        detailed performance metrics, and competitive benchmarking data.
+    - name: updated_at
+      type: timestamp_without_time_zone
+      description: >
+        System timestamp recording the most recent modification to the supplier information 
+        in the public directory. Essential for tracking revision history, documenting when 
+        vendor data was refreshed, and maintaining currency of relationship information for 
+        effective stakeholder communications and supply chain reporting.
+  graphql:
+    typeName: public_suppliers
+    inputTypeName: public_suppliers_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: operations
+      dataConnectorObjectType: public.suppliers
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_suppliers
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - address
+          - contact_email
+          - contact_name
+          - contact_phone
+          - country
+          - created_at
+          - is_active
+          - lead_time_days
+          - payment_terms
+          - primary_category
+          - supplier_id
+          - supplier_name
+          - supplier_rating
+          - updated_at
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_suppliers_bool_exp
+  operand:
+    object:
+      type: public_suppliers
+      comparableFields:
+        - fieldName: address
+          booleanExpressionType: text_bool_exp
+        - fieldName: contact_email
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: contact_name
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: contact_phone
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: country
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: created_at
+          booleanExpressionType: timestamp_without_time_zone_bool_exp
+        - fieldName: is_active
+          booleanExpressionType: boolean_bool_exp
+        - fieldName: lead_time_days
+          booleanExpressionType: integer_bool_exp
+        - fieldName: payment_terms
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: primary_category
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: supplier_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: supplier_name
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: supplier_rating
+          booleanExpressionType: integer_bool_exp
+        - fieldName: updated_at
+          booleanExpressionType: timestamp_without_time_zone_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_suppliers_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_suppliers_agg_exp
+  operand:
+    object:
+      aggregatedType: public_suppliers
+      aggregatableFields:
+        - fieldName: address
+          aggregateExpression: text_agg_exp
+        - fieldName: contact_email
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: contact_name
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: contact_phone
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: country
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: created_at
+          aggregateExpression: timestamp_without_time_zone_agg_exp
+        - fieldName: is_active
+          aggregateExpression: boolean_agg_exp
+        - fieldName: lead_time_days
+          aggregateExpression: integer_agg_exp
+        - fieldName: payment_terms
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: primary_category
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: supplier_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: supplier_name
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: supplier_rating
+          aggregateExpression: integer_agg_exp
+        - fieldName: updated_at
+          aggregateExpression: timestamp_without_time_zone_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_suppliers_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_suppliers_order_by_exp
+  operand:
+    object:
+      orderedType: public_suppliers
+      orderableFields:
+        - fieldName: address
+          orderByExpression: text_order_by_exp
+        - fieldName: contact_email
+          orderByExpression: character_varying_order_by_exp
+        - fieldName: contact_name
+          orderByExpression: character_varying_order_by_exp
+        - fieldName: contact_phone
+          orderByExpression: character_varying_order_by_exp
+        - fieldName: country
+          orderByExpression: character_varying_order_by_exp
+        - fieldName: created_at
+          orderByExpression: timestamp_without_time_zone_order_by_exp
+        - fieldName: is_active
+          orderByExpression: boolean_order_by_exp
+        - fieldName: lead_time_days
+          orderByExpression: integer_order_by_exp
+        - fieldName: payment_terms
+          orderByExpression: character_varying_order_by_exp
+        - fieldName: primary_category
+          orderByExpression: character_varying_order_by_exp
+        - fieldName: supplier_id
+          orderByExpression: integer_order_by_exp
+        - fieldName: supplier_name
+          orderByExpression: character_varying_order_by_exp
+        - fieldName: supplier_rating
+          orderByExpression: integer_order_by_exp
+        - fieldName: updated_at
+          orderByExpression: timestamp_without_time_zone_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_suppliers_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_suppliers
+  description: |
+    # Supply Chain Partner Framework
+
+    The Public Suppliers model represents the organization's externally shareable directory of 
+    vendor relationships and procurement sources. This model provides a structured framework for 
+    managing supplier information while maintaining appropriate confidentiality boundaries around 
+    proprietary commercial arrangements, supporting:
+
+    * **Supply Chain Transparency** - Enabling appropriate visibility into sourcing relationships, 
+      vendor capabilities, and procurement networks for stakeholder reporting
+    * **Vendor Diversity Reporting** - Supporting analysis of supplier demographics, geographic 
+      distribution, and category coverage for sustainability and governance disclosures
+    * **Procurement Governance** - Providing the organizational context for vendor engagement 
+      policies, relationship management protocols, and supply chain risk mitigation
+    * **Compliance Documentation** - Ensuring proper recording of business relationships for 
+      regulatory reporting, ethical sourcing verification, and corporate governance
+    * **Operational Resilience** - Facilitating supply base analysis, vendor redundancy planning, 
+      and business continuity management for stakeholder confidence
+
+    ## Implementation Guidelines
+
+    The public supplier directory follows these key principles:
+    - Only vendor information authorized for external use is included
+    - Supplier records maintain appropriate abstraction of confidential commercial terms
+    - Active status indicators clearly distinguish current from historical relationships
+    - Geographic and category classifications use standardized taxonomies
+    - Performance metrics are appropriately aggregated for external consumption
+
+    ## Integration Context
+
+    The Public Suppliers model connects to multiple external-facing systems:
+    - Structures vendor attribution in Annual Reports and ESG Disclosures
+    - Powers supplier directories in Partner Portals and Procurement Platforms
+    - Provides organizational context for Supply Chain Transparency Reports
+    - Supports geographic mapping in Sourcing Strategy Communications
+    - Enables relationship visualization in Stakeholder Presentations and Governance Reports
+  objectType: public_suppliers
+  source:
+    dataConnectorName: operations
+    collection: public.suppliers
+  filterExpressionType: public_suppliers_bool_exp
+  aggregateExpression: public_suppliers_agg_exp
+  orderByExpression: public_suppliers_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_suppliers
+      subscription:
+        rootField: public_suppliers
+    selectUniques:
+      - queryRootField: public_suppliers_by_supplier_id
+        uniqueIdentifier:
+          - supplier_id
+        subscription:
+          rootField: public_suppliers_by_supplier_id
+    filterInputTypeName: public_suppliers_filter_input
+    aggregate:
+      queryRootField: public_suppliers_aggregate
+      subscription:
+        rootField: public_suppliers_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_suppliers
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: purchase_orders
+  sourceType: public_suppliers
+  target:
+    model:
+      name: public_purchase_orders
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: supplier_id
+      target:
+        modelField:
+          - fieldName: supplier_id

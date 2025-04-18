@@ -1,0 +1,286 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_product_categories
+  description: >
+    Product classification framework that provides externally shareable information about the
+    organization's offering taxonomy and market segmentation. This model represents the publicly
+    accessible categorization system used for catalog organization, market positioning, and
+    stakeholder communications while maintaining appropriate confidentiality boundaries around
+    proprietary product strategies and competitive positioning.
+  fields:
+    - name: category_id
+      type: integer!
+      description: >
+        Primary system identifier for each product category. Serves as the unique reference key
+        for data integration with external systems, catalog platforms, and stakeholder communications.
+        Ensures consistent tracking of product classifications across all market-facing communications
+        and offering analysis.
+    - name: category_name
+      type: character_varying!
+      description: >
+        Official designation of the product grouping used in external communications. Provides
+        human-readable identification of offering categories for stakeholders, customers, and
+        market analysts. Forms the basis for product classification in public catalogs, marketing
+        materials, and industry reporting.
+    - name: created_at
+      type: timestamp_without_time_zone
+      description: >
+        System timestamp recording when the product category was initially created in the public
+        taxonomy. Supports audit trails, catalog history tracking, and chronological documentation
+        of offering evolution. Helps establish the sequence of product portfolio development for
+        market positioning and innovation reporting.
+    - name: description
+      type: text
+      description: >
+        Narrative explanation of the product category that has been authorized for external
+        disclosure. Provides context about the grouping's purpose, characteristics, and market
+        positioning while maintaining appropriate confidentiality around detailed product strategies
+        and competitive differentiation tactics.
+    - name: parent_category_id
+      type: integer
+      description: >
+        Reference to the broader product classification that contains this category. Establishes
+        the hierarchical taxonomy structure for the organization's offerings, enabling consistent
+        navigation and logical organization in public catalogs, market communications, and
+        stakeholder reporting about product portfolio composition.
+    - name: updated_at
+      type: timestamp_without_time_zone
+      description: >
+        System timestamp recording the most recent modification to the product category information
+        in the public taxonomy. Essential for tracking revision history, documenting when
+        classification data was refreshed, and maintaining currency of offering information for
+        effective stakeholder communications and market positioning.
+  graphql:
+    typeName: public_product_categories
+    inputTypeName: public_product_categories_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: operations
+      dataConnectorObjectType: public.product_categories
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_product_categories
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - category_id
+          - category_name
+          - created_at
+          - description
+          - parent_category_id
+          - updated_at
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_product_categories_bool_exp
+  operand:
+    object:
+      type: public_product_categories
+      comparableFields:
+        - fieldName: category_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: category_name
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: created_at
+          booleanExpressionType: timestamp_without_time_zone_bool_exp
+        - fieldName: description
+          booleanExpressionType: text_bool_exp
+        - fieldName: parent_category_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: updated_at
+          booleanExpressionType: timestamp_without_time_zone_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_product_categories_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_product_categories_agg_exp
+  operand:
+    object:
+      aggregatedType: public_product_categories
+      aggregatableFields:
+        - fieldName: category_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: category_name
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: created_at
+          aggregateExpression: timestamp_without_time_zone_agg_exp
+        - fieldName: description
+          aggregateExpression: text_agg_exp
+        - fieldName: parent_category_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: updated_at
+          aggregateExpression: timestamp_without_time_zone_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_product_categories_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_product_categories_order_by_exp
+  operand:
+    object:
+      orderedType: public_product_categories
+      orderableFields:
+        - fieldName: category_id
+          orderByExpression: integer_order_by_exp
+        - fieldName: category_name
+          orderByExpression: character_varying_order_by_exp
+        - fieldName: created_at
+          orderByExpression: timestamp_without_time_zone_order_by_exp
+        - fieldName: description
+          orderByExpression: text_order_by_exp
+        - fieldName: parent_category_id
+          orderByExpression: integer_order_by_exp
+        - fieldName: updated_at
+          orderByExpression: timestamp_without_time_zone_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_product_categories_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_product_categories
+  description: |
+    # Product Classification Framework
+
+    The Public Product Categories model represents the organization's externally shareable
+    taxonomy of offerings and market segments. This model provides a structured framework for
+    organizing and classifying products while maintaining appropriate confidentiality boundaries
+    around proprietary portfolio strategies, supporting:
+
+    * **Catalog Organization** - Enabling logical, navigable grouping of offerings for customers,
+      partners, and market participants
+    * **Market Positioning** - Providing clear segmentation and classification of the organization's
+      products within industry standard taxonomies
+    * **Portfolio Communication** - Supporting consistent messaging about product families,
+      solution areas, and offering relationships
+    * **Competitive Analysis** - Facilitating appropriate market comparisons and industry
+      benchmarking at the category level
+    * **Investment Narrative** - Demonstrating strategic focus areas and portfolio evolution
+      for investor communications
+
+    ## Implementation Guidelines
+
+    The public product classification system follows these key principles:
+    - Only category information authorized for external disclosure is included
+    - Hierarchical relationships enable intuitive navigation of the offering portfolio
+    - Category naming follows industry-standard conventions for market clarity
+    - Descriptions balance transparency with protection of proprietary strategies
+    - Classification evolution supports historical analysis of portfolio development
+
+    ## Integration Context
+
+    The Public Product Categories model connects to multiple external-facing systems:
+    - Structures navigation in Digital Catalogs and E-commerce Platforms
+    - Organizes offerings in Marketing Materials and Sales Collateral
+    - Provides segmentation for Investor Communications and Annual Reports
+    - Supports industry classification in Analyst Briefings and Market Research
+    - Enables portfolio visualization in Product Roadmaps and Strategic Communications
+  objectType: public_product_categories
+  source:
+    dataConnectorName: operations
+    collection: public.product_categories
+  filterExpressionType: public_product_categories_bool_exp
+  aggregateExpression: public_product_categories_agg_exp
+  orderByExpression: public_product_categories_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_product_categories
+      subscription:
+        rootField: public_product_categories
+    selectUniques:
+      - queryRootField: public_product_categories_by_category_id
+        uniqueIdentifier:
+          - category_id
+        subscription:
+          rootField: public_product_categories_by_category_id
+    filterInputTypeName: public_product_categories_filter_input
+    aggregate:
+      queryRootField: public_product_categories_aggregate
+      subscription:
+        rootField: public_product_categories_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_product_categories
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: product_category
+  sourceType: public_product_categories
+  target:
+    model:
+      name: public_product_categories
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: parent_category_id
+      target:
+        modelField:
+          - fieldName: category_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: product_categories
+  sourceType: public_product_categories
+  target:
+    model:
+      name: public_product_categories
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: category_id
+      target:
+        modelField:
+          - fieldName: parent_category_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: products
+  sourceType: public_product_categories
+  target:
+    model:
+      name: public_products
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: category_id
+      target:
+        modelField:
+          - fieldName: category_id

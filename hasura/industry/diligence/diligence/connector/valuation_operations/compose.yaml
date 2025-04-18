@@ -1,0 +1,13 @@
+services:
+  diligence_valuation_operations:
+    build:
+      context: .
+      dockerfile: .hasura-connector/Dockerfile
+    environment:
+      HASURA_SERVICE_TOKEN_SECRET: $DILIGENCE_VALUATION_OPERATIONS_HASURA_SERVICE_TOKEN_SECRET
+      OTEL_EXPORTER_OTLP_ENDPOINT: $DILIGENCE_VALUATION_OPERATIONS_OTEL_EXPORTER_OTLP_ENDPOINT
+      OTEL_SERVICE_NAME: $DILIGENCE_VALUATION_OPERATIONS_OTEL_SERVICE_NAME
+    extra_hosts:
+      - local.hasura.dev:host-gateway
+    ports:
+      - 4477:8080
