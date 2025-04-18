@@ -57,6 +57,12 @@ Compliance and risk management with real-time monitoring and automated flagging.
 ### 🏥 Healthcare
 Patient operations platform with scheduling, case management, and medical reference data.
 
+### 🛒 CPG (Consumer Packaged Goods)
+Retail operations and execution platform for CPG companies with product management, inventory allocation, and promotional planning.
+
+### 📊 GTM (Go-to-Market)
+Sales and marketing operations platform with opportunity management, campaign execution, and revenue forecasting.
+
 ### 🔍 Due Diligence
 Financial due diligence platform with valuation operations, financial analysis, and ERP data integration.
 
@@ -121,6 +127,26 @@ ddn run init -- healthcare
 ddn run demo -- healthcare
 ```
 
+## 🛒 CPG Demo in Action
+
+### Features
+- **Product Management** - Comprehensive product catalog and category management
+- **Retail Operations** - Inventory tracking, assortment planning, and availability monitoring
+- **Promotional Planning** - Campaign creation, discount management, and promotional effectiveness
+- **Market Analytics** - Sales tracking, market share analysis, and competitive intelligence
+- **Retail Execution** - Store-level merchandising, pricing updates, and inventory allocation
+
+### Quick Start
+```bash
+cd hasura
+
+# Setting up the environment
+ddn run init -- cpg
+
+# Launching the demo
+ddn run demo -- cpg
+```
+
 ## 🔍 Due Diligence Demo in Action
 
 ### Features
@@ -139,6 +165,26 @@ ddn run init -- diligence
 
 # Launching the demo
 ddn run demo -- diligence
+```
+
+## 📊 GTM Demo in Action
+
+### Features
+- **Sales Operations** - Opportunity management, forecasting, and pipeline analytics
+- **Marketing Automation** - Campaign management, lead nurturing, and sequence creation
+- **Revenue Intelligence** - Call analytics, opportunity insights, and revenue forecasting
+- **Account Management** - Customer 360° view with integrated contact and account data
+- **Sales Enablement** - Content management, call transcriptions, and action items
+
+### Quick Start
+```bash
+cd hasura
+
+# Setting up the environment
+ddn run init -- gtm
+
+# Launching the demo
+ddn run demo -- gtm
 ```
 
 ## 🛠️ Command Reference

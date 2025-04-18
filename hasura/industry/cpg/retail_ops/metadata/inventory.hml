@@ -1,0 +1,1309 @@
+kind: DataConnectorLink
+version: v1
+definition:
+  name: inventory
+  url:
+    readWriteUrls:
+      read:
+        valueFromEnv: RETAIL_OPS_INVENTORY_READ_URL
+      write:
+        valueFromEnv: RETAIL_OPS_INVENTORY_WRITE_URL
+  headers:
+    Authorization:
+      valueFromEnv: RETAIL_OPS_INVENTORY_AUTHORIZATION_HEADER
+  schema:
+    version: v0.1
+    schema:
+      scalar_types:
+        array:
+          representation:
+            type: json
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+            _in:
+              type: in
+            _neq:
+              type: custom
+              argument_type:
+                name: array
+                type: named
+        boolean:
+          representation:
+            type: boolean
+          aggregate_functions:
+            max:
+              result_type:
+                name: boolean
+                type: named
+            min:
+              result_type:
+                name: boolean
+                type: named
+          comparison_operators:
+            _eq:
+              type: equal
+            _in:
+              type: in
+            _neq:
+              type: custom
+              argument_type:
+                name: boolean
+                type: named
+        character_varying:
+          representation:
+            type: string
+          aggregate_functions:
+            max:
+              result_type:
+                name: character_varying
+                type: named
+            min:
+              result_type:
+                name: character_varying
+                type: named
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                name: character_varying
+                type: named
+            _gte:
+              type: custom
+              argument_type:
+                name: character_varying
+                type: named
+            _ilike:
+              type: custom
+              argument_type:
+                name: character_varying
+                type: named
+            _in:
+              type: in
+            _iregex:
+              type: custom
+              argument_type:
+                name: character_varying
+                type: named
+            _like:
+              type: custom
+              argument_type:
+                name: character_varying
+                type: named
+            _lt:
+              type: custom
+              argument_type:
+                name: character_varying
+                type: named
+            _lte:
+              type: custom
+              argument_type:
+                name: character_varying
+                type: named
+            _neq:
+              type: custom
+              argument_type:
+                name: character_varying
+                type: named
+            _nilike:
+              type: custom
+              argument_type:
+                name: character_varying
+                type: named
+            _niregex:
+              type: custom
+              argument_type:
+                name: character_varying
+                type: named
+            _nlike:
+              type: custom
+              argument_type:
+                name: character_varying
+                type: named
+            _nregex:
+              type: custom
+              argument_type:
+                name: character_varying
+                type: named
+            _regex:
+              type: custom
+              argument_type:
+                name: character_varying
+                type: named
+        date:
+          representation:
+            type: date
+          aggregate_functions:
+            max:
+              result_type:
+                name: date
+                type: named
+            min:
+              result_type:
+                name: date
+                type: named
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                name: date
+                type: named
+            _gte:
+              type: custom
+              argument_type:
+                name: date
+                type: named
+            _in:
+              type: in
+            _lt:
+              type: custom
+              argument_type:
+                name: date
+                type: named
+            _lte:
+              type: custom
+              argument_type:
+                name: date
+                type: named
+            _neq:
+              type: custom
+              argument_type:
+                name: date
+                type: named
+        integer:
+          representation:
+            type: int32
+          aggregate_functions:
+            avg:
+              result_type:
+                name: integer
+                type: named
+            max:
+              result_type:
+                name: integer
+                type: named
+            min:
+              result_type:
+                name: integer
+                type: named
+            stddev_pop:
+              result_type:
+                name: integer
+                type: named
+            stddev_samp:
+              result_type:
+                name: integer
+                type: named
+            sum:
+              result_type:
+                name: integer
+                type: named
+            var_pop:
+              result_type:
+                name: integer
+                type: named
+            var_samp:
+              result_type:
+                name: integer
+                type: named
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                name: integer
+                type: named
+            _gte:
+              type: custom
+              argument_type:
+                name: integer
+                type: named
+            _in:
+              type: in
+            _lt:
+              type: custom
+              argument_type:
+                name: integer
+                type: named
+            _lte:
+              type: custom
+              argument_type:
+                name: integer
+                type: named
+            _neq:
+              type: custom
+              argument_type:
+                name: integer
+                type: named
+        numeric:
+          representation:
+            type: bigdecimal
+          aggregate_functions:
+            avg:
+              result_type:
+                name: numeric
+                type: named
+            max:
+              result_type:
+                name: numeric
+                type: named
+            min:
+              result_type:
+                name: numeric
+                type: named
+            stddev_pop:
+              result_type:
+                name: numeric
+                type: named
+            stddev_samp:
+              result_type:
+                name: numeric
+                type: named
+            sum:
+              result_type:
+                name: numeric
+                type: named
+            var_pop:
+              result_type:
+                name: numeric
+                type: named
+            var_samp:
+              result_type:
+                name: numeric
+                type: named
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                name: numeric
+                type: named
+            _gte:
+              type: custom
+              argument_type:
+                name: numeric
+                type: named
+            _in:
+              type: in
+            _lt:
+              type: custom
+              argument_type:
+                name: numeric
+                type: named
+            _lte:
+              type: custom
+              argument_type:
+                name: numeric
+                type: named
+            _neq:
+              type: custom
+              argument_type:
+                name: numeric
+                type: named
+        text:
+          representation:
+            type: string
+          aggregate_functions:
+            max:
+              result_type:
+                name: text
+                type: named
+            min:
+              result_type:
+                name: text
+                type: named
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                name: text
+                type: named
+            _gte:
+              type: custom
+              argument_type:
+                name: text
+                type: named
+            _ilike:
+              type: custom
+              argument_type:
+                name: text
+                type: named
+            _in:
+              type: in
+            _iregex:
+              type: custom
+              argument_type:
+                name: text
+                type: named
+            _like:
+              type: custom
+              argument_type:
+                name: text
+                type: named
+            _lt:
+              type: custom
+              argument_type:
+                name: text
+                type: named
+            _lte:
+              type: custom
+              argument_type:
+                name: text
+                type: named
+            _neq:
+              type: custom
+              argument_type:
+                name: text
+                type: named
+            _nilike:
+              type: custom
+              argument_type:
+                name: text
+                type: named
+            _niregex:
+              type: custom
+              argument_type:
+                name: text
+                type: named
+            _nlike:
+              type: custom
+              argument_type:
+                name: text
+                type: named
+            _nregex:
+              type: custom
+              argument_type:
+                name: text
+                type: named
+            _regex:
+              type: custom
+              argument_type:
+                name: text
+                type: named
+        timestamp_without_time_zone:
+          representation:
+            type: timestamp
+          aggregate_functions:
+            max:
+              result_type:
+                name: timestamp_without_time_zone
+                type: named
+            min:
+              result_type:
+                name: timestamp_without_time_zone
+                type: named
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                name: timestamp_without_time_zone
+                type: named
+            _gte:
+              type: custom
+              argument_type:
+                name: timestamp_without_time_zone
+                type: named
+            _in:
+              type: in
+            _lt:
+              type: custom
+              argument_type:
+                name: timestamp_without_time_zone
+                type: named
+            _lte:
+              type: custom
+              argument_type:
+                name: timestamp_without_time_zone
+                type: named
+            _neq:
+              type: custom
+              argument_type:
+                name: timestamp_without_time_zone
+                type: named
+      object_types:
+        public.assortment:
+          fields:
+            assortment_id:
+              type:
+                name: integer
+                type: named
+              arguments: {}
+            end_date:
+              type:
+                type: nullable
+                underlying_type:
+                  name: date
+                  type: named
+              arguments: {}
+            facings:
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+              arguments: {}
+            is_core_assortment:
+              type:
+                type: nullable
+                underlying_type:
+                  name: boolean
+                  type: named
+              arguments: {}
+            is_online_only:
+              type:
+                type: nullable
+                underlying_type:
+                  name: boolean
+                  type: named
+              arguments: {}
+            is_promotional_only:
+              type:
+                type: nullable
+                underlying_type:
+                  name: boolean
+                  type: named
+              arguments: {}
+            notes:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+              arguments: {}
+            planogram_position:
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+              arguments: {}
+            product_id:
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+              arguments: {}
+            retailer_id:
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+              arguments: {}
+            start_date:
+              type:
+                name: date
+                type: named
+              arguments: {}
+            status:
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+              arguments: {}
+        public.availability:
+          fields:
+            availability_id:
+              type:
+                name: integer
+                type: named
+              arguments: {}
+            date:
+              type:
+                name: date
+                type: named
+              arguments: {}
+            days_of_supply:
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+              arguments: {}
+            in_stock_percentage:
+              type:
+                type: nullable
+                underlying_type:
+                  name: numeric
+                  type: named
+              arguments: {}
+            is_online:
+              type:
+                type: nullable
+                underlying_type:
+                  name: boolean
+                  type: named
+              arguments: {}
+            notes:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+              arguments: {}
+            on_shelf_availability_percentage:
+              type:
+                type: nullable
+                underlying_type:
+                  name: numeric
+                  type: named
+              arguments: {}
+            out_of_stock_incidents:
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+              arguments: {}
+            product_id:
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+              arguments: {}
+            retailer_id:
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+              arguments: {}
+        public.demand_forecasts:
+          fields:
+            actual_quantity:
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+              arguments: {}
+            forecast_confidence:
+              type:
+                type: nullable
+                underlying_type:
+                  name: numeric
+                  type: named
+              arguments: {}
+            forecast_date:
+              type:
+                name: date
+                type: named
+              arguments: {}
+            forecast_error_percentage:
+              type:
+                type: nullable
+                underlying_type:
+                  name: numeric
+                  type: named
+              arguments: {}
+            forecast_id:
+              type:
+                name: integer
+                type: named
+              arguments: {}
+            forecast_period_end:
+              type:
+                name: date
+                type: named
+              arguments: {}
+            forecast_period_start:
+              type:
+                name: date
+                type: named
+              arguments: {}
+            forecasted_quantity:
+              type:
+                name: integer
+                type: named
+              arguments: {}
+            notes:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+              arguments: {}
+            product_id:
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+              arguments: {}
+            retailer_id:
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+              arguments: {}
+        public.inventory:
+          fields:
+            date:
+              type:
+                name: date
+                type: named
+              arguments: {}
+            days_of_supply:
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+              arguments: {}
+            expiration_date:
+              type:
+                type: nullable
+                underlying_type:
+                  name: date
+                  type: named
+              arguments: {}
+            inventory_id:
+              type:
+                name: integer
+                type: named
+              arguments: {}
+            inventory_value:
+              type:
+                type: nullable
+                underlying_type:
+                  name: numeric
+                  type: named
+              arguments: {}
+            lot_number:
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+              arguments: {}
+            max_capacity:
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+              arguments: {}
+            product_id:
+              type:
+                name: integer
+                type: named
+              arguments: {}
+            quantity_allocated:
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+              arguments: {}
+            quantity_available:
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+              arguments: {}
+            quantity_on_hand:
+              type:
+                name: integer
+                type: named
+              arguments: {}
+            reorder_point:
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+              arguments: {}
+            warehouse_id:
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+              arguments: {}
+        public.inventory_transactions:
+          fields:
+            notes:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+              arguments: {}
+            product_id:
+              type:
+                name: integer
+                type: named
+              arguments: {}
+            quantity:
+              type:
+                name: integer
+                type: named
+              arguments: {}
+            reference_number:
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+              arguments: {}
+            transaction_date:
+              type:
+                name: timestamp_without_time_zone
+                type: named
+              arguments: {}
+            transaction_id:
+              type:
+                name: integer
+                type: named
+              arguments: {}
+            transaction_type:
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+              arguments: {}
+            warehouse_id:
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+              arguments: {}
+        public.product_categories_copy:
+          fields:
+            category_description:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+              arguments: {}
+            category_id:
+              type:
+                name: integer
+                type: named
+              arguments: {}
+            category_name:
+              type:
+                name: character_varying
+                type: named
+              arguments: {}
+            is_seasonal:
+              type:
+                type: nullable
+                underlying_type:
+                  name: boolean
+                  type: named
+              arguments: {}
+            parent_category_id:
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+              arguments: {}
+            typical_margin_percentage:
+              type:
+                type: nullable
+                underlying_type:
+                  name: numeric
+                  type: named
+              arguments: {}
+        public.products_copy:
+          fields:
+            brand_id:
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+              arguments: {}
+            case_pack:
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+              arguments: {}
+            category_id:
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+              arguments: {}
+            discontinue_date:
+              type:
+                type: nullable
+                underlying_type:
+                  name: date
+                  type: named
+              arguments: {}
+            high_velocity:
+              type:
+                type: nullable
+                underlying_type:
+                  name: boolean
+                  type: named
+              arguments: {}
+            is_glutenfree:
+              type:
+                type: nullable
+                underlying_type:
+                  name: boolean
+                  type: named
+              arguments: {}
+            is_organic:
+              type:
+                type: nullable
+                underlying_type:
+                  name: boolean
+                  type: named
+              arguments: {}
+            is_seasonal:
+              type:
+                type: nullable
+                underlying_type:
+                  name: boolean
+                  type: named
+              arguments: {}
+            launch_date:
+              type:
+                type: nullable
+                underlying_type:
+                  name: date
+                  type: named
+              arguments: {}
+            msrp:
+              type:
+                type: nullable
+                underlying_type:
+                  name: numeric
+                  type: named
+              arguments: {}
+            product_id:
+              type:
+                name: integer
+                type: named
+              arguments: {}
+            product_name:
+              type:
+                name: character_varying
+                type: named
+              arguments: {}
+            product_sku:
+              type:
+                name: character_varying
+                type: named
+              arguments: {}
+            subcategory_id:
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+              arguments: {}
+            unit_measure:
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+              arguments: {}
+            unit_size:
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+              arguments: {}
+            weight_oz:
+              type:
+                type: nullable
+                underlying_type:
+                  name: numeric
+                  type: named
+              arguments: {}
+            wholesale_price:
+              type:
+                type: nullable
+                underlying_type:
+                  name: numeric
+                  type: named
+              arguments: {}
+        public.retailers_copy:
+          fields:
+            account_tier:
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+              arguments: {}
+            annual_revenue_tier:
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+              arguments: {}
+            channel_id:
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+              arguments: {}
+            has_ecommerce:
+              type:
+                type: nullable
+                underlying_type:
+                  name: boolean
+                  type: named
+              arguments: {}
+            retailer_id:
+              type:
+                name: integer
+                type: named
+              arguments: {}
+            retailer_name:
+              type:
+                name: character_varying
+                type: named
+              arguments: {}
+            sales_region:
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+              arguments: {}
+        public.shipping:
+          fields:
+            actual_arrival_date:
+              type:
+                type: nullable
+                underlying_type:
+                  name: date
+                  type: named
+              arguments: {}
+            carrier:
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+              arguments: {}
+            destination_id:
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+              arguments: {}
+            destination_type:
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+              arguments: {}
+            expected_arrival_date:
+              type:
+                name: date
+                type: named
+              arguments: {}
+            origin_warehouse_id:
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+              arguments: {}
+            product_id:
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+              arguments: {}
+            quantity:
+              type:
+                name: integer
+                type: named
+              arguments: {}
+            ship_date:
+              type:
+                name: date
+                type: named
+              arguments: {}
+            shipping_cost:
+              type:
+                type: nullable
+                underlying_type:
+                  name: numeric
+                  type: named
+              arguments: {}
+            shipping_id:
+              type:
+                name: integer
+                type: named
+              arguments: {}
+            status:
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+              arguments: {}
+            tracking_number:
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+              arguments: {}
+        public.supply_chain_events:
+          fields:
+            affected_products:
+              type:
+                type: nullable
+                underlying_type:
+                  name: array
+                  type: named
+              arguments: {}
+            affected_warehouses:
+              type:
+                type: nullable
+                underlying_type:
+                  name: array
+                  type: named
+              arguments: {}
+            description:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+              arguments: {}
+            end_date:
+              type:
+                type: nullable
+                underlying_type:
+                  name: date
+                  type: named
+              arguments: {}
+            event_id:
+              type:
+                name: integer
+                type: named
+              arguments: {}
+            event_type:
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+              arguments: {}
+            impact_estimate:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+              arguments: {}
+            mitigation_actions:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+              arguments: {}
+            severity:
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+              arguments: {}
+            start_date:
+              type:
+                name: date
+                type: named
+              arguments: {}
+        public.warehouses:
+          fields:
+            location_city:
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+              arguments: {}
+            location_country:
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+              arguments: {}
+            location_state:
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+              arguments: {}
+            max_capacity_pallets:
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+              arguments: {}
+            operating_cost_per_month:
+              type:
+                type: nullable
+                underlying_type:
+                  name: numeric
+                  type: named
+              arguments: {}
+            square_footage:
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+              arguments: {}
+            warehouse_id:
+              type:
+                name: integer
+                type: named
+              arguments: {}
+            warehouse_name:
+              type:
+                name: character_varying
+                type: named
+              arguments: {}
+            warehouse_type:
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+              arguments: {}
+      collections:
+        - name: public.assortment
+          arguments: {}
+          type: public.assortment
+          uniqueness_constraints:
+            assortment_id:
+              unique_columns:
+                - assortment_id
+          foreign_keys: {}
+        - name: public.availability
+          arguments: {}
+          type: public.availability
+          uniqueness_constraints:
+            availability_id:
+              unique_columns:
+                - availability_id
+          foreign_keys: {}
+        - name: public.demand_forecasts
+          arguments: {}
+          type: public.demand_forecasts
+          uniqueness_constraints:
+            forecast_id:
+              unique_columns:
+                - forecast_id
+          foreign_keys: {}
+        - name: public.inventory
+          arguments: {}
+          type: public.inventory
+          uniqueness_constraints:
+            inventory_id:
+              unique_columns:
+                - inventory_id
+          foreign_keys: {}
+        - name: public.inventory_transactions
+          arguments: {}
+          type: public.inventory_transactions
+          uniqueness_constraints:
+            transaction_id:
+              unique_columns:
+                - transaction_id
+          foreign_keys: {}
+        - name: public.product_categories_copy
+          arguments: {}
+          type: public.product_categories_copy
+          uniqueness_constraints:
+            category_id:
+              unique_columns:
+                - category_id
+          foreign_keys: {}
+        - name: public.products_copy
+          arguments: {}
+          type: public.products_copy
+          uniqueness_constraints:
+            product_id:
+              unique_columns:
+                - product_id
+          foreign_keys: {}
+        - name: public.retailers_copy
+          arguments: {}
+          type: public.retailers_copy
+          uniqueness_constraints:
+            retailer_id:
+              unique_columns:
+                - retailer_id
+          foreign_keys: {}
+        - name: public.shipping
+          arguments: {}
+          type: public.shipping
+          uniqueness_constraints:
+            shipping_id:
+              unique_columns:
+                - shipping_id
+          foreign_keys: {}
+        - name: public.supply_chain_events
+          arguments: {}
+          type: public.supply_chain_events
+          uniqueness_constraints:
+            event_id:
+              unique_columns:
+                - event_id
+          foreign_keys: {}
+        - name: public.warehouses
+          arguments: {}
+          type: public.warehouses
+          uniqueness_constraints:
+            warehouse_id:
+              unique_columns:
+                - warehouse_id
+          foreign_keys: {}
+      functions: []
+      procedures: []
+    capabilities:
+      version: 0.1.6
+      capabilities:
+        query:
+          aggregates: {}
+          variables: {}
+        mutation: {}

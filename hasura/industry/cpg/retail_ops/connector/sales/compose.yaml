@@ -1,0 +1,15 @@
+services:
+  retail_ops_sales:
+    build:
+      context: .
+      dockerfile: .hasura-connector/Dockerfile.sales
+    environment:
+      HASURA_SERVICE_TOKEN_SECRET: $RETAIL_OPS_SALES_HASURA_SERVICE_TOKEN_SECRET
+      JDBC_SCHEMAS: $RETAIL_OPS_SALES_JDBC_SCHEMAS
+      JDBC_URL: $RETAIL_OPS_SALES_JDBC_URL
+      OTEL_EXPORTER_OTLP_ENDPOINT: $RETAIL_OPS_SALES_OTEL_EXPORTER_OTLP_ENDPOINT
+      OTEL_SERVICE_NAME: $RETAIL_OPS_SALES_OTEL_SERVICE_NAME
+    extra_hosts:
+      - local.hasura.dev:host-gateway
+    ports:
+      - 5063:8080

@@ -1,0 +1,13 @@
+services:
+  retail_actions_retail_execution:
+    build:
+      context: .
+      dockerfile: .hasura-connector/Dockerfile
+    environment:
+      HASURA_SERVICE_TOKEN_SECRET: $RETAIL_ACTIONS_RETAIL_EXECUTION_HASURA_SERVICE_TOKEN_SECRET
+      OTEL_EXPORTER_OTLP_ENDPOINT: $RETAIL_ACTIONS_RETAIL_EXECUTION_OTEL_EXPORTER_OTLP_ENDPOINT
+      OTEL_SERVICE_NAME: $RETAIL_ACTIONS_RETAIL_EXECUTION_OTEL_SERVICE_NAME
+    extra_hosts:
+      - local.hasura.dev:host-gateway
+    ports:
+      - 6279:8080

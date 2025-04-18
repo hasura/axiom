@@ -1,0 +1,234 @@
+kind: DataConnectorLink
+version: v1
+definition:
+  name: retail_execution
+  url:
+    readWriteUrls:
+      read:
+        valueFromEnv: RETAIL_ACTIONS_RETAIL_EXECUTION_READ_URL
+      write:
+        valueFromEnv: RETAIL_ACTIONS_RETAIL_EXECUTION_WRITE_URL
+  headers:
+    Authorization:
+      valueFromEnv: RETAIL_ACTIONS_RETAIL_EXECUTION_AUTHORIZATION_HEADER
+  schema:
+    version: v0.1
+    schema:
+      scalar_types:
+        Float:
+          representation:
+            type: float64
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+        String:
+          representation:
+            type: string
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+      object_types:
+        InventoryAllocationResponse:
+          fields:
+            allocation_id:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            product_id:
+              type:
+                name: Float
+                type: named
+            status:
+              type:
+                name: String
+                type: named
+            warehouse_id:
+              type:
+                name: Float
+                type: named
+        PricingUpdateResponse:
+          fields:
+            product_id:
+              type:
+                name: Float
+                type: named
+            retailer_id:
+              type:
+                name: Float
+                type: named
+            status:
+              type:
+                name: String
+                type: named
+            update_id:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+        PromotionCreationResponse:
+          fields:
+            product_id:
+              type:
+                name: Float
+                type: named
+            promotion_id:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            retailer_id:
+              type:
+                name: Float
+                type: named
+            status:
+              type:
+                name: String
+                type: named
+      collections: []
+      functions: []
+      procedures:
+        - name: createPromotion
+          description: |-
+            **Description:**
+            This function creates a new promotional campaign for specific products at targeted retailers. It establishes the promotion parameters including discount type, value, and duration. The function helps CPG companies drive sales, increase market share, and manage product lifecycle through strategic promotional activities. It automatically validates promotion parameters and ensures compliance with trade spending policies.
+
+            **When to Call:**
+            - When launching new products to drive trial and awareness in the market.
+            - During seasonal peaks to maximize sales opportunities and market presence.
+            - To counter competitive activities and protect market share in key retailers.
+            - For inventory management of products approaching expiration or discontinuation.
+          arguments:
+            discountType:
+              type:
+                name: String
+                type: named
+            discountValue:
+              type:
+                name: Float
+                type: named
+            endDate:
+              type:
+                name: String
+                type: named
+            minPurchaseQty:
+              type:
+                type: nullable
+                underlying_type:
+                  name: Float
+                  type: named
+            productId:
+              type:
+                name: Float
+                type: named
+            productName:
+              type:
+                name: String
+                type: named
+            retailerId:
+              type:
+                name: Float
+                type: named
+            startDate:
+              type:
+                name: String
+                type: named
+          result_type:
+            name: PromotionCreationResponse
+            type: named
+        - name: updateProductPricing
+          description: |-
+            **Description:**
+            This function updates product pricing across specified retail channels. It can adjust MSRP, wholesale pricing, or promotional pricing based on market conditions, competitive landscape, or strategic initiatives. The function ensures pricing consistency across channels while allowing for retailer-specific adjustments. It automatically validates pricing against margin thresholds and competitive positioning guidelines.
+
+            **When to Call:**
+            - When raw material or production costs change requiring price adjustments.
+            - During competitive pricing pressures that require strategic responses.
+            - For implementing tiered pricing strategies across different retail channels.
+            - When executing planned price increases as part of product lifecycle management.
+          arguments:
+            effectiveDate:
+              type:
+                name: String
+                type: named
+            newMsrp:
+              type:
+                name: Float
+                type: named
+            newWholesalePrice:
+              type:
+                name: Float
+                type: named
+            productId:
+              type:
+                name: Float
+                type: named
+            productName:
+              type:
+                name: String
+                type: named
+            reason:
+              type:
+                name: String
+                type: named
+            retailerId:
+              type:
+                name: Float
+                type: named
+          result_type:
+            name: PricingUpdateResponse
+            type: named
+        - name: allocateInventory
+          description: |-
+            **Description:**
+            This function manages inventory allocation across warehouses and retailers based on demand forecasts, promotional activities, and supply constraints. It optimizes product distribution to maximize availability while minimizing logistics costs and inventory holding. The function can prioritize allocation based on retailer tier, promotional commitments, or regional demand patterns.
+
+            **When to Call:**
+            - During supply constraints when inventory must be strategically allocated.
+            - Before major promotional events to ensure sufficient stock at participating retailers.
+            - When implementing new distribution strategies or entering new markets.
+            - For seasonal products requiring specialized allocation patterns.
+          arguments:
+            allocationQuantity:
+              type:
+                name: Float
+                type: named
+            priorityLevel:
+              type:
+                name: String
+                type: named
+            productId:
+              type:
+                name: Float
+                type: named
+            productName:
+              type:
+                name: String
+                type: named
+            reason:
+              type:
+                name: String
+                type: named
+            retailerId:
+              type:
+                name: Float
+                type: named
+            warehouseId:
+              type:
+                name: Float
+                type: named
+          result_type:
+            name: InventoryAllocationResponse
+            type: named
+    capabilities:
+      version: 0.1.6
+      capabilities:
+        query:
+          variables: {}
+          nested_fields: {}
+        mutation: {}

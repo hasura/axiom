@@ -1,0 +1,285 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_promotions
+  description: >
+    Promotional campaign management system tracking marketing and trade activities.
+    Contains detailed information about promotional mechanics, timing, budgets, and targeting.
+    This model is critical for trade promotion management, marketing planning, and
+    promotional effectiveness measurement across the CPG product portfolio.
+  fields:
+    - name: budget
+      description: >
+        Allocated financial resources for the promotional activity in standard currency.
+        Used for budget management, ROI calculation, and promotional investment tracking.
+      type: numeric
+    - name: channel_id
+      description: >
+        Foreign key to channels table. Identifies the retail channel where promotion
+        will be executed for channel-specific promotional planning and execution.
+      type: integer
+    - name: discount_type
+      description: >
+        Classification of discount mechanism ('Percentage Off', 'Dollar Off', 'BOGO', 'Free Gift').
+        Determines promotional execution requirements, financial impact calculations, and consumer messaging.
+      type: character_varying
+    - name: discount_value
+      description: >
+        Numeric value of the discount (percentage or fixed amount). Core parameter for
+        promotional pricing, financial impact modeling, and consumer value proposition.
+      type: numeric
+    - name: end_date
+      description: >
+        Date when promotional activity concludes. Defines promotional calendar boundaries,
+        execution timelines, and performance measurement periods.
+      type: date!
+    - name: min_purchase_qty
+      description: >
+        Minimum product quantity required to qualify for promotion. Important for
+        volume-driving mechanics, promotional terms, and consumer qualification rules.
+      type: integer
+    - name: notes
+      description: >
+        Free-text field for promotion-specific details, execution requirements, or
+        special handling instructions. Referenced during promotional planning and execution.
+      type: text
+    - name: promotion_id
+      description: >
+        Unique identifier for each promotional activity. Primary key referenced by
+        promotional planning, execution, and performance measurement systems.
+      type: integer!
+    - name: promotion_name
+      description: >
+        Descriptive title of the promotional activity. Used for identification in
+        planning systems, reporting, and cross-functional communication.
+      type: character_varying!
+    - name: promotion_type
+      description: >
+        Classification of promotional activity ('Trade Promotion', 'Consumer Offer', 'Loyalty Program').
+        Determines funding sources, execution approaches, and performance measurement methodologies.
+      type: character_varying
+    - name: start_date
+      description: >
+        Date when promotional activity begins. Defines promotional calendar boundaries,
+        execution timelines, and performance measurement periods.
+      type: date!
+  graphql:
+    typeName: public_promotions
+    inputTypeName: public_promotions_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: sales
+      dataConnectorObjectType: public.promotions
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_promotions
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - budget
+          - channel_id
+          - discount_type
+          - discount_value
+          - end_date
+          - min_purchase_qty
+          - notes
+          - promotion_id
+          - promotion_name
+          - promotion_type
+          - start_date
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_promotions_bool_exp
+  operand:
+    object:
+      type: public_promotions
+      comparableFields:
+        - fieldName: budget
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: channel_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: discount_type
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: discount_value
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: end_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: min_purchase_qty
+          booleanExpressionType: integer_bool_exp
+        - fieldName: notes
+          booleanExpressionType: text_bool_exp
+        - fieldName: promotion_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: promotion_name
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: promotion_type
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: start_date
+          booleanExpressionType: date_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_promotions_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_promotions_agg_exp
+  operand:
+    object:
+      aggregatedType: public_promotions
+      aggregatableFields:
+        - fieldName: budget
+          aggregateExpression: numeric_agg_exp
+        - fieldName: channel_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: discount_type
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: discount_value
+          aggregateExpression: numeric_agg_exp
+        - fieldName: end_date
+          aggregateExpression: date_agg_exp
+        - fieldName: min_purchase_qty
+          aggregateExpression: integer_agg_exp
+        - fieldName: notes
+          aggregateExpression: text_agg_exp
+        - fieldName: promotion_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: promotion_name
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: promotion_type
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: start_date
+          aggregateExpression: date_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_promotions_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_promotions_order_by_exp
+  operand:
+    object:
+      orderedType: public_promotions
+      orderableFields:
+        - fieldName: budget
+          orderByExpression: numeric_order_by_exp
+        - fieldName: channel_id
+          orderByExpression: integer_order_by_exp
+        - fieldName: discount_type
+          orderByExpression: character_varying_order_by_exp
+        - fieldName: discount_value
+          orderByExpression: numeric_order_by_exp
+        - fieldName: end_date
+          orderByExpression: date_order_by_exp
+        - fieldName: min_purchase_qty
+          orderByExpression: integer_order_by_exp
+        - fieldName: notes
+          orderByExpression: text_order_by_exp
+        - fieldName: promotion_id
+          orderByExpression: integer_order_by_exp
+        - fieldName: promotion_name
+          orderByExpression: character_varying_order_by_exp
+        - fieldName: promotion_type
+          orderByExpression: character_varying_order_by_exp
+        - fieldName: start_date
+          orderByExpression: date_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_promotions_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_promotions
+  description: |
+    # Consumer Packaged Goods Promotional Management Repository
+
+    Comprehensive system for planning and tracking promotional activities across retail partners.
+    This model serves as the authoritative source for promotional information including:
+
+    * **Promotional mechanics** with discount types and values
+    * **Timing parameters** defining promotional calendar
+    * **Budget allocation** for financial tracking and ROI measurement
+    * **Channel targeting** for focused promotional execution
+    * **Qualification rules** for consumer participation requirements
+
+    ## Usage Guidelines
+
+    This model should be the primary reference for:
+    - Trade promotion planning and management
+    - Promotional calendar development and coordination
+    - Promotional budget allocation and tracking
+    - Promotional effectiveness measurement and ROI analysis
+    - Historical promotional activity analysis and learning
+  objectType: public_promotions
+  source:
+    dataConnectorName: sales
+    collection: public.promotions
+  filterExpressionType: public_promotions_bool_exp
+  aggregateExpression: public_promotions_agg_exp
+  orderByExpression: public_promotions_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_promotions
+      subscription:
+        rootField: public_promotions
+    selectUniques:
+      - queryRootField: public_promotions_by_promotion_id
+        uniqueIdentifier:
+          - promotion_id
+        subscription:
+          rootField: public_promotions_by_promotion_id
+    filterInputTypeName: public_promotions_filter_input
+    aggregate:
+      queryRootField: public_promotions_aggregate
+      subscription:
+        rootField: public_promotions_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_promotions
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: channel
+  description: >
+    Relationship connecting promotions to their targeted retail channels. Essential for
+    channel-specific promotional planning, execution strategies, and performance analysis.
+  sourceType: public_promotions
+  target:
+    model:
+      name: public_channels
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: channel_id
+      target:
+        modelField:
+          - fieldName: channel_id
+

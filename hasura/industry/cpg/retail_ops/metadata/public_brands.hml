@@ -1,0 +1,170 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_brands
+  fields:
+    - name: brand_id
+      type: integer!
+    - name: brand_name
+      type: character_varying!
+    - name: brand_tier
+      type: character_varying
+    - name: category_focus
+      type: character_varying
+    - name: is_active
+      type: boolean
+    - name: parent_company
+      type: character_varying
+    - name: year_established
+      type: integer
+  graphql:
+    typeName: public_brands
+    inputTypeName: public_brands_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: sales
+      dataConnectorObjectType: public.brands
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_brands
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - brand_id
+          - brand_name
+          - brand_tier
+          - category_focus
+          - is_active
+          - parent_company
+          - year_established
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_brands_bool_exp
+  operand:
+    object:
+      type: public_brands
+      comparableFields:
+        - fieldName: brand_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: brand_name
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: brand_tier
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: category_focus
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: is_active
+          booleanExpressionType: boolean_bool_exp
+        - fieldName: parent_company
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: year_established
+          booleanExpressionType: integer_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_brands_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_brands_agg_exp
+  operand:
+    object:
+      aggregatedType: public_brands
+      aggregatableFields:
+        - fieldName: brand_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: brand_name
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: brand_tier
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: category_focus
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: is_active
+          aggregateExpression: boolean_agg_exp
+        - fieldName: parent_company
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: year_established
+          aggregateExpression: integer_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_brands_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_brands_order_by_exp
+  operand:
+    object:
+      orderedType: public_brands
+      orderableFields:
+        - fieldName: brand_id
+          orderByExpression: integer_order_by_exp
+        - fieldName: brand_name
+          orderByExpression: character_varying_order_by_exp
+        - fieldName: brand_tier
+          orderByExpression: character_varying_order_by_exp
+        - fieldName: category_focus
+          orderByExpression: character_varying_order_by_exp
+        - fieldName: is_active
+          orderByExpression: boolean_order_by_exp
+        - fieldName: parent_company
+          orderByExpression: character_varying_order_by_exp
+        - fieldName: year_established
+          orderByExpression: integer_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_brands_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_brands
+  objectType: public_brands
+  source:
+    dataConnectorName: sales
+    collection: public.brands
+  filterExpressionType: public_brands_bool_exp
+  aggregateExpression: public_brands_agg_exp
+  orderByExpression: public_brands_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_brands
+      subscription:
+        rootField: public_brands
+    selectUniques:
+      - queryRootField: public_brands_by_brand_id
+        uniqueIdentifier:
+          - brand_id
+        subscription:
+          rootField: public_brands_by_brand_id
+    filterInputTypeName: public_brands_filter_input
+    aggregate:
+      queryRootField: public_brands_aggregate
+      subscription:
+        rootField: public_brands_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_brands
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
