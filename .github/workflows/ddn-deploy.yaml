@@ -94,14 +94,21 @@ jobs:
               --no-interaction
           fi
 
-      - name: Extract URLs from JSON
+      - name: Extract Information from JSON
         if: env.no_op != 'true'
         run: |
           cat $RUNNER_TEMP/axiom.json
           BUILD_URLS=$(jq -r '.build_url' $RUNNER_TEMP/axiom.json | tr '\n' ',')
-          CONSOLE_URLS=$(jq -r '.console_url' $RUNNER_TEMP/axiom.json | tr '\n' ',')
+          PROJECT_NAME=$(jq -r '.project_name' $RUNNER_TEMP/axiom.json)
+          BUILD_VERSION=$(jq -r '.build_version' $RUNNER_TEMP/axiom.json)
+          PROMPTQL_URL=$(jq -r '.promptql_url // ""' $RUNNER_TEMP/axiom.json)
+          DESCRIPTION=$(jq -r '.description // ""' $RUNNER_TEMP/axiom.json)
+          
           echo "build_urls=${BUILD_URLS%,}" >> $GITHUB_ENV
-          echo "console_urls=${CONSOLE_URLS%,}" >> $GITHUB_ENV
+          echo "project_name=$PROJECT_NAME" >> $GITHUB_ENV
+          echo "build_version=$BUILD_VERSION" >> $GITHUB_ENV
+          echo "promptql_url=$PROMPTQL_URL" >> $GITHUB_ENV
+          echo "description=$DESCRIPTION" >> $GITHUB_ENV
 
       - name: Add PR comment with build details
         if: env.no_op != 'true'
@@ -109,23 +116,39 @@ jobs:
         with:
           script: |
             const buildUrls = process.env.build_urls.split(',').map(url => url.trim());
-            const consoleUrls = process.env.console_urls.split(',').map(url => url.trim());
             const prNumber = context.payload.pull_request.number;
             const commitId = context.payload.pull_request.head.sha;
 
             const buildUrlsList = buildUrls.map(url => `- [${url}](${url})`).join('\n');
-            const consoleUrlsList = consoleUrls.map(url => `- [${url}](${url})`).join('\n');
 
+            const projectName = process.env.project_name || 'Unknown Project';
+            const buildVersion = process.env.build_version || 'Unknown Version';
+            const promptqlUrl = process.env.promptql_url || '';
+            const description = process.env.description || '';
+
+            // Extract PR number from description or context
+            const prMatch = description.match(/\[PR-(\d+)\]/);
+            const prNumberFromDesc = prMatch ? prMatch[1] : null;
+
+            // Create a more visually appealing comment
             const commentBody = `
-            Supergraph build was successful! 🎉
+            # 🚀 Axiom Deployment Successful!
 
-            **Build URLs:**
+            ## 📊 Build Information
+            - **Project:** \`${projectName}\`
+            - **Build Version:** \`${buildVersion}\`
+            - **PR:** [#${prNumberFromDesc || prNumber}](${context.payload.pull_request.html_url})
+            - **Commit:** \`${commitId.substring(0, 7)}\`
+
+            ## 🔗 Access Points
+
+            ### GraphQL Endpoints
             ${buildUrlsList}
 
-            **Console URLs:**
-            ${consoleUrlsList}
+            ${promptqlUrl ? `### PromptQL Playground\n- [${promptqlUrl}](${promptqlUrl})` : ''}
 
-            **Commit ID:** ${commitId}
+            ---
+            *Deployed from commit ${commitId.substring(0, 7)}*
             `;
 
             github.rest.issues.createComment({

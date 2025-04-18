@@ -1,9 +1,9 @@
-name: ${CONTAINER_PREFIX}
+name: axiomstarter
 services:
   # Databases
   postgres:
     image: postgres
-    container_name: ${CONTAINER_PREFIX}_postgres
+    container_name: axiomstarter_postgres
     restart: unless-stopped
     volumes:
       - postgres-data:/var/lib/postgresql/data
@@ -19,26 +19,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 30
-
-  redis:
-    image: redis:latest
-    restart: unless-stopped
-    ports:
-      - 6379:6379
-
-  caching:
-    build:
-      context: https://github.com/hasura/engine-plugin-caching.git
-    restart: unless-stopped
-    ports:
-      - 8787:8787
-    environment:
-      CACHING_PLUGIN_SECRET: ${CACHING_PLUGIN_SECRET}
-      CACHING_PLUGIN_REDIS_URL: ${CACHING_PLUGIN_REDIS_URL}
-    extra_hosts:
-      - local.hasura.dev=host-gateway
-    volumes:
-      - ../plugins/caching-config.js:/app/src/config.js
 
 volumes:
   postgres-data:
