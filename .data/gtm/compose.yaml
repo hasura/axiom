@@ -39,45 +39,6 @@ services:
       timeout: 5s
       retries: 30
 
-  redis:
-    image: redis:latest
-    restart: unless-stopped
-    ports:
-      - 6379:6379
-
-  caching:
-    build:
-      context: https://github.com/hasura/engine-plugin-caching.git#64b184d2ea530e6314900c5177e822d2384b8fd3
-    restart: unless-stopped
-    ports:
-      - 8787:8787
-    environment:
-      CACHING_PLUGIN_SECRET: ${CACHING_PLUGIN_SECRET}
-      CACHING_PLUGIN_REDIS_URL: ${CACHING_PLUGIN_REDIS_URL}
-    extra_hosts:
-      - local.hasura.dev=host-gateway
-    volumes:
-      - ../plugins/caching/gtm-config.js:/app/src/config.js
-
-  restified:
-    container_name: ${CONTAINER_PREFIX}_restified
-    build:
-      context: https://github.com/hasura/engine-plugin-restified-endpoint.git#paritosh/express-server
-      target: base
-    restart: unless-stopped
-    ports:
-      - "8788:8788"
-    environment:
-      OTEL_EXPORTER_OTLP_ENDPOINT: ${RESTIFIED_EXPORTER_OTLP_ENDPOINT}
-      GRAPHQL_SERVER_URL: ${RESTIFIED_GRAPHQL_SERVER_URL}
-      RESTIFIED_PLUGIN_SECRET: ${RESTIFIED_PLUGIN_SECRET}
-      PORT: 8788
-    extra_hosts:
-      - local.hasura.dev=host-gateway
-    volumes:
-      - ../plugins/restified/gtm-config.ts:/app/src/config.ts
-    command: ["bash", "-c", "npm run build && npm run serve"]
-
 volumes:
   postgres-data:
   pgvector-data:

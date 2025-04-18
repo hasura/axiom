@@ -121,14 +121,10 @@ git add -f .env.$PROFILE.template
 
 2. Copy environment files from your own supergraph to populate environments in this repository
 
-Remember to include a JWT_SECRET and caching plugin configuration in your `.env` files to allow for builds to proceed:
+Remember to include a JWT_SECRET configuration in your `.env` files to allow for builds to proceed:
 
 ```bash
-echo 'JWT_SECRET="hptj8supNeslwet7nhGGr5Uu5MombVVjDmcGMOyrWa8"
-CACHING_PLUGIN_PRE_PARSE_URL="http://local.hasura.dev:8787/pre-parse"
-CACHING_PLUGIN_PRE_RESPONSE_URL="http://local.hasura.dev:8787/pre-response"
-CACHING_PLUGIN_REDIS_URL="redis://local.hasura.dev:6379"
-CACHING_PLUGIN_SECRET="zZkhKqFjqXR4g5MZCsJUZCnhCcoPyZ"' > .env.$PROFILE.template
+echo 'JWT_SECRET="hptj8supNeslwet7nhGGr5Uu5MombVVjDmcGMOyrWa8"' > .env.$PROFILE.template
 ```
 
 _Optional_ Use the following one-liner to generate a JWT_SECRET
