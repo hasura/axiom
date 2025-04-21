@@ -1,0 +1,1005 @@
+kind: DataConnectorLink
+version: v1
+definition:
+  name: ecommerce_mongodb
+  url:
+    readWriteUrls:
+      read:
+        valueFromEnv: ECOMMERCE_ECOMMERCE_MONGODB_READ_URL
+      write:
+        valueFromEnv: ECOMMERCE_ECOMMERCE_MONGODB_WRITE_URL
+  headers:
+    Authorization:
+      valueFromEnv: ECOMMERCE_ECOMMERCE_MONGODB_AUTHORIZATION_HEADER
+  schema:
+    version: v0.1
+    schema:
+      scalar_types:
+        BinData:
+          aggregate_functions:
+            count:
+              result_type:
+                name: Int
+                type: named
+          comparison_operators:
+            _eq:
+              type: equal
+            _in:
+              type: in
+            _neq:
+              type: custom
+              argument_type:
+                name: BinData
+                type: named
+            _nin:
+              type: custom
+              argument_type:
+                element_type:
+                  name: BinData
+                  type: named
+                type: array
+        Bool:
+          representation:
+            type: boolean
+          aggregate_functions:
+            count:
+              result_type:
+                name: Int
+                type: named
+          comparison_operators:
+            _eq:
+              type: equal
+            _in:
+              type: in
+            _neq:
+              type: custom
+              argument_type:
+                name: Bool
+                type: named
+            _nin:
+              type: custom
+              argument_type:
+                element_type:
+                  name: Bool
+                  type: named
+                type: array
+        Date:
+          representation:
+            type: timestamp
+          aggregate_functions:
+            count:
+              result_type:
+                name: Int
+                type: named
+            max:
+              result_type:
+                type: nullable
+                underlying_type:
+                  name: Date
+                  type: named
+            min:
+              result_type:
+                type: nullable
+                underlying_type:
+                  name: Date
+                  type: named
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                name: Date
+                type: named
+            _gte:
+              type: custom
+              argument_type:
+                name: Date
+                type: named
+            _in:
+              type: in
+            _lt:
+              type: custom
+              argument_type:
+                name: Date
+                type: named
+            _lte:
+              type: custom
+              argument_type:
+                name: Date
+                type: named
+            _neq:
+              type: custom
+              argument_type:
+                name: Date
+                type: named
+            _nin:
+              type: custom
+              argument_type:
+                element_type:
+                  name: Date
+                  type: named
+                type: array
+        DbPointer:
+          aggregate_functions:
+            count:
+              result_type:
+                name: Int
+                type: named
+          comparison_operators:
+            _eq:
+              type: equal
+            _in:
+              type: in
+            _neq:
+              type: custom
+              argument_type:
+                name: DbPointer
+                type: named
+            _nin:
+              type: custom
+              argument_type:
+                element_type:
+                  name: DbPointer
+                  type: named
+                type: array
+        Decimal:
+          representation:
+            type: bigdecimal
+          aggregate_functions:
+            avg:
+              result_type:
+                type: nullable
+                underlying_type:
+                  name: Decimal
+                  type: named
+            count:
+              result_type:
+                name: Int
+                type: named
+            max:
+              result_type:
+                type: nullable
+                underlying_type:
+                  name: Decimal
+                  type: named
+            min:
+              result_type:
+                type: nullable
+                underlying_type:
+                  name: Decimal
+                  type: named
+            sum:
+              result_type:
+                type: nullable
+                underlying_type:
+                  name: Decimal
+                  type: named
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                name: Decimal
+                type: named
+            _gte:
+              type: custom
+              argument_type:
+                name: Decimal
+                type: named
+            _in:
+              type: in
+            _lt:
+              type: custom
+              argument_type:
+                name: Decimal
+                type: named
+            _lte:
+              type: custom
+              argument_type:
+                name: Decimal
+                type: named
+            _neq:
+              type: custom
+              argument_type:
+                name: Decimal
+                type: named
+            _nin:
+              type: custom
+              argument_type:
+                element_type:
+                  name: Decimal
+                  type: named
+                type: array
+        Double:
+          representation:
+            type: float64
+          aggregate_functions:
+            avg:
+              result_type:
+                type: nullable
+                underlying_type:
+                  name: Double
+                  type: named
+            count:
+              result_type:
+                name: Int
+                type: named
+            max:
+              result_type:
+                type: nullable
+                underlying_type:
+                  name: Double
+                  type: named
+            min:
+              result_type:
+                type: nullable
+                underlying_type:
+                  name: Double
+                  type: named
+            sum:
+              result_type:
+                type: nullable
+                underlying_type:
+                  name: Double
+                  type: named
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                name: Double
+                type: named
+            _gte:
+              type: custom
+              argument_type:
+                name: Double
+                type: named
+            _in:
+              type: in
+            _lt:
+              type: custom
+              argument_type:
+                name: Double
+                type: named
+            _lte:
+              type: custom
+              argument_type:
+                name: Double
+                type: named
+            _neq:
+              type: custom
+              argument_type:
+                name: Double
+                type: named
+            _nin:
+              type: custom
+              argument_type:
+                element_type:
+                  name: Double
+                  type: named
+                type: array
+        ExtendedJSON:
+          representation:
+            type: json
+          aggregate_functions:
+            avg:
+              result_type:
+                name: ExtendedJSON
+                type: named
+            count:
+              result_type:
+                name: Int
+                type: named
+            max:
+              result_type:
+                name: ExtendedJSON
+                type: named
+            min:
+              result_type:
+                name: ExtendedJSON
+                type: named
+            sum:
+              result_type:
+                name: ExtendedJSON
+                type: named
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                name: ExtendedJSON
+                type: named
+            _gte:
+              type: custom
+              argument_type:
+                name: ExtendedJSON
+                type: named
+            _in:
+              type: custom
+              argument_type:
+                name: ExtendedJSON
+                type: named
+            _iregex:
+              type: custom
+              argument_type:
+                name: String
+                type: named
+            _lt:
+              type: custom
+              argument_type:
+                name: ExtendedJSON
+                type: named
+            _lte:
+              type: custom
+              argument_type:
+                name: ExtendedJSON
+                type: named
+            _neq:
+              type: custom
+              argument_type:
+                name: ExtendedJSON
+                type: named
+            _nin:
+              type: custom
+              argument_type:
+                name: ExtendedJSON
+                type: named
+            _regex:
+              type: custom
+              argument_type:
+                name: String
+                type: named
+        Int:
+          representation:
+            type: int32
+          aggregate_functions:
+            avg:
+              result_type:
+                type: nullable
+                underlying_type:
+                  name: Int
+                  type: named
+            count:
+              result_type:
+                name: Int
+                type: named
+            max:
+              result_type:
+                type: nullable
+                underlying_type:
+                  name: Int
+                  type: named
+            min:
+              result_type:
+                type: nullable
+                underlying_type:
+                  name: Int
+                  type: named
+            sum:
+              result_type:
+                type: nullable
+                underlying_type:
+                  name: Int
+                  type: named
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                name: Int
+                type: named
+            _gte:
+              type: custom
+              argument_type:
+                name: Int
+                type: named
+            _in:
+              type: in
+            _lt:
+              type: custom
+              argument_type:
+                name: Int
+                type: named
+            _lte:
+              type: custom
+              argument_type:
+                name: Int
+                type: named
+            _neq:
+              type: custom
+              argument_type:
+                name: Int
+                type: named
+            _nin:
+              type: custom
+              argument_type:
+                element_type:
+                  name: Int
+                  type: named
+                type: array
+        Javascript:
+          aggregate_functions:
+            count:
+              result_type:
+                name: Int
+                type: named
+          comparison_operators: {}
+        JavascriptWithScope:
+          aggregate_functions:
+            count:
+              result_type:
+                name: Int
+                type: named
+          comparison_operators: {}
+        Long:
+          representation:
+            type: int64
+          aggregate_functions:
+            avg:
+              result_type:
+                type: nullable
+                underlying_type:
+                  name: Long
+                  type: named
+            count:
+              result_type:
+                name: Int
+                type: named
+            max:
+              result_type:
+                type: nullable
+                underlying_type:
+                  name: Long
+                  type: named
+            min:
+              result_type:
+                type: nullable
+                underlying_type:
+                  name: Long
+                  type: named
+            sum:
+              result_type:
+                type: nullable
+                underlying_type:
+                  name: Long
+                  type: named
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                name: Long
+                type: named
+            _gte:
+              type: custom
+              argument_type:
+                name: Long
+                type: named
+            _in:
+              type: in
+            _lt:
+              type: custom
+              argument_type:
+                name: Long
+                type: named
+            _lte:
+              type: custom
+              argument_type:
+                name: Long
+                type: named
+            _neq:
+              type: custom
+              argument_type:
+                name: Long
+                type: named
+            _nin:
+              type: custom
+              argument_type:
+                element_type:
+                  name: Long
+                  type: named
+                type: array
+        MaxKey:
+          aggregate_functions:
+            count:
+              result_type:
+                name: Int
+                type: named
+          comparison_operators:
+            _eq:
+              type: equal
+            _in:
+              type: in
+            _neq:
+              type: custom
+              argument_type:
+                name: MaxKey
+                type: named
+            _nin:
+              type: custom
+              argument_type:
+                element_type:
+                  name: MaxKey
+                  type: named
+                type: array
+        MinKey:
+          aggregate_functions:
+            count:
+              result_type:
+                name: Int
+                type: named
+          comparison_operators:
+            _eq:
+              type: equal
+            _in:
+              type: in
+            _neq:
+              type: custom
+              argument_type:
+                name: MinKey
+                type: named
+            _nin:
+              type: custom
+              argument_type:
+                element_type:
+                  name: MinKey
+                  type: named
+                type: array
+        "Null":
+          aggregate_functions:
+            count:
+              result_type:
+                name: Int
+                type: named
+          comparison_operators:
+            _eq:
+              type: equal
+            _in:
+              type: in
+            _neq:
+              type: custom
+              argument_type:
+                name: "Null"
+                type: named
+            _nin:
+              type: custom
+              argument_type:
+                element_type:
+                  name: "Null"
+                  type: named
+                type: array
+        ObjectId:
+          representation:
+            type: string
+          aggregate_functions:
+            count:
+              result_type:
+                name: Int
+                type: named
+          comparison_operators:
+            _eq:
+              type: equal
+            _in:
+              type: in
+            _neq:
+              type: custom
+              argument_type:
+                name: ObjectId
+                type: named
+            _nin:
+              type: custom
+              argument_type:
+                element_type:
+                  name: ObjectId
+                  type: named
+                type: array
+        Regex:
+          aggregate_functions:
+            count:
+              result_type:
+                name: Int
+                type: named
+          comparison_operators: {}
+        String:
+          representation:
+            type: string
+          aggregate_functions:
+            count:
+              result_type:
+                name: Int
+                type: named
+            max:
+              result_type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            min:
+              result_type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                name: String
+                type: named
+            _gte:
+              type: custom
+              argument_type:
+                name: String
+                type: named
+            _in:
+              type: in
+            _iregex:
+              type: custom
+              argument_type:
+                name: String
+                type: named
+            _lt:
+              type: custom
+              argument_type:
+                name: String
+                type: named
+            _lte:
+              type: custom
+              argument_type:
+                name: String
+                type: named
+            _neq:
+              type: custom
+              argument_type:
+                name: String
+                type: named
+            _nin:
+              type: custom
+              argument_type:
+                element_type:
+                  name: String
+                  type: named
+                type: array
+            _regex:
+              type: custom
+              argument_type:
+                name: String
+                type: named
+        Symbol:
+          aggregate_functions:
+            count:
+              result_type:
+                name: Int
+                type: named
+          comparison_operators:
+            _eq:
+              type: equal
+            _in:
+              type: in
+            _neq:
+              type: custom
+              argument_type:
+                name: Symbol
+                type: named
+            _nin:
+              type: custom
+              argument_type:
+                element_type:
+                  name: Symbol
+                  type: named
+                type: array
+        Timestamp:
+          aggregate_functions:
+            count:
+              result_type:
+                name: Int
+                type: named
+            max:
+              result_type:
+                type: nullable
+                underlying_type:
+                  name: Timestamp
+                  type: named
+            min:
+              result_type:
+                type: nullable
+                underlying_type:
+                  name: Timestamp
+                  type: named
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: custom
+              argument_type:
+                name: Timestamp
+                type: named
+            _gte:
+              type: custom
+              argument_type:
+                name: Timestamp
+                type: named
+            _in:
+              type: in
+            _lt:
+              type: custom
+              argument_type:
+                name: Timestamp
+                type: named
+            _lte:
+              type: custom
+              argument_type:
+                name: Timestamp
+                type: named
+            _neq:
+              type: custom
+              argument_type:
+                name: Timestamp
+                type: named
+            _nin:
+              type: custom
+              argument_type:
+                element_type:
+                  name: Timestamp
+                  type: named
+                type: array
+        UUID:
+          representation:
+            type: string
+          aggregate_functions:
+            count:
+              result_type:
+                name: Int
+                type: named
+          comparison_operators:
+            _eq:
+              type: equal
+            _in:
+              type: in
+            _neq:
+              type: custom
+              argument_type:
+                name: UUID
+                type: named
+            _nin:
+              type: custom
+              argument_type:
+                element_type:
+                  name: UUID
+                  type: named
+                type: array
+        Undefined:
+          aggregate_functions:
+            count:
+              result_type:
+                name: Int
+                type: named
+          comparison_operators:
+            _eq:
+              type: equal
+            _in:
+              type: in
+            _neq:
+              type: custom
+              argument_type:
+                name: Undefined
+                type: named
+            _nin:
+              type: custom
+              argument_type:
+                element_type:
+                  name: Undefined
+                  type: named
+                type: array
+      object_types:
+        customer_orders:
+          fields:
+            _id:
+              type:
+                name: ObjectId
+                type: named
+            customer:
+              type:
+                type: nullable
+                underlying_type:
+                  name: customer_orders_customer
+                  type: named
+            expected_delivery:
+              type:
+                type: nullable
+                underlying_type:
+                  name: Date
+                  type: named
+            items:
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: customer_orders_items
+                    type: named
+                  type: array
+            last_updated:
+              type:
+                type: nullable
+                underlying_type:
+                  name: Date
+                  type: named
+            order_date:
+              type:
+                type: nullable
+                underlying_type:
+                  name: Date
+                  type: named
+            order_id:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            payment_method:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            shipping_cost:
+              type:
+                type: nullable
+                underlying_type:
+                  name: Double
+                  type: named
+            shipping_method:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            status:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            total_price:
+              type:
+                type: nullable
+                underlying_type:
+                  name: Double
+                  type: named
+        customer_orders_customer:
+          fields:
+            address:
+              type:
+                type: nullable
+                underlying_type:
+                  name: customer_orders_customer_address
+                  type: named
+            customer_id:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            email:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            name:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            phone:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+        customer_orders_customer_address:
+          fields:
+            city:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            country:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            state:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            street:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            zip:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+        customer_orders_items:
+          fields:
+            category:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            model_id:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            name:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            quantity:
+              type:
+                type: nullable
+                underlying_type:
+                  name: Int
+                  type: named
+            subtotal:
+              type:
+                type: nullable
+                underlying_type:
+                  name: Double
+                  type: named
+            unit_price:
+              type:
+                type: nullable
+                underlying_type:
+                  name: Double
+                  type: named
+      collections:
+        - name: customer_orders
+          arguments: {}
+          type: customer_orders
+          uniqueness_constraints:
+            customer_orders_id:
+              unique_columns:
+                - _id
+          foreign_keys: {}
+      functions: []
+      procedures: []
+    capabilities:
+      version: 0.1.6
+      capabilities:
+        query:
+          aggregates: {}
+          variables: {}
+          explain: {}
+          nested_fields:
+            filter_by: {}
+            order_by: {}
+            aggregates: {}
+          exists:
+            nested_collections: {}
+        mutation: {}
+        relationships:
+          relation_comparisons: {}
