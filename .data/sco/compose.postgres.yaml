@@ -1,8 +1,9 @@
 services:
   db:
     image: postgres:latest
-    container_name: postgres
+    container_name: axiom_sco_postgres
     shm_size: 128mb
+    restart: unless-stopped
     ports:
       - "5432:5432"
     environment:
@@ -11,4 +12,7 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: scms
     volumes:
-      - ./vol/db:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql/data
+      - ./postgres/entrypoint/:/docker-entrypoint-initdb.d/
+volumes:
+  postgres-data:

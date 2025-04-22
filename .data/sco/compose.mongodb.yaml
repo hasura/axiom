@@ -1,0 +1,15 @@
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: axiom_sco_mongodb
+    shm_size: 128mb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=ecommerce
+    volumes:
+      - mongodb-data:/data/db
+      - ./mongodb/entrypoint:/docker-entrypoint-initdb.d/
+volumes:
+  mongodb-data:
