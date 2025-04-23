@@ -1,5 +1,16 @@
 services:
-  db:
+  mongodb:
+    image: mongo:latest
+    container_name: axiom_sco_mongodb
+    shm_size: 128mb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=ecommerce
+    volumes:
+      - mongodb-data:/data/db
+  postgres:
     image: postgres:latest
     container_name: axiom_sco_postgres
     shm_size: 128mb
@@ -15,4 +26,5 @@ services:
       - postgres-data:/var/lib/postgresql/data
       - ./postgres/entrypoint/:/docker-entrypoint-initdb.d/
 volumes:
+  mongodb-data:
   postgres-data:
