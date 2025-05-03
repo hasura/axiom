@@ -61,3 +61,36 @@ export async function createSequence(
     message: `Sequence "${name}" created successfully with ID ${sequenceId}`,
   };
 }
+
+/**
+ * Updates Salesforce MEDDPICC fields based on call transcript analysis
+ */
+export async function updateMeddpicc(
+  opportunityId: string,
+  metrics?: string,
+  economicBuyer?: string,
+  decisionCriteria?: string,
+  decisionProcess?: string,
+  paperProcess?: string,
+  identifiedPain?: string,
+  champion?: string,
+  competition?: string
+): Promise<ActionResponse> {
+  const updatedFields = [];
+  
+  if (metrics) updatedFields.push('Metrics');
+  if (economicBuyer) updatedFields.push('Economic Buyer');
+  if (decisionCriteria) updatedFields.push('Decision Criteria');
+  if (decisionProcess) updatedFields.push('Decision Process');
+  if (paperProcess) updatedFields.push('Paper Process');
+  if (identifiedPain) updatedFields.push('Identified Pain');
+  if (champion) updatedFields.push('Champion');
+  if (competition) updatedFields.push('Competition');
+  
+  return {
+    success: true,
+    message: updatedFields.length > 0
+      ? `MEDDPICC fields updated for opportunity ${opportunityId} based on call transcript analysis. Updated fields: ${updatedFields.join(', ')}.`
+      : `No MEDDPICC fields were updated for opportunity ${opportunityId}.`,
+  };
+}
