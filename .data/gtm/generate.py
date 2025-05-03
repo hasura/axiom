@@ -99,6 +99,117 @@ def weighted_choice(choices: List, weights: List[float]) -> str:
     # Using NumPy's random choice for better distribution
     return np.random.choice(choices, p=normalized_weights)
 
+def generate_detailed_call_summary(account, opp, include_metrics, include_econ_buyer,
+                                 include_decision_criteria, include_decision_process,
+                                 include_paper_process, include_pain, include_champion,
+                                 include_competition):
+    """Generate a detailed call summary with rich MEDDPICC information."""
+    
+    # Base summary starts with the account and opportunity context
+    summary = f"Call with {account['name']} regarding {opp['name']}. "
+    
+    # Add detailed information about each MEDDPICC element that was discussed
+    
+    # Metrics
+    if include_metrics:
+        metrics_details = [
+            f"Customer needs to reduce API development time by 50-60%.",
+            f"Target is to improve query performance by 70-80%, reducing response times from 800ms to under 200ms.",
+            f"Goal to ship features 40% faster by implementing a more flexible data access layer.",
+            f"Looking to reduce infrastructure costs by 30% while improving scalability.",
+            f"Aiming for 99.99% uptime for critical services, current system achieves only 99.9%."
+        ]
+        summary += f"{random.choice(metrics_details)} "
+    
+    # Economic Buyer
+    if include_econ_buyer:
+        buyer_details = [
+            f"CTO has final sign-off authority on all technology purchases over $50K.",
+            f"VP of Engineering controls the budget for all developer tools and infrastructure.",
+            f"Chief Data Officer will make the final decision and has expressed support for the initiative.",
+            f"CEO is personally involved in this decision due to its strategic importance.",
+            f"CFO requires ROI analysis before approving the purchase."
+        ]
+        summary += f"{random.choice(buyer_details)} "
+    
+    # Decision Criteria
+    if include_decision_criteria:
+        criteria_details = [
+            f"Key evaluation criteria: performance (40%), security features (30%), ease of integration (30%).",
+            f"Primary requirements: developer experience, documentation quality, and enterprise support.",
+            f"Decision matrix focuses on scalability, compliance with security policies, and TCO.",
+            f"Evaluation scorecard weights: technical capabilities (50%), support (25%), pricing (25%).",
+            f"Must-have features: role-based access control, audit logging, and real-time subscriptions."
+        ]
+        summary += f"{random.choice(criteria_details)} "
+    
+    # Decision Process
+    if include_decision_process:
+        process_details = [
+            f"3-phase evaluation: technical POC (2 weeks), security review (1 week), architecture board approval (1 week).",
+            f"Decision timeline: technical evaluation by June 1, business case review by June 15, final decision by July 1.",
+            f"Process involves technical team validation, followed by director approval and C-level sign-off.",
+            f"Weekly steering committee meetings to review progress, with final decision expected in 4-6 weeks.",
+            f"Evaluation team will present findings to leadership on the 15th, with decision expected within 10 days."
+        ]
+        summary += f"{random.choice(process_details)} "
+    
+    # Paper Process
+    if include_paper_process:
+        paper_details = [
+            f"Procurement process: legal review (2 weeks), security assessment (1 week), PO processing (1 week).",
+            f"Vendor onboarding requires security questionnaire, SOC2 report, and MSA negotiation.",
+            f"Standard 45-day procurement cycle with security, legal, and finance approvals required.",
+            f"Legal team needs to review all contracts; typical turnaround is 5-10 business days.",
+            f"Procurement portal submission required, followed by three levels of internal approval."
+        ]
+        summary += f"{random.choice(paper_details)} "
+    
+    # Identified Pain
+    if include_pain:
+        pain_details = [
+            f"Current pain: developers spending 40% of time writing boilerplate API code instead of business logic.",
+            f"Performance issues with existing solution causing customer complaints and affecting NPS scores.",
+            f"Access control management across microservices creating security risks and compliance issues.",
+            f"Current architecture doesn't scale; each new data source requires 3-4 weeks of integration work.",
+            f"Existing solution costs increasing by 15% annually while performance degrades."
+        ]
+        summary += f"{random.choice(pain_details)} "
+    
+    # Champion
+    if include_champion:
+        champion_details = [
+            f"Lead architect will champion the implementation and has already created internal presentations.",
+            f"Director of Engineering is advocating strongly for Hasura and has executive relationships.",
+            f"Data Platform Lead has been researching GraphQL solutions for months and prefers Hasura.",
+            f"VP of Product is driving this initiative and has budget authority for the project.",
+            f"Technical Lead has built a prototype using Hasura and demonstrated it to the team."
+        ]
+        summary += f"{random.choice(champion_details)} "
+    
+    # Competition
+    if include_competition:
+        competition_details = [
+            f"Also evaluating Apollo GraphQL and considering building an in-house solution.",
+            f"Comparing Hasura with AWS AppSync and two other GraphQL implementations.",
+            f"Currently using a custom REST API layer but also looking at Apollo as an alternative.",
+            f"Considering both commercial options and open-source alternatives with support contracts.",
+            f"Evaluating Hasura against continuing with their current solution and accepting limitations."
+        ]
+        summary += f"{random.choice(competition_details)} "
+    
+    # Add next steps
+    next_steps = [
+        f"Next steps: follow-up with technical documentation and ROI analysis.",
+        f"Action items: schedule technical deep dive and provide reference customers.",
+        f"Follow-up: send security whitepaper and arrange call with solution architect.",
+        f"Next meeting scheduled for next week to continue evaluation.",
+        f"Customer requested pricing proposal and implementation timeline."
+    ]
+    summary += f"{random.choice(next_steps)}"
+    
+    return summary
+
 def generate_auth_data(num_users: int = 38) -> List[Dict]:
     users = []
     user_roles = {
@@ -519,6 +630,106 @@ def generate_salesforce_data(users: List[Dict], config: Dict[str, int] = CONFIG)
         else:
             close_date = fake.date_time_between(start_date=CURRENT_DATE + timedelta(days=90), end_date=CURRENT_DATE + timedelta(days=180))
         
+        # Generate MEDDPICC fields with realistic gaps
+        # Not all opportunities will have all fields filled in
+        
+        # Metrics - quantifiable outcomes the customer is targeting
+        metrics = None
+        if random.random() < 0.7:  # 70% chance to have metrics
+            metrics_options = [
+                f"Reduce infrastructure cost by {random.randint(20, 40)}%",
+                f"Improve time-to-market by {random.randint(30, 60)} days",
+                f"Increase developer productivity by {random.randint(20, 50)}%",
+                f"Reduce API latency by {random.randint(40, 80)}%",
+                f"Cut data processing time by {random.randint(30, 70)}%",
+                f"Achieve {random.randint(99, 100)}.{random.randint(0, 99)}% uptime for critical services",
+                f"Decrease time to deploy new features by {random.randint(30, 70)}%"
+            ]
+            metrics = random.choice(metrics_options)
+        
+        # Economic Buyer - person with final sign-off power
+        economic_buyer = None
+        if random.random() < 0.6:  # 60% chance to have economic buyer identified
+            # Check if there are executive contacts for this account
+            executive_contacts = account_executive_contacts[account['id']]
+            if executive_contacts:
+                exec_contact = random.choice(executive_contacts)
+                economic_buyer = exec_contact['id']
+        
+        # Decision Criteria - factors used to evaluate vendors
+        decision_criteria = None
+        if random.random() < 0.65:  # 65% chance to have decision criteria
+            criteria_options = [
+                "Performance, security, and ease of integration",
+                "Cost efficiency, scalability, and enterprise support",
+                "Developer experience, documentation, and community",
+                "Compliance with regulatory requirements and data sovereignty",
+                "Integration capabilities with existing tech stack",
+                "Total cost of ownership and ROI timeline"
+            ]
+            decision_criteria = random.choice(criteria_options)
+        
+        # Decision Process - how the decision will be made
+        decision_process = None
+        if random.random() < 0.55:  # 55% chance to have decision process
+            process_options = [
+                "Technical evaluation followed by executive review and procurement approval",
+                "POC with success criteria, followed by security review and contract negotiation",
+                "Vendor comparison matrix, technical validation, and executive sign-off",
+                "Internal champion presentation to steering committee for final approval",
+                "Technical team evaluation, followed by business case presentation to leadership"
+            ]
+            decision_process = random.choice(process_options)
+        
+        # Paper Process - internal procurement steps
+        paper_process = None
+        if random.random() < 0.45:  # 45% chance to have paper process
+            process_options = [
+                "Legal review (2 weeks), procurement approval (1 week), vendor onboarding (1 week)",
+                "Security assessment required before contract signing, 30-day payment terms",
+                "MSA already in place, only SOW approval needed through procurement portal",
+                "Requires three levels of approval: manager, director, and VP of Engineering",
+                "Procurement team handles all vendor contracts with 45-day standard process"
+            ]
+            paper_process = random.choice(process_options)
+        
+        # Identified Pain - core business pain driving the evaluation
+        identified_pain = None
+        if random.random() < 0.75:  # 75% chance to have identified pain
+            pain_options = [
+                "Slow application delivery causing missed market opportunities",
+                "Rising cloud costs from inefficient data processing",
+                "Developer bottlenecks due to complex API management",
+                "Data silos preventing unified customer view",
+                "Security concerns with current GraphQL implementation",
+                "Performance issues with existing data access layer",
+                "Difficulty scaling current architecture to meet growth"
+            ]
+            identified_pain = random.choice(pain_options)
+        
+        # Champion - internal advocate with influence
+        champion = None
+        if random.random() < 0.6:  # 60% chance to have champion
+            # Look for champions in the contacts
+            champion_contacts = [c for c in sf_data['contacts']
+                               if c['account_id'] == account['id'] and c['contact_roles_c'] == 'Champion']
+            if champion_contacts:
+                champ_contact = random.choice(champion_contacts)
+                champion = champ_contact['id']
+        
+        # Competition - who else is being evaluated
+        competition = None
+        if random.random() < 0.5:  # 50% chance to have competition info
+            competition_options = [
+                "Apollo GraphQL, considering building in-house solution",
+                "Evaluating Apollo and considering DIY GraphQL implementation",
+                "Currently using REST APIs, evaluating multiple GraphQL solutions",
+                "Legacy system with custom middleware, also looking at Apollo",
+                "Considering both Hasura and building their own solution",
+                "Evaluating Hasura against AWS AppSync and Apollo"
+            ]
+            competition = random.choice(competition_options)
+        
         sf_data['opportunities'].append({
             'id': opp_id,
             'account_id': account['id'],
@@ -528,7 +739,15 @@ def generate_salesforce_data(users: List[Dict], config: Dict[str, int] = CONFIG)
             'probability': probability,
             'close_date': format_date(close_date),
             'owner_id': owner_id,
-            'created_date': format_date(fake.date_time_between(start_date=START_DATE, end_date=close_date))
+            'created_date': format_date(fake.date_time_between(start_date=START_DATE, end_date=close_date)),
+            'metrics_c': metrics,
+            'economic_buyer_c': economic_buyer,
+            'decision_criteria_c': decision_criteria,
+            'decision_process_c': decision_process,
+            'paper_process_c': paper_process,
+            'identified_pain_c': identified_pain,
+            'champion_c': champion,
+            'competition_c': competition
         })
 
         # Add opportunity contact roles for this opportunity
@@ -736,18 +955,81 @@ def generate_clari_data(sf_data: Dict[str, List[Dict]], users: List[Dict], confi
             for contact in selected_contacts:
                 contact_ids.append(contact['id'])
         
+        # Generate realistic transcriptions that could be used for MEDDPICC analysis
+        # Create a list of participants for this call
+        participants = []
+        for j, contact_id in enumerate(contact_ids):
+            contact = next((c for c in sf_data['contacts'] if c['id'] == contact_id), None)
+            if contact:
+                participants.append({
+                    'id': j,
+                    'name': f"{contact['first_name']} {contact['last_name']}",
+                    'role': contact['contact_roles_c'],
+                    'company': 'Hasura' if j == 0 else account['name'],
+                    'title': contact['title']
+                })
+        
+        # Add a Hasura rep if not already included
+        if not any(p['company'] == 'Hasura' for p in participants):
+            hasura_rep = {
+                'id': len(participants),
+                'name': random.choice(['Emma Johnson', 'Michael Chen', 'Sarah Williams', 'David Rodriguez']),
+                'role': 'Sales Representative',
+                'company': 'Hasura',
+                'title': random.choice(['Account Executive', 'Solutions Engineer', 'Customer Success Manager'])
+            }
+            participants.append(hasura_rep)
+        
+        # For the first call of each opportunity, ensure we cover all MEDDPICC elements
+        # For subsequent calls, be more selective
+        is_first_call = not any(c['salesforce_deal_id'] == opp['id'] for c in clari_data['calls'])
+        
+        # Determine which MEDDPICC elements to include
+        # For the first call, include all elements that aren't already populated
+        # For subsequent calls, be more selective but still cover missing elements
+        include_metrics = opp.get('metrics_c') is None and (is_first_call or random.random() < 0.7)
+        include_econ_buyer = opp.get('economic_buyer_c') is None and (is_first_call or random.random() < 0.6)
+        include_decision_criteria = opp.get('decision_criteria_c') is None and (is_first_call or random.random() < 0.65)
+        include_decision_process = opp.get('decision_process_c') is None and (is_first_call or random.random() < 0.55)
+        include_paper_process = opp.get('paper_process_c') is None and (is_first_call or random.random() < 0.45)
+        include_pain = opp.get('identified_pain_c') is None and (is_first_call or random.random() < 0.75)
+        include_champion = opp.get('champion_c') is None and (is_first_call or random.random() < 0.6)
+        include_competition = opp.get('competition_c') is None and (is_first_call or random.random() < 0.5)
+        
+        # For the first call, ensure we have at least one of each MEDDPICC element
+        if is_first_call:
+            include_metrics = True
+            include_pain = True
+            # Include at least one of economic buyer or champion
+            if not include_econ_buyer and not include_champion:
+                include_econ_buyer = True
+            # Include at least one of decision criteria or process
+            if not include_decision_criteria and not include_decision_process:
+                include_decision_criteria = True
+        
         # Update the call record with the contact IDs
         clari_data['calls'].append({
             'id': call_id,
             'account_name': account['name'],
             'call_action_items_discussed': fake.sentence(),
             'call_action_items_discussed_embedding': '[0,0,0]',  # Placeholder vector
-            'call_full_transcript': fake.paragraph(nb_sentences=5),
+            'call_full_transcript': "This transcript will be populated from the detailed conversation snippets",
             'call_full_transcript_embedding': '[0,0,0]',
-            'call_key_takeaways': fake.sentence(),
+            'call_key_takeaways': f"MEDDPICC: " +
+                                 (f"M✓ " if include_metrics else "M✗ ") +
+                                 (f"E✓ " if include_econ_buyer else "E✗ ") +
+                                 (f"D✓ " if include_decision_criteria else "D✗ ") +
+                                 (f"D✓ " if include_decision_process else "D✗ ") +
+                                 (f"P✓ " if include_paper_process else "P✗ ") +
+                                 (f"I✓ " if include_pain else "I✗ ") +
+                                 (f"C✓ " if include_champion else "C✗ ") +
+                                 (f"C✓" if include_competition else "C✗"),
             'call_key_takeaways_embedding': '[0,0,0]',
             'call_review_page': f"https://clari.com/review/{call_id}",
-            'call_summary': fake.paragraph(),
+            'call_summary': generate_detailed_call_summary(account, opp, include_metrics, include_econ_buyer,
+                                                         include_decision_criteria, include_decision_process,
+                                                         include_paper_process, include_pain, include_champion,
+                                                         include_competition),
             'call_summary_embedding': '[0,0,0]',
             'call_topics_discussed': topics,
             'call_topics_discussed_embedding': '[0,0,0]',
@@ -776,15 +1058,206 @@ def generate_clari_data(sf_data: Dict[str, List[Dict]], users: List[Dict], confi
                     'user_id': random.choice([u['id'] for u in users])
                 })
 
-        # Generate transcriptions (one per participant)
-        for j in range(len(contact_ids)):
+        # Generate conversation snippets based on opportunity stage
+        conversation_snippets = []
+        
+        # Add introduction
+        hasura_rep = next(p for p in participants if p['company'] == 'Hasura')
+        client_rep = next((p for p in participants if p['company'] != 'Hasura'), None)
+        
+        conversation_snippets.append({
+            'speaker': hasura_rep['name'],
+            'text': f"Thanks everyone for joining today's call. I'm {hasura_rep['name']} from Hasura, and I'm excited to discuss how we can help {account['name']} with your data API needs."
+        })
+        
+        if client_rep:
+            conversation_snippets.append({
+                'speaker': client_rep['name'],
+                'text': f"Thanks for having us. We're looking forward to learning more about how Hasura can help us address our challenges."
+            })
+        
+        # Add MEDDPICC-related conversation snippets based on stage
+        if opp['stage'] in ['Discovery', 'Qualification']:
+            # Pain points discussion
+            if include_pain:
+                conversation_snippets.append({
+                    'speaker': hasura_rep['name'],
+                    'text': "Could you tell me more about the challenges you're currently facing with your data access layer?"
+                })
+                
+                pain_responses = [
+                    f"Our developers are spending too much time writing custom APIs instead of focusing on business logic. It's really slowing down our release cycles.",
+                    f"We're struggling with our current solution's performance. As our data grows, queries are getting slower and it's affecting user experience.",
+                    f"Managing access control across all our microservices is becoming a nightmare. We need a more centralized approach.",
+                    f"Our current architecture doesn't scale well. Every new data source requires weeks of integration work."
+                ]
+                
+                if client_rep:
+                    conversation_snippets.append({
+                        'speaker': client_rep['name'],
+                        'text': random.choice(pain_responses)
+                    })
+            
+            # Metrics discussion
+            if include_metrics:
+                conversation_snippets.append({
+                    'speaker': hasura_rep['name'],
+                    'text': "What specific outcomes are you hoping to achieve with a new solution? Are there any metrics or KPIs you're targeting?"
+                })
+                
+                metrics_responses = [
+                    f"We need to reduce our API development time by at least 50%. Right now it takes us about 3 weeks to build and deploy new endpoints.",
+                    f"Our goal is to improve query performance by 70%. Current response times are averaging 800ms, and we need to get that down to under 200ms.",
+                    f"We want to enable our front-end teams to ship features 40% faster by giving them a more flexible data access layer."
+                ]
+                
+                if client_rep:
+                    conversation_snippets.append({
+                        'speaker': client_rep['name'],
+                        'text': random.choice(metrics_responses)
+                    })
+        
+        elif opp['stage'] in ['Meeting', 'Proposal']:
+            # Decision process discussion
+            if include_decision_process:
+                conversation_snippets.append({
+                    'speaker': hasura_rep['name'],
+                    'text': "I'd like to understand your evaluation process better. What steps do you typically go through when selecting a new technology like this?"
+                })
+                
+                process_responses = [
+                    "We usually start with a technical POC to validate the solution, then do a security review. After that, we present to the architecture review board for final approval.",
+                    "Our process involves a technical evaluation first, then a business case review with our leadership team, and finally procurement and legal review.",
+                    "We have a three-phase approach: technical validation, integration testing with our existing systems, and then a final review with our CTO's team."
+                ]
+                
+                if client_rep:
+                    conversation_snippets.append({
+                        'speaker': client_rep['name'],
+                        'text': random.choice(process_responses)
+                    })
+            
+            # Decision criteria discussion
+            if include_decision_criteria:
+                conversation_snippets.append({
+                    'speaker': hasura_rep['name'],
+                    'text': "What criteria are most important to you when evaluating solutions like Hasura?"
+                })
+                
+                criteria_responses = [
+                    "Performance is our top priority, followed by security features and ease of integration with our existing stack.",
+                    "We're looking at developer experience, documentation quality, and enterprise support options as our main criteria.",
+                    "Our key requirements are scalability, compliance with our security policies, and total cost of ownership."
+                ]
+                
+                if client_rep:
+                    conversation_snippets.append({
+                        'speaker': client_rep['name'],
+                        'text': random.choice(criteria_responses)
+                    })
+            
+            # Competition discussion
+            if include_competition:
+                conversation_snippets.append({
+                    'speaker': hasura_rep['name'],
+                    'text': "Are you evaluating any other solutions alongside Hasura?"
+                })
+                
+                competition_responses = [
+                    "Yes, we're also looking at Apollo GraphQL and considering building something in-house.",
+                    "We're comparing Hasura with AWS AppSync and a couple of other GraphQL implementations.",
+                    "We've been using a custom REST API layer, but we're also evaluating Apollo as an alternative to Hasura."
+                ]
+                
+                if client_rep:
+                    conversation_snippets.append({
+                        'speaker': client_rep['name'],
+                        'text': random.choice(competition_responses)
+                    })
+        
+        elif opp['stage'] in ['Negotiation', 'Closed Won']:
+            # Economic buyer discussion
+            if include_econ_buyer:
+                conversation_snippets.append({
+                    'speaker': hasura_rep['name'],
+                    'text': "Who will be making the final decision on this purchase? Is there anyone else we should include in our discussions?"
+                })
+                
+                buyer_responses = [
+                    f"That would be our CTO, Sarah Johnson. She has the final sign-off on all technology purchases over $50K.",
+                    f"Our VP of Engineering, Michael Chen, will need to approve this. He manages the budget for all developer tools.",
+                    f"The final approval will come from our Chief Data Officer. He's very supportive of this initiative."
+                ]
+                
+                if client_rep:
+                    conversation_snippets.append({
+                        'speaker': client_rep['name'],
+                        'text': random.choice(buyer_responses)
+                    })
+            
+            # Paper process discussion
+            if include_paper_process:
+                conversation_snippets.append({
+                    'speaker': hasura_rep['name'],
+                    'text': "Could you walk me through your procurement process? What steps do we need to take to get the contract finalized?"
+                })
+                
+                paper_responses = [
+                    "We'll need to go through legal review first, which typically takes 2 weeks. Then procurement will process the PO, which is another week.",
+                    "Our procurement process is pretty straightforward. We'll need to get you set up as a vendor in our system, then the contract goes through legal review.",
+                    "We have a standard 45-day procurement cycle. It starts with security assessment, then legal review, and finally finance approval."
+                ]
+                
+                if client_rep:
+                    conversation_snippets.append({
+                        'speaker': client_rep['name'],
+                        'text': random.choice(paper_responses)
+                    })
+            
+            # Champion discussion
+            if include_champion:
+                conversation_snippets.append({
+                    'speaker': hasura_rep['name'],
+                    'text': "Who on your team will be leading the implementation if you decide to move forward with Hasura?"
+                })
+                
+                champion_responses = [
+                    f"I'll be leading the implementation team. I've already started getting the team excited about what we can do with Hasura.",
+                    f"Our lead architect, David, will be spearheading this. He's been advocating for a GraphQL solution for months.",
+                    f"I'm going to be the project lead. I've already created some internal presentations about how Hasura can solve our challenges."
+                ]
+                
+                if client_rep:
+                    conversation_snippets.append({
+                        'speaker': client_rep['name'],
+                        'text': random.choice(champion_responses)
+                    })
+        
+        # Add closing remarks
+        conversation_snippets.append({
+            'speaker': hasura_rep['name'],
+            'text': f"This has been really helpful. I'll follow up with a summary of our discussion and the next steps we discussed."
+        })
+        
+        if client_rep:
+            conversation_snippets.append({
+                'speaker': client_rep['name'],
+                'text': "Great, looking forward to it. Thanks for your time today."
+            })
+        
+        # Convert conversation snippets to transcriptions
+        for j, snippet in enumerate(conversation_snippets):
+            speaker_id = next((p['id'] for p in participants if p['name'] == snippet['speaker']), 0)
+            start_time = j * 2  # Simple time spacing
+            end_time = start_time + 1.5
+            
             clari_data['call_transcriptions'].append({
                 'call_id': call_id,
-                'call_person_id': f"{call_id}_part{j}",
-                'end_time': random.uniform(30, 60),
+                'call_person_id': f"{call_id}_part{speaker_id}",
+                'end_time': end_time,
                 'person_id': random.randint(1, 1000),
-                'start_time': random.uniform(0, 30),
-                'text': fake.paragraph(),
+                'start_time': start_time,
+                'text': snippet['text'],
                 'text_embedding': '[0,0,0]',
                 'transcription_id': f"trans_{call_id}_{j}"
             })
