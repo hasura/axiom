@@ -25,12 +25,15 @@ def generate_patients_and_insurance(num_patients=1000):
     with open(f"{OUTPUT_DIR}/patients.csv", "w", newline="") as f:
         writer = csv.writer(f)
         writer.writerow(["patient.patient_id", "patient.first_name", "patient.last_name", 
-                         "patient.date_of_birth", "patient.insurance_plan_id"])
+                         "patient.date_of_birth", "patient.ssn", "patient.credit_card", "patient.insurance_plan_id"])
         for _ in range(num_patients):
             pid = fake.uuid4()[:20]
             writer.writerow([
-                pid, fake.first_name(), fake.last_name(), 
+                pid, fake.first_name(), 
+                fake.last_name(), 
                 fake.date_of_birth(minimum_age=18, maximum_age=90).isoformat(),
+                fake.ssn(),
+                fake.credit_card_number(),
                 f"PLAN{random.randint(1, 5):03d}"
             ])
 
