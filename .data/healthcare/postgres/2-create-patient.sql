@@ -14,7 +14,7 @@ CREATE TABLE patients (
     last_name VARCHAR(50),
     date_of_birth DATE,
     patient_ssn VARCHAR(11),
-    patient_creditcard VARCHAR(16),
+    patient_creditcard VARCHAR(19),
     insurance_plan_id VARCHAR(20) REFERENCES insurance_plans(plan_id)
 );
 
