@@ -1,0 +1,21 @@
+kind: Subgraph
+version: v2
+definition:
+  name: ecommerce
+  generator:
+    rootPath: .
+    graphqlRootFieldPrefix: ecommerce_
+    graphqlTypeNamePrefix: eCommerce_
+    namingConvention: snake_case
+  includePaths:
+    - metadata
+  envMapping:
+    ECOMMERCE_ECOMMERCE_MONGODB_AUTHORIZATION_HEADER:
+      fromEnv: ECOMMERCE_ECOMMERCE_MONGODB_AUTHORIZATION_HEADER
+    ECOMMERCE_ECOMMERCE_MONGODB_READ_URL:
+      fromEnv: ECOMMERCE_ECOMMERCE_MONGODB_READ_URL
+    ECOMMERCE_ECOMMERCE_MONGODB_WRITE_URL:
+      fromEnv: ECOMMERCE_ECOMMERCE_MONGODB_WRITE_URL
+  connectors:
+    - path: connector/ecommerce_mongodb/connector.yaml
+      connectorLinkName: ecommerce_mongodb

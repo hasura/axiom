@@ -1,0 +1,100 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: create_shipment_request_shipment_data
+  fields:
+    - name: product_name
+      type: String!
+    - name: unit_quantity
+      type: Float!
+    - name: warehouse_destination
+      type: String!
+  graphql:
+    typeName: Operations_create_shipment_request_shipment_data
+    inputTypeName: Operations_create_shipment_request_shipment_data_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: operations_nodejs
+      dataConnectorObjectType: createShipmentRequest_shipmentData
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: create_shipment_request_shipment_data
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - product_name
+          - unit_quantity
+          - warehouse_destination
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: shipment_request
+  description: |-
+    Start functions for supply chain demos 
+    note that all functions must not return scalar values
+  fields:
+    - name: destination
+      type: String!
+    - name: name
+      type: String!
+    - name: units
+      type: Float!
+  graphql:
+    typeName: Operations_shipment_request
+    inputTypeName: Operations_shipment_request_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: operations_nodejs
+      dataConnectorObjectType: ShipmentRequest
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: shipment_request
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - destination
+          - name
+          - units
+
+---
+kind: Command
+version: v1
+definition:
+  name: create_shipment_request
+  description: >
+    Creates a new Warehouse Shipment Request
+
+     - This can be used to redistribute stock units from one warehouse to another.
+  outputType: shipment_request!
+  arguments:
+    - name: shipment_data
+      type: create_shipment_request_shipment_data!
+      description: Data for the new product
+  source:
+    dataConnectorName: operations_nodejs
+    dataConnectorCommand:
+      procedure: createShipmentRequest
+    argumentMapping:
+      shipment_data: shipmentData
+  graphql:
+    rootFieldName: operations_create_shipment_request
+    rootFieldKind: Mutation
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: create_shipment_request
+  permissions:
+    - role: admin
+      allowExecution: true
+

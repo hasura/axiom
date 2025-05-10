@@ -1,0 +1,149 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: us_factories
+  fields:
+    - name: capacity
+      description: Production capacity of the factory (likely in units per month)
+      type: integer
+    - name: factory_id
+      description: Unique identifier for each factory
+      type: integer!
+    - name: location
+      description: Geographic location of the factory
+      type: character_varying
+    - name: name
+      description: The name of the factory
+      type: character_varying
+  graphql:
+    typeName: SCMS_us_factories
+    inputTypeName: SCMS_us_factories_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: scms_postgres
+      dataConnectorObjectType: us.factories
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: us_factories
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - capacity
+          - factory_id
+          - location
+          - name
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: us_factories_bool_exp
+  operand:
+    object:
+      type: us_factories
+      comparableFields:
+        - fieldName: capacity
+          booleanExpressionType: integer_bool_exp
+        - fieldName: factory_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: location
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: name
+          booleanExpressionType: character_varying_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: SCMS_us_factories_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: us_factories_agg_exp
+  operand:
+    object:
+      aggregatedType: us_factories
+      aggregatableFields:
+        - fieldName: capacity
+          aggregateExpression: integer_agg_exp
+        - fieldName: factory_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: location
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: name
+          aggregateExpression: character_varying_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: SCMS_us_factories_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: us_factories_order_by_exp
+  operand:
+    object:
+      orderedType: us_factories
+      orderableFields:
+        - fieldName: capacity
+          orderByExpression: integer_order_by_exp
+        - fieldName: factory_id
+          orderByExpression: integer_order_by_exp
+        - fieldName: location
+          orderByExpression: character_varying_order_by_exp
+        - fieldName: name
+          orderByExpression: character_varying_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: SCMS_us_factories_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: us_factories
+  description: >
+    Manufacturing facilities information where shoes are produced.
+  objectType: us_factories
+  source:
+    dataConnectorName: scms_postgres
+    collection: us.factories
+  filterExpressionType: us_factories_bool_exp
+  aggregateExpression: us_factories_agg_exp
+  orderByExpression: us_factories_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: scmsus_factories
+      subscription:
+        rootField: scmsus_factories
+    selectUniques:
+      - queryRootField: scmsus_factories_by_factory_id
+        uniqueIdentifier:
+          - factory_id
+        subscription:
+          rootField: scmsus_factories_by_factory_id
+    filterInputTypeName: SCMS_us_factories_filter_input
+    aggregate:
+      queryRootField: scmsus_factories_aggregate
+      subscription:
+        rootField: scmsus_factories_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: us_factories
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
