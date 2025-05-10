@@ -272,7 +272,15 @@ CREATE TABLE opportunities (
     probability INTEGER,
     close_date VARCHAR(255),
     owner_id INTEGER,
-    created_date VARCHAR(255)
+    created_date VARCHAR(255),
+    metrics_c TEXT,
+    economic_buyer_c VARCHAR(255),
+    decision_criteria_c TEXT,
+    decision_process_c TEXT,
+    paper_process_c TEXT,
+    identified_pain_c TEXT,
+    champion_c VARCHAR(255),
+    competition_c TEXT
 );
 
 CREATE TABLE product_2 (

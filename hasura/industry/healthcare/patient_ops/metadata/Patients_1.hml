@@ -14,6 +14,10 @@ definition:
       type: Varchar_1
     - name: patientId
       type: Varchar_1!
+    - name: patientCreditcard
+      type: Varchar_1
+    - name: patientSsn
+      type: Varchar_1
   graphql:
     typeName: Patients
     inputTypeName: PatientsInput
@@ -36,6 +40,12 @@ definition:
         patientId:
           column:
             name: patient_id
+        patientCreditcard:
+          column:
+            name: patient_creditcard
+        patientSsn:
+          column:
+            name: patient_ssn
 
 ---
 kind: TypePermissions
@@ -51,6 +61,8 @@ definition:
           - insurancePlanId
           - lastName
           - patientId
+          - patientCreditcard
+          - patientSsn
 
 ---
 kind: BooleanExpressionType
@@ -70,6 +82,10 @@ definition:
         - fieldName: lastName
           booleanExpressionType: VarcharBoolExp_1
         - fieldName: patientId
+          booleanExpressionType: VarcharBoolExp_1
+        - fieldName: patientCreditcard
+          booleanExpressionType: VarcharBoolExp_1
+        - fieldName: patientSsn
           booleanExpressionType: VarcharBoolExp_1
       comparableRelationships:
         - relationshipName: insurancePlan
@@ -99,6 +115,10 @@ definition:
           aggregateExpression: VarcharAggExp_1
         - fieldName: patientId
           aggregateExpression: VarcharAggExp_1
+        - fieldName: patientCreditcard
+          aggregateExpression: VarcharAggExp_1
+        - fieldName: patientSsn
+          aggregateExpression: VarcharAggExp_1
   count:
     enable: true
   graphql:
@@ -122,6 +142,10 @@ definition:
         - fieldName: lastName
           orderByExpression: Varchar1OrderByExp
         - fieldName: patientId
+          orderByExpression: Varchar1OrderByExp
+        - fieldName: patientCreditcard
+          orderByExpression: Varchar1OrderByExp
+        - fieldName: patientSsn
           orderByExpression: Varchar1OrderByExp
       orderableRelationships:
         - relationshipName: insurancePlan

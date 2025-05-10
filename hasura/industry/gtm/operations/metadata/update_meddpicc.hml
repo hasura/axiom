@@ -1,0 +1,53 @@
+---
+kind: Command
+version: v1
+definition:
+  name: update_meddpicc
+  outputType: action_response!
+  arguments:
+    - name: champion
+      type: String
+    - name: competition
+      type: String
+    - name: decision_criteria
+      type: String
+    - name: decision_process
+      type: String
+    - name: economic_buyer
+      type: String
+    - name: identified_pain
+      type: String
+    - name: metrics
+      type: String
+    - name: opportunity_id
+      type: String!
+    - name: paper_process
+      type: String
+  source:
+    dataConnectorName: actions
+    dataConnectorCommand:
+      procedure: updateMeddpicc
+    argumentMapping:
+      champion: champion
+      competition: competition
+      decision_criteria: decisionCriteria
+      decision_process: decisionProcess
+      economic_buyer: economicBuyer
+      identified_pain: identifiedPain
+      metrics: metrics
+      opportunity_id: opportunityId
+      paper_process: paperProcess
+  graphql:
+    rootFieldName: update_meddpicc
+    rootFieldKind: Mutation
+  description: Updates Salesforce MEDDPICC fields based on call transcript analysis
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: update_meddpicc
+  permissions:
+    - role: admin
+      allowExecution: true
+
