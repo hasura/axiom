@@ -1,0 +1,139 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: us_warehouses
+  fields:
+    - name: location
+      description: Geographic location of the warehouse
+      type: character_varying
+    - name: name
+      description: Name of the warehouse
+      type: character_varying
+    - name: warehouse_id
+      description: Unique identifier for each warehouse
+      type: integer!
+  graphql:
+    typeName: SCMS_us_warehouses
+    inputTypeName: SCMS_us_warehouses_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: scms_postgres
+      dataConnectorObjectType: us.warehouses
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: us_warehouses
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - location
+          - name
+          - warehouse_id
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: us_warehouses_bool_exp
+  operand:
+    object:
+      type: us_warehouses
+      comparableFields:
+        - fieldName: location
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: name
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: warehouse_id
+          booleanExpressionType: integer_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: SCMS_us_warehouses_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: us_warehouses_agg_exp
+  operand:
+    object:
+      aggregatedType: us_warehouses
+      aggregatableFields:
+        - fieldName: location
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: name
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: warehouse_id
+          aggregateExpression: integer_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: SCMS_us_warehouses_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: us_warehouses_order_by_exp
+  operand:
+    object:
+      orderedType: us_warehouses
+      orderableFields:
+        - fieldName: location
+          orderByExpression: character_varying_order_by_exp
+        - fieldName: name
+          orderByExpression: character_varying_order_by_exp
+        - fieldName: warehouse_id
+          orderByExpression: integer_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: SCMS_us_warehouses_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: us_warehouses
+  description: >
+    Storage facilities for finished products.
+  objectType: us_warehouses
+  source:
+    dataConnectorName: scms_postgres
+    collection: us.warehouses
+  filterExpressionType: us_warehouses_bool_exp
+  aggregateExpression: us_warehouses_agg_exp
+  orderByExpression: us_warehouses_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: scmsus_warehouses
+      subscription:
+        rootField: scmsus_warehouses
+    selectUniques:
+      - queryRootField: scmsus_warehouses_by_warehouse_id
+        uniqueIdentifier:
+          - warehouse_id
+        subscription:
+          rootField: scmsus_warehouses_by_warehouse_id
+    filterInputTypeName: SCMS_us_warehouses_filter_input
+    aggregate:
+      queryRootField: scmsus_warehouses_aggregate
+      subscription:
+        rootField: scmsus_warehouses_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: us_warehouses
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
