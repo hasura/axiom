@@ -1,0 +1,170 @@
+---
+kind: Relationship
+version: v1
+definition:
+  name: texts
+  sourceType: Customers
+  target:
+    model:
+      name: Texts
+      relationshipType: Array
+      subgraph: network
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerid
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: calls
+  sourceType: Customers
+  target:
+    model:
+      name: Calls
+      relationshipType: Array
+      subgraph: network
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerid
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: node
+  sourceType: Network
+  target:
+    model:
+      name: Equipment
+      relationshipType: Object
+      subgraph: network
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: nodeId
+      target:
+        modelField:
+          - fieldName: nodeId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: supportDB
+  description: This relationship should be used as the predominant souce for support tickets
+  sourceType: Customers
+  target:
+    model:
+      name: UserProfiles
+      relationshipType: Object
+      subgraph: support
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: userProfiles
+  sourceType: CustomerPreferences
+  target:
+    model:
+      name: UserProfiles
+      relationshipType: Object
+      subgraph: support
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerGuid
+      target:
+        modelField:
+          - fieldName: memberId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: CDR
+  sourceType: CustomerLink
+  target:
+    model:
+      subgraph: network
+      name: Cdr
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerGuid
+      target:
+        modelField:
+          - fieldName: guid
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: NetworkPerformance
+  sourceType: CustomerLink
+  target:
+    model:
+      subgraph: network
+      name: NetworkPerformance
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerGuid
+      target:
+        modelField:
+          - fieldName: guid
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: DataUsage
+  sourceType: CustomerLink
+  target:
+    model:
+      subgraph: network
+      name: DataUsage
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerGuid
+      target:
+        modelField:
+          - fieldName: guid
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: prefs
+  sourceType: CustomerLink
+  target:
+    model:
+      name: CustomerPreferences
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerGuid
+      target:
+        modelField:
+          - fieldName: customerGuid
