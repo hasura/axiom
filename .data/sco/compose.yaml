@@ -1,0 +1,33 @@
+services:
+  mongodb:
+    build:
+      context: ./mongodb
+      dockerfile: Dockerfile
+    container_name: axiom_sco_mongodb
+    shm_size: 128mb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: ecommerce
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+    volumes:
+      - mongodb-data:/data/db
+  postgres:
+    image: postgres:latest
+    container_name: axiom_sco_postgres
+    shm_size: 128mb
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      PGPORT: 5432
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./postgres/entrypoint/:/docker-entrypoint-initdb.d/
+volumes:
+  mongodb-data:
+  postgres-data:
