@@ -101,43 +101,11 @@ sed "s/CONTAINER_PREFIX=axiomdata/CONTAINER_PREFIX=axiom${PROFILE}/g" ../.data/$
 
 **Required files in `.data/$PROFILE`:**
 
-<<<<<<< Updated upstream
 Remember to include a JWT_SECRET configuration in your `.env` files to allow for builds to proceed:
 
 ```bash
 echo 'JWT_SECRET="hptj8supNeslwet7nhGGr5Uu5MombVVjDmcGMOyrWa8"' > .env.$PROFILE.template
 ```
-=======
-1. **`compose.yaml`**: Docker Compose configuration defining:
-   - Database containers (PostgreSQL, MongoDB, etc.)
-   - Redis for caching
-   - Caching plugin configuration
-   - Any other services needed for your demo
-
-2. **`postgres/`**: Directory containing SQL initialization scripts that will run when the container starts
-   - SQL files should be named with numerical prefixes (e.g., `1-schema.sql`, `2-data.sql`)
-   - These scripts create tables and populate them with seed data
-
-3. **`.env`**: Environment variables for Docker Compose
-   - Contains passwords and configuration for containers
-   - Should include `CONTAINER_PREFIX` to identify your demo's containers
-
-### Step 4: Set Up Hasura Directory Components
-
-#### 4.1: Create Environment Files
-
-```bash
-# Create environment files
-touch .env.$PROFILE.template .env.$PROFILE .env.cloud.$PROFILE
-
-# Add basic configuration to template
-cat > .env.$PROFILE.template << EOF
-JWT_SECRET="hptj8supNeslwet7nhGGr5Uu5MombVVjDmcGMOyrWa8"
-CACHING_PLUGIN_PRE_PARSE_URL="http://local.hasura.dev:8787/pre-parse"
-CACHING_PLUGIN_PRE_RESPONSE_URL="http://local.hasura.dev:8787/pre-response"
-CACHING_PLUGIN_REDIS_URL="redis://local.hasura.dev:6379"
-CACHING_PLUGIN_SECRET="zZkhKqFjqXR4g5MZCsJUZCnhCcoPyZ"
->>>>>>> Stashed changes
 
 # Add your connector environment variables here
 ${PROFILE^^}_MYPOSTGRES_READ_URL="postgres://postgres:hbGciOiJIUzI1NiIsInR5cCI6IkpX@local.hasura.dev:5432/postgres"
