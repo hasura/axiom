@@ -1,5 +1,19 @@
 # Ansible for Axiom
 
+This repository contains Ansible playbooks for deploying and managing Axiom demo environments. The playbooks automate the setup of servers, installation of dependencies, and deployment of Axiom demos.
+
+## Overview
+
+The Ansible setup consists of several playbooks that handle different aspects of the deployment:
+
+- **master.yml**: The main entry point that orchestrates the entire deployment process
+- **defaults.yml**: Sets up basic host configuration (hostname, basic tools)
+- **manage_ssh_keys.yml**: Manages SSH keys for authorized users
+- **configure_docker.yml**: Installs and configures Docker
+- **ddn.yml**: Installs the Hasura DDN CLI
+- **axiom.yml**: Deploys the Axiom demo environment
+- **cron.yml**: Sets up cron jobs for maintenance tasks
+
 ## Prerequisites
 
 ### Install Required Tools
@@ -16,7 +30,9 @@ brew install ansible-lint
 ansible-galaxy collection install -r requirements.yml
 ```
 
-## Configure Environment Variables
+## Configuration
+
+### Configure Environment Variables
 Set up the `.env` file to include the required database passwords and other sensitive information:
 
 ```bash
@@ -27,7 +43,7 @@ cp template.env .env
 vim .env
 ```
 
-## Set Up Inventory of Servers
+### Set Up Inventory of Servers
 The Ansible inventory file specifies the servers to manage.
 
 * The official inventory file for presales can be found in the Presales Wiki.
@@ -46,7 +62,8 @@ cat <<EOF > inventory.json
     "hosts": {
       "telco": {
         "ansible_host": "telco-server.example.com",
-        "region": "us-east"
+        "region": "us-east",
+        "demo_profile": "telco"
       }
     }
   }
@@ -55,7 +72,6 @@ EOF
 ```
 
 ## Usage
-As soon as the server is set up, Ansible can be run against them to complete configuration.
 
 ### Run Against All Hosts
 Run the playbook against all hosts in your inventory:
@@ -71,9 +87,47 @@ To limit execution to specific hosts, use the --limit option:
 ansible-playbook -i inventory.json master.yml --limit host1:host2:host3
 ```
 
+### Force Clean Installation
+To force a complete reinstallation (stop all containers, remove volumes, and start fresh):
+
+```bash
+ansible-playbook -i inventory.json master.yml -e "force_clean=true"
+```
+
+### Run Specific Playbooks
+You can run specific playbooks individually if needed:
+
+```bash
+# Just set up Docker
+ansible-playbook -i inventory.json playbooks/configure_docker.yml
+
+# Just set up cron jobs
+ansible-playbook -i inventory.json playbooks/cron.yml
+```
+
 ### Validate Configuration
 Use ansible-lint to validate your playbooks and tasks:
 
 ```bash
 ansible-lint
 ```
+
+## Playbook Details
+
+### master.yml
+The main entry point that imports all other playbooks in the correct order:
+- Applies host defaults
+- Manages SSH keys
+- Deploys Axiom with dependencies
+
+### axiom.yml
+The main deployment playbook that:
+- Installs prerequisites (DDN CLI)
+- Configures Docker
+- Clones and configures the Axiom repository
+- Sets up environment variables
+- Manages Docker containers for the demo
+- Provides smart container management (starts if not running, ignores if running)
+
+### cron.yml
+Sets up cron jobs for maintenance tasks like connector keepalive.

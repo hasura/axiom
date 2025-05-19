@@ -2,6 +2,12 @@
 - name: Set hostnames based on region
   hosts: hosts
   become: true
+  vars:
+    snapd_state: absent
+
+  roles:
+    - bodsch.snapd
+
   tasks:
     - name: Set the hostname
       ansible.builtin.hostname:
