@@ -125,7 +125,10 @@
 
     - name: Display Docker status
       ansible.builtin.debug:
-        msg: "🐳 Docker Status: Service running: {{ docker_running }}, Compose services running: {{ compose_services_running }}, Containers running: {{ containers_running }}"
+        msg: >-
+          🐳 Docker Status: Service running: {{ docker_running }},
+          Compose services running: {{ compose_services_running }},
+          Containers running: {{ containers_running }}
 
     - name: Stop all Docker containers if force_clean is enabled
       community.docker.docker_compose_v2:
@@ -165,7 +168,11 @@
 
     - name: Display success message
       ansible.builtin.debug:
-        msg: "✅ Demo setup completed successfully! {% if force_clean | bool %}⚠️ All containers were stopped and restarted cleanly.{% elif start_result is defined and start_result.changed %}🚀 New containers started.{% else %}ℹ️ No changes to running containers.{% endif %}"
+        msg: >-
+          ✅ Demo setup completed successfully!
+          {% if force_clean | bool %}⚠️ All containers were stopped and restarted cleanly.
+          {% elif start_result is defined and start_result.changed %}🚀 New containers started.
+          {% else %}ℹ️ No changes to running containers.{% endif %}
       when: >-
         not (containers_running | bool and
         not force_clean | bool)
