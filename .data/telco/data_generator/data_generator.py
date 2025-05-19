@@ -356,17 +356,21 @@ def main():
     # Generate ClickHouse data
     print("\nGenerating ClickHouse data...")
     print(f"Using months_back={CLICKHOUSE_MONTHS_BACK}, records_per_customer={CLICKHOUSE_RECORDS_PER_CUSTOMER}")
-
+    
+    # Generate and write each type of ClickHouse data
+    print("\nGenerating CDR data...")
     cdr_data = generate_cdr_data(customer_link, calls,
                                months_back=CLICKHOUSE_MONTHS_BACK,
                                records_per_customer=CLICKHOUSE_RECORDS_PER_CUSTOMER)
     write_csv(cdr_data, "cdr.csv", "clickhouse/csv")
-
+    
+    print("\nGenerating network performance data...")
     network_perf = generate_network_performance(customer_link,
                                               months_back=CLICKHOUSE_MONTHS_BACK,
                                               records_per_customer=CLICKHOUSE_RECORDS_PER_CUSTOMER)
     write_csv(network_perf, "network_performance.csv", "clickhouse/csv")
-
+    
+    print("\nGenerating data usage data...")
     data_usage = generate_data_usage(customer_link,
                                    months_back=CLICKHOUSE_MONTHS_BACK,
                                    records_per_customer=CLICKHOUSE_RECORDS_PER_CUSTOMER)

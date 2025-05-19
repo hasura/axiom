@@ -3572,7 +3572,33 @@ def generate_family_plans(customers: List[Dict]) -> List[Dict]:
         {"name": "Family Elite", "min_members": 3, "max_members": 6, "weight": 0.05}
     ]
     
-    # Create network of relationships
+    # Create indexes for faster lookups
+    location_index = {}
+    lastname_index = {}
+    location_lastname_index = {}
+    
+    print("Building customer indexes for family plans...")
+    for customer in customers:
+        customer_id = customer["customer_id"]
+        location = (customer["country"], customer["state"], customer["city"])
+        lastname = customer["last_name"]
+        
+        # Add to location index
+        if location not in location_index:
+            location_index[location] = []
+        location_index[location].append(customer)
+        
+        # Add to lastname index
+        if lastname not in lastname_index:
+            lastname_index[lastname] = []
+        lastname_index[lastname].append(customer)
+        
+        # Add to combined index
+        location_lastname_key = (location, lastname)
+        if location_lastname_key not in location_lastname_index:
+            location_lastname_index[location_lastname_key] = []
+        location_lastname_index[location_lastname_key].append(customer)
+    
     # Start by identifying potential primary members
     potential_primaries = []
     for customer in customers:
@@ -3600,163 +3626,166 @@ def generate_family_plans(customers: List[Dict]) -> List[Dict]:
         if random.random() < family_plan_rate:
             potential_primaries.append(customer)
     
-    # Identify potential secondary/child members
-    all_customer_ids = {c["customer_id"] for c in customers}
-    members_assigned = set()  # Track already assigned members
+    # Track already assigned members
+    members_assigned = set()
     
-    for primary in potential_primaries:
-        primary_id = primary["customer_id"]
+    # Process in batches for large datasets
+    batch_size = 1000
+    num_batches = (len(potential_primaries) + batch_size - 1) // batch_size
+    
+    print(f"Processing {len(potential_primaries)} potential primary members in {num_batches} batches...")
+    
+    for batch_idx in range(num_batches):
+        start_idx = batch_idx * batch_size
+        end_idx = min((batch_idx + 1) * batch_size, len(potential_primaries))
+        batch_primaries = potential_primaries[start_idx:end_idx]
         
-        # Skip if primary already assigned as a member
-        if primary_id in members_assigned:
-            continue
+        if batch_idx % 10 == 0 and batch_idx > 0:
+            print(f"Processed {batch_idx} batches ({batch_idx * batch_size} primaries)...")
+        
+        for primary in batch_primaries:
+            primary_id = primary["customer_id"]
             
-        # Select plan type based on weights
-        plan_weights = [option["weight"] for option in family_plan_options]
-        plan_option = random.choices(family_plan_options, weights=plan_weights)[0]
-        
-        plan_name = plan_option["name"]
-        max_members = plan_option["max_members"]
-        
-        # Created date - correlate with customer creation
-        if primary_id < len(customers) * 0.3:  # Oldest 30% of customers
-            created_at = fake.date_time_between(start_date="-3y", end_date="-1y")
-        elif primary_id < len(customers) * 0.7:  # Middle 40%
-            created_at = fake.date_time_between(start_date="-2y", end_date="-6m")
-        else:  # Newest 30%
-            created_at = fake.date_time_between(start_date="-1y", end_date="-1m")
-        
-        # Shared data and pricing scales with max_members
-        shared_data_gb = random.choice([max_members * 5, max_members * 10, max_members * 15])
-        monthly_fee = 40 + (shared_data_gb * 0.5) + (max_members * 10)
-        
-        family_plans.append({
-            "family_plan_id": family_plan_id,
-            "primary_customer_id": primary_id,
-            "plan_name": plan_name,
-            "created_at": created_at.isoformat(),
-            "max_members": max_members,
-            "shared_data_gb": shared_data_gb,
-            "monthly_fee": round(monthly_fee, 2)
-        })
-        
-        # Add primary member
-        family_plan_members.append({
-            "family_plan_id": family_plan_id,
-            "customer_id": primary_id,
-            "role": "primary",
-            "data_allocation_percentage": random.randint(20, 40)
-        })
-        
-        members_assigned.add(primary_id)
-        
-        # Find other members based on matching characteristics
-        # Focus on location and last name to simulate family relationships
-        primary_location = (primary["country"], primary["state"], primary["city"])
-        primary_last_name = primary["last_name"]
-        
-        # Potential family members are either:
-        # 1. Same location AND same last name (immediate family)
-        # 2. Same location only (extended family, roommates)
-        # 3. Same last name only (family living elsewhere)
-        # 4. Neither (friends, distant relatives)
-        
-        immediate_family = [
-            c for c in customers
-            if c["customer_id"] != primary_id and
-            c["customer_id"] not in members_assigned and
-            (c["country"], c["state"], c["city"]) == primary_location and
-            c["last_name"] == primary_last_name
-        ]
-        
-        extended_family_local = [
-            c for c in customers
-            if c["customer_id"] != primary_id and
-            c["customer_id"] not in members_assigned and
-            (c["country"], c["state"], c["city"]) == primary_location and
-            c["last_name"] != primary_last_name
-        ]
-        
-        extended_family_distant = [
-            c for c in customers
-            if c["customer_id"] != primary_id and
-            c["customer_id"] not in members_assigned and
-            (c["country"], c["state"], c["city"]) != primary_location and
-            c["last_name"] == primary_last_name
-        ]
-        
-        others = [
-            c for c in customers
-            if c["customer_id"] != primary_id and
-            c["customer_id"] not in members_assigned and
-            c not in immediate_family and
-            c not in extended_family_local and
-            c not in extended_family_distant
-        ]
-        
-        # Determine number of additional members (1 to max_members-1)
-        num_additional = random.randint(1, max_members-1)
-        
-        # Preference order for selecting members
-        all_potential_members = (
-            immediate_family +
-            extended_family_local +
-            extended_family_distant +
-            random.sample(others, min(len(others), 10))  # Limit to 10 random others
-        )
-        
-        # Select members
-        selected_members = []
-        for potential_member in all_potential_members:
-            if len(selected_members) >= num_additional:
-                break
+            # Skip if primary already assigned as a member
+            if primary_id in members_assigned:
+                continue
                 
-            selected_members.append(potential_member)
-            members_assigned.add(potential_member["customer_id"])
-        
-        # Add selected members to family plan
-        for i, member in enumerate(selected_members):
-            # Determine role based on relationship and age
-            member_age = member.get("age", 35)
+            # Select plan type based on weights
+            plan_weights = [option["weight"] for option in family_plan_options]
+            plan_option = random.choices(family_plan_options, weights=plan_weights)[0]
             
-            if member["last_name"] == primary_last_name:
-                # Family member
-                if member_age >= 18:
-                    # Adult family member
-                    role = "secondary"
-                else:
-                    # Child
-                    role = "child"
-            else:
-                # Non-family member on plan
-                role = "secondary"
+            plan_name = plan_option["name"]
+            max_members = plan_option["max_members"]
             
-            # Data allocation (distribute remaining percentage after primary)
-            primary_pct = next(
-                m["data_allocation_percentage"] for m in family_plan_members 
-                if m["family_plan_id"] == family_plan_id and m["role"] == "primary"
-            )
+            # Created date - correlate with customer creation
+            if primary_id < len(customers) * 0.3:  # Oldest 30% of customers
+                created_at = fake.date_time_between(start_date="-3y", end_date="-1y")
+            elif primary_id < len(customers) * 0.7:  # Middle 40%
+                created_at = fake.date_time_between(start_date="-2y", end_date="-6m")
+            else:  # Newest 30%
+                created_at = fake.date_time_between(start_date="-1y", end_date="-1m")
             
-            remaining_pct = 100 - primary_pct
-            individual_pct = round(remaining_pct / len(selected_members))
+            # Shared data and pricing scales with max_members
+            shared_data_gb = random.choice([max_members * 5, max_members * 10, max_members * 15])
+            monthly_fee = 40 + (shared_data_gb * 0.5) + (max_members * 10)
             
-            # Adjust for last member to ensure total is 100%
-            if i == len(selected_members) - 1:
-                total_so_far = primary_pct + sum(
-                    m["data_allocation_percentage"] for m in family_plan_members
-                    if m["family_plan_id"] == family_plan_id and m["role"] != "primary"
-                )
-                individual_pct = 100 - total_so_far
+            family_plans.append({
+                "family_plan_id": family_plan_id,
+                "primary_customer_id": primary_id,
+                "plan_name": plan_name,
+                "created_at": created_at.isoformat(),
+                "max_members": max_members,
+                "shared_data_gb": shared_data_gb,
+                "monthly_fee": round(monthly_fee, 2)
+            })
             
+            # Add primary member
+            primary_pct = random.randint(20, 40)
             family_plan_members.append({
                 "family_plan_id": family_plan_id,
-                "customer_id": member["customer_id"],
-                "role": role,
-                "data_allocation_percentage": individual_pct
+                "customer_id": primary_id,
+                "role": "primary",
+                "data_allocation_percentage": primary_pct
             })
-        
-        family_plan_id += 1
+            
+            members_assigned.add(primary_id)
+            
+            # Find other members based on matching characteristics
+            # Focus on location and last name to simulate family relationships
+            primary_location = (primary["country"], primary["state"], primary["city"])
+            primary_last_name = primary["last_name"]
+            
+            # Use indexes for faster lookups
+            immediate_family_candidates = location_lastname_index.get((primary_location, primary_last_name), [])
+            immediate_family = [
+                c for c in immediate_family_candidates
+                if c["customer_id"] != primary_id and c["customer_id"] not in members_assigned
+            ][:10]  # Limit to 10 candidates
+            
+            extended_family_local_candidates = location_index.get(primary_location, [])
+            extended_family_local = [
+                c for c in extended_family_local_candidates
+                if c["customer_id"] != primary_id and
+                c["customer_id"] not in members_assigned and
+                c["last_name"] != primary_last_name
+            ][:20]  # Limit to 20 candidates
+            
+            extended_family_distant_candidates = lastname_index.get(primary_last_name, [])
+            extended_family_distant = [
+                c for c in extended_family_distant_candidates
+                if c["customer_id"] != primary_id and
+                c["customer_id"] not in members_assigned and
+                (c["country"], c["state"], c["city"]) != primary_location
+            ][:20]  # Limit to 20 candidates
+            
+            # For "others", just sample a small number randomly instead of filtering all customers
+            others_sample_size = min(50, len(customers) // 1000)  # Scale with customer count
+            others = random.sample([
+                c for c in customers
+                if c["customer_id"] != primary_id and
+                c["customer_id"] not in members_assigned and
+                c not in immediate_family and
+                c not in extended_family_local and
+                c not in extended_family_distant
+            ][:1000], min(others_sample_size, 10))  # Take at most 10
+            
+            # Determine number of additional members (1 to max_members-1)
+            num_additional = random.randint(1, max_members-1)
+            
+            # Preference order for selecting members
+            all_potential_members = immediate_family + extended_family_local + extended_family_distant + others
+            
+            # Select members
+            selected_members = []
+            for potential_member in all_potential_members:
+                if len(selected_members) >= num_additional:
+                    break
+                    
+                selected_members.append(potential_member)
+                members_assigned.add(potential_member["customer_id"])
+            
+            # Calculate data allocation percentages once
+            remaining_pct = 100 - primary_pct
+            if selected_members:
+                individual_pct = remaining_pct // len(selected_members)
+                last_member_pct = remaining_pct - (individual_pct * (len(selected_members) - 1))
+            else:
+                individual_pct = 0
+                last_member_pct = 0
+            
+            # Add selected members to family plan
+            for i, member in enumerate(selected_members):
+                # Determine role based on relationship and age
+                member_age = member.get("age", 35)
+                
+                if member["last_name"] == primary_last_name:
+                    # Family member
+                    if member_age >= 18:
+                        # Adult family member
+                        role = "secondary"
+                    else:
+                        # Child
+                        role = "child"
+                else:
+                    # Non-family member on plan
+                    role = "secondary"
+                
+                # Use pre-calculated percentages
+                if i == len(selected_members) - 1:
+                    member_pct = last_member_pct
+                else:
+                    member_pct = individual_pct
+                
+                family_plan_members.append({
+                    "family_plan_id": family_plan_id,
+                    "customer_id": member["customer_id"],
+                    "role": role,
+                    "data_allocation_percentage": member_pct
+                })
+            
+            family_plan_id += 1
     
+    print(f"Generated {len(family_plans)} family plans with {len(family_plan_members)} members")
     return family_plans, family_plan_members
 
 def generate_loyalty_rewards(customers: List[Dict]) -> List[Dict]:
