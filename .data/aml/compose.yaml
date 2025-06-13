@@ -12,6 +12,7 @@ services:
       PGUSER: postgres
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      READONLY_PASSWORD: ${READONLY_PASSWORD}
     ports:
       - "5432:5432"
     healthcheck:
@@ -36,6 +37,13 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
     extra_hosts:
       - local.hasura.dev=host-gateway
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.runCommand('ping').ok", "--quiet"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 40s
+
   mongo-seed:
     env_file:
         - .env
@@ -43,14 +51,15 @@ services:
     build:
         context: ./mongo_seed
         dockerfile: Dockerfile
-        args:
-            - DATABASE_URI=mongodb://local.hasura.dev:27017/aml
-            - USERNAME=presales
-            - PASSWORD=${MONGO_PASSWORD}
+    environment:
+        - DATABASE_URI=mongodb://mongodb:27017/aml
+        - USERNAME=presales
+        - PASSWORD=${MONGO_PASSWORD}
+        - READONLY_PASSWORD=${READONLY_PASSWORD}
     depends_on:
-        - mongodb
-    extra_hosts:
-      - local.hasura.dev=host-gateway
+      mongodb:
+        condition: service_healthy
+    restart: "no"
 
 volumes:
   postgres-data:
