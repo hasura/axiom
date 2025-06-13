@@ -1,21 +1,13 @@
-FROM mongo:8.0
+FROM mongo:latest
 
-ARG DATABASE_URI
-ARG USERNAME
-ARG PASSWORD
-
-ENV DATABASE_URI=${DATABASE_URI}
-ENV USERNAME=${USERNAME}
-ENV PASSWORD=${PASSWORD}
-
-# Copy the data and script
+# Copy the JSON data files
 COPY accounts.json /accounts.json
-COPY sanctions.json /sanctions.json
 COPY aml_cases.json /aml_cases.json
-COPY entrypoint.sh /entrypoint.sh
+COPY sanctions.json /sanctions.json
 
-# Make the script executable
+# Copy the entrypoint script
+COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-# Use entrypoint script to ensure logs and debugging
+# Set the entrypoint
 ENTRYPOINT ["/entrypoint.sh"]

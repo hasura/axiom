@@ -180,11 +180,11 @@ pd.DataFrame(pg_transactions).to_csv("postgres/financial_transfers.csv", index=F
 pd.DataFrame(sars).to_csv("postgres/sars.csv", index=False)
 
 # Save MongoDB data as JSON
-with open("mongodb/accounts.json", "w") as f:
+with open("mongo_seed/accounts.json", "w") as f:
     json.dump(accounts, f, indent=2)
-with open("mongodb/aml_cases.json", "w") as f:
+with open("mongo_seed/aml_cases.json", "w") as f:
     json.dump(mongo_transactions, f, indent=2)
-with open("mongodb/sanctions.json", "w") as f:
+with open("mongo_seed/sanctions.json", "w") as f:
     json.dump(sanctions, f, indent=2)
 
 print("Data generation complete. Files saved: customers.csv, financial_transfers.csv, sars.csv, accounts.json, aml_cases.json, sanctions.json")
