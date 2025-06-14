@@ -25,14 +25,14 @@ if (-not (Test-Path $DataEnvFile)) {
 }
 
 if (-not (Test-Path $HasuraLocalEnvFile)) {
-    Write-Host "Creating Hasura local environment file: $HasuraLocalEnvFile"
+    Write-Host "Creating local environment file: $HasuraLocalEnvFile"
     Copy-Item "../hasura/.env.$Context.template" -Destination $HasuraLocalEnvFile
 } else {
-    Write-Host "Hasura environment file already exists: $HasuraLocalEnvFile"
+    Write-Host "Environment file already exists: $HasuraLocalEnvFile"
 }
 
 if (-not (Test-Path $HasuraCloudEnvFile)) {
-    Write-Host "Creating Hasura cloud environment file: $HasuraCloudEnvFile"
+    Write-Host "Creating cloud environment file: $HasuraCloudEnvFile"
     Copy-Item "../hasura/.env.$Context.template" -Destination $HasuraCloudEnvFile
 } else {
     Write-Host "Hasura cloud environment file already exists: $HasuraCloudEnvFile"

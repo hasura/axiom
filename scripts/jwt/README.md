@@ -1,6 +1,6 @@
 # JWT Generator
 
-A command-line tool to generate JWT tokens with Hasura-specific claims.
+A command-line tool to generate JWT tokens with PromptQL-specific claims.
 
 ## Installation
 

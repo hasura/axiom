@@ -1,6 +1,6 @@
-# Axiom Hasura Demo Development Guide
+# Axiom PromptQL Demo Development Guide
 
-Axiom provides a centralized platform for deploying and testing a variety of Hasura industry demos. This guide will help you understand how to use existing demos and create new ones.
+Axiom provides a centralized platform for deploying and testing a variety of PromptQL industry demos. This guide will help you understand how to use existing demos and create new ones.
 
 ## 🌟 Existing Demo Profiles
 
@@ -33,7 +33,7 @@ To utilize an existing demo profile, run the following `ddn run` commands:
   # Example: ddn run docker-start -- telco
   ```
 
-- **`demo`**: Execute both build and docker-start, then launch Hasura locally.
+- **`demo`**: Execute both build and docker-start, then launch PromptQL locally.
   ```bash
   ddn run demo -- <profile>
   # Example: ddn run demo -- telco
@@ -229,6 +229,7 @@ Ensure your demo profile includes:
 
 ## 📚 Additional Resources
 
+- [PromptQL Documentation](https://promptql.io/docs/index/)
 - [DDN Documentation](https://hasura.io/docs/3.0/)
 - [Deployment Guide](../scripts/deploy/README.md)
 - [Connector Development Guide](https://hasura.io/docs/3.0/data-connectors/build/overview/)

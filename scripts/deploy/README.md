@@ -1,6 +1,6 @@
 # Axiom Deploy
 
-The deploy script automates the deployment process for supergraphs within a specified Hasura project. It provides flexibility through various CLI options to customise deployment, rebuild connectors, and manage metadata.
+The deploy script automates the deployment process for supergraphs within a specified PromptQL project. It provides flexibility through various CLI options to customise deployment, rebuild connectors, and manage metadata.
 
 ## Features
 

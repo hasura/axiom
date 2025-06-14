@@ -180,21 +180,21 @@ def generate_detailed_call_summary(account, opp, include_metrics, include_econ_b
     if include_champion:
         champion_details = [
             f"Lead architect will champion the implementation and has already created internal presentations.",
-            f"Director of Engineering is advocating strongly for Hasura and has executive relationships.",
-            f"Data Platform Lead has been researching GraphQL solutions for months and prefers Hasura.",
+            f"Director of Engineering is advocating strongly for PromptQP and has executive relationships.",
+            f"Data Platform Lead has been researching GraphQL solutions for months and prefers PromptQL.",
             f"VP of Product is driving this initiative and has budget authority for the project.",
-            f"Technical Lead has built a prototype using Hasura and demonstrated it to the team."
+            f"Technical Lead has built a prototype using PromptQL and demonstrated it to the team."
         ]
         summary += f"{random.choice(champion_details)} "
     
     # Competition
     if include_competition:
         competition_details = [
-            f"Also evaluating Apollo GraphQL and considering building an in-house solution.",
-            f"Comparing Hasura with AWS AppSync and two other GraphQL implementations.",
-            f"Currently using a custom REST API layer but also looking at Apollo as an alternative.",
+            f"Also evaluating and considering building an in-house solution.",
+            f"Comparing PromptQL with other AI implementations.",
+            f"Currently using a custom AI layer but also looking at MCP as an alternative.",
             f"Considering both commercial options and open-source alternatives with support contracts.",
-            f"Evaluating Hasura against continuing with their current solution and accepting limitations."
+            f"Evaluating PromptQL against continuing with their current solution and accepting limitations."
         ]
         summary += f"{random.choice(competition_details)} "
     
@@ -222,13 +222,13 @@ def generate_auth_data(num_users: int = 38) -> List[Dict]:
     }
     
     initial_users = [
-        {'id': 1, 'email': 'emma.exec@hasura.io', 'roles': 'executive'},
-        {'id': 2, 'email': 'liam.analyst@hasura.io', 'roles': 'business_analyst'},
-        {'id': 3, 'email': 'sophia.data@hasura.io', 'roles': 'data_steward'},
-        {'id': 4, 'email': 'noah.ai@hasura.io', 'roles': 'ai_ops'},
-        {'id': 5, 'email': 'olivia.cs@hasura.io', 'roles': 'customer_success'},
-        {'id': 6, 'email': 'eleanor.cs@hasura.io', 'roles': 'customer_success'},
-        {'id': 7, 'email': 'julian.mayorga@hasura.io', 'roles': 'sales_lead'}
+        {'id': 1, 'email': 'emma.exec@promptql.io', 'roles': 'executive'},
+        {'id': 2, 'email': 'liam.analyst@promptql.io', 'roles': 'business_analyst'},
+        {'id': 3, 'email': 'sophia.data@promptql.io', 'roles': 'data_steward'},
+        {'id': 4, 'email': 'noah.ai@promptql.io', 'roles': 'ai_ops'},
+        {'id': 5, 'email': 'olivia.cs@promptql.io', 'roles': 'customer_success'},
+        {'id': 6, 'email': 'eleanor.cs@promptql.io', 'roles': 'customer_success'},
+        {'id': 7, 'email': 'julian.mayorga@promptql.io', 'roles': 'sales_lead'}
     ]
     
     users.extend([{
@@ -248,7 +248,7 @@ def generate_auth_data(num_users: int = 38) -> List[Dict]:
             last_name = fake.last_name()
             users.append({
                 'id': user_id,
-                'email': f"{first_name.lower()}.{last_name.lower()}.{role}@hasura.io",
+                'email': f"{first_name.lower()}.{last_name.lower()}.{role}@promptql.io",
                 'password': '$2a$10$DSRHAPZP0fuEFioGOPOdW.kgFWZvQgmMihaBYsUs8rO4cdHFFK7cS',
                 'roles': role,
                 'created_at': format_datetime(CURRENT_DATE - timedelta(days=random.randint(0, 365))),
@@ -721,12 +721,12 @@ def generate_salesforce_data(users: List[Dict], config: Dict[str, int] = CONFIG)
         competition = None
         if random.random() < 0.5:  # 50% chance to have competition info
             competition_options = [
-                "Apollo GraphQL, considering building in-house solution",
-                "Evaluating Apollo and considering DIY GraphQL implementation",
-                "Currently using REST APIs, evaluating multiple GraphQL solutions",
-                "Legacy system with custom middleware, also looking at Apollo",
-                "Considering both Hasura and building their own solution",
-                "Evaluating Hasura against AWS AppSync and Apollo"
+                "Looking at MCP, considering building in-house solution",
+                "Evaluating MCP and considering DIY implementations",
+                "Currently using custom AI models, evaluating multiple alternate solutions",
+                "Legacy system with custom middleware, also looking at Langchain",
+                "Considering both PromptQL and building their own solution",
+                "Evaluating PromptQL against AWS Bedrock and custom apps"
             ]
             competition = random.choice(competition_options)
         
@@ -965,20 +965,20 @@ def generate_clari_data(sf_data: Dict[str, List[Dict]], users: List[Dict], confi
                     'id': j,
                     'name': f"{contact['first_name']} {contact['last_name']}",
                     'role': contact['contact_roles_c'],
-                    'company': 'Hasura' if j == 0 else account['name'],
+                    'company': 'PromptQL' if j == 0 else account['name'],
                     'title': contact['title']
                 })
         
-        # Add a Hasura rep if not already included
-        if not any(p['company'] == 'Hasura' for p in participants):
-            hasura_rep = {
+        # Add a PromptQL rep if not already included
+        if not any(p['company'] == 'PromptQL' for p in participants):
+            promptql_rep = {
                 'id': len(participants),
                 'name': random.choice(['Emma Johnson', 'Michael Chen', 'Sarah Williams', 'David Rodriguez']),
                 'role': 'Sales Representative',
-                'company': 'Hasura',
+                'company': 'PromptQL',
                 'title': random.choice(['Account Executive', 'Solutions Engineer', 'Customer Success Manager'])
             }
-            participants.append(hasura_rep)
+            participants.append(promptql_rep)
         
         # For the first call of each opportunity, ensure we cover all MEDDPICC elements
         # For subsequent calls, be more selective
@@ -1062,18 +1062,18 @@ def generate_clari_data(sf_data: Dict[str, List[Dict]], users: List[Dict], confi
         conversation_snippets = []
         
         # Add introduction
-        hasura_rep = next(p for p in participants if p['company'] == 'Hasura')
-        client_rep = next((p for p in participants if p['company'] != 'Hasura'), None)
+        promptql_rep = next(p for p in participants if p['company'] == 'PromptQL')
+        client_rep = next((p for p in participants if p['company'] != 'PromptQL'), None)
         
         conversation_snippets.append({
-            'speaker': hasura_rep['name'],
-            'text': f"Thanks everyone for joining today's call. I'm {hasura_rep['name']} from Hasura, and I'm excited to discuss how we can help {account['name']} with your data API needs."
+            'speaker': promptql_rep['name'],
+            'text': f"Thanks everyone for joining today's call. I'm {promptql_rep['name']} from PromptQL, and I'm excited to discuss how we can help {account['name']} with your data API needs."
         })
         
         if client_rep:
             conversation_snippets.append({
                 'speaker': client_rep['name'],
-                'text': f"Thanks for having us. We're looking forward to learning more about how Hasura can help us address our challenges."
+                'text': f"Thanks for having us. We're looking forward to learning more about how PromptQL can help us address our challenges."
             })
         
         # Add MEDDPICC-related conversation snippets based on stage
@@ -1081,7 +1081,7 @@ def generate_clari_data(sf_data: Dict[str, List[Dict]], users: List[Dict], confi
             # Pain points discussion
             if include_pain:
                 conversation_snippets.append({
-                    'speaker': hasura_rep['name'],
+                    'speaker': promptql_rep['name'],
                     'text': "Could you tell me more about the challenges you're currently facing with your data access layer?"
                 })
                 
@@ -1101,7 +1101,7 @@ def generate_clari_data(sf_data: Dict[str, List[Dict]], users: List[Dict], confi
             # Metrics discussion
             if include_metrics:
                 conversation_snippets.append({
-                    'speaker': hasura_rep['name'],
+                    'speaker': promptql_rep['name'],
                     'text': "What specific outcomes are you hoping to achieve with a new solution? Are there any metrics or KPIs you're targeting?"
                 })
                 
@@ -1121,7 +1121,7 @@ def generate_clari_data(sf_data: Dict[str, List[Dict]], users: List[Dict], confi
             # Decision process discussion
             if include_decision_process:
                 conversation_snippets.append({
-                    'speaker': hasura_rep['name'],
+                    'speaker': promptql_rep['name'],
                     'text': "I'd like to understand your evaluation process better. What steps do you typically go through when selecting a new technology like this?"
                 })
                 
@@ -1140,8 +1140,8 @@ def generate_clari_data(sf_data: Dict[str, List[Dict]], users: List[Dict], confi
             # Decision criteria discussion
             if include_decision_criteria:
                 conversation_snippets.append({
-                    'speaker': hasura_rep['name'],
-                    'text': "What criteria are most important to you when evaluating solutions like Hasura?"
+                    'speaker': promptql_rep['name'],
+                    'text': "What criteria are most important to you when evaluating solutions like PromptQL?"
                 })
                 
                 criteria_responses = [
@@ -1159,14 +1159,14 @@ def generate_clari_data(sf_data: Dict[str, List[Dict]], users: List[Dict], confi
             # Competition discussion
             if include_competition:
                 conversation_snippets.append({
-                    'speaker': hasura_rep['name'],
-                    'text': "Are you evaluating any other solutions alongside Hasura?"
+                    'speaker': promptql_rep['name'],
+                    'text': "Are you evaluating any other solutions alongside PromptQL?"
                 })
                 
                 competition_responses = [
-                    "Yes, we're also looking at Apollo GraphQL and considering building something in-house.",
-                    "We're comparing Hasura with AWS AppSync and a couple of other GraphQL implementations.",
-                    "We've been using a custom REST API layer, but we're also evaluating Apollo as an alternative to Hasura."
+                    "Yes, we're also looking at MCP and considering building something in-house.",
+                    "We're comparing PromptQL with AWS AppSync and a couple of other AI implementations.",
+                    "We've been using a custom layer, but we're also evaluating MCP as an alternative to PromptQL."
                 ]
                 
                 if client_rep:
@@ -1179,7 +1179,7 @@ def generate_clari_data(sf_data: Dict[str, List[Dict]], users: List[Dict], confi
             # Economic buyer discussion
             if include_econ_buyer:
                 conversation_snippets.append({
-                    'speaker': hasura_rep['name'],
+                    'speaker': promptql_rep['name'],
                     'text': "Who will be making the final decision on this purchase? Is there anyone else we should include in our discussions?"
                 })
                 
@@ -1198,7 +1198,7 @@ def generate_clari_data(sf_data: Dict[str, List[Dict]], users: List[Dict], confi
             # Paper process discussion
             if include_paper_process:
                 conversation_snippets.append({
-                    'speaker': hasura_rep['name'],
+                    'speaker': promptql_rep['name'],
                     'text': "Could you walk me through your procurement process? What steps do we need to take to get the contract finalized?"
                 })
                 
@@ -1217,14 +1217,14 @@ def generate_clari_data(sf_data: Dict[str, List[Dict]], users: List[Dict], confi
             # Champion discussion
             if include_champion:
                 conversation_snippets.append({
-                    'speaker': hasura_rep['name'],
-                    'text': "Who on your team will be leading the implementation if you decide to move forward with Hasura?"
+                    'speaker': promptql_rep['name'],
+                    'text': "Who on your team will be leading the implementation if you decide to move forward with PromptQL?"
                 })
                 
                 champion_responses = [
-                    f"I'll be leading the implementation team. I've already started getting the team excited about what we can do with Hasura.",
-                    f"Our lead architect, David, will be spearheading this. He's been advocating for a GraphQL solution for months.",
-                    f"I'm going to be the project lead. I've already created some internal presentations about how Hasura can solve our challenges."
+                    f"I'll be leading the implementation team. I've already started getting the team excited about what we can do with PromptQL.",
+                    f"Our lead architect, David, will be spearheading this. He's been advocating for an AI solution for months.",
+                    f"I'm going to be the project lead. I've already created some internal presentations about how PromptQL can solve our challenges."
                 ]
                 
                 if client_rep:
@@ -1235,7 +1235,7 @@ def generate_clari_data(sf_data: Dict[str, List[Dict]], users: List[Dict], confi
         
         # Add closing remarks
         conversation_snippets.append({
-            'speaker': hasura_rep['name'],
+            'speaker': promptql_rep['name'],
             'text': f"This has been really helpful. I'll follow up with a summary of our discussion and the next steps we discussed."
         })
         

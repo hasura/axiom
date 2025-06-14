@@ -1,13 +1,13 @@
-# 💚 Axiom: Hasura Industry Demo Toolkit
+# 💚 Axiom: PromptQL Industry Demo Toolkit
 
-**API and AI Demonstration with Hasura DDN and PromptQL**
+**AI Demonstration with PromptQL**
 
-![Hasura DDN](https://img.shields.io/badge/Hasura-DDN%203.0-blue)
+![PromptQL](https://img.shields.io/badge/PromptQL-DDN%203.0-b6fc34)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
 ## 🧰 Prerequisites
 The following dependencies are required for running the demos:
-- [DDN CLI](https://hasura.io/docs/3.0/reference/cli/installation/) - The Hasura command line interface
+- [DDN CLI](https://hasura.io/docs/3.0/reference/cli/installation/) - The command line interface
 - Git LFS (`brew install git-lfs` on macOS) - Required for handling large files
 - Docker and Docker Compose - Necessary for running local environments
 - Node.js - Needed for utility scripts
@@ -32,7 +32,7 @@ ddn run demo -- telco
 ```
 
 ## 🔍 Overview
-Axiom brings Hasura's capabilities to life through industry-specific demos:
+Axiom brings PromptQL's capabilities to life through industry-specific demos:
 - 🏭 **Ready-to-run industry demos** - Real-world industry use cases with minimal setup
 - 🧪 **Feature testing playground** - New DDN & PromptQL features demonstrated in an example project
 - 🛠️ **Extensible toolkit** - Easy to add new demos and customisations
@@ -274,7 +274,7 @@ Each demo profile comes with pre-configured datasets to make demos work out of t
 | `ddn run init -- <context>` | 🛠️ Initializes the DDN environment | Run this once before using other commands or when setting up a new demo |
 | `ddn run build -- <context>` | 🏗️ Builds the DDN supergraph | When you've made metadata changes |
 | `ddn run docker-start -- <context>` | 🐳 Starts the Docker containers | When you need the data sources |
-| `ddn run demo -- <context>` | ✨ Does build, docker-start, and starts Hasura/PromptQL | The all-in-one command to get started |
+| `ddn run demo -- <context>` | ✨ Does build, docker-start, and starts PromptQL | The all-in-one command to get started |
 | `ddn run docker-stop` | 🛑 Stops all containers | When you're done or need to switch demos |
 
 ```
@@ -284,7 +284,7 @@ Each demo profile comes with pre-configured datasets to make demos work out of t
 
 ## 🌟 Deployment & Management
 
-Demos may be pushed to Hasura Cloud with simple/configurable deployment tools
+Demos may be pushed to PromptQL Cloud with simple/configurable deployment tools
 
 ### Deploying Metadata Changes
 
@@ -326,7 +326,7 @@ The [hasura/README.md](hasura/README.md) provides detailed instructions on addin
 
 ## 🔌 Integration Capabilities
 
-Axiom demonstrates Hasura's powerful integration capabilities across various systems:
+Axiom demonstrates PromptQL's powerful integration capabilities across various systems:
 
 ### Database Integrations
 - **PostgreSQL**: Used in multiple demos for relational data storage
@@ -358,7 +358,7 @@ The supergraph configuration demonstrates how to create a unified API across dis
 The Telco demo shows how to combine transactional systems (PostgreSQL) with analytical systems (ClickHouse).
 
 ### Event-Driven Architecture
-The Kafka integration demonstrates how to build event-driven systems with Hasura.
+The Kafka integration demonstrates how to build event-driven systems with PromptQL.
 
 ### AI-Enhanced Applications
 Vector search and PromptQL integrations show how to enhance applications with AI capabilities.
