@@ -2,7 +2,7 @@
 
 **AI Demonstration with PromptQL**
 
-![Hasura DDN](https://img.shields.io/badge/Hasura-DDN%203.0-blue)
+![PromptQL](https://img.shields.io/badge/PromptQL-DDN%203.0-b6fc34)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
 ## 🧰 Prerequisites

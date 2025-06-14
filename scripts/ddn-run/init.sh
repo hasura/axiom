@@ -31,17 +31,17 @@ else
 fi
 
 if [ ! -f "$HASURA_LOCAL_ENV_FILE" ]; then
-    echo "Creating Hasura local environment file: $HASURA_LOCAL_ENV_FILE"
+    echo "Creating local environment file: $HASURA_LOCAL_ENV_FILE"
     cp "../hasura/.env.$CONTEXT.template" "$HASURA_LOCAL_ENV_FILE"
 else
-    echo "Hasura environment file already exists: $HASURA_LOCAL_ENV_FILE"
+    echo "Environment file already exists: $HASURA_LOCAL_ENV_FILE"
 fi
 
 if [ ! -f "$HASURA_CLOUD_ENV_FILE" ]; then
-    echo "Creating Hasura cloud environment file: $HASURA_CLOUD_ENV_FILE"
+    echo "Creating cloud environment file: $HASURA_CLOUD_ENV_FILE"
     cp "../hasura/.env.$CONTEXT.template" "$HASURA_CLOUD_ENV_FILE"
 else
-    echo "Hasura cloud environment file already exists: $HASURA_CLOUD_ENV_FILE"
+    echo "Cloud environment file already exists: $HASURA_CLOUD_ENV_FILE"
 fi
 
 echo "Generating PromptQL secret key for context: $CONTEXT"
