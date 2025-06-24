@@ -78,3 +78,78 @@ export function maskCardNumber(cardNumber?: string): string {
   }
 }
 
+// TypeScript interfaces for the Churn Prediction API
+
+export interface CustomerData {
+  customerId: number;
+  satisfactionScore: number; // 1-10
+  segment: string; // Business, Family, Premium, Standard, Student
+  dataAllocationGb: number;
+  dataUsedGb: number;
+  totalAmount: number;
+  paymentStatus: string; // Paid, Pending, Overdue, Late
+  downloadSpeed: number;
+  uploadSpeed: number;
+  latency: number;
+  serviceInteractionCount: number;
+  avgResolutionTime?: number; // Optional, defaults to 0.0
+  feedbackRating?: number; // Optional, defaults to 3.0
+  callDurationMinutes?: number; // Optional, defaults to 0.0
+}
+
+export interface ChurnPrediction {
+  customerId: number;
+  churnProbability: number; // 0.0 to 1.0
+  churnRisk: string; // Low, Medium, High
+  riskFactors: string[];
+  recommendations: string[];
+}
+
+export interface PredictChurnRequest {
+  customer_data: CustomerData;
+}
+
+export interface ApiError {
+  detail: string | Array<{
+    type: string;
+    loc: (string | number)[];
+    msg: string;
+    input: any;
+    url?: string;
+  }>;
+}
+
+/**
+ * Function to call the churn prediction endpoint
+ *
+ * @readonly This function should only query data without making modifications
+ */
+export async function predictChurn(
+  customer_data: CustomerData,
+): Promise<ChurnPrediction> {
+  const baseUrl = `http://host.docker.internal:8000`;
+  try {
+    const response = await fetch(`${baseUrl}/predict`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(customer_data), // Extract customer_data from request
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json() as ApiError;
+      throw new Error(`API Error (${response.status}): ${JSON.stringify(errorData.detail)}`);
+    }
+
+    const prediction = await response.json() as ChurnPrediction;
+    return prediction;
+  } catch (error) {
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error(`Network error: ${String(error)}`);
+  }
+}
+
+

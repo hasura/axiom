@@ -1,0 +1,132 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: CustomerData
+  fields:
+    - name: avgResolutionTime
+      type: Float
+    - name: callDurationMinutes
+      type: Float
+    - name: customerId
+      type: Float!
+    - name: dataAllocationGb
+      type: Float!
+    - name: dataUsedGb
+      type: Float!
+    - name: downloadSpeed
+      type: Float!
+    - name: feedbackRating
+      type: Float
+    - name: latency
+      type: Float!
+    - name: paymentStatus
+      type: String!
+    - name: satisfactionScore
+      type: Float!
+    - name: segment
+      type: String!
+    - name: serviceInteractionCount
+      type: Float!
+    - name: totalAmount
+      type: Float!
+    - name: uploadSpeed
+      type: Float!
+  graphql:
+    typeName: customer_CustomerData
+    inputTypeName: customer_CustomerDataInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: logic
+      dataConnectorObjectType: CustomerData
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: CustomerData
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - avgResolutionTime
+          - callDurationMinutes
+          - customerId
+          - dataAllocationGb
+          - dataUsedGb
+          - downloadSpeed
+          - feedbackRating
+          - latency
+          - paymentStatus
+          - satisfactionScore
+          - segment
+          - serviceInteractionCount
+          - totalAmount
+          - uploadSpeed
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ChurnPrediction
+  fields:
+    - name: churnProbability
+      type: Float!
+    - name: churnRisk
+      type: String!
+    - name: customerId
+      type: Float!
+    - name: recommendations
+      type: "[String!]!"
+    - name: riskFactors
+      type: "[String!]!"
+  graphql:
+    typeName: customer_ChurnPrediction
+    inputTypeName: customer_ChurnPredictionInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: logic
+      dataConnectorObjectType: ChurnPrediction
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ChurnPrediction
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - churnProbability
+          - churnRisk
+          - customerId
+          - recommendations
+          - riskFactors
+
+---
+kind: Command
+version: v1
+definition:
+  name: PredictChurn
+  outputType: ChurnPrediction!
+  arguments:
+    - name: customerData
+      type: CustomerData!
+  source:
+    dataConnectorName: logic
+    dataConnectorCommand:
+      function: predictChurn
+    argumentMapping:
+      customerData: customer_data
+  graphql:
+    rootFieldName: predictChurn
+    rootFieldKind: Query
+  description: Function to call the churn prediction endpoint
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: PredictChurn
+  permissions:
+    - role: admin
+      allowExecution: true
+

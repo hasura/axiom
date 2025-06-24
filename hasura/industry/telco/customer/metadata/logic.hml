@@ -14,22 +14,58 @@ definition:
   schema:
     version: v0.1
     schema:
-      scalar_types:
-        DateTime:
-          representation:
-            type: timestamp
-          aggregate_functions: {}
-          comparison_operators:
-            _eq:
-              type: equal
-        String:
-          representation:
-            type: string
-          aggregate_functions: {}
-          comparison_operators:
-            _eq:
-              type: equal
+      collections: []
+      functions:
+        - arguments:
+            cardNumber:
+              description: The credit card number to mask.
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+          description: Masks a credit card number to hide all but the last four digits.
+          name: maskCardNumber
+          result_type:
+            name: String
+            type: named
+        - arguments:
+            customer_data:
+              type:
+                name: CustomerData
+                type: named
+          description: Function to call the churn prediction endpoint
+          name: predictChurn
+          result_type:
+            name: ChurnPrediction
+            type: named
       object_types:
+        ChurnPrediction:
+          fields:
+            churnProbability:
+              type:
+                name: Float
+                type: named
+            churnRisk:
+              type:
+                name: String
+                type: named
+            customerId:
+              type:
+                name: Float
+                type: named
+            recommendations:
+              type:
+                element_type:
+                  name: String
+                  type: named
+                type: array
+            riskFactors:
+              type:
+                element_type:
+                  name: String
+                  type: named
+                type: array
         CreateCampaignObj:
           fields:
             budget:
@@ -66,6 +102,70 @@ definition:
               type:
                 name: String
                 type: named
+        CustomerData:
+          fields:
+            avgResolutionTime:
+              type:
+                type: nullable
+                underlying_type:
+                  name: Float
+                  type: named
+            callDurationMinutes:
+              type:
+                type: nullable
+                underlying_type:
+                  name: Float
+                  type: named
+            customerId:
+              type:
+                name: Float
+                type: named
+            dataAllocationGb:
+              type:
+                name: Float
+                type: named
+            dataUsedGb:
+              type:
+                name: Float
+                type: named
+            downloadSpeed:
+              type:
+                name: Float
+                type: named
+            feedbackRating:
+              type:
+                type: nullable
+                underlying_type:
+                  name: Float
+                  type: named
+            latency:
+              type:
+                name: Float
+                type: named
+            paymentStatus:
+              type:
+                name: String
+                type: named
+            satisfactionScore:
+              type:
+                name: Float
+                type: named
+            segment:
+              type:
+                name: String
+                type: named
+            serviceInteractionCount:
+              type:
+                name: Float
+                type: named
+            totalAmount:
+              type:
+                name: Float
+                type: named
+            uploadSpeed:
+              type:
+                name: Float
+                type: named
         DeviceActionResponse:
           fields:
             activation_id:
@@ -90,33 +190,17 @@ definition:
               type:
                 name: String
                 type: named
-      collections: []
-      functions:
-        - name: maskCardNumber
-          description: Masks a credit card number to hide all but the last four digits.
-          arguments:
-            cardNumber:
-              description: The credit card number to mask.
-              type:
-                type: nullable
-                underlying_type:
-                  name: String
-                  type: named
-          result_type:
-            name: String
-            type: named
       procedures:
-        - name: CreateCampaign
-          arguments:
+        - arguments:
             camp:
               type:
                 name: CreateCampaignObj
                 type: named
+          name: CreateCampaign
           result_type:
             name: CreateCampaignObj
             type: named
-        - name: activateDevice
-          arguments:
+        - arguments:
             customer_id:
               type:
                 name: String
@@ -129,11 +213,11 @@ definition:
               type:
                 name: String
                 type: named
+          name: activateDevice
           result_type:
             name: DeviceActionResponse
             type: named
-        - name: deactivateDevice
-          arguments:
+        - arguments:
             customer_id:
               type:
                 name: String
@@ -146,13 +230,36 @@ definition:
               type:
                 name: String
                 type: named
+          name: deactivateDevice
           result_type:
             name: DeviceActionResponse
             type: named
+      scalar_types:
+        DateTime:
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+          representation:
+            type: timestamp
+        Float:
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+          representation:
+            type: float64
+        String:
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+          representation:
+            type: string
     capabilities:
-      version: 0.1.6
       capabilities:
-        query:
-          variables: {}
-          nested_fields: {}
         mutation: {}
+        query:
+          nested_fields: {}
+          variables: {}
+      version: 0.1.6
