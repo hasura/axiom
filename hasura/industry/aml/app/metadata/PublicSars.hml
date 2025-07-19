@@ -2,26 +2,27 @@
 kind: ObjectType
 version: v1
 definition:
-  name: Sars
+  name: PublicSars
+  description: "Object type for public.sars. Description: null"
   fields:
     - name: customerId
-      type: Int4
+      type: Int32
     - name: filedDate
       type: Timestamp
     - name: reason
-      type: Text
+      type: String_1
     - name: sarId
-      type: Int4!
+      type: Int32!
     - name: status
-      type: Varchar
+      type: String_1
     - name: transactionId
-      type: Int4
+      type: Int32
   graphql:
-    typeName: Sars
-    inputTypeName: SarsInput
+    typeName: PublicSars
+    inputTypeName: PublicSarsInput
   dataConnectorTypeMapping:
     - dataConnectorName: banking_core
-      dataConnectorObjectType: sars
+      dataConnectorObjectType: public.sars
       fieldMapping:
         customerId:
           column:
@@ -46,7 +47,7 @@ definition:
 kind: TypePermissions
 version: v1
 definition:
-  typeName: Sars
+  typeName: PublicSars
   permissions:
     - role: admin
       output:
@@ -62,120 +63,116 @@ definition:
 kind: BooleanExpressionType
 version: v1
 definition:
-  name: SarsBoolExp
+  name: PublicSarsBoolExp
   operand:
     object:
-      type: Sars
+      type: PublicSars
       comparableFields:
         - fieldName: customerId
-          booleanExpressionType: Int4BoolExp
+          booleanExpressionType: IntegerBoolExp
         - fieldName: filedDate
-          booleanExpressionType: TimestampBoolExp
+          booleanExpressionType: TimestampWithoutTimeZoneBoolExp
         - fieldName: reason
           booleanExpressionType: TextBoolExp
         - fieldName: sarId
-          booleanExpressionType: Int4BoolExp
+          booleanExpressionType: IntegerBoolExp
         - fieldName: status
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: CharacterVaryingBoolExp
         - fieldName: transactionId
-          booleanExpressionType: Int4BoolExp
-      comparableRelationships:
-        - relationshipName: customer
-        - relationshipName: financialTransfer
+          booleanExpressionType: IntegerBoolExp
+      comparableRelationships: []
   logicalOperators:
     enable: true
   isNull:
     enable: true
   graphql:
-    typeName: SarsBoolExp
+    typeName: PublicSarsBoolExp
 
 ---
 kind: AggregateExpression
 version: v1
 definition:
-  name: SarsAggExp
+  name: PublicSarsAggExp
   operand:
     object:
-      aggregatedType: Sars
+      aggregatedType: PublicSars
       aggregatableFields:
         - fieldName: customerId
-          aggregateExpression: Int4AggExp
+          aggregateExpression: IntegerAggExp
         - fieldName: filedDate
-          aggregateExpression: TimestampAggExp
+          aggregateExpression: TimestampWithoutTimeZoneAggExp
         - fieldName: reason
           aggregateExpression: TextAggExp
         - fieldName: sarId
-          aggregateExpression: Int4AggExp
+          aggregateExpression: IntegerAggExp
         - fieldName: status
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: CharacterVaryingAggExp
         - fieldName: transactionId
-          aggregateExpression: Int4AggExp
+          aggregateExpression: IntegerAggExp
   count:
     enable: true
   graphql:
-    selectTypeName: SarsAggExp
+    selectTypeName: PublicSarsAggExp
 
 ---
 kind: OrderByExpression
 version: v1
 definition:
-  name: SarsOrderByExp
+  name: PublicSarsOrderByExp
   operand:
     object:
-      orderedType: Sars
+      orderedType: PublicSars
       orderableFields:
         - fieldName: customerId
-          orderByExpression: Int4OrderByExp
+          orderByExpression: Int32OrderByExp
         - fieldName: filedDate
           orderByExpression: TimestampOrderByExp
         - fieldName: reason
-          orderByExpression: TextOrderByExp
+          orderByExpression: String1OrderByExp
         - fieldName: sarId
-          orderByExpression: Int4OrderByExp
+          orderByExpression: Int32OrderByExp
         - fieldName: status
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: String1OrderByExp
         - fieldName: transactionId
-          orderByExpression: Int4OrderByExp
-      orderableRelationships:
-        - relationshipName: customer
-        - relationshipName: financialTransfer
+          orderByExpression: Int32OrderByExp
+      orderableRelationships: []
   graphql:
-    expressionTypeName: SarsOrderByExp
+    expressionTypeName: PublicSarsOrderByExp
 
 ---
 kind: Model
 version: v2
 definition:
-  name: Sars
-  objectType: Sars
+  name: PublicSars
+  objectType: PublicSars
   source:
     dataConnectorName: banking_core
-    collection: sars
-  filterExpressionType: SarsBoolExp
-  aggregateExpression: SarsAggExp
-  orderByExpression: SarsOrderByExp
+    collection: public.sars
+  filterExpressionType: PublicSarsBoolExp
+  aggregateExpression: PublicSarsAggExp
+  orderByExpression: PublicSarsOrderByExp
   graphql:
     selectMany:
-      queryRootField: sars
+      queryRootField: publicSars
       subscription:
-        rootField: sars
+        rootField: publicSars
     selectUniques:
-      - queryRootField: sarsBySarId
+      - queryRootField: publicSarsBySarId
         uniqueIdentifier:
           - sarId
         subscription:
-          rootField: sarsBySarId
-    filterInputTypeName: SarsFilterInput
+          rootField: publicSarsBySarId
+    filterInputTypeName: PublicSarsFilterInput
     aggregate:
-      queryRootField: sarsAggregate
+      queryRootField: publicSarsAggregate
       subscription:
-        rootField: sarsAggregate
+        rootField: publicSarsAggregate
 
 ---
 kind: ModelPermissions
 version: v1
 definition:
-  modelName: Sars
+  modelName: PublicSars
   permissions:
     - role: admin
       select:
@@ -217,4 +214,3 @@ definition:
       target:
         modelField:
           - fieldName: transactionId
-

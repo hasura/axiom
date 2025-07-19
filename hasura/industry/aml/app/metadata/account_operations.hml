@@ -12,76 +12,84 @@ definition:
     Authorization:
       valueFromEnv: APP_ACCOUNT_OPERATIONS_AUTHORIZATION_HEADER
   schema:
-    version: v0.1
+    version: v0.2
     schema:
-      scalar_types:
-        Float:
-          representation:
-            type: float64
-          aggregate_functions: {}
-          comparison_operators:
-            _eq:
-              type: equal
-        String:
-          representation:
-            type: string
-          aggregate_functions: {}
-          comparison_operators:
-            _eq:
-              type: equal
+      collections: []
+      functions: []
       object_types:
         AccountFreezeResponse:
           fields:
             account_id:
               type:
-                type: named
                 name: Float
+                type: named
             freeze_id:
               type:
                 type: nullable
                 underlying_type:
-                  type: named
                   name: String
+                  type: named
             status:
               type:
-                type: named
                 name: String
+                type: named
+          foreign_keys: {}
         SARFilingResponse:
           fields:
             account_id:
               type:
-                type: named
                 name: Float
+                type: named
             sar_id:
               type:
                 type: nullable
                 underlying_type:
-                  type: named
                   name: String
+                  type: named
             status:
               type:
-                type: named
                 name: String
+                type: named
+          foreign_keys: {}
         TransactionHoldResponse:
           fields:
             account_id:
               type:
-                type: named
                 name: Float
+                type: named
             hold_id:
               type:
                 type: nullable
                 underlying_type:
-                  type: named
                   name: String
+                  type: named
             status:
               type:
-                type: named
                 name: String
-      collections: []
-      functions: []
+                type: named
+          foreign_keys: {}
       procedures:
-        - name: holdTransactions
+        - arguments:
+            accountId:
+              type:
+                name: Float
+                type: named
+            accountName:
+              type:
+                name: String
+                type: named
+            holdDuration:
+              type:
+                name: Float
+                type: named
+            reason:
+              type:
+                name: String
+                type: named
+            thresholdAmount:
+              type:
+                name: Float
+                type: named
           description: |-
             **Description:**
             This function places a temporary hold on transactions exceeding a specified threshold amount for a defined duration. It is designed to ensure that high-value transactions undergo additional scrutiny before being processed. By temporarily restricting transactions, this function helps prevent unauthorized access, mitigate fraud, and comply with regulatory requirements.
@@ -90,31 +98,33 @@ definition:
             - Before processing large withdrawals, wire transfers, or high-value purchases that require verification.
             - When a customer requests a temporary spending limit as a security measure.
             - As part of an automated fraud detection workflow to prevent potentially fraudulent transactions.
-          arguments:
+          name: holdTransactions
+          result_type:
+            name: TransactionHoldResponse
+            type: named
+        - arguments:
             accountId:
               type:
-                type: named
                 name: Float
+                type: named
             accountName:
               type:
-                type: named
                 name: String
-            holdDuration:
-              type:
                 type: named
-                name: Float
+            freezeLevel:
+              type:
+                name: String
+                type: named
             reason:
               type:
-                type: named
                 name: String
-            thresholdAmount:
-              type:
                 type: named
-                name: Float
-          result_type:
-            type: named
-            name: TransactionHoldResponse
-        - name: freezeAccount
+            transactionThreshold:
+              type:
+                type: nullable
+                underlying_type:
+                  name: Float
+                  type: named
           description: |-
             **Description:**
             This function fully or partially freezes an account to prevent unauthorized transactions. A full freeze blocks all transactions, while a partial freeze imposes specific restrictions based on transaction limits. This function is crucial for fraud mitigation, regulatory compliance, and safeguarding customer funds in cases of suspected account compromise.
@@ -123,33 +133,23 @@ definition:
             - Immediately after identifying suspicious activities indicative of account takeover or fraud.
             - When law enforcement or regulatory agencies require an account freeze as part of an investigation.
             - If a customer reports unauthorized access or requests a temporary block on their account.
-          arguments:
+          name: freezeAccount
+          result_type:
+            name: AccountFreezeResponse
+            type: named
+        - arguments:
             accountId:
               type:
-                type: named
                 name: Float
+                type: named
             accountName:
               type:
-                type: named
                 name: String
-            freezeLevel:
-              type:
                 type: named
-                name: String
             reason:
               type:
-                type: named
                 name: String
-            transactionThreshold:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: Float
-          result_type:
-            type: named
-            name: AccountFreezeResponse
-        - name: fileSAR
+                type: named
           description: |-
             **Description:**
             This function generates and files a Suspicious Activity Report (SAR) when a pattern of high-risk transactions or behaviors suggests potential financial crimes such as money laundering or fraud. The SAR filing provides documented evidence for compliance teams and regulatory bodies to review and take appropriate actions.
@@ -158,26 +158,29 @@ definition:
             - When an account exhibits transactions or behaviors consistent with known fraud patterns or money laundering schemes.
             - If internal risk teams identify multiple suspicious transactions requiring formal documentation.
             - When compliance regulations mandate the reporting of unusual account activities for further investigation.
-          arguments:
-            accountId:
-              type:
-                type: named
-                name: Float
-            accountName:
-              type:
-                type: named
-                name: String
-            reason:
-              type:
-                type: named
-                name: String
+          name: fileSAR
           result_type:
-            type: named
             name: SARFilingResponse
+            type: named
+      scalar_types:
+        Float:
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+          representation:
+            type: float64
+        String:
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+          representation:
+            type: string
     capabilities:
-      version: 0.1.6
       capabilities:
-        query:
-          variables: {}
-          nested_fields: {}
         mutation: {}
+        query:
+          nested_fields: {}
+          variables: {}
+      version: 0.2.0

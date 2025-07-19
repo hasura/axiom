@@ -2,40 +2,41 @@
 kind: ObjectType
 version: v1
 definition:
-  name: FinancialTransfers
+  name: PublicFinancialTransfers
+  description: "Object type for public.financial_transfers. Description: null"
   fields:
     - name: amount
-      type: Numeric
+      type: Bigdecimal
     - name: date
       type: Date
     - name: isLaundering
-      type: Bool
+      type: Boolean_1
     - name: launderingType
-      type: Varchar
+      type: String_1
     - name: paymentCurrency
-      type: Varchar
+      type: String_1
     - name: paymentType
-      type: Varchar
+      type: String_1
     - name: receivedCurrency
-      type: Varchar
+      type: String_1
     - name: receiverAccount
-      type: Int4
+      type: Int32
     - name: receiverBankLocation
-      type: Varchar
+      type: String_1
     - name: senderAccount
-      type: Int4
+      type: Int32
     - name: senderBankLocation
-      type: Varchar
+      type: String_1
     - name: time
-      type: Varchar
+      type: String_1
     - name: transactionId
-      type: Int4!
+      type: Int32!
   graphql:
-    typeName: FinancialTransfers
-    inputTypeName: FinancialTransfersInput
+    typeName: PublicFinancialTransfers
+    inputTypeName: PublicFinancialTransfersInput
   dataConnectorTypeMapping:
     - dataConnectorName: banking_core
-      dataConnectorObjectType: financial_transfers
+      dataConnectorObjectType: public.financial_transfers
       fieldMapping:
         amount:
           column:
@@ -81,7 +82,7 @@ definition:
 kind: TypePermissions
 version: v1
 definition:
-  typeName: FinancialTransfers
+  typeName: PublicFinancialTransfers
   permissions:
     - role: admin
       output:
@@ -104,159 +105,158 @@ definition:
 kind: BooleanExpressionType
 version: v1
 definition:
-  name: FinancialTransfersBoolExp
+  name: PublicFinancialTransfersBoolExp
   operand:
     object:
-      type: FinancialTransfers
+      type: PublicFinancialTransfers
       comparableFields:
         - fieldName: amount
-          booleanExpressionType: NumericBoolExp
+          booleanExpressionType: DecimalBoolExp
         - fieldName: date
           booleanExpressionType: DateBoolExp
         - fieldName: isLaundering
-          booleanExpressionType: BoolBoolExp
+          booleanExpressionType: BooleanBoolExp
         - fieldName: launderingType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: CharacterVaryingBoolExp
         - fieldName: paymentCurrency
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: CharacterVaryingBoolExp
         - fieldName: paymentType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: CharacterVaryingBoolExp
         - fieldName: receivedCurrency
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: CharacterVaryingBoolExp
         - fieldName: receiverAccount
-          booleanExpressionType: Int4BoolExp
+          booleanExpressionType: IntegerBoolExp
         - fieldName: receiverBankLocation
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: CharacterVaryingBoolExp
         - fieldName: senderAccount
-          booleanExpressionType: Int4BoolExp
+          booleanExpressionType: IntegerBoolExp
         - fieldName: senderBankLocation
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: CharacterVaryingBoolExp
         - fieldName: time
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: CharacterVaryingBoolExp
         - fieldName: transactionId
-          booleanExpressionType: Int4BoolExp
-      comparableRelationships:
-        - relationshipName: sars
+          booleanExpressionType: IntegerBoolExp
+      comparableRelationships: []
   logicalOperators:
     enable: true
   isNull:
     enable: true
   graphql:
-    typeName: FinancialTransfersBoolExp
+    typeName: PublicFinancialTransfersBoolExp
 
 ---
 kind: AggregateExpression
 version: v1
 definition:
-  name: FinancialTransfersAggExp
+  name: PublicFinancialTransfersAggExp
   operand:
     object:
-      aggregatedType: FinancialTransfers
+      aggregatedType: PublicFinancialTransfers
       aggregatableFields:
         - fieldName: amount
-          aggregateExpression: NumericAggExp
+          aggregateExpression: DecimalAggExp
         - fieldName: date
           aggregateExpression: DateAggExp
         - fieldName: isLaundering
-          aggregateExpression: BoolAggExp
+          aggregateExpression: BooleanAggExp
         - fieldName: launderingType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: CharacterVaryingAggExp
         - fieldName: paymentCurrency
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: CharacterVaryingAggExp
         - fieldName: paymentType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: CharacterVaryingAggExp
         - fieldName: receivedCurrency
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: CharacterVaryingAggExp
         - fieldName: receiverAccount
-          aggregateExpression: Int4AggExp
+          aggregateExpression: IntegerAggExp
         - fieldName: receiverBankLocation
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: CharacterVaryingAggExp
         - fieldName: senderAccount
-          aggregateExpression: Int4AggExp
+          aggregateExpression: IntegerAggExp
         - fieldName: senderBankLocation
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: CharacterVaryingAggExp
         - fieldName: time
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: CharacterVaryingAggExp
         - fieldName: transactionId
-          aggregateExpression: Int4AggExp
+          aggregateExpression: IntegerAggExp
   count:
     enable: true
   graphql:
-    selectTypeName: FinancialTransfersAggExp
+    selectTypeName: PublicFinancialTransfersAggExp
 
 ---
 kind: OrderByExpression
 version: v1
 definition:
-  name: FinancialTransfersOrderByExp
+  name: PublicFinancialTransfersOrderByExp
   operand:
     object:
-      orderedType: FinancialTransfers
+      orderedType: PublicFinancialTransfers
       orderableFields:
         - fieldName: amount
-          orderByExpression: NumericOrderByExp
+          orderByExpression: BigdecimalOrderByExp
         - fieldName: date
           orderByExpression: DateOrderByExp
         - fieldName: isLaundering
-          orderByExpression: BoolOrderByExp
+          orderByExpression: Boolean1OrderByExp
         - fieldName: launderingType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: String1OrderByExp
         - fieldName: paymentCurrency
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: String1OrderByExp
         - fieldName: paymentType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: String1OrderByExp
         - fieldName: receivedCurrency
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: String1OrderByExp
         - fieldName: receiverAccount
-          orderByExpression: Int4OrderByExp
+          orderByExpression: Int32OrderByExp
         - fieldName: receiverBankLocation
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: String1OrderByExp
         - fieldName: senderAccount
-          orderByExpression: Int4OrderByExp
+          orderByExpression: Int32OrderByExp
         - fieldName: senderBankLocation
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: String1OrderByExp
         - fieldName: time
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: String1OrderByExp
         - fieldName: transactionId
-          orderByExpression: Int4OrderByExp
+          orderByExpression: Int32OrderByExp
       orderableRelationships: []
   graphql:
-    expressionTypeName: FinancialTransfersOrderByExp
+    expressionTypeName: PublicFinancialTransfersOrderByExp
 
 ---
 kind: Model
 version: v2
 definition:
-  name: FinancialTransfers
-  objectType: FinancialTransfers
+  name: PublicFinancialTransfers
+  objectType: PublicFinancialTransfers
   source:
     dataConnectorName: banking_core
-    collection: financial_transfers
-  filterExpressionType: FinancialTransfersBoolExp
-  aggregateExpression: FinancialTransfersAggExp
-  orderByExpression: FinancialTransfersOrderByExp
+    collection: public.financial_transfers
+  filterExpressionType: PublicFinancialTransfersBoolExp
+  aggregateExpression: PublicFinancialTransfersAggExp
+  orderByExpression: PublicFinancialTransfersOrderByExp
   graphql:
     selectMany:
-      queryRootField: financialTransfers
+      queryRootField: publicFinancialTransfers
       subscription:
-        rootField: financialTransfers
+        rootField: publicFinancialTransfers
     selectUniques:
-      - queryRootField: financialTransfersByTransactionId
+      - queryRootField: publicFinancialTransfersByTransactionId
         uniqueIdentifier:
           - transactionId
         subscription:
-          rootField: financialTransfersByTransactionId
-    filterInputTypeName: FinancialTransfersFilterInput
+          rootField: publicFinancialTransfersByTransactionId
+    filterInputTypeName: PublicFinancialTransfersFilterInput
     aggregate:
-      queryRootField: financialTransfersAggregate
+      queryRootField: publicFinancialTransfersAggregate
       subscription:
-        rootField: financialTransfersAggregate
+        rootField: publicFinancialTransfersAggregate
 
 ---
 kind: ModelPermissions
 version: v1
 definition:
-  modelName: FinancialTransfers
+  modelName: PublicFinancialTransfers
   permissions:
     - role: admin
       select:
@@ -284,4 +284,3 @@ definition:
           - fieldName: transactionId
   graphql:
     aggregateFieldName: sarsAggregate
-

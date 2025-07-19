@@ -2,32 +2,33 @@
 kind: ObjectType
 version: v1
 definition:
-  name: Customers
+  name: PublicCustomers
+  description: "Object type for public.customers. Description: null"
   fields:
     - name: account
-      type: Int4!
+      type: Int32!
     - name: address
-      type: Text
+      type: String_1
     - name: blacklisted
-      type: Bool
+      type: Boolean_1
     - name: customerId
-      type: Int4!
+      type: Int32!
     - name: dob
       type: Date
     - name: name
-      type: Varchar!
+      type: String_1!
     - name: nationality
-      type: Varchar
+      type: String_1
     - name: pepStatus
-      type: Bool
+      type: Boolean_1
     - name: riskLevel
-      type: Varchar
+      type: String_1
   graphql:
-    typeName: Customers
-    inputTypeName: CustomersInput
+    typeName: PublicCustomers
+    inputTypeName: PublicCustomersInput
   dataConnectorTypeMapping:
     - dataConnectorName: banking_core
-      dataConnectorObjectType: customers
+      dataConnectorObjectType: public.customers
       fieldMapping:
         account:
           column:
@@ -61,7 +62,7 @@ definition:
 kind: TypePermissions
 version: v1
 definition:
-  typeName: Customers
+  typeName: PublicCustomers
   permissions:
     - role: admin
       output:
@@ -80,135 +81,134 @@ definition:
 kind: BooleanExpressionType
 version: v1
 definition:
-  name: CustomersBoolExp
+  name: PublicCustomersBoolExp
   operand:
     object:
-      type: Customers
+      type: PublicCustomers
       comparableFields:
         - fieldName: account
-          booleanExpressionType: Int4BoolExp
+          booleanExpressionType: IntegerBoolExp
         - fieldName: address
           booleanExpressionType: TextBoolExp
         - fieldName: blacklisted
-          booleanExpressionType: BoolBoolExp
+          booleanExpressionType: BooleanBoolExp
         - fieldName: customerId
-          booleanExpressionType: Int4BoolExp
+          booleanExpressionType: IntegerBoolExp
         - fieldName: dob
           booleanExpressionType: DateBoolExp
         - fieldName: name
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: CharacterVaryingBoolExp
         - fieldName: nationality
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: CharacterVaryingBoolExp
         - fieldName: pepStatus
-          booleanExpressionType: BoolBoolExp
+          booleanExpressionType: BooleanBoolExp
         - fieldName: riskLevel
-          booleanExpressionType: VarcharBoolExp
-      comparableRelationships:
-        - relationshipName: sars
+          booleanExpressionType: CharacterVaryingBoolExp
+      comparableRelationships: []
   logicalOperators:
     enable: true
   isNull:
     enable: true
   graphql:
-    typeName: CustomersBoolExp
+    typeName: PublicCustomersBoolExp
 
 ---
 kind: AggregateExpression
 version: v1
 definition:
-  name: CustomersAggExp
+  name: PublicCustomersAggExp
   operand:
     object:
-      aggregatedType: Customers
+      aggregatedType: PublicCustomers
       aggregatableFields:
         - fieldName: account
-          aggregateExpression: Int4AggExp
+          aggregateExpression: IntegerAggExp
         - fieldName: address
           aggregateExpression: TextAggExp
         - fieldName: blacklisted
-          aggregateExpression: BoolAggExp
+          aggregateExpression: BooleanAggExp
         - fieldName: customerId
-          aggregateExpression: Int4AggExp
+          aggregateExpression: IntegerAggExp
         - fieldName: dob
           aggregateExpression: DateAggExp
         - fieldName: name
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: CharacterVaryingAggExp
         - fieldName: nationality
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: CharacterVaryingAggExp
         - fieldName: pepStatus
-          aggregateExpression: BoolAggExp
+          aggregateExpression: BooleanAggExp
         - fieldName: riskLevel
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: CharacterVaryingAggExp
   count:
     enable: true
   graphql:
-    selectTypeName: CustomersAggExp
+    selectTypeName: PublicCustomersAggExp
 
 ---
 kind: OrderByExpression
 version: v1
 definition:
-  name: CustomersOrderByExp
+  name: PublicCustomersOrderByExp
   operand:
     object:
-      orderedType: Customers
+      orderedType: PublicCustomers
       orderableFields:
         - fieldName: account
-          orderByExpression: Int4OrderByExp
+          orderByExpression: Int32OrderByExp
         - fieldName: address
-          orderByExpression: TextOrderByExp
+          orderByExpression: String1OrderByExp
         - fieldName: blacklisted
-          orderByExpression: BoolOrderByExp
+          orderByExpression: Boolean1OrderByExp
         - fieldName: customerId
-          orderByExpression: Int4OrderByExp
+          orderByExpression: Int32OrderByExp
         - fieldName: dob
           orderByExpression: DateOrderByExp
         - fieldName: name
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: String1OrderByExp
         - fieldName: nationality
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: String1OrderByExp
         - fieldName: pepStatus
-          orderByExpression: BoolOrderByExp
+          orderByExpression: Boolean1OrderByExp
         - fieldName: riskLevel
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: String1OrderByExp
       orderableRelationships: []
   graphql:
-    expressionTypeName: CustomersOrderByExp
+    expressionTypeName: PublicCustomersOrderByExp
 
 ---
 kind: Model
 version: v2
 definition:
-  name: Customers
-  objectType: Customers
+  name: PublicCustomers
+  objectType: PublicCustomers
   source:
     dataConnectorName: banking_core
-    collection: customers
-  filterExpressionType: CustomersBoolExp
-  aggregateExpression: CustomersAggExp
-  orderByExpression: CustomersOrderByExp
+    collection: public.customers
+  filterExpressionType: PublicCustomersBoolExp
+  aggregateExpression: PublicCustomersAggExp
+  orderByExpression: PublicCustomersOrderByExp
   graphql:
     selectMany:
-      queryRootField: customers
+      queryRootField: publicCustomers
       subscription:
-        rootField: customers
+        rootField: publicCustomers
     selectUniques:
-      - queryRootField: customersByCustomerId
+      - queryRootField: publicCustomersByCustomerId
         uniqueIdentifier:
           - customerId
         subscription:
-          rootField: customersByCustomerId
-    filterInputTypeName: CustomersFilterInput
+          rootField: publicCustomersByCustomerId
+    filterInputTypeName: PublicCustomersFilterInput
     aggregate:
-      queryRootField: customersAggregate
+      queryRootField: publicCustomersAggregate
       subscription:
-        rootField: customersAggregate
+        rootField: publicCustomersAggregate
 
 ---
 kind: ModelPermissions
 version: v1
 definition:
-  modelName: Customers
+  modelName: PublicCustomers
   permissions:
     - role: admin
       select:
