@@ -1,0 +1,135 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: PublicCampaigns
+  description: "Object type for public.campaigns. Description: null"
+  fields:
+    - name: id
+      type: String_1!
+    - name: name
+      type: String_1
+    - name: type
+      type: String_1
+  graphql:
+    typeName: PublicCampaigns
+    inputTypeName: PublicCampaignsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: salesforce
+      dataConnectorObjectType: public.campaigns
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: PublicCampaigns
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - id
+          - name
+          - type
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PublicCampaignsBoolExp
+  operand:
+    object:
+      type: PublicCampaigns
+      comparableFields:
+        - fieldName: id
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: name
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: type
+          booleanExpressionType: CharacterVaryingBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: PublicCampaignsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PublicCampaignsAggExp
+  operand:
+    object:
+      aggregatedType: PublicCampaigns
+      aggregatableFields:
+        - fieldName: id
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: name
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: type
+          aggregateExpression: CharacterVaryingAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: PublicCampaignsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PublicCampaignsOrderByExp
+  operand:
+    object:
+      orderedType: PublicCampaigns
+      orderableFields:
+        - fieldName: id
+          orderByExpression: String1OrderByExp
+        - fieldName: name
+          orderByExpression: String1OrderByExp
+        - fieldName: type
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: PublicCampaignsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: PublicCampaigns
+  objectType: PublicCampaigns
+  source:
+    dataConnectorName: salesforce
+    collection: public.campaigns
+  filterExpressionType: PublicCampaignsBoolExp
+  aggregateExpression: PublicCampaignsAggExp
+  orderByExpression: PublicCampaignsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: publicCampaigns
+      subscription:
+        rootField: publicCampaigns
+    selectUniques:
+      - queryRootField: publicCampaignsById
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: publicCampaignsById
+    filterInputTypeName: PublicCampaignsFilterInput
+    aggregate:
+      queryRootField: publicCampaignsAggregate
+      subscription:
+        rootField: publicCampaignsAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: PublicCampaigns
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

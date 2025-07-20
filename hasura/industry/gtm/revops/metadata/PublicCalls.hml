@@ -1,0 +1,361 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: PublicCalls
+  description: "Object type for public.calls. Description: null"
+  fields:
+    - name: accountName
+      type: String_1
+    - name: callActionItemsDiscussed
+      type: String_1
+    - name: callActionItemsDiscussedEmbedding
+      type: Json
+    - name: callFullTranscript
+      type: String_1
+    - name: callFullTranscriptEmbedding
+      type: Json
+    - name: callKeyTakeaways
+      type: String_1
+    - name: callKeyTakeawaysEmbedding
+      type: Json
+    - name: callReviewPage
+      type: String_1!
+    - name: callSummary
+      type: String_1
+    - name: callSummaryEmbedding
+      type: Json
+    - name: callTopicsDiscussed
+      type: String_1
+    - name: callTopicsDiscussedEmbedding
+      type: Json
+    - name: id
+      type: String_1!
+    - name: lastModifiedTime
+      type: Timestamp!
+    - name: salesforceAccountId
+      type: String_1
+    - name: salesforceContactIds
+      type: Json
+    - name: salesforceDealId
+      type: String_1
+    - name: sourceId
+      type: String_1
+    - name: time
+      type: Timestamp!
+    - name: title
+      type: String_1!
+    - name: type
+      type: String_1!
+  graphql:
+    typeName: PublicCalls
+    inputTypeName: PublicCallsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: clari
+      dataConnectorObjectType: public.calls
+      fieldMapping:
+        accountName:
+          column:
+            name: account_name
+        callActionItemsDiscussed:
+          column:
+            name: call_action_items_discussed
+        callActionItemsDiscussedEmbedding:
+          column:
+            name: call_action_items_discussed_embedding
+        callFullTranscript:
+          column:
+            name: call_full_transcript
+        callFullTranscriptEmbedding:
+          column:
+            name: call_full_transcript_embedding
+        callKeyTakeaways:
+          column:
+            name: call_key_takeaways
+        callKeyTakeawaysEmbedding:
+          column:
+            name: call_key_takeaways_embedding
+        callReviewPage:
+          column:
+            name: call_review_page
+        callSummary:
+          column:
+            name: call_summary
+        callSummaryEmbedding:
+          column:
+            name: call_summary_embedding
+        callTopicsDiscussed:
+          column:
+            name: call_topics_discussed
+        callTopicsDiscussedEmbedding:
+          column:
+            name: call_topics_discussed_embedding
+        id:
+          column:
+            name: id
+        lastModifiedTime:
+          column:
+            name: last_modified_time
+        salesforceAccountId:
+          column:
+            name: salesforce_account_id
+        salesforceContactIds:
+          column:
+            name: salesforce_contact_ids
+        salesforceDealId:
+          column:
+            name: salesforce_deal_id
+        sourceId:
+          column:
+            name: source_id
+        time:
+          column:
+            name: time
+        title:
+          column:
+            name: title
+        type:
+          column:
+            name: type
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: PublicCalls
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - accountName
+          - callActionItemsDiscussed
+          - callActionItemsDiscussedEmbedding
+          - callFullTranscript
+          - callFullTranscriptEmbedding
+          - callKeyTakeaways
+          - callKeyTakeawaysEmbedding
+          - callReviewPage
+          - callSummary
+          - callSummaryEmbedding
+          - callTopicsDiscussed
+          - callTopicsDiscussedEmbedding
+          - id
+          - lastModifiedTime
+          - salesforceAccountId
+          - salesforceContactIds
+          - salesforceDealId
+          - sourceId
+          - time
+          - title
+          - type
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PublicCallsBoolExp
+  operand:
+    object:
+      type: PublicCalls
+      comparableFields:
+        - fieldName: accountName
+          booleanExpressionType: TextBoolExp
+        - fieldName: callActionItemsDiscussed
+          booleanExpressionType: TextBoolExp
+        - fieldName: callActionItemsDiscussedEmbedding
+          booleanExpressionType: Vector3BoolExp
+        - fieldName: callFullTranscript
+          booleanExpressionType: TextBoolExp
+        - fieldName: callFullTranscriptEmbedding
+          booleanExpressionType: Vector3BoolExp
+        - fieldName: callKeyTakeaways
+          booleanExpressionType: TextBoolExp
+        - fieldName: callKeyTakeawaysEmbedding
+          booleanExpressionType: Vector3BoolExp
+        - fieldName: callReviewPage
+          booleanExpressionType: TextBoolExp
+        - fieldName: callSummary
+          booleanExpressionType: TextBoolExp
+        - fieldName: callSummaryEmbedding
+          booleanExpressionType: Vector3BoolExp
+        - fieldName: callTopicsDiscussed
+          booleanExpressionType: TextBoolExp
+        - fieldName: callTopicsDiscussedEmbedding
+          booleanExpressionType: Vector3BoolExp
+        - fieldName: id
+          booleanExpressionType: TextBoolExp
+        - fieldName: lastModifiedTime
+          booleanExpressionType: TimestampWithoutTimeZoneBoolExp
+        - fieldName: salesforceAccountId
+          booleanExpressionType: TextBoolExp
+        - fieldName: salesforceContactIds
+          booleanExpressionType: ArrayBoolExp
+        - fieldName: salesforceDealId
+          booleanExpressionType: TextBoolExp
+        - fieldName: sourceId
+          booleanExpressionType: TextBoolExp
+        - fieldName: time
+          booleanExpressionType: TimestampWithoutTimeZoneBoolExp
+        - fieldName: title
+          booleanExpressionType: TextBoolExp
+        - fieldName: type
+          booleanExpressionType: TextBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: PublicCallsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PublicCallsAggExp
+  operand:
+    object:
+      aggregatedType: PublicCalls
+      aggregatableFields:
+        - fieldName: accountName
+          aggregateExpression: TextAggExp
+        - fieldName: callActionItemsDiscussed
+          aggregateExpression: TextAggExp
+        - fieldName: callActionItemsDiscussedEmbedding
+          aggregateExpression: Vector3AggExp
+        - fieldName: callFullTranscript
+          aggregateExpression: TextAggExp
+        - fieldName: callFullTranscriptEmbedding
+          aggregateExpression: Vector3AggExp
+        - fieldName: callKeyTakeaways
+          aggregateExpression: TextAggExp
+        - fieldName: callKeyTakeawaysEmbedding
+          aggregateExpression: Vector3AggExp
+        - fieldName: callReviewPage
+          aggregateExpression: TextAggExp
+        - fieldName: callSummary
+          aggregateExpression: TextAggExp
+        - fieldName: callSummaryEmbedding
+          aggregateExpression: Vector3AggExp
+        - fieldName: callTopicsDiscussed
+          aggregateExpression: TextAggExp
+        - fieldName: callTopicsDiscussedEmbedding
+          aggregateExpression: Vector3AggExp
+        - fieldName: id
+          aggregateExpression: TextAggExp
+        - fieldName: lastModifiedTime
+          aggregateExpression: TimestampWithoutTimeZoneAggExp
+        - fieldName: salesforceAccountId
+          aggregateExpression: TextAggExp
+        - fieldName: salesforceContactIds
+          aggregateExpression: ArrayAggExp
+        - fieldName: salesforceDealId
+          aggregateExpression: TextAggExp
+        - fieldName: sourceId
+          aggregateExpression: TextAggExp
+        - fieldName: time
+          aggregateExpression: TimestampWithoutTimeZoneAggExp
+        - fieldName: title
+          aggregateExpression: TextAggExp
+        - fieldName: type
+          aggregateExpression: TextAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: PublicCallsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PublicCallsOrderByExp
+  operand:
+    object:
+      orderedType: PublicCalls
+      orderableFields:
+        - fieldName: accountName
+          orderByExpression: String1OrderByExp
+        - fieldName: callActionItemsDiscussed
+          orderByExpression: String1OrderByExp
+        - fieldName: callActionItemsDiscussedEmbedding
+          orderByExpression: JsonOrderByExp
+        - fieldName: callFullTranscript
+          orderByExpression: String1OrderByExp
+        - fieldName: callFullTranscriptEmbedding
+          orderByExpression: JsonOrderByExp
+        - fieldName: callKeyTakeaways
+          orderByExpression: String1OrderByExp
+        - fieldName: callKeyTakeawaysEmbedding
+          orderByExpression: JsonOrderByExp
+        - fieldName: callReviewPage
+          orderByExpression: String1OrderByExp
+        - fieldName: callSummary
+          orderByExpression: String1OrderByExp
+        - fieldName: callSummaryEmbedding
+          orderByExpression: JsonOrderByExp
+        - fieldName: callTopicsDiscussed
+          orderByExpression: String1OrderByExp
+        - fieldName: callTopicsDiscussedEmbedding
+          orderByExpression: JsonOrderByExp
+        - fieldName: id
+          orderByExpression: String1OrderByExp
+        - fieldName: lastModifiedTime
+          orderByExpression: TimestampOrderByExp
+        - fieldName: salesforceAccountId
+          orderByExpression: String1OrderByExp
+        - fieldName: salesforceContactIds
+          orderByExpression: JsonOrderByExp
+        - fieldName: salesforceDealId
+          orderByExpression: String1OrderByExp
+        - fieldName: sourceId
+          orderByExpression: String1OrderByExp
+        - fieldName: time
+          orderByExpression: TimestampOrderByExp
+        - fieldName: title
+          orderByExpression: String1OrderByExp
+        - fieldName: type
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: PublicCallsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: PublicCalls
+  objectType: PublicCalls
+  source:
+    dataConnectorName: clari
+    collection: public.calls
+  filterExpressionType: PublicCallsBoolExp
+  aggregateExpression: PublicCallsAggExp
+  orderByExpression: PublicCallsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: publicCalls
+      subscription:
+        rootField: publicCalls
+    selectUniques:
+      - queryRootField: publicCallsById
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: publicCallsById
+    filterInputTypeName: PublicCallsFilterInput
+    aggregate:
+      queryRootField: publicCallsAggregate
+      subscription:
+        rootField: publicCallsAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: PublicCalls
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

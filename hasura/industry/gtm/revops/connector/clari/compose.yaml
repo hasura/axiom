@@ -4,11 +4,11 @@ services:
       context: .
       dockerfile: .hasura-connector/Dockerfile.clari
     environment:
-      CONNECTION_URI: $REVOPS_CLARI_CONNECTION_URI
       HASURA_SERVICE_TOKEN_SECRET: $REVOPS_CLARI_HASURA_SERVICE_TOKEN_SECRET
+      JDBC_URL: $REVOPS_CLARI_JDBC_URL
       OTEL_EXPORTER_OTLP_ENDPOINT: $REVOPS_CLARI_OTEL_EXPORTER_OTLP_ENDPOINT
       OTEL_SERVICE_NAME: $REVOPS_CLARI_OTEL_SERVICE_NAME
     extra_hosts:
       - local.hasura.dev:host-gateway
     ports:
-      - 7480:8080
+      - 7160:8080

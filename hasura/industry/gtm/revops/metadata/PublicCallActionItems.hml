@@ -1,0 +1,200 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: PublicCallActionItems
+  description: "Object type for public.call_action_items. Description: null"
+  fields:
+    - name: actionItem
+      type: String_1
+    - name: callId
+      type: String_1!
+    - name: endTimestamp
+      type: Timestamp
+    - name: ownerName
+      type: String_1
+    - name: reasoning
+      type: String_1
+    - name: speakerName
+      type: String_1
+    - name: startTimestamp
+      type: Timestamp
+    - name: timeline
+      type: String_1
+  graphql:
+    typeName: PublicCallActionItems
+    inputTypeName: PublicCallActionItemsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: clari
+      dataConnectorObjectType: public.call_action_items
+      fieldMapping:
+        actionItem:
+          column:
+            name: action_item
+        callId:
+          column:
+            name: call_id
+        endTimestamp:
+          column:
+            name: end_timestamp
+        ownerName:
+          column:
+            name: owner_name
+        reasoning:
+          column:
+            name: reasoning
+        speakerName:
+          column:
+            name: speaker_name
+        startTimestamp:
+          column:
+            name: start_timestamp
+        timeline:
+          column:
+            name: timeline
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: PublicCallActionItems
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - actionItem
+          - callId
+          - endTimestamp
+          - ownerName
+          - reasoning
+          - speakerName
+          - startTimestamp
+          - timeline
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PublicCallActionItemsBoolExp
+  operand:
+    object:
+      type: PublicCallActionItems
+      comparableFields:
+        - fieldName: actionItem
+          booleanExpressionType: TextBoolExp
+        - fieldName: callId
+          booleanExpressionType: TextBoolExp
+        - fieldName: endTimestamp
+          booleanExpressionType: TimeWithoutTimeZoneBoolExp
+        - fieldName: ownerName
+          booleanExpressionType: TextBoolExp
+        - fieldName: reasoning
+          booleanExpressionType: TextBoolExp
+        - fieldName: speakerName
+          booleanExpressionType: TextBoolExp
+        - fieldName: startTimestamp
+          booleanExpressionType: TimeWithoutTimeZoneBoolExp
+        - fieldName: timeline
+          booleanExpressionType: TextBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: PublicCallActionItemsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PublicCallActionItemsAggExp
+  operand:
+    object:
+      aggregatedType: PublicCallActionItems
+      aggregatableFields:
+        - fieldName: actionItem
+          aggregateExpression: TextAggExp
+        - fieldName: callId
+          aggregateExpression: TextAggExp
+        - fieldName: endTimestamp
+          aggregateExpression: TimeWithoutTimeZoneAggExp
+        - fieldName: ownerName
+          aggregateExpression: TextAggExp
+        - fieldName: reasoning
+          aggregateExpression: TextAggExp
+        - fieldName: speakerName
+          aggregateExpression: TextAggExp
+        - fieldName: startTimestamp
+          aggregateExpression: TimeWithoutTimeZoneAggExp
+        - fieldName: timeline
+          aggregateExpression: TextAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: PublicCallActionItemsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PublicCallActionItemsOrderByExp
+  operand:
+    object:
+      orderedType: PublicCallActionItems
+      orderableFields:
+        - fieldName: actionItem
+          orderByExpression: String1OrderByExp
+        - fieldName: callId
+          orderByExpression: String1OrderByExp
+        - fieldName: endTimestamp
+          orderByExpression: TimestampOrderByExp
+        - fieldName: ownerName
+          orderByExpression: String1OrderByExp
+        - fieldName: reasoning
+          orderByExpression: String1OrderByExp
+        - fieldName: speakerName
+          orderByExpression: String1OrderByExp
+        - fieldName: startTimestamp
+          orderByExpression: TimestampOrderByExp
+        - fieldName: timeline
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: PublicCallActionItemsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: PublicCallActionItems
+  objectType: PublicCallActionItems
+  source:
+    dataConnectorName: clari
+    collection: public.call_action_items
+  filterExpressionType: PublicCallActionItemsBoolExp
+  aggregateExpression: PublicCallActionItemsAggExp
+  orderByExpression: PublicCallActionItemsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: publicCallActionItems
+      subscription:
+        rootField: publicCallActionItems
+    selectUniques: []
+    filterInputTypeName: PublicCallActionItemsFilterInput
+    aggregate:
+      queryRootField: publicCallActionItemsAggregate
+      subscription:
+        rootField: publicCallActionItemsAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: PublicCallActionItems
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

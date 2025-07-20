@@ -1,0 +1,58 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ActionResponse
+  fields:
+    - name: message
+      type: String!
+    - name: success
+      type: Boolean!
+  graphql:
+    typeName: ActionResponse
+    inputTypeName: ActionResponseInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: actions
+      dataConnectorObjectType: ActionResponse
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ActionResponse
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - message
+          - success
+
+---
+kind: Command
+version: v1
+definition:
+  name: AddContactToSequence
+  outputType: ActionResponse!
+  arguments:
+    - name: contactId
+      type: String!
+    - name: sequenceId
+      type: Float!
+  source:
+    dataConnectorName: actions
+    dataConnectorCommand:
+      procedure: addContactToSequence
+  graphql:
+    rootFieldName: addContactToSequence
+    rootFieldKind: Mutation
+  description: Adds a contact to a sequence (mock)
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: AddContactToSequence
+  permissions:
+    - role: admin
+      allowExecution: true
+

@@ -1,0 +1,313 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: PublicOpportunities
+  description: "Object type for public.opportunities. Description: null"
+  fields:
+    - name: accountId
+      type: String_1
+    - name: amount
+      type: String_1
+    - name: championC
+      type: String_1
+    - name: closeDate
+      type: String_1
+    - name: competitionC
+      type: String_1
+    - name: createdDate
+      type: String_1
+    - name: decisionCriteriaC
+      type: String_1
+    - name: decisionProcessC
+      type: String_1
+    - name: economicBuyerC
+      type: String_1
+    - name: id
+      type: String_1!
+    - name: identifiedPainC
+      type: String_1
+    - name: metricsC
+      type: String_1
+    - name: name
+      type: String_1
+    - name: ownerId
+      type: Int32
+    - name: paperProcessC
+      type: String_1
+    - name: probability
+      type: Int32
+    - name: stage
+      type: String_1
+  graphql:
+    typeName: PublicOpportunities
+    inputTypeName: PublicOpportunitiesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: salesforce
+      dataConnectorObjectType: public.opportunities
+      fieldMapping:
+        accountId:
+          column:
+            name: account_id
+        amount:
+          column:
+            name: amount
+        championC:
+          column:
+            name: champion_c
+        closeDate:
+          column:
+            name: close_date
+        competitionC:
+          column:
+            name: competition_c
+        createdDate:
+          column:
+            name: created_date
+        decisionCriteriaC:
+          column:
+            name: decision_criteria_c
+        decisionProcessC:
+          column:
+            name: decision_process_c
+        economicBuyerC:
+          column:
+            name: economic_buyer_c
+        id:
+          column:
+            name: id
+        identifiedPainC:
+          column:
+            name: identified_pain_c
+        metricsC:
+          column:
+            name: metrics_c
+        name:
+          column:
+            name: name
+        ownerId:
+          column:
+            name: owner_id
+        paperProcessC:
+          column:
+            name: paper_process_c
+        probability:
+          column:
+            name: probability
+        stage:
+          column:
+            name: stage
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: PublicOpportunities
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - accountId
+          - amount
+          - championC
+          - closeDate
+          - competitionC
+          - createdDate
+          - decisionCriteriaC
+          - decisionProcessC
+          - economicBuyerC
+          - id
+          - identifiedPainC
+          - metricsC
+          - name
+          - ownerId
+          - paperProcessC
+          - probability
+          - stage
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PublicOpportunitiesBoolExp
+  operand:
+    object:
+      type: PublicOpportunities
+      comparableFields:
+        - fieldName: accountId
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: amount
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: championC
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: closeDate
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: competitionC
+          booleanExpressionType: TextBoolExp_1
+        - fieldName: createdDate
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: decisionCriteriaC
+          booleanExpressionType: TextBoolExp_1
+        - fieldName: decisionProcessC
+          booleanExpressionType: TextBoolExp_1
+        - fieldName: economicBuyerC
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: id
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: identifiedPainC
+          booleanExpressionType: TextBoolExp_1
+        - fieldName: metricsC
+          booleanExpressionType: TextBoolExp_1
+        - fieldName: name
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: ownerId
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: paperProcessC
+          booleanExpressionType: TextBoolExp_1
+        - fieldName: probability
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: stage
+          booleanExpressionType: CharacterVaryingBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: PublicOpportunitiesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PublicOpportunitiesAggExp
+  operand:
+    object:
+      aggregatedType: PublicOpportunities
+      aggregatableFields:
+        - fieldName: accountId
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: amount
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: championC
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: closeDate
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: competitionC
+          aggregateExpression: TextAggExp_1
+        - fieldName: createdDate
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: decisionCriteriaC
+          aggregateExpression: TextAggExp_1
+        - fieldName: decisionProcessC
+          aggregateExpression: TextAggExp_1
+        - fieldName: economicBuyerC
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: id
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: identifiedPainC
+          aggregateExpression: TextAggExp_1
+        - fieldName: metricsC
+          aggregateExpression: TextAggExp_1
+        - fieldName: name
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: ownerId
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: paperProcessC
+          aggregateExpression: TextAggExp_1
+        - fieldName: probability
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: stage
+          aggregateExpression: CharacterVaryingAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: PublicOpportunitiesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PublicOpportunitiesOrderByExp
+  operand:
+    object:
+      orderedType: PublicOpportunities
+      orderableFields:
+        - fieldName: accountId
+          orderByExpression: String1OrderByExp
+        - fieldName: amount
+          orderByExpression: String1OrderByExp
+        - fieldName: championC
+          orderByExpression: String1OrderByExp
+        - fieldName: closeDate
+          orderByExpression: String1OrderByExp
+        - fieldName: competitionC
+          orderByExpression: String1OrderByExp
+        - fieldName: createdDate
+          orderByExpression: String1OrderByExp
+        - fieldName: decisionCriteriaC
+          orderByExpression: String1OrderByExp
+        - fieldName: decisionProcessC
+          orderByExpression: String1OrderByExp
+        - fieldName: economicBuyerC
+          orderByExpression: String1OrderByExp
+        - fieldName: id
+          orderByExpression: String1OrderByExp
+        - fieldName: identifiedPainC
+          orderByExpression: String1OrderByExp
+        - fieldName: metricsC
+          orderByExpression: String1OrderByExp
+        - fieldName: name
+          orderByExpression: String1OrderByExp
+        - fieldName: ownerId
+          orderByExpression: Int32OrderByExp
+        - fieldName: paperProcessC
+          orderByExpression: String1OrderByExp
+        - fieldName: probability
+          orderByExpression: Int32OrderByExp
+        - fieldName: stage
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: PublicOpportunitiesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: PublicOpportunities
+  objectType: PublicOpportunities
+  source:
+    dataConnectorName: salesforce
+    collection: public.opportunities
+  filterExpressionType: PublicOpportunitiesBoolExp
+  aggregateExpression: PublicOpportunitiesAggExp
+  orderByExpression: PublicOpportunitiesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: publicOpportunities
+      subscription:
+        rootField: publicOpportunities
+    selectUniques:
+      - queryRootField: publicOpportunitiesById
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: publicOpportunitiesById
+    filterInputTypeName: PublicOpportunitiesFilterInput
+    aggregate:
+      queryRootField: publicOpportunitiesAggregate
+      subscription:
+        rootField: publicOpportunitiesAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: PublicOpportunities
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

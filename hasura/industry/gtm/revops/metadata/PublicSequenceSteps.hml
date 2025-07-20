@@ -1,0 +1,205 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: PublicSequenceSteps
+  description: "Object type for public.sequence_steps. Description: null"
+  fields:
+    - name: createdAt
+      type: Timestamptz
+    - name: delayDays
+      type: Int32
+    - name: id
+      type: Int32!
+    - name: sequenceId
+      type: Int32
+    - name: stepNumber
+      type: Int32
+    - name: stepType
+      type: String_1
+    - name: templateBody
+      type: String_1
+    - name: templateSubject
+      type: String_1
+  graphql:
+    typeName: PublicSequenceSteps
+    inputTypeName: PublicSequenceStepsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: salesforce
+      dataConnectorObjectType: public.sequence_steps
+      fieldMapping:
+        createdAt:
+          column:
+            name: created_at
+        delayDays:
+          column:
+            name: delay_days
+        id:
+          column:
+            name: id
+        sequenceId:
+          column:
+            name: sequence_id
+        stepNumber:
+          column:
+            name: step_number
+        stepType:
+          column:
+            name: step_type
+        templateBody:
+          column:
+            name: template_body
+        templateSubject:
+          column:
+            name: template_subject
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: PublicSequenceSteps
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - createdAt
+          - delayDays
+          - id
+          - sequenceId
+          - stepNumber
+          - stepType
+          - templateBody
+          - templateSubject
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PublicSequenceStepsBoolExp
+  operand:
+    object:
+      type: PublicSequenceSteps
+      comparableFields:
+        - fieldName: createdAt
+          booleanExpressionType: TimestampWithTimeZoneBoolExp
+        - fieldName: delayDays
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: id
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: sequenceId
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: stepNumber
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: stepType
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: templateBody
+          booleanExpressionType: TextBoolExp_1
+        - fieldName: templateSubject
+          booleanExpressionType: CharacterVaryingBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: PublicSequenceStepsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PublicSequenceStepsAggExp
+  operand:
+    object:
+      aggregatedType: PublicSequenceSteps
+      aggregatableFields:
+        - fieldName: createdAt
+          aggregateExpression: TimestampWithTimeZoneAggExp
+        - fieldName: delayDays
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: id
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: sequenceId
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: stepNumber
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: stepType
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: templateBody
+          aggregateExpression: TextAggExp_1
+        - fieldName: templateSubject
+          aggregateExpression: CharacterVaryingAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: PublicSequenceStepsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PublicSequenceStepsOrderByExp
+  operand:
+    object:
+      orderedType: PublicSequenceSteps
+      orderableFields:
+        - fieldName: createdAt
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: delayDays
+          orderByExpression: Int32OrderByExp
+        - fieldName: id
+          orderByExpression: Int32OrderByExp
+        - fieldName: sequenceId
+          orderByExpression: Int32OrderByExp
+        - fieldName: stepNumber
+          orderByExpression: Int32OrderByExp
+        - fieldName: stepType
+          orderByExpression: String1OrderByExp
+        - fieldName: templateBody
+          orderByExpression: String1OrderByExp
+        - fieldName: templateSubject
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: PublicSequenceStepsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: PublicSequenceSteps
+  objectType: PublicSequenceSteps
+  source:
+    dataConnectorName: salesforce
+    collection: public.sequence_steps
+  filterExpressionType: PublicSequenceStepsBoolExp
+  aggregateExpression: PublicSequenceStepsAggExp
+  orderByExpression: PublicSequenceStepsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: publicSequenceSteps
+      subscription:
+        rootField: publicSequenceSteps
+    selectUniques:
+      - queryRootField: publicSequenceStepsById
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: publicSequenceStepsById
+    filterInputTypeName: PublicSequenceStepsFilterInput
+    aggregate:
+      queryRootField: publicSequenceStepsAggregate
+      subscription:
+        rootField: publicSequenceStepsAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: PublicSequenceSteps
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
