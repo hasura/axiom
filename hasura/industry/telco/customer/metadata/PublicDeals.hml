@@ -1,0 +1,229 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: PublicDeals
+  description: "Object type for public.deals. Description: null"
+  fields:
+    - name: additionalBenefits
+      type: String_1
+    - name: customerSegment
+      type: String_1
+    - name: dealId
+      type: Int32!
+    - name: dealName
+      type: String_1
+    - name: description
+      type: String_1
+    - name: endDate
+      type: Date
+    - name: maxMonthlySpend
+      type: Bigdecimal
+    - name: minMonthlySpend
+      type: Bigdecimal
+    - name: startDate
+      type: Date
+    - name: termsConditions
+      type: String_1
+  graphql:
+    typeName: customer_PublicDeals
+    inputTypeName: customer_PublicDealsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: public.deals
+      fieldMapping:
+        additionalBenefits:
+          column:
+            name: additional_benefits
+        customerSegment:
+          column:
+            name: customer_segment
+        dealId:
+          column:
+            name: deal_id
+        dealName:
+          column:
+            name: deal_name
+        description:
+          column:
+            name: description
+        endDate:
+          column:
+            name: end_date
+        maxMonthlySpend:
+          column:
+            name: max_monthly_spend
+        minMonthlySpend:
+          column:
+            name: min_monthly_spend
+        startDate:
+          column:
+            name: start_date
+        termsConditions:
+          column:
+            name: terms_conditions
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: PublicDeals
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - additionalBenefits
+          - customerSegment
+          - dealId
+          - dealName
+          - description
+          - endDate
+          - maxMonthlySpend
+          - minMonthlySpend
+          - startDate
+          - termsConditions
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PublicDealsBoolExp
+  operand:
+    object:
+      type: PublicDeals
+      comparableFields:
+        - fieldName: additionalBenefits
+          booleanExpressionType: TextBoolExp
+        - fieldName: customerSegment
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: dealId
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: dealName
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: description
+          booleanExpressionType: TextBoolExp
+        - fieldName: endDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: maxMonthlySpend
+          booleanExpressionType: DecimalBoolExp
+        - fieldName: minMonthlySpend
+          booleanExpressionType: DecimalBoolExp
+        - fieldName: startDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: termsConditions
+          booleanExpressionType: TextBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customer_PublicDealsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PublicDealsAggExp
+  operand:
+    object:
+      aggregatedType: PublicDeals
+      aggregatableFields:
+        - fieldName: additionalBenefits
+          aggregateExpression: TextAggExp
+        - fieldName: customerSegment
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: dealId
+          aggregateExpression: IntegerAggExp
+        - fieldName: dealName
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: description
+          aggregateExpression: TextAggExp
+        - fieldName: endDate
+          aggregateExpression: DateAggExp
+        - fieldName: maxMonthlySpend
+          aggregateExpression: DecimalAggExp
+        - fieldName: minMonthlySpend
+          aggregateExpression: DecimalAggExp
+        - fieldName: startDate
+          aggregateExpression: DateAggExp
+        - fieldName: termsConditions
+          aggregateExpression: TextAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: customer_PublicDealsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PublicDealsOrderByExp
+  operand:
+    object:
+      orderedType: PublicDeals
+      orderableFields:
+        - fieldName: additionalBenefits
+          orderByExpression: String1OrderByExp
+        - fieldName: customerSegment
+          orderByExpression: String1OrderByExp
+        - fieldName: dealId
+          orderByExpression: Int32OrderByExp
+        - fieldName: dealName
+          orderByExpression: String1OrderByExp
+        - fieldName: description
+          orderByExpression: String1OrderByExp
+        - fieldName: endDate
+          orderByExpression: DateOrderByExp
+        - fieldName: maxMonthlySpend
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: minMonthlySpend
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: startDate
+          orderByExpression: DateOrderByExp
+        - fieldName: termsConditions
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: customer_PublicDealsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: PublicDeals
+  objectType: PublicDeals
+  source:
+    dataConnectorName: aurora
+    collection: public.deals
+  filterExpressionType: PublicDealsBoolExp
+  aggregateExpression: PublicDealsAggExp
+  orderByExpression: PublicDealsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: publicDeals
+      subscription:
+        rootField: publicDeals
+    selectUniques:
+      - queryRootField: publicDealsByDealId
+        uniqueIdentifier:
+          - dealId
+        subscription:
+          rootField: publicDealsByDealId
+    filterInputTypeName: customer_PublicDealsFilterInput
+    aggregate:
+      queryRootField: publicDealsAggregate
+      subscription:
+        rootField: publicDealsAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: PublicDeals
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

@@ -1,0 +1,169 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: PublicBilling
+  description: "Object type for public.billing. Description: null"
+  fields:
+    - name: billingDate
+      type: Date
+    - name: billingId
+      type: Int32!
+    - name: customerId
+      type: Int32
+    - name: paymentStatus
+      type: String_1
+    - name: totalAmount
+      type: Bigdecimal
+  graphql:
+    typeName: customer_PublicBilling
+    inputTypeName: customer_PublicBillingInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: public.billing
+      fieldMapping:
+        billingDate:
+          column:
+            name: billing_date
+        billingId:
+          column:
+            name: billing_id
+        customerId:
+          column:
+            name: customer_id
+        paymentStatus:
+          column:
+            name: payment_status
+        totalAmount:
+          column:
+            name: total_amount
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: PublicBilling
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - billingDate
+          - billingId
+          - customerId
+          - paymentStatus
+          - totalAmount
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PublicBillingBoolExp
+  operand:
+    object:
+      type: PublicBilling
+      comparableFields:
+        - fieldName: billingDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: billingId
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: customerId
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: paymentStatus
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: totalAmount
+          booleanExpressionType: DecimalBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customer_PublicBillingBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PublicBillingAggExp
+  operand:
+    object:
+      aggregatedType: PublicBilling
+      aggregatableFields:
+        - fieldName: billingDate
+          aggregateExpression: DateAggExp
+        - fieldName: billingId
+          aggregateExpression: IntegerAggExp
+        - fieldName: customerId
+          aggregateExpression: IntegerAggExp
+        - fieldName: paymentStatus
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: totalAmount
+          aggregateExpression: DecimalAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: customer_PublicBillingAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PublicBillingOrderByExp
+  operand:
+    object:
+      orderedType: PublicBilling
+      orderableFields:
+        - fieldName: billingDate
+          orderByExpression: DateOrderByExp
+        - fieldName: billingId
+          orderByExpression: Int32OrderByExp
+        - fieldName: customerId
+          orderByExpression: Int32OrderByExp
+        - fieldName: paymentStatus
+          orderByExpression: String1OrderByExp
+        - fieldName: totalAmount
+          orderByExpression: BigdecimalOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: customer_PublicBillingOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: PublicBilling
+  objectType: PublicBilling
+  source:
+    dataConnectorName: aurora
+    collection: public.billing
+  filterExpressionType: PublicBillingBoolExp
+  aggregateExpression: PublicBillingAggExp
+  orderByExpression: PublicBillingOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: publicBilling
+      subscription:
+        rootField: publicBilling
+    selectUniques:
+      - queryRootField: publicBillingByBillingId
+        uniqueIdentifier:
+          - billingId
+        subscription:
+          rootField: publicBillingByBillingId
+    filterInputTypeName: customer_PublicBillingFilterInput
+    aggregate:
+      queryRootField: publicBillingAggregate
+      subscription:
+        rootField: publicBillingAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: PublicBilling
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

@@ -1,0 +1,229 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: PublicInteractions
+  description: "Object type for public.interactions. Description: null"
+  fields:
+    - name: agentId
+      type: Int32
+    - name: channel
+      type: String_1!
+    - name: customerId
+      type: Int32
+    - name: durationSeconds
+      type: Int32
+    - name: interactionId
+      type: Int32!
+    - name: interactionTime
+      type: Timestamptz
+    - name: notes
+      type: String_1
+    - name: resolutionStatus
+      type: String_1
+    - name: satisfactionRating
+      type: Int32
+    - name: topic
+      type: String_1
+  graphql:
+    typeName: customer_PublicInteractions
+    inputTypeName: customer_PublicInteractionsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: public.interactions
+      fieldMapping:
+        agentId:
+          column:
+            name: agent_id
+        channel:
+          column:
+            name: channel
+        customerId:
+          column:
+            name: customer_id
+        durationSeconds:
+          column:
+            name: duration_seconds
+        interactionId:
+          column:
+            name: interaction_id
+        interactionTime:
+          column:
+            name: interaction_time
+        notes:
+          column:
+            name: notes
+        resolutionStatus:
+          column:
+            name: resolution_status
+        satisfactionRating:
+          column:
+            name: satisfaction_rating
+        topic:
+          column:
+            name: topic
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: PublicInteractions
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - agentId
+          - channel
+          - customerId
+          - durationSeconds
+          - interactionId
+          - interactionTime
+          - notes
+          - resolutionStatus
+          - satisfactionRating
+          - topic
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PublicInteractionsBoolExp
+  operand:
+    object:
+      type: PublicInteractions
+      comparableFields:
+        - fieldName: agentId
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: channel
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: customerId
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: durationSeconds
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: interactionId
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: interactionTime
+          booleanExpressionType: TimestampWithTimeZoneBoolExp
+        - fieldName: notes
+          booleanExpressionType: TextBoolExp
+        - fieldName: resolutionStatus
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: satisfactionRating
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: topic
+          booleanExpressionType: CharacterVaryingBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customer_PublicInteractionsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PublicInteractionsAggExp
+  operand:
+    object:
+      aggregatedType: PublicInteractions
+      aggregatableFields:
+        - fieldName: agentId
+          aggregateExpression: IntegerAggExp
+        - fieldName: channel
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: customerId
+          aggregateExpression: IntegerAggExp
+        - fieldName: durationSeconds
+          aggregateExpression: IntegerAggExp
+        - fieldName: interactionId
+          aggregateExpression: IntegerAggExp
+        - fieldName: interactionTime
+          aggregateExpression: TimestampWithTimeZoneAggExp
+        - fieldName: notes
+          aggregateExpression: TextAggExp
+        - fieldName: resolutionStatus
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: satisfactionRating
+          aggregateExpression: IntegerAggExp
+        - fieldName: topic
+          aggregateExpression: CharacterVaryingAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: customer_PublicInteractionsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PublicInteractionsOrderByExp
+  operand:
+    object:
+      orderedType: PublicInteractions
+      orderableFields:
+        - fieldName: agentId
+          orderByExpression: Int32OrderByExp
+        - fieldName: channel
+          orderByExpression: String1OrderByExp
+        - fieldName: customerId
+          orderByExpression: Int32OrderByExp
+        - fieldName: durationSeconds
+          orderByExpression: Int32OrderByExp
+        - fieldName: interactionId
+          orderByExpression: Int32OrderByExp
+        - fieldName: interactionTime
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: notes
+          orderByExpression: String1OrderByExp
+        - fieldName: resolutionStatus
+          orderByExpression: String1OrderByExp
+        - fieldName: satisfactionRating
+          orderByExpression: Int32OrderByExp
+        - fieldName: topic
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: customer_PublicInteractionsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: PublicInteractions
+  objectType: PublicInteractions
+  source:
+    dataConnectorName: aurora
+    collection: public.interactions
+  filterExpressionType: PublicInteractionsBoolExp
+  aggregateExpression: PublicInteractionsAggExp
+  orderByExpression: PublicInteractionsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: publicInteractions
+      subscription:
+        rootField: publicInteractions
+    selectUniques:
+      - queryRootField: publicInteractionsByInteractionId
+        uniqueIdentifier:
+          - interactionId
+        subscription:
+          rootField: publicInteractionsByInteractionId
+    filterInputTypeName: customer_PublicInteractionsFilterInput
+    aggregate:
+      queryRootField: publicInteractionsAggregate
+      subscription:
+        rootField: publicInteractionsAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: PublicInteractions
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

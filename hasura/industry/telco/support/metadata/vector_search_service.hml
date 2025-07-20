@@ -12,23 +12,36 @@ definition:
     Authorization:
       valueFromEnv: SUPPORT_VECTOR_SEARCH_SERVICE_AUTHORIZATION_HEADER
   schema:
-    version: v0.1
+    version: v0.2
     schema:
-      scalar_types:
-        Float:
-          representation:
-            type: float64
-          aggregate_functions: {}
-          comparison_operators:
-            _eq:
-              type: equal
-        String:
-          representation:
-            type: string
-          aggregate_functions: {}
-          comparison_operators:
-            _eq:
-              type: equal
+      collections: []
+      functions:
+        - arguments:
+            text:
+              description: String input for converting into embedding
+              type:
+                name: String
+                type: named
+          description: Generate embeddings for a collection of documents
+          name: generateEmbedding
+          result_type:
+            name: TextEmbeddingResponse
+            type: named
+        - arguments:
+            documents:
+              description: Array of document metadata
+              type:
+                element_type:
+                  name: DocumentMetadata
+                  type: named
+                type: array
+          description: Generate embeddings for a collection of documents
+          name: generateDocumentEmbeddings
+          result_type:
+            element_type:
+              name: DocumentEmbeddingResponse
+              type: named
+            type: array
       object_types:
         DocumentEmbeddingResponse:
           description: Interface for document embedding response
@@ -43,6 +56,7 @@ definition:
                   name: Float
                   type: named
                 type: array
+          foreign_keys: {}
         DocumentMetadata:
           description: Interface for document metadata
           fields:
@@ -100,6 +114,7 @@ definition:
                 underlying_type:
                   name: Float
                   type: named
+          foreign_keys: {}
         TextEmbeddingResponse:
           description: Interface for text embedding response
           fields:
@@ -113,39 +128,27 @@ definition:
               type:
                 name: String
                 type: named
-      collections: []
-      functions:
-        - name: generateEmbedding
-          description: Generate embeddings for a collection of documents
-          arguments:
-            text:
-              description: String input for converting into embedding
-              type:
-                name: String
-                type: named
-          result_type:
-            name: TextEmbeddingResponse
-            type: named
-        - name: generateDocumentEmbeddings
-          description: Generate embeddings for a collection of documents
-          arguments:
-            documents:
-              description: Array of document metadata
-              type:
-                element_type:
-                  name: DocumentMetadata
-                  type: named
-                type: array
-          result_type:
-            element_type:
-              name: DocumentEmbeddingResponse
-              type: named
-            type: array
+          foreign_keys: {}
       procedures: []
+      scalar_types:
+        Float:
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+          representation:
+            type: float64
+        String:
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+          representation:
+            type: string
     capabilities:
-      version: 0.1.6
       capabilities:
-        query:
-          variables: {}
-          nested_fields: {}
         mutation: {}
+        query:
+          nested_fields: {}
+          variables: {}
+      version: 0.2.0

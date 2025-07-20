@@ -12,647 +12,2590 @@ definition:
     Authorization:
       valueFromEnv: NETWORK_CLICKHOUSE_AUTHORIZATION_HEADER
   schema:
-    version: v0.1
+    version: v0.2
     schema:
-      scalar_types:
-        DateTime64(6):
-          representation:
-            type: string
-          aggregate_functions:
-            max:
-              result_type:
-                type: named
-                name: DateTime64(6)
-            min:
-              result_type:
-                type: named
-                name: DateTime64(6)
-          comparison_operators:
-            _eq:
-              type: equal
-            _gt:
-              type: custom
-              argument_type:
-                type: named
-                name: DateTime64(6)
-            _gte:
-              type: custom
-              argument_type:
-                type: named
-                name: DateTime64(6)
-            _in:
-              type: in
-            _lt:
-              type: custom
-              argument_type:
-                type: named
-                name: DateTime64(6)
-            _lte:
-              type: custom
-              argument_type:
-                type: named
-                name: DateTime64(6)
-            _neq:
-              type: custom
-              argument_type:
-                type: named
-                name: DateTime64(6)
-            _nin:
-              type: custom
-              argument_type:
-                type: array
-                element_type:
-                  type: named
-                  name: DateTime64(6)
-        Float32:
-          representation:
-            type: float32
-          aggregate_functions:
-            avg:
-              result_type:
-                type: named
-                name: Float64
-            max:
-              result_type:
-                type: named
-                name: Float64
-            min:
-              result_type:
-                type: named
-                name: Float32
-            stddev_pop:
-              result_type:
-                type: named
-                name: Float32
-            stddev_samp:
-              result_type:
-                type: named
-                name: Float32
-            sum:
-              result_type:
-                type: named
-                name: Float32
-            var_pop:
-              result_type:
-                type: named
-                name: Float32
-            var_samp:
-              result_type:
-                type: named
-                name: Float32
-          comparison_operators:
-            _eq:
-              type: equal
-            _gt:
-              type: custom
-              argument_type:
-                type: named
-                name: Float32
-            _gte:
-              type: custom
-              argument_type:
-                type: named
-                name: Float32
-            _in:
-              type: in
-            _lt:
-              type: custom
-              argument_type:
-                type: named
-                name: Float32
-            _lte:
-              type: custom
-              argument_type:
-                type: named
-                name: Float32
-            _neq:
-              type: custom
-              argument_type:
-                type: named
-                name: Float32
-            _nin:
-              type: custom
-              argument_type:
-                type: array
-                element_type:
-                  type: named
-                  name: Float32
-        Float64:
-          representation:
-            type: float64
-          aggregate_functions:
-            avg:
-              result_type:
-                type: named
-                name: Float64
-            max:
-              result_type:
-                type: named
-                name: Float64
-            min:
-              result_type:
-                type: named
-                name: Float64
-            stddev_pop:
-              result_type:
-                type: named
-                name: Float64
-            stddev_samp:
-              result_type:
-                type: named
-                name: Float64
-            sum:
-              result_type:
-                type: named
-                name: Float64
-            var_pop:
-              result_type:
-                type: named
-                name: Float64
-            var_samp:
-              result_type:
-                type: named
-                name: Float64
-          comparison_operators:
-            _eq:
-              type: equal
-            _gt:
-              type: custom
-              argument_type:
-                type: named
-                name: Float64
-            _gte:
-              type: custom
-              argument_type:
-                type: named
-                name: Float64
-            _in:
-              type: in
-            _lt:
-              type: custom
-              argument_type:
-                type: named
-                name: Float64
-            _lte:
-              type: custom
-              argument_type:
-                type: named
-                name: Float64
-            _neq:
-              type: custom
-              argument_type:
-                type: named
-                name: Float64
-            _nin:
-              type: custom
-              argument_type:
-                type: array
-                element_type:
-                  type: named
-                  name: Float64
-        Int32:
-          representation:
-            type: int32
-          aggregate_functions:
-            avg:
-              result_type:
-                type: named
-                name: Float64
-            max:
-              result_type:
-                type: named
-                name: Int32
-            min:
-              result_type:
-                type: named
-                name: Int32
-            stddev_pop:
-              result_type:
-                type: named
-                name: Float64
-            stddev_samp:
-              result_type:
-                type: named
-                name: Float64
-            sum:
-              result_type:
-                type: named
-                name: Int64
-            var_pop:
-              result_type:
-                type: named
-                name: Float64
-            var_samp:
-              result_type:
-                type: named
-                name: Float64
-          comparison_operators:
-            _eq:
-              type: equal
-            _gt:
-              type: custom
-              argument_type:
-                type: named
-                name: Int32
-            _gte:
-              type: custom
-              argument_type:
-                type: named
-                name: Int32
-            _in:
-              type: in
-            _lt:
-              type: custom
-              argument_type:
-                type: named
-                name: Int32
-            _lte:
-              type: custom
-              argument_type:
-                type: named
-                name: Int32
-            _neq:
-              type: custom
-              argument_type:
-                type: named
-                name: Int32
-            _nin:
-              type: custom
-              argument_type:
-                type: array
-                element_type:
-                  type: named
-                  name: Int32
-        Int64:
-          representation:
-            type: int64
-          aggregate_functions:
-            avg:
-              result_type:
-                type: named
-                name: Float64
-            max:
-              result_type:
-                type: named
-                name: Int64
-            min:
-              result_type:
-                type: named
-                name: Int64
-            stddev_pop:
-              result_type:
-                type: named
-                name: Float64
-            stddev_samp:
-              result_type:
-                type: named
-                name: Float64
-            sum:
-              result_type:
-                type: named
-                name: Int64
-            var_pop:
-              result_type:
-                type: named
-                name: Float64
-            var_samp:
-              result_type:
-                type: named
-                name: Float64
-          comparison_operators:
-            _eq:
-              type: equal
-            _gt:
-              type: custom
-              argument_type:
-                type: named
-                name: Int64
-            _gte:
-              type: custom
-              argument_type:
-                type: named
-                name: Int64
-            _in:
-              type: in
-            _lt:
-              type: custom
-              argument_type:
-                type: named
-                name: Int64
-            _lte:
-              type: custom
-              argument_type:
-                type: named
-                name: Int64
-            _neq:
-              type: custom
-              argument_type:
-                type: named
-                name: Int64
-            _nin:
-              type: custom
-              argument_type:
-                type: array
-                element_type:
-                  type: named
-                  name: Int64
-        String:
-          representation:
-            type: string
-          aggregate_functions: {}
-          comparison_operators:
-            _eq:
-              type: equal
-            _gt:
-              type: custom
-              argument_type:
-                type: named
-                name: String
-            _gte:
-              type: custom
-              argument_type:
-                type: named
-                name: String
-            _ilike:
-              type: custom
-              argument_type:
-                type: named
-                name: String
-            _in:
-              type: in
-            _like:
-              type: custom
-              argument_type:
-                type: named
-                name: String
-            _lt:
-              type: custom
-              argument_type:
-                type: named
-                name: String
-            _lte:
-              type: custom
-              argument_type:
-                type: named
-                name: String
-            _match:
-              type: custom
-              argument_type:
-                type: named
-                name: String
-            _neq:
-              type: custom
-              argument_type:
-                type: named
-                name: String
-            _nilike:
-              type: custom
-              argument_type:
-                type: named
-                name: String
-            _nin:
-              type: custom
-              argument_type:
-                type: array
-                element_type:
-                  type: named
-                  name: String
-            _nlike:
-              type: custom
-              argument_type:
-                type: named
-                name: String
-      object_types:
-        .inner_id.b838e2e6-8196-4082-9223-99af95ed95a2:
-          description: ""
-          fields:
-            CDR_GUID:
-              type:
-                type: named
-                name: String
-            CDR_Timestamp:
-              type:
-                type: named
-                name: DateTime64(6)
-            Call_Duration:
-              type:
-                type: named
-                name: Int32
-            Call_Type:
-              type:
-                type: named
-                name: String
-            DU_GUID:
-              type:
-                type: named
-                name: String
-            DU_Timestamp:
-              type:
-                type: named
-                name: DateTime64(6)
-            Data_Usage:
-              type:
-                type: named
-                name: Float32
-            Download_Speed:
-              type:
-                type: named
-                name: Float32
-            Latency:
-              type:
-                type: named
-                name: Int32
-            NP_GUID:
-              type:
-                type: named
-                name: String
-            NP_Timestamp:
-              type:
-                type: named
-                name: DateTime64(6)
-            Upload_Speed:
-              type:
-                type: named
-                name: Float32
-        cdr:
-          description: ""
-          fields:
-            CUID:
-              type:
-                type: named
-                name: Int32
-            Call_Duration:
-              type:
-                type: named
-                name: Int32
-            Call_Type:
-              type:
-                type: named
-                name: String
-            GUID:
-              type:
-                type: named
-                name: String
-            Timestamp:
-              type:
-                type: named
-                name: DateTime64(6)
-        data_usage:
-          description: ""
-          fields:
-            CUID:
-              type:
-                type: named
-                name: Int32
-            Data_Usage:
-              type:
-                type: named
-                name: Float32
-            GUID:
-              type:
-                type: named
-                name: String
-            Timestamp:
-              type:
-                type: named
-                name: DateTime64(6)
-        detailed_user_activity_mv:
-          description: ""
-          fields:
-            CDR_GUID:
-              type:
-                type: named
-                name: String
-            CDR_Timestamp:
-              type:
-                type: named
-                name: DateTime64(6)
-            Call_Duration:
-              type:
-                type: named
-                name: Int32
-            Call_Type:
-              type:
-                type: named
-                name: String
-            DU_GUID:
-              type:
-                type: named
-                name: String
-            DU_Timestamp:
-              type:
-                type: named
-                name: DateTime64(6)
-            Data_Usage:
-              type:
-                type: named
-                name: Float32
-            Download_Speed:
-              type:
-                type: named
-                name: Float32
-            Latency:
-              type:
-                type: named
-                name: Int32
-            NP_GUID:
-              type:
-                type: named
-                name: String
-            NP_Timestamp:
-              type:
-                type: named
-                name: DateTime64(6)
-            Upload_Speed:
-              type:
-                type: named
-                name: Float32
-        network_performance:
-          description: ""
-          fields:
-            CUID:
-              type:
-                type: named
-                name: Int32
-            Download_Speed:
-              type:
-                type: named
-                name: Float32
-            GUID:
-              type:
-                type: named
-                name: String
-            Latency:
-              type:
-                type: named
-                name: Int32
-            Timestamp:
-              type:
-                type: named
-                name: DateTime64(6)
-            Upload_Speed:
-              type:
-                type: named
-                name: Float32
       collections:
-        - name: .inner_id.b838e2e6-8196-4082-9223-99af95ed95a2
-          description: ""
-          arguments: {}
-          type: .inner_id.b838e2e6-8196-4082-9223-99af95ed95a2
+        - arguments: {}
+          name: default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f
+          type: default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f
           uniqueness_constraints:
-            CDR_Timestamp, CDR_GUID:
+            primary_key:
               unique_columns:
                 - CDR_GUID
                 - CDR_Timestamp
-          foreign_keys: {}
-        - name: cdr
-          description: ""
-          arguments: {}
-          type: cdr
+        - arguments: {}
+          name: default.cdr
+          type: default.cdr
           uniqueness_constraints:
-            Timestamp, GUID:
+            primary_key:
               unique_columns:
                 - GUID
                 - Timestamp
-          foreign_keys: {}
-        - name: data_usage
-          description: ""
-          arguments: {}
-          type: data_usage
+        - arguments: {}
+          name: default.data_usage
+          type: default.data_usage
           uniqueness_constraints:
-            Timestamp, GUID:
+            primary_key:
               unique_columns:
                 - GUID
                 - Timestamp
-          foreign_keys: {}
-        - name: detailed_user_activity_mv
-          description: ""
-          arguments: {}
-          type: detailed_user_activity_mv
+        - arguments: {}
+          name: default.detailed_user_activity_mv
+          type: default.detailed_user_activity_mv
           uniqueness_constraints: {}
-          foreign_keys: {}
-        - name: network_performance
-          description: ""
-          arguments: {}
-          type: network_performance
+        - arguments: {}
+          name: default.network_performance
+          type: default.network_performance
           uniqueness_constraints:
-            Timestamp, GUID:
+            primary_key:
               unique_columns:
                 - GUID
                 - Timestamp
-          foreign_keys: {}
       functions: []
-      procedures: []
+      object_types:
+        bigint_set_input:
+          description: Wrapper for setting scalar bigint
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar bigint
+              type:
+                type: nullable
+                underlying_type:
+                  name: bigint
+                  type: named
+          foreign_keys: {}
+        datetime64_set_input:
+          description: Wrapper for setting scalar datetime64
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar datetime64
+              type:
+                type: nullable
+                underlying_type:
+                  name: datetime64
+                  type: named
+          foreign_keys: {}
+        decimal_set_input:
+          description: Wrapper for setting scalar decimal
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar decimal
+              type:
+                type: nullable
+                underlying_type:
+                  name: decimal
+                  type: named
+          foreign_keys: {}
+        default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f:
+          description: 'Object type for default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f. Description: null'
+          fields:
+            CDR_GUID:
+              arguments: {}
+              type:
+                name: string
+                type: named
+            CDR_Timestamp:
+              arguments: {}
+              type:
+                name: datetime64
+                type: named
+            Call_Duration:
+              arguments: {}
+              type:
+                name: int32
+                type: named
+            Call_Type:
+              arguments: {}
+              type:
+                name: string
+                type: named
+            DU_GUID:
+              arguments: {}
+              type:
+                name: string
+                type: named
+            DU_Timestamp:
+              arguments: {}
+              type:
+                name: datetime64
+                type: named
+            Data_Usage:
+              arguments: {}
+              type:
+                name: float32
+                type: named
+            Download_Speed:
+              arguments: {}
+              type:
+                name: float32
+                type: named
+            Latency:
+              arguments: {}
+              type:
+                name: int32
+                type: named
+            NP_GUID:
+              arguments: {}
+              type:
+                name: string
+                type: named
+            NP_Timestamp:
+              arguments: {}
+              type:
+                name: datetime64
+                type: named
+            Upload_Speed:
+              arguments: {}
+              type:
+                name: float32
+                type: named
+          foreign_keys: {}
+        default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f_insert_input:
+          description: Input type for inserting into default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f
+          fields:
+            CDR_GUID:
+              arguments: {}
+              description: New value for default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f.CDR_GUID
+              type:
+                name: string
+                type: named
+            CDR_Timestamp:
+              arguments: {}
+              description: New value for default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f.CDR_Timestamp
+              type:
+                name: datetime64
+                type: named
+            Call_Duration:
+              arguments: {}
+              description: New value for default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f.Call_Duration
+              type:
+                name: int32
+                type: named
+            Call_Type:
+              arguments: {}
+              description: New value for default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f.Call_Type
+              type:
+                name: string
+                type: named
+            DU_GUID:
+              arguments: {}
+              description: New value for default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f.DU_GUID
+              type:
+                name: string
+                type: named
+            DU_Timestamp:
+              arguments: {}
+              description: New value for default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f.DU_Timestamp
+              type:
+                name: datetime64
+                type: named
+            Data_Usage:
+              arguments: {}
+              description: New value for default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f.Data_Usage
+              type:
+                name: float32
+                type: named
+            Download_Speed:
+              arguments: {}
+              description: New value for default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f.Download_Speed
+              type:
+                name: float32
+                type: named
+            Latency:
+              arguments: {}
+              description: New value for default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f.Latency
+              type:
+                name: int32
+                type: named
+            NP_GUID:
+              arguments: {}
+              description: New value for default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f.NP_GUID
+              type:
+                name: string
+                type: named
+            NP_Timestamp:
+              arguments: {}
+              description: New value for default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f.NP_Timestamp
+              type:
+                name: datetime64
+                type: named
+            Upload_Speed:
+              arguments: {}
+              description: New value for default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f.Upload_Speed
+              type:
+                name: float32
+                type: named
+          foreign_keys: {}
+        default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f_set_input:
+          description: Input type for updating default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f
+          fields:
+            CDR_GUID:
+              arguments: {}
+              description: New value wrapper for default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f.CDR_GUID
+              type:
+                type: nullable
+                underlying_type:
+                  name: string_set_input
+                  type: named
+            CDR_Timestamp:
+              arguments: {}
+              description: New value wrapper for default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f.CDR_Timestamp
+              type:
+                type: nullable
+                underlying_type:
+                  name: datetime64_set_input
+                  type: named
+            Call_Duration:
+              arguments: {}
+              description: New value wrapper for default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f.Call_Duration
+              type:
+                type: nullable
+                underlying_type:
+                  name: int32_set_input
+                  type: named
+            Call_Type:
+              arguments: {}
+              description: New value wrapper for default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f.Call_Type
+              type:
+                type: nullable
+                underlying_type:
+                  name: string_set_input
+                  type: named
+            DU_GUID:
+              arguments: {}
+              description: New value wrapper for default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f.DU_GUID
+              type:
+                type: nullable
+                underlying_type:
+                  name: string_set_input
+                  type: named
+            DU_Timestamp:
+              arguments: {}
+              description: New value wrapper for default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f.DU_Timestamp
+              type:
+                type: nullable
+                underlying_type:
+                  name: datetime64_set_input
+                  type: named
+            Data_Usage:
+              arguments: {}
+              description: New value wrapper for default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f.Data_Usage
+              type:
+                type: nullable
+                underlying_type:
+                  name: float32_set_input
+                  type: named
+            Download_Speed:
+              arguments: {}
+              description: New value wrapper for default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f.Download_Speed
+              type:
+                type: nullable
+                underlying_type:
+                  name: float32_set_input
+                  type: named
+            Latency:
+              arguments: {}
+              description: New value wrapper for default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f.Latency
+              type:
+                type: nullable
+                underlying_type:
+                  name: int32_set_input
+                  type: named
+            NP_GUID:
+              arguments: {}
+              description: New value wrapper for default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f.NP_GUID
+              type:
+                type: nullable
+                underlying_type:
+                  name: string_set_input
+                  type: named
+            NP_Timestamp:
+              arguments: {}
+              description: New value wrapper for default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f.NP_Timestamp
+              type:
+                type: nullable
+                underlying_type:
+                  name: datetime64_set_input
+                  type: named
+            Upload_Speed:
+              arguments: {}
+              description: New value wrapper for default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f.Upload_Speed
+              type:
+                type: nullable
+                underlying_type:
+                  name: float32_set_input
+                  type: named
+          foreign_keys: {}
+        default.cdr:
+          description: 'Object type for default.cdr. Description: null'
+          fields:
+            CUID:
+              arguments: {}
+              type:
+                name: int32
+                type: named
+            Call_Duration:
+              arguments: {}
+              type:
+                name: int32
+                type: named
+            Call_Type:
+              arguments: {}
+              type:
+                name: string
+                type: named
+            GUID:
+              arguments: {}
+              type:
+                name: string
+                type: named
+            Timestamp:
+              arguments: {}
+              type:
+                name: datetime64
+                type: named
+          foreign_keys: {}
+        default.cdr_insert_input:
+          description: Input type for inserting into default.cdr
+          fields:
+            CUID:
+              arguments: {}
+              description: New value for default.cdr.CUID
+              type:
+                name: int32
+                type: named
+            Call_Duration:
+              arguments: {}
+              description: New value for default.cdr.Call_Duration
+              type:
+                name: int32
+                type: named
+            Call_Type:
+              arguments: {}
+              description: New value for default.cdr.Call_Type
+              type:
+                name: string
+                type: named
+            GUID:
+              arguments: {}
+              description: New value for default.cdr.GUID
+              type:
+                name: string
+                type: named
+            Timestamp:
+              arguments: {}
+              description: New value for default.cdr.Timestamp
+              type:
+                name: datetime64
+                type: named
+          foreign_keys: {}
+        default.cdr_set_input:
+          description: Input type for updating default.cdr
+          fields:
+            CUID:
+              arguments: {}
+              description: New value wrapper for default.cdr.CUID
+              type:
+                type: nullable
+                underlying_type:
+                  name: int32_set_input
+                  type: named
+            Call_Duration:
+              arguments: {}
+              description: New value wrapper for default.cdr.Call_Duration
+              type:
+                type: nullable
+                underlying_type:
+                  name: int32_set_input
+                  type: named
+            Call_Type:
+              arguments: {}
+              description: New value wrapper for default.cdr.Call_Type
+              type:
+                type: nullable
+                underlying_type:
+                  name: string_set_input
+                  type: named
+            GUID:
+              arguments: {}
+              description: New value wrapper for default.cdr.GUID
+              type:
+                type: nullable
+                underlying_type:
+                  name: string_set_input
+                  type: named
+            Timestamp:
+              arguments: {}
+              description: New value wrapper for default.cdr.Timestamp
+              type:
+                type: nullable
+                underlying_type:
+                  name: datetime64_set_input
+                  type: named
+          foreign_keys: {}
+        default.data_usage:
+          description: 'Object type for default.data_usage. Description: null'
+          fields:
+            CUID:
+              arguments: {}
+              type:
+                name: int32
+                type: named
+            Data_Usage:
+              arguments: {}
+              type:
+                name: float32
+                type: named
+            GUID:
+              arguments: {}
+              type:
+                name: string
+                type: named
+            Timestamp:
+              arguments: {}
+              type:
+                name: datetime64
+                type: named
+          foreign_keys: {}
+        default.data_usage_insert_input:
+          description: Input type for inserting into default.data_usage
+          fields:
+            CUID:
+              arguments: {}
+              description: New value for default.data_usage.CUID
+              type:
+                name: int32
+                type: named
+            Data_Usage:
+              arguments: {}
+              description: New value for default.data_usage.Data_Usage
+              type:
+                name: float32
+                type: named
+            GUID:
+              arguments: {}
+              description: New value for default.data_usage.GUID
+              type:
+                name: string
+                type: named
+            Timestamp:
+              arguments: {}
+              description: New value for default.data_usage.Timestamp
+              type:
+                name: datetime64
+                type: named
+          foreign_keys: {}
+        default.data_usage_set_input:
+          description: Input type for updating default.data_usage
+          fields:
+            CUID:
+              arguments: {}
+              description: New value wrapper for default.data_usage.CUID
+              type:
+                type: nullable
+                underlying_type:
+                  name: int32_set_input
+                  type: named
+            Data_Usage:
+              arguments: {}
+              description: New value wrapper for default.data_usage.Data_Usage
+              type:
+                type: nullable
+                underlying_type:
+                  name: float32_set_input
+                  type: named
+            GUID:
+              arguments: {}
+              description: New value wrapper for default.data_usage.GUID
+              type:
+                type: nullable
+                underlying_type:
+                  name: string_set_input
+                  type: named
+            Timestamp:
+              arguments: {}
+              description: New value wrapper for default.data_usage.Timestamp
+              type:
+                type: nullable
+                underlying_type:
+                  name: datetime64_set_input
+                  type: named
+          foreign_keys: {}
+        default.detailed_user_activity_mv:
+          description: 'Object type for default.detailed_user_activity_mv. Description: null'
+          fields:
+            CDR_GUID:
+              arguments: {}
+              type:
+                name: string
+                type: named
+            CDR_Timestamp:
+              arguments: {}
+              type:
+                name: datetime64
+                type: named
+            Call_Duration:
+              arguments: {}
+              type:
+                name: int32
+                type: named
+            Call_Type:
+              arguments: {}
+              type:
+                name: string
+                type: named
+            DU_GUID:
+              arguments: {}
+              type:
+                name: string
+                type: named
+            DU_Timestamp:
+              arguments: {}
+              type:
+                name: datetime64
+                type: named
+            Data_Usage:
+              arguments: {}
+              type:
+                name: float32
+                type: named
+            Download_Speed:
+              arguments: {}
+              type:
+                name: float32
+                type: named
+            Latency:
+              arguments: {}
+              type:
+                name: int32
+                type: named
+            NP_GUID:
+              arguments: {}
+              type:
+                name: string
+                type: named
+            NP_Timestamp:
+              arguments: {}
+              type:
+                name: datetime64
+                type: named
+            Upload_Speed:
+              arguments: {}
+              type:
+                name: float32
+                type: named
+          foreign_keys: {}
+        default.detailed_user_activity_mv_insert_input:
+          description: Input type for inserting into default.detailed_user_activity_mv
+          fields:
+            CDR_GUID:
+              arguments: {}
+              description: New value for default.detailed_user_activity_mv.CDR_GUID
+              type:
+                name: string
+                type: named
+            CDR_Timestamp:
+              arguments: {}
+              description: New value for default.detailed_user_activity_mv.CDR_Timestamp
+              type:
+                name: datetime64
+                type: named
+            Call_Duration:
+              arguments: {}
+              description: New value for default.detailed_user_activity_mv.Call_Duration
+              type:
+                name: int32
+                type: named
+            Call_Type:
+              arguments: {}
+              description: New value for default.detailed_user_activity_mv.Call_Type
+              type:
+                name: string
+                type: named
+            DU_GUID:
+              arguments: {}
+              description: New value for default.detailed_user_activity_mv.DU_GUID
+              type:
+                name: string
+                type: named
+            DU_Timestamp:
+              arguments: {}
+              description: New value for default.detailed_user_activity_mv.DU_Timestamp
+              type:
+                name: datetime64
+                type: named
+            Data_Usage:
+              arguments: {}
+              description: New value for default.detailed_user_activity_mv.Data_Usage
+              type:
+                name: float32
+                type: named
+            Download_Speed:
+              arguments: {}
+              description: New value for default.detailed_user_activity_mv.Download_Speed
+              type:
+                name: float32
+                type: named
+            Latency:
+              arguments: {}
+              description: New value for default.detailed_user_activity_mv.Latency
+              type:
+                name: int32
+                type: named
+            NP_GUID:
+              arguments: {}
+              description: New value for default.detailed_user_activity_mv.NP_GUID
+              type:
+                name: string
+                type: named
+            NP_Timestamp:
+              arguments: {}
+              description: New value for default.detailed_user_activity_mv.NP_Timestamp
+              type:
+                name: datetime64
+                type: named
+            Upload_Speed:
+              arguments: {}
+              description: New value for default.detailed_user_activity_mv.Upload_Speed
+              type:
+                name: float32
+                type: named
+          foreign_keys: {}
+        default.detailed_user_activity_mv_set_input:
+          description: Input type for updating default.detailed_user_activity_mv
+          fields:
+            CDR_GUID:
+              arguments: {}
+              description: New value wrapper for default.detailed_user_activity_mv.CDR_GUID
+              type:
+                type: nullable
+                underlying_type:
+                  name: string_set_input
+                  type: named
+            CDR_Timestamp:
+              arguments: {}
+              description: New value wrapper for default.detailed_user_activity_mv.CDR_Timestamp
+              type:
+                type: nullable
+                underlying_type:
+                  name: datetime64_set_input
+                  type: named
+            Call_Duration:
+              arguments: {}
+              description: New value wrapper for default.detailed_user_activity_mv.Call_Duration
+              type:
+                type: nullable
+                underlying_type:
+                  name: int32_set_input
+                  type: named
+            Call_Type:
+              arguments: {}
+              description: New value wrapper for default.detailed_user_activity_mv.Call_Type
+              type:
+                type: nullable
+                underlying_type:
+                  name: string_set_input
+                  type: named
+            DU_GUID:
+              arguments: {}
+              description: New value wrapper for default.detailed_user_activity_mv.DU_GUID
+              type:
+                type: nullable
+                underlying_type:
+                  name: string_set_input
+                  type: named
+            DU_Timestamp:
+              arguments: {}
+              description: New value wrapper for default.detailed_user_activity_mv.DU_Timestamp
+              type:
+                type: nullable
+                underlying_type:
+                  name: datetime64_set_input
+                  type: named
+            Data_Usage:
+              arguments: {}
+              description: New value wrapper for default.detailed_user_activity_mv.Data_Usage
+              type:
+                type: nullable
+                underlying_type:
+                  name: float32_set_input
+                  type: named
+            Download_Speed:
+              arguments: {}
+              description: New value wrapper for default.detailed_user_activity_mv.Download_Speed
+              type:
+                type: nullable
+                underlying_type:
+                  name: float32_set_input
+                  type: named
+            Latency:
+              arguments: {}
+              description: New value wrapper for default.detailed_user_activity_mv.Latency
+              type:
+                type: nullable
+                underlying_type:
+                  name: int32_set_input
+                  type: named
+            NP_GUID:
+              arguments: {}
+              description: New value wrapper for default.detailed_user_activity_mv.NP_GUID
+              type:
+                type: nullable
+                underlying_type:
+                  name: string_set_input
+                  type: named
+            NP_Timestamp:
+              arguments: {}
+              description: New value wrapper for default.detailed_user_activity_mv.NP_Timestamp
+              type:
+                type: nullable
+                underlying_type:
+                  name: datetime64_set_input
+                  type: named
+            Upload_Speed:
+              arguments: {}
+              description: New value wrapper for default.detailed_user_activity_mv.Upload_Speed
+              type:
+                type: nullable
+                underlying_type:
+                  name: float32_set_input
+                  type: named
+          foreign_keys: {}
+        default.network_performance:
+          description: 'Object type for default.network_performance. Description: null'
+          fields:
+            CUID:
+              arguments: {}
+              type:
+                name: int32
+                type: named
+            Download_Speed:
+              arguments: {}
+              type:
+                name: float32
+                type: named
+            GUID:
+              arguments: {}
+              type:
+                name: string
+                type: named
+            Latency:
+              arguments: {}
+              type:
+                name: int32
+                type: named
+            Timestamp:
+              arguments: {}
+              type:
+                name: datetime64
+                type: named
+            Upload_Speed:
+              arguments: {}
+              type:
+                name: float32
+                type: named
+          foreign_keys: {}
+        default.network_performance_insert_input:
+          description: Input type for inserting into default.network_performance
+          fields:
+            CUID:
+              arguments: {}
+              description: New value for default.network_performance.CUID
+              type:
+                name: int32
+                type: named
+            Download_Speed:
+              arguments: {}
+              description: New value for default.network_performance.Download_Speed
+              type:
+                name: float32
+                type: named
+            GUID:
+              arguments: {}
+              description: New value for default.network_performance.GUID
+              type:
+                name: string
+                type: named
+            Latency:
+              arguments: {}
+              description: New value for default.network_performance.Latency
+              type:
+                name: int32
+                type: named
+            Timestamp:
+              arguments: {}
+              description: New value for default.network_performance.Timestamp
+              type:
+                name: datetime64
+                type: named
+            Upload_Speed:
+              arguments: {}
+              description: New value for default.network_performance.Upload_Speed
+              type:
+                name: float32
+                type: named
+          foreign_keys: {}
+        default.network_performance_set_input:
+          description: Input type for updating default.network_performance
+          fields:
+            CUID:
+              arguments: {}
+              description: New value wrapper for default.network_performance.CUID
+              type:
+                type: nullable
+                underlying_type:
+                  name: int32_set_input
+                  type: named
+            Download_Speed:
+              arguments: {}
+              description: New value wrapper for default.network_performance.Download_Speed
+              type:
+                type: nullable
+                underlying_type:
+                  name: float32_set_input
+                  type: named
+            GUID:
+              arguments: {}
+              description: New value wrapper for default.network_performance.GUID
+              type:
+                type: nullable
+                underlying_type:
+                  name: string_set_input
+                  type: named
+            Latency:
+              arguments: {}
+              description: New value wrapper for default.network_performance.Latency
+              type:
+                type: nullable
+                underlying_type:
+                  name: int32_set_input
+                  type: named
+            Timestamp:
+              arguments: {}
+              description: New value wrapper for default.network_performance.Timestamp
+              type:
+                type: nullable
+                underlying_type:
+                  name: datetime64_set_input
+                  type: named
+            Upload_Speed:
+              arguments: {}
+              description: New value wrapper for default.network_performance.Upload_Speed
+              type:
+                type: nullable
+                underlying_type:
+                  name: float32_set_input
+                  type: named
+          foreign_keys: {}
+        delete_default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f_result:
+          description: delete from default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by delete
+              type:
+                element_type:
+                  name: default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f
+                  type: named
+                type: array
+          foreign_keys: {}
+        delete_default.cdr_result:
+          description: delete from default.cdr result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by delete
+              type:
+                element_type:
+                  name: default.cdr
+                  type: named
+                type: array
+          foreign_keys: {}
+        delete_default.data_usage_result:
+          description: delete from default.data_usage result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by delete
+              type:
+                element_type:
+                  name: default.data_usage
+                  type: named
+                type: array
+          foreign_keys: {}
+        delete_default.detailed_user_activity_mv_result:
+          description: delete from default.detailed_user_activity_mv result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by delete
+              type:
+                element_type:
+                  name: default.detailed_user_activity_mv
+                  type: named
+                type: array
+          foreign_keys: {}
+        delete_default.network_performance_result:
+          description: delete from default.network_performance result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by delete
+              type:
+                element_type:
+                  name: default.network_performance
+                  type: named
+                type: array
+          foreign_keys: {}
+        float32_set_input:
+          description: Wrapper for setting scalar float32
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar float32
+              type:
+                type: nullable
+                underlying_type:
+                  name: float32
+                  type: named
+          foreign_keys: {}
+        insert_default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f_result:
+          description: insert from default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by insert
+              type:
+                element_type:
+                  name: default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f
+                  type: named
+                type: array
+          foreign_keys: {}
+        insert_default.cdr_result:
+          description: insert from default.cdr result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by insert
+              type:
+                element_type:
+                  name: default.cdr
+                  type: named
+                type: array
+          foreign_keys: {}
+        insert_default.data_usage_result:
+          description: insert from default.data_usage result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by insert
+              type:
+                element_type:
+                  name: default.data_usage
+                  type: named
+                type: array
+          foreign_keys: {}
+        insert_default.detailed_user_activity_mv_result:
+          description: insert from default.detailed_user_activity_mv result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by insert
+              type:
+                element_type:
+                  name: default.detailed_user_activity_mv
+                  type: named
+                type: array
+          foreign_keys: {}
+        insert_default.network_performance_result:
+          description: insert from default.network_performance result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by insert
+              type:
+                element_type:
+                  name: default.network_performance
+                  type: named
+                type: array
+          foreign_keys: {}
+        int_set_input:
+          description: Wrapper for setting scalar int
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar int
+              type:
+                type: nullable
+                underlying_type:
+                  name: int
+                  type: named
+          foreign_keys: {}
+        int32_set_input:
+          description: Wrapper for setting scalar int32
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar int32
+              type:
+                type: nullable
+                underlying_type:
+                  name: int32
+                  type: named
+          foreign_keys: {}
+        string_set_input:
+          description: Wrapper for setting scalar string
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar string
+              type:
+                type: nullable
+                underlying_type:
+                  name: string
+                  type: named
+          foreign_keys: {}
+        update_default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f_result:
+          description: update from default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by update
+              type:
+                element_type:
+                  name: default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f
+                  type: named
+                type: array
+          foreign_keys: {}
+        update_default.cdr_result:
+          description: update from default.cdr result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by update
+              type:
+                element_type:
+                  name: default.cdr
+                  type: named
+                type: array
+          foreign_keys: {}
+        update_default.data_usage_result:
+          description: update from default.data_usage result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by update
+              type:
+                element_type:
+                  name: default.data_usage
+                  type: named
+                type: array
+          foreign_keys: {}
+        update_default.detailed_user_activity_mv_result:
+          description: update from default.detailed_user_activity_mv result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by update
+              type:
+                element_type:
+                  name: default.detailed_user_activity_mv
+                  type: named
+                type: array
+          foreign_keys: {}
+        update_default.network_performance_result:
+          description: update from default.network_performance result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by update
+              type:
+                element_type:
+                  name: default.network_performance
+                  type: named
+                type: array
+          foreign_keys: {}
+      procedures:
+        - arguments:
+            objects:
+              description: Objects to insert
+              type:
+                element_type:
+                  name: default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f_insert_input
+                  type: named
+                type: array
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+          description: Insert into default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f
+          name: insert_default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f
+          result_type:
+            name: insert_default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            set:
+              description: Values to set
+              type:
+                name: default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f_set_input
+                type: named
+            where:
+              description: Filter for rows to update
+              type:
+                object_type_name: default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f
+                type: predicate
+          description: Update default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f
+          name: update_default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f
+          result_type:
+            name: update_default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            where:
+              description: Filter for rows to delete
+              type:
+                object_type_name: default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f
+                type: predicate
+          description: Delete from default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f
+          name: delete_default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f
+          result_type:
+            name: delete_default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f_result
+            type: named
+        - arguments:
+            objects:
+              description: Objects to insert
+              type:
+                element_type:
+                  name: default.cdr_insert_input
+                  type: named
+                type: array
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+          description: Insert into default.cdr
+          name: insert_default.cdr
+          result_type:
+            name: insert_default.cdr_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            set:
+              description: Values to set
+              type:
+                name: default.cdr_set_input
+                type: named
+            where:
+              description: Filter for rows to update
+              type:
+                object_type_name: default.cdr
+                type: predicate
+          description: Update default.cdr
+          name: update_default.cdr
+          result_type:
+            name: update_default.cdr_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            where:
+              description: Filter for rows to delete
+              type:
+                object_type_name: default.cdr
+                type: predicate
+          description: Delete from default.cdr
+          name: delete_default.cdr
+          result_type:
+            name: delete_default.cdr_result
+            type: named
+        - arguments:
+            objects:
+              description: Objects to insert
+              type:
+                element_type:
+                  name: default.data_usage_insert_input
+                  type: named
+                type: array
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+          description: Insert into default.data_usage
+          name: insert_default.data_usage
+          result_type:
+            name: insert_default.data_usage_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            set:
+              description: Values to set
+              type:
+                name: default.data_usage_set_input
+                type: named
+            where:
+              description: Filter for rows to update
+              type:
+                object_type_name: default.data_usage
+                type: predicate
+          description: Update default.data_usage
+          name: update_default.data_usage
+          result_type:
+            name: update_default.data_usage_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            where:
+              description: Filter for rows to delete
+              type:
+                object_type_name: default.data_usage
+                type: predicate
+          description: Delete from default.data_usage
+          name: delete_default.data_usage
+          result_type:
+            name: delete_default.data_usage_result
+            type: named
+        - arguments:
+            objects:
+              description: Objects to insert
+              type:
+                element_type:
+                  name: default.detailed_user_activity_mv_insert_input
+                  type: named
+                type: array
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+          description: Insert into default.detailed_user_activity_mv
+          name: insert_default.detailed_user_activity_mv
+          result_type:
+            name: insert_default.detailed_user_activity_mv_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            set:
+              description: Values to set
+              type:
+                name: default.detailed_user_activity_mv_set_input
+                type: named
+            where:
+              description: Filter for rows to update
+              type:
+                object_type_name: default.detailed_user_activity_mv
+                type: predicate
+          description: Update default.detailed_user_activity_mv
+          name: update_default.detailed_user_activity_mv
+          result_type:
+            name: update_default.detailed_user_activity_mv_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            where:
+              description: Filter for rows to delete
+              type:
+                object_type_name: default.detailed_user_activity_mv
+                type: predicate
+          description: Delete from default.detailed_user_activity_mv
+          name: delete_default.detailed_user_activity_mv
+          result_type:
+            name: delete_default.detailed_user_activity_mv_result
+            type: named
+        - arguments:
+            objects:
+              description: Objects to insert
+              type:
+                element_type:
+                  name: default.network_performance_insert_input
+                  type: named
+                type: array
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+          description: Insert into default.network_performance
+          name: insert_default.network_performance
+          result_type:
+            name: insert_default.network_performance_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            set:
+              description: Values to set
+              type:
+                name: default.network_performance_set_input
+                type: named
+            where:
+              description: Filter for rows to update
+              type:
+                object_type_name: default.network_performance
+                type: predicate
+          description: Update default.network_performance
+          name: update_default.network_performance
+          result_type:
+            name: update_default.network_performance_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            where:
+              description: Filter for rows to delete
+              type:
+                object_type_name: default.network_performance
+                type: predicate
+          description: Delete from default.network_performance
+          name: delete_default.network_performance
+          result_type:
+            name: delete_default.network_performance_result
+            type: named
+      scalar_types:
+        bigint:
+          aggregate_functions:
+            avg:
+              result_type: decimal
+              type: average
+            max:
+              type: max
+            min:
+              type: min
+            stddev_pop:
+              result_type:
+                name: bigint
+                type: named
+              type: custom
+            stddev_samp:
+              result_type:
+                name: bigint
+                type: named
+              type: custom
+            sum:
+              result_type: bigint
+              type: sum
+            var_pop:
+              result_type:
+                name: bigint
+                type: named
+              type: custom
+            var_samp:
+              result_type:
+                name: bigint
+                type: named
+              type: custom
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _in:
+              type: in
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: bigint
+                type: named
+              type: custom
+          representation:
+            type: biginteger
+        datetime64:
+          aggregate_functions:
+            max:
+              type: max
+            min:
+              type: min
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _in:
+              type: in
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: datetime64
+                type: named
+              type: custom
+          representation:
+            type: timestamptz
+        decimal:
+          aggregate_functions:
+            avg:
+              result_type: decimal
+              type: average
+            max:
+              type: max
+            min:
+              type: min
+            stddev_pop:
+              result_type:
+                name: decimal
+                type: named
+              type: custom
+            stddev_samp:
+              result_type:
+                name: decimal
+                type: named
+              type: custom
+            sum:
+              result_type: decimal
+              type: sum
+            var_pop:
+              result_type:
+                name: decimal
+                type: named
+              type: custom
+            var_samp:
+              result_type:
+                name: decimal
+                type: named
+              type: custom
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _in:
+              type: in
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: decimal
+                type: named
+              type: custom
+          representation:
+            type: bigdecimal
+        float32:
+          aggregate_functions:
+            avg:
+              result_type: decimal
+              type: average
+            max:
+              type: max
+            min:
+              type: min
+            stddev_pop:
+              result_type:
+                name: float32
+                type: named
+              type: custom
+            stddev_samp:
+              result_type:
+                name: float32
+                type: named
+              type: custom
+            sum:
+              result_type: decimal
+              type: sum
+            var_pop:
+              result_type:
+                name: float32
+                type: named
+              type: custom
+            var_samp:
+              result_type:
+                name: float32
+                type: named
+              type: custom
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _in:
+              type: in
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: float32
+                type: named
+              type: custom
+          representation:
+            type: float32
+        int:
+          aggregate_functions:
+            avg:
+              result_type: decimal
+              type: average
+            max:
+              type: max
+            min:
+              type: min
+            stddev_pop:
+              result_type:
+                name: int
+                type: named
+              type: custom
+            stddev_samp:
+              result_type:
+                name: int
+                type: named
+              type: custom
+            sum:
+              result_type: bigint
+              type: sum
+            var_pop:
+              result_type:
+                name: int
+                type: named
+              type: custom
+            var_samp:
+              result_type:
+                name: int
+                type: named
+              type: custom
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _in:
+              type: in
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: int
+                type: named
+              type: custom
+          representation:
+            type: int32
+        int32:
+          aggregate_functions:
+            avg:
+              result_type: decimal
+              type: average
+            max:
+              type: max
+            min:
+              type: min
+            stddev_pop:
+              result_type:
+                name: int32
+                type: named
+              type: custom
+            stddev_samp:
+              result_type:
+                name: int32
+                type: named
+              type: custom
+            sum:
+              result_type: bigint
+              type: sum
+            var_pop:
+              result_type:
+                name: int32
+                type: named
+              type: custom
+            var_samp:
+              result_type:
+                name: int32
+                type: named
+              type: custom
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _in:
+              type: in
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: int32
+                type: named
+              type: custom
+          representation:
+            type: int32
+        string:
+          aggregate_functions:
+            max:
+              type: max
+            min:
+              type: min
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _ilike:
+              type: contains_insensitive
+            _in:
+              type: in
+            _iregex:
+              argument_type:
+                name: string
+                type: named
+              type: custom
+            _like:
+              type: contains
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: string
+                type: named
+              type: custom
+            _nilike:
+              argument_type:
+                name: string
+                type: named
+              type: custom
+            _niregex:
+              argument_type:
+                name: string
+                type: named
+              type: custom
+            _nlike:
+              argument_type:
+                name: string
+                type: named
+              type: custom
+            _nregex:
+              argument_type:
+                name: string
+                type: named
+              type: custom
+            _regex:
+              argument_type:
+                name: string
+                type: named
+              type: custom
+          representation:
+            type: string
     capabilities:
-      version: 0.1.6
       capabilities:
+        mutation:
+          explain: {}
+          transactional: {}
         query:
-          aggregates: {}
-          variables: {}
+          aggregates:
+            filter_by: {}
+          exists: {}
           explain: {}
           nested_fields: {}
-          exists: {}
-        mutation: {}
-        relationships:
-          relation_comparisons: {}
-          order_by_aggregate: {}
+          variables: {}
+        relational_query:
+          aggregate:
+            expression:
+              aggregate:
+                approx_distinct: {}
+                approx_percentile_cont: {}
+                avg: {}
+                bool_and: {}
+                bool_or: {}
+                count:
+                  distinct: {}
+                first_value: {}
+                last_value: {}
+                max: {}
+                median: {}
+                min: {}
+                stddev: {}
+                stddev_pop: {}
+                string_agg: {}
+                sum: {}
+                var: {}
+              comparison:
+                between: {}
+                contains: {}
+                greater_than: {}
+                greater_than_eq: {}
+                ilike: {}
+                in_list: {}
+                is_false: {}
+                is_nan: {}
+                is_null: {}
+                is_true: {}
+                is_zero: {}
+                less_than: {}
+                less_than_eq: {}
+                like: {}
+              conditional:
+                case: {}
+                nullif: {}
+              scalar:
+                abs: {}
+                and: {}
+                array_element: {}
+                binary_concat: {}
+                btrim: {}
+                ceil: {}
+                character_length: {}
+                coalesce: {}
+                concat: {}
+                cos: {}
+                current_date: {}
+                current_time: {}
+                current_timestamp: {}
+                date_part:
+                  day: {}
+                  day_of_week: {}
+                  day_of_year: {}
+                  epoch: {}
+                  hour: {}
+                  microsecond: {}
+                  millisecond: {}
+                  minute: {}
+                  month: {}
+                  nanosecond: {}
+                  quarter: {}
+                  second: {}
+                  week: {}
+                  year: {}
+                date_trunc: {}
+                divide: {}
+                exp: {}
+                floor: {}
+                get_field: {}
+                greatest: {}
+                least: {}
+                left: {}
+                ln: {}
+                log: {}
+                log2: {}
+                log10: {}
+                lpad: {}
+                ltrim: {}
+                minus: {}
+                modulo: {}
+                multiply: {}
+                negate: {}
+                not: {}
+                nvl: {}
+                or: {}
+                plus: {}
+                power: {}
+                random: {}
+                replace: {}
+                reverse: {}
+                right: {}
+                round: {}
+                rpad: {}
+                rtrim: {}
+                sqrt: {}
+                str_pos: {}
+                substr: {}
+                substr_index: {}
+                tan: {}
+                to_date: {}
+                to_lower: {}
+                to_timestamp: {}
+                to_upper: {}
+                trunc: {}
+              window:
+                cume_dist: {}
+                dense_rank: {}
+                ntile: {}
+                percent_rank: {}
+                rank: {}
+                row_number: {}
+            group_by: {}
+          filter:
+            aggregate:
+              approx_distinct: {}
+              approx_percentile_cont: {}
+              avg: {}
+              bool_and: {}
+              bool_or: {}
+              count:
+                distinct: {}
+              first_value: {}
+              last_value: {}
+              max: {}
+              median: {}
+              min: {}
+              stddev: {}
+              stddev_pop: {}
+              string_agg: {}
+              sum: {}
+              var: {}
+            comparison:
+              between: {}
+              contains: {}
+              greater_than: {}
+              greater_than_eq: {}
+              ilike: {}
+              in_list: {}
+              is_false: {}
+              is_nan: {}
+              is_null: {}
+              is_true: {}
+              is_zero: {}
+              less_than: {}
+              less_than_eq: {}
+              like: {}
+            conditional:
+              case: {}
+              nullif: {}
+            scalar:
+              abs: {}
+              and: {}
+              array_element: {}
+              binary_concat: {}
+              btrim: {}
+              ceil: {}
+              character_length: {}
+              coalesce: {}
+              concat: {}
+              cos: {}
+              current_date: {}
+              current_time: {}
+              current_timestamp: {}
+              date_part:
+                day: {}
+                day_of_week: {}
+                day_of_year: {}
+                epoch: {}
+                hour: {}
+                microsecond: {}
+                millisecond: {}
+                minute: {}
+                month: {}
+                nanosecond: {}
+                quarter: {}
+                second: {}
+                week: {}
+                year: {}
+              date_trunc: {}
+              divide: {}
+              exp: {}
+              floor: {}
+              get_field: {}
+              greatest: {}
+              least: {}
+              left: {}
+              ln: {}
+              log: {}
+              log2: {}
+              log10: {}
+              lpad: {}
+              ltrim: {}
+              minus: {}
+              modulo: {}
+              multiply: {}
+              negate: {}
+              not: {}
+              nvl: {}
+              or: {}
+              plus: {}
+              power: {}
+              random: {}
+              replace: {}
+              reverse: {}
+              right: {}
+              round: {}
+              rpad: {}
+              rtrim: {}
+              sqrt: {}
+              str_pos: {}
+              substr: {}
+              substr_index: {}
+              tan: {}
+              to_date: {}
+              to_lower: {}
+              to_timestamp: {}
+              to_upper: {}
+              trunc: {}
+            window:
+              cume_dist: {}
+              dense_rank: {}
+              ntile: {}
+              percent_rank: {}
+              rank: {}
+              row_number: {}
+          join:
+            expression:
+              aggregate:
+                approx_distinct: {}
+                approx_percentile_cont: {}
+                avg: {}
+                bool_and: {}
+                bool_or: {}
+                count:
+                  distinct: {}
+                first_value: {}
+                last_value: {}
+                max: {}
+                median: {}
+                min: {}
+                stddev: {}
+                stddev_pop: {}
+                string_agg: {}
+                sum: {}
+                var: {}
+              comparison:
+                between: {}
+                contains: {}
+                greater_than: {}
+                greater_than_eq: {}
+                ilike: {}
+                in_list: {}
+                is_false: {}
+                is_nan: {}
+                is_null: {}
+                is_true: {}
+                is_zero: {}
+                less_than: {}
+                less_than_eq: {}
+                like: {}
+              conditional:
+                case: {}
+                nullif: {}
+              scalar:
+                abs: {}
+                and: {}
+                array_element: {}
+                binary_concat: {}
+                btrim: {}
+                ceil: {}
+                character_length: {}
+                coalesce: {}
+                concat: {}
+                cos: {}
+                current_date: {}
+                current_time: {}
+                current_timestamp: {}
+                date_part:
+                  day: {}
+                  day_of_week: {}
+                  day_of_year: {}
+                  epoch: {}
+                  hour: {}
+                  microsecond: {}
+                  millisecond: {}
+                  minute: {}
+                  month: {}
+                  nanosecond: {}
+                  quarter: {}
+                  second: {}
+                  week: {}
+                  year: {}
+                date_trunc: {}
+                divide: {}
+                exp: {}
+                floor: {}
+                get_field: {}
+                greatest: {}
+                least: {}
+                left: {}
+                ln: {}
+                log: {}
+                log2: {}
+                log10: {}
+                lpad: {}
+                ltrim: {}
+                minus: {}
+                modulo: {}
+                multiply: {}
+                negate: {}
+                not: {}
+                nvl: {}
+                or: {}
+                plus: {}
+                power: {}
+                random: {}
+                replace: {}
+                reverse: {}
+                right: {}
+                round: {}
+                rpad: {}
+                rtrim: {}
+                sqrt: {}
+                str_pos: {}
+                substr: {}
+                substr_index: {}
+                tan: {}
+                to_date: {}
+                to_lower: {}
+                to_timestamp: {}
+                to_upper: {}
+                trunc: {}
+              window:
+                cume_dist: {}
+                dense_rank: {}
+                ntile: {}
+                percent_rank: {}
+                rank: {}
+                row_number: {}
+            join_types:
+              full: {}
+              inner: {}
+              left: {}
+              left_anti: {}
+              left_semi: {}
+              right: {}
+              right_anti: {}
+              right_semi: {}
+          project:
+            expression:
+              aggregate:
+                approx_distinct: {}
+                approx_percentile_cont: {}
+                avg: {}
+                bool_and: {}
+                bool_or: {}
+                count:
+                  distinct: {}
+                first_value: {}
+                last_value: {}
+                max: {}
+                median: {}
+                min: {}
+                stddev: {}
+                stddev_pop: {}
+                string_agg: {}
+                sum: {}
+                var: {}
+              comparison:
+                between: {}
+                contains: {}
+                greater_than: {}
+                greater_than_eq: {}
+                ilike: {}
+                in_list: {}
+                is_false: {}
+                is_nan: {}
+                is_null: {}
+                is_true: {}
+                is_zero: {}
+                less_than: {}
+                less_than_eq: {}
+                like: {}
+              conditional:
+                case: {}
+                nullif: {}
+              scalar:
+                abs: {}
+                and: {}
+                array_element: {}
+                binary_concat: {}
+                btrim: {}
+                ceil: {}
+                character_length: {}
+                coalesce: {}
+                concat: {}
+                cos: {}
+                current_date: {}
+                current_time: {}
+                current_timestamp: {}
+                date_part:
+                  day: {}
+                  day_of_week: {}
+                  day_of_year: {}
+                  epoch: {}
+                  hour: {}
+                  microsecond: {}
+                  millisecond: {}
+                  minute: {}
+                  month: {}
+                  nanosecond: {}
+                  quarter: {}
+                  second: {}
+                  week: {}
+                  year: {}
+                date_trunc: {}
+                divide: {}
+                exp: {}
+                floor: {}
+                get_field: {}
+                greatest: {}
+                least: {}
+                left: {}
+                ln: {}
+                log: {}
+                log2: {}
+                log10: {}
+                lpad: {}
+                ltrim: {}
+                minus: {}
+                modulo: {}
+                multiply: {}
+                negate: {}
+                not: {}
+                nvl: {}
+                or: {}
+                plus: {}
+                power: {}
+                random: {}
+                replace: {}
+                reverse: {}
+                right: {}
+                round: {}
+                rpad: {}
+                rtrim: {}
+                sqrt: {}
+                str_pos: {}
+                substr: {}
+                substr_index: {}
+                tan: {}
+                to_date: {}
+                to_lower: {}
+                to_timestamp: {}
+                to_upper: {}
+                trunc: {}
+              window:
+                cume_dist: {}
+                dense_rank: {}
+                ntile: {}
+                percent_rank: {}
+                rank: {}
+                row_number: {}
+          sort:
+            expression:
+              aggregate:
+                approx_distinct: {}
+                approx_percentile_cont: {}
+                avg: {}
+                bool_and: {}
+                bool_or: {}
+                count:
+                  distinct: {}
+                first_value: {}
+                last_value: {}
+                max: {}
+                median: {}
+                min: {}
+                stddev: {}
+                stddev_pop: {}
+                string_agg: {}
+                sum: {}
+                var: {}
+              comparison:
+                between: {}
+                contains: {}
+                greater_than: {}
+                greater_than_eq: {}
+                ilike: {}
+                in_list: {}
+                is_false: {}
+                is_nan: {}
+                is_null: {}
+                is_true: {}
+                is_zero: {}
+                less_than: {}
+                less_than_eq: {}
+                like: {}
+              conditional:
+                case: {}
+                nullif: {}
+              scalar:
+                abs: {}
+                and: {}
+                array_element: {}
+                binary_concat: {}
+                btrim: {}
+                ceil: {}
+                character_length: {}
+                coalesce: {}
+                concat: {}
+                cos: {}
+                current_date: {}
+                current_time: {}
+                current_timestamp: {}
+                date_part:
+                  day: {}
+                  day_of_week: {}
+                  day_of_year: {}
+                  epoch: {}
+                  hour: {}
+                  microsecond: {}
+                  millisecond: {}
+                  minute: {}
+                  month: {}
+                  nanosecond: {}
+                  quarter: {}
+                  second: {}
+                  week: {}
+                  year: {}
+                date_trunc: {}
+                divide: {}
+                exp: {}
+                floor: {}
+                get_field: {}
+                greatest: {}
+                least: {}
+                left: {}
+                ln: {}
+                log: {}
+                log2: {}
+                log10: {}
+                lpad: {}
+                ltrim: {}
+                minus: {}
+                modulo: {}
+                multiply: {}
+                negate: {}
+                not: {}
+                nvl: {}
+                or: {}
+                plus: {}
+                power: {}
+                random: {}
+                replace: {}
+                reverse: {}
+                right: {}
+                round: {}
+                rpad: {}
+                rtrim: {}
+                sqrt: {}
+                str_pos: {}
+                substr: {}
+                substr_index: {}
+                tan: {}
+                to_date: {}
+                to_lower: {}
+                to_timestamp: {}
+                to_upper: {}
+                trunc: {}
+              window:
+                cume_dist: {}
+                dense_rank: {}
+                ntile: {}
+                percent_rank: {}
+                rank: {}
+                row_number: {}
+          union: {}
+          window:
+            expression:
+              aggregate:
+                approx_distinct: {}
+                approx_percentile_cont: {}
+                avg: {}
+                bool_and: {}
+                bool_or: {}
+                count:
+                  distinct: {}
+                first_value: {}
+                last_value: {}
+                max: {}
+                median: {}
+                min: {}
+                stddev: {}
+                stddev_pop: {}
+                string_agg: {}
+                sum: {}
+                var: {}
+              comparison:
+                between: {}
+                contains: {}
+                greater_than: {}
+                greater_than_eq: {}
+                ilike: {}
+                in_list: {}
+                is_false: {}
+                is_nan: {}
+                is_null: {}
+                is_true: {}
+                is_zero: {}
+                less_than: {}
+                less_than_eq: {}
+                like: {}
+              conditional:
+                case: {}
+                nullif: {}
+              scalar:
+                abs: {}
+                and: {}
+                array_element: {}
+                binary_concat: {}
+                btrim: {}
+                ceil: {}
+                character_length: {}
+                coalesce: {}
+                concat: {}
+                cos: {}
+                current_date: {}
+                current_time: {}
+                current_timestamp: {}
+                date_part:
+                  day: {}
+                  day_of_week: {}
+                  day_of_year: {}
+                  epoch: {}
+                  hour: {}
+                  microsecond: {}
+                  millisecond: {}
+                  minute: {}
+                  month: {}
+                  nanosecond: {}
+                  quarter: {}
+                  second: {}
+                  week: {}
+                  year: {}
+                date_trunc: {}
+                divide: {}
+                exp: {}
+                floor: {}
+                get_field: {}
+                greatest: {}
+                least: {}
+                left: {}
+                ln: {}
+                log: {}
+                log2: {}
+                log10: {}
+                lpad: {}
+                ltrim: {}
+                minus: {}
+                modulo: {}
+                multiply: {}
+                negate: {}
+                not: {}
+                nvl: {}
+                or: {}
+                plus: {}
+                power: {}
+                random: {}
+                replace: {}
+                reverse: {}
+                right: {}
+                round: {}
+                rpad: {}
+                rtrim: {}
+                sqrt: {}
+                str_pos: {}
+                substr: {}
+                substr_index: {}
+                tan: {}
+                to_date: {}
+                to_lower: {}
+                to_timestamp: {}
+                to_upper: {}
+                trunc: {}
+              window:
+                cume_dist: {}
+                dense_rank: {}
+                ntile: {}
+                percent_rank: {}
+                rank: {}
+                row_number: {}
+      version: 0.2.5

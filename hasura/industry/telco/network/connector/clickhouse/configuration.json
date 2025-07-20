@@ -1,122 +1,452 @@
 {
-  "$schema": "configuration.schema.json",
-  "tables": {
-    ".inner_id.b838e2e6-8196-4082-9223-99af95ed95a2": {
-      "name": ".inner_id.b838e2e6-8196-4082-9223-99af95ed95a2",
-      "schema": "default",
-      "comment": "",
-      "primary_key": {
-        "name": "CDR_Timestamp, CDR_GUID",
-        "columns": [
-          "CDR_GUID",
-          "CDR_Timestamp"
-        ]
-      },
-      "return_type": {
-        "kind": "definition",
-        "columns": {
-          "CDR_GUID": "String",
-          "CDR_Timestamp": "DateTime64(6)",
-          "Call_Duration": "Int32",
-          "Call_Type": "String",
-          "DU_GUID": "String",
-          "DU_Timestamp": "DateTime64(6)",
-          "Data_Usage": "Float32",
-          "Download_Speed": "Float32",
-          "Latency": "Int32",
-          "NP_GUID": "String",
-          "NP_Timestamp": "DateTime64(6)",
-          "Upload_Speed": "Float32"
-        }
-      }
+    "version": "v2",
+    "connection_uri": {
+        "variable": "JDBC_URL"
     },
-    "cdr": {
-      "name": "cdr",
-      "schema": "default",
-      "comment": "",
-      "primary_key": {
-        "name": "Timestamp, GUID",
-        "columns": [
-          "GUID",
-          "Timestamp"
-        ]
-      },
-      "return_type": {
-        "kind": "definition",
-        "columns": {
-          "CUID": "Int32",
-          "Call_Duration": "Int32",
-          "Call_Type": "String",
-          "GUID": "String",
-          "Timestamp": "DateTime64(6)"
+    "tables": [
+        {
+            "name": "default..inner_id.c82a24ea-1e98-40d1-868c-56d674f2140f",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "CDR_GUID",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "string"
+                    }
+                },
+                {
+                    "name": "Call_Duration",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "int32"
+                    }
+                },
+                {
+                    "name": "Call_Type",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "string"
+                    }
+                },
+                {
+                    "name": "CDR_Timestamp",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "datetime64",
+                        "metadata": {
+                            "type": "precision",
+                            "precision": 6
+                        }
+                    }
+                },
+                {
+                    "name": "NP_GUID",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "string"
+                    }
+                },
+                {
+                    "name": "Download_Speed",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "float32"
+                    }
+                },
+                {
+                    "name": "Upload_Speed",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "float32"
+                    }
+                },
+                {
+                    "name": "Latency",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "int32"
+                    }
+                },
+                {
+                    "name": "NP_Timestamp",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "datetime64",
+                        "metadata": {
+                            "type": "precision",
+                            "precision": 6
+                        }
+                    }
+                },
+                {
+                    "name": "DU_GUID",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "string"
+                    }
+                },
+                {
+                    "name": "Data_Usage",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "float32"
+                    }
+                },
+                {
+                    "name": "DU_Timestamp",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "datetime64",
+                        "metadata": {
+                            "type": "precision",
+                            "precision": 6
+                        }
+                    }
+                }
+            ],
+            "primary_keys": [
+                "CDR_GUID",
+                "CDR_Timestamp"
+            ],
+            "foreign_keys": {}
+        },
+        {
+            "name": "default.cdr",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "CUID",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "int32"
+                    }
+                },
+                {
+                    "name": "GUID",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "string"
+                    }
+                },
+                {
+                    "name": "Call_Duration",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "int32"
+                    }
+                },
+                {
+                    "name": "Call_Type",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "string"
+                    }
+                },
+                {
+                    "name": "Timestamp",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "datetime64",
+                        "metadata": {
+                            "type": "precision",
+                            "precision": 6
+                        }
+                    }
+                }
+            ],
+            "primary_keys": [
+                "GUID",
+                "Timestamp"
+            ],
+            "foreign_keys": {}
+        },
+        {
+            "name": "default.data_usage",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "CUID",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "int32"
+                    }
+                },
+                {
+                    "name": "GUID",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "string"
+                    }
+                },
+                {
+                    "name": "Data_Usage",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "float32"
+                    }
+                },
+                {
+                    "name": "Timestamp",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "datetime64",
+                        "metadata": {
+                            "type": "precision",
+                            "precision": 6
+                        }
+                    }
+                }
+            ],
+            "primary_keys": [
+                "GUID",
+                "Timestamp"
+            ],
+            "foreign_keys": {}
+        },
+        {
+            "name": "default.detailed_user_activity_mv",
+            "description": null,
+            "category": "VIEW",
+            "columns": [
+                {
+                    "name": "CDR_GUID",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "string"
+                    }
+                },
+                {
+                    "name": "Call_Duration",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "int32"
+                    }
+                },
+                {
+                    "name": "Call_Type",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "string"
+                    }
+                },
+                {
+                    "name": "CDR_Timestamp",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "datetime64",
+                        "metadata": {
+                            "type": "precision",
+                            "precision": 6
+                        }
+                    }
+                },
+                {
+                    "name": "NP_GUID",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "string"
+                    }
+                },
+                {
+                    "name": "Download_Speed",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "float32"
+                    }
+                },
+                {
+                    "name": "Upload_Speed",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "float32"
+                    }
+                },
+                {
+                    "name": "Latency",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "int32"
+                    }
+                },
+                {
+                    "name": "NP_Timestamp",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "datetime64",
+                        "metadata": {
+                            "type": "precision",
+                            "precision": 6
+                        }
+                    }
+                },
+                {
+                    "name": "DU_GUID",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "string"
+                    }
+                },
+                {
+                    "name": "Data_Usage",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "float32"
+                    }
+                },
+                {
+                    "name": "DU_Timestamp",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "datetime64",
+                        "metadata": {
+                            "type": "precision",
+                            "precision": 6
+                        }
+                    }
+                }
+            ],
+            "primary_keys": [],
+            "foreign_keys": {}
+        },
+        {
+            "name": "default.network_performance",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "CUID",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "int32"
+                    }
+                },
+                {
+                    "name": "GUID",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "string"
+                    }
+                },
+                {
+                    "name": "Download_Speed",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "float32"
+                    }
+                },
+                {
+                    "name": "Upload_Speed",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "float32"
+                    }
+                },
+                {
+                    "name": "Latency",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "int32"
+                    }
+                },
+                {
+                    "name": "Timestamp",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "datetime64",
+                        "metadata": {
+                            "type": "precision",
+                            "precision": 6
+                        }
+                    }
+                }
+            ],
+            "primary_keys": [
+                "GUID",
+                "Timestamp"
+            ],
+            "foreign_keys": {}
         }
-      }
-    },
-    "data_usage": {
-      "name": "data_usage",
-      "schema": "default",
-      "comment": "",
-      "primary_key": {
-        "name": "Timestamp, GUID",
-        "columns": [
-          "GUID",
-          "Timestamp"
-        ]
-      },
-      "return_type": {
-        "kind": "definition",
-        "columns": {
-          "CUID": "Int32",
-          "Data_Usage": "Float32",
-          "GUID": "String",
-          "Timestamp": "DateTime64(6)"
-        }
-      }
-    },
-    "detailed_user_activity_mv": {
-      "name": "detailed_user_activity_mv",
-      "schema": "default",
-      "comment": "",
-      "return_type": {
-        "kind": "definition",
-        "columns": {
-          "CDR_GUID": "String",
-          "CDR_Timestamp": "DateTime64(6)",
-          "Call_Duration": "Int32",
-          "Call_Type": "String",
-          "DU_GUID": "String",
-          "DU_Timestamp": "DateTime64(6)",
-          "Data_Usage": "Float32",
-          "Download_Speed": "Float32",
-          "Latency": "Int32",
-          "NP_GUID": "String",
-          "NP_Timestamp": "DateTime64(6)",
-          "Upload_Speed": "Float32"
-        }
-      }
-    },
-    "network_performance": {
-      "name": "network_performance",
-      "schema": "default",
-      "comment": "",
-      "primary_key": {
-        "name": "Timestamp, GUID",
-        "columns": [
-          "GUID",
-          "Timestamp"
-        ]
-      },
-      "return_type": {
-        "kind": "definition",
-        "columns": {
-          "CUID": "Int32",
-          "Download_Speed": "Float32",
-          "GUID": "String",
-          "Latency": "Int32",
-          "Timestamp": "DateTime64(6)",
-          "Upload_Speed": "Float32"
-        }
-      }
-    }
-  }
+    ]
 }

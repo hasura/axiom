@@ -1,4 +1,3 @@
-
 // Interfaces representing Stripe entities
 interface TelcoCustomer {
   id: string;

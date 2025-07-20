@@ -77,4 +77,3 @@ export function maskCardNumber(cardNumber?: string): string {
     return "Invalid card number";
   }
 }
-

@@ -1,0 +1,193 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: PublicNetwork
+  description: "Object type for public.network. Description: null"
+  fields:
+    - name: capacity
+      type: Int32
+    - name: latitude
+      type: Bigdecimal
+    - name: longitude
+      type: Bigdecimal
+    - name: nodeId
+      type: Int32!
+    - name: nodeName
+      type: String_1
+    - name: quality
+      type: String_1
+    - name: status
+      type: String_1
+  graphql:
+    typeName: customer_PublicNetwork
+    inputTypeName: customer_PublicNetworkInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: public.network
+      fieldMapping:
+        capacity:
+          column:
+            name: capacity
+        latitude:
+          column:
+            name: latitude
+        longitude:
+          column:
+            name: longitude
+        nodeId:
+          column:
+            name: node_id
+        nodeName:
+          column:
+            name: node_name
+        quality:
+          column:
+            name: quality
+        status:
+          column:
+            name: status
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: PublicNetwork
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - capacity
+          - latitude
+          - longitude
+          - nodeId
+          - nodeName
+          - quality
+          - status
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PublicNetworkBoolExp
+  operand:
+    object:
+      type: PublicNetwork
+      comparableFields:
+        - fieldName: capacity
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: latitude
+          booleanExpressionType: DecimalBoolExp
+        - fieldName: longitude
+          booleanExpressionType: DecimalBoolExp
+        - fieldName: nodeId
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: nodeName
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: quality
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: status
+          booleanExpressionType: CharacterVaryingBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customer_PublicNetworkBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PublicNetworkAggExp
+  operand:
+    object:
+      aggregatedType: PublicNetwork
+      aggregatableFields:
+        - fieldName: capacity
+          aggregateExpression: IntegerAggExp
+        - fieldName: latitude
+          aggregateExpression: DecimalAggExp
+        - fieldName: longitude
+          aggregateExpression: DecimalAggExp
+        - fieldName: nodeId
+          aggregateExpression: IntegerAggExp
+        - fieldName: nodeName
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: quality
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: status
+          aggregateExpression: CharacterVaryingAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: customer_PublicNetworkAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PublicNetworkOrderByExp
+  operand:
+    object:
+      orderedType: PublicNetwork
+      orderableFields:
+        - fieldName: capacity
+          orderByExpression: Int32OrderByExp
+        - fieldName: latitude
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: longitude
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: nodeId
+          orderByExpression: Int32OrderByExp
+        - fieldName: nodeName
+          orderByExpression: String1OrderByExp
+        - fieldName: quality
+          orderByExpression: String1OrderByExp
+        - fieldName: status
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: customer_PublicNetworkOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: PublicNetwork
+  objectType: PublicNetwork
+  source:
+    dataConnectorName: aurora
+    collection: public.network
+  filterExpressionType: PublicNetworkBoolExp
+  aggregateExpression: PublicNetworkAggExp
+  orderByExpression: PublicNetworkOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: publicNetwork
+      subscription:
+        rootField: publicNetwork
+    selectUniques:
+      - queryRootField: publicNetworkByNodeId
+        uniqueIdentifier:
+          - nodeId
+        subscription:
+          rootField: publicNetworkByNodeId
+    filterInputTypeName: customer_PublicNetworkFilterInput
+    aggregate:
+      queryRootField: publicNetworkAggregate
+      subscription:
+        rootField: publicNetworkAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: PublicNetwork
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

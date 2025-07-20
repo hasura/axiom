@@ -1,0 +1,158 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: PublicFamilyPlanMembers
+  description: "Object type for public.family_plan_members. Description: null"
+  fields:
+    - name: customerId
+      type: Int32!
+    - name: dataAllocationPercentage
+      type: Int32
+    - name: familyPlanId
+      type: Int32!
+    - name: role
+      type: String_1
+  graphql:
+    typeName: customer_PublicFamilyPlanMembers
+    inputTypeName: customer_PublicFamilyPlanMembersInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: public.family_plan_members
+      fieldMapping:
+        customerId:
+          column:
+            name: customer_id
+        dataAllocationPercentage:
+          column:
+            name: data_allocation_percentage
+        familyPlanId:
+          column:
+            name: family_plan_id
+        role:
+          column:
+            name: role
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: PublicFamilyPlanMembers
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - customerId
+          - dataAllocationPercentage
+          - familyPlanId
+          - role
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PublicFamilyPlanMembersBoolExp
+  operand:
+    object:
+      type: PublicFamilyPlanMembers
+      comparableFields:
+        - fieldName: customerId
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: dataAllocationPercentage
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: familyPlanId
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: role
+          booleanExpressionType: CharacterVaryingBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customer_PublicFamilyPlanMembersBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PublicFamilyPlanMembersAggExp
+  operand:
+    object:
+      aggregatedType: PublicFamilyPlanMembers
+      aggregatableFields:
+        - fieldName: customerId
+          aggregateExpression: IntegerAggExp
+        - fieldName: dataAllocationPercentage
+          aggregateExpression: IntegerAggExp
+        - fieldName: familyPlanId
+          aggregateExpression: IntegerAggExp
+        - fieldName: role
+          aggregateExpression: CharacterVaryingAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: customer_PublicFamilyPlanMembersAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PublicFamilyPlanMembersOrderByExp
+  operand:
+    object:
+      orderedType: PublicFamilyPlanMembers
+      orderableFields:
+        - fieldName: customerId
+          orderByExpression: Int32OrderByExp
+        - fieldName: dataAllocationPercentage
+          orderByExpression: Int32OrderByExp
+        - fieldName: familyPlanId
+          orderByExpression: Int32OrderByExp
+        - fieldName: role
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: customer_PublicFamilyPlanMembersOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: PublicFamilyPlanMembers
+  objectType: PublicFamilyPlanMembers
+  source:
+    dataConnectorName: aurora
+    collection: public.family_plan_members
+  filterExpressionType: PublicFamilyPlanMembersBoolExp
+  aggregateExpression: PublicFamilyPlanMembersAggExp
+  orderByExpression: PublicFamilyPlanMembersOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: publicFamilyPlanMembers
+      subscription:
+        rootField: publicFamilyPlanMembers
+    selectUniques:
+      - queryRootField: publicFamilyPlanMembersByPrimaryKey
+        uniqueIdentifier:
+          - familyPlanId
+          - customerId
+        subscription:
+          rootField: publicFamilyPlanMembersByPrimaryKey
+    filterInputTypeName: customer_PublicFamilyPlanMembersFilterInput
+    aggregate:
+      queryRootField: publicFamilyPlanMembersAggregate
+      subscription:
+        rootField: publicFamilyPlanMembersAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: PublicFamilyPlanMembers
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
