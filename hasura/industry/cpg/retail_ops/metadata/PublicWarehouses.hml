@@ -1,0 +1,217 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: PublicWarehouses
+  description: "Object type for public.warehouses. Description: null"
+  fields:
+    - name: locationCity
+      type: String_1
+    - name: locationCountry
+      type: String_1
+    - name: locationState
+      type: String_1
+    - name: maxCapacityPallets
+      type: Int32
+    - name: operatingCostPerMonth
+      type: Bigdecimal
+    - name: squareFootage
+      type: Int32
+    - name: warehouseId
+      type: Int32!
+    - name: warehouseName
+      type: String_1!
+    - name: warehouseType
+      type: String_1
+  graphql:
+    typeName: PublicWarehouses
+    inputTypeName: PublicWarehousesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: inventory
+      dataConnectorObjectType: public.warehouses
+      fieldMapping:
+        locationCity:
+          column:
+            name: location_city
+        locationCountry:
+          column:
+            name: location_country
+        locationState:
+          column:
+            name: location_state
+        maxCapacityPallets:
+          column:
+            name: max_capacity_pallets
+        operatingCostPerMonth:
+          column:
+            name: operating_cost_per_month
+        squareFootage:
+          column:
+            name: square_footage
+        warehouseId:
+          column:
+            name: warehouse_id
+        warehouseName:
+          column:
+            name: warehouse_name
+        warehouseType:
+          column:
+            name: warehouse_type
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: PublicWarehouses
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - locationCity
+          - locationCountry
+          - locationState
+          - maxCapacityPallets
+          - operatingCostPerMonth
+          - squareFootage
+          - warehouseId
+          - warehouseName
+          - warehouseType
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PublicWarehousesBoolExp
+  operand:
+    object:
+      type: PublicWarehouses
+      comparableFields:
+        - fieldName: locationCity
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: locationCountry
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: locationState
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: maxCapacityPallets
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: operatingCostPerMonth
+          booleanExpressionType: DecimalBoolExp_1
+        - fieldName: squareFootage
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: warehouseId
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: warehouseName
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: warehouseType
+          booleanExpressionType: CharacterVaryingBoolExp_1
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: PublicWarehousesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PublicWarehousesAggExp
+  operand:
+    object:
+      aggregatedType: PublicWarehouses
+      aggregatableFields:
+        - fieldName: locationCity
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: locationCountry
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: locationState
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: maxCapacityPallets
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: operatingCostPerMonth
+          aggregateExpression: DecimalAggExp_1
+        - fieldName: squareFootage
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: warehouseId
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: warehouseName
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: warehouseType
+          aggregateExpression: CharacterVaryingAggExp_1
+  count:
+    enable: true
+  graphql:
+    selectTypeName: PublicWarehousesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PublicWarehousesOrderByExp
+  operand:
+    object:
+      orderedType: PublicWarehouses
+      orderableFields:
+        - fieldName: locationCity
+          orderByExpression: String1OrderByExp
+        - fieldName: locationCountry
+          orderByExpression: String1OrderByExp
+        - fieldName: locationState
+          orderByExpression: String1OrderByExp
+        - fieldName: maxCapacityPallets
+          orderByExpression: Int32OrderByExp
+        - fieldName: operatingCostPerMonth
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: squareFootage
+          orderByExpression: Int32OrderByExp
+        - fieldName: warehouseId
+          orderByExpression: Int32OrderByExp
+        - fieldName: warehouseName
+          orderByExpression: String1OrderByExp
+        - fieldName: warehouseType
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: PublicWarehousesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: PublicWarehouses
+  objectType: PublicWarehouses
+  source:
+    dataConnectorName: inventory
+    collection: public.warehouses
+  filterExpressionType: PublicWarehousesBoolExp
+  aggregateExpression: PublicWarehousesAggExp
+  orderByExpression: PublicWarehousesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: publicWarehouses
+      subscription:
+        rootField: publicWarehouses
+    selectUniques:
+      - queryRootField: publicWarehousesByWarehouseId
+        uniqueIdentifier:
+          - warehouseId
+        subscription:
+          rootField: publicWarehousesByWarehouseId
+    filterInputTypeName: PublicWarehousesFilterInput
+    aggregate:
+      queryRootField: publicWarehousesAggregate
+      subscription:
+        rootField: publicWarehousesAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: PublicWarehouses
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

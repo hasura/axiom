@@ -1,0 +1,241 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: PublicDemandForecasts
+  description: "Object type for public.demand_forecasts. Description: null"
+  fields:
+    - name: actualQuantity
+      type: Int32
+    - name: forecastConfidence
+      type: Bigdecimal
+    - name: forecastDate
+      type: Date!
+    - name: forecastErrorPercentage
+      type: Bigdecimal
+    - name: forecastId
+      type: Int32!
+    - name: forecastPeriodEnd
+      type: Date!
+    - name: forecastPeriodStart
+      type: Date!
+    - name: forecastedQuantity
+      type: Int32!
+    - name: notes
+      type: String_1
+    - name: productId
+      type: Int32
+    - name: retailerId
+      type: Int32
+  graphql:
+    typeName: PublicDemandForecasts
+    inputTypeName: PublicDemandForecastsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: inventory
+      dataConnectorObjectType: public.demand_forecasts
+      fieldMapping:
+        actualQuantity:
+          column:
+            name: actual_quantity
+        forecastConfidence:
+          column:
+            name: forecast_confidence
+        forecastDate:
+          column:
+            name: forecast_date
+        forecastErrorPercentage:
+          column:
+            name: forecast_error_percentage
+        forecastId:
+          column:
+            name: forecast_id
+        forecastPeriodEnd:
+          column:
+            name: forecast_period_end
+        forecastPeriodStart:
+          column:
+            name: forecast_period_start
+        forecastedQuantity:
+          column:
+            name: forecasted_quantity
+        notes:
+          column:
+            name: notes
+        productId:
+          column:
+            name: product_id
+        retailerId:
+          column:
+            name: retailer_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: PublicDemandForecasts
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - actualQuantity
+          - forecastConfidence
+          - forecastDate
+          - forecastErrorPercentage
+          - forecastId
+          - forecastPeriodEnd
+          - forecastPeriodStart
+          - forecastedQuantity
+          - notes
+          - productId
+          - retailerId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PublicDemandForecastsBoolExp
+  operand:
+    object:
+      type: PublicDemandForecasts
+      comparableFields:
+        - fieldName: actualQuantity
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: forecastConfidence
+          booleanExpressionType: DecimalBoolExp_1
+        - fieldName: forecastDate
+          booleanExpressionType: DateBoolExp_1
+        - fieldName: forecastErrorPercentage
+          booleanExpressionType: DecimalBoolExp_1
+        - fieldName: forecastId
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: forecastPeriodEnd
+          booleanExpressionType: DateBoolExp_1
+        - fieldName: forecastPeriodStart
+          booleanExpressionType: DateBoolExp_1
+        - fieldName: forecastedQuantity
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: notes
+          booleanExpressionType: TextBoolExp_1
+        - fieldName: productId
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: retailerId
+          booleanExpressionType: IntegerBoolExp_1
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: PublicDemandForecastsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PublicDemandForecastsAggExp
+  operand:
+    object:
+      aggregatedType: PublicDemandForecasts
+      aggregatableFields:
+        - fieldName: actualQuantity
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: forecastConfidence
+          aggregateExpression: DecimalAggExp_1
+        - fieldName: forecastDate
+          aggregateExpression: DateAggExp_1
+        - fieldName: forecastErrorPercentage
+          aggregateExpression: DecimalAggExp_1
+        - fieldName: forecastId
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: forecastPeriodEnd
+          aggregateExpression: DateAggExp_1
+        - fieldName: forecastPeriodStart
+          aggregateExpression: DateAggExp_1
+        - fieldName: forecastedQuantity
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: notes
+          aggregateExpression: TextAggExp_1
+        - fieldName: productId
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: retailerId
+          aggregateExpression: IntegerAggExp_1
+  count:
+    enable: true
+  graphql:
+    selectTypeName: PublicDemandForecastsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PublicDemandForecastsOrderByExp
+  operand:
+    object:
+      orderedType: PublicDemandForecasts
+      orderableFields:
+        - fieldName: actualQuantity
+          orderByExpression: Int32OrderByExp
+        - fieldName: forecastConfidence
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: forecastDate
+          orderByExpression: DateOrderByExp
+        - fieldName: forecastErrorPercentage
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: forecastId
+          orderByExpression: Int32OrderByExp
+        - fieldName: forecastPeriodEnd
+          orderByExpression: DateOrderByExp
+        - fieldName: forecastPeriodStart
+          orderByExpression: DateOrderByExp
+        - fieldName: forecastedQuantity
+          orderByExpression: Int32OrderByExp
+        - fieldName: notes
+          orderByExpression: String1OrderByExp
+        - fieldName: productId
+          orderByExpression: Int32OrderByExp
+        - fieldName: retailerId
+          orderByExpression: Int32OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: PublicDemandForecastsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: PublicDemandForecasts
+  objectType: PublicDemandForecasts
+  source:
+    dataConnectorName: inventory
+    collection: public.demand_forecasts
+  filterExpressionType: PublicDemandForecastsBoolExp
+  aggregateExpression: PublicDemandForecastsAggExp
+  orderByExpression: PublicDemandForecastsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: publicDemandForecasts
+      subscription:
+        rootField: publicDemandForecasts
+    selectUniques:
+      - queryRootField: publicDemandForecastsByForecastId
+        uniqueIdentifier:
+          - forecastId
+        subscription:
+          rootField: publicDemandForecastsByForecastId
+    filterInputTypeName: PublicDemandForecastsFilterInput
+    aggregate:
+      queryRootField: publicDemandForecastsAggregate
+      subscription:
+        rootField: publicDemandForecastsAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: PublicDemandForecasts
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
