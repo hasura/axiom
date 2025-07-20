@@ -248,3 +248,20 @@ definition:
               sessionVariable: x-hasura-user-id
         allowSubscriptions: true
 
+---
+kind: Relationship
+version: v1
+definition:
+  name: customerPlanDevices
+  sourceType: PublicCustomerPlans
+  target:
+    model:
+      name: PublicCustomerPlanDevices
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerPlanId
+      target:
+        modelField:
+          - fieldName: customerPlanId
