@@ -46,6 +46,11 @@ definition:
           - dataAllocationPercentage
           - familyPlanId
           - role
+    - role: customer
+      output:
+        allowedFields:
+          - customerId
+          - dataAllocationPercentage
 
 ---
 kind: BooleanExpressionType
@@ -155,4 +160,49 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
+    - role: customer
+      select:
+        filter: 
+          fieldComparison:
+            field: customerId
+            operator: _eq
+            value: 
+              sessionVariable: x-hasura-user-id
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer
+  sourceType: PublicFamilyPlanMembers
+  target:
+    model:
+      name: PublicCustomers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: familyPlan
+  sourceType: PublicFamilyPlanMembers
+  target:
+    model:
+      name: PublicFamilyPlans
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: familyPlanId
+      target:
+        modelField:
+          - fieldName: familyPlanId
 

@@ -1,0 +1,170 @@
+---
+kind: Relationship
+version: v1
+definition:
+  name: texts
+  sourceType: PublicCustomers
+  target:
+    model:
+      name: PublicTexts
+      relationshipType: Array
+      subgraph: network
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerid
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: calls
+  sourceType: PublicCustomers
+  target:
+    model:
+      name: PublicCalls
+      relationshipType: Array
+      subgraph: network
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerid
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: node
+  sourceType: PublicNetwork
+  target:
+    model:
+      name: PublicEquipment
+      relationshipType: Object
+      subgraph: network
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: nodeId
+      target:
+        modelField:
+          - fieldName: nodeId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: supportDB
+  description: This relationship should be used as the predominant souce for support tickets
+  sourceType: PublicCustomers
+  target:
+    model:
+      name: UserProfiles
+      relationshipType: Object
+      subgraph: support
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: userProfiles
+  sourceType: CustomerPreferences
+  target:
+    model:
+      name: UserProfiles
+      relationshipType: Object
+      subgraph: support
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerGuid
+      target:
+        modelField:
+          - fieldName: memberId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: CDR
+  sourceType: PublicCustomerLink
+  target:
+    model:
+      subgraph: network
+      name: DefaultCdr
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerGuid
+      target:
+        modelField:
+          - fieldName: guid
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: NetworkPerformance
+  sourceType: PublicCustomerLink
+  target:
+    model:
+      subgraph: network
+      name: DefaultNetworkPerformance
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerGuid
+      target:
+        modelField:
+          - fieldName: guid
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: DataUsage
+  sourceType: PublicCustomerLink
+  target:
+    model:
+      subgraph: network
+      name: DefaultDataUsage
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerGuid
+      target:
+        modelField:
+          - fieldName: guid
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: prefs
+  sourceType: PublicCustomerLink
+  target:
+    model:
+      name: CustomerPreferences
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerGuid
+      target:
+        modelField:
+          - fieldName: customerGuid

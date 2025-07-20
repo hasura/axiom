@@ -82,6 +82,13 @@ definition:
           - resolutionStatus
           - resolutionTimeMinutes
           - satisfactionScore
+    - role: customer
+      output:
+        allowedFields:
+          - category
+          - interactionDate
+          - resolutionStatus
+          - resolutionTimeMinutes
 
 ---
 kind: BooleanExpressionType
@@ -226,4 +233,31 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
+    - role: customer
+      select:
+        filter: 
+          fieldComparison:
+            field: customerId
+            operator: _eq
+            value: 
+              sessionVariable: x-hasura-user-id
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer
+  sourceType: PublicServiceInteractions
+  target:
+    model:
+      name: PublicCustomers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId
 

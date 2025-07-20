@@ -58,6 +58,13 @@ definition:
           - password
           - roles
           - updatedAt
+    - role: customer
+      output:
+        allowedFields:
+          - email
+          - id
+          - password
+          - roles
 
 ---
 kind: BooleanExpressionType
@@ -178,4 +185,12 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
+    - role: customer
+      select:
+        filter:
+          fieldComparison:
+            field: id
+            operator: _eq
+            value:
+              sessionVariable: x-hasura-user-id
 

@@ -64,6 +64,13 @@ definition:
           - referredId
           - referrerId
           - status
+    - role: customer
+      output:
+        allowedFields:
+          - bonusAmount
+          - bonusPaid
+          - referralDate
+          - status
 
 ---
 kind: BooleanExpressionType
@@ -88,7 +95,9 @@ definition:
           booleanExpressionType: IntegerBoolExp
         - fieldName: status
           booleanExpressionType: CharacterVaryingBoolExp
-      comparableRelationships: []
+      comparableRelationships:
+        - relationshipName: customer
+        - relationshipName: customerByReferrerId
   logicalOperators:
     enable: true
   isNull:
@@ -190,4 +199,60 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
+    - role: customer
+      select:
+        filter: 
+          or:
+            - relationship:
+                name: customer
+                predicate: 
+                  fieldComparison:
+                    field: customerId
+                    operator: _eq
+                    value: 
+                      sessionVariable: x-hasura-user-id
+            - relationship:
+                name: customerByReferrerId
+                predicate: 
+                  fieldComparison:
+                    field: customerId
+                    operator: _eq
+                    value: 
+                      sessionVariable: x-hasura-user-id
+        allowSubscriptions: true
 
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer
+  sourceType: PublicReferrals
+  target:
+    model:
+      name: PublicCustomers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: referredId
+      target:
+        modelField:
+          - fieldName: customerId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customerByReferrerId
+  sourceType: PublicReferrals
+  target:
+    model:
+      name: PublicCustomers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: referrerId
+      target:
+        modelField:
+          - fieldName: customerId

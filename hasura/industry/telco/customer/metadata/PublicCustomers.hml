@@ -130,6 +130,20 @@ definition:
           - satisfactionScore
           - segment
           - state
+    - role: customer
+      output:
+        allowedFields:
+          - address
+          - city
+          - country
+          - customerId
+          - email
+          - firstName
+          - image
+          - lastName
+          - phoneNumber
+          - postcode
+          - state
 
 ---
 kind: BooleanExpressionType
@@ -288,6 +302,26 @@ kind: Model
 version: v2
 definition:
   name: PublicCustomers
+  description: |
+    # Telecommunications Customer Master Repository
+
+    Central subscriber datastore for the integrated telecommunications system. This is the authoritative
+    source of truth for all customer data across the organization including:
+
+    * **Service eligibility** and qualification status
+    * **Network preferences** and technical configurations
+    * **Billing profiles** and payment history references
+    * **Risk analytics** including churn prediction models
+    * **Customer journey** tracking across all touchpoints
+
+    ## Usage Guidelines
+
+    This model should be the primary reference for:
+    - Customer-facing applications and self-service portals
+    - Call center and technical support systems
+    - Network provisioning and service activation workflows
+    - Business intelligence and executive reporting dashboards
+    - Regulatory compliance and data governance processes
   objectType: PublicCustomers
   source:
     dataConnectorName: aurora
@@ -322,4 +356,386 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
+    - role: customer
+      select:
+        filter:
+          fieldComparison:
+            field: customerId
+            operator: _eq
+            value:
+              sessionVariable: x-hasura-user-id
+        allowSubscriptions: true
 
+---
+kind: Relationship
+version: v1
+definition:
+  name: billings
+  sourceType: PublicCustomers
+  target:
+    model:
+      name: PublicBilling
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: PublicBillingAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId
+  graphql:
+    aggregateFieldName: billingsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: creditCards
+  sourceType: PublicCustomers
+  target:
+    model:
+      name: PublicCreditCards
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: PublicCreditCardsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId
+  graphql:
+    aggregateFieldName: creditCardsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customerLinks
+  sourceType: PublicCustomers
+  target:
+    model:
+      name: PublicCustomerLink
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: PublicCustomerLinkAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId
+  graphql:
+    aggregateFieldName: customerLinksAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customerNetworks
+  sourceType: PublicCustomers
+  target:
+    model:
+      name: PublicCustomerNetwork
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: PublicCustomerNetworkAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId
+  graphql:
+    aggregateFieldName: customerNetworksAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customerPlans
+  sourceType: PublicCustomers
+  target:
+    model:
+      name: PublicCustomerPlans
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: PublicCustomerPlansAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId
+  graphql:
+    aggregateFieldName: customerPlansAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: deviceUpgrades
+  sourceType: PublicCustomers
+  target:
+    model:
+      name: PublicDeviceUpgrades
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: PublicDeviceUpgradesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId
+  graphql:
+    aggregateFieldName: deviceUpgradesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: familyPlanMembers
+  sourceType: PublicCustomers
+  target:
+    model:
+      name: PublicFamilyPlanMembers
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: PublicFamilyPlanMembersAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId
+  graphql:
+    aggregateFieldName: familyPlanMembersAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: familyPlans
+  sourceType: PublicCustomers
+  target:
+    model:
+      name: PublicFamilyPlans
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: PublicFamilyPlansAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: primaryCustomerId
+  graphql:
+    aggregateFieldName: familyPlansAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: feedbacks
+  sourceType: PublicCustomers
+  target:
+    model:
+      name: PublicFeedback
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: PublicFeedbackAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId
+  graphql:
+    aggregateFieldName: feedbacksAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: interactions
+  sourceType: PublicCustomers
+  target:
+    model:
+      name: PublicInteractions
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: PublicInteractionsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId
+  graphql:
+    aggregateFieldName: interactionsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: iotDevices
+  sourceType: PublicCustomers
+  target:
+    model:
+      name: PublicIotDevices
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: PublicIotDevicesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId
+  graphql:
+    aggregateFieldName: iotDevicesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: loyaltyRewards
+  sourceType: PublicCustomers
+  target:
+    model:
+      name: PublicLoyaltyRewards
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: PublicLoyaltyRewardsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId
+  graphql:
+    aggregateFieldName: loyaltyRewardsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: numberPortabilities
+  sourceType: PublicCustomers
+  target:
+    model:
+      name: PublicNumberPortability
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: PublicNumberPortabilityAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId
+  graphql:
+    aggregateFieldName: numberPortabilitiesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: referrals
+  sourceType: PublicCustomers
+  target:
+    model:
+      name: PublicReferrals
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: PublicReferralsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: referredId
+  graphql:
+    aggregateFieldName: referralsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: referralsByReferrerId
+  sourceType: PublicCustomers
+  target:
+    model:
+      name: PublicReferrals
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: PublicReferralsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: referrerId
+  graphql:
+    aggregateFieldName: referralsByReferrerIdAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: serviceInteractions
+  sourceType: PublicCustomers
+  target:
+    model:
+      name: PublicServiceInteractions
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: PublicServiceInteractionsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId
+  graphql:
+    aggregateFieldName: serviceInteractionsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: voipServices
+  sourceType: PublicCustomers
+  target:
+    model:
+      name: PublicVoipServices
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: PublicVoipServicesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId
+  graphql:
+    aggregateFieldName: voipServicesAggregate

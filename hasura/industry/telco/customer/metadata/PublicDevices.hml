@@ -64,6 +64,12 @@ definition:
           - model
           - sfRecord
           - updatedAt
+    - role: customer
+      output:
+        allowedFields:
+          - brand
+          - image
+          - model
 
 ---
 kind: BooleanExpressionType
@@ -88,7 +94,8 @@ definition:
           booleanExpressionType: CharacterVaryingBoolExp
         - fieldName: updatedAt
           booleanExpressionType: TimestampWithTimeZoneBoolExp
-      comparableRelationships: []
+      comparableRelationships:
+        - relationshipName: customerPlanDevices
   logicalOperators:
     enable: true
   isNull:
@@ -190,4 +197,84 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
+    - role: customer
+      select:
+        filter: 
+          relationship:
+            name: customerPlanDevices
+            predicate: 
+              relationship:
+                name: customerPlan
+                predicate: 
+                  fieldComparison:
+                    field: customerId
+                    operator: _eq
+                    value: 
+                      sessionVariable: x-hasura-user-id
+        allowSubscriptions: true
 
+---
+kind: Relationship
+version: v1
+definition:
+  name: customerPlanDevices
+  sourceType: PublicDevices
+  target:
+    model:
+      name: PublicCustomerPlanDevices
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: PublicCustomerPlanDevicesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: deviceId
+      target:
+        modelField:
+          - fieldName: deviceId
+  graphql:
+    aggregateFieldName: customerPlanDevicesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: deviceUpgrades
+  sourceType: PublicDevices
+  target:
+    model:
+      name: PublicDeviceUpgrades
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: PublicDeviceUpgradesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: deviceId
+      target:
+        modelField:
+          - fieldName: newDeviceId
+  graphql:
+    aggregateFieldName: deviceUpgradesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: deviceUpgradesByOldDeviceId
+  sourceType: PublicDevices
+  target:
+    model:
+      name: PublicDeviceUpgrades
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: PublicDeviceUpgradesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: deviceId
+      target:
+        modelField:
+          - fieldName: oldDeviceId
+  graphql:
+    aggregateFieldName: deviceUpgradesByOldDeviceIdAggregate

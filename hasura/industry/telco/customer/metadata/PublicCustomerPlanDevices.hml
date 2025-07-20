@@ -46,6 +46,13 @@ definition:
           - deviceId
           - deviceImei
           - simIccid
+    - role: customer
+      output:
+        allowedFields:
+          - customerPlanId
+          - deviceId
+          - deviceImei
+          - simIccid
 
 ---
 kind: BooleanExpressionType
@@ -64,7 +71,8 @@ definition:
           booleanExpressionType: CharacterVaryingBoolExp
         - fieldName: simIccid
           booleanExpressionType: CharacterVaryingBoolExp
-      comparableRelationships: []
+      comparableRelationships:
+        - relationshipName: customerPlan
   logicalOperators:
     enable: true
   isNull:
@@ -155,4 +163,52 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
+    - role: customer
+      select:
+        filter: 
+          relationship:
+            name: customerPlan
+            predicate: 
+              fieldComparison:
+                field: customerId
+                operator: _eq
+                value: 
+                  sessionVariable: x-hasura-user-id
+        allowSubscriptions: true
 
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customerPlan
+  sourceType: PublicCustomerPlanDevices
+  target:
+    model:
+      name: PublicCustomerPlans
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerPlanId
+      target:
+        modelField:
+          - fieldName: customerPlanId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: device
+  sourceType: PublicCustomerPlanDevices
+  target:
+    model:
+      name: PublicDevices
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: deviceId
+      target:
+        modelField:
+          - fieldName: deviceId

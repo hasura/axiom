@@ -100,6 +100,19 @@ definition:
           - smsLimit
           - type
           - voiceLimitMinutes
+    - role: customer
+      output:
+        allowedFields:
+          - dataLimitGb
+          - description
+          - internationalRoaming
+          - monthlyFee
+          - planName
+          - roamingCountries
+          - roamingDataGb
+          - roamingVoiceMinutes
+          - smsLimit
+          - voiceLimitMinutes
 
 ---
 kind: BooleanExpressionType
@@ -136,7 +149,9 @@ definition:
           booleanExpressionType: TextBoolExp
         - fieldName: voiceLimitMinutes
           booleanExpressionType: IntegerBoolExp
-      comparableRelationships: []
+      comparableRelationships:
+        - relationshipName: customerPlans
+        - relationshipName: iotDevices
   logicalOperators:
     enable: true
   isNull:
@@ -262,4 +277,60 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
+    - role: customer
+      select:
+        filter: 
+          relationship:
+            name: customerPlans
+            predicate: 
+              fieldComparison:
+                field: customerId
+                operator: _eq
+                value: 
+                  sessionVariable: x-hasura-user-id
+        allowSubscriptions: true
 
+---
+kind: Relationship
+version: v1
+definition:
+  name: customerPlans
+  sourceType: PublicPlans
+  target:
+    model:
+      name: PublicCustomerPlans
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: PublicCustomerPlansAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: planId
+      target:
+        modelField:
+          - fieldName: planId
+  graphql:
+    aggregateFieldName: customerPlansAggregate
+
+---
+
+kind: Relationship
+version: v1
+definition:
+  name: iotDevices
+  sourceType: PublicPlans
+  target:
+    model:
+      name: PublicIotDevices
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: PublicIotDevicesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: planId
+      target:
+        modelField:
+          - fieldName: dataPlanId
+  graphql:
+    aggregateFieldName: iotDevicesAggregate

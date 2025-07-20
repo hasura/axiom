@@ -82,6 +82,18 @@ definition:
           - rolloverDataGb
           - startDate
           - status
+    - role: customer
+      output:
+        allowedFields:
+          - cellNumber
+          - customerId
+          - dataAllocationGb
+          - dataUsedGb
+          - endDate
+          - planId
+          - rolloverDataGb
+          - startDate
+          - status
 
 ---
 kind: BooleanExpressionType
@@ -225,5 +237,14 @@ definition:
     - role: admin
       select:
         filter: null
+        allowSubscriptions: true
+    - role: customer
+      select:
+        filter: 
+          fieldComparison:
+            field: customerId
+            operator: _eq
+            value: 
+              sessionVariable: x-hasura-user-id
         allowSubscriptions: true
 
