@@ -3,13 +3,15 @@ version: v2
 definition:
   name: operations
   subgraph: patient_ops
-  source: hasura/postgres:v2.0.0
+  source: hasura/postgres-promptql:v1.2.6
   context: .
   envMapping:
-    CONNECTION_URI:
-      fromEnv: PATIENT_OPS_OPERATIONS_CONNECTION_URI
+    HASURA_CONNECTOR_PORT:
+      fromEnv: PATIENT_OPS_OPERATIONS_HASURA_CONNECTOR_PORT
     HASURA_SERVICE_TOKEN_SECRET:
       fromEnv: PATIENT_OPS_OPERATIONS_HASURA_SERVICE_TOKEN_SECRET
+    JDBC_URL:
+      fromEnv: PATIENT_OPS_OPERATIONS_JDBC_URL
     OTEL_EXPORTER_OTLP_ENDPOINT:
       fromEnv: PATIENT_OPS_OPERATIONS_OTEL_EXPORTER_OTLP_ENDPOINT
     OTEL_SERVICE_NAME:

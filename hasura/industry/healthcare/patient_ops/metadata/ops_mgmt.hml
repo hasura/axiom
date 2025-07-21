@@ -12,124 +12,131 @@ definition:
     Authorization:
       valueFromEnv: PATIENT_OPS_OPS_MGMT_AUTHORIZATION_HEADER
   schema:
-    version: v0.1
+    version: v0.2
     schema:
-      scalar_types:
-        Float:
-          representation:
-            type: float64
-          aggregate_functions: {}
-          comparison_operators:
-            _eq:
-              type: equal
-        String:
-          representation:
-            type: string
-          aggregate_functions: {}
-          comparison_operators:
-            _eq:
-              type: equal
+      collections: []
+      functions: []
       object_types:
         CaseReassignmentResponse:
           fields:
             caseId:
               type:
-                type: named
                 name: Float
+                type: named
             reassignmentId:
               type:
                 type: nullable
                 underlying_type:
-                  type: named
                   name: String
+                  type: named
             status:
               type:
-                type: named
                 name: String
+                type: named
+          foreign_keys: {}
         CaseReviewMarkingResponse:
           fields:
             caseId:
               type:
-                type: named
                 name: Float
+                type: named
             reviewId:
               type:
                 type: nullable
                 underlying_type:
-                  type: named
                   name: String
+                  type: named
             status:
               type:
-                type: named
                 name: String
+                type: named
+          foreign_keys: {}
         CaseRiskMarkingResponse:
           fields:
             caseId:
               type:
-                type: named
                 name: Float
+                type: named
             riskId:
               type:
                 type: nullable
                 underlying_type:
-                  type: named
                   name: String
+                  type: named
             status:
               type:
-                type: named
                 name: String
+                type: named
+          foreign_keys: {}
         CaseUrgencyUpdateResponse:
           fields:
             caseId:
               type:
-                type: named
                 name: Float
+                type: named
             status:
               type:
-                type: named
                 name: String
+                type: named
             updateId:
               type:
                 type: nullable
                 underlying_type:
-                  type: named
                   name: String
+                  type: named
+          foreign_keys: {}
         EmergencySlotBlockResponse:
           fields:
             blockId:
               type:
                 type: nullable
                 underlying_type:
-                  type: named
                   name: String
+                  type: named
             slotId:
               type:
-                type: named
                 name: Float
+                type: named
             status:
               type:
-                type: named
                 name: String
+                type: named
+          foreign_keys: {}
         OperatorAvailabilityResponse:
           fields:
             adjustmentId:
               type:
                 type: nullable
                 underlying_type:
-                  type: named
                   name: String
+                  type: named
             operatorId:
               type:
-                type: named
                 name: String
+                type: named
             status:
               type:
-                type: named
                 name: String
-      collections: []
-      functions: []
+                type: named
+          foreign_keys: {}
       procedures:
-        - name: reassignCase
+        - arguments:
+            caseId:
+              type:
+                name: Float
+                type: named
+            newOperatorId:
+              type:
+                name: String
+                type: named
+            previousOperatorId:
+              type:
+                name: String
+                type: named
+            reason:
+              type:
+                name: String
+                type: named
           description: |-
             **Description:**
             This function reassigns a case to a new operator due to workload balancing, availability, or expertise alignment.
@@ -138,27 +145,27 @@ definition:
             - When an operator is overloaded or unavailable.
             - To optimize case distribution for efficiency.
             - When a specialist is required for a complex case.
-          arguments:
-            caseId:
+          name: reassignCase
+          result_type:
+            name: CaseReassignmentResponse
+            type: named
+        - arguments:
+            endTime:
               type:
-                type: named
-                name: Float
-            newOperatorId:
-              type:
-                type: named
                 name: String
-            previousOperatorId:
-              type:
                 type: named
-                name: String
             reason:
               type:
-                type: named
                 name: String
-          result_type:
-            type: named
-            name: CaseReassignmentResponse
-        - name: blockEmergencySlot
+                type: named
+            slotId:
+              type:
+                name: Float
+                type: named
+            startTime:
+              type:
+                name: String
+                type: named
           description: |-
             **Description:**
             Blocks out emergency slots to prioritize urgent procedures or critical patient care.
@@ -166,27 +173,31 @@ definition:
             **When to Call:**
             - When an unexpected emergency arises requiring an open time slot.
             - To manage hospital or clinic workflow more efficiently.
-          arguments:
-            endTime:
+          name: blockEmergencySlot
+          result_type:
+            name: EmergencySlotBlockResponse
+            type: named
+        - arguments:
+            newEndTime:
               type:
-                type: named
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            newStartTime:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            operatorId:
+              type:
                 name: String
+                type: named
             reason:
               type:
-                type: named
                 name: String
-            slotId:
-              type:
                 type: named
-                name: Float
-            startTime:
-              type:
-                type: named
-                name: String
-          result_type:
-            type: named
-            name: EmergencySlotBlockResponse
-        - name: adjustOperatorAvailability
           description: |-
             **Description:**
             Adjusts an operator's available hours due to schedule changes, emergencies, or workload balancing.
@@ -194,31 +205,23 @@ definition:
             **When to Call:**
             - To accommodate an operator’s shift adjustment.
             - To align available capacity with case demand.
-          arguments:
-            newEndTime:
+          name: adjustOperatorAvailability
+          result_type:
+            name: OperatorAvailabilityResponse
+            type: named
+        - arguments:
+            caseId:
               type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: String
-            newStartTime:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: String
-            operatorId:
-              type:
+                name: Float
                 type: named
-                name: String
             reason:
               type:
-                type: named
                 name: String
-          result_type:
-            type: named
-            name: OperatorAvailabilityResponse
-        - name: markCaseAtRisk
+                type: named
+            riskLevel:
+              type:
+                name: String
+                type: named
           description: |-
             **Description:**
             Marks a case as at-risk due to potential delays, complexity, or patient conditions requiring urgent attention.
@@ -226,23 +229,27 @@ definition:
             **When to Call:**
             - When there is a risk of SLA non-compliance.
             - When a patient’s condition changes, increasing urgency.
-          arguments:
+          name: markCaseAtRisk
+          result_type:
+            name: CaseRiskMarkingResponse
+            type: named
+        - arguments:
             caseId:
               type:
-                type: named
                 name: Float
+                type: named
+            newUrgency:
+              type:
+                name: String
+                type: named
+            previousUrgency:
+              type:
+                name: String
+                type: named
             reason:
               type:
-                type: named
                 name: String
-            riskLevel:
-              type:
                 type: named
-                name: String
-          result_type:
-            type: named
-            name: CaseRiskMarkingResponse
-        - name: updateCaseUrgency
           description: |-
             **Description:**
             Updates a case's urgency level to reflect changing patient conditions or operational requirements.
@@ -250,27 +257,23 @@ definition:
             **When to Call:**
             - When a case’s urgency escalates or de-escalates due to new information.
             - To ensure proper prioritization in scheduling.
-          arguments:
+          name: updateCaseUrgency
+          result_type:
+            name: CaseUrgencyUpdateResponse
+            type: named
+        - arguments:
             caseId:
               type:
-                type: named
                 name: Float
-            newUrgency:
-              type:
                 type: named
-                name: String
-            previousUrgency:
-              type:
-                type: named
-                name: String
             reason:
               type:
-                type: named
                 name: String
-          result_type:
-            type: named
-            name: CaseUrgencyUpdateResponse
-        - name: markCaseForReview
+                type: named
+            reviewerId:
+              type:
+                name: Float
+                type: named
           description: |-
             **Description:**
             Marks a case for review by a designated reviewer to ensure compliance, accuracy, or additional assessment.
@@ -278,26 +281,29 @@ definition:
             **When to Call:**
             - When a case requires further evaluation.
             - To confirm that the right decisions and treatments are being followed.
-          arguments:
-            caseId:
-              type:
-                type: named
-                name: Float
-            reason:
-              type:
-                type: named
-                name: String
-            reviewerId:
-              type:
-                type: named
-                name: Float
+          name: markCaseForReview
           result_type:
-            type: named
             name: CaseReviewMarkingResponse
+            type: named
+      scalar_types:
+        Float:
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+          representation:
+            type: float64
+        String:
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+          representation:
+            type: string
     capabilities:
-      version: 0.1.6
       capabilities:
-        query:
-          variables: {}
-          nested_fields: {}
         mutation: {}
+        query:
+          nested_fields: {}
+          variables: {}
+      version: 0.2.0

@@ -2,34 +2,35 @@
 kind: ObjectType
 version: v1
 definition:
-  name: Cases
+  name: PublicCases
+  description: "Object type for public.cases. Description: null"
   fields:
     - name: caseId
-      type: Int4!
+      type: Int32!
     - name: clinicId
-      type: Varchar!
+      type: String_1!
     - name: createdAt
       type: Timestamp
     - name: operatorId
-      type: Varchar
+      type: String_1
     - name: patientId
-      type: Varchar
+      type: String_1
     - name: procedureCode
-      type: Varchar
+      type: String_1
     - name: recommendedDate
       type: Timestamp!
     - name: region
-      type: Varchar
+      type: String_1
     - name: status
-      type: Varchar
+      type: String_1
     - name: urgencyLevel
-      type: Varchar
+      type: String_1
   graphql:
-    typeName: Cases
-    inputTypeName: CasesInput
+    typeName: PublicCases
+    inputTypeName: PublicCasesInput
   dataConnectorTypeMapping:
     - dataConnectorName: operations
-      dataConnectorObjectType: cases
+      dataConnectorObjectType: public.cases
       fieldMapping:
         caseId:
           column:
@@ -66,7 +67,7 @@ definition:
 kind: TypePermissions
 version: v1
 definition:
-  typeName: Cases
+  typeName: PublicCases
   permissions:
     - role: admin
       output:
@@ -86,163 +87,143 @@ definition:
 kind: BooleanExpressionType
 version: v1
 definition:
-  name: CasesBoolExp
+  name: PublicCasesBoolExp
   operand:
     object:
-      type: Cases
+      type: PublicCases
       comparableFields:
         - fieldName: caseId
-          booleanExpressionType: Int4BoolExp
+          booleanExpressionType: IntegerBoolExp
         - fieldName: clinicId
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: CharacterVaryingBoolExp_1
         - fieldName: createdAt
-          booleanExpressionType: TimestampBoolExp
+          booleanExpressionType: TimestampWithoutTimeZoneBoolExp
         - fieldName: operatorId
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: CharacterVaryingBoolExp_1
         - fieldName: patientId
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: CharacterVaryingBoolExp_1
         - fieldName: procedureCode
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: CharacterVaryingBoolExp_1
         - fieldName: recommendedDate
-          booleanExpressionType: TimestampBoolExp
+          booleanExpressionType: TimestampWithoutTimeZoneBoolExp
         - fieldName: region
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: CharacterVaryingBoolExp_1
         - fieldName: status
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: CharacterVaryingBoolExp_1
         - fieldName: urgencyLevel
-          booleanExpressionType: VarcharBoolExp
-      comparableRelationships:
-        - relationshipName: operator
+          booleanExpressionType: CharacterVaryingBoolExp_1
+      comparableRelationships: []
   logicalOperators:
     enable: true
   isNull:
     enable: true
   graphql:
-    typeName: CasesBoolExp
+    typeName: PublicCasesBoolExp
 
 ---
 kind: AggregateExpression
 version: v1
 definition:
-  name: CasesAggExp
+  name: PublicCasesAggExp
   operand:
     object:
-      aggregatedType: Cases
+      aggregatedType: PublicCases
       aggregatableFields:
         - fieldName: caseId
-          aggregateExpression: Int4AggExp
+          aggregateExpression: IntegerAggExp
         - fieldName: clinicId
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: CharacterVaryingAggExp_1
         - fieldName: createdAt
-          aggregateExpression: TimestampAggExp
+          aggregateExpression: TimestampWithoutTimeZoneAggExp
         - fieldName: operatorId
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: CharacterVaryingAggExp_1
         - fieldName: patientId
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: CharacterVaryingAggExp_1
         - fieldName: procedureCode
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: CharacterVaryingAggExp_1
         - fieldName: recommendedDate
-          aggregateExpression: TimestampAggExp
+          aggregateExpression: TimestampWithoutTimeZoneAggExp
         - fieldName: region
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: CharacterVaryingAggExp_1
         - fieldName: status
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: CharacterVaryingAggExp_1
         - fieldName: urgencyLevel
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: CharacterVaryingAggExp_1
   count:
     enable: true
   graphql:
-    selectTypeName: CasesAggExp
+    selectTypeName: PublicCasesAggExp
 
 ---
 kind: OrderByExpression
 version: v1
 definition:
-  name: CasesOrderByExp
+  name: PublicCasesOrderByExp
   operand:
     object:
-      orderedType: Cases
+      orderedType: PublicCases
       orderableFields:
         - fieldName: caseId
-          orderByExpression: Int4OrderByExp
+          orderByExpression: Int32OrderByExp
         - fieldName: clinicId
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: String1OrderByExp
         - fieldName: createdAt
           orderByExpression: TimestampOrderByExp
         - fieldName: operatorId
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: String1OrderByExp
         - fieldName: patientId
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: String1OrderByExp
         - fieldName: procedureCode
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: String1OrderByExp
         - fieldName: recommendedDate
           orderByExpression: TimestampOrderByExp
         - fieldName: region
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: String1OrderByExp
         - fieldName: status
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: String1OrderByExp
         - fieldName: urgencyLevel
-          orderByExpression: VarcharOrderByExp
-      orderableRelationships:
-        - relationshipName: operator
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
   graphql:
-    expressionTypeName: CasesOrderByExp
+    expressionTypeName: PublicCasesOrderByExp
 
 ---
 kind: Model
 version: v2
 definition:
-  name: Cases
-  objectType: Cases
+  name: PublicCases
+  objectType: PublicCases
   source:
     dataConnectorName: operations
-    collection: cases
-  filterExpressionType: CasesBoolExp
-  aggregateExpression: CasesAggExp
-  orderByExpression: CasesOrderByExp
+    collection: public.cases
+  filterExpressionType: PublicCasesBoolExp
+  aggregateExpression: PublicCasesAggExp
+  orderByExpression: PublicCasesOrderByExp
   graphql:
     selectMany:
-      queryRootField: cases
+      queryRootField: publicCases
       subscription:
-        rootField: cases
+        rootField: publicCases
     selectUniques:
-      - queryRootField: casesByCaseId
+      - queryRootField: publicCasesByCaseId
         uniqueIdentifier:
           - caseId
         subscription:
-          rootField: casesByCaseId
-    filterInputTypeName: CasesFilterInput
+          rootField: publicCasesByCaseId
+    filterInputTypeName: PublicCasesFilterInput
     aggregate:
-      queryRootField: casesAggregate
+      queryRootField: publicCasesAggregate
       subscription:
-        rootField: casesAggregate
+        rootField: publicCasesAggregate
 
 ---
 kind: ModelPermissions
 version: v1
 definition:
-  modelName: Cases
+  modelName: PublicCases
   permissions:
     - role: admin
       select:
         filter: null
         allowSubscriptions: true
-
----
-kind: Relationship
-version: v1
-definition:
-  name: operator
-  sourceType: Cases
-  target:
-    model:
-      name: Operators
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: operatorId
-      target:
-        modelField:
-          - fieldName: operatorId
 

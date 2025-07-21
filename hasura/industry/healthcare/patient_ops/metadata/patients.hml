@@ -12,801 +12,1594 @@ definition:
     Authorization:
       valueFromEnv: PATIENT_OPS_PATIENTS_AUTHORIZATION_HEADER
   schema:
-    version: v0.1
+    version: v0.2
     schema:
-      scalar_types:
-        date:
-          representation:
-            type: date
-          aggregate_functions:
-            max:
-              result_type:
-                type: nullable
-                underlying_type:
-                  name: date
-                  type: named
-            min:
-              result_type:
-                type: nullable
-                underlying_type:
-                  name: date
-                  type: named
-          comparison_operators:
-            _eq:
-              type: equal
-            _gt:
-              type: custom
-              argument_type:
-                name: date
-                type: named
-            _gte:
-              type: custom
-              argument_type:
-                name: date
-                type: named
-            _in:
-              type: in
-            _lt:
-              type: custom
-              argument_type:
-                name: date
-                type: named
-            _lte:
-              type: custom
-              argument_type:
-                name: date
-                type: named
-            _neq:
-              type: custom
-              argument_type:
-                name: date
-                type: named
-        int4:
-          representation:
-            type: int32
-          aggregate_functions: {}
-          comparison_operators: {}
-        text:
-          representation:
-            type: string
-          aggregate_functions:
-            max:
-              result_type:
-                type: nullable
-                underlying_type:
-                  name: text
-                  type: named
-            min:
-              result_type:
-                type: nullable
-                underlying_type:
-                  name: text
-                  type: named
-          comparison_operators:
-            _eq:
-              type: equal
-            _gt:
-              type: custom
-              argument_type:
-                name: text
-                type: named
-            _gte:
-              type: custom
-              argument_type:
-                name: text
-                type: named
-            _ilike:
-              type: custom
-              argument_type:
-                name: text
-                type: named
-            _in:
-              type: in
-            _iregex:
-              type: custom
-              argument_type:
-                name: text
-                type: named
-            _like:
-              type: custom
-              argument_type:
-                name: text
-                type: named
-            _lt:
-              type: custom
-              argument_type:
-                name: text
-                type: named
-            _lte:
-              type: custom
-              argument_type:
-                name: text
-                type: named
-            _neq:
-              type: custom
-              argument_type:
-                name: text
-                type: named
-            _nilike:
-              type: custom
-              argument_type:
-                name: text
-                type: named
-            _niregex:
-              type: custom
-              argument_type:
-                name: text
-                type: named
-            _nlike:
-              type: custom
-              argument_type:
-                name: text
-                type: named
-            _nregex:
-              type: custom
-              argument_type:
-                name: text
-                type: named
-            _regex:
-              type: custom
-              argument_type:
-                name: text
-                type: named
-            starts_with:
-              type: custom
-              argument_type:
-                name: text
-                type: named
-            ts_match_tt:
-              type: custom
-              argument_type:
-                name: text
-                type: named
-        varchar:
-          representation:
-            type: string
-          aggregate_functions:
-            max:
-              result_type:
-                type: nullable
-                underlying_type:
-                  name: text
-                  type: named
-            min:
-              result_type:
-                type: nullable
-                underlying_type:
-                  name: text
-                  type: named
-          comparison_operators:
-            _eq:
-              type: equal
-            _gt:
-              type: custom
-              argument_type:
-                name: varchar
-                type: named
-            _gte:
-              type: custom
-              argument_type:
-                name: varchar
-                type: named
-            _ilike:
-              type: custom
-              argument_type:
-                name: varchar
-                type: named
-            _in:
-              type: in
-            _iregex:
-              type: custom
-              argument_type:
-                name: varchar
-                type: named
-            _like:
-              type: custom
-              argument_type:
-                name: varchar
-                type: named
-            _lt:
-              type: custom
-              argument_type:
-                name: varchar
-                type: named
-            _lte:
-              type: custom
-              argument_type:
-                name: varchar
-                type: named
-            _neq:
-              type: custom
-              argument_type:
-                name: varchar
-                type: named
-            _nilike:
-              type: custom
-              argument_type:
-                name: varchar
-                type: named
-            _niregex:
-              type: custom
-              argument_type:
-                name: varchar
-                type: named
-            _nlike:
-              type: custom
-              argument_type:
-                name: varchar
-                type: named
-            _nregex:
-              type: custom
-              argument_type:
-                name: varchar
-                type: named
-            _regex:
-              type: custom
-              argument_type:
-                name: varchar
-                type: named
-            starts_with:
-              type: custom
-              argument_type:
-                name: varchar
-                type: named
-            ts_match_tt:
-              type: custom
-              argument_type:
-                name: varchar
-                type: named
-      object_types:
-        delete_insurance_plans_by_plan_id_response:
-          description: Responses from the 'delete_insurance_plans_by_plan_id' procedure
-          fields:
-            affected_rows:
-              description: The number of rows affected by the mutation
-              type:
-                name: int4
-                type: named
-            returning:
-              description: Data from rows affected by the mutation
-              type:
-                element_type:
-                  name: insurance_plans
-                  type: named
-                type: array
-        delete_patients_by_patient_id_response:
-          description: Responses from the 'delete_patients_by_patient_id' procedure
-          fields:
-            affected_rows:
-              description: The number of rows affected by the mutation
-              type:
-                name: int4
-                type: named
-            returning:
-              description: Data from rows affected by the mutation
-              type:
-                element_type:
-                  name: patients
-                  type: named
-                type: array
-        insert_insurance_plans_object:
-          fields:
-            payer_name:
-              type:
-                type: nullable
-                underlying_type:
-                  name: varchar
-                  type: named
-            plan_id:
-              type:
-                name: varchar
-                type: named
-            plan_name:
-              type:
-                type: nullable
-                underlying_type:
-                  name: varchar
-                  type: named
-        insert_insurance_plans_response:
-          description: Responses from the 'insert_insurance_plans' procedure
-          fields:
-            affected_rows:
-              description: The number of rows affected by the mutation
-              type:
-                name: int4
-                type: named
-            returning:
-              description: Data from rows affected by the mutation
-              type:
-                element_type:
-                  name: insurance_plans
-                  type: named
-                type: array
-        insert_patients_object:
-          fields:
-            date_of_birth:
-              type:
-                type: nullable
-                underlying_type:
-                  name: date
-                  type: named
-            first_name:
-              type:
-                type: nullable
-                underlying_type:
-                  name: varchar
-                  type: named
-            insurance_plan_id:
-              type:
-                type: nullable
-                underlying_type:
-                  name: varchar
-                  type: named
-            last_name:
-              type:
-                type: nullable
-                underlying_type:
-                  name: varchar
-                  type: named
-            patient_creditcard:
-              type:
-                type: nullable
-                underlying_type:
-                  name: varchar
-                  type: named
-            patient_id:
-              type:
-                name: varchar
-                type: named
-            patient_ssn:
-              type:
-                type: nullable
-                underlying_type:
-                  name: varchar
-                  type: named
-        insert_patients_response:
-          description: Responses from the 'insert_patients' procedure
-          fields:
-            affected_rows:
-              description: The number of rows affected by the mutation
-              type:
-                name: int4
-                type: named
-            returning:
-              description: Data from rows affected by the mutation
-              type:
-                element_type:
-                  name: patients
-                  type: named
-                type: array
-        insurance_plans:
-          fields:
-            payer_name:
-              type:
-                type: nullable
-                underlying_type:
-                  name: varchar
-                  type: named
-            plan_id:
-              type:
-                name: varchar
-                type: named
-            plan_name:
-              type:
-                type: nullable
-                underlying_type:
-                  name: varchar
-                  type: named
-        patients:
-          fields:
-            date_of_birth:
-              type:
-                type: nullable
-                underlying_type:
-                  name: date
-                  type: named
-            first_name:
-              type:
-                type: nullable
-                underlying_type:
-                  name: varchar
-                  type: named
-            insurance_plan_id:
-              type:
-                type: nullable
-                underlying_type:
-                  name: varchar
-                  type: named
-            last_name:
-              type:
-                type: nullable
-                underlying_type:
-                  name: varchar
-                  type: named
-            patient_creditcard:
-              type:
-                type: nullable
-                underlying_type:
-                  name: varchar
-                  type: named
-            patient_id:
-              type:
-                name: varchar
-                type: named
-            patient_ssn:
-              type:
-                type: nullable
-                underlying_type:
-                  name: varchar
-                  type: named
-        update_column_insurance_plans_payer_name:
-          description: Update the 'payer_name' column in the 'insurance_plans' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  name: varchar
-                  type: named
-        update_column_insurance_plans_plan_id:
-          description: Update the 'plan_id' column in the 'insurance_plans' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                name: varchar
-                type: named
-        update_column_insurance_plans_plan_name:
-          description: Update the 'plan_name' column in the 'insurance_plans' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  name: varchar
-                  type: named
-        update_column_patients_date_of_birth:
-          description: Update the 'date_of_birth' column in the 'patients' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  name: date
-                  type: named
-        update_column_patients_first_name:
-          description: Update the 'first_name' column in the 'patients' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  name: varchar
-                  type: named
-        update_column_patients_insurance_plan_id:
-          description: Update the 'insurance_plan_id' column in the 'patients' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  name: varchar
-                  type: named
-        update_column_patients_last_name:
-          description: Update the 'last_name' column in the 'patients' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  name: varchar
-                  type: named
-        update_column_patients_patient_creditcard:
-          description: Update the 'patient_creditcard' column in the 'patients' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  name: varchar
-                  type: named
-        update_column_patients_patient_id:
-          description: Update the 'patient_id' column in the 'patients' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                name: varchar
-                type: named
-        update_column_patients_patient_ssn:
-          description: Update the 'patient_ssn' column in the 'patients' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  name: varchar
-                  type: named
-        update_insurance_plans_by_plan_id_response:
-          description: Responses from the 'update_insurance_plans_by_plan_id' procedure
-          fields:
-            affected_rows:
-              description: The number of rows affected by the mutation
-              type:
-                name: int4
-                type: named
-            returning:
-              description: Data from rows affected by the mutation
-              type:
-                element_type:
-                  name: insurance_plans
-                  type: named
-                type: array
-        update_insurance_plans_by_plan_id_update_columns:
-          description: Update the columns of the 'insurance_plans' collection
-          fields:
-            payer_name:
-              description: Update the 'payer_name' column in the 'insurance_plans' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  name: update_column_insurance_plans_payer_name
-                  type: named
-            plan_id:
-              description: Update the 'plan_id' column in the 'insurance_plans' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  name: update_column_insurance_plans_plan_id
-                  type: named
-            plan_name:
-              description: Update the 'plan_name' column in the 'insurance_plans' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  name: update_column_insurance_plans_plan_name
-                  type: named
-        update_patients_by_patient_id_response:
-          description: Responses from the 'update_patients_by_patient_id' procedure
-          fields:
-            affected_rows:
-              description: The number of rows affected by the mutation
-              type:
-                name: int4
-                type: named
-            returning:
-              description: Data from rows affected by the mutation
-              type:
-                element_type:
-                  name: patients
-                  type: named
-                type: array
-        update_patients_by_patient_id_update_columns:
-          description: Update the columns of the 'patients' collection
-          fields:
-            date_of_birth:
-              description: Update the 'date_of_birth' column in the 'patients' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  name: update_column_patients_date_of_birth
-                  type: named
-            first_name:
-              description: Update the 'first_name' column in the 'patients' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  name: update_column_patients_first_name
-                  type: named
-            insurance_plan_id:
-              description: Update the 'insurance_plan_id' column in the 'patients' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  name: update_column_patients_insurance_plan_id
-                  type: named
-            last_name:
-              description: Update the 'last_name' column in the 'patients' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  name: update_column_patients_last_name
-                  type: named
-            patient_creditcard:
-              description: Update the 'patient_creditcard' column in the 'patients' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  name: update_column_patients_patient_creditcard
-                  type: named
-            patient_id:
-              description: Update the 'patient_id' column in the 'patients' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  name: update_column_patients_patient_id
-                  type: named
-            patient_ssn:
-              description: Update the 'patient_ssn' column in the 'patients' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  name: update_column_patients_patient_ssn
-                  type: named
       collections:
-        - name: insurance_plans
-          arguments: {}
-          type: insurance_plans
+        - arguments: {}
+          name: public.insurance_plans
+          type: public.insurance_plans
           uniqueness_constraints:
-            insurance_plans_pkey:
+            primary_key:
               unique_columns:
                 - plan_id
-          foreign_keys: {}
-        - name: patients
-          arguments: {}
-          type: patients
+        - arguments: {}
+          name: public.patients
+          type: public.patients
           uniqueness_constraints:
-            patients_pkey:
+            primary_key:
               unique_columns:
                 - patient_id
-          foreign_keys:
-            patients_insurance_plan_id_fkey:
-              column_mapping:
-                insurance_plan_id: plan_id
-              foreign_collection: insurance_plans
       functions: []
+      object_types:
+        bigint_set_input:
+          description: Wrapper for setting scalar bigint
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar bigint
+              type:
+                type: nullable
+                underlying_type:
+                  name: bigint
+                  type: named
+          foreign_keys: {}
+        character_varying_set_input:
+          description: Wrapper for setting scalar character_varying
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar character_varying
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+          foreign_keys: {}
+        date_set_input:
+          description: Wrapper for setting scalar date
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar date
+              type:
+                type: nullable
+                underlying_type:
+                  name: date
+                  type: named
+          foreign_keys: {}
+        decimal_set_input:
+          description: Wrapper for setting scalar decimal
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar decimal
+              type:
+                type: nullable
+                underlying_type:
+                  name: decimal
+                  type: named
+          foreign_keys: {}
+        delete_public.insurance_plans_result:
+          description: delete from public.insurance_plans result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by delete
+              type:
+                element_type:
+                  name: public.insurance_plans
+                  type: named
+                type: array
+          foreign_keys: {}
+        delete_public.patients_result:
+          description: delete from public.patients result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by delete
+              type:
+                element_type:
+                  name: public.patients
+                  type: named
+                type: array
+          foreign_keys: {}
+        insert_public.insurance_plans_result:
+          description: insert from public.insurance_plans result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by insert
+              type:
+                element_type:
+                  name: public.insurance_plans
+                  type: named
+                type: array
+          foreign_keys: {}
+        insert_public.patients_result:
+          description: insert from public.patients result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by insert
+              type:
+                element_type:
+                  name: public.patients
+                  type: named
+                type: array
+          foreign_keys: {}
+        int_set_input:
+          description: Wrapper for setting scalar int
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar int
+              type:
+                type: nullable
+                underlying_type:
+                  name: int
+                  type: named
+          foreign_keys: {}
+        public.insurance_plans:
+          description: 'Object type for public.insurance_plans. Description: null'
+          fields:
+            payer_name:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+            plan_id:
+              arguments: {}
+              type:
+                name: character_varying
+                type: named
+            plan_name:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+          foreign_keys: {}
+        public.insurance_plans_insert_input:
+          description: Input type for inserting into public.insurance_plans
+          fields:
+            payer_name:
+              arguments: {}
+              description: New value for public.insurance_plans.payer_name
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+            plan_id:
+              arguments: {}
+              description: New value for public.insurance_plans.plan_id
+              type:
+                name: character_varying
+                type: named
+            plan_name:
+              arguments: {}
+              description: New value for public.insurance_plans.plan_name
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+          foreign_keys: {}
+        public.insurance_plans_set_input:
+          description: Input type for updating public.insurance_plans
+          fields:
+            payer_name:
+              arguments: {}
+              description: New value wrapper for public.insurance_plans.payer_name
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying_set_input
+                  type: named
+            plan_id:
+              arguments: {}
+              description: New value wrapper for public.insurance_plans.plan_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying_set_input
+                  type: named
+            plan_name:
+              arguments: {}
+              description: New value wrapper for public.insurance_plans.plan_name
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying_set_input
+                  type: named
+          foreign_keys: {}
+        public.patients:
+          description: 'Object type for public.patients. Description: null'
+          fields:
+            date_of_birth:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: date
+                  type: named
+            first_name:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+            insurance_plan_id:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+            last_name:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+            patient_creditcard:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+            patient_id:
+              arguments: {}
+              type:
+                name: character_varying
+                type: named
+            patient_ssn:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+          foreign_keys: {}
+        public.patients_insert_input:
+          description: Input type for inserting into public.patients
+          fields:
+            date_of_birth:
+              arguments: {}
+              description: New value for public.patients.date_of_birth
+              type:
+                type: nullable
+                underlying_type:
+                  name: date
+                  type: named
+            first_name:
+              arguments: {}
+              description: New value for public.patients.first_name
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+            insurance_plan_id:
+              arguments: {}
+              description: New value for public.patients.insurance_plan_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+            last_name:
+              arguments: {}
+              description: New value for public.patients.last_name
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+            patient_creditcard:
+              arguments: {}
+              description: New value for public.patients.patient_creditcard
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+            patient_id:
+              arguments: {}
+              description: New value for public.patients.patient_id
+              type:
+                name: character_varying
+                type: named
+            patient_ssn:
+              arguments: {}
+              description: New value for public.patients.patient_ssn
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+          foreign_keys: {}
+        public.patients_set_input:
+          description: Input type for updating public.patients
+          fields:
+            date_of_birth:
+              arguments: {}
+              description: New value wrapper for public.patients.date_of_birth
+              type:
+                type: nullable
+                underlying_type:
+                  name: date_set_input
+                  type: named
+            first_name:
+              arguments: {}
+              description: New value wrapper for public.patients.first_name
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying_set_input
+                  type: named
+            insurance_plan_id:
+              arguments: {}
+              description: New value wrapper for public.patients.insurance_plan_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying_set_input
+                  type: named
+            last_name:
+              arguments: {}
+              description: New value wrapper for public.patients.last_name
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying_set_input
+                  type: named
+            patient_creditcard:
+              arguments: {}
+              description: New value wrapper for public.patients.patient_creditcard
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying_set_input
+                  type: named
+            patient_id:
+              arguments: {}
+              description: New value wrapper for public.patients.patient_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying_set_input
+                  type: named
+            patient_ssn:
+              arguments: {}
+              description: New value wrapper for public.patients.patient_ssn
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying_set_input
+                  type: named
+          foreign_keys: {}
+        string_set_input:
+          description: Wrapper for setting scalar string
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar string
+              type:
+                type: nullable
+                underlying_type:
+                  name: string
+                  type: named
+          foreign_keys: {}
+        update_public.insurance_plans_result:
+          description: update from public.insurance_plans result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by update
+              type:
+                element_type:
+                  name: public.insurance_plans
+                  type: named
+                type: array
+          foreign_keys: {}
+        update_public.patients_result:
+          description: update from public.patients result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by update
+              type:
+                element_type:
+                  name: public.patients
+                  type: named
+                type: array
+          foreign_keys: {}
       procedures:
-        - name: delete_insurance_plans_by_plan_id
-          description: Delete any row on the 'insurance_plans' collection using the 'plan_id' key
-          arguments:
-            key_plan_id:
-              type:
-                name: varchar
-                type: named
-            pre_check:
-              description: Delete permission predicate over the 'insurance_plans' collection
-              type:
-                type: nullable
-                underlying_type:
-                  object_type_name: insurance_plans
-                  type: predicate
-          result_type:
-            name: delete_insurance_plans_by_plan_id_response
-            type: named
-        - name: delete_patients_by_patient_id
-          description: Delete any row on the 'patients' collection using the 'patient_id' key
-          arguments:
-            key_patient_id:
-              type:
-                name: varchar
-                type: named
-            pre_check:
-              description: Delete permission predicate over the 'patients' collection
-              type:
-                type: nullable
-                underlying_type:
-                  object_type_name: patients
-                  type: predicate
-          result_type:
-            name: delete_patients_by_patient_id_response
-            type: named
-        - name: insert_insurance_plans
-          description: Insert into the insurance_plans table
-          arguments:
+        - arguments:
             objects:
+              description: Objects to insert
               type:
                 element_type:
-                  name: insert_insurance_plans_object
+                  name: public.insurance_plans_insert_input
                   type: named
                 type: array
-            post_check:
-              description: Insert permission predicate over the 'insurance_plans' collection
+            returning:
+              description: Fields to return
               type:
                 type: nullable
                 underlying_type:
-                  object_type_name: insurance_plans
-                  type: predicate
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+          description: Insert into public.insurance_plans
+          name: insert_public.insurance_plans
           result_type:
-            name: insert_insurance_plans_response
+            name: insert_public.insurance_plans_result
             type: named
-        - name: insert_patients
-          description: Insert into the patients table
-          arguments:
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            set:
+              description: Values to set
+              type:
+                name: public.insurance_plans_set_input
+                type: named
+            where:
+              description: Filter for rows to update
+              type:
+                object_type_name: public.insurance_plans
+                type: predicate
+          description: Update public.insurance_plans
+          name: update_public.insurance_plans
+          result_type:
+            name: update_public.insurance_plans_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            where:
+              description: Filter for rows to delete
+              type:
+                object_type_name: public.insurance_plans
+                type: predicate
+          description: Delete from public.insurance_plans
+          name: delete_public.insurance_plans
+          result_type:
+            name: delete_public.insurance_plans_result
+            type: named
+        - arguments:
             objects:
+              description: Objects to insert
               type:
                 element_type:
-                  name: insert_patients_object
+                  name: public.patients_insert_input
                   type: named
                 type: array
-            post_check:
-              description: Insert permission predicate over the 'patients' collection
+            returning:
+              description: Fields to return
               type:
                 type: nullable
                 underlying_type:
-                  object_type_name: patients
-                  type: predicate
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+          description: Insert into public.patients
+          name: insert_public.patients
           result_type:
-            name: insert_patients_response
+            name: insert_public.patients_result
             type: named
-        - name: update_insurance_plans_by_plan_id
-          description: Update any row on the 'insurance_plans' collection using the 'plan_id' key
-          arguments:
-            key_plan_id:
-              type:
-                name: varchar
-                type: named
-            post_check:
-              description: Update permission post-condition predicate over the 'insurance_plans' collection
+        - arguments:
+            returning:
+              description: Fields to return
               type:
                 type: nullable
                 underlying_type:
-                  object_type_name: insurance_plans
-                  type: predicate
-            pre_check:
-              description: Update permission pre-condition predicate over the 'insurance_plans' collection
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            set:
+              description: Values to set
               type:
-                type: nullable
-                underlying_type:
-                  object_type_name: insurance_plans
-                  type: predicate
-            update_columns:
-              type:
-                name: update_insurance_plans_by_plan_id_update_columns
+                name: public.patients_set_input
                 type: named
+            where:
+              description: Filter for rows to update
+              type:
+                object_type_name: public.patients
+                type: predicate
+          description: Update public.patients
+          name: update_public.patients
           result_type:
-            name: update_insurance_plans_by_plan_id_response
+            name: update_public.patients_result
             type: named
-        - name: update_patients_by_patient_id
-          description: Update any row on the 'patients' collection using the 'patient_id' key
-          arguments:
-            key_patient_id:
-              type:
-                name: varchar
-                type: named
-            post_check:
-              description: Update permission post-condition predicate over the 'patients' collection
+        - arguments:
+            returning:
+              description: Fields to return
               type:
                 type: nullable
                 underlying_type:
-                  object_type_name: patients
-                  type: predicate
-            pre_check:
-              description: Update permission pre-condition predicate over the 'patients' collection
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            where:
+              description: Filter for rows to delete
               type:
-                type: nullable
-                underlying_type:
-                  object_type_name: patients
-                  type: predicate
-            update_columns:
-              type:
-                name: update_patients_by_patient_id_update_columns
-                type: named
+                object_type_name: public.patients
+                type: predicate
+          description: Delete from public.patients
+          name: delete_public.patients
           result_type:
-            name: update_patients_by_patient_id_response
+            name: delete_public.patients_result
             type: named
+      scalar_types:
+        bigint:
+          aggregate_functions:
+            avg:
+              result_type: decimal
+              type: average
+            max:
+              type: max
+            min:
+              type: min
+            stddev_pop:
+              result_type:
+                name: bigint
+                type: named
+              type: custom
+            stddev_samp:
+              result_type:
+                name: bigint
+                type: named
+              type: custom
+            sum:
+              result_type: bigint
+              type: sum
+            var_pop:
+              result_type:
+                name: bigint
+                type: named
+              type: custom
+            var_samp:
+              result_type:
+                name: bigint
+                type: named
+              type: custom
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _in:
+              type: in
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: bigint
+                type: named
+              type: custom
+          representation:
+            type: biginteger
+        character_varying:
+          aggregate_functions:
+            max:
+              type: max
+            min:
+              type: min
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _ilike:
+              type: contains_insensitive
+            _in:
+              type: in
+            _iregex:
+              argument_type:
+                name: character_varying
+                type: named
+              type: custom
+            _like:
+              type: contains
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: character_varying
+                type: named
+              type: custom
+            _nilike:
+              argument_type:
+                name: character_varying
+                type: named
+              type: custom
+            _niregex:
+              argument_type:
+                name: character_varying
+                type: named
+              type: custom
+            _nlike:
+              argument_type:
+                name: character_varying
+                type: named
+              type: custom
+            _nregex:
+              argument_type:
+                name: character_varying
+                type: named
+              type: custom
+            _regex:
+              argument_type:
+                name: character_varying
+                type: named
+              type: custom
+          representation:
+            type: string
+        date:
+          aggregate_functions:
+            max:
+              type: max
+            min:
+              type: min
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _in:
+              type: in
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: date
+                type: named
+              type: custom
+          representation:
+            type: date
+        decimal:
+          aggregate_functions:
+            avg:
+              result_type: decimal
+              type: average
+            max:
+              type: max
+            min:
+              type: min
+            stddev_pop:
+              result_type:
+                name: decimal
+                type: named
+              type: custom
+            stddev_samp:
+              result_type:
+                name: decimal
+                type: named
+              type: custom
+            sum:
+              result_type: decimal
+              type: sum
+            var_pop:
+              result_type:
+                name: decimal
+                type: named
+              type: custom
+            var_samp:
+              result_type:
+                name: decimal
+                type: named
+              type: custom
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _in:
+              type: in
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: decimal
+                type: named
+              type: custom
+          representation:
+            type: bigdecimal
+        int:
+          aggregate_functions:
+            avg:
+              result_type: decimal
+              type: average
+            max:
+              type: max
+            min:
+              type: min
+            stddev_pop:
+              result_type:
+                name: int
+                type: named
+              type: custom
+            stddev_samp:
+              result_type:
+                name: int
+                type: named
+              type: custom
+            sum:
+              result_type: bigint
+              type: sum
+            var_pop:
+              result_type:
+                name: int
+                type: named
+              type: custom
+            var_samp:
+              result_type:
+                name: int
+                type: named
+              type: custom
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _in:
+              type: in
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: int
+                type: named
+              type: custom
+          representation:
+            type: int32
+        string:
+          aggregate_functions:
+            max:
+              type: max
+            min:
+              type: min
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _ilike:
+              type: contains_insensitive
+            _in:
+              type: in
+            _iregex:
+              argument_type:
+                name: string
+                type: named
+              type: custom
+            _like:
+              type: contains
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: string
+                type: named
+              type: custom
+            _nilike:
+              argument_type:
+                name: string
+                type: named
+              type: custom
+            _niregex:
+              argument_type:
+                name: string
+                type: named
+              type: custom
+            _nlike:
+              argument_type:
+                name: string
+                type: named
+              type: custom
+            _nregex:
+              argument_type:
+                name: string
+                type: named
+              type: custom
+            _regex:
+              argument_type:
+                name: string
+                type: named
+              type: custom
+          representation:
+            type: string
     capabilities:
-      version: 0.1.6
       capabilities:
-        query:
-          aggregates: {}
-          variables: {}
-          explain: {}
-          nested_fields:
-            filter_by: {}
-            order_by: {}
-          exists:
-            nested_collections: {}
         mutation:
-          transactional: {}
           explain: {}
-        relationships:
-          relation_comparisons: {}
-          order_by_aggregate: {}
+          transactional: {}
+        query:
+          aggregates:
+            filter_by: {}
+          exists: {}
+          explain: {}
+          nested_fields: {}
+          variables: {}
+        relational_query:
+          aggregate:
+            expression:
+              aggregate:
+                approx_distinct: {}
+                approx_percentile_cont: {}
+                avg: {}
+                bool_and: {}
+                bool_or: {}
+                count:
+                  distinct: {}
+                first_value: {}
+                last_value: {}
+                max: {}
+                median: {}
+                min: {}
+                stddev: {}
+                stddev_pop: {}
+                string_agg: {}
+                sum: {}
+                var: {}
+              comparison:
+                between: {}
+                contains: {}
+                greater_than: {}
+                greater_than_eq: {}
+                ilike: {}
+                in_list: {}
+                is_false: {}
+                is_nan: {}
+                is_null: {}
+                is_true: {}
+                is_zero: {}
+                less_than: {}
+                less_than_eq: {}
+                like: {}
+              conditional:
+                case: {}
+                nullif: {}
+              scalar:
+                abs: {}
+                and: {}
+                array_element: {}
+                binary_concat: {}
+                btrim: {}
+                ceil: {}
+                character_length: {}
+                coalesce: {}
+                concat: {}
+                cos: {}
+                current_date: {}
+                current_time: {}
+                current_timestamp: {}
+                date_part:
+                  day: {}
+                  day_of_week: {}
+                  day_of_year: {}
+                  epoch: {}
+                  hour: {}
+                  microsecond: {}
+                  millisecond: {}
+                  minute: {}
+                  month: {}
+                  nanosecond: {}
+                  quarter: {}
+                  second: {}
+                  week: {}
+                  year: {}
+                date_trunc: {}
+                divide: {}
+                exp: {}
+                floor: {}
+                get_field: {}
+                greatest: {}
+                least: {}
+                left: {}
+                ln: {}
+                log: {}
+                log2: {}
+                log10: {}
+                lpad: {}
+                ltrim: {}
+                minus: {}
+                modulo: {}
+                multiply: {}
+                negate: {}
+                not: {}
+                nvl: {}
+                or: {}
+                plus: {}
+                power: {}
+                random: {}
+                replace: {}
+                reverse: {}
+                right: {}
+                round: {}
+                rpad: {}
+                rtrim: {}
+                sqrt: {}
+                str_pos: {}
+                substr: {}
+                substr_index: {}
+                tan: {}
+                to_date: {}
+                to_lower: {}
+                to_timestamp: {}
+                to_upper: {}
+                trunc: {}
+              window:
+                cume_dist: {}
+                dense_rank: {}
+                ntile: {}
+                percent_rank: {}
+                rank: {}
+                row_number: {}
+            group_by: {}
+          filter:
+            aggregate:
+              approx_distinct: {}
+              approx_percentile_cont: {}
+              avg: {}
+              bool_and: {}
+              bool_or: {}
+              count:
+                distinct: {}
+              first_value: {}
+              last_value: {}
+              max: {}
+              median: {}
+              min: {}
+              stddev: {}
+              stddev_pop: {}
+              string_agg: {}
+              sum: {}
+              var: {}
+            comparison:
+              between: {}
+              contains: {}
+              greater_than: {}
+              greater_than_eq: {}
+              ilike: {}
+              in_list: {}
+              is_false: {}
+              is_nan: {}
+              is_null: {}
+              is_true: {}
+              is_zero: {}
+              less_than: {}
+              less_than_eq: {}
+              like: {}
+            conditional:
+              case: {}
+              nullif: {}
+            scalar:
+              abs: {}
+              and: {}
+              array_element: {}
+              binary_concat: {}
+              btrim: {}
+              ceil: {}
+              character_length: {}
+              coalesce: {}
+              concat: {}
+              cos: {}
+              current_date: {}
+              current_time: {}
+              current_timestamp: {}
+              date_part:
+                day: {}
+                day_of_week: {}
+                day_of_year: {}
+                epoch: {}
+                hour: {}
+                microsecond: {}
+                millisecond: {}
+                minute: {}
+                month: {}
+                nanosecond: {}
+                quarter: {}
+                second: {}
+                week: {}
+                year: {}
+              date_trunc: {}
+              divide: {}
+              exp: {}
+              floor: {}
+              get_field: {}
+              greatest: {}
+              least: {}
+              left: {}
+              ln: {}
+              log: {}
+              log2: {}
+              log10: {}
+              lpad: {}
+              ltrim: {}
+              minus: {}
+              modulo: {}
+              multiply: {}
+              negate: {}
+              not: {}
+              nvl: {}
+              or: {}
+              plus: {}
+              power: {}
+              random: {}
+              replace: {}
+              reverse: {}
+              right: {}
+              round: {}
+              rpad: {}
+              rtrim: {}
+              sqrt: {}
+              str_pos: {}
+              substr: {}
+              substr_index: {}
+              tan: {}
+              to_date: {}
+              to_lower: {}
+              to_timestamp: {}
+              to_upper: {}
+              trunc: {}
+            window:
+              cume_dist: {}
+              dense_rank: {}
+              ntile: {}
+              percent_rank: {}
+              rank: {}
+              row_number: {}
+          join:
+            expression:
+              aggregate:
+                approx_distinct: {}
+                approx_percentile_cont: {}
+                avg: {}
+                bool_and: {}
+                bool_or: {}
+                count:
+                  distinct: {}
+                first_value: {}
+                last_value: {}
+                max: {}
+                median: {}
+                min: {}
+                stddev: {}
+                stddev_pop: {}
+                string_agg: {}
+                sum: {}
+                var: {}
+              comparison:
+                between: {}
+                contains: {}
+                greater_than: {}
+                greater_than_eq: {}
+                ilike: {}
+                in_list: {}
+                is_false: {}
+                is_nan: {}
+                is_null: {}
+                is_true: {}
+                is_zero: {}
+                less_than: {}
+                less_than_eq: {}
+                like: {}
+              conditional:
+                case: {}
+                nullif: {}
+              scalar:
+                abs: {}
+                and: {}
+                array_element: {}
+                binary_concat: {}
+                btrim: {}
+                ceil: {}
+                character_length: {}
+                coalesce: {}
+                concat: {}
+                cos: {}
+                current_date: {}
+                current_time: {}
+                current_timestamp: {}
+                date_part:
+                  day: {}
+                  day_of_week: {}
+                  day_of_year: {}
+                  epoch: {}
+                  hour: {}
+                  microsecond: {}
+                  millisecond: {}
+                  minute: {}
+                  month: {}
+                  nanosecond: {}
+                  quarter: {}
+                  second: {}
+                  week: {}
+                  year: {}
+                date_trunc: {}
+                divide: {}
+                exp: {}
+                floor: {}
+                get_field: {}
+                greatest: {}
+                least: {}
+                left: {}
+                ln: {}
+                log: {}
+                log2: {}
+                log10: {}
+                lpad: {}
+                ltrim: {}
+                minus: {}
+                modulo: {}
+                multiply: {}
+                negate: {}
+                not: {}
+                nvl: {}
+                or: {}
+                plus: {}
+                power: {}
+                random: {}
+                replace: {}
+                reverse: {}
+                right: {}
+                round: {}
+                rpad: {}
+                rtrim: {}
+                sqrt: {}
+                str_pos: {}
+                substr: {}
+                substr_index: {}
+                tan: {}
+                to_date: {}
+                to_lower: {}
+                to_timestamp: {}
+                to_upper: {}
+                trunc: {}
+              window:
+                cume_dist: {}
+                dense_rank: {}
+                ntile: {}
+                percent_rank: {}
+                rank: {}
+                row_number: {}
+            join_types:
+              full: {}
+              inner: {}
+              left: {}
+              left_anti: {}
+              left_semi: {}
+              right: {}
+              right_anti: {}
+              right_semi: {}
+          project:
+            expression:
+              aggregate:
+                approx_distinct: {}
+                approx_percentile_cont: {}
+                avg: {}
+                bool_and: {}
+                bool_or: {}
+                count:
+                  distinct: {}
+                first_value: {}
+                last_value: {}
+                max: {}
+                median: {}
+                min: {}
+                stddev: {}
+                stddev_pop: {}
+                string_agg: {}
+                sum: {}
+                var: {}
+              comparison:
+                between: {}
+                contains: {}
+                greater_than: {}
+                greater_than_eq: {}
+                ilike: {}
+                in_list: {}
+                is_false: {}
+                is_nan: {}
+                is_null: {}
+                is_true: {}
+                is_zero: {}
+                less_than: {}
+                less_than_eq: {}
+                like: {}
+              conditional:
+                case: {}
+                nullif: {}
+              scalar:
+                abs: {}
+                and: {}
+                array_element: {}
+                binary_concat: {}
+                btrim: {}
+                ceil: {}
+                character_length: {}
+                coalesce: {}
+                concat: {}
+                cos: {}
+                current_date: {}
+                current_time: {}
+                current_timestamp: {}
+                date_part:
+                  day: {}
+                  day_of_week: {}
+                  day_of_year: {}
+                  epoch: {}
+                  hour: {}
+                  microsecond: {}
+                  millisecond: {}
+                  minute: {}
+                  month: {}
+                  nanosecond: {}
+                  quarter: {}
+                  second: {}
+                  week: {}
+                  year: {}
+                date_trunc: {}
+                divide: {}
+                exp: {}
+                floor: {}
+                get_field: {}
+                greatest: {}
+                least: {}
+                left: {}
+                ln: {}
+                log: {}
+                log2: {}
+                log10: {}
+                lpad: {}
+                ltrim: {}
+                minus: {}
+                modulo: {}
+                multiply: {}
+                negate: {}
+                not: {}
+                nvl: {}
+                or: {}
+                plus: {}
+                power: {}
+                random: {}
+                replace: {}
+                reverse: {}
+                right: {}
+                round: {}
+                rpad: {}
+                rtrim: {}
+                sqrt: {}
+                str_pos: {}
+                substr: {}
+                substr_index: {}
+                tan: {}
+                to_date: {}
+                to_lower: {}
+                to_timestamp: {}
+                to_upper: {}
+                trunc: {}
+              window:
+                cume_dist: {}
+                dense_rank: {}
+                ntile: {}
+                percent_rank: {}
+                rank: {}
+                row_number: {}
+          sort:
+            expression:
+              aggregate:
+                approx_distinct: {}
+                approx_percentile_cont: {}
+                avg: {}
+                bool_and: {}
+                bool_or: {}
+                count:
+                  distinct: {}
+                first_value: {}
+                last_value: {}
+                max: {}
+                median: {}
+                min: {}
+                stddev: {}
+                stddev_pop: {}
+                string_agg: {}
+                sum: {}
+                var: {}
+              comparison:
+                between: {}
+                contains: {}
+                greater_than: {}
+                greater_than_eq: {}
+                ilike: {}
+                in_list: {}
+                is_false: {}
+                is_nan: {}
+                is_null: {}
+                is_true: {}
+                is_zero: {}
+                less_than: {}
+                less_than_eq: {}
+                like: {}
+              conditional:
+                case: {}
+                nullif: {}
+              scalar:
+                abs: {}
+                and: {}
+                array_element: {}
+                binary_concat: {}
+                btrim: {}
+                ceil: {}
+                character_length: {}
+                coalesce: {}
+                concat: {}
+                cos: {}
+                current_date: {}
+                current_time: {}
+                current_timestamp: {}
+                date_part:
+                  day: {}
+                  day_of_week: {}
+                  day_of_year: {}
+                  epoch: {}
+                  hour: {}
+                  microsecond: {}
+                  millisecond: {}
+                  minute: {}
+                  month: {}
+                  nanosecond: {}
+                  quarter: {}
+                  second: {}
+                  week: {}
+                  year: {}
+                date_trunc: {}
+                divide: {}
+                exp: {}
+                floor: {}
+                get_field: {}
+                greatest: {}
+                least: {}
+                left: {}
+                ln: {}
+                log: {}
+                log2: {}
+                log10: {}
+                lpad: {}
+                ltrim: {}
+                minus: {}
+                modulo: {}
+                multiply: {}
+                negate: {}
+                not: {}
+                nvl: {}
+                or: {}
+                plus: {}
+                power: {}
+                random: {}
+                replace: {}
+                reverse: {}
+                right: {}
+                round: {}
+                rpad: {}
+                rtrim: {}
+                sqrt: {}
+                str_pos: {}
+                substr: {}
+                substr_index: {}
+                tan: {}
+                to_date: {}
+                to_lower: {}
+                to_timestamp: {}
+                to_upper: {}
+                trunc: {}
+              window:
+                cume_dist: {}
+                dense_rank: {}
+                ntile: {}
+                percent_rank: {}
+                rank: {}
+                row_number: {}
+          union: {}
+          window:
+            expression:
+              aggregate:
+                approx_distinct: {}
+                approx_percentile_cont: {}
+                avg: {}
+                bool_and: {}
+                bool_or: {}
+                count:
+                  distinct: {}
+                first_value: {}
+                last_value: {}
+                max: {}
+                median: {}
+                min: {}
+                stddev: {}
+                stddev_pop: {}
+                string_agg: {}
+                sum: {}
+                var: {}
+              comparison:
+                between: {}
+                contains: {}
+                greater_than: {}
+                greater_than_eq: {}
+                ilike: {}
+                in_list: {}
+                is_false: {}
+                is_nan: {}
+                is_null: {}
+                is_true: {}
+                is_zero: {}
+                less_than: {}
+                less_than_eq: {}
+                like: {}
+              conditional:
+                case: {}
+                nullif: {}
+              scalar:
+                abs: {}
+                and: {}
+                array_element: {}
+                binary_concat: {}
+                btrim: {}
+                ceil: {}
+                character_length: {}
+                coalesce: {}
+                concat: {}
+                cos: {}
+                current_date: {}
+                current_time: {}
+                current_timestamp: {}
+                date_part:
+                  day: {}
+                  day_of_week: {}
+                  day_of_year: {}
+                  epoch: {}
+                  hour: {}
+                  microsecond: {}
+                  millisecond: {}
+                  minute: {}
+                  month: {}
+                  nanosecond: {}
+                  quarter: {}
+                  second: {}
+                  week: {}
+                  year: {}
+                date_trunc: {}
+                divide: {}
+                exp: {}
+                floor: {}
+                get_field: {}
+                greatest: {}
+                least: {}
+                left: {}
+                ln: {}
+                log: {}
+                log2: {}
+                log10: {}
+                lpad: {}
+                ltrim: {}
+                minus: {}
+                modulo: {}
+                multiply: {}
+                negate: {}
+                not: {}
+                nvl: {}
+                or: {}
+                plus: {}
+                power: {}
+                random: {}
+                replace: {}
+                reverse: {}
+                right: {}
+                round: {}
+                rpad: {}
+                rtrim: {}
+                sqrt: {}
+                str_pos: {}
+                substr: {}
+                substr_index: {}
+                tan: {}
+                to_date: {}
+                to_lower: {}
+                to_timestamp: {}
+                to_upper: {}
+                trunc: {}
+              window:
+                cume_dist: {}
+                dense_rank: {}
+                ntile: {}
+                percent_rank: {}
+                rank: {}
+                row_number: {}
+      version: 0.2.5
