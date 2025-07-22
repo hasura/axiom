@@ -1,1463 +1,790 @@
 {
-  "version": "5",
-  "$schema": "schema.json",
-  "connectionSettings": {
-    "connectionUri": {
-      "variable": "CONNECTION_URI"
+    "version": "v2",
+    "connection_uri": {
+        "variable": "JDBC_URL"
     },
-    "poolSettings": {
-      "maxConnections": 50,
-      "poolTimeout": 30,
-      "idleTimeout": 180,
-      "checkConnectionAfterIdle": 60,
-      "connectionLifetime": 600
-    },
-    "isolationLevel": "ReadCommitted"
-  },
-  "metadata": {
-    "tables": {
-      "calls": {
-        "schemaName": "public",
-        "tableName": "calls",
-        "columns": {
-          "callid": {
-            "name": "callid",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "calltype": {
-            "name": "calltype",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "customerid": {
-            "name": "customerid",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "deviceid": {
-            "name": "deviceid",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "duration": {
-            "name": "duration",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "latitude": {
-            "name": "latitude",
-            "type": {
-              "scalarType": "numeric"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "longitude": {
-            "name": "longitude",
-            "type": {
-              "scalarType": "numeric"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "nodeid": {
-            "name": "nodeid",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "receivernumber": {
-            "name": "receivernumber",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "timestamp": {
-            "name": "timestamp",
-            "type": {
-              "scalarType": "timestamptz"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          }
+    "tables": [
+        {
+            "name": "public.calls",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "callid",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "customerid",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "deviceid",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "timestamp",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_with_time_zone"
+                    }
+                },
+                {
+                    "name": "duration",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "calltype",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 50
+                        }
+                    }
+                },
+                {
+                    "name": "receivernumber",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 15
+                        }
+                    }
+                },
+                {
+                    "name": "nodeid",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "latitude",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 9,
+                            "scale": 6
+                        }
+                    }
+                },
+                {
+                    "name": "longitude",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 9,
+                            "scale": 6
+                        }
+                    }
+                }
+            ],
+            "primary_keys": [
+                "callid"
+            ],
+            "foreign_keys": {}
         },
-        "uniquenessConstraints": {
-          "calls_pkey": [
-            "callid"
-          ]
+        {
+            "name": "public.coverage_areas",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "coverage_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "node_id",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "technology",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 10
+                        }
+                    }
+                },
+                {
+                    "name": "coverage_radius_km",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 10,
+                            "scale": 2
+                        }
+                    }
+                },
+                {
+                    "name": "population_covered",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "terrain_type",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 50
+                        }
+                    }
+                },
+                {
+                    "name": "signal_strength_dbm",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "last_upgraded",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "date"
+                    }
+                }
+            ],
+            "primary_keys": [
+                "coverage_id"
+            ],
+            "foreign_keys": {}
         },
-        "foreignRelations": {},
-        "description": null
-      },
-      "coverage_areas": {
-        "schemaName": "public",
-        "tableName": "coverage_areas",
-        "columns": {
-          "coverage_id": {
-            "name": "coverage_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "coverage_radius_km": {
-            "name": "coverage_radius_km",
-            "type": {
-              "scalarType": "numeric"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "last_upgraded": {
-            "name": "last_upgraded",
-            "type": {
-              "scalarType": "date"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "node_id": {
-            "name": "node_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "population_covered": {
-            "name": "population_covered",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "signal_strength_dbm": {
-            "name": "signal_strength_dbm",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "technology": {
-            "name": "technology",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "terrain_type": {
-            "name": "terrain_type",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          }
+        {
+            "name": "public.equipment",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "equipment_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "node_id",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "equipment_type",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 50
+                        }
+                    }
+                },
+                {
+                    "name": "manufacturer",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 100
+                        }
+                    }
+                },
+                {
+                    "name": "model",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 100
+                        }
+                    }
+                },
+                {
+                    "name": "serial_number",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 100
+                        }
+                    }
+                },
+                {
+                    "name": "installation_date",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "date"
+                    }
+                },
+                {
+                    "name": "last_maintenance_date",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "date"
+                    }
+                },
+                {
+                    "name": "firmware_version",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 50
+                        }
+                    }
+                },
+                {
+                    "name": "status",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 20
+                        }
+                    }
+                },
+                {
+                    "name": "capacity_mbps",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "power_consumption_watts",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                }
+            ],
+            "primary_keys": [
+                "equipment_id"
+            ],
+            "foreign_keys": {}
         },
-        "uniquenessConstraints": {
-          "coverage_areas_pkey": [
-            "coverage_id"
-          ]
+        {
+            "name": "public.outages",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "outage_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "node_id",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "start_time",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_with_time_zone"
+                    }
+                },
+                {
+                    "name": "end_time",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_with_time_zone"
+                    }
+                },
+                {
+                    "name": "affected_customers",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "severity",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 20
+                        }
+                    }
+                },
+                {
+                    "name": "cause",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 100
+                        }
+                    }
+                },
+                {
+                    "name": "resolution",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "text"
+                    }
+                }
+            ],
+            "primary_keys": [
+                "outage_id"
+            ],
+            "foreign_keys": {}
         },
-        "foreignRelations": {},
-        "description": null
-      },
-      "equipment": {
-        "schemaName": "public",
-        "tableName": "equipment",
-        "columns": {
-          "capacity_mbps": {
-            "name": "capacity_mbps",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "equipment_id": {
-            "name": "equipment_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "equipment_type": {
-            "name": "equipment_type",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "firmware_version": {
-            "name": "firmware_version",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "installation_date": {
-            "name": "installation_date",
-            "type": {
-              "scalarType": "date"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "last_maintenance_date": {
-            "name": "last_maintenance_date",
-            "type": {
-              "scalarType": "date"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "manufacturer": {
-            "name": "manufacturer",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "model": {
-            "name": "model",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "node_id": {
-            "name": "node_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "power_consumption_watts": {
-            "name": "power_consumption_watts",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "serial_number": {
-            "name": "serial_number",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "status": {
-            "name": "status",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          }
+        {
+            "name": "public.spectrum_licenses",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "license_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "frequency_band",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 20
+                        }
+                    }
+                },
+                {
+                    "name": "bandwidth_mhz",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 10,
+                            "scale": 2
+                        }
+                    }
+                },
+                {
+                    "name": "geographic_area",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 100
+                        }
+                    }
+                },
+                {
+                    "name": "acquisition_date",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "date"
+                    }
+                },
+                {
+                    "name": "expiration_date",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "date"
+                    }
+                },
+                {
+                    "name": "cost_million_usd",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 10,
+                            "scale": 2
+                        }
+                    }
+                },
+                {
+                    "name": "regulatory_authority",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 100
+                        }
+                    }
+                },
+                {
+                    "name": "license_number",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 50
+                        }
+                    }
+                }
+            ],
+            "primary_keys": [
+                "license_id"
+            ],
+            "foreign_keys": {}
         },
-        "uniquenessConstraints": {
-          "equipment_pkey": [
-            "equipment_id"
-          ]
-        },
-        "foreignRelations": {},
-        "description": null
-      },
-      "outages": {
-        "schemaName": "public",
-        "tableName": "outages",
-        "columns": {
-          "affected_customers": {
-            "name": "affected_customers",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "cause": {
-            "name": "cause",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "end_time": {
-            "name": "end_time",
-            "type": {
-              "scalarType": "timestamptz"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "node_id": {
-            "name": "node_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "outage_id": {
-            "name": "outage_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "resolution": {
-            "name": "resolution",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "severity": {
-            "name": "severity",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "start_time": {
-            "name": "start_time",
-            "type": {
-              "scalarType": "timestamptz"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          }
-        },
-        "uniquenessConstraints": {
-          "outages_pkey": [
-            "outage_id"
-          ]
-        },
-        "foreignRelations": {},
-        "description": null
-      },
-      "spectrum_licenses": {
-        "schemaName": "public",
-        "tableName": "spectrum_licenses",
-        "columns": {
-          "acquisition_date": {
-            "name": "acquisition_date",
-            "type": {
-              "scalarType": "date"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "bandwidth_mhz": {
-            "name": "bandwidth_mhz",
-            "type": {
-              "scalarType": "numeric"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "cost_million_usd": {
-            "name": "cost_million_usd",
-            "type": {
-              "scalarType": "numeric"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "expiration_date": {
-            "name": "expiration_date",
-            "type": {
-              "scalarType": "date"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "frequency_band": {
-            "name": "frequency_band",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "geographic_area": {
-            "name": "geographic_area",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "license_id": {
-            "name": "license_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "license_number": {
-            "name": "license_number",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "regulatory_authority": {
-            "name": "regulatory_authority",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          }
-        },
-        "uniquenessConstraints": {
-          "spectrum_licenses_pkey": [
-            "license_id"
-          ]
-        },
-        "foreignRelations": {},
-        "description": null
-      },
-      "texts": {
-        "schemaName": "public",
-        "tableName": "texts",
-        "columns": {
-          "customerid": {
-            "name": "customerid",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "deviceid": {
-            "name": "deviceid",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "latitude": {
-            "name": "latitude",
-            "type": {
-              "scalarType": "numeric"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "longitude": {
-            "name": "longitude",
-            "type": {
-              "scalarType": "numeric"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "messagetype": {
-            "name": "messagetype",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "nodeid": {
-            "name": "nodeid",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "receivernumber": {
-            "name": "receivernumber",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "textid": {
-            "name": "textid",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "timestamp": {
-            "name": "timestamp",
-            "type": {
-              "scalarType": "timestamptz"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          }
-        },
-        "uniquenessConstraints": {
-          "texts_pkey": [
-            "textid"
-          ]
-        },
-        "foreignRelations": {},
-        "description": null
-      }
-    },
-    "types": {
-      "scalar": {
-        "date": {
-          "typeName": "date",
-          "schemaName": "pg_catalog",
-          "description": null,
-          "aggregateFunctions": {
-            "max": {
-              "returnType": "date"
-            },
-            "min": {
-              "returnType": "date"
-            }
-          },
-          "comparisonOperators": {
-            "_eq": {
-              "operatorName": "=",
-              "operatorKind": "equal",
-              "argumentType": "date",
-              "isInfix": true
-            },
-            "_gt": {
-              "operatorName": ">",
-              "operatorKind": "custom",
-              "argumentType": "date",
-              "isInfix": true
-            },
-            "_gte": {
-              "operatorName": ">=",
-              "operatorKind": "custom",
-              "argumentType": "date",
-              "isInfix": true
-            },
-            "_in": {
-              "operatorName": "IN",
-              "operatorKind": "in",
-              "argumentType": "date",
-              "isInfix": true
-            },
-            "_lt": {
-              "operatorName": "<",
-              "operatorKind": "custom",
-              "argumentType": "date",
-              "isInfix": true
-            },
-            "_lte": {
-              "operatorName": "<=",
-              "operatorKind": "custom",
-              "argumentType": "date",
-              "isInfix": true
-            },
-            "_neq": {
-              "operatorName": "<>",
-              "operatorKind": "custom",
-              "argumentType": "date",
-              "isInfix": true
-            }
-          },
-          "typeRepresentation": "date"
-        },
-        "int4": {
-          "typeName": "int4",
-          "schemaName": "pg_catalog",
-          "description": null,
-          "aggregateFunctions": {
-            "avg": {
-              "returnType": "numeric"
-            },
-            "bit_and": {
-              "returnType": "int4"
-            },
-            "bit_or": {
-              "returnType": "int4"
-            },
-            "bit_xor": {
-              "returnType": "int4"
-            },
-            "max": {
-              "returnType": "int4"
-            },
-            "min": {
-              "returnType": "int4"
-            },
-            "stddev": {
-              "returnType": "numeric"
-            },
-            "stddev_pop": {
-              "returnType": "numeric"
-            },
-            "stddev_samp": {
-              "returnType": "numeric"
-            },
-            "sum": {
-              "returnType": "int8"
-            },
-            "var_pop": {
-              "returnType": "numeric"
-            },
-            "var_samp": {
-              "returnType": "numeric"
-            },
-            "variance": {
-              "returnType": "numeric"
-            }
-          },
-          "comparisonOperators": {
-            "_eq": {
-              "operatorName": "=",
-              "operatorKind": "equal",
-              "argumentType": "int4",
-              "isInfix": true
-            },
-            "_gt": {
-              "operatorName": ">",
-              "operatorKind": "custom",
-              "argumentType": "int4",
-              "isInfix": true
-            },
-            "_gte": {
-              "operatorName": ">=",
-              "operatorKind": "custom",
-              "argumentType": "int4",
-              "isInfix": true
-            },
-            "_in": {
-              "operatorName": "IN",
-              "operatorKind": "in",
-              "argumentType": "int4",
-              "isInfix": true
-            },
-            "_lt": {
-              "operatorName": "<",
-              "operatorKind": "custom",
-              "argumentType": "int4",
-              "isInfix": true
-            },
-            "_lte": {
-              "operatorName": "<=",
-              "operatorKind": "custom",
-              "argumentType": "int4",
-              "isInfix": true
-            },
-            "_neq": {
-              "operatorName": "<>",
-              "operatorKind": "custom",
-              "argumentType": "int4",
-              "isInfix": true
-            }
-          },
-          "typeRepresentation": "int32"
-        },
-        "int8": {
-          "typeName": "int8",
-          "schemaName": "pg_catalog",
-          "description": null,
-          "aggregateFunctions": {
-            "avg": {
-              "returnType": "numeric"
-            },
-            "bit_and": {
-              "returnType": "int8"
-            },
-            "bit_or": {
-              "returnType": "int8"
-            },
-            "bit_xor": {
-              "returnType": "int8"
-            },
-            "max": {
-              "returnType": "int8"
-            },
-            "min": {
-              "returnType": "int8"
-            },
-            "stddev": {
-              "returnType": "numeric"
-            },
-            "stddev_pop": {
-              "returnType": "numeric"
-            },
-            "stddev_samp": {
-              "returnType": "numeric"
-            },
-            "sum": {
-              "returnType": "numeric"
-            },
-            "var_pop": {
-              "returnType": "numeric"
-            },
-            "var_samp": {
-              "returnType": "numeric"
-            },
-            "variance": {
-              "returnType": "numeric"
-            }
-          },
-          "comparisonOperators": {
-            "_eq": {
-              "operatorName": "=",
-              "operatorKind": "equal",
-              "argumentType": "int8",
-              "isInfix": true
-            },
-            "_gt": {
-              "operatorName": ">",
-              "operatorKind": "custom",
-              "argumentType": "int8",
-              "isInfix": true
-            },
-            "_gte": {
-              "operatorName": ">=",
-              "operatorKind": "custom",
-              "argumentType": "int8",
-              "isInfix": true
-            },
-            "_in": {
-              "operatorName": "IN",
-              "operatorKind": "in",
-              "argumentType": "int8",
-              "isInfix": true
-            },
-            "_lt": {
-              "operatorName": "<",
-              "operatorKind": "custom",
-              "argumentType": "int8",
-              "isInfix": true
-            },
-            "_lte": {
-              "operatorName": "<=",
-              "operatorKind": "custom",
-              "argumentType": "int8",
-              "isInfix": true
-            },
-            "_neq": {
-              "operatorName": "<>",
-              "operatorKind": "custom",
-              "argumentType": "int8",
-              "isInfix": true
-            }
-          },
-          "typeRepresentation": "int64AsString"
-        },
-        "numeric": {
-          "typeName": "numeric",
-          "schemaName": "pg_catalog",
-          "description": null,
-          "aggregateFunctions": {
-            "avg": {
-              "returnType": "numeric"
-            },
-            "max": {
-              "returnType": "numeric"
-            },
-            "min": {
-              "returnType": "numeric"
-            },
-            "stddev": {
-              "returnType": "numeric"
-            },
-            "stddev_pop": {
-              "returnType": "numeric"
-            },
-            "stddev_samp": {
-              "returnType": "numeric"
-            },
-            "sum": {
-              "returnType": "numeric"
-            },
-            "var_pop": {
-              "returnType": "numeric"
-            },
-            "var_samp": {
-              "returnType": "numeric"
-            },
-            "variance": {
-              "returnType": "numeric"
-            }
-          },
-          "comparisonOperators": {
-            "_eq": {
-              "operatorName": "=",
-              "operatorKind": "equal",
-              "argumentType": "numeric",
-              "isInfix": true
-            },
-            "_gt": {
-              "operatorName": ">",
-              "operatorKind": "custom",
-              "argumentType": "numeric",
-              "isInfix": true
-            },
-            "_gte": {
-              "operatorName": ">=",
-              "operatorKind": "custom",
-              "argumentType": "numeric",
-              "isInfix": true
-            },
-            "_in": {
-              "operatorName": "IN",
-              "operatorKind": "in",
-              "argumentType": "numeric",
-              "isInfix": true
-            },
-            "_lt": {
-              "operatorName": "<",
-              "operatorKind": "custom",
-              "argumentType": "numeric",
-              "isInfix": true
-            },
-            "_lte": {
-              "operatorName": "<=",
-              "operatorKind": "custom",
-              "argumentType": "numeric",
-              "isInfix": true
-            },
-            "_neq": {
-              "operatorName": "<>",
-              "operatorKind": "custom",
-              "argumentType": "numeric",
-              "isInfix": true
-            }
-          },
-          "typeRepresentation": "bigDecimalAsString"
-        },
-        "text": {
-          "typeName": "text",
-          "schemaName": "pg_catalog",
-          "description": null,
-          "aggregateFunctions": {
-            "max": {
-              "returnType": "text"
-            },
-            "min": {
-              "returnType": "text"
-            }
-          },
-          "comparisonOperators": {
-            "_eq": {
-              "operatorName": "=",
-              "operatorKind": "equal",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_gt": {
-              "operatorName": ">",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_gte": {
-              "operatorName": ">=",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_ilike": {
-              "operatorName": "~~*",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_in": {
-              "operatorName": "IN",
-              "operatorKind": "in",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_iregex": {
-              "operatorName": "~*",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_like": {
-              "operatorName": "~~",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_lt": {
-              "operatorName": "<",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_lte": {
-              "operatorName": "<=",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_neq": {
-              "operatorName": "<>",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_nilike": {
-              "operatorName": "!~~*",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_niregex": {
-              "operatorName": "!~*",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_nlike": {
-              "operatorName": "!~~",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_nregex": {
-              "operatorName": "!~",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_regex": {
-              "operatorName": "~",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "starts_with": {
-              "operatorName": "starts_with",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": false
-            },
-            "ts_match_tt": {
-              "operatorName": "ts_match_tt",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": false
-            }
-          },
-          "typeRepresentation": "string"
-        },
-        "timestamptz": {
-          "typeName": "timestamptz",
-          "schemaName": "pg_catalog",
-          "description": null,
-          "aggregateFunctions": {
-            "max": {
-              "returnType": "timestamptz"
-            },
-            "min": {
-              "returnType": "timestamptz"
-            }
-          },
-          "comparisonOperators": {
-            "_eq": {
-              "operatorName": "=",
-              "operatorKind": "equal",
-              "argumentType": "timestamptz",
-              "isInfix": true
-            },
-            "_gt": {
-              "operatorName": ">",
-              "operatorKind": "custom",
-              "argumentType": "timestamptz",
-              "isInfix": true
-            },
-            "_gte": {
-              "operatorName": ">=",
-              "operatorKind": "custom",
-              "argumentType": "timestamptz",
-              "isInfix": true
-            },
-            "_in": {
-              "operatorName": "IN",
-              "operatorKind": "in",
-              "argumentType": "timestamptz",
-              "isInfix": true
-            },
-            "_lt": {
-              "operatorName": "<",
-              "operatorKind": "custom",
-              "argumentType": "timestamptz",
-              "isInfix": true
-            },
-            "_lte": {
-              "operatorName": "<=",
-              "operatorKind": "custom",
-              "argumentType": "timestamptz",
-              "isInfix": true
-            },
-            "_neq": {
-              "operatorName": "<>",
-              "operatorKind": "custom",
-              "argumentType": "timestamptz",
-              "isInfix": true
-            }
-          },
-          "typeRepresentation": "timestamptz"
-        },
-        "varchar": {
-          "typeName": "varchar",
-          "schemaName": "pg_catalog",
-          "description": null,
-          "aggregateFunctions": {
-            "max": {
-              "returnType": "text"
-            },
-            "min": {
-              "returnType": "text"
-            }
-          },
-          "comparisonOperators": {
-            "_eq": {
-              "operatorName": "=",
-              "operatorKind": "equal",
-              "argumentType": "varchar",
-              "isInfix": true
-            },
-            "_gt": {
-              "operatorName": ">",
-              "operatorKind": "custom",
-              "argumentType": "varchar",
-              "isInfix": true
-            },
-            "_gte": {
-              "operatorName": ">=",
-              "operatorKind": "custom",
-              "argumentType": "varchar",
-              "isInfix": true
-            },
-            "_ilike": {
-              "operatorName": "~~*",
-              "operatorKind": "custom",
-              "argumentType": "varchar",
-              "isInfix": true
-            },
-            "_in": {
-              "operatorName": "IN",
-              "operatorKind": "in",
-              "argumentType": "varchar",
-              "isInfix": true
-            },
-            "_iregex": {
-              "operatorName": "~*",
-              "operatorKind": "custom",
-              "argumentType": "varchar",
-              "isInfix": true
-            },
-            "_like": {
-              "operatorName": "~~",
-              "operatorKind": "custom",
-              "argumentType": "varchar",
-              "isInfix": true
-            },
-            "_lt": {
-              "operatorName": "<",
-              "operatorKind": "custom",
-              "argumentType": "varchar",
-              "isInfix": true
-            },
-            "_lte": {
-              "operatorName": "<=",
-              "operatorKind": "custom",
-              "argumentType": "varchar",
-              "isInfix": true
-            },
-            "_neq": {
-              "operatorName": "<>",
-              "operatorKind": "custom",
-              "argumentType": "varchar",
-              "isInfix": true
-            },
-            "_nilike": {
-              "operatorName": "!~~*",
-              "operatorKind": "custom",
-              "argumentType": "varchar",
-              "isInfix": true
-            },
-            "_niregex": {
-              "operatorName": "!~*",
-              "operatorKind": "custom",
-              "argumentType": "varchar",
-              "isInfix": true
-            },
-            "_nlike": {
-              "operatorName": "!~~",
-              "operatorKind": "custom",
-              "argumentType": "varchar",
-              "isInfix": true
-            },
-            "_nregex": {
-              "operatorName": "!~",
-              "operatorKind": "custom",
-              "argumentType": "varchar",
-              "isInfix": true
-            },
-            "_regex": {
-              "operatorName": "~",
-              "operatorKind": "custom",
-              "argumentType": "varchar",
-              "isInfix": true
-            },
-            "starts_with": {
-              "operatorName": "starts_with",
-              "operatorKind": "custom",
-              "argumentType": "varchar",
-              "isInfix": false
-            },
-            "ts_match_tt": {
-              "operatorName": "ts_match_tt",
-              "operatorKind": "custom",
-              "argumentType": "varchar",
-              "isInfix": false
-            }
-          },
-          "typeRepresentation": "string"
+        {
+            "name": "public.texts",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "textid",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "customerid",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "deviceid",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "timestamp",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_with_time_zone"
+                    }
+                },
+                {
+                    "name": "messagetype",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 50
+                        }
+                    }
+                },
+                {
+                    "name": "receivernumber",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 15
+                        }
+                    }
+                },
+                {
+                    "name": "nodeid",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "latitude",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 9,
+                            "scale": 6
+                        }
+                    }
+                },
+                {
+                    "name": "longitude",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 9,
+                            "scale": 6
+                        }
+                    }
+                }
+            ],
+            "primary_keys": [
+                "textid"
+            ],
+            "foreign_keys": {}
         }
-      },
-      "composite": {}
-    },
-    "nativeOperations": {
-      "queries": {},
-      "mutations": {}
-    }
-  },
-  "introspectionOptions": {
-    "excludedSchemas": [
-      "information_schema",
-      "pg_catalog",
-      "tiger",
-      "crdb_internal",
-      "columnar",
-      "columnar_internal",
-      "_timescaledb_catalog",
-      "_timescaledb_functions",
-      "_timescaledb_internal",
-      "_timescaledb_cache",
-      "_timescaledb_config",
-      "timescaledb_experimental",
-      "timescaledb_information",
-      "_timescaledb_debug"
-    ],
-    "unqualifiedSchemasForTables": [
-      "public"
-    ],
-    "unqualifiedSchemasForTypesAndProcedures": [
-      "public",
-      "pg_catalog",
-      "tiger"
-    ],
-    "comparisonOperatorMapping": [
-      {
-        "operatorName": "=",
-        "exposedName": "_eq",
-        "operatorKind": "equal"
-      },
-      {
-        "operatorName": "<=",
-        "exposedName": "_lte",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": ">",
-        "exposedName": "_gt",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": ">=",
-        "exposedName": "_gte",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "<",
-        "exposedName": "_lt",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "<>",
-        "exposedName": "_neq",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "!=",
-        "exposedName": "_neq",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "LIKE",
-        "exposedName": "_like",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "NOT LIKE",
-        "exposedName": "_nlike",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "ILIKE",
-        "exposedName": "_ilike",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "NOT ILIKE",
-        "exposedName": "_nilike",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "SIMILAR TO",
-        "exposedName": "_similar",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "NOT SIMILAR TO",
-        "exposedName": "_nsimilar",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "~~",
-        "exposedName": "_like",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "!~~",
-        "exposedName": "_nlike",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "~~*",
-        "exposedName": "_ilike",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "!~~*",
-        "exposedName": "_nilike",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "~",
-        "exposedName": "_regex",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "!~",
-        "exposedName": "_nregex",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "~*",
-        "exposedName": "_iregex",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "!~*",
-        "exposedName": "_niregex",
-        "operatorKind": "custom"
-      }
-    ],
-    "introspectPrefixFunctionComparisonOperators": [
-      "box_above",
-      "box_below",
-      "box_contain",
-      "box_contain_pt",
-      "box_contained",
-      "box_left",
-      "box_overabove",
-      "box_overbelow",
-      "box_overlap",
-      "box_overleft",
-      "box_overright",
-      "box_right",
-      "box_same",
-      "circle_above",
-      "circle_below",
-      "circle_contain",
-      "circle_contain_pt",
-      "circle_contained",
-      "circle_left",
-      "circle_overabove",
-      "circle_overbelow",
-      "circle_overlap",
-      "circle_overleft",
-      "circle_overright",
-      "circle_right",
-      "circle_same",
-      "contains_2d",
-      "equals",
-      "geography_overlaps",
-      "geometry_above",
-      "geometry_below",
-      "geometry_contained_3d",
-      "geometry_contains",
-      "geometry_contains_3d",
-      "geometry_contains_nd",
-      "geometry_left",
-      "geometry_overabove",
-      "geometry_overbelow",
-      "geometry_overlaps",
-      "geometry_overlaps_3d",
-      "geometry_overlaps_nd",
-      "geometry_overleft",
-      "geometry_overright",
-      "geometry_right",
-      "geometry_same",
-      "geometry_same_3d",
-      "geometry_same_nd",
-      "geometry_within",
-      "geometry_within_nd",
-      "inet_same_family",
-      "inter_lb",
-      "inter_sb",
-      "inter_sl",
-      "is_contained_2d",
-      "ishorizontal",
-      "isparallel",
-      "isperp",
-      "isvertical",
-      "jsonb_contained",
-      "jsonb_contains",
-      "jsonb_exists",
-      "jsonb_path_exists_opr",
-      "jsonb_path_match_opr",
-      "line_intersect",
-      "line_parallel",
-      "line_perp",
-      "lseg_intersect",
-      "lseg_parallel",
-      "lseg_perp",
-      "network_overlap",
-      "network_sub",
-      "network_subeq",
-      "network_sup",
-      "network_supeq",
-      "on_pb",
-      "on_pl",
-      "on_ppath",
-      "on_ps",
-      "on_sb",
-      "on_sl",
-      "overlaps_2d",
-      "path_contain_pt",
-      "path_inter",
-      "point_above",
-      "point_below",
-      "point_horiz",
-      "point_left",
-      "point_right",
-      "point_vert",
-      "poly_above",
-      "poly_below",
-      "poly_contain",
-      "poly_contain_pt",
-      "poly_contained",
-      "poly_left",
-      "poly_overabove",
-      "poly_overbelow",
-      "poly_overlap",
-      "poly_overleft",
-      "poly_overright",
-      "poly_right",
-      "poly_same",
-      "pt_contained_poly",
-      "st_3dintersects",
-      "st_contains",
-      "st_containsproperly",
-      "st_coveredby",
-      "st_covers",
-      "st_crosses",
-      "st_disjoint",
-      "st_equals",
-      "st_intersects",
-      "st_isvalid",
-      "st_orderingequals",
-      "st_overlaps",
-      "st_relatematch",
-      "st_touches",
-      "st_within",
-      "starts_with",
-      "ts_match_qv",
-      "ts_match_tq",
-      "ts_match_tt",
-      "ts_match_vq",
-      "tsq_mcontained",
-      "tsq_mcontains",
-      "xmlexists",
-      "xmlvalidate",
-      "xpath_exists"
-    ],
-    "typeRepresentations": {
-      "bit": "string",
-      "bool": "boolean",
-      "bpchar": "string",
-      "char": "string",
-      "date": "date",
-      "float4": "float32",
-      "float8": "float64",
-      "int2": "int16",
-      "int4": "int32",
-      "int8": "int64AsString",
-      "numeric": "bigDecimalAsString",
-      "text": "string",
-      "time": "time",
-      "timestamp": "timestamp",
-      "timestamptz": "timestamptz",
-      "timetz": "timetz",
-      "uuid": "uUID",
-      "varchar": "string"
-    }
-  },
-  "mutationsVersion": "v2",
-  "mutationsPrefix": ""
+    ]
 }

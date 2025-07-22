@@ -1,34 +1,42 @@
 ---
-kind: ScalarType
-version: v1
-definition:
-  name: Uuid
-  graphql:
-    typeName: support_Uuid
-
----
 kind: BooleanExpressionType
 version: v1
 definition:
   name: UuidBoolExp
   operand:
     scalar:
-      type: Uuid
+      type: String_1
       comparisonOperators:
         - name: _eq
-          argumentType: Uuid!
+          argumentType: String_1!
         - name: _gt
-          argumentType: Uuid!
+          argumentType: String_1!
         - name: _gte
-          argumentType: Uuid!
+          argumentType: String_1!
+        - name: _ilike
+          argumentType: String_1!
         - name: _in
-          argumentType: "[Uuid!]!"
+          argumentType: "[String_1!]!"
+        - name: _iregex
+          argumentType: String_1!
+        - name: _like
+          argumentType: String_1!
         - name: _lt
-          argumentType: Uuid!
+          argumentType: String_1!
         - name: _lte
-          argumentType: Uuid!
+          argumentType: String_1!
         - name: _neq
-          argumentType: Uuid!
+          argumentType: String_1!
+        - name: _nilike
+          argumentType: String_1!
+        - name: _niregex
+          argumentType: String_1!
+        - name: _nlike
+          argumentType: String_1!
+        - name: _nregex
+          argumentType: String_1!
+        - name: _regex
+          argumentType: String_1!
       dataConnectorOperatorMapping:
         - dataConnectorName: vector
           dataConnectorScalarType: uuid
@@ -46,61 +54,53 @@ version: v1
 definition:
   dataConnectorName: vector
   dataConnectorScalarType: uuid
-  representation: Uuid
+  representation: String_1
   graphql:
-    comparisonExpressionTypeName: support_UuidComparisonExp
+    comparisonExpressionTypeName: support_String1ComparisonExp_1
 
 ---
 kind: ScalarType
 version: v1
 definition:
-  name: Vector
+  name: Json
   graphql:
-    typeName: support_Vector
+    typeName: support_Json
 
 ---
 kind: BooleanExpressionType
 version: v1
 definition:
-  name: VectorBoolExp
+  name: Vector1536BoolExp
   operand:
     scalar:
-      type: Vector
+      type: Json
       comparisonOperators:
         - name: _eq
-          argumentType: Vector!
-        - name: _gt
-          argumentType: Vector!
-        - name: _gte
-          argumentType: Vector!
+          argumentType: Json!
         - name: _in
-          argumentType: "[Vector!]!"
-        - name: _lt
-          argumentType: Vector!
-        - name: _lte
-          argumentType: Vector!
+          argumentType: "[Json!]!"
         - name: _neq
-          argumentType: Vector!
+          argumentType: Json!
       dataConnectorOperatorMapping:
         - dataConnectorName: vector
-          dataConnectorScalarType: vector
+          dataConnectorScalarType: vector(1536)
           operatorMapping: {}
   logicalOperators:
     enable: true
   isNull:
     enable: true
   graphql:
-    typeName: support_VectorBoolExp
+    typeName: support_Vector1536BoolExp
 
 ---
 kind: DataConnectorScalarRepresentation
 version: v1
 definition:
   dataConnectorName: vector
-  dataConnectorScalarType: vector
-  representation: Vector
+  dataConnectorScalarType: vector(1536)
+  representation: Json
   graphql:
-    comparisonExpressionTypeName: support_VectorComparisonExp
+    comparisonExpressionTypeName: support_JsonComparisonExp
 
 ---
 kind: AggregateExpression
@@ -109,12 +109,20 @@ definition:
   name: UuidAggExp
   operand:
     scalar:
-      aggregatedType: Uuid
-      aggregationFunctions: []
+      aggregatedType: String_1
+      aggregationFunctions:
+        - name: max
+          returnType: String_1
+        - name: min
+          returnType: String_1
       dataConnectorAggregationFunctionMapping:
         - dataConnectorName: vector
           dataConnectorScalarType: uuid
-          functionMapping: {}
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
   count:
     enable: true
   countDistinct:
@@ -126,63 +134,34 @@ definition:
 kind: AggregateExpression
 version: v1
 definition:
-  name: VectorAggExp
+  name: Vector1536AggExp
   operand:
     scalar:
-      aggregatedType: Vector
-      aggregationFunctions:
-        - name: avg
-          returnType: Vector
-        - name: sum
-          returnType: Vector
+      aggregatedType: Json
+      aggregationFunctions: []
       dataConnectorAggregationFunctionMapping:
         - dataConnectorName: vector
-          dataConnectorScalarType: vector
-          functionMapping:
-            avg:
-              name: avg
-            sum:
-              name: sum
+          dataConnectorScalarType: vector(1536)
+          functionMapping: {}
   count:
     enable: true
   countDistinct:
     enable: true
   graphql:
-    selectTypeName: support_VectorAggExp
+    selectTypeName: support_Vector1536AggExp
 
 ---
 kind: OrderByExpression
 version: v1
 definition:
-  name: UuidOrderByExp
+  name: JsonOrderByExp
   operand:
     scalar:
-      orderedType: Uuid
+      orderedType: Json
       enableOrderByDirections:
         enableAll: true
   graphql:
-    expressionTypeName: support_UuidOrderByExp
-
----
-kind: OrderByExpression
-version: v1
-definition:
-  name: VectorOrderByExp
-  operand:
-    scalar:
-      orderedType: Vector
-      enableOrderByDirections:
-        enableAll: true
-  graphql:
-    expressionTypeName: support_VectorOrderByExp
-
----
-kind: ScalarType
-version: v1
-definition:
-  name: Text
-  graphql:
-    typeName: support_Text
+    expressionTypeName: support_JsonOrderByExp
 
 ---
 kind: BooleanExpressionType
@@ -191,42 +170,38 @@ definition:
   name: TextBoolExp
   operand:
     scalar:
-      type: Text
+      type: String_1
       comparisonOperators:
         - name: _eq
-          argumentType: Text!
+          argumentType: String_1!
         - name: _gt
-          argumentType: Text!
+          argumentType: String_1!
         - name: _gte
-          argumentType: Text!
+          argumentType: String_1!
         - name: _ilike
-          argumentType: Text!
+          argumentType: String_1!
         - name: _in
-          argumentType: "[Text!]!"
+          argumentType: "[String_1!]!"
         - name: _iregex
-          argumentType: Text!
+          argumentType: String_1!
         - name: _like
-          argumentType: Text!
+          argumentType: String_1!
         - name: _lt
-          argumentType: Text!
+          argumentType: String_1!
         - name: _lte
-          argumentType: Text!
+          argumentType: String_1!
         - name: _neq
-          argumentType: Text!
+          argumentType: String_1!
         - name: _nilike
-          argumentType: Text!
+          argumentType: String_1!
         - name: _niregex
-          argumentType: Text!
+          argumentType: String_1!
         - name: _nlike
-          argumentType: Text!
+          argumentType: String_1!
         - name: _nregex
-          argumentType: Text!
+          argumentType: String_1!
         - name: _regex
-          argumentType: Text!
-        - name: starts_with
-          argumentType: Text!
-        - name: ts_match_tt
-          argumentType: Text!
+          argumentType: String_1!
       dataConnectorOperatorMapping:
         - dataConnectorName: vector
           dataConnectorScalarType: text
@@ -244,9 +219,9 @@ version: v1
 definition:
   dataConnectorName: vector
   dataConnectorScalarType: text
-  representation: Text
+  representation: String_1
   graphql:
-    comparisonExpressionTypeName: support_TextComparisonExp
+    comparisonExpressionTypeName: support_String1ComparisonExp_2
 
 ---
 kind: ScalarType
@@ -260,7 +235,7 @@ definition:
 kind: BooleanExpressionType
 version: v1
 definition:
-  name: TimestamptzBoolExp
+  name: TimestampWithTimeZoneBoolExp
   operand:
     scalar:
       type: Timestamptz
@@ -281,21 +256,21 @@ definition:
           argumentType: Timestamptz!
       dataConnectorOperatorMapping:
         - dataConnectorName: vector
-          dataConnectorScalarType: timestamptz
+          dataConnectorScalarType: timestamp_with_time_zone
           operatorMapping: {}
   logicalOperators:
     enable: true
   isNull:
     enable: true
   graphql:
-    typeName: support_TimestamptzBoolExp
+    typeName: support_TimestampWithTimeZoneBoolExp
 
 ---
 kind: DataConnectorScalarRepresentation
 version: v1
 definition:
   dataConnectorName: vector
-  dataConnectorScalarType: timestamptz
+  dataConnectorScalarType: timestamp_with_time_zone
   representation: Timestamptz
   graphql:
     comparisonExpressionTypeName: support_TimestamptzComparisonExp
@@ -304,53 +279,53 @@ definition:
 kind: ScalarType
 version: v1
 definition:
-  name: Int4
+  name: Int32
   graphql:
-    typeName: support_Int4
+    typeName: support_Int32
 
 ---
 kind: BooleanExpressionType
 version: v1
 definition:
-  name: Int4BoolExp
+  name: IntegerBoolExp
   operand:
     scalar:
-      type: Int4
+      type: Int32
       comparisonOperators:
         - name: _eq
-          argumentType: Int4!
+          argumentType: Int32!
         - name: _gt
-          argumentType: Int4!
+          argumentType: Int32!
         - name: _gte
-          argumentType: Int4!
+          argumentType: Int32!
         - name: _in
-          argumentType: "[Int4!]!"
+          argumentType: "[Int32!]!"
         - name: _lt
-          argumentType: Int4!
+          argumentType: Int32!
         - name: _lte
-          argumentType: Int4!
+          argumentType: Int32!
         - name: _neq
-          argumentType: Int4!
+          argumentType: Int32!
       dataConnectorOperatorMapping:
         - dataConnectorName: vector
-          dataConnectorScalarType: int4
+          dataConnectorScalarType: integer
           operatorMapping: {}
   logicalOperators:
     enable: true
   isNull:
     enable: true
   graphql:
-    typeName: support_Int4BoolExp
+    typeName: support_IntegerBoolExp
 
 ---
 kind: DataConnectorScalarRepresentation
 version: v1
 definition:
   dataConnectorName: vector
-  dataConnectorScalarType: int4
-  representation: Int4
+  dataConnectorScalarType: integer
+  representation: Int32
   graphql:
-    comparisonExpressionTypeName: support_Int4ComparisonExp
+    comparisonExpressionTypeName: support_Int32ComparisonExp
 
 ---
 kind: AggregateExpression
@@ -359,12 +334,12 @@ definition:
   name: TextAggExp
   operand:
     scalar:
-      aggregatedType: Text
+      aggregatedType: String_1
       aggregationFunctions:
         - name: max
-          returnType: Text
+          returnType: String_1
         - name: min
-          returnType: Text
+          returnType: String_1
       dataConnectorAggregationFunctionMapping:
         - dataConnectorName: vector
           dataConnectorScalarType: text
@@ -384,7 +359,7 @@ definition:
 kind: AggregateExpression
 version: v1
 definition:
-  name: TimestamptzAggExp
+  name: TimestampWithTimeZoneAggExp
   operand:
     scalar:
       aggregatedType: Timestamptz
@@ -395,7 +370,7 @@ definition:
           returnType: Timestamptz
       dataConnectorAggregationFunctionMapping:
         - dataConnectorName: vector
-          dataConnectorScalarType: timestamptz
+          dataConnectorScalarType: timestamp_with_time_zone
           functionMapping:
             max:
               name: max
@@ -406,165 +381,147 @@ definition:
   countDistinct:
     enable: true
   graphql:
-    selectTypeName: support_TimestamptzAggExp
+    selectTypeName: support_TimestampWithTimeZoneAggExp
 
 ---
 kind: ScalarType
 version: v1
 definition:
-  name: Numeric
+  name: Bigdecimal
   graphql:
-    typeName: support_Numeric
+    typeName: support_Bigdecimal
 
 ---
 kind: BooleanExpressionType
 version: v1
 definition:
-  name: NumericBoolExp
+  name: DecimalBoolExp
   operand:
     scalar:
-      type: Numeric
+      type: Bigdecimal
       comparisonOperators:
         - name: _eq
-          argumentType: Numeric!
+          argumentType: Bigdecimal!
         - name: _gt
-          argumentType: Numeric!
+          argumentType: Bigdecimal!
         - name: _gte
-          argumentType: Numeric!
+          argumentType: Bigdecimal!
         - name: _in
-          argumentType: "[Numeric!]!"
+          argumentType: "[Bigdecimal!]!"
         - name: _lt
-          argumentType: Numeric!
+          argumentType: Bigdecimal!
         - name: _lte
-          argumentType: Numeric!
+          argumentType: Bigdecimal!
         - name: _neq
-          argumentType: Numeric!
+          argumentType: Bigdecimal!
       dataConnectorOperatorMapping:
         - dataConnectorName: vector
-          dataConnectorScalarType: numeric
+          dataConnectorScalarType: decimal
           operatorMapping: {}
   logicalOperators:
     enable: true
   isNull:
     enable: true
   graphql:
-    typeName: support_NumericBoolExp
+    typeName: support_DecimalBoolExp
 
 ---
 kind: DataConnectorScalarRepresentation
 version: v1
 definition:
   dataConnectorName: vector
-  dataConnectorScalarType: numeric
-  representation: Numeric
+  dataConnectorScalarType: decimal
+  representation: Bigdecimal
   graphql:
-    comparisonExpressionTypeName: support_NumericComparisonExp
+    comparisonExpressionTypeName: support_BigdecimalComparisonExp
 
 ---
 kind: ScalarType
 version: v1
 definition:
-  name: Int8
+  name: Biginteger
   graphql:
-    typeName: support_Int8
+    typeName: support_Biginteger
 
 ---
 kind: BooleanExpressionType
 version: v1
 definition:
-  name: Int8BoolExp
+  name: BigintBoolExp
   operand:
     scalar:
-      type: Int8
+      type: Biginteger
       comparisonOperators:
         - name: _eq
-          argumentType: Int8!
+          argumentType: Biginteger!
         - name: _gt
-          argumentType: Int8!
+          argumentType: Biginteger!
         - name: _gte
-          argumentType: Int8!
+          argumentType: Biginteger!
         - name: _in
-          argumentType: "[Int8!]!"
+          argumentType: "[Biginteger!]!"
         - name: _lt
-          argumentType: Int8!
+          argumentType: Biginteger!
         - name: _lte
-          argumentType: Int8!
+          argumentType: Biginteger!
         - name: _neq
-          argumentType: Int8!
+          argumentType: Biginteger!
       dataConnectorOperatorMapping:
         - dataConnectorName: vector
-          dataConnectorScalarType: int8
+          dataConnectorScalarType: bigint
           operatorMapping: {}
   logicalOperators:
     enable: true
   isNull:
     enable: true
   graphql:
-    typeName: support_Int8BoolExp
+    typeName: support_BigintBoolExp
 
 ---
 kind: DataConnectorScalarRepresentation
 version: v1
 definition:
   dataConnectorName: vector
-  dataConnectorScalarType: int8
-  representation: Int8
+  dataConnectorScalarType: bigint
+  representation: Biginteger
   graphql:
-    comparisonExpressionTypeName: support_Int8ComparisonExp
+    comparisonExpressionTypeName: support_BigintegerComparisonExp
 
 ---
 kind: AggregateExpression
 version: v1
 definition:
-  name: Int4AggExp
+  name: IntegerAggExp
   operand:
     scalar:
-      aggregatedType: Int4
+      aggregatedType: Int32
       aggregationFunctions:
         - name: avg
-          returnType: Numeric
-        - name: bit_and
-          returnType: Int4
-        - name: bit_or
-          returnType: Int4
-        - name: bit_xor
-          returnType: Int4
+          returnType: Bigdecimal
         - name: max
-          returnType: Int4
+          returnType: Int32
         - name: min
-          returnType: Int4
-        - name: stddev
-          returnType: Numeric
+          returnType: Int32
         - name: stddev_pop
-          returnType: Numeric
+          returnType: Int32!
         - name: stddev_samp
-          returnType: Numeric
+          returnType: Int32!
         - name: sum
-          returnType: Int8
+          returnType: Biginteger
         - name: var_pop
-          returnType: Numeric
+          returnType: Int32!
         - name: var_samp
-          returnType: Numeric
-        - name: variance
-          returnType: Numeric
+          returnType: Int32!
       dataConnectorAggregationFunctionMapping:
         - dataConnectorName: vector
-          dataConnectorScalarType: int4
+          dataConnectorScalarType: integer
           functionMapping:
             avg:
               name: avg
-            bit_and:
-              name: bit_and
-            bit_or:
-              name: bit_or
-            bit_xor:
-              name: bit_xor
             max:
               name: max
             min:
               name: min
-            stddev:
-              name: stddev
             stddev_pop:
               name: stddev_pop
             stddev_samp:
@@ -575,27 +532,12 @@ definition:
               name: var_pop
             var_samp:
               name: var_samp
-            variance:
-              name: variance
   count:
     enable: true
   countDistinct:
     enable: true
   graphql:
-    selectTypeName: support_Int4AggExp
-
----
-kind: OrderByExpression
-version: v1
-definition:
-  name: TextOrderByExp
-  operand:
-    scalar:
-      orderedType: Text
-      enableOrderByDirections:
-        enableAll: true
-  graphql:
-    expressionTypeName: support_TextOrderByExp
+    selectTypeName: support_IntegerAggExp
 
 ---
 kind: OrderByExpression
@@ -614,137 +556,12 @@ definition:
 kind: OrderByExpression
 version: v1
 definition:
-  name: Int4OrderByExp
+  name: Int32OrderByExp
   operand:
     scalar:
-      orderedType: Int4
+      orderedType: Int32
       enableOrderByDirections:
         enableAll: true
   graphql:
-    expressionTypeName: support_Int4OrderByExp
-
----
-kind: ScalarType
-version: v1
-definition:
-  name: Float8
-  graphql:
-    typeName: support_Float8
-
----
-kind: BooleanExpressionType
-version: v1
-definition:
-  name: Float8BoolExp
-  operand:
-    scalar:
-      type: Float8
-      comparisonOperators:
-        - name: _eq
-          argumentType: Float8!
-        - name: _gt
-          argumentType: Float8!
-        - name: _gte
-          argumentType: Float8!
-        - name: _in
-          argumentType: "[Float8!]!"
-        - name: _lt
-          argumentType: Float8!
-        - name: _lte
-          argumentType: Float8!
-        - name: _neq
-          argumentType: Float8!
-      dataConnectorOperatorMapping:
-        - dataConnectorName: vector
-          dataConnectorScalarType: float8
-          operatorMapping: {}
-  logicalOperators:
-    enable: true
-  isNull:
-    enable: true
-  graphql:
-    typeName: support_Float8BoolExp
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: vector
-  dataConnectorScalarType: float8
-  representation: Float8
-  graphql:
-    comparisonExpressionTypeName: support_Float8ComparisonExp
-
----
-kind: AggregateExpression
-version: v1
-definition:
-  name: Float8AggExp
-  operand:
-    scalar:
-      aggregatedType: Float8
-      aggregationFunctions:
-        - name: avg
-          returnType: Float8
-        - name: max
-          returnType: Float8
-        - name: min
-          returnType: Float8
-        - name: stddev
-          returnType: Float8
-        - name: stddev_pop
-          returnType: Float8
-        - name: stddev_samp
-          returnType: Float8
-        - name: sum
-          returnType: Float8
-        - name: var_pop
-          returnType: Float8
-        - name: var_samp
-          returnType: Float8
-        - name: variance
-          returnType: Float8
-      dataConnectorAggregationFunctionMapping:
-        - dataConnectorName: vector
-          dataConnectorScalarType: float8
-          functionMapping:
-            avg:
-              name: avg
-            max:
-              name: max
-            min:
-              name: min
-            stddev:
-              name: stddev
-            stddev_pop:
-              name: stddev_pop
-            stddev_samp:
-              name: stddev_samp
-            sum:
-              name: sum
-            var_pop:
-              name: var_pop
-            var_samp:
-              name: var_samp
-            variance:
-              name: variance
-  count:
-    enable: true
-  countDistinct:
-    enable: true
-  graphql:
-    selectTypeName: support_Float8AggExp
-
----
-kind: OrderByExpression
-version: v1
-definition:
-  name: Float8OrderByExp
-  operand:
-    scalar:
-      orderedType: Float8
-      enableOrderByDirections:
-        enableAll: true
-  graphql:
-    expressionTypeName: support_Float8OrderByExp
+    expressionTypeName: support_Int32OrderByExp
 

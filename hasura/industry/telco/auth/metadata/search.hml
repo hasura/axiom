@@ -12,16 +12,41 @@ definition:
     Authorization:
       valueFromEnv: AUTH_SEARCH_AUTHORIZATION_HEADER
   schema:
-    version: v0.1
+    version: v0.2
     schema:
-      scalar_types:
-        String:
-          representation:
-            type: string
-          aggregate_functions: {}
-          comparison_operators:
-            _eq:
-              type: equal
+      collections: []
+      functions:
+        - arguments:
+            query:
+              description: Search query string
+              type:
+                name: String
+                type: named
+          description: Make a web search with brave, returns 10 results
+          name: braveSearch
+          result_type:
+            element_type:
+              name: SearchResult
+              type: named
+            type: array
+        - arguments:
+            query:
+              type:
+                name: String
+                type: named
+          name: searchWithPerplexity
+          result_type:
+            name: PerplexityResponse
+            type: named
+        - arguments:
+            query:
+              type:
+                name: String
+                type: named
+          name: geminiSearch
+          result_type:
+            name: GeminiSearchResponse
+            type: named
       object_types:
         GeminiSearchResponse:
           fields:
@@ -29,6 +54,7 @@ definition:
               type:
                 name: String
                 type: named
+          foreign_keys: {}
         PerplexityResponse:
           fields:
             references:
@@ -41,6 +67,7 @@ definition:
               type:
                 name: String
                 type: named
+          foreign_keys: {}
         SearchResult:
           fields:
             description:
@@ -61,44 +88,20 @@ definition:
               type:
                 name: String
                 type: named
-      collections: []
-      functions:
-        - name: braveSearch
-          description: Make a web search with brave, returns 10 results
-          arguments:
-            query:
-              description: Search query string
-              type:
-                name: String
-                type: named
-          result_type:
-            element_type:
-              name: SearchResult
-              type: named
-            type: array
-        - name: searchWithPerplexity
-          arguments:
-            query:
-              type:
-                name: String
-                type: named
-          result_type:
-            name: PerplexityResponse
-            type: named
-        - name: geminiSearch
-          arguments:
-            query:
-              type:
-                name: String
-                type: named
-          result_type:
-            name: GeminiSearchResponse
-            type: named
+          foreign_keys: {}
       procedures: []
+      scalar_types:
+        String:
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+          representation:
+            type: string
     capabilities:
-      version: 0.1.6
       capabilities:
-        query:
-          variables: {}
-          nested_fields: {}
         mutation: {}
+        query:
+          nested_fields: {}
+          variables: {}
+      version: 0.2.0

@@ -1,0 +1,205 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: PublicInventoryTransactions
+  description: "Object type for public.inventory_transactions. Description: null"
+  fields:
+    - name: notes
+      type: String_1
+    - name: productId
+      type: Int32!
+    - name: quantity
+      type: Int32!
+    - name: referenceNumber
+      type: String_1
+    - name: transactionDate
+      type: Timestamp!
+    - name: transactionId
+      type: Int32!
+    - name: transactionType
+      type: String_1
+    - name: warehouseId
+      type: Int32
+  graphql:
+    typeName: PublicInventoryTransactions
+    inputTypeName: PublicInventoryTransactionsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: inventory
+      dataConnectorObjectType: public.inventory_transactions
+      fieldMapping:
+        notes:
+          column:
+            name: notes
+        productId:
+          column:
+            name: product_id
+        quantity:
+          column:
+            name: quantity
+        referenceNumber:
+          column:
+            name: reference_number
+        transactionDate:
+          column:
+            name: transaction_date
+        transactionId:
+          column:
+            name: transaction_id
+        transactionType:
+          column:
+            name: transaction_type
+        warehouseId:
+          column:
+            name: warehouse_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: PublicInventoryTransactions
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - notes
+          - productId
+          - quantity
+          - referenceNumber
+          - transactionDate
+          - transactionId
+          - transactionType
+          - warehouseId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PublicInventoryTransactionsBoolExp
+  operand:
+    object:
+      type: PublicInventoryTransactions
+      comparableFields:
+        - fieldName: notes
+          booleanExpressionType: TextBoolExp_1
+        - fieldName: productId
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: quantity
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: referenceNumber
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: transactionDate
+          booleanExpressionType: TimestampWithoutTimeZoneBoolExp
+        - fieldName: transactionId
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: transactionType
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: warehouseId
+          booleanExpressionType: IntegerBoolExp_1
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: PublicInventoryTransactionsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PublicInventoryTransactionsAggExp
+  operand:
+    object:
+      aggregatedType: PublicInventoryTransactions
+      aggregatableFields:
+        - fieldName: notes
+          aggregateExpression: TextAggExp_1
+        - fieldName: productId
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: quantity
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: referenceNumber
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: transactionDate
+          aggregateExpression: TimestampWithoutTimeZoneAggExp
+        - fieldName: transactionId
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: transactionType
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: warehouseId
+          aggregateExpression: IntegerAggExp_1
+  count:
+    enable: true
+  graphql:
+    selectTypeName: PublicInventoryTransactionsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PublicInventoryTransactionsOrderByExp
+  operand:
+    object:
+      orderedType: PublicInventoryTransactions
+      orderableFields:
+        - fieldName: notes
+          orderByExpression: String1OrderByExp
+        - fieldName: productId
+          orderByExpression: Int32OrderByExp
+        - fieldName: quantity
+          orderByExpression: Int32OrderByExp
+        - fieldName: referenceNumber
+          orderByExpression: String1OrderByExp
+        - fieldName: transactionDate
+          orderByExpression: TimestampOrderByExp
+        - fieldName: transactionId
+          orderByExpression: Int32OrderByExp
+        - fieldName: transactionType
+          orderByExpression: String1OrderByExp
+        - fieldName: warehouseId
+          orderByExpression: Int32OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: PublicInventoryTransactionsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: PublicInventoryTransactions
+  objectType: PublicInventoryTransactions
+  source:
+    dataConnectorName: inventory
+    collection: public.inventory_transactions
+  filterExpressionType: PublicInventoryTransactionsBoolExp
+  aggregateExpression: PublicInventoryTransactionsAggExp
+  orderByExpression: PublicInventoryTransactionsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: publicInventoryTransactions
+      subscription:
+        rootField: publicInventoryTransactions
+    selectUniques:
+      - queryRootField: publicInventoryTransactionsByTransactionId
+        uniqueIdentifier:
+          - transactionId
+        subscription:
+          rootField: publicInventoryTransactionsByTransactionId
+    filterInputTypeName: PublicInventoryTransactionsFilterInput
+    aggregate:
+      queryRootField: publicInventoryTransactionsAggregate
+      subscription:
+        rootField: publicInventoryTransactionsAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: PublicInventoryTransactions
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

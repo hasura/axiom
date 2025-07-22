@@ -1,28 +1,65 @@
+version: v2
+ndcSpecGeneration: v0.2
 packagingDefinition:
   type: PrebuiltDockerImage
-  dockerImage: ghcr.io/hasura/ndc-clickhouse:v1.1.0
+  dockerImage: ghcr.io/hasura/ndc-clickhouse-jdbc:v1.0.2
 supportedEnvironmentVariables:
-  - name: CLICKHOUSE_URL
-    description: The ClickHouse connection URL
-    defaultValue: ""
-    required: true
-  - name: CLICKHOUSE_USERNAME
-    description: The ClickHouse connection username
-    defaultValue: ""
-    required: true
-  - name: CLICKHOUSE_PASSWORD
-    description: The ClickHouse connection password
-    defaultValue: ""
-    required: true
+  - name: JDBC_URL
+    description: The JDBC URL to connect to the database
+  - name: JDBC_SCHEMAS
+    description: A comma-separated list of schemas to include in the metadata
 commands:
-  update: hasura-clickhouse update
-  printSchemaAndCapabilities: hasura-clickhouse print-schema-and-capabilities
+  update:
+    type: Dockerized
+    dockerImage: ghcr.io/hasura/ndc-clickhouse-jdbc-cli:v1.0.2
+    commandArgs:
+      - update
+      - --jdbc-url
+      - JDBC_URL
+      - --schemas
+      - $JDBC_SCHEMAS
+      - --outfile
+      - /etc/connector/configuration.json
+  upgradeConfiguration:
+    type: Dockerized
+    dockerImage: ghcr.io/hasura/ndc-clickhouse-jdbc-cli:v1.0.2
+    commandArgs:
+      - upgrade
+      - --config-file
+      - /etc/connector/configuration.json
+      - --outfile
+      - /etc/connector/configuration.json
 cliPlugin:
-  type: null
-  name: clickhouse
-  version: v1.1.0
-dockerComposeWatch:
-  - path: ./
-    action: sync+restart
-    target: /etc/connector
-documentationPage: https://hasura.info/clickhouse-getting-started
+  type: Docker
+  dockerImage: ghcr.io/hasura/ndc-clickhouse-jdbc-cli:v1.0.2
+dockerComposeWatch: []
+nativeToolchainDefinition:
+  commands:
+    start:
+      type: ShellScript
+      bash: |
+        #!/usr/bin/env bash
+        set -eu -o pipefail
+        HASURA_CONFIGURATION_DIRECTORY="$HASURA_PLUGIN_CONNECTOR_CONTEXT_PATH" \
+        "$HASURA_DDN_NATIVE_CONNECTOR_DIR/entrypoint.sh"
+      powershell: |
+        $ErrorActionPreference = "Stop"
+        $env:HASURA_CONFIGURATION_DIRECTORY="$env:HASURA_PLUGIN_CONNECTOR_CONTEXT_PATH";
+        & "$env:HASURA_DDN_NATIVE_CONNECTOR_DIR\entrypoint.bat"
+    watch:
+      type: ShellScript
+      bash: |
+        #!/usr/bin/env bash
+        echo "Watch is not supported for this connector"
+        exit 1
+      powershell: |
+        Write-Output "Watch is not supported for this connector"
+        exit 1
+    update:
+      type: ShellScript
+      bash: set -e -o pipefail; "$HASURA_DDN_NATIVE_CONNECTOR_PLUGIN_DIR/entrypoint.sh" update --jdbc-url JDBC_URL --schemas $JDBC_SCHEMAS --outfile "$HASURA_PLUGIN_CONNECTOR_CONTEXT_PATH/configuration.json"
+      powershell: $ErrorActionPreference = "Stop"; & "$env:HASURA_DDN_NATIVE_CONNECTOR_PLUGIN_DIR\entrypoint.bat" update --jdbc-url JDBC_URL --schemas `$env:JDBC_SCHEMAS --outfile "$env:HASURA_PLUGIN_CONNECTOR_CONTEXT_PATH\configuration.json"
+    cliPluginEntrypoint:
+      type: ShellScript
+      bash: set -e -o pipefail; "$HASURA_DDN_NATIVE_CONNECTOR_PLUGIN_DIR/entrypoint.sh"
+      powershell: $ErrorActionPreference = "Stop"; & "$env:HASURA_DDN_NATIVE_CONNECTOR_PLUGIN_DIR/entrypoint.bat"

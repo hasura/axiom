@@ -1,0 +1,210 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: PublicCreditCards
+  description: "Object type for public.credit_cards. Description: null"
+  fields:
+    - name: createdAt
+      type: Timestamptz!
+    - name: creditCardId
+      type: Int32!
+    - name: customerId
+      type: Int32
+    - name: cvv
+      type: Int32!
+    - name: expiry
+      type: Date!
+    - name: number
+      type: String_1!
+    - name: updatedAt
+      type: Timestamptz!
+  graphql:
+    typeName: customer_PublicCreditCards
+    inputTypeName: customer_PublicCreditCardsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: public.credit_cards
+      fieldMapping:
+        createdAt:
+          column:
+            name: created_at
+        creditCardId:
+          column:
+            name: credit_card_id
+        customerId:
+          column:
+            name: customer_id
+        cvv:
+          column:
+            name: cvv
+        expiry:
+          column:
+            name: expiry
+        number:
+          column:
+            name: number
+        updatedAt:
+          column:
+            name: updated_at
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: PublicCreditCards
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - createdAt
+          - creditCardId
+          - customerId
+          - cvv
+          - expiry
+          - number
+          - updatedAt
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PublicCreditCardsBoolExp
+  operand:
+    object:
+      type: PublicCreditCards
+      comparableFields:
+        - fieldName: createdAt
+          booleanExpressionType: TimestampWithTimeZoneBoolExp
+        - fieldName: creditCardId
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: customerId
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: cvv
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: expiry
+          booleanExpressionType: DateBoolExp
+        - fieldName: number
+          booleanExpressionType: TextBoolExp
+        - fieldName: updatedAt
+          booleanExpressionType: TimestampWithTimeZoneBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customer_PublicCreditCardsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PublicCreditCardsAggExp
+  operand:
+    object:
+      aggregatedType: PublicCreditCards
+      aggregatableFields:
+        - fieldName: createdAt
+          aggregateExpression: TimestampWithTimeZoneAggExp
+        - fieldName: creditCardId
+          aggregateExpression: IntegerAggExp
+        - fieldName: customerId
+          aggregateExpression: IntegerAggExp
+        - fieldName: cvv
+          aggregateExpression: IntegerAggExp
+        - fieldName: expiry
+          aggregateExpression: DateAggExp
+        - fieldName: number
+          aggregateExpression: TextAggExp
+        - fieldName: updatedAt
+          aggregateExpression: TimestampWithTimeZoneAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: customer_PublicCreditCardsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PublicCreditCardsOrderByExp
+  operand:
+    object:
+      orderedType: PublicCreditCards
+      orderableFields:
+        - fieldName: createdAt
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: creditCardId
+          orderByExpression: Int32OrderByExp
+        - fieldName: customerId
+          orderByExpression: Int32OrderByExp
+        - fieldName: cvv
+          orderByExpression: Int32OrderByExp
+        - fieldName: expiry
+          orderByExpression: DateOrderByExp
+        - fieldName: number
+          orderByExpression: String1OrderByExp
+        - fieldName: updatedAt
+          orderByExpression: TimestamptzOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: customer_PublicCreditCardsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: PublicCreditCards
+  objectType: PublicCreditCards
+  source:
+    dataConnectorName: aurora
+    collection: public.credit_cards
+  filterExpressionType: PublicCreditCardsBoolExp
+  aggregateExpression: PublicCreditCardsAggExp
+  orderByExpression: PublicCreditCardsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: publicCreditCards
+      subscription:
+        rootField: publicCreditCards
+    selectUniques:
+      - queryRootField: publicCreditCardsByCreditCardId
+        uniqueIdentifier:
+          - creditCardId
+        subscription:
+          rootField: publicCreditCardsByCreditCardId
+    filterInputTypeName: customer_PublicCreditCardsFilterInput
+    aggregate:
+      queryRootField: publicCreditCardsAggregate
+      subscription:
+        rootField: publicCreditCardsAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: PublicCreditCards
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer
+  sourceType: PublicCreditCards
+  target:
+    model:
+      name: PublicCustomers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId

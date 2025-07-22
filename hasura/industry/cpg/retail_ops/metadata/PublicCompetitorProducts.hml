@@ -1,0 +1,181 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: PublicCompetitorProducts
+  description: "Object type for public.competitor_products. Description: null"
+  fields:
+    - name: categoryId
+      type: Int32
+    - name: competitorId
+      type: Int32
+    - name: competitorProductId
+      type: Int32!
+    - name: estimatedPrice
+      type: Bigdecimal
+    - name: notes
+      type: String_1
+    - name: productName
+      type: String_1!
+  graphql:
+    typeName: PublicCompetitorProducts
+    inputTypeName: PublicCompetitorProductsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: sales
+      dataConnectorObjectType: public.competitor_products
+      fieldMapping:
+        categoryId:
+          column:
+            name: category_id
+        competitorId:
+          column:
+            name: competitor_id
+        competitorProductId:
+          column:
+            name: competitor_product_id
+        estimatedPrice:
+          column:
+            name: estimated_price
+        notes:
+          column:
+            name: notes
+        productName:
+          column:
+            name: product_name
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: PublicCompetitorProducts
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - categoryId
+          - competitorId
+          - competitorProductId
+          - estimatedPrice
+          - notes
+          - productName
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PublicCompetitorProductsBoolExp
+  operand:
+    object:
+      type: PublicCompetitorProducts
+      comparableFields:
+        - fieldName: categoryId
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: competitorId
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: competitorProductId
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: estimatedPrice
+          booleanExpressionType: DecimalBoolExp
+        - fieldName: notes
+          booleanExpressionType: TextBoolExp
+        - fieldName: productName
+          booleanExpressionType: CharacterVaryingBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: PublicCompetitorProductsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PublicCompetitorProductsAggExp
+  operand:
+    object:
+      aggregatedType: PublicCompetitorProducts
+      aggregatableFields:
+        - fieldName: categoryId
+          aggregateExpression: IntegerAggExp
+        - fieldName: competitorId
+          aggregateExpression: IntegerAggExp
+        - fieldName: competitorProductId
+          aggregateExpression: IntegerAggExp
+        - fieldName: estimatedPrice
+          aggregateExpression: DecimalAggExp
+        - fieldName: notes
+          aggregateExpression: TextAggExp
+        - fieldName: productName
+          aggregateExpression: CharacterVaryingAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: PublicCompetitorProductsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PublicCompetitorProductsOrderByExp
+  operand:
+    object:
+      orderedType: PublicCompetitorProducts
+      orderableFields:
+        - fieldName: categoryId
+          orderByExpression: Int32OrderByExp
+        - fieldName: competitorId
+          orderByExpression: Int32OrderByExp
+        - fieldName: competitorProductId
+          orderByExpression: Int32OrderByExp
+        - fieldName: estimatedPrice
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: notes
+          orderByExpression: String1OrderByExp
+        - fieldName: productName
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: PublicCompetitorProductsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: PublicCompetitorProducts
+  objectType: PublicCompetitorProducts
+  source:
+    dataConnectorName: sales
+    collection: public.competitor_products
+  filterExpressionType: PublicCompetitorProductsBoolExp
+  aggregateExpression: PublicCompetitorProductsAggExp
+  orderByExpression: PublicCompetitorProductsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: publicCompetitorProducts
+      subscription:
+        rootField: publicCompetitorProducts
+    selectUniques:
+      - queryRootField: publicCompetitorProductsByCompetitorProductId
+        uniqueIdentifier:
+          - competitorProductId
+        subscription:
+          rootField: publicCompetitorProductsByCompetitorProductId
+    filterInputTypeName: PublicCompetitorProductsFilterInput
+    aggregate:
+      queryRootField: publicCompetitorProductsAggregate
+      subscription:
+        rootField: publicCompetitorProductsAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: PublicCompetitorProducts
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

@@ -1,0 +1,170 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: DefaultCdr
+  description: "Object type for default.cdr. Description: null"
+  fields:
+    - name: cuid
+      type: Int32!
+    - name: callDuration
+      type: Int32!
+    - name: callType
+      type: String_1!
+    - name: guid
+      type: String_1!
+    - name: timestamp
+      type: Timestamptz!
+  graphql:
+    typeName: network_DefaultCdr
+    inputTypeName: network_DefaultCdrInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: clickhouse
+      dataConnectorObjectType: default.cdr
+      fieldMapping:
+        cuid:
+          column:
+            name: CUID
+        callDuration:
+          column:
+            name: Call_Duration
+        callType:
+          column:
+            name: Call_Type
+        guid:
+          column:
+            name: GUID
+        timestamp:
+          column:
+            name: Timestamp
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: DefaultCdr
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - cuid
+          - callDuration
+          - callType
+          - guid
+          - timestamp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: DefaultCdrBoolExp
+  operand:
+    object:
+      type: DefaultCdr
+      comparableFields:
+        - fieldName: cuid
+          booleanExpressionType: Int32BoolExp
+        - fieldName: callDuration
+          booleanExpressionType: Int32BoolExp
+        - fieldName: callType
+          booleanExpressionType: StringBoolExp
+        - fieldName: guid
+          booleanExpressionType: StringBoolExp
+        - fieldName: timestamp
+          booleanExpressionType: Datetime64BoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: network_DefaultCdrBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: DefaultCdrAggExp
+  operand:
+    object:
+      aggregatedType: DefaultCdr
+      aggregatableFields:
+        - fieldName: cuid
+          aggregateExpression: Int32AggExp
+        - fieldName: callDuration
+          aggregateExpression: Int32AggExp
+        - fieldName: callType
+          aggregateExpression: StringAggExp
+        - fieldName: guid
+          aggregateExpression: StringAggExp
+        - fieldName: timestamp
+          aggregateExpression: Datetime64AggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: network_DefaultCdrAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: DefaultCdrOrderByExp
+  operand:
+    object:
+      orderedType: DefaultCdr
+      orderableFields:
+        - fieldName: cuid
+          orderByExpression: Int32OrderByExp
+        - fieldName: callDuration
+          orderByExpression: Int32OrderByExp
+        - fieldName: callType
+          orderByExpression: String1OrderByExp
+        - fieldName: guid
+          orderByExpression: String1OrderByExp
+        - fieldName: timestamp
+          orderByExpression: TimestamptzOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: network_DefaultCdrOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: DefaultCdr
+  objectType: DefaultCdr
+  source:
+    dataConnectorName: clickhouse
+    collection: default.cdr
+  filterExpressionType: DefaultCdrBoolExp
+  aggregateExpression: DefaultCdrAggExp
+  orderByExpression: DefaultCdrOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: defaultCdr
+      subscription:
+        rootField: defaultCdr
+    selectUniques:
+      - queryRootField: defaultCdrByPrimaryKey
+        uniqueIdentifier:
+          - guid
+          - timestamp
+        subscription:
+          rootField: defaultCdrByPrimaryKey
+    filterInputTypeName: network_DefaultCdrFilterInput
+    aggregate:
+      queryRootField: defaultCdrAggregate
+      subscription:
+        rootField: defaultCdrAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: DefaultCdr
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
