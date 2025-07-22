@@ -1,0 +1,171 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_retailers_copy
+  description: "Object type for public.retailers_copy. Description: null"
+  fields:
+    - name: account_tier
+      type: String_1
+    - name: annual_revenue_tier
+      type: String_1
+    - name: channel_id
+      type: Int32
+    - name: has_ecommerce
+      type: Boolean_1
+    - name: retailer_id
+      type: Int32!
+    - name: retailer_name
+      type: String_1!
+    - name: sales_region
+      type: String_1
+  graphql:
+    typeName: public_retailers_copy
+    inputTypeName: public_retailers_copy_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: inventory
+      dataConnectorObjectType: public.retailers_copy
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_retailers_copy
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - account_tier
+          - annual_revenue_tier
+          - channel_id
+          - has_ecommerce
+          - retailer_id
+          - retailer_name
+          - sales_region
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_retailers_copy_bool_exp
+  operand:
+    object:
+      type: public_retailers_copy
+      comparableFields:
+        - fieldName: account_tier
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: annual_revenue_tier
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: channel_id
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: has_ecommerce
+          booleanExpressionType: BooleanBoolExp_1
+        - fieldName: retailer_id
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: retailer_name
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: sales_region
+          booleanExpressionType: CharacterVaryingBoolExp_1
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_retailers_copy_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_retailers_copy_agg_exp
+  operand:
+    object:
+      aggregatedType: public_retailers_copy
+      aggregatableFields:
+        - fieldName: account_tier
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: annual_revenue_tier
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: channel_id
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: has_ecommerce
+          aggregateExpression: BooleanAggExp_1
+        - fieldName: retailer_id
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: retailer_name
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: sales_region
+          aggregateExpression: CharacterVaryingAggExp_1
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_retailers_copy_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_retailers_copy_order_by_exp
+  operand:
+    object:
+      orderedType: public_retailers_copy
+      orderableFields:
+        - fieldName: account_tier
+          orderByExpression: String1OrderByExp
+        - fieldName: annual_revenue_tier
+          orderByExpression: String1OrderByExp
+        - fieldName: channel_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: has_ecommerce
+          orderByExpression: Boolean1OrderByExp
+        - fieldName: retailer_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: retailer_name
+          orderByExpression: String1OrderByExp
+        - fieldName: sales_region
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_retailers_copy_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_retailers_copy
+  objectType: public_retailers_copy
+  source:
+    dataConnectorName: inventory
+    collection: public.retailers_copy
+  filterExpressionType: public_retailers_copy_bool_exp
+  aggregateExpression: public_retailers_copy_agg_exp
+  orderByExpression: public_retailers_copy_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_retailers_copy
+      subscription:
+        rootField: public_retailers_copy
+    selectUniques:
+      - queryRootField: public_retailers_copy_by_retailer_id
+        uniqueIdentifier:
+          - retailer_id
+        subscription:
+          rootField: public_retailers_copy_by_retailer_id
+    filterInputTypeName: public_retailers_copy_filter_input
+    aggregate:
+      queryRootField: public_retailers_copy_aggregate
+      subscription:
+        rootField: public_retailers_copy_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_retailers_copy
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

@@ -2,77 +2,72 @@
 kind: ObjectType
 version: v1
 definition:
-  name: InventoryAllocationResponse
+  name: inventory_allocation_response
   fields:
-    - name: allocationId
+    - name: allocation_id
       type: String
-    - name: productId
+    - name: product_id
       type: Float!
     - name: status
       type: String!
-    - name: warehouseId
+    - name: warehouse_id
       type: Float!
   graphql:
-    typeName: InventoryAllocationResponse
-    inputTypeName: InventoryAllocationResponseInput
+    typeName: inventory_allocation_response
+    inputTypeName: inventory_allocation_response_input
   dataConnectorTypeMapping:
     - dataConnectorName: retail_execution
       dataConnectorObjectType: InventoryAllocationResponse
-      fieldMapping:
-        allocationId:
-          column:
-            name: allocation_id
-        productId:
-          column:
-            name: product_id
-        status:
-          column:
-            name: status
-        warehouseId:
-          column:
-            name: warehouse_id
 
 ---
 kind: TypePermissions
 version: v1
 definition:
-  typeName: InventoryAllocationResponse
+  typeName: inventory_allocation_response
   permissions:
     - role: admin
       output:
         allowedFields:
-          - allocationId
-          - productId
+          - allocation_id
+          - product_id
           - status
-          - warehouseId
+          - warehouse_id
 
 ---
 kind: Command
 version: v1
 definition:
-  name: AllocateInventory
-  outputType: InventoryAllocationResponse!
+  name: allocate_inventory
+  outputType: inventory_allocation_response!
   arguments:
-    - name: allocationQuantity
+    - name: allocation_quantity
       type: Float!
-    - name: priorityLevel
+    - name: priority_level
       type: String!
-    - name: productId
+    - name: product_id
       type: Float!
-    - name: productName
+    - name: product_name
       type: String!
     - name: reason
       type: String!
-    - name: retailerId
+    - name: retailer_id
       type: Float!
-    - name: warehouseId
+    - name: warehouse_id
       type: Float!
   source:
     dataConnectorName: retail_execution
     dataConnectorCommand:
       procedure: allocateInventory
+    argumentMapping:
+      allocation_quantity: allocationQuantity
+      priority_level: priorityLevel
+      product_id: productId
+      product_name: productName
+      reason: reason
+      retailer_id: retailerId
+      warehouse_id: warehouseId
   graphql:
-    rootFieldName: allocateInventory
+    rootFieldName: allocate_inventory
     rootFieldKind: Mutation
   description: >-
     **Description:**
@@ -94,7 +89,7 @@ definition:
 kind: CommandPermissions
 version: v1
 definition:
-  commandName: AllocateInventory
+  commandName: allocate_inventory
   permissions:
     - role: admin
       allowExecution: true

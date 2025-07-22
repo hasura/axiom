@@ -1,0 +1,270 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_products_copy
+  description: "Object type for public.products_copy. Description: null"
+  fields:
+    - name: brand_id
+      type: Int32
+    - name: case_pack
+      type: Int32
+    - name: category_id
+      type: Int32
+    - name: discontinue_date
+      type: Date
+    - name: high_velocity
+      type: Boolean_1
+    - name: is_glutenfree
+      type: Boolean_1
+    - name: is_organic
+      type: Boolean_1
+    - name: is_seasonal
+      type: Boolean_1
+    - name: launch_date
+      type: Date
+    - name: msrp
+      type: Bigdecimal
+    - name: product_id
+      type: Int32!
+    - name: product_name
+      type: String_1!
+    - name: product_sku
+      type: String_1!
+    - name: subcategory_id
+      type: Int32
+    - name: unit_measure
+      type: String_1
+    - name: unit_size
+      type: String_1
+    - name: weight_oz
+      type: Bigdecimal
+    - name: wholesale_price
+      type: Bigdecimal
+  graphql:
+    typeName: public_products_copy
+    inputTypeName: public_products_copy_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: inventory
+      dataConnectorObjectType: public.products_copy
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_products_copy
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - brand_id
+          - case_pack
+          - category_id
+          - discontinue_date
+          - high_velocity
+          - is_glutenfree
+          - is_organic
+          - is_seasonal
+          - launch_date
+          - msrp
+          - product_id
+          - product_name
+          - product_sku
+          - subcategory_id
+          - unit_measure
+          - unit_size
+          - weight_oz
+          - wholesale_price
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_products_copy_bool_exp
+  operand:
+    object:
+      type: public_products_copy
+      comparableFields:
+        - fieldName: brand_id
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: case_pack
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: category_id
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: discontinue_date
+          booleanExpressionType: DateBoolExp_1
+        - fieldName: high_velocity
+          booleanExpressionType: BooleanBoolExp_1
+        - fieldName: is_glutenfree
+          booleanExpressionType: BooleanBoolExp_1
+        - fieldName: is_organic
+          booleanExpressionType: BooleanBoolExp_1
+        - fieldName: is_seasonal
+          booleanExpressionType: BooleanBoolExp_1
+        - fieldName: launch_date
+          booleanExpressionType: DateBoolExp_1
+        - fieldName: msrp
+          booleanExpressionType: DecimalBoolExp_1
+        - fieldName: product_id
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: product_name
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: product_sku
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: subcategory_id
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: unit_measure
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: unit_size
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: weight_oz
+          booleanExpressionType: DecimalBoolExp_1
+        - fieldName: wholesale_price
+          booleanExpressionType: DecimalBoolExp_1
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_products_copy_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_products_copy_agg_exp
+  operand:
+    object:
+      aggregatedType: public_products_copy
+      aggregatableFields:
+        - fieldName: brand_id
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: case_pack
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: category_id
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: discontinue_date
+          aggregateExpression: DateAggExp_1
+        - fieldName: high_velocity
+          aggregateExpression: BooleanAggExp_1
+        - fieldName: is_glutenfree
+          aggregateExpression: BooleanAggExp_1
+        - fieldName: is_organic
+          aggregateExpression: BooleanAggExp_1
+        - fieldName: is_seasonal
+          aggregateExpression: BooleanAggExp_1
+        - fieldName: launch_date
+          aggregateExpression: DateAggExp_1
+        - fieldName: msrp
+          aggregateExpression: DecimalAggExp_1
+        - fieldName: product_id
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: product_name
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: product_sku
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: subcategory_id
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: unit_measure
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: unit_size
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: weight_oz
+          aggregateExpression: DecimalAggExp_1
+        - fieldName: wholesale_price
+          aggregateExpression: DecimalAggExp_1
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_products_copy_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_products_copy_order_by_exp
+  operand:
+    object:
+      orderedType: public_products_copy
+      orderableFields:
+        - fieldName: brand_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: case_pack
+          orderByExpression: Int32OrderByExp
+        - fieldName: category_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: discontinue_date
+          orderByExpression: DateOrderByExp
+        - fieldName: high_velocity
+          orderByExpression: Boolean1OrderByExp
+        - fieldName: is_glutenfree
+          orderByExpression: Boolean1OrderByExp
+        - fieldName: is_organic
+          orderByExpression: Boolean1OrderByExp
+        - fieldName: is_seasonal
+          orderByExpression: Boolean1OrderByExp
+        - fieldName: launch_date
+          orderByExpression: DateOrderByExp
+        - fieldName: msrp
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: product_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: product_name
+          orderByExpression: String1OrderByExp
+        - fieldName: product_sku
+          orderByExpression: String1OrderByExp
+        - fieldName: subcategory_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: unit_measure
+          orderByExpression: String1OrderByExp
+        - fieldName: unit_size
+          orderByExpression: String1OrderByExp
+        - fieldName: weight_oz
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: wholesale_price
+          orderByExpression: BigdecimalOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_products_copy_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_products_copy
+  objectType: public_products_copy
+  source:
+    dataConnectorName: inventory
+    collection: public.products_copy
+  filterExpressionType: public_products_copy_bool_exp
+  aggregateExpression: public_products_copy_agg_exp
+  orderByExpression: public_products_copy_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_products_copy
+      subscription:
+        rootField: public_products_copy
+    selectUniques:
+      - queryRootField: public_products_copy_by_product_id
+        uniqueIdentifier:
+          - product_id
+        subscription:
+          rootField: public_products_copy_by_product_id
+    filterInputTypeName: public_products_copy_filter_input
+    aggregate:
+      queryRootField: public_products_copy_aggregate
+      subscription:
+        rootField: public_products_copy_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_products_copy
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

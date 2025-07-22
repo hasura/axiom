@@ -2,99 +2,74 @@
 kind: ObjectType
 version: v1
 definition:
-  name: PublicInventoryTransactions
+  name: public_inventory_transactions
   description: "Object type for public.inventory_transactions. Description: null"
   fields:
     - name: notes
       type: String_1
-    - name: productId
+    - name: product_id
       type: Int32!
     - name: quantity
       type: Int32!
-    - name: referenceNumber
+    - name: reference_number
       type: String_1
-    - name: transactionDate
+    - name: transaction_date
       type: Timestamp!
-    - name: transactionId
+    - name: transaction_id
       type: Int32!
-    - name: transactionType
+    - name: transaction_type
       type: String_1
-    - name: warehouseId
+    - name: warehouse_id
       type: Int32
   graphql:
-    typeName: PublicInventoryTransactions
-    inputTypeName: PublicInventoryTransactionsInput
+    typeName: public_inventory_transactions
+    inputTypeName: public_inventory_transactions_input
   dataConnectorTypeMapping:
     - dataConnectorName: inventory
       dataConnectorObjectType: public.inventory_transactions
-      fieldMapping:
-        notes:
-          column:
-            name: notes
-        productId:
-          column:
-            name: product_id
-        quantity:
-          column:
-            name: quantity
-        referenceNumber:
-          column:
-            name: reference_number
-        transactionDate:
-          column:
-            name: transaction_date
-        transactionId:
-          column:
-            name: transaction_id
-        transactionType:
-          column:
-            name: transaction_type
-        warehouseId:
-          column:
-            name: warehouse_id
 
 ---
 kind: TypePermissions
 version: v1
 definition:
-  typeName: PublicInventoryTransactions
+  typeName: public_inventory_transactions
   permissions:
     - role: admin
       output:
         allowedFields:
           - notes
-          - productId
+          - product_id
           - quantity
-          - referenceNumber
-          - transactionDate
-          - transactionId
-          - transactionType
-          - warehouseId
+          - reference_number
+          - transaction_date
+          - transaction_id
+          - transaction_type
+          - warehouse_id
 
 ---
 kind: BooleanExpressionType
 version: v1
 definition:
-  name: PublicInventoryTransactionsBoolExp
+  name: public_inventory_transactions_bool_exp
   operand:
     object:
-      type: PublicInventoryTransactions
+      type: public_inventory_transactions
       comparableFields:
         - fieldName: notes
           booleanExpressionType: TextBoolExp_1
-        - fieldName: productId
+        - fieldName: product_id
           booleanExpressionType: IntegerBoolExp_1
         - fieldName: quantity
           booleanExpressionType: IntegerBoolExp_1
-        - fieldName: referenceNumber
+        - fieldName: reference_number
           booleanExpressionType: CharacterVaryingBoolExp_1
-        - fieldName: transactionDate
+        - fieldName: transaction_date
           booleanExpressionType: TimestampWithoutTimeZoneBoolExp
-        - fieldName: transactionId
+        - fieldName: transaction_id
           booleanExpressionType: IntegerBoolExp_1
-        - fieldName: transactionType
+        - fieldName: transaction_type
           booleanExpressionType: CharacterVaryingBoolExp_1
-        - fieldName: warehouseId
+        - fieldName: warehouse_id
           booleanExpressionType: IntegerBoolExp_1
       comparableRelationships: []
   logicalOperators:
@@ -102,101 +77,101 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: PublicInventoryTransactionsBoolExp
+    typeName: public_inventory_transactions_bool_exp
 
 ---
 kind: AggregateExpression
 version: v1
 definition:
-  name: PublicInventoryTransactionsAggExp
+  name: public_inventory_transactions_agg_exp
   operand:
     object:
-      aggregatedType: PublicInventoryTransactions
+      aggregatedType: public_inventory_transactions
       aggregatableFields:
         - fieldName: notes
           aggregateExpression: TextAggExp_1
-        - fieldName: productId
+        - fieldName: product_id
           aggregateExpression: IntegerAggExp_1
         - fieldName: quantity
           aggregateExpression: IntegerAggExp_1
-        - fieldName: referenceNumber
+        - fieldName: reference_number
           aggregateExpression: CharacterVaryingAggExp_1
-        - fieldName: transactionDate
+        - fieldName: transaction_date
           aggregateExpression: TimestampWithoutTimeZoneAggExp
-        - fieldName: transactionId
+        - fieldName: transaction_id
           aggregateExpression: IntegerAggExp_1
-        - fieldName: transactionType
+        - fieldName: transaction_type
           aggregateExpression: CharacterVaryingAggExp_1
-        - fieldName: warehouseId
+        - fieldName: warehouse_id
           aggregateExpression: IntegerAggExp_1
   count:
     enable: true
   graphql:
-    selectTypeName: PublicInventoryTransactionsAggExp
+    selectTypeName: public_inventory_transactions_agg_exp
 
 ---
 kind: OrderByExpression
 version: v1
 definition:
-  name: PublicInventoryTransactionsOrderByExp
+  name: public_inventory_transactions_order_by_exp
   operand:
     object:
-      orderedType: PublicInventoryTransactions
+      orderedType: public_inventory_transactions
       orderableFields:
         - fieldName: notes
           orderByExpression: String1OrderByExp
-        - fieldName: productId
+        - fieldName: product_id
           orderByExpression: Int32OrderByExp
         - fieldName: quantity
           orderByExpression: Int32OrderByExp
-        - fieldName: referenceNumber
+        - fieldName: reference_number
           orderByExpression: String1OrderByExp
-        - fieldName: transactionDate
+        - fieldName: transaction_date
           orderByExpression: TimestampOrderByExp
-        - fieldName: transactionId
+        - fieldName: transaction_id
           orderByExpression: Int32OrderByExp
-        - fieldName: transactionType
+        - fieldName: transaction_type
           orderByExpression: String1OrderByExp
-        - fieldName: warehouseId
+        - fieldName: warehouse_id
           orderByExpression: Int32OrderByExp
       orderableRelationships: []
   graphql:
-    expressionTypeName: PublicInventoryTransactionsOrderByExp
+    expressionTypeName: public_inventory_transactions_order_by_exp
 
 ---
 kind: Model
 version: v2
 definition:
-  name: PublicInventoryTransactions
-  objectType: PublicInventoryTransactions
+  name: public_inventory_transactions
+  objectType: public_inventory_transactions
   source:
     dataConnectorName: inventory
     collection: public.inventory_transactions
-  filterExpressionType: PublicInventoryTransactionsBoolExp
-  aggregateExpression: PublicInventoryTransactionsAggExp
-  orderByExpression: PublicInventoryTransactionsOrderByExp
+  filterExpressionType: public_inventory_transactions_bool_exp
+  aggregateExpression: public_inventory_transactions_agg_exp
+  orderByExpression: public_inventory_transactions_order_by_exp
   graphql:
     selectMany:
-      queryRootField: publicInventoryTransactions
+      queryRootField: public_inventory_transactions
       subscription:
-        rootField: publicInventoryTransactions
+        rootField: public_inventory_transactions
     selectUniques:
-      - queryRootField: publicInventoryTransactionsByTransactionId
+      - queryRootField: public_inventory_transactions_by_transaction_id
         uniqueIdentifier:
-          - transactionId
+          - transaction_id
         subscription:
-          rootField: publicInventoryTransactionsByTransactionId
-    filterInputTypeName: PublicInventoryTransactionsFilterInput
+          rootField: public_inventory_transactions_by_transaction_id
+    filterInputTypeName: public_inventory_transactions_filter_input
     aggregate:
-      queryRootField: publicInventoryTransactionsAggregate
+      queryRootField: public_inventory_transactions_aggregate
       subscription:
-        rootField: publicInventoryTransactionsAggregate
+        rootField: public_inventory_transactions_aggregate
 
 ---
 kind: ModelPermissions
 version: v1
 definition:
-  modelName: PublicInventoryTransactions
+  modelName: public_inventory_transactions
   permissions:
     - role: admin
       select:

@@ -2,91 +2,69 @@
 kind: ObjectType
 version: v1
 definition:
-  name: PublicBrands
+  name: public_brands
   description: "Object type for public.brands. Description: null"
   fields:
-    - name: brandId
+    - name: brand_id
       type: Int32!
-    - name: brandName
+    - name: brand_name
       type: String_1!
-    - name: brandTier
+    - name: brand_tier
       type: String_1
-    - name: categoryFocus
+    - name: category_focus
       type: String_1
-    - name: isActive
+    - name: is_active
       type: Boolean_1
-    - name: parentCompany
+    - name: parent_company
       type: String_1
-    - name: yearEstablished
+    - name: year_established
       type: Int32
   graphql:
-    typeName: PublicBrands
-    inputTypeName: PublicBrandsInput
+    typeName: public_brands
+    inputTypeName: public_brands_input
   dataConnectorTypeMapping:
     - dataConnectorName: sales
       dataConnectorObjectType: public.brands
-      fieldMapping:
-        brandId:
-          column:
-            name: brand_id
-        brandName:
-          column:
-            name: brand_name
-        brandTier:
-          column:
-            name: brand_tier
-        categoryFocus:
-          column:
-            name: category_focus
-        isActive:
-          column:
-            name: is_active
-        parentCompany:
-          column:
-            name: parent_company
-        yearEstablished:
-          column:
-            name: year_established
 
 ---
 kind: TypePermissions
 version: v1
 definition:
-  typeName: PublicBrands
+  typeName: public_brands
   permissions:
     - role: admin
       output:
         allowedFields:
-          - brandId
-          - brandName
-          - brandTier
-          - categoryFocus
-          - isActive
-          - parentCompany
-          - yearEstablished
+          - brand_id
+          - brand_name
+          - brand_tier
+          - category_focus
+          - is_active
+          - parent_company
+          - year_established
 
 ---
 kind: BooleanExpressionType
 version: v1
 definition:
-  name: PublicBrandsBoolExp
+  name: public_brands_bool_exp
   operand:
     object:
-      type: PublicBrands
+      type: public_brands
       comparableFields:
-        - fieldName: brandId
+        - fieldName: brand_id
           booleanExpressionType: IntegerBoolExp
-        - fieldName: brandName
+        - fieldName: brand_name
           booleanExpressionType: CharacterVaryingBoolExp
-        - fieldName: brandTier
+        - fieldName: brand_tier
           booleanExpressionType: CharacterVaryingBoolExp
-        - fieldName: categoryFocus
+        - fieldName: category_focus
           booleanExpressionType: CharacterVaryingBoolExp
-        - fieldName: isActive
+        - fieldName: is_active
           booleanExpressionType: BooleanBoolExp
-        - fieldName: parentCompany
+        - fieldName: parent_company
           booleanExpressionType: CharacterVaryingBoolExp
-        - fieldName: yearEstablished
+        - fieldName: year_established
           booleanExpressionType: IntegerBoolExp
       comparableRelationships: []
   logicalOperators:
@@ -94,97 +72,97 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: PublicBrandsBoolExp
+    typeName: public_brands_bool_exp
 
 ---
 kind: AggregateExpression
 version: v1
 definition:
-  name: PublicBrandsAggExp
+  name: public_brands_agg_exp
   operand:
     object:
-      aggregatedType: PublicBrands
+      aggregatedType: public_brands
       aggregatableFields:
-        - fieldName: brandId
+        - fieldName: brand_id
           aggregateExpression: IntegerAggExp
-        - fieldName: brandName
+        - fieldName: brand_name
           aggregateExpression: CharacterVaryingAggExp
-        - fieldName: brandTier
+        - fieldName: brand_tier
           aggregateExpression: CharacterVaryingAggExp
-        - fieldName: categoryFocus
+        - fieldName: category_focus
           aggregateExpression: CharacterVaryingAggExp
-        - fieldName: isActive
+        - fieldName: is_active
           aggregateExpression: BooleanAggExp
-        - fieldName: parentCompany
+        - fieldName: parent_company
           aggregateExpression: CharacterVaryingAggExp
-        - fieldName: yearEstablished
+        - fieldName: year_established
           aggregateExpression: IntegerAggExp
   count:
     enable: true
   graphql:
-    selectTypeName: PublicBrandsAggExp
+    selectTypeName: public_brands_agg_exp
 
 ---
 kind: OrderByExpression
 version: v1
 definition:
-  name: PublicBrandsOrderByExp
+  name: public_brands_order_by_exp
   operand:
     object:
-      orderedType: PublicBrands
+      orderedType: public_brands
       orderableFields:
-        - fieldName: brandId
+        - fieldName: brand_id
           orderByExpression: Int32OrderByExp
-        - fieldName: brandName
+        - fieldName: brand_name
           orderByExpression: String1OrderByExp
-        - fieldName: brandTier
+        - fieldName: brand_tier
           orderByExpression: String1OrderByExp
-        - fieldName: categoryFocus
+        - fieldName: category_focus
           orderByExpression: String1OrderByExp
-        - fieldName: isActive
+        - fieldName: is_active
           orderByExpression: Boolean1OrderByExp
-        - fieldName: parentCompany
+        - fieldName: parent_company
           orderByExpression: String1OrderByExp
-        - fieldName: yearEstablished
+        - fieldName: year_established
           orderByExpression: Int32OrderByExp
       orderableRelationships: []
   graphql:
-    expressionTypeName: PublicBrandsOrderByExp
+    expressionTypeName: public_brands_order_by_exp
 
 ---
 kind: Model
 version: v2
 definition:
-  name: PublicBrands
-  objectType: PublicBrands
+  name: public_brands
+  objectType: public_brands
   source:
     dataConnectorName: sales
     collection: public.brands
-  filterExpressionType: PublicBrandsBoolExp
-  aggregateExpression: PublicBrandsAggExp
-  orderByExpression: PublicBrandsOrderByExp
+  filterExpressionType: public_brands_bool_exp
+  aggregateExpression: public_brands_agg_exp
+  orderByExpression: public_brands_order_by_exp
   graphql:
     selectMany:
-      queryRootField: publicBrands
+      queryRootField: public_brands
       subscription:
-        rootField: publicBrands
+        rootField: public_brands
     selectUniques:
-      - queryRootField: publicBrandsByBrandId
+      - queryRootField: public_brands_by_brand_id
         uniqueIdentifier:
-          - brandId
+          - brand_id
         subscription:
-          rootField: publicBrandsByBrandId
-    filterInputTypeName: PublicBrandsFilterInput
+          rootField: public_brands_by_brand_id
+    filterInputTypeName: public_brands_filter_input
     aggregate:
-      queryRootField: publicBrandsAggregate
+      queryRootField: public_brands_aggregate
       subscription:
-        rootField: publicBrandsAggregate
+        rootField: public_brands_aggregate
 
 ---
 kind: ModelPermissions
 version: v1
 definition:
-  modelName: PublicBrands
+  modelName: public_brands
   permissions:
     - role: admin
       select:

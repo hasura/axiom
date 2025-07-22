@@ -2,115 +2,84 @@
 kind: ObjectType
 version: v1
 definition:
-  name: PublicSupplyChainEvents
+  name: public_supply_chain_events
   description: "Object type for public.supply_chain_events. Description: null"
   fields:
-    - name: affectedProducts
+    - name: affected_products
       type: Json
-    - name: affectedWarehouses
+    - name: affected_warehouses
       type: Json
     - name: description
       type: String_1
-    - name: endDate
+    - name: end_date
       type: Date
-    - name: eventId
+    - name: event_id
       type: Int32!
-    - name: eventType
+    - name: event_type
       type: String_1
-    - name: impactEstimate
+    - name: impact_estimate
       type: String_1
-    - name: mitigationActions
+    - name: mitigation_actions
       type: String_1
     - name: severity
       type: String_1
-    - name: startDate
+    - name: start_date
       type: Date!
   graphql:
-    typeName: PublicSupplyChainEvents
-    inputTypeName: PublicSupplyChainEventsInput
+    typeName: public_supply_chain_events
+    inputTypeName: public_supply_chain_events_input
   dataConnectorTypeMapping:
     - dataConnectorName: inventory
       dataConnectorObjectType: public.supply_chain_events
-      fieldMapping:
-        affectedProducts:
-          column:
-            name: affected_products
-        affectedWarehouses:
-          column:
-            name: affected_warehouses
-        description:
-          column:
-            name: description
-        endDate:
-          column:
-            name: end_date
-        eventId:
-          column:
-            name: event_id
-        eventType:
-          column:
-            name: event_type
-        impactEstimate:
-          column:
-            name: impact_estimate
-        mitigationActions:
-          column:
-            name: mitigation_actions
-        severity:
-          column:
-            name: severity
-        startDate:
-          column:
-            name: start_date
 
 ---
 kind: TypePermissions
 version: v1
 definition:
-  typeName: PublicSupplyChainEvents
+  typeName: public_supply_chain_events
   permissions:
     - role: admin
       output:
         allowedFields:
-          - affectedProducts
-          - affectedWarehouses
+          - affected_products
+          - affected_warehouses
           - description
-          - endDate
-          - eventId
-          - eventType
-          - impactEstimate
-          - mitigationActions
+          - end_date
+          - event_id
+          - event_type
+          - impact_estimate
+          - mitigation_actions
           - severity
-          - startDate
+          - start_date
 
 ---
 kind: BooleanExpressionType
 version: v1
 definition:
-  name: PublicSupplyChainEventsBoolExp
+  name: public_supply_chain_events_bool_exp
   operand:
     object:
-      type: PublicSupplyChainEvents
+      type: public_supply_chain_events
       comparableFields:
-        - fieldName: affectedProducts
+        - fieldName: affected_products
           booleanExpressionType: ArrayBoolExp_1
-        - fieldName: affectedWarehouses
+        - fieldName: affected_warehouses
           booleanExpressionType: ArrayBoolExp_1
         - fieldName: description
           booleanExpressionType: TextBoolExp_1
-        - fieldName: endDate
+        - fieldName: end_date
           booleanExpressionType: DateBoolExp_1
-        - fieldName: eventId
+        - fieldName: event_id
           booleanExpressionType: IntegerBoolExp_1
-        - fieldName: eventType
+        - fieldName: event_type
           booleanExpressionType: CharacterVaryingBoolExp_1
-        - fieldName: impactEstimate
+        - fieldName: impact_estimate
           booleanExpressionType: TextBoolExp_1
-        - fieldName: mitigationActions
+        - fieldName: mitigation_actions
           booleanExpressionType: TextBoolExp_1
         - fieldName: severity
           booleanExpressionType: CharacterVaryingBoolExp_1
-        - fieldName: startDate
+        - fieldName: start_date
           booleanExpressionType: DateBoolExp_1
       comparableRelationships: []
   logicalOperators:
@@ -118,109 +87,109 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: PublicSupplyChainEventsBoolExp
+    typeName: public_supply_chain_events_bool_exp
 
 ---
 kind: AggregateExpression
 version: v1
 definition:
-  name: PublicSupplyChainEventsAggExp
+  name: public_supply_chain_events_agg_exp
   operand:
     object:
-      aggregatedType: PublicSupplyChainEvents
+      aggregatedType: public_supply_chain_events
       aggregatableFields:
-        - fieldName: affectedProducts
+        - fieldName: affected_products
           aggregateExpression: ArrayAggExp_1
-        - fieldName: affectedWarehouses
+        - fieldName: affected_warehouses
           aggregateExpression: ArrayAggExp_1
         - fieldName: description
           aggregateExpression: TextAggExp_1
-        - fieldName: endDate
+        - fieldName: end_date
           aggregateExpression: DateAggExp_1
-        - fieldName: eventId
+        - fieldName: event_id
           aggregateExpression: IntegerAggExp_1
-        - fieldName: eventType
+        - fieldName: event_type
           aggregateExpression: CharacterVaryingAggExp_1
-        - fieldName: impactEstimate
+        - fieldName: impact_estimate
           aggregateExpression: TextAggExp_1
-        - fieldName: mitigationActions
+        - fieldName: mitigation_actions
           aggregateExpression: TextAggExp_1
         - fieldName: severity
           aggregateExpression: CharacterVaryingAggExp_1
-        - fieldName: startDate
+        - fieldName: start_date
           aggregateExpression: DateAggExp_1
   count:
     enable: true
   graphql:
-    selectTypeName: PublicSupplyChainEventsAggExp
+    selectTypeName: public_supply_chain_events_agg_exp
 
 ---
 kind: OrderByExpression
 version: v1
 definition:
-  name: PublicSupplyChainEventsOrderByExp
+  name: public_supply_chain_events_order_by_exp
   operand:
     object:
-      orderedType: PublicSupplyChainEvents
+      orderedType: public_supply_chain_events
       orderableFields:
-        - fieldName: affectedProducts
+        - fieldName: affected_products
           orderByExpression: JsonOrderByExp
-        - fieldName: affectedWarehouses
+        - fieldName: affected_warehouses
           orderByExpression: JsonOrderByExp
         - fieldName: description
           orderByExpression: String1OrderByExp
-        - fieldName: endDate
+        - fieldName: end_date
           orderByExpression: DateOrderByExp
-        - fieldName: eventId
+        - fieldName: event_id
           orderByExpression: Int32OrderByExp
-        - fieldName: eventType
+        - fieldName: event_type
           orderByExpression: String1OrderByExp
-        - fieldName: impactEstimate
+        - fieldName: impact_estimate
           orderByExpression: String1OrderByExp
-        - fieldName: mitigationActions
+        - fieldName: mitigation_actions
           orderByExpression: String1OrderByExp
         - fieldName: severity
           orderByExpression: String1OrderByExp
-        - fieldName: startDate
+        - fieldName: start_date
           orderByExpression: DateOrderByExp
       orderableRelationships: []
   graphql:
-    expressionTypeName: PublicSupplyChainEventsOrderByExp
+    expressionTypeName: public_supply_chain_events_order_by_exp
 
 ---
 kind: Model
 version: v2
 definition:
-  name: PublicSupplyChainEvents
-  objectType: PublicSupplyChainEvents
+  name: public_supply_chain_events
+  objectType: public_supply_chain_events
   source:
     dataConnectorName: inventory
     collection: public.supply_chain_events
-  filterExpressionType: PublicSupplyChainEventsBoolExp
-  aggregateExpression: PublicSupplyChainEventsAggExp
-  orderByExpression: PublicSupplyChainEventsOrderByExp
+  filterExpressionType: public_supply_chain_events_bool_exp
+  aggregateExpression: public_supply_chain_events_agg_exp
+  orderByExpression: public_supply_chain_events_order_by_exp
   graphql:
     selectMany:
-      queryRootField: publicSupplyChainEvents
+      queryRootField: public_supply_chain_events
       subscription:
-        rootField: publicSupplyChainEvents
+        rootField: public_supply_chain_events
     selectUniques:
-      - queryRootField: publicSupplyChainEventsByEventId
+      - queryRootField: public_supply_chain_events_by_event_id
         uniqueIdentifier:
-          - eventId
+          - event_id
         subscription:
-          rootField: publicSupplyChainEventsByEventId
-    filterInputTypeName: PublicSupplyChainEventsFilterInput
+          rootField: public_supply_chain_events_by_event_id
+    filterInputTypeName: public_supply_chain_events_filter_input
     aggregate:
-      queryRootField: publicSupplyChainEventsAggregate
+      queryRootField: public_supply_chain_events_aggregate
       subscription:
-        rootField: publicSupplyChainEventsAggregate
+        rootField: public_supply_chain_events_aggregate
 
 ---
 kind: ModelPermissions
 version: v1
 definition:
-  modelName: PublicSupplyChainEvents
+  modelName: public_supply_chain_events
   permissions:
     - role: admin
       select:

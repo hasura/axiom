@@ -2,89 +2,67 @@
 kind: ObjectType
 version: v1
 definition:
-  name: PublicChannels
+  name: public_channels
   description: "Object type for public.channels. Description: null"
   fields:
-    - name: channelId
+    - name: channel_id
       type: Int32!
-    - name: channelName
+    - name: channel_name
       type: String_1!
-    - name: channelType
+    - name: channel_type
       type: String_1
-    - name: distributionCostPercentage
+    - name: distribution_cost_percentage
       type: Bigdecimal
-    - name: isDirectToConsumer
+    - name: is_direct_to_consumer
       type: Boolean_1
-    - name: isOnline
+    - name: is_online
       type: Boolean_1
     - name: region
       type: String_1
   graphql:
-    typeName: PublicChannels
-    inputTypeName: PublicChannelsInput
+    typeName: public_channels
+    inputTypeName: public_channels_input
   dataConnectorTypeMapping:
     - dataConnectorName: sales
       dataConnectorObjectType: public.channels
-      fieldMapping:
-        channelId:
-          column:
-            name: channel_id
-        channelName:
-          column:
-            name: channel_name
-        channelType:
-          column:
-            name: channel_type
-        distributionCostPercentage:
-          column:
-            name: distribution_cost_percentage
-        isDirectToConsumer:
-          column:
-            name: is_direct_to_consumer
-        isOnline:
-          column:
-            name: is_online
-        region:
-          column:
-            name: region
 
 ---
 kind: TypePermissions
 version: v1
 definition:
-  typeName: PublicChannels
+  typeName: public_channels
   permissions:
     - role: admin
       output:
         allowedFields:
-          - channelId
-          - channelName
-          - channelType
-          - distributionCostPercentage
-          - isDirectToConsumer
-          - isOnline
+          - channel_id
+          - channel_name
+          - channel_type
+          - distribution_cost_percentage
+          - is_direct_to_consumer
+          - is_online
           - region
 
 ---
 kind: BooleanExpressionType
 version: v1
 definition:
-  name: PublicChannelsBoolExp
+  name: public_channels_bool_exp
   operand:
     object:
-      type: PublicChannels
+      type: public_channels
       comparableFields:
-        - fieldName: channelId
+        - fieldName: channel_id
           booleanExpressionType: IntegerBoolExp
-        - fieldName: channelName
+        - fieldName: channel_name
           booleanExpressionType: CharacterVaryingBoolExp
-        - fieldName: channelType
+        - fieldName: channel_type
           booleanExpressionType: CharacterVaryingBoolExp
-        - fieldName: distributionCostPercentage
+        - fieldName: distribution_cost_percentage
           booleanExpressionType: DecimalBoolExp
-        - fieldName: isDirectToConsumer
+        - fieldName: is_direct_to_consumer
           booleanExpressionType: BooleanBoolExp
-        - fieldName: isOnline
+        - fieldName: is_online
           booleanExpressionType: BooleanBoolExp
         - fieldName: region
           booleanExpressionType: CharacterVaryingBoolExp
@@ -94,97 +72,97 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: PublicChannelsBoolExp
+    typeName: public_channels_bool_exp
 
 ---
 kind: AggregateExpression
 version: v1
 definition:
-  name: PublicChannelsAggExp
+  name: public_channels_agg_exp
   operand:
     object:
-      aggregatedType: PublicChannels
+      aggregatedType: public_channels
       aggregatableFields:
-        - fieldName: channelId
+        - fieldName: channel_id
           aggregateExpression: IntegerAggExp
-        - fieldName: channelName
+        - fieldName: channel_name
           aggregateExpression: CharacterVaryingAggExp
-        - fieldName: channelType
+        - fieldName: channel_type
           aggregateExpression: CharacterVaryingAggExp
-        - fieldName: distributionCostPercentage
+        - fieldName: distribution_cost_percentage
           aggregateExpression: DecimalAggExp
-        - fieldName: isDirectToConsumer
+        - fieldName: is_direct_to_consumer
           aggregateExpression: BooleanAggExp
-        - fieldName: isOnline
+        - fieldName: is_online
           aggregateExpression: BooleanAggExp
         - fieldName: region
           aggregateExpression: CharacterVaryingAggExp
   count:
     enable: true
   graphql:
-    selectTypeName: PublicChannelsAggExp
+    selectTypeName: public_channels_agg_exp
 
 ---
 kind: OrderByExpression
 version: v1
 definition:
-  name: PublicChannelsOrderByExp
+  name: public_channels_order_by_exp
   operand:
     object:
-      orderedType: PublicChannels
+      orderedType: public_channels
       orderableFields:
-        - fieldName: channelId
+        - fieldName: channel_id
           orderByExpression: Int32OrderByExp
-        - fieldName: channelName
+        - fieldName: channel_name
           orderByExpression: String1OrderByExp
-        - fieldName: channelType
+        - fieldName: channel_type
           orderByExpression: String1OrderByExp
-        - fieldName: distributionCostPercentage
+        - fieldName: distribution_cost_percentage
           orderByExpression: BigdecimalOrderByExp
-        - fieldName: isDirectToConsumer
+        - fieldName: is_direct_to_consumer
           orderByExpression: Boolean1OrderByExp
-        - fieldName: isOnline
+        - fieldName: is_online
           orderByExpression: Boolean1OrderByExp
         - fieldName: region
           orderByExpression: String1OrderByExp
       orderableRelationships: []
   graphql:
-    expressionTypeName: PublicChannelsOrderByExp
+    expressionTypeName: public_channels_order_by_exp
 
 ---
 kind: Model
 version: v2
 definition:
-  name: PublicChannels
-  objectType: PublicChannels
+  name: public_channels
+  objectType: public_channels
   source:
     dataConnectorName: sales
     collection: public.channels
-  filterExpressionType: PublicChannelsBoolExp
-  aggregateExpression: PublicChannelsAggExp
-  orderByExpression: PublicChannelsOrderByExp
+  filterExpressionType: public_channels_bool_exp
+  aggregateExpression: public_channels_agg_exp
+  orderByExpression: public_channels_order_by_exp
   graphql:
     selectMany:
-      queryRootField: publicChannels
+      queryRootField: public_channels
       subscription:
-        rootField: publicChannels
+        rootField: public_channels
     selectUniques:
-      - queryRootField: publicChannelsByChannelId
+      - queryRootField: public_channels_by_channel_id
         uniqueIdentifier:
-          - channelId
+          - channel_id
         subscription:
-          rootField: publicChannelsByChannelId
-    filterInputTypeName: PublicChannelsFilterInput
+          rootField: public_channels_by_channel_id
+    filterInputTypeName: public_channels_filter_input
     aggregate:
-      queryRootField: publicChannelsAggregate
+      queryRootField: public_channels_aggregate
       subscription:
-        rootField: publicChannelsAggregate
+        rootField: public_channels_aggregate
 
 ---
 kind: ModelPermissions
 version: v1
 definition:
-  modelName: PublicChannels
+  modelName: public_channels
   permissions:
     - role: admin
       select:

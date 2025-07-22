@@ -1,0 +1,225 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_inventory
+  description: "Object type for public.inventory. Description: null"
+  fields:
+    - name: date
+      type: Date!
+    - name: days_of_supply
+      type: Int32
+    - name: expiration_date
+      type: Date
+    - name: inventory_id
+      type: Int32!
+    - name: inventory_value
+      type: Bigdecimal
+    - name: lot_number
+      type: String_1
+    - name: max_capacity
+      type: Int32
+    - name: product_id
+      type: Int32!
+    - name: quantity_allocated
+      type: Int32
+    - name: quantity_available
+      type: Int32
+    - name: quantity_on_hand
+      type: Int32!
+    - name: reorder_point
+      type: Int32
+    - name: warehouse_id
+      type: Int32
+  graphql:
+    typeName: public_inventory
+    inputTypeName: public_inventory_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: inventory
+      dataConnectorObjectType: public.inventory
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_inventory
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - date
+          - days_of_supply
+          - expiration_date
+          - inventory_id
+          - inventory_value
+          - lot_number
+          - max_capacity
+          - product_id
+          - quantity_allocated
+          - quantity_available
+          - quantity_on_hand
+          - reorder_point
+          - warehouse_id
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_inventory_bool_exp
+  operand:
+    object:
+      type: public_inventory
+      comparableFields:
+        - fieldName: date
+          booleanExpressionType: DateBoolExp_1
+        - fieldName: days_of_supply
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: expiration_date
+          booleanExpressionType: DateBoolExp_1
+        - fieldName: inventory_id
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: inventory_value
+          booleanExpressionType: DecimalBoolExp_1
+        - fieldName: lot_number
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: max_capacity
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: product_id
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: quantity_allocated
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: quantity_available
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: quantity_on_hand
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: reorder_point
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: warehouse_id
+          booleanExpressionType: IntegerBoolExp_1
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_inventory_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_inventory_agg_exp
+  operand:
+    object:
+      aggregatedType: public_inventory
+      aggregatableFields:
+        - fieldName: date
+          aggregateExpression: DateAggExp_1
+        - fieldName: days_of_supply
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: expiration_date
+          aggregateExpression: DateAggExp_1
+        - fieldName: inventory_id
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: inventory_value
+          aggregateExpression: DecimalAggExp_1
+        - fieldName: lot_number
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: max_capacity
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: product_id
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: quantity_allocated
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: quantity_available
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: quantity_on_hand
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: reorder_point
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: warehouse_id
+          aggregateExpression: IntegerAggExp_1
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_inventory_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_inventory_order_by_exp
+  operand:
+    object:
+      orderedType: public_inventory
+      orderableFields:
+        - fieldName: date
+          orderByExpression: DateOrderByExp
+        - fieldName: days_of_supply
+          orderByExpression: Int32OrderByExp
+        - fieldName: expiration_date
+          orderByExpression: DateOrderByExp
+        - fieldName: inventory_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: inventory_value
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: lot_number
+          orderByExpression: String1OrderByExp
+        - fieldName: max_capacity
+          orderByExpression: Int32OrderByExp
+        - fieldName: product_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: quantity_allocated
+          orderByExpression: Int32OrderByExp
+        - fieldName: quantity_available
+          orderByExpression: Int32OrderByExp
+        - fieldName: quantity_on_hand
+          orderByExpression: Int32OrderByExp
+        - fieldName: reorder_point
+          orderByExpression: Int32OrderByExp
+        - fieldName: warehouse_id
+          orderByExpression: Int32OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_inventory_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_inventory
+  objectType: public_inventory
+  source:
+    dataConnectorName: inventory
+    collection: public.inventory
+  filterExpressionType: public_inventory_bool_exp
+  aggregateExpression: public_inventory_agg_exp
+  orderByExpression: public_inventory_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_inventory
+      subscription:
+        rootField: public_inventory
+    selectUniques:
+      - queryRootField: public_inventory_by_inventory_id
+        uniqueIdentifier:
+          - inventory_id
+        subscription:
+          rootField: public_inventory_by_inventory_id
+    filterInputTypeName: public_inventory_filter_input
+    aggregate:
+      queryRootField: public_inventory_aggregate
+      subscription:
+        rootField: public_inventory_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_inventory
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

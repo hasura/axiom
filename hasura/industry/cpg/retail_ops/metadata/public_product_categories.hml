@@ -1,0 +1,162 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_product_categories
+  description: "Object type for public.product_categories. Description: null"
+  fields:
+    - name: category_description
+      type: String_1
+    - name: category_id
+      type: Int32!
+    - name: category_name
+      type: String_1!
+    - name: is_seasonal
+      type: Boolean_1
+    - name: parent_category_id
+      type: Int32
+    - name: typical_margin_percentage
+      type: Bigdecimal
+  graphql:
+    typeName: public_product_categories
+    inputTypeName: public_product_categories_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: sales
+      dataConnectorObjectType: public.product_categories
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_product_categories
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - category_description
+          - category_id
+          - category_name
+          - is_seasonal
+          - parent_category_id
+          - typical_margin_percentage
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_product_categories_bool_exp
+  operand:
+    object:
+      type: public_product_categories
+      comparableFields:
+        - fieldName: category_description
+          booleanExpressionType: TextBoolExp
+        - fieldName: category_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: category_name
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: is_seasonal
+          booleanExpressionType: BooleanBoolExp
+        - fieldName: parent_category_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: typical_margin_percentage
+          booleanExpressionType: DecimalBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_product_categories_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_product_categories_agg_exp
+  operand:
+    object:
+      aggregatedType: public_product_categories
+      aggregatableFields:
+        - fieldName: category_description
+          aggregateExpression: TextAggExp
+        - fieldName: category_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: category_name
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: is_seasonal
+          aggregateExpression: BooleanAggExp
+        - fieldName: parent_category_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: typical_margin_percentage
+          aggregateExpression: DecimalAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_product_categories_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_product_categories_order_by_exp
+  operand:
+    object:
+      orderedType: public_product_categories
+      orderableFields:
+        - fieldName: category_description
+          orderByExpression: String1OrderByExp
+        - fieldName: category_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: category_name
+          orderByExpression: String1OrderByExp
+        - fieldName: is_seasonal
+          orderByExpression: Boolean1OrderByExp
+        - fieldName: parent_category_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: typical_margin_percentage
+          orderByExpression: BigdecimalOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_product_categories_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_product_categories
+  objectType: public_product_categories
+  source:
+    dataConnectorName: sales
+    collection: public.product_categories
+  filterExpressionType: public_product_categories_bool_exp
+  aggregateExpression: public_product_categories_agg_exp
+  orderByExpression: public_product_categories_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_product_categories
+      subscription:
+        rootField: public_product_categories
+    selectUniques:
+      - queryRootField: public_product_categories_by_category_id
+        uniqueIdentifier:
+          - category_id
+        subscription:
+          rootField: public_product_categories_by_category_id
+    filterInputTypeName: public_product_categories_filter_input
+    aggregate:
+      queryRootField: public_product_categories_aggregate
+      subscription:
+        rootField: public_product_categories_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_product_categories
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
