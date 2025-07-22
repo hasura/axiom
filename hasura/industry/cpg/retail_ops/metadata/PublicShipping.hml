@@ -1,0 +1,265 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: PublicShipping
+  description: "Object type for public.shipping. Description: null"
+  fields:
+    - name: actualArrivalDate
+      type: Date
+    - name: carrier
+      type: String_1
+    - name: destinationId
+      type: Int32
+    - name: destinationType
+      type: String_1
+    - name: expectedArrivalDate
+      type: Date!
+    - name: originWarehouseId
+      type: Int32
+    - name: productId
+      type: Int32
+    - name: quantity
+      type: Int32!
+    - name: shipDate
+      type: Date!
+    - name: shippingCost
+      type: Bigdecimal
+    - name: shippingId
+      type: Int32!
+    - name: status
+      type: String_1
+    - name: trackingNumber
+      type: String_1
+  graphql:
+    typeName: PublicShipping
+    inputTypeName: PublicShippingInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: inventory
+      dataConnectorObjectType: public.shipping
+      fieldMapping:
+        actualArrivalDate:
+          column:
+            name: actual_arrival_date
+        carrier:
+          column:
+            name: carrier
+        destinationId:
+          column:
+            name: destination_id
+        destinationType:
+          column:
+            name: destination_type
+        expectedArrivalDate:
+          column:
+            name: expected_arrival_date
+        originWarehouseId:
+          column:
+            name: origin_warehouse_id
+        productId:
+          column:
+            name: product_id
+        quantity:
+          column:
+            name: quantity
+        shipDate:
+          column:
+            name: ship_date
+        shippingCost:
+          column:
+            name: shipping_cost
+        shippingId:
+          column:
+            name: shipping_id
+        status:
+          column:
+            name: status
+        trackingNumber:
+          column:
+            name: tracking_number
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: PublicShipping
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - actualArrivalDate
+          - carrier
+          - destinationId
+          - destinationType
+          - expectedArrivalDate
+          - originWarehouseId
+          - productId
+          - quantity
+          - shipDate
+          - shippingCost
+          - shippingId
+          - status
+          - trackingNumber
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PublicShippingBoolExp
+  operand:
+    object:
+      type: PublicShipping
+      comparableFields:
+        - fieldName: actualArrivalDate
+          booleanExpressionType: DateBoolExp_1
+        - fieldName: carrier
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: destinationId
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: destinationType
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: expectedArrivalDate
+          booleanExpressionType: DateBoolExp_1
+        - fieldName: originWarehouseId
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: productId
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: quantity
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: shipDate
+          booleanExpressionType: DateBoolExp_1
+        - fieldName: shippingCost
+          booleanExpressionType: DecimalBoolExp_1
+        - fieldName: shippingId
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: status
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: trackingNumber
+          booleanExpressionType: CharacterVaryingBoolExp_1
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: PublicShippingBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PublicShippingAggExp
+  operand:
+    object:
+      aggregatedType: PublicShipping
+      aggregatableFields:
+        - fieldName: actualArrivalDate
+          aggregateExpression: DateAggExp_1
+        - fieldName: carrier
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: destinationId
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: destinationType
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: expectedArrivalDate
+          aggregateExpression: DateAggExp_1
+        - fieldName: originWarehouseId
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: productId
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: quantity
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: shipDate
+          aggregateExpression: DateAggExp_1
+        - fieldName: shippingCost
+          aggregateExpression: DecimalAggExp_1
+        - fieldName: shippingId
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: status
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: trackingNumber
+          aggregateExpression: CharacterVaryingAggExp_1
+  count:
+    enable: true
+  graphql:
+    selectTypeName: PublicShippingAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PublicShippingOrderByExp
+  operand:
+    object:
+      orderedType: PublicShipping
+      orderableFields:
+        - fieldName: actualArrivalDate
+          orderByExpression: DateOrderByExp
+        - fieldName: carrier
+          orderByExpression: String1OrderByExp
+        - fieldName: destinationId
+          orderByExpression: Int32OrderByExp
+        - fieldName: destinationType
+          orderByExpression: String1OrderByExp
+        - fieldName: expectedArrivalDate
+          orderByExpression: DateOrderByExp
+        - fieldName: originWarehouseId
+          orderByExpression: Int32OrderByExp
+        - fieldName: productId
+          orderByExpression: Int32OrderByExp
+        - fieldName: quantity
+          orderByExpression: Int32OrderByExp
+        - fieldName: shipDate
+          orderByExpression: DateOrderByExp
+        - fieldName: shippingCost
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: shippingId
+          orderByExpression: Int32OrderByExp
+        - fieldName: status
+          orderByExpression: String1OrderByExp
+        - fieldName: trackingNumber
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: PublicShippingOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: PublicShipping
+  objectType: PublicShipping
+  source:
+    dataConnectorName: inventory
+    collection: public.shipping
+  filterExpressionType: PublicShippingBoolExp
+  aggregateExpression: PublicShippingAggExp
+  orderByExpression: PublicShippingOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: publicShipping
+      subscription:
+        rootField: publicShipping
+    selectUniques:
+      - queryRootField: publicShippingByShippingId
+        uniqueIdentifier:
+          - shippingId
+        subscription:
+          rootField: publicShippingByShippingId
+    filterInputTypeName: PublicShippingFilterInput
+    aggregate:
+      queryRootField: publicShippingAggregate
+      subscription:
+        rootField: publicShippingAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: PublicShipping
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

@@ -6,7 +6,7 @@ definition:
   description: Interface for text embedding response
   fields:
     - name: embedding
-      type: "Vector!"
+      type: "[Float!]!"
     - name: text
       type: String!
   graphql:
@@ -37,7 +37,7 @@ definition:
   arguments:
     - name: text
       type: String!
-      description: The text to generate an embedding for
+      description: String input for converting into embedding
   source:
     dataConnectorName: vector_search_service
     dataConnectorCommand:
@@ -45,7 +45,7 @@ definition:
   graphql:
     rootFieldName: generateEmbedding
     rootFieldKind: Query
-  description: Generates a vector embedding for a given text string.
+  description: Generate embeddings for a collection of documents
 
 ---
 kind: CommandPermissions
@@ -55,22 +55,4 @@ definition:
   permissions:
     - role: admin
       allowExecution: true
-
-# ---
-# kind: Relationship
-# version: v1
-# definition:
-#   name: document
-#   sourceType: TextEmbeddingResponse
-#   target:
-#     model:
-#       name: DocumentVectorSearch
-#       relationshipType: Array
-#   mapping:
-#     - source:
-#         fieldPath:
-#           - fieldName: embedding
-#       target:
-#         argument:
-#           argumentName: queryVector
 

@@ -68,7 +68,7 @@ definition:
     - name: contactMethod
       type: String
     - name: marketingOptIn
-      type: Bool_1
+      type: Boolean_1
   graphql:
     typeName: customer_CustomerPreferencesPreferences
     inputTypeName: customer_CustomerPreferencesPreferencesInput
@@ -96,7 +96,11 @@ definition:
   fields:
     - name: facebook
       type: String
+    - name: instagram
+      type: String
     - name: linkedin
+      type: String
+    - name: tiktok
       type: String
     - name: twitter
       type: String
@@ -117,7 +121,9 @@ definition:
       output:
         allowedFields:
           - facebook
+          - instagram
           - linkedin
+          - tiktok
           - twitter
 
 ---
@@ -127,7 +133,7 @@ definition:
   name: CustomerPreferences
   fields:
     - name: id
-      type: ObjectId!
+      type: String_1!
     - name: behavioralData
       type: CustomerPreferencesBehavioralData
     - name: customerGuid
@@ -236,7 +242,7 @@ definition:
         - fieldName: contactMethod
           booleanExpressionType: StringBoolExp
         - fieldName: marketingOptIn
-          booleanExpressionType: BoolBoolExp_1
+          booleanExpressionType: BoolBoolExp
       comparableRelationships: []
   logicalOperators:
     enable: true
@@ -256,7 +262,11 @@ definition:
       comparableFields:
         - fieldName: facebook
           booleanExpressionType: StringBoolExp
+        - fieldName: instagram
+          booleanExpressionType: StringBoolExp
         - fieldName: linkedin
+          booleanExpressionType: StringBoolExp
+        - fieldName: tiktok
           booleanExpressionType: StringBoolExp
         - fieldName: twitter
           booleanExpressionType: StringBoolExp
@@ -344,7 +354,7 @@ definition:
         - fieldName: contactMethod
           orderByExpression: StringOrderByExp
         - fieldName: marketingOptIn
-          orderByExpression: Bool1OrderByExp
+          orderByExpression: Boolean1OrderByExp
       orderableRelationships: []
   graphql:
     expressionTypeName: customer_CustomerPreferencesPreferencesOrderByExp
@@ -360,7 +370,11 @@ definition:
       orderableFields:
         - fieldName: facebook
           orderByExpression: StringOrderByExp
+        - fieldName: instagram
+          orderByExpression: StringOrderByExp
         - fieldName: linkedin
+          orderByExpression: StringOrderByExp
+        - fieldName: tiktok
           orderByExpression: StringOrderByExp
         - fieldName: twitter
           orderByExpression: StringOrderByExp
@@ -378,7 +392,7 @@ definition:
       orderedType: CustomerPreferences
       orderableFields:
         - fieldName: id
-          orderByExpression: ObjectIdOrderByExp
+          orderByExpression: String1OrderByExp
         - fieldName: behavioralData
           orderByExpression: CustomerPreferencesBehavioralDataOrderByExp
         - fieldName: customerGuid
@@ -430,3 +444,4 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
+

@@ -1,55 +1,65 @@
+version: v2
+ndcSpecGeneration: v0.2
 packagingDefinition:
   type: PrebuiltDockerImage
-  dockerImage: ghcr.io/hasura/ndc-postgres:v2.1.1
+  dockerImage: ghcr.io/hasura/ndc-postgres-jdbc:v1.2.6
 supportedEnvironmentVariables:
-  - name: CONNECTION_URI
-    description: The PostgreSQL connection URI
-    defaultValue: postgresql://read_only_user:readonlyuser@35.236.11.122:5432/v3-docs-sample-app
-  - name: CLIENT_CERT
-    description: The SSL client certificate (Optional)
-    defaultValue: ""
-  - name: CLIENT_KEY
-    description: The SSL client key (Optional)
-    defaultValue: ""
-  - name: ROOT_CERT
-    description: The SSL root certificate (Optional)
-    defaultValue: ""
+  - name: JDBC_URL
+    description: The JDBC URL to connect to the database
+  - name: JDBC_SCHEMAS
+    description: A comma-separated list of schemas to include in the metadata
 commands:
-  update: hasura-ndc-postgres update
+  update:
+    type: Dockerized
+    dockerImage: ghcr.io/hasura/ndc-postgres-jdbc-cli:v1.2.6
+    commandArgs:
+      - update
+      - --jdbc-url
+      - JDBC_URL
+      - --schemas
+      - $JDBC_SCHEMAS
+      - --outfile
+      - /etc/connector/configuration.json
+  upgradeConfiguration:
+    type: Dockerized
+    dockerImage: ghcr.io/hasura/ndc-postgres-jdbc-cli:v1.2.6
+    commandArgs:
+      - upgrade
+      - --config-file
+      - /etc/connector/configuration.json
+      - --outfile
+      - /etc/connector/configuration.json
 cliPlugin:
-  type: null
-  name: ndc-postgres
-  version: v2.1.1
-dockerComposeWatch:
-  - path: ./
-    action: sync+restart
-    target: /etc/connector
+  type: Docker
+  dockerImage: ghcr.io/hasura/ndc-postgres-jdbc-cli:v1.2.6
+dockerComposeWatch: []
 nativeToolchainDefinition:
   commands:
     start:
       type: ShellScript
-      bash: |-
+      bash: |
         #!/usr/bin/env bash
         set -eu -o pipefail
-        HASURA_CONFIGURATION_DIRECTORY="$HASURA_PLUGIN_CONNECTOR_CONTEXT_PATH" "$HASURA_DDN_NATIVE_CONNECTOR_DIR/ndc-postgres" serve
-      powershell: |-
+        HASURA_CONFIGURATION_DIRECTORY="$HASURA_PLUGIN_CONNECTOR_CONTEXT_PATH" \
+        "$HASURA_DDN_NATIVE_CONNECTOR_DIR/entrypoint.sh"
+      powershell: |
         $ErrorActionPreference = "Stop"
-        $env:HASURA_CONFIGURATION_DIRECTORY="$env:HASURA_PLUGIN_CONNECTOR_CONTEXT_PATH"; & "$env:HASURA_DDN_NATIVE_CONNECTOR_DIR\ndc-postgres.exe" serve
+        $env:HASURA_CONFIGURATION_DIRECTORY="$env:HASURA_PLUGIN_CONNECTOR_CONTEXT_PATH";
+        & "$env:HASURA_DDN_NATIVE_CONNECTOR_DIR\entrypoint.bat"
     watch:
       type: ShellScript
-      bash: |-
+      bash: |
         #!/usr/bin/env bash
         echo "Watch is not supported for this connector"
         exit 1
-      powershell: |-
+      powershell: |
         Write-Output "Watch is not supported for this connector"
         exit 1
     update:
       type: ShellScript
-      bash: |-
-        #!/usr/bin/env bash
-        set -eu -o pipefail
-        "$HASURA_DDN_NATIVE_CONNECTOR_PLUGIN_DIR/hasura-ndc-postgres" update
-      powershell: |-
-        $ErrorActionPreference = "Stop"
-        & "$env:HASURA_DDN_NATIVE_CONNECTOR_PLUGIN_DIR\hasura-ndc-postgres.exe" update
+      bash: set -e -o pipefail; "$HASURA_DDN_NATIVE_CONNECTOR_PLUGIN_DIR/entrypoint.sh" update --jdbc-url JDBC_URL --schemas $JDBC_SCHEMAS --outfile "$HASURA_PLUGIN_CONNECTOR_CONTEXT_PATH/configuration.json"
+      powershell: $ErrorActionPreference = "Stop"; & "$env:HASURA_DDN_NATIVE_CONNECTOR_PLUGIN_DIR\entrypoint.bat" update --jdbc-url JDBC_URL --schemas `$env:JDBC_SCHEMAS --outfile "$env:HASURA_PLUGIN_CONNECTOR_CONTEXT_PATH\configuration.json"
+    cliPluginEntrypoint:
+      type: ShellScript
+      bash: set -e -o pipefail; "$HASURA_DDN_NATIVE_CONNECTOR_PLUGIN_DIR/entrypoint.sh"
+      powershell: $ErrorActionPreference = "Stop"; & "$env:HASURA_DDN_NATIVE_CONNECTOR_PLUGIN_DIR/entrypoint.bat"

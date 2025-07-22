@@ -12,30 +12,10 @@ definition:
     Authorization:
       valueFromEnv: CUSTOMER_STRIPE_AUTHORIZATION_HEADER
   schema:
-    version: v0.1
+    version: v0.2
     schema:
-      scalar_types:
-        Boolean:
-          representation:
-            type: boolean
-          aggregate_functions: {}
-          comparison_operators:
-            _eq:
-              type: equal
-        Float:
-          representation:
-            type: float64
-          aggregate_functions: {}
-          comparison_operators:
-            _eq:
-              type: equal
-        String:
-          representation:
-            type: string
-          aggregate_functions: {}
-          comparison_operators:
-            _eq:
-              type: equal
+      collections: []
+      functions: []
       object_types:
         TelcoCustomer:
           fields:
@@ -59,6 +39,7 @@ definition:
               type:
                 name: String
                 type: named
+          foreign_keys: {}
         TelcoCustomer_metadata:
           fields:
             accountType:
@@ -73,6 +54,7 @@ definition:
               type:
                 name: String
                 type: named
+          foreign_keys: {}
         TelcoInvoice:
           fields:
             amount_due:
@@ -107,6 +89,7 @@ definition:
               type:
                 name: String
                 type: named
+          foreign_keys: {}
         TelcoInvoice_lines:
           fields:
             data:
@@ -115,6 +98,7 @@ definition:
                   name: functions_array23
                   type: named
                 type: array
+          foreign_keys: {}
         TelcoInvoice_metadata:
           fields:
             billingCycle:
@@ -125,6 +109,7 @@ definition:
               type:
                 name: String
                 type: named
+          foreign_keys: {}
         TelcoProduct:
           fields:
             active:
@@ -143,6 +128,7 @@ definition:
               type:
                 name: String
                 type: named
+          foreign_keys: {}
         TelcoProduct_metadata:
           fields:
             marketingName:
@@ -161,6 +147,7 @@ definition:
               type:
                 name: String
                 type: named
+          foreign_keys: {}
         TelcoSubscription:
           fields:
             current_period_end:
@@ -191,6 +178,7 @@ definition:
               type:
                 name: String
                 type: named
+          foreign_keys: {}
         TelcoSubscription_items:
           fields:
             data:
@@ -199,6 +187,7 @@ definition:
                   name: functions_array2
                   type: named
                 type: array
+          foreign_keys: {}
         TelcoSubscription_metadata:
           fields:
             contractEndDate:
@@ -217,6 +206,7 @@ definition:
                 underlying_type:
                   name: String
                   type: named
+          foreign_keys: {}
         TelcoUsageRecord:
           fields:
             action:
@@ -239,6 +229,7 @@ definition:
               type:
                 name: Float
                 type: named
+          foreign_keys: {}
         array_period:
           fields:
             end:
@@ -249,6 +240,7 @@ definition:
               type:
                 name: Float
                 type: named
+          foreign_keys: {}
         array_price:
           fields:
             id:
@@ -267,6 +259,7 @@ definition:
               type:
                 name: Float
                 type: named
+          foreign_keys: {}
         createTelcoCustomer_customerData:
           fields:
             accountType:
@@ -293,6 +286,7 @@ definition:
               type:
                 name: String
                 type: named
+          foreign_keys: {}
         createTelcoProduct_productData:
           fields:
             marketingName:
@@ -315,6 +309,7 @@ definition:
               type:
                 name: String
                 type: named
+          foreign_keys: {}
         createTelcoSubscription_subscriptionData:
           fields:
             contractMonths:
@@ -343,6 +338,7 @@ definition:
                 underlying_type:
                   name: String
                   type: named
+          foreign_keys: {}
         functions_array:
           fields:
             priceId:
@@ -355,6 +351,7 @@ definition:
                 underlying_type:
                   name: Float
                   type: named
+          foreign_keys: {}
         functions_array2:
           fields:
             id:
@@ -365,6 +362,7 @@ definition:
               type:
                 name: array_price
                 type: named
+          foreign_keys: {}
         functions_array23:
           fields:
             amount:
@@ -383,6 +381,7 @@ definition:
               type:
                 name: array_period
                 type: named
+          foreign_keys: {}
         recordTelcoUsage_usageData:
           fields:
             action:
@@ -405,68 +404,89 @@ definition:
                 underlying_type:
                   name: Float
                   type: named
-      collections: []
-      functions: []
+          foreign_keys: {}
       procedures:
-        - name: createTelcoCustomer
-          description: Simulates creating a new telecommunications customer in Stripe
-          arguments:
+        - arguments:
             customerData:
               description: Data for the new customer
               type:
                 name: createTelcoCustomer_customerData
                 type: named
+          description: Simulates creating a new telecommunications customer in Stripe
+          name: createTelcoCustomer
           result_type:
             name: TelcoCustomer
             type: named
-        - name: createTelcoSubscription
-          description: Simulates creating a telecommunications service subscription
-          arguments:
+        - arguments:
             subscriptionData:
               description: Data for the new subscription
               type:
                 name: createTelcoSubscription_subscriptionData
                 type: named
+          description: Simulates creating a telecommunications service subscription
+          name: createTelcoSubscription
           result_type:
             name: TelcoSubscription
             type: named
-        - name: recordTelcoUsage
-          description: Records usage for metered telecommunications services like data overages
-          arguments:
+        - arguments:
             usageData:
               description: Data about the usage to record
               type:
                 name: recordTelcoUsage_usageData
                 type: named
+          description: Records usage for metered telecommunications services like data overages
+          name: recordTelcoUsage
           result_type:
             name: TelcoUsageRecord
             type: named
-        - name: getLatestTelcoInvoice
-          description: Retrieves a customer's latest invoice
-          arguments:
+        - arguments:
             customerId:
               description: Stripe customer ID
               type:
                 name: String
                 type: named
+          description: Retrieves a customer's latest invoice
+          name: getLatestTelcoInvoice
           result_type:
             name: TelcoInvoice
             type: named
-        - name: createTelcoProduct
-          description: Creates a new telecommunications service product in Stripe
-          arguments:
+        - arguments:
             productData:
               description: Data for the new product
               type:
                 name: createTelcoProduct_productData
                 type: named
+          description: Creates a new telecommunications service product in Stripe
+          name: createTelcoProduct
           result_type:
             name: TelcoProduct
             type: named
+      scalar_types:
+        Boolean:
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+          representation:
+            type: boolean
+        Float:
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+          representation:
+            type: float64
+        String:
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+          representation:
+            type: string
     capabilities:
-      version: 0.1.6
       capabilities:
-        query:
-          variables: {}
-          nested_fields: {}
         mutation: {}
+        query:
+          nested_fields: {}
+          variables: {}
+      version: 0.2.0

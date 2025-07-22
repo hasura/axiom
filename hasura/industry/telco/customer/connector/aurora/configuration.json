@@ -1,3061 +1,2576 @@
 {
-  "version": "5",
-  "$schema": "schema.json",
-  "connectionSettings": {
-    "connectionUri": {
-      "variable": "CONNECTION_URI"
+    "version": "v2",
+    "connection_uri": {
+        "variable": "JDBC_URL"
     },
-    "poolSettings": {
-      "maxConnections": 50,
-      "poolTimeout": 30,
-      "idleTimeout": 180,
-      "checkConnectionAfterIdle": 60,
-      "connectionLifetime": 600
-    },
-    "isolationLevel": "ReadCommitted"
-  },
-  "metadata": {
-    "tables": {
-      "billing": {
-        "schemaName": "public",
-        "tableName": "billing",
-        "columns": {
-          "billing_date": {
-            "name": "billing_date",
-            "type": {
-              "scalarType": "date"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "billing_id": {
-            "name": "billing_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "customer_id": {
-            "name": "customer_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "payment_status": {
-            "name": "payment_status",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "total_amount": {
-            "name": "total_amount",
-            "type": {
-              "scalarType": "numeric"
-            },
-            "nullable": "nullable",
-            "description": null
-          }
-        },
-        "uniquenessConstraints": {
-          "billing_pkey": [
-            "billing_id"
-          ]
-        },
-        "foreignRelations": {
-          "billing_customer_id_fkey": {
-            "foreignSchema": "public",
-            "foreignTable": "customers",
-            "columnMapping": {
-              "customer_id": "customer_id"
-            }
-          }
-        },
-        "description": null
-      },
-      "campaigns": {
-        "schemaName": "public",
-        "tableName": "campaigns",
-        "columns": {
-          "actual_conversions": {
-            "name": "actual_conversions",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "budget": {
-            "name": "budget",
-            "type": {
-              "scalarType": "numeric"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "campaign_id": {
-            "name": "campaign_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "campaign_name": {
-            "name": "campaign_name",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "channel": {
-            "name": "channel",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "conversion_goal": {
-            "name": "conversion_goal",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "end_date": {
-            "name": "end_date",
-            "type": {
-              "scalarType": "date"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "offer_details": {
-            "name": "offer_details",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "start_date": {
-            "name": "start_date",
-            "type": {
-              "scalarType": "date"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "target_segment": {
-            "name": "target_segment",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          }
-        },
-        "uniquenessConstraints": {
-          "campaigns_pkey": [
-            "campaign_id"
-          ]
-        },
-        "foreignRelations": {},
-        "description": null
-      },
-      "credit_cards": {
-        "schemaName": "public",
-        "tableName": "credit_cards",
-        "columns": {
-          "created_at": {
-            "name": "created_at",
-            "type": {
-              "scalarType": "timestamptz"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "credit_card_id": {
-            "name": "credit_card_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "customer_id": {
-            "name": "customer_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "cvv": {
-            "name": "cvv",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "expiry": {
-            "name": "expiry",
-            "type": {
-              "scalarType": "date"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "number": {
-            "name": "number",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "updated_at": {
-            "name": "updated_at",
-            "type": {
-              "scalarType": "timestamptz"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          }
-        },
-        "uniquenessConstraints": {
-          "credit_cards_pkey": [
-            "credit_card_id"
-          ]
-        },
-        "foreignRelations": {
-          "credit_cards_customer_id_fkey": {
-            "foreignSchema": "public",
-            "foreignTable": "customers",
-            "columnMapping": {
-              "customer_id": "customer_id"
-            }
-          }
-        },
-        "description": null
-      },
-      "customer_link": {
-        "schemaName": "public",
-        "tableName": "customer_link",
-        "columns": {
-          "customer_guid": {
-            "name": "customer_guid",
-            "type": {
-              "scalarType": "uuid"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "customer_id": {
-            "name": "customer_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "id": {
-            "name": "id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          }
-        },
-        "uniquenessConstraints": {
-          "customer_link_customer_id_key": [
-            "customer_id"
-          ],
-          "customer_link_pkey": [
-            "id"
-          ]
-        },
-        "foreignRelations": {
-          "customer_link_customer_id_fkey": {
-            "foreignSchema": "public",
-            "foreignTable": "customers",
-            "columnMapping": {
-              "customer_id": "customer_id"
-            }
-          }
-        },
-        "description": null
-      },
-      "customer_network": {
-        "schemaName": "public",
-        "tableName": "customer_network",
-        "columns": {
-          "customer_id": {
-            "name": "customer_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "node_id": {
-            "name": "node_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          }
-        },
-        "uniquenessConstraints": {
-          "customer_network_pkey": [
-            "customer_id",
-            "node_id"
-          ]
-        },
-        "foreignRelations": {
-          "customer_network_customer_id_fkey": {
-            "foreignSchema": "public",
-            "foreignTable": "customers",
-            "columnMapping": {
-              "customer_id": "customer_id"
-            }
-          },
-          "customer_network_node_id_fkey": {
-            "foreignSchema": "public",
-            "foreignTable": "network",
-            "columnMapping": {
-              "node_id": "node_id"
-            }
-          }
-        },
-        "description": null
-      },
-      "customer_plan_devices": {
-        "schemaName": "public",
-        "tableName": "customer_plan_devices",
-        "columns": {
-          "customer_plan_id": {
-            "name": "customer_plan_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "device_id": {
-            "name": "device_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "device_imei": {
-            "name": "device_imei",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "sim_iccid": {
-            "name": "sim_iccid",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          }
-        },
-        "uniquenessConstraints": {
-          "customer_plan_devices_pkey": [
-            "customer_plan_id",
-            "device_id"
-          ]
-        },
-        "foreignRelations": {
-          "customer_plan_devices_customer_plan_id_fkey": {
-            "foreignSchema": "public",
-            "foreignTable": "customer_plans",
-            "columnMapping": {
-              "customer_plan_id": "customer_plan_id"
-            }
-          },
-          "customer_plan_devices_device_id_fkey": {
-            "foreignSchema": "public",
-            "foreignTable": "devices",
-            "columnMapping": {
-              "device_id": "device_id"
-            }
-          }
-        },
-        "description": null
-      },
-      "customer_plans": {
-        "schemaName": "public",
-        "tableName": "customer_plans",
-        "columns": {
-          "cell_number": {
-            "name": "cell_number",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "customer_id": {
-            "name": "customer_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "customer_plan_id": {
-            "name": "customer_plan_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "data_allocation_gb": {
-            "name": "data_allocation_gb",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "data_used_gb": {
-            "name": "data_used_gb",
-            "type": {
-              "scalarType": "numeric"
-            },
-            "nullable": "nullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "end_date": {
-            "name": "end_date",
-            "type": {
-              "scalarType": "date"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "plan_id": {
-            "name": "plan_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "rollover_data_gb": {
-            "name": "rollover_data_gb",
-            "type": {
-              "scalarType": "numeric"
-            },
-            "nullable": "nullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "start_date": {
-            "name": "start_date",
-            "type": {
-              "scalarType": "date"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "status": {
-            "name": "status",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          }
-        },
-        "uniquenessConstraints": {
-          "customer_plans_pkey": [
-            "customer_plan_id"
-          ]
-        },
-        "foreignRelations": {
-          "customer_plans_customer_id_fkey": {
-            "foreignSchema": "public",
-            "foreignTable": "customers",
-            "columnMapping": {
-              "customer_id": "customer_id"
-            }
-          },
-          "customer_plans_plan_id_fkey": {
-            "foreignSchema": "public",
-            "foreignTable": "plans",
-            "columnMapping": {
-              "plan_id": "plan_id"
-            }
-          }
-        },
-        "description": null
-      },
-      "customers": {
-        "schemaName": "public",
-        "tableName": "customers",
-        "columns": {
-          "address": {
-            "name": "address",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "auth_user_id": {
-            "name": "auth_user_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "churn_risk": {
-            "name": "churn_risk",
-            "type": {
-              "scalarType": "numeric"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "churn_risk_factors": {
-            "name": "churn_risk_factors",
-            "type": {
-              "arrayType": {
-                "scalarType": "text"
-              }
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "city": {
-            "name": "city",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "country": {
-            "name": "country",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "customer_id": {
-            "name": "customer_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "dob": {
-            "name": "dob",
-            "type": {
-              "scalarType": "date"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "email": {
-            "name": "email",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "first_name": {
-            "name": "first_name",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "image": {
-            "name": "image",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "last_name": {
-            "name": "last_name",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "last_survey_date": {
-            "name": "last_survey_date",
-            "type": {
-              "scalarType": "date"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "phone_number": {
-            "name": "phone_number",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "postcode": {
-            "name": "postcode",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "satisfaction_score": {
-            "name": "satisfaction_score",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "segment": {
-            "name": "segment",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "state": {
-            "name": "state",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          }
-        },
-        "uniquenessConstraints": {
-          "customers_phone_number_key": [
-            "phone_number"
-          ],
-          "customers_pkey": [
-            "customer_id"
-          ]
-        },
-        "foreignRelations": {},
-        "description": null
-      },
-      "deals": {
-        "schemaName": "public",
-        "tableName": "deals",
-        "columns": {
-          "additional_benefits": {
-            "name": "additional_benefits",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "customer_segment": {
-            "name": "customer_segment",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "deal_id": {
-            "name": "deal_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "deal_name": {
-            "name": "deal_name",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "description": {
-            "name": "description",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "end_date": {
-            "name": "end_date",
-            "type": {
-              "scalarType": "date"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "max_monthly_spend": {
-            "name": "max_monthly_spend",
-            "type": {
-              "scalarType": "numeric"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "min_monthly_spend": {
-            "name": "min_monthly_spend",
-            "type": {
-              "scalarType": "numeric"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "start_date": {
-            "name": "start_date",
-            "type": {
-              "scalarType": "date"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "terms_conditions": {
-            "name": "terms_conditions",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nullable",
-            "description": null
-          }
-        },
-        "uniquenessConstraints": {
-          "deals_pkey": [
-            "deal_id"
-          ]
-        },
-        "foreignRelations": {},
-        "description": null
-      },
-      "device_upgrades": {
-        "schemaName": "public",
-        "tableName": "device_upgrades",
-        "columns": {
-          "contract_extension_months": {
-            "name": "contract_extension_months",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "customer_id": {
-            "name": "customer_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "new_device_id": {
-            "name": "new_device_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "old_device_id": {
-            "name": "old_device_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "promotion_applied": {
-            "name": "promotion_applied",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "trade_in_value": {
-            "name": "trade_in_value",
-            "type": {
-              "scalarType": "numeric"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "upgrade_date": {
-            "name": "upgrade_date",
-            "type": {
-              "scalarType": "date"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "upgrade_id": {
-            "name": "upgrade_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          }
-        },
-        "uniquenessConstraints": {
-          "device_upgrades_pkey": [
-            "upgrade_id"
-          ]
-        },
-        "foreignRelations": {
-          "device_upgrades_customer_id_fkey": {
-            "foreignSchema": "public",
-            "foreignTable": "customers",
-            "columnMapping": {
-              "customer_id": "customer_id"
-            }
-          },
-          "device_upgrades_new_device_id_fkey": {
-            "foreignSchema": "public",
-            "foreignTable": "devices",
-            "columnMapping": {
-              "new_device_id": "device_id"
-            }
-          },
-          "device_upgrades_old_device_id_fkey": {
-            "foreignSchema": "public",
-            "foreignTable": "devices",
-            "columnMapping": {
-              "old_device_id": "device_id"
-            }
-          }
-        },
-        "description": null
-      },
-      "devices": {
-        "schemaName": "public",
-        "tableName": "devices",
-        "columns": {
-          "brand": {
-            "name": "brand",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "created_at": {
-            "name": "created_at",
-            "type": {
-              "scalarType": "timestamptz"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "device_id": {
-            "name": "device_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "image": {
-            "name": "image",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "model": {
-            "name": "model",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "sf_record": {
-            "name": "sf_record",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "updated_at": {
-            "name": "updated_at",
-            "type": {
-              "scalarType": "timestamptz"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          }
-        },
-        "uniquenessConstraints": {
-          "devices_pkey": [
-            "device_id"
-          ]
-        },
-        "foreignRelations": {},
-        "description": null
-      },
-      "family_plan_members": {
-        "schemaName": "public",
-        "tableName": "family_plan_members",
-        "columns": {
-          "customer_id": {
-            "name": "customer_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "data_allocation_percentage": {
-            "name": "data_allocation_percentage",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "family_plan_id": {
-            "name": "family_plan_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "role": {
-            "name": "role",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          }
-        },
-        "uniquenessConstraints": {
-          "family_plan_members_pkey": [
-            "customer_id",
-            "family_plan_id"
-          ]
-        },
-        "foreignRelations": {
-          "family_plan_members_customer_id_fkey": {
-            "foreignSchema": "public",
-            "foreignTable": "customers",
-            "columnMapping": {
-              "customer_id": "customer_id"
-            }
-          },
-          "family_plan_members_family_plan_id_fkey": {
-            "foreignSchema": "public",
-            "foreignTable": "family_plans",
-            "columnMapping": {
-              "family_plan_id": "family_plan_id"
-            }
-          }
-        },
-        "description": null
-      },
-      "family_plans": {
-        "schemaName": "public",
-        "tableName": "family_plans",
-        "columns": {
-          "created_at": {
-            "name": "created_at",
-            "type": {
-              "scalarType": "timestamptz"
-            },
-            "nullable": "nullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "family_plan_id": {
-            "name": "family_plan_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "max_members": {
-            "name": "max_members",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "monthly_fee": {
-            "name": "monthly_fee",
-            "type": {
-              "scalarType": "numeric"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "plan_name": {
-            "name": "plan_name",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "primary_customer_id": {
-            "name": "primary_customer_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "shared_data_gb": {
-            "name": "shared_data_gb",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          }
-        },
-        "uniquenessConstraints": {
-          "family_plans_pkey": [
-            "family_plan_id"
-          ]
-        },
-        "foreignRelations": {
-          "family_plans_primary_customer_id_fkey": {
-            "foreignSchema": "public",
-            "foreignTable": "customers",
-            "columnMapping": {
-              "primary_customer_id": "customer_id"
-            }
-          }
-        },
-        "description": null
-      },
-      "feedback": {
-        "schemaName": "public",
-        "tableName": "feedback",
-        "columns": {
-          "category": {
-            "name": "category",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "comments": {
-            "name": "comments",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "customer_id": {
-            "name": "customer_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "feedback_date": {
-            "name": "feedback_date",
-            "type": {
-              "scalarType": "timestamptz"
-            },
-            "nullable": "nullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "feedback_id": {
-            "name": "feedback_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "followup_date": {
-            "name": "followup_date",
-            "type": {
-              "scalarType": "timestamptz"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "followup_notes": {
-            "name": "followup_notes",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "rating": {
-            "name": "rating",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "requires_followup": {
-            "name": "requires_followup",
-            "type": {
-              "scalarType": "bool"
-            },
-            "nullable": "nullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          }
-        },
-        "uniquenessConstraints": {
-          "feedback_pkey": [
-            "feedback_id"
-          ]
-        },
-        "foreignRelations": {
-          "feedback_customer_id_fkey": {
-            "foreignSchema": "public",
-            "foreignTable": "customers",
-            "columnMapping": {
-              "customer_id": "customer_id"
-            }
-          }
-        },
-        "description": null
-      },
-      "interactions": {
-        "schemaName": "public",
-        "tableName": "interactions",
-        "columns": {
-          "agent_id": {
-            "name": "agent_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "channel": {
-            "name": "channel",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "customer_id": {
-            "name": "customer_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "duration_seconds": {
-            "name": "duration_seconds",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "interaction_id": {
-            "name": "interaction_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "interaction_time": {
-            "name": "interaction_time",
-            "type": {
-              "scalarType": "timestamptz"
-            },
-            "nullable": "nullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "notes": {
-            "name": "notes",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "resolution_status": {
-            "name": "resolution_status",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "satisfaction_rating": {
-            "name": "satisfaction_rating",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "topic": {
-            "name": "topic",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          }
-        },
-        "uniquenessConstraints": {
-          "interactions_pkey": [
-            "interaction_id"
-          ]
-        },
-        "foreignRelations": {
-          "interactions_customer_id_fkey": {
-            "foreignSchema": "public",
-            "foreignTable": "customers",
-            "columnMapping": {
-              "customer_id": "customer_id"
-            }
-          }
-        },
-        "description": null
-      },
-      "iot_devices": {
-        "schemaName": "public",
-        "tableName": "iot_devices",
-        "columns": {
-          "activation_date": {
-            "name": "activation_date",
-            "type": {
-              "scalarType": "date"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "customer_id": {
-            "name": "customer_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "data_plan_id": {
-            "name": "data_plan_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "device_type": {
-            "name": "device_type",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "imei": {
-            "name": "imei",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "iot_device_id": {
-            "name": "iot_device_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "last_active_date": {
-            "name": "last_active_date",
-            "type": {
-              "scalarType": "timestamptz"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "monthly_data_usage_mb": {
-            "name": "monthly_data_usage_mb",
-            "type": {
-              "scalarType": "numeric"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "sim_iccid": {
-            "name": "sim_iccid",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "status": {
-            "name": "status",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          }
-        },
-        "uniquenessConstraints": {
-          "iot_devices_pkey": [
-            "iot_device_id"
-          ]
-        },
-        "foreignRelations": {
-          "iot_devices_customer_id_fkey": {
-            "foreignSchema": "public",
-            "foreignTable": "customers",
-            "columnMapping": {
-              "customer_id": "customer_id"
-            }
-          },
-          "iot_devices_data_plan_id_fkey": {
-            "foreignSchema": "public",
-            "foreignTable": "plans",
-            "columnMapping": {
-              "data_plan_id": "plan_id"
-            }
-          }
-        },
-        "description": null
-      },
-      "loyalty_rewards": {
-        "schemaName": "public",
-        "tableName": "loyalty_rewards",
-        "columns": {
-          "customer_id": {
-            "name": "customer_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "last_activity_date": {
-            "name": "last_activity_date",
-            "type": {
-              "scalarType": "date"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "points_balance": {
-            "name": "points_balance",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "points_earned": {
-            "name": "points_earned",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "points_redeemed": {
-            "name": "points_redeemed",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "reward_id": {
-            "name": "reward_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "tier": {
-            "name": "tier",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          }
-        },
-        "uniquenessConstraints": {
-          "loyalty_rewards_pkey": [
-            "reward_id"
-          ]
-        },
-        "foreignRelations": {
-          "loyalty_rewards_customer_id_fkey": {
-            "foreignSchema": "public",
-            "foreignTable": "customers",
-            "columnMapping": {
-              "customer_id": "customer_id"
-            }
-          }
-        },
-        "description": null
-      },
-      "network": {
-        "schemaName": "public",
-        "tableName": "network",
-        "columns": {
-          "capacity": {
-            "name": "capacity",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "latitude": {
-            "name": "latitude",
-            "type": {
-              "scalarType": "numeric"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "longitude": {
-            "name": "longitude",
-            "type": {
-              "scalarType": "numeric"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "node_id": {
-            "name": "node_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "node_name": {
-            "name": "node_name",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "quality": {
-            "name": "quality",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "status": {
-            "name": "status",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          }
-        },
-        "uniquenessConstraints": {
-          "network_pkey": [
-            "node_id"
-          ]
-        },
-        "foreignRelations": {},
-        "description": null
-      },
-      "number_portability": {
-        "schemaName": "public",
-        "tableName": "number_portability",
-        "columns": {
-          "completion_date": {
-            "name": "completion_date",
-            "type": {
-              "scalarType": "timestamptz"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "customer_id": {
-            "name": "customer_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "notes": {
-            "name": "notes",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "phone_number": {
-            "name": "phone_number",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "port_date": {
-            "name": "port_date",
-            "type": {
-              "scalarType": "timestamptz"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "portability_id": {
-            "name": "portability_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "previous_carrier": {
-            "name": "previous_carrier",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "status": {
-            "name": "status",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          }
-        },
-        "uniquenessConstraints": {
-          "number_portability_phone_number_key": [
-            "phone_number"
-          ],
-          "number_portability_pkey": [
-            "portability_id"
-          ]
-        },
-        "foreignRelations": {
-          "number_portability_customer_id_fkey": {
-            "foreignSchema": "public",
-            "foreignTable": "customers",
-            "columnMapping": {
-              "customer_id": "customer_id"
-            }
-          }
-        },
-        "description": null
-      },
-      "plans": {
-        "schemaName": "public",
-        "tableName": "plans",
-        "columns": {
-          "data_limit_gb": {
-            "name": "data_limit_gb",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "description": {
-            "name": "description",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "international_roaming": {
-            "name": "international_roaming",
-            "type": {
-              "scalarType": "bool"
-            },
-            "nullable": "nullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "monthly_fee": {
-            "name": "monthly_fee",
-            "type": {
-              "scalarType": "numeric"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "plan_id": {
-            "name": "plan_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "plan_name": {
-            "name": "plan_name",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "roaming_countries": {
-            "name": "roaming_countries",
-            "type": {
-              "arrayType": {
-                "scalarType": "text"
-              }
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "roaming_data_gb": {
-            "name": "roaming_data_gb",
-            "type": {
-              "scalarType": "numeric"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "roaming_voice_minutes": {
-            "name": "roaming_voice_minutes",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "sf_record": {
-            "name": "sf_record",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "sms_limit": {
-            "name": "sms_limit",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "type": {
-            "name": "type",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "voice_limit_minutes": {
-            "name": "voice_limit_minutes",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          }
-        },
-        "uniquenessConstraints": {
-          "plans_pkey": [
-            "plan_id"
-          ],
-          "plans_plan_name_key": [
-            "plan_name"
-          ]
-        },
-        "foreignRelations": {},
-        "description": null
-      },
-      "referrals": {
-        "schemaName": "public",
-        "tableName": "referrals",
-        "columns": {
-          "bonus_amount": {
-            "name": "bonus_amount",
-            "type": {
-              "scalarType": "numeric"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "bonus_paid": {
-            "name": "bonus_paid",
-            "type": {
-              "scalarType": "bool"
-            },
-            "nullable": "nullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "referral_date": {
-            "name": "referral_date",
-            "type": {
-              "scalarType": "date"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "referral_id": {
-            "name": "referral_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "referred_id": {
-            "name": "referred_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "referrer_id": {
-            "name": "referrer_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "status": {
-            "name": "status",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          }
-        },
-        "uniquenessConstraints": {
-          "referrals_pkey": [
-            "referral_id"
-          ]
-        },
-        "foreignRelations": {
-          "referrals_referred_id_fkey": {
-            "foreignSchema": "public",
-            "foreignTable": "customers",
-            "columnMapping": {
-              "referred_id": "customer_id"
-            }
-          },
-          "referrals_referrer_id_fkey": {
-            "foreignSchema": "public",
-            "foreignTable": "customers",
-            "columnMapping": {
-              "referrer_id": "customer_id"
-            }
-          }
-        },
-        "description": null
-      },
-      "service_interactions": {
-        "schemaName": "public",
-        "tableName": "service_interactions",
-        "columns": {
-          "agent_id": {
-            "name": "agent_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "category": {
-            "name": "category",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "channel": {
-            "name": "channel",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "customer_id": {
-            "name": "customer_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "interaction_date": {
-            "name": "interaction_date",
-            "type": {
-              "scalarType": "timestamptz"
-            },
-            "nullable": "nullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "interaction_id": {
-            "name": "interaction_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "notes": {
-            "name": "notes",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "resolution_status": {
-            "name": "resolution_status",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "resolution_time_minutes": {
-            "name": "resolution_time_minutes",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "satisfaction_score": {
-            "name": "satisfaction_score",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          }
-        },
-        "uniquenessConstraints": {
-          "service_interactions_pkey": [
-            "interaction_id"
-          ]
-        },
-        "foreignRelations": {
-          "service_interactions_customer_id_fkey": {
-            "foreignSchema": "public",
-            "foreignTable": "customers",
-            "columnMapping": {
-              "customer_id": "customer_id"
-            }
-          }
-        },
-        "description": null
-      },
-      "voip_services": {
-        "schemaName": "public",
-        "tableName": "voip_services",
-        "columns": {
-          "activation_date": {
-            "name": "activation_date",
-            "type": {
-              "scalarType": "date"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "customer_id": {
-            "name": "customer_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "features": {
-            "name": "features",
-            "type": {
-              "arrayType": {
-                "scalarType": "text"
-              }
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "monthly_fee": {
-            "name": "monthly_fee",
-            "type": {
-              "scalarType": "numeric"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "service_number": {
-            "name": "service_number",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "service_type": {
-            "name": "service_type",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "status": {
-            "name": "status",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "voip_id": {
-            "name": "voip_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          }
-        },
-        "uniquenessConstraints": {
-          "voip_services_pkey": [
-            "voip_id"
-          ]
-        },
-        "foreignRelations": {
-          "voip_services_customer_id_fkey": {
-            "foreignSchema": "public",
-            "foreignTable": "customers",
-            "columnMapping": {
-              "customer_id": "customer_id"
-            }
-          }
-        },
-        "description": null
-      }
-    },
-    "types": {
-      "scalar": {
-        "bool": {
-          "typeName": "bool",
-          "schemaName": "pg_catalog",
-          "description": null,
-          "aggregateFunctions": {
-            "bool_and": {
-              "returnType": "bool"
-            },
-            "bool_or": {
-              "returnType": "bool"
-            },
-            "every": {
-              "returnType": "bool"
-            }
-          },
-          "comparisonOperators": {
-            "_eq": {
-              "operatorName": "=",
-              "operatorKind": "equal",
-              "argumentType": "bool",
-              "isInfix": true
-            },
-            "_gt": {
-              "operatorName": ">",
-              "operatorKind": "custom",
-              "argumentType": "bool",
-              "isInfix": true
-            },
-            "_gte": {
-              "operatorName": ">=",
-              "operatorKind": "custom",
-              "argumentType": "bool",
-              "isInfix": true
-            },
-            "_in": {
-              "operatorName": "IN",
-              "operatorKind": "in",
-              "argumentType": "bool",
-              "isInfix": true
-            },
-            "_lt": {
-              "operatorName": "<",
-              "operatorKind": "custom",
-              "argumentType": "bool",
-              "isInfix": true
-            },
-            "_lte": {
-              "operatorName": "<=",
-              "operatorKind": "custom",
-              "argumentType": "bool",
-              "isInfix": true
-            },
-            "_neq": {
-              "operatorName": "<>",
-              "operatorKind": "custom",
-              "argumentType": "bool",
-              "isInfix": true
-            }
-          },
-          "typeRepresentation": "boolean"
-        },
-        "date": {
-          "typeName": "date",
-          "schemaName": "pg_catalog",
-          "description": null,
-          "aggregateFunctions": {
-            "max": {
-              "returnType": "date"
-            },
-            "min": {
-              "returnType": "date"
-            }
-          },
-          "comparisonOperators": {
-            "_eq": {
-              "operatorName": "=",
-              "operatorKind": "equal",
-              "argumentType": "date",
-              "isInfix": true
-            },
-            "_gt": {
-              "operatorName": ">",
-              "operatorKind": "custom",
-              "argumentType": "date",
-              "isInfix": true
-            },
-            "_gte": {
-              "operatorName": ">=",
-              "operatorKind": "custom",
-              "argumentType": "date",
-              "isInfix": true
-            },
-            "_in": {
-              "operatorName": "IN",
-              "operatorKind": "in",
-              "argumentType": "date",
-              "isInfix": true
-            },
-            "_lt": {
-              "operatorName": "<",
-              "operatorKind": "custom",
-              "argumentType": "date",
-              "isInfix": true
-            },
-            "_lte": {
-              "operatorName": "<=",
-              "operatorKind": "custom",
-              "argumentType": "date",
-              "isInfix": true
-            },
-            "_neq": {
-              "operatorName": "<>",
-              "operatorKind": "custom",
-              "argumentType": "date",
-              "isInfix": true
-            }
-          },
-          "typeRepresentation": "date"
-        },
-        "int4": {
-          "typeName": "int4",
-          "schemaName": "pg_catalog",
-          "description": null,
-          "aggregateFunctions": {
-            "avg": {
-              "returnType": "numeric"
-            },
-            "bit_and": {
-              "returnType": "int4"
-            },
-            "bit_or": {
-              "returnType": "int4"
-            },
-            "bit_xor": {
-              "returnType": "int4"
-            },
-            "max": {
-              "returnType": "int4"
-            },
-            "min": {
-              "returnType": "int4"
-            },
-            "stddev": {
-              "returnType": "numeric"
-            },
-            "stddev_pop": {
-              "returnType": "numeric"
-            },
-            "stddev_samp": {
-              "returnType": "numeric"
-            },
-            "sum": {
-              "returnType": "int8"
-            },
-            "var_pop": {
-              "returnType": "numeric"
-            },
-            "var_samp": {
-              "returnType": "numeric"
-            },
-            "variance": {
-              "returnType": "numeric"
-            }
-          },
-          "comparisonOperators": {
-            "_eq": {
-              "operatorName": "=",
-              "operatorKind": "equal",
-              "argumentType": "int4",
-              "isInfix": true
-            },
-            "_gt": {
-              "operatorName": ">",
-              "operatorKind": "custom",
-              "argumentType": "int4",
-              "isInfix": true
-            },
-            "_gte": {
-              "operatorName": ">=",
-              "operatorKind": "custom",
-              "argumentType": "int4",
-              "isInfix": true
-            },
-            "_in": {
-              "operatorName": "IN",
-              "operatorKind": "in",
-              "argumentType": "int4",
-              "isInfix": true
-            },
-            "_lt": {
-              "operatorName": "<",
-              "operatorKind": "custom",
-              "argumentType": "int4",
-              "isInfix": true
-            },
-            "_lte": {
-              "operatorName": "<=",
-              "operatorKind": "custom",
-              "argumentType": "int4",
-              "isInfix": true
-            },
-            "_neq": {
-              "operatorName": "<>",
-              "operatorKind": "custom",
-              "argumentType": "int4",
-              "isInfix": true
-            }
-          },
-          "typeRepresentation": "int32"
-        },
-        "int8": {
-          "typeName": "int8",
-          "schemaName": "pg_catalog",
-          "description": null,
-          "aggregateFunctions": {
-            "avg": {
-              "returnType": "numeric"
-            },
-            "bit_and": {
-              "returnType": "int8"
-            },
-            "bit_or": {
-              "returnType": "int8"
-            },
-            "bit_xor": {
-              "returnType": "int8"
-            },
-            "max": {
-              "returnType": "int8"
-            },
-            "min": {
-              "returnType": "int8"
-            },
-            "stddev": {
-              "returnType": "numeric"
-            },
-            "stddev_pop": {
-              "returnType": "numeric"
-            },
-            "stddev_samp": {
-              "returnType": "numeric"
-            },
-            "sum": {
-              "returnType": "numeric"
-            },
-            "var_pop": {
-              "returnType": "numeric"
-            },
-            "var_samp": {
-              "returnType": "numeric"
-            },
-            "variance": {
-              "returnType": "numeric"
-            }
-          },
-          "comparisonOperators": {
-            "_eq": {
-              "operatorName": "=",
-              "operatorKind": "equal",
-              "argumentType": "int8",
-              "isInfix": true
-            },
-            "_gt": {
-              "operatorName": ">",
-              "operatorKind": "custom",
-              "argumentType": "int8",
-              "isInfix": true
-            },
-            "_gte": {
-              "operatorName": ">=",
-              "operatorKind": "custom",
-              "argumentType": "int8",
-              "isInfix": true
-            },
-            "_in": {
-              "operatorName": "IN",
-              "operatorKind": "in",
-              "argumentType": "int8",
-              "isInfix": true
-            },
-            "_lt": {
-              "operatorName": "<",
-              "operatorKind": "custom",
-              "argumentType": "int8",
-              "isInfix": true
-            },
-            "_lte": {
-              "operatorName": "<=",
-              "operatorKind": "custom",
-              "argumentType": "int8",
-              "isInfix": true
-            },
-            "_neq": {
-              "operatorName": "<>",
-              "operatorKind": "custom",
-              "argumentType": "int8",
-              "isInfix": true
-            }
-          },
-          "typeRepresentation": "int64AsString"
-        },
-        "numeric": {
-          "typeName": "numeric",
-          "schemaName": "pg_catalog",
-          "description": null,
-          "aggregateFunctions": {
-            "avg": {
-              "returnType": "numeric"
-            },
-            "max": {
-              "returnType": "numeric"
-            },
-            "min": {
-              "returnType": "numeric"
-            },
-            "stddev": {
-              "returnType": "numeric"
-            },
-            "stddev_pop": {
-              "returnType": "numeric"
-            },
-            "stddev_samp": {
-              "returnType": "numeric"
-            },
-            "sum": {
-              "returnType": "numeric"
-            },
-            "var_pop": {
-              "returnType": "numeric"
-            },
-            "var_samp": {
-              "returnType": "numeric"
-            },
-            "variance": {
-              "returnType": "numeric"
-            }
-          },
-          "comparisonOperators": {
-            "_eq": {
-              "operatorName": "=",
-              "operatorKind": "equal",
-              "argumentType": "numeric",
-              "isInfix": true
-            },
-            "_gt": {
-              "operatorName": ">",
-              "operatorKind": "custom",
-              "argumentType": "numeric",
-              "isInfix": true
-            },
-            "_gte": {
-              "operatorName": ">=",
-              "operatorKind": "custom",
-              "argumentType": "numeric",
-              "isInfix": true
-            },
-            "_in": {
-              "operatorName": "IN",
-              "operatorKind": "in",
-              "argumentType": "numeric",
-              "isInfix": true
-            },
-            "_lt": {
-              "operatorName": "<",
-              "operatorKind": "custom",
-              "argumentType": "numeric",
-              "isInfix": true
-            },
-            "_lte": {
-              "operatorName": "<=",
-              "operatorKind": "custom",
-              "argumentType": "numeric",
-              "isInfix": true
-            },
-            "_neq": {
-              "operatorName": "<>",
-              "operatorKind": "custom",
-              "argumentType": "numeric",
-              "isInfix": true
-            }
-          },
-          "typeRepresentation": "bigDecimalAsString"
-        },
-        "text": {
-          "typeName": "text",
-          "schemaName": "pg_catalog",
-          "description": null,
-          "aggregateFunctions": {
-            "max": {
-              "returnType": "text"
-            },
-            "min": {
-              "returnType": "text"
-            }
-          },
-          "comparisonOperators": {
-            "_eq": {
-              "operatorName": "=",
-              "operatorKind": "equal",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_gt": {
-              "operatorName": ">",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_gte": {
-              "operatorName": ">=",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_ilike": {
-              "operatorName": "~~*",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_in": {
-              "operatorName": "IN",
-              "operatorKind": "in",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_iregex": {
-              "operatorName": "~*",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_like": {
-              "operatorName": "~~",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_lt": {
-              "operatorName": "<",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_lte": {
-              "operatorName": "<=",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_neq": {
-              "operatorName": "<>",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_nilike": {
-              "operatorName": "!~~*",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_niregex": {
-              "operatorName": "!~*",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_nlike": {
-              "operatorName": "!~~",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_nregex": {
-              "operatorName": "!~",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_regex": {
-              "operatorName": "~",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "starts_with": {
-              "operatorName": "starts_with",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": false
-            },
-            "ts_match_tt": {
-              "operatorName": "ts_match_tt",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": false
-            }
-          },
-          "typeRepresentation": "string"
-        },
-        "timestamptz": {
-          "typeName": "timestamptz",
-          "schemaName": "pg_catalog",
-          "description": null,
-          "aggregateFunctions": {
-            "max": {
-              "returnType": "timestamptz"
-            },
-            "min": {
-              "returnType": "timestamptz"
-            }
-          },
-          "comparisonOperators": {
-            "_eq": {
-              "operatorName": "=",
-              "operatorKind": "equal",
-              "argumentType": "timestamptz",
-              "isInfix": true
-            },
-            "_gt": {
-              "operatorName": ">",
-              "operatorKind": "custom",
-              "argumentType": "timestamptz",
-              "isInfix": true
-            },
-            "_gte": {
-              "operatorName": ">=",
-              "operatorKind": "custom",
-              "argumentType": "timestamptz",
-              "isInfix": true
-            },
-            "_in": {
-              "operatorName": "IN",
-              "operatorKind": "in",
-              "argumentType": "timestamptz",
-              "isInfix": true
-            },
-            "_lt": {
-              "operatorName": "<",
-              "operatorKind": "custom",
-              "argumentType": "timestamptz",
-              "isInfix": true
-            },
-            "_lte": {
-              "operatorName": "<=",
-              "operatorKind": "custom",
-              "argumentType": "timestamptz",
-              "isInfix": true
-            },
-            "_neq": {
-              "operatorName": "<>",
-              "operatorKind": "custom",
-              "argumentType": "timestamptz",
-              "isInfix": true
-            }
-          },
-          "typeRepresentation": "timestamptz"
-        },
-        "uuid": {
-          "typeName": "uuid",
-          "schemaName": "pg_catalog",
-          "description": null,
-          "aggregateFunctions": {},
-          "comparisonOperators": {
-            "_eq": {
-              "operatorName": "=",
-              "operatorKind": "equal",
-              "argumentType": "uuid",
-              "isInfix": true
-            },
-            "_gt": {
-              "operatorName": ">",
-              "operatorKind": "custom",
-              "argumentType": "uuid",
-              "isInfix": true
-            },
-            "_gte": {
-              "operatorName": ">=",
-              "operatorKind": "custom",
-              "argumentType": "uuid",
-              "isInfix": true
-            },
-            "_in": {
-              "operatorName": "IN",
-              "operatorKind": "in",
-              "argumentType": "uuid",
-              "isInfix": true
-            },
-            "_lt": {
-              "operatorName": "<",
-              "operatorKind": "custom",
-              "argumentType": "uuid",
-              "isInfix": true
-            },
-            "_lte": {
-              "operatorName": "<=",
-              "operatorKind": "custom",
-              "argumentType": "uuid",
-              "isInfix": true
-            },
-            "_neq": {
-              "operatorName": "<>",
-              "operatorKind": "custom",
-              "argumentType": "uuid",
-              "isInfix": true
-            }
-          },
-          "typeRepresentation": "uUID"
-        },
-        "varchar": {
-          "typeName": "varchar",
-          "schemaName": "pg_catalog",
-          "description": null,
-          "aggregateFunctions": {
-            "max": {
-              "returnType": "text"
-            },
-            "min": {
-              "returnType": "text"
-            }
-          },
-          "comparisonOperators": {
-            "_eq": {
-              "operatorName": "=",
-              "operatorKind": "equal",
-              "argumentType": "varchar",
-              "isInfix": true
-            },
-            "_gt": {
-              "operatorName": ">",
-              "operatorKind": "custom",
-              "argumentType": "varchar",
-              "isInfix": true
-            },
-            "_gte": {
-              "operatorName": ">=",
-              "operatorKind": "custom",
-              "argumentType": "varchar",
-              "isInfix": true
-            },
-            "_ilike": {
-              "operatorName": "~~*",
-              "operatorKind": "custom",
-              "argumentType": "varchar",
-              "isInfix": true
-            },
-            "_in": {
-              "operatorName": "IN",
-              "operatorKind": "in",
-              "argumentType": "varchar",
-              "isInfix": true
-            },
-            "_iregex": {
-              "operatorName": "~*",
-              "operatorKind": "custom",
-              "argumentType": "varchar",
-              "isInfix": true
-            },
-            "_like": {
-              "operatorName": "~~",
-              "operatorKind": "custom",
-              "argumentType": "varchar",
-              "isInfix": true
-            },
-            "_lt": {
-              "operatorName": "<",
-              "operatorKind": "custom",
-              "argumentType": "varchar",
-              "isInfix": true
-            },
-            "_lte": {
-              "operatorName": "<=",
-              "operatorKind": "custom",
-              "argumentType": "varchar",
-              "isInfix": true
-            },
-            "_neq": {
-              "operatorName": "<>",
-              "operatorKind": "custom",
-              "argumentType": "varchar",
-              "isInfix": true
-            },
-            "_nilike": {
-              "operatorName": "!~~*",
-              "operatorKind": "custom",
-              "argumentType": "varchar",
-              "isInfix": true
-            },
-            "_niregex": {
-              "operatorName": "!~*",
-              "operatorKind": "custom",
-              "argumentType": "varchar",
-              "isInfix": true
-            },
-            "_nlike": {
-              "operatorName": "!~~",
-              "operatorKind": "custom",
-              "argumentType": "varchar",
-              "isInfix": true
-            },
-            "_nregex": {
-              "operatorName": "!~",
-              "operatorKind": "custom",
-              "argumentType": "varchar",
-              "isInfix": true
-            },
-            "_regex": {
-              "operatorName": "~",
-              "operatorKind": "custom",
-              "argumentType": "varchar",
-              "isInfix": true
-            },
-            "starts_with": {
-              "operatorName": "starts_with",
-              "operatorKind": "custom",
-              "argumentType": "varchar",
-              "isInfix": false
-            },
-            "ts_match_tt": {
-              "operatorName": "ts_match_tt",
-              "operatorKind": "custom",
-              "argumentType": "varchar",
-              "isInfix": false
-            }
-          },
-          "typeRepresentation": "string"
+    "tables": [
+        {
+            "name": "public.billing",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "billing_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "customer_id",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "billing_date",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "date"
+                    }
+                },
+                {
+                    "name": "total_amount",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 10,
+                            "scale": 2
+                        }
+                    }
+                },
+                {
+                    "name": "payment_status",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 20
+                        }
+                    }
+                }
+            ],
+            "primary_keys": [
+                "billing_id"
+            ],
+            "foreign_keys": {}
+        },
+        {
+            "name": "public.campaigns",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "campaign_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "campaign_name",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 100
+                        }
+                    }
+                },
+                {
+                    "name": "start_date",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "date"
+                    }
+                },
+                {
+                    "name": "end_date",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "date"
+                    }
+                },
+                {
+                    "name": "target_segment",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 50
+                        }
+                    }
+                },
+                {
+                    "name": "channel",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 50
+                        }
+                    }
+                },
+                {
+                    "name": "offer_details",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "text"
+                    }
+                },
+                {
+                    "name": "budget",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 10,
+                            "scale": 2
+                        }
+                    }
+                },
+                {
+                    "name": "conversion_goal",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "actual_conversions",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                }
+            ],
+            "primary_keys": [
+                "campaign_id"
+            ],
+            "foreign_keys": {}
+        },
+        {
+            "name": "public.credit_cards",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "credit_card_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "created_at",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_with_time_zone"
+                    }
+                },
+                {
+                    "name": "updated_at",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_with_time_zone"
+                    }
+                },
+                {
+                    "name": "expiry",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "date"
+                    }
+                },
+                {
+                    "name": "cvv",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "number",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "text"
+                    }
+                },
+                {
+                    "name": "customer_id",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                }
+            ],
+            "primary_keys": [
+                "credit_card_id"
+            ],
+            "foreign_keys": {}
+        },
+        {
+            "name": "public.customer_link",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "customer_id",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "customer_guid",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "uuid"
+                    }
+                }
+            ],
+            "primary_keys": [
+                "id"
+            ],
+            "foreign_keys": {}
+        },
+        {
+            "name": "public.customer_network",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "customer_id",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "node_id",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                }
+            ],
+            "primary_keys": [
+                "customer_id",
+                "node_id"
+            ],
+            "foreign_keys": {}
+        },
+        {
+            "name": "public.customer_plan_devices",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "customer_plan_id",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "device_id",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "sim_iccid",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 24
+                        }
+                    }
+                },
+                {
+                    "name": "device_imei",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 16
+                        }
+                    }
+                }
+            ],
+            "primary_keys": [
+                "customer_plan_id",
+                "device_id"
+            ],
+            "foreign_keys": {}
+        },
+        {
+            "name": "public.customer_plans",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "customer_plan_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "customer_id",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "plan_id",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "start_date",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "date"
+                    }
+                },
+                {
+                    "name": "end_date",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "date"
+                    }
+                },
+                {
+                    "name": "cell_number",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 10
+                        }
+                    }
+                },
+                {
+                    "name": "status",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 10
+                        }
+                    }
+                },
+                {
+                    "name": "data_allocation_gb",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "data_used_gb",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 10,
+                            "scale": 2
+                        }
+                    }
+                },
+                {
+                    "name": "rollover_data_gb",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 10,
+                            "scale": 2
+                        }
+                    }
+                }
+            ],
+            "primary_keys": [
+                "customer_plan_id"
+            ],
+            "foreign_keys": {}
+        },
+        {
+            "name": "public.customers",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "customer_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "first_name",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 50
+                        }
+                    }
+                },
+                {
+                    "name": "last_name",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 50
+                        }
+                    }
+                },
+                {
+                    "name": "email",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 100
+                        }
+                    }
+                },
+                {
+                    "name": "phone_number",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 20
+                        }
+                    }
+                },
+                {
+                    "name": "address",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 255
+                        }
+                    }
+                },
+                {
+                    "name": "city",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 255
+                        }
+                    }
+                },
+                {
+                    "name": "state",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 255
+                        }
+                    }
+                },
+                {
+                    "name": "postcode",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 255
+                        }
+                    }
+                },
+                {
+                    "name": "country",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 255
+                        }
+                    }
+                },
+                {
+                    "name": "dob",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "date"
+                    }
+                },
+                {
+                    "name": "image",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 30
+                        }
+                    }
+                },
+                {
+                    "name": "segment",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 30
+                        }
+                    }
+                },
+                {
+                    "name": "auth_user_id",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "satisfaction_score",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "last_survey_date",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "date"
+                    }
+                },
+                {
+                    "name": "churn_risk",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 3,
+                            "scale": 2
+                        }
+                    }
+                },
+                {
+                    "name": "churn_risk_factors",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "array",
+                        "metadata": {
+                            "type": "array",
+                            "array_types": {
+                                "database_type": "text"
+                            }
+                        }
+                    }
+                }
+            ],
+            "primary_keys": [
+                "customer_id"
+            ],
+            "foreign_keys": {}
+        },
+        {
+            "name": "public.deals",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "deal_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "deal_name",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 255
+                        }
+                    }
+                },
+                {
+                    "name": "description",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "text"
+                    }
+                },
+                {
+                    "name": "customer_segment",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 50
+                        }
+                    }
+                },
+                {
+                    "name": "min_monthly_spend",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 10,
+                            "scale": 2
+                        }
+                    }
+                },
+                {
+                    "name": "max_monthly_spend",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 10,
+                            "scale": 2
+                        }
+                    }
+                },
+                {
+                    "name": "start_date",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "date"
+                    }
+                },
+                {
+                    "name": "end_date",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "date"
+                    }
+                },
+                {
+                    "name": "additional_benefits",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "text"
+                    }
+                },
+                {
+                    "name": "terms_conditions",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "text"
+                    }
+                }
+            ],
+            "primary_keys": [
+                "deal_id"
+            ],
+            "foreign_keys": {}
+        },
+        {
+            "name": "public.device_upgrades",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "upgrade_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "customer_id",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "old_device_id",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "new_device_id",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "upgrade_date",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "date"
+                    }
+                },
+                {
+                    "name": "trade_in_value",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 10,
+                            "scale": 2
+                        }
+                    }
+                },
+                {
+                    "name": "contract_extension_months",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "promotion_applied",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 100
+                        }
+                    }
+                }
+            ],
+            "primary_keys": [
+                "upgrade_id"
+            ],
+            "foreign_keys": {}
+        },
+        {
+            "name": "public.devices",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "device_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "created_at",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_with_time_zone"
+                    }
+                },
+                {
+                    "name": "updated_at",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_with_time_zone"
+                    }
+                },
+                {
+                    "name": "brand",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 50
+                        }
+                    }
+                },
+                {
+                    "name": "model",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 50
+                        }
+                    }
+                },
+                {
+                    "name": "image",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 50
+                        }
+                    }
+                },
+                {
+                    "name": "sf_record",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 18
+                        }
+                    }
+                }
+            ],
+            "primary_keys": [
+                "device_id"
+            ],
+            "foreign_keys": {}
+        },
+        {
+            "name": "public.family_plan_members",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "family_plan_id",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "customer_id",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "role",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 20
+                        }
+                    }
+                },
+                {
+                    "name": "data_allocation_percentage",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                }
+            ],
+            "primary_keys": [
+                "family_plan_id",
+                "customer_id"
+            ],
+            "foreign_keys": {}
+        },
+        {
+            "name": "public.family_plans",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "family_plan_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "primary_customer_id",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "plan_name",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 100
+                        }
+                    }
+                },
+                {
+                    "name": "created_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_with_time_zone"
+                    }
+                },
+                {
+                    "name": "max_members",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "shared_data_gb",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "monthly_fee",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 10,
+                            "scale": 2
+                        }
+                    }
+                }
+            ],
+            "primary_keys": [
+                "family_plan_id"
+            ],
+            "foreign_keys": {}
+        },
+        {
+            "name": "public.feedback",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "feedback_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "customer_id",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "feedback_date",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_with_time_zone"
+                    }
+                },
+                {
+                    "name": "category",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 50
+                        }
+                    }
+                },
+                {
+                    "name": "rating",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "comments",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "text"
+                    }
+                },
+                {
+                    "name": "requires_followup",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "boolean"
+                    }
+                },
+                {
+                    "name": "followup_notes",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "text"
+                    }
+                },
+                {
+                    "name": "followup_date",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_with_time_zone"
+                    }
+                }
+            ],
+            "primary_keys": [
+                "feedback_id"
+            ],
+            "foreign_keys": {}
+        },
+        {
+            "name": "public.interactions",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "interaction_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "customer_id",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "channel",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 50
+                        }
+                    }
+                },
+                {
+                    "name": "agent_id",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "interaction_time",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_with_time_zone"
+                    }
+                },
+                {
+                    "name": "duration_seconds",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "topic",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 100
+                        }
+                    }
+                },
+                {
+                    "name": "resolution_status",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 50
+                        }
+                    }
+                },
+                {
+                    "name": "satisfaction_rating",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "notes",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "text"
+                    }
+                }
+            ],
+            "primary_keys": [
+                "interaction_id"
+            ],
+            "foreign_keys": {}
+        },
+        {
+            "name": "public.iot_devices",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "iot_device_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "customer_id",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "device_type",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 50
+                        }
+                    }
+                },
+                {
+                    "name": "imei",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 15
+                        }
+                    }
+                },
+                {
+                    "name": "sim_iccid",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 24
+                        }
+                    }
+                },
+                {
+                    "name": "data_plan_id",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "activation_date",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "date"
+                    }
+                },
+                {
+                    "name": "last_active_date",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_with_time_zone"
+                    }
+                },
+                {
+                    "name": "monthly_data_usage_mb",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 10,
+                            "scale": 2
+                        }
+                    }
+                },
+                {
+                    "name": "status",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 20
+                        }
+                    }
+                }
+            ],
+            "primary_keys": [
+                "iot_device_id"
+            ],
+            "foreign_keys": {}
+        },
+        {
+            "name": "public.loyalty_rewards",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "reward_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "customer_id",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "points_earned",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "points_redeemed",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "points_balance",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "last_activity_date",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "date"
+                    }
+                },
+                {
+                    "name": "tier",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 20
+                        }
+                    }
+                }
+            ],
+            "primary_keys": [
+                "reward_id"
+            ],
+            "foreign_keys": {}
+        },
+        {
+            "name": "public.network",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "node_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "node_name",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 255
+                        }
+                    }
+                },
+                {
+                    "name": "latitude",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 9,
+                            "scale": 6
+                        }
+                    }
+                },
+                {
+                    "name": "longitude",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 9,
+                            "scale": 6
+                        }
+                    }
+                },
+                {
+                    "name": "capacity",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "status",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 50
+                        }
+                    }
+                },
+                {
+                    "name": "quality",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 50
+                        }
+                    }
+                }
+            ],
+            "primary_keys": [
+                "node_id"
+            ],
+            "foreign_keys": {}
+        },
+        {
+            "name": "public.number_portability",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "portability_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "customer_id",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "phone_number",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 20
+                        }
+                    }
+                },
+                {
+                    "name": "previous_carrier",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 100
+                        }
+                    }
+                },
+                {
+                    "name": "port_date",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_with_time_zone"
+                    }
+                },
+                {
+                    "name": "status",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 20
+                        }
+                    }
+                },
+                {
+                    "name": "completion_date",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_with_time_zone"
+                    }
+                },
+                {
+                    "name": "notes",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "text"
+                    }
+                }
+            ],
+            "primary_keys": [
+                "portability_id"
+            ],
+            "foreign_keys": {}
+        },
+        {
+            "name": "public.plans",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "plan_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "plan_name",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 50
+                        }
+                    }
+                },
+                {
+                    "name": "description",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "text"
+                    }
+                },
+                {
+                    "name": "type",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "text"
+                    }
+                },
+                {
+                    "name": "monthly_fee",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 10,
+                            "scale": 2
+                        }
+                    }
+                },
+                {
+                    "name": "sf_record",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 18
+                        }
+                    }
+                },
+                {
+                    "name": "data_limit_gb",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "voice_limit_minutes",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "sms_limit",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "international_roaming",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "boolean"
+                    }
+                },
+                {
+                    "name": "roaming_countries",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "array",
+                        "metadata": {
+                            "type": "array",
+                            "array_types": {
+                                "database_type": "text"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "roaming_data_gb",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 10,
+                            "scale": 2
+                        }
+                    }
+                },
+                {
+                    "name": "roaming_voice_minutes",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                }
+            ],
+            "primary_keys": [
+                "plan_id"
+            ],
+            "foreign_keys": {}
+        },
+        {
+            "name": "public.referrals",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "referral_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "referrer_id",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "referred_id",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "referral_date",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "date"
+                    }
+                },
+                {
+                    "name": "status",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 20
+                        }
+                    }
+                },
+                {
+                    "name": "bonus_amount",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 10,
+                            "scale": 2
+                        }
+                    }
+                },
+                {
+                    "name": "bonus_paid",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "boolean"
+                    }
+                }
+            ],
+            "primary_keys": [
+                "referral_id"
+            ],
+            "foreign_keys": {}
+        },
+        {
+            "name": "public.service_interactions",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "interaction_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "customer_id",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "interaction_date",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_with_time_zone"
+                    }
+                },
+                {
+                    "name": "channel",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 20
+                        }
+                    }
+                },
+                {
+                    "name": "category",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 50
+                        }
+                    }
+                },
+                {
+                    "name": "resolution_status",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 20
+                        }
+                    }
+                },
+                {
+                    "name": "satisfaction_score",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "agent_id",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "resolution_time_minutes",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "notes",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "text"
+                    }
+                }
+            ],
+            "primary_keys": [
+                "interaction_id"
+            ],
+            "foreign_keys": {}
+        },
+        {
+            "name": "public.voip_services",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "voip_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "customer_id",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 32,
+                            "scale": 0
+                        }
+                    }
+                },
+                {
+                    "name": "service_number",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 20
+                        }
+                    }
+                },
+                {
+                    "name": "service_type",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 50
+                        }
+                    }
+                },
+                {
+                    "name": "monthly_fee",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 10,
+                            "scale": 2
+                        }
+                    }
+                },
+                {
+                    "name": "features",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "array",
+                        "metadata": {
+                            "type": "array",
+                            "array_types": {
+                                "database_type": "text"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "activation_date",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "date"
+                    }
+                },
+                {
+                    "name": "status",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 20
+                        }
+                    }
+                }
+            ],
+            "primary_keys": [
+                "voip_id"
+            ],
+            "foreign_keys": {}
         }
-      },
-      "composite": {}
-    },
-    "nativeOperations": {
-      "queries": {},
-      "mutations": {}
-    }
-  },
-  "introspectionOptions": {
-    "excludedSchemas": [
-      "information_schema",
-      "pg_catalog",
-      "tiger",
-      "crdb_internal",
-      "columnar",
-      "columnar_internal",
-      "_timescaledb_catalog",
-      "_timescaledb_functions",
-      "_timescaledb_internal",
-      "_timescaledb_cache",
-      "_timescaledb_config",
-      "timescaledb_experimental",
-      "timescaledb_information",
-      "_timescaledb_debug"
-    ],
-    "unqualifiedSchemasForTables": [
-      "public"
-    ],
-    "unqualifiedSchemasForTypesAndProcedures": [
-      "public",
-      "pg_catalog",
-      "tiger"
-    ],
-    "comparisonOperatorMapping": [
-      {
-        "operatorName": "=",
-        "exposedName": "_eq",
-        "operatorKind": "equal"
-      },
-      {
-        "operatorName": "<=",
-        "exposedName": "_lte",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": ">",
-        "exposedName": "_gt",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": ">=",
-        "exposedName": "_gte",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "<",
-        "exposedName": "_lt",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "<>",
-        "exposedName": "_neq",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "!=",
-        "exposedName": "_neq",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "LIKE",
-        "exposedName": "_like",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "NOT LIKE",
-        "exposedName": "_nlike",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "ILIKE",
-        "exposedName": "_ilike",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "NOT ILIKE",
-        "exposedName": "_nilike",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "SIMILAR TO",
-        "exposedName": "_similar",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "NOT SIMILAR TO",
-        "exposedName": "_nsimilar",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "~~",
-        "exposedName": "_like",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "!~~",
-        "exposedName": "_nlike",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "~~*",
-        "exposedName": "_ilike",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "!~~*",
-        "exposedName": "_nilike",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "~",
-        "exposedName": "_regex",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "!~",
-        "exposedName": "_nregex",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "~*",
-        "exposedName": "_iregex",
-        "operatorKind": "custom"
-      },
-      {
-        "operatorName": "!~*",
-        "exposedName": "_niregex",
-        "operatorKind": "custom"
-      }
-    ],
-    "introspectPrefixFunctionComparisonOperators": [
-      "box_above",
-      "box_below",
-      "box_contain",
-      "box_contain_pt",
-      "box_contained",
-      "box_left",
-      "box_overabove",
-      "box_overbelow",
-      "box_overlap",
-      "box_overleft",
-      "box_overright",
-      "box_right",
-      "box_same",
-      "circle_above",
-      "circle_below",
-      "circle_contain",
-      "circle_contain_pt",
-      "circle_contained",
-      "circle_left",
-      "circle_overabove",
-      "circle_overbelow",
-      "circle_overlap",
-      "circle_overleft",
-      "circle_overright",
-      "circle_right",
-      "circle_same",
-      "contains_2d",
-      "equals",
-      "geography_overlaps",
-      "geometry_above",
-      "geometry_below",
-      "geometry_contained_3d",
-      "geometry_contains",
-      "geometry_contains_3d",
-      "geometry_contains_nd",
-      "geometry_left",
-      "geometry_overabove",
-      "geometry_overbelow",
-      "geometry_overlaps",
-      "geometry_overlaps_3d",
-      "geometry_overlaps_nd",
-      "geometry_overleft",
-      "geometry_overright",
-      "geometry_right",
-      "geometry_same",
-      "geometry_same_3d",
-      "geometry_same_nd",
-      "geometry_within",
-      "geometry_within_nd",
-      "inet_same_family",
-      "inter_lb",
-      "inter_sb",
-      "inter_sl",
-      "is_contained_2d",
-      "ishorizontal",
-      "isparallel",
-      "isperp",
-      "isvertical",
-      "jsonb_contained",
-      "jsonb_contains",
-      "jsonb_exists",
-      "jsonb_path_exists_opr",
-      "jsonb_path_match_opr",
-      "line_intersect",
-      "line_parallel",
-      "line_perp",
-      "lseg_intersect",
-      "lseg_parallel",
-      "lseg_perp",
-      "network_overlap",
-      "network_sub",
-      "network_subeq",
-      "network_sup",
-      "network_supeq",
-      "on_pb",
-      "on_pl",
-      "on_ppath",
-      "on_ps",
-      "on_sb",
-      "on_sl",
-      "overlaps_2d",
-      "path_contain_pt",
-      "path_inter",
-      "point_above",
-      "point_below",
-      "point_horiz",
-      "point_left",
-      "point_right",
-      "point_vert",
-      "poly_above",
-      "poly_below",
-      "poly_contain",
-      "poly_contain_pt",
-      "poly_contained",
-      "poly_left",
-      "poly_overabove",
-      "poly_overbelow",
-      "poly_overlap",
-      "poly_overleft",
-      "poly_overright",
-      "poly_right",
-      "poly_same",
-      "pt_contained_poly",
-      "st_3dintersects",
-      "st_contains",
-      "st_containsproperly",
-      "st_coveredby",
-      "st_covers",
-      "st_crosses",
-      "st_disjoint",
-      "st_equals",
-      "st_intersects",
-      "st_isvalid",
-      "st_orderingequals",
-      "st_overlaps",
-      "st_relatematch",
-      "st_touches",
-      "st_within",
-      "starts_with",
-      "ts_match_qv",
-      "ts_match_tq",
-      "ts_match_tt",
-      "ts_match_vq",
-      "tsq_mcontained",
-      "tsq_mcontains",
-      "xmlexists",
-      "xmlvalidate",
-      "xpath_exists"
-    ],
-    "typeRepresentations": {
-      "bit": "string",
-      "bool": "boolean",
-      "bpchar": "string",
-      "char": "string",
-      "date": "date",
-      "float4": "float32",
-      "float8": "float64",
-      "int2": "int16",
-      "int4": "int32",
-      "int8": "int64AsString",
-      "numeric": "bigDecimalAsString",
-      "text": "string",
-      "time": "time",
-      "timestamp": "timestamp",
-      "timestamptz": "timestamptz",
-      "timetz": "timetz",
-      "uuid": "uUID",
-      "varchar": "string"
-    }
-  },
-  "mutationsVersion": "v2",
-  "mutationsPrefix": ""
+    ]
 }
