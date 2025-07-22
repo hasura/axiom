@@ -1,0 +1,171 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_patients
+  description: "Object type for public.patients. Description: null"
+  fields:
+    - name: date_of_birth
+      type: Date
+    - name: first_name
+      type: String_1
+    - name: insurance_plan_id
+      type: String_1
+    - name: last_name
+      type: String_1
+    - name: patient_creditcard
+      type: String_1
+    - name: patient_id
+      type: String_1!
+    - name: patient_ssn
+      type: String_1
+  graphql:
+    typeName: public_patients
+    inputTypeName: public_patients_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: patients
+      dataConnectorObjectType: public.patients
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_patients
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - date_of_birth
+          - first_name
+          - insurance_plan_id
+          - last_name
+          - patient_creditcard
+          - patient_id
+          - patient_ssn
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_patients_bool_exp
+  operand:
+    object:
+      type: public_patients
+      comparableFields:
+        - fieldName: date_of_birth
+          booleanExpressionType: DateBoolExp
+        - fieldName: first_name
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: insurance_plan_id
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: last_name
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: patient_creditcard
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: patient_id
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: patient_ssn
+          booleanExpressionType: CharacterVaryingBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_patients_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_patients_agg_exp
+  operand:
+    object:
+      aggregatedType: public_patients
+      aggregatableFields:
+        - fieldName: date_of_birth
+          aggregateExpression: DateAggExp
+        - fieldName: first_name
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: insurance_plan_id
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: last_name
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: patient_creditcard
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: patient_id
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: patient_ssn
+          aggregateExpression: CharacterVaryingAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_patients_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_patients_order_by_exp
+  operand:
+    object:
+      orderedType: public_patients
+      orderableFields:
+        - fieldName: date_of_birth
+          orderByExpression: DateOrderByExp
+        - fieldName: first_name
+          orderByExpression: String1OrderByExp
+        - fieldName: insurance_plan_id
+          orderByExpression: String1OrderByExp
+        - fieldName: last_name
+          orderByExpression: String1OrderByExp
+        - fieldName: patient_creditcard
+          orderByExpression: String1OrderByExp
+        - fieldName: patient_id
+          orderByExpression: String1OrderByExp
+        - fieldName: patient_ssn
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_patients_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_patients
+  objectType: public_patients
+  source:
+    dataConnectorName: patients
+    collection: public.patients
+  filterExpressionType: public_patients_bool_exp
+  aggregateExpression: public_patients_agg_exp
+  orderByExpression: public_patients_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_patients
+      subscription:
+        rootField: public_patients
+    selectUniques:
+      - queryRootField: public_patients_by_patient_id
+        uniqueIdentifier:
+          - patient_id
+        subscription:
+          rootField: public_patients_by_patient_id
+    filterInputTypeName: public_patients_filter_input
+    aggregate:
+      queryRootField: public_patients_aggregate
+      subscription:
+        rootField: public_patients_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_patients
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

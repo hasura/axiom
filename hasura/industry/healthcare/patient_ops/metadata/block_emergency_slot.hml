@@ -2,55 +2,70 @@
 kind: ObjectType
 version: v1
 definition:
-  name: EmergencySlotBlockResponse
+  name: emergency_slot_block_response
   fields:
-    - name: blockId
+    - name: block_id
       type: String
-    - name: slotId
+    - name: slot_id
       type: Float!
     - name: status
       type: String!
   graphql:
-    typeName: EmergencySlotBlockResponse
-    inputTypeName: EmergencySlotBlockResponseInput
+    typeName: emergency_slot_block_response
+    inputTypeName: emergency_slot_block_response_input
   dataConnectorTypeMapping:
     - dataConnectorName: ops_mgmt
       dataConnectorObjectType: EmergencySlotBlockResponse
+      fieldMapping:
+        block_id:
+          column:
+            name: blockId
+        slot_id:
+          column:
+            name: slotId
+        status:
+          column:
+            name: status
 
 ---
 kind: TypePermissions
 version: v1
 definition:
-  typeName: EmergencySlotBlockResponse
+  typeName: emergency_slot_block_response
   permissions:
     - role: admin
       output:
         allowedFields:
-          - blockId
-          - slotId
+          - block_id
+          - slot_id
           - status
 
 ---
 kind: Command
 version: v1
 definition:
-  name: BlockEmergencySlot
-  outputType: EmergencySlotBlockResponse!
+  name: block_emergency_slot
+  outputType: emergency_slot_block_response!
   arguments:
-    - name: endTime
+    - name: end_time
       type: String!
     - name: reason
       type: String!
-    - name: slotId
+    - name: slot_id
       type: Float!
-    - name: startTime
+    - name: start_time
       type: String!
   source:
     dataConnectorName: ops_mgmt
     dataConnectorCommand:
       procedure: blockEmergencySlot
+    argumentMapping:
+      end_time: endTime
+      reason: reason
+      slot_id: slotId
+      start_time: startTime
   graphql:
-    rootFieldName: blockEmergencySlot
+    rootFieldName: block_emergency_slot
     rootFieldKind: Mutation
   description: >-
     **Description:**
@@ -68,7 +83,7 @@ definition:
 kind: CommandPermissions
 version: v1
 definition:
-  commandName: BlockEmergencySlot
+  commandName: block_emergency_slot
   permissions:
     - role: admin
       allowExecution: true

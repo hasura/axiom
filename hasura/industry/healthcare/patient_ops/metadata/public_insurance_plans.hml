@@ -2,59 +2,49 @@
 kind: ObjectType
 version: v1
 definition:
-  name: PublicInsurancePlans
+  name: public_insurance_plans
   description: "Object type for public.insurance_plans. Description: null"
   fields:
-    - name: payerName
+    - name: payer_name
       type: String_1
-    - name: planId
+    - name: plan_id
       type: String_1!
-    - name: planName
+    - name: plan_name
       type: String_1
   graphql:
-    typeName: PublicInsurancePlans
-    inputTypeName: PublicInsurancePlansInput
+    typeName: public_insurance_plans
+    inputTypeName: public_insurance_plans_input
   dataConnectorTypeMapping:
     - dataConnectorName: patients
       dataConnectorObjectType: public.insurance_plans
-      fieldMapping:
-        payerName:
-          column:
-            name: payer_name
-        planId:
-          column:
-            name: plan_id
-        planName:
-          column:
-            name: plan_name
 
 ---
 kind: TypePermissions
 version: v1
 definition:
-  typeName: PublicInsurancePlans
+  typeName: public_insurance_plans
   permissions:
     - role: admin
       output:
         allowedFields:
-          - payerName
-          - planId
-          - planName
+          - payer_name
+          - plan_id
+          - plan_name
 
 ---
 kind: BooleanExpressionType
 version: v1
 definition:
-  name: PublicInsurancePlansBoolExp
+  name: public_insurance_plans_bool_exp
   operand:
     object:
-      type: PublicInsurancePlans
+      type: public_insurance_plans
       comparableFields:
-        - fieldName: payerName
+        - fieldName: payer_name
           booleanExpressionType: CharacterVaryingBoolExp
-        - fieldName: planId
+        - fieldName: plan_id
           booleanExpressionType: CharacterVaryingBoolExp
-        - fieldName: planName
+        - fieldName: plan_name
           booleanExpressionType: CharacterVaryingBoolExp
       comparableRelationships: []
   logicalOperators:
@@ -62,81 +52,81 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: PublicInsurancePlansBoolExp
+    typeName: public_insurance_plans_bool_exp
 
 ---
 kind: AggregateExpression
 version: v1
 definition:
-  name: PublicInsurancePlansAggExp
+  name: public_insurance_plans_agg_exp
   operand:
     object:
-      aggregatedType: PublicInsurancePlans
+      aggregatedType: public_insurance_plans
       aggregatableFields:
-        - fieldName: payerName
+        - fieldName: payer_name
           aggregateExpression: CharacterVaryingAggExp
-        - fieldName: planId
+        - fieldName: plan_id
           aggregateExpression: CharacterVaryingAggExp
-        - fieldName: planName
+        - fieldName: plan_name
           aggregateExpression: CharacterVaryingAggExp
   count:
     enable: true
   graphql:
-    selectTypeName: PublicInsurancePlansAggExp
+    selectTypeName: public_insurance_plans_agg_exp
 
 ---
 kind: OrderByExpression
 version: v1
 definition:
-  name: PublicInsurancePlansOrderByExp
+  name: public_insurance_plans_order_by_exp
   operand:
     object:
-      orderedType: PublicInsurancePlans
+      orderedType: public_insurance_plans
       orderableFields:
-        - fieldName: payerName
+        - fieldName: payer_name
           orderByExpression: String1OrderByExp
-        - fieldName: planId
+        - fieldName: plan_id
           orderByExpression: String1OrderByExp
-        - fieldName: planName
+        - fieldName: plan_name
           orderByExpression: String1OrderByExp
       orderableRelationships: []
   graphql:
-    expressionTypeName: PublicInsurancePlansOrderByExp
+    expressionTypeName: public_insurance_plans_order_by_exp
 
 ---
 kind: Model
 version: v2
 definition:
-  name: PublicInsurancePlans
-  objectType: PublicInsurancePlans
+  name: public_insurance_plans
+  objectType: public_insurance_plans
   source:
     dataConnectorName: patients
     collection: public.insurance_plans
-  filterExpressionType: PublicInsurancePlansBoolExp
-  aggregateExpression: PublicInsurancePlansAggExp
-  orderByExpression: PublicInsurancePlansOrderByExp
+  filterExpressionType: public_insurance_plans_bool_exp
+  aggregateExpression: public_insurance_plans_agg_exp
+  orderByExpression: public_insurance_plans_order_by_exp
   graphql:
     selectMany:
-      queryRootField: publicInsurancePlans
+      queryRootField: public_insurance_plans
       subscription:
-        rootField: publicInsurancePlans
+        rootField: public_insurance_plans
     selectUniques:
-      - queryRootField: publicInsurancePlansByPlanId
+      - queryRootField: public_insurance_plans_by_plan_id
         uniqueIdentifier:
-          - planId
+          - plan_id
         subscription:
-          rootField: publicInsurancePlansByPlanId
-    filterInputTypeName: PublicInsurancePlansFilterInput
+          rootField: public_insurance_plans_by_plan_id
+    filterInputTypeName: public_insurance_plans_filter_input
     aggregate:
-      queryRootField: publicInsurancePlansAggregate
+      queryRootField: public_insurance_plans_aggregate
       subscription:
-        rootField: publicInsurancePlansAggregate
+        rootField: public_insurance_plans_aggregate
 
 ---
 kind: ModelPermissions
 version: v1
 definition:
-  modelName: PublicInsurancePlans
+  modelName: public_insurance_plans
   permissions:
     - role: admin
       select:

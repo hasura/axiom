@@ -2,46 +2,56 @@
 kind: ObjectType
 version: v1
 definition:
-  name: OperatorAvailabilityResponse
+  name: operator_availability_response
   fields:
-    - name: adjustmentId
+    - name: adjustment_id
       type: String
-    - name: operatorId
+    - name: operator_id
       type: String!
     - name: status
       type: String!
   graphql:
-    typeName: OperatorAvailabilityResponse
-    inputTypeName: OperatorAvailabilityResponseInput
+    typeName: operator_availability_response
+    inputTypeName: operator_availability_response_input
   dataConnectorTypeMapping:
     - dataConnectorName: ops_mgmt
       dataConnectorObjectType: OperatorAvailabilityResponse
+      fieldMapping:
+        adjustment_id:
+          column:
+            name: adjustmentId
+        operator_id:
+          column:
+            name: operatorId
+        status:
+          column:
+            name: status
 
 ---
 kind: TypePermissions
 version: v1
 definition:
-  typeName: OperatorAvailabilityResponse
+  typeName: operator_availability_response
   permissions:
     - role: admin
       output:
         allowedFields:
-          - adjustmentId
-          - operatorId
+          - adjustment_id
+          - operator_id
           - status
 
 ---
 kind: Command
 version: v1
 definition:
-  name: AdjustOperatorAvailability
-  outputType: OperatorAvailabilityResponse!
+  name: adjust_operator_availability
+  outputType: operator_availability_response!
   arguments:
-    - name: newEndTime
+    - name: new_end_time
       type: String
-    - name: newStartTime
+    - name: new_start_time
       type: String
-    - name: operatorId
+    - name: operator_id
       type: String!
     - name: reason
       type: String!
@@ -49,8 +59,13 @@ definition:
     dataConnectorName: ops_mgmt
     dataConnectorCommand:
       procedure: adjustOperatorAvailability
+    argumentMapping:
+      new_end_time: newEndTime
+      new_start_time: newStartTime
+      operator_id: operatorId
+      reason: reason
   graphql:
-    rootFieldName: adjustOperatorAvailability
+    rootFieldName: adjust_operator_availability
     rootFieldKind: Mutation
   description: >-
     **Description:**
@@ -68,7 +83,7 @@ definition:
 kind: CommandPermissions
 version: v1
 definition:
-  commandName: AdjustOperatorAvailability
+  commandName: adjust_operator_availability
   permissions:
     - role: admin
       allowExecution: true

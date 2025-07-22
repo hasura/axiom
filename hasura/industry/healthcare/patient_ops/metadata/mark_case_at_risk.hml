@@ -2,53 +2,67 @@
 kind: ObjectType
 version: v1
 definition:
-  name: CaseRiskMarkingResponse
+  name: case_risk_marking_response
   fields:
-    - name: caseId
+    - name: case_id
       type: Float!
-    - name: riskId
+    - name: risk_id
       type: String
     - name: status
       type: String!
   graphql:
-    typeName: CaseRiskMarkingResponse
-    inputTypeName: CaseRiskMarkingResponseInput
+    typeName: case_risk_marking_response
+    inputTypeName: case_risk_marking_response_input
   dataConnectorTypeMapping:
     - dataConnectorName: ops_mgmt
       dataConnectorObjectType: CaseRiskMarkingResponse
+      fieldMapping:
+        case_id:
+          column:
+            name: caseId
+        risk_id:
+          column:
+            name: riskId
+        status:
+          column:
+            name: status
 
 ---
 kind: TypePermissions
 version: v1
 definition:
-  typeName: CaseRiskMarkingResponse
+  typeName: case_risk_marking_response
   permissions:
     - role: admin
       output:
         allowedFields:
-          - caseId
-          - riskId
+          - case_id
+          - risk_id
           - status
 
 ---
 kind: Command
 version: v1
 definition:
-  name: MarkCaseAtRisk
-  outputType: CaseRiskMarkingResponse!
+  name: mark_case_at_risk
+  outputType: case_risk_marking_response!
   arguments:
-    - name: caseId
+    - name: case_id
       type: Float!
     - name: reason
       type: String!
-    - name: riskLevel
+    - name: risk_level
       type: String!
   source:
     dataConnectorName: ops_mgmt
     dataConnectorCommand:
       procedure: markCaseAtRisk
+    argumentMapping:
+      case_id: caseId
+      reason: reason
+      risk_level: riskLevel
   graphql:
-    rootFieldName: markCaseAtRisk
+    rootFieldName: mark_case_at_risk
     rootFieldKind: Mutation
   description: >-
     **Description:**
@@ -66,7 +80,7 @@ definition:
 kind: CommandPermissions
 version: v1
 definition:
-  commandName: MarkCaseAtRisk
+  commandName: mark_case_at_risk
   permissions:
     - role: admin
       allowExecution: true

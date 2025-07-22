@@ -2,46 +2,56 @@
 kind: ObjectType
 version: v1
 definition:
-  name: CaseUrgencyUpdateResponse
+  name: case_urgency_update_response
   fields:
-    - name: caseId
+    - name: case_id
       type: Float!
     - name: status
       type: String!
-    - name: updateId
+    - name: update_id
       type: String
   graphql:
-    typeName: CaseUrgencyUpdateResponse
-    inputTypeName: CaseUrgencyUpdateResponseInput
+    typeName: case_urgency_update_response
+    inputTypeName: case_urgency_update_response_input
   dataConnectorTypeMapping:
     - dataConnectorName: ops_mgmt
       dataConnectorObjectType: CaseUrgencyUpdateResponse
+      fieldMapping:
+        case_id:
+          column:
+            name: caseId
+        status:
+          column:
+            name: status
+        update_id:
+          column:
+            name: updateId
 
 ---
 kind: TypePermissions
 version: v1
 definition:
-  typeName: CaseUrgencyUpdateResponse
+  typeName: case_urgency_update_response
   permissions:
     - role: admin
       output:
         allowedFields:
-          - caseId
+          - case_id
           - status
-          - updateId
+          - update_id
 
 ---
 kind: Command
 version: v1
 definition:
-  name: UpdateCaseUrgency
-  outputType: CaseUrgencyUpdateResponse!
+  name: update_case_urgency
+  outputType: case_urgency_update_response!
   arguments:
-    - name: caseId
+    - name: case_id
       type: Float!
-    - name: newUrgency
+    - name: new_urgency
       type: String!
-    - name: previousUrgency
+    - name: previous_urgency
       type: String!
     - name: reason
       type: String!
@@ -49,8 +59,13 @@ definition:
     dataConnectorName: ops_mgmt
     dataConnectorCommand:
       procedure: updateCaseUrgency
+    argumentMapping:
+      case_id: caseId
+      new_urgency: newUrgency
+      previous_urgency: previousUrgency
+      reason: reason
   graphql:
-    rootFieldName: updateCaseUrgency
+    rootFieldName: update_case_urgency
     rootFieldKind: Mutation
   description: >-
     **Description:**
@@ -68,7 +83,7 @@ definition:
 kind: CommandPermissions
 version: v1
 definition:
-  commandName: UpdateCaseUrgency
+  commandName: update_case_urgency
   permissions:
     - role: admin
       allowExecution: true

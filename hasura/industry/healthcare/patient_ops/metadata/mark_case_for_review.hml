@@ -2,53 +2,67 @@
 kind: ObjectType
 version: v1
 definition:
-  name: CaseReviewMarkingResponse
+  name: case_review_marking_response
   fields:
-    - name: caseId
+    - name: case_id
       type: Float!
-    - name: reviewId
+    - name: review_id
       type: String
     - name: status
       type: String!
   graphql:
-    typeName: CaseReviewMarkingResponse
-    inputTypeName: CaseReviewMarkingResponseInput
+    typeName: case_review_marking_response
+    inputTypeName: case_review_marking_response_input
   dataConnectorTypeMapping:
     - dataConnectorName: ops_mgmt
       dataConnectorObjectType: CaseReviewMarkingResponse
+      fieldMapping:
+        case_id:
+          column:
+            name: caseId
+        review_id:
+          column:
+            name: reviewId
+        status:
+          column:
+            name: status
 
 ---
 kind: TypePermissions
 version: v1
 definition:
-  typeName: CaseReviewMarkingResponse
+  typeName: case_review_marking_response
   permissions:
     - role: admin
       output:
         allowedFields:
-          - caseId
-          - reviewId
+          - case_id
+          - review_id
           - status
 
 ---
 kind: Command
 version: v1
 definition:
-  name: MarkCaseForReview
-  outputType: CaseReviewMarkingResponse!
+  name: mark_case_for_review
+  outputType: case_review_marking_response!
   arguments:
-    - name: caseId
+    - name: case_id
       type: Float!
     - name: reason
       type: String!
-    - name: reviewerId
+    - name: reviewer_id
       type: Float!
   source:
     dataConnectorName: ops_mgmt
     dataConnectorCommand:
       procedure: markCaseForReview
+    argumentMapping:
+      case_id: caseId
+      reason: reason
+      reviewer_id: reviewerId
   graphql:
-    rootFieldName: markCaseForReview
+    rootFieldName: mark_case_for_review
     rootFieldKind: Mutation
   description: >-
     **Description:**
@@ -66,7 +80,7 @@ definition:
 kind: CommandPermissions
 version: v1
 definition:
-  commandName: MarkCaseForReview
+  commandName: mark_case_for_review
   permissions:
     - role: admin
       allowExecution: true

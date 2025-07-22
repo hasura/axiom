@@ -2,46 +2,56 @@
 kind: ObjectType
 version: v1
 definition:
-  name: CaseReassignmentResponse
+  name: case_reassignment_response
   fields:
-    - name: caseId
+    - name: case_id
       type: Float!
-    - name: reassignmentId
+    - name: reassignment_id
       type: String
     - name: status
       type: String!
   graphql:
-    typeName: CaseReassignmentResponse
-    inputTypeName: CaseReassignmentResponseInput
+    typeName: case_reassignment_response
+    inputTypeName: case_reassignment_response_input
   dataConnectorTypeMapping:
     - dataConnectorName: ops_mgmt
       dataConnectorObjectType: CaseReassignmentResponse
+      fieldMapping:
+        case_id:
+          column:
+            name: caseId
+        reassignment_id:
+          column:
+            name: reassignmentId
+        status:
+          column:
+            name: status
 
 ---
 kind: TypePermissions
 version: v1
 definition:
-  typeName: CaseReassignmentResponse
+  typeName: case_reassignment_response
   permissions:
     - role: admin
       output:
         allowedFields:
-          - caseId
-          - reassignmentId
+          - case_id
+          - reassignment_id
           - status
 
 ---
 kind: Command
 version: v1
 definition:
-  name: ReassignCase
-  outputType: CaseReassignmentResponse!
+  name: reassign_case
+  outputType: case_reassignment_response!
   arguments:
-    - name: caseId
+    - name: case_id
       type: Float!
-    - name: newOperatorId
+    - name: new_operator_id
       type: String!
-    - name: previousOperatorId
+    - name: previous_operator_id
       type: String!
     - name: reason
       type: String!
@@ -49,8 +59,13 @@ definition:
     dataConnectorName: ops_mgmt
     dataConnectorCommand:
       procedure: reassignCase
+    argumentMapping:
+      case_id: caseId
+      new_operator_id: newOperatorId
+      previous_operator_id: previousOperatorId
+      reason: reason
   graphql:
-    rootFieldName: reassignCase
+    rootFieldName: reassign_case
     rootFieldKind: Mutation
   description: >-
     **Description:**
@@ -70,7 +85,7 @@ definition:
 kind: CommandPermissions
 version: v1
 definition:
-  commandName: ReassignCase
+  commandName: reassign_case
   permissions:
     - role: admin
       allowExecution: true

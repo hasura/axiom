@@ -1,0 +1,180 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_drug_reference
+  description: "Object type for public.drug_reference. Description: null"
+  fields:
+    - name: active_ingredients_info
+      type: String_1
+    - name: dosage_form_name
+      type: String_1
+    - name: labeler_name
+      type: String_1
+    - name: nonproprietary_name
+      type: String_1
+    - name: product_ndc
+      type: String_1!
+    - name: proprietary_name
+      type: String_1
+    - name: route_name
+      type: String_1
+    - name: substance_name
+      type: String_1
+  graphql:
+    typeName: public_drug_reference
+    inputTypeName: public_drug_reference_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: reference
+      dataConnectorObjectType: public.drug_reference
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_drug_reference
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - active_ingredients_info
+          - dosage_form_name
+          - labeler_name
+          - nonproprietary_name
+          - product_ndc
+          - proprietary_name
+          - route_name
+          - substance_name
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_drug_reference_bool_exp
+  operand:
+    object:
+      type: public_drug_reference
+      comparableFields:
+        - fieldName: active_ingredients_info
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: dosage_form_name
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: labeler_name
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: nonproprietary_name
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: product_ndc
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: proprietary_name
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: route_name
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: substance_name
+          booleanExpressionType: CharacterVaryingBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_drug_reference_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_drug_reference_agg_exp
+  operand:
+    object:
+      aggregatedType: public_drug_reference
+      aggregatableFields:
+        - fieldName: active_ingredients_info
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: dosage_form_name
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: labeler_name
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: nonproprietary_name
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: product_ndc
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: proprietary_name
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: route_name
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: substance_name
+          aggregateExpression: CharacterVaryingAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_drug_reference_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_drug_reference_order_by_exp
+  operand:
+    object:
+      orderedType: public_drug_reference
+      orderableFields:
+        - fieldName: active_ingredients_info
+          orderByExpression: String1OrderByExp
+        - fieldName: dosage_form_name
+          orderByExpression: String1OrderByExp
+        - fieldName: labeler_name
+          orderByExpression: String1OrderByExp
+        - fieldName: nonproprietary_name
+          orderByExpression: String1OrderByExp
+        - fieldName: product_ndc
+          orderByExpression: String1OrderByExp
+        - fieldName: proprietary_name
+          orderByExpression: String1OrderByExp
+        - fieldName: route_name
+          orderByExpression: String1OrderByExp
+        - fieldName: substance_name
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_drug_reference_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_drug_reference
+  objectType: public_drug_reference
+  source:
+    dataConnectorName: reference
+    collection: public.drug_reference
+  filterExpressionType: public_drug_reference_bool_exp
+  aggregateExpression: public_drug_reference_agg_exp
+  orderByExpression: public_drug_reference_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_drug_reference
+      subscription:
+        rootField: public_drug_reference
+    selectUniques:
+      - queryRootField: public_drug_reference_by_product_ndc
+        uniqueIdentifier:
+          - product_ndc
+        subscription:
+          rootField: public_drug_reference_by_product_ndc
+    filterInputTypeName: public_drug_reference_filter_input
+    aggregate:
+      queryRootField: public_drug_reference_aggregate
+      subscription:
+        rootField: public_drug_reference_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_drug_reference
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
