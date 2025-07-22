@@ -12,23 +12,10 @@ definition:
     Authorization:
       valueFromEnv: DILIGENCE_VALUATION_OPERATIONS_AUTHORIZATION_HEADER
   schema:
-    version: v0.1
+    version: v0.2
     schema:
-      scalar_types:
-        Float:
-          representation:
-            type: float64
-          aggregate_functions: {}
-          comparison_operators:
-            _eq:
-              type: equal
-        String:
-          representation:
-            type: string
-          aggregate_functions: {}
-          comparison_operators:
-            _eq:
-              type: equal
+      collections: []
+      functions: []
       object_types:
         AdjustmentScenarioResponse:
           fields:
@@ -60,6 +47,7 @@ definition:
               type:
                 name: String
                 type: named
+          foreign_keys: {}
         FinancialInconsistencyResponse:
           fields:
             account_id:
@@ -90,6 +78,7 @@ definition:
               type:
                 name: String
                 type: named
+          foreign_keys: {}
         FindingResponse:
           fields:
             assigned_to:
@@ -116,20 +105,9 @@ definition:
               type:
                 name: String
                 type: named
-      collections: []
-      functions: []
+          foreign_keys: {}
       procedures:
-        - name: flagFinancialInconsistency
-          description: |-
-            **Description:**
-            This function flags financial inconsistencies in the company's data for further investigation. It creates a record of the potential issue, assigns it a severity level, and tracks its investigation status. This function is essential for identifying accounting irregularities, data discrepancies, or suspicious financial patterns during due diligence.
-
-            **When to Call:**
-            - When discovering a mismatch between financial statements and general ledger entries
-            - Upon identifying unusual accounting treatments or questionable revenue recognition
-            - When transaction patterns deviate significantly from historical norms
-            - If financial ratios suggest potential manipulation or reporting issues
-          arguments:
+        - arguments:
             accountId:
               type:
                 name: Float
@@ -160,20 +138,20 @@ definition:
               type:
                 name: String
                 type: named
+          description: |-
+            **Description:**
+            This function flags financial inconsistencies in the company's data for further investigation. It creates a record of the potential issue, assigns it a severity level, and tracks its investigation status. This function is essential for identifying accounting irregularities, data discrepancies, or suspicious financial patterns during due diligence.
+
+            **When to Call:**
+            - When discovering a mismatch between financial statements and general ledger entries
+            - Upon identifying unusual accounting treatments or questionable revenue recognition
+            - When transaction patterns deviate significantly from historical norms
+            - If financial ratios suggest potential manipulation or reporting issues
+          name: flagFinancialInconsistency
           result_type:
             name: FinancialInconsistencyResponse
             type: named
-        - name: createAdjustmentScenario
-          description: |-
-            **Description:**
-            This function creates financial adjustment scenarios to normalize the company's financial data. It documents adjustments needed for accurate valuation, such as one-time expenses, non-recurring revenue, or working capital normalization. The function calculates the impact on valuation multiples and allows for comparison across different adjustment scenarios.
-
-            **When to Call:**
-            - When normalizing EBITDA by removing non-recurring items
-            - To adjust for owner-related expenses that won't continue post-acquisition
-            - When standardizing accounting treatments for comparability
-            - To model "what-if" scenarios for different valuation approaches
-          arguments:
+        - arguments:
             accountId:
               type:
                 name: Float
@@ -220,20 +198,20 @@ definition:
               type:
                 name: String
                 type: named
+          description: |-
+            **Description:**
+            This function creates financial adjustment scenarios to normalize the company's financial data. It documents adjustments needed for accurate valuation, such as one-time expenses, non-recurring revenue, or working capital normalization. The function calculates the impact on valuation multiples and allows for comparison across different adjustment scenarios.
+
+            **When to Call:**
+            - When normalizing EBITDA by removing non-recurring items
+            - To adjust for owner-related expenses that won't continue post-acquisition
+            - When standardizing accounting treatments for comparability
+            - To model "what-if" scenarios for different valuation approaches
+          name: createAdjustmentScenario
           result_type:
             name: AdjustmentScenarioResponse
             type: named
-        - name: createFinding
-          description: |-
-            **Description:**
-            This function creates and manages findings during the due diligence process. It documents key issues discovered, categorizes them by severity and workstream, and tracks their resolution status. The findings register serves as a comprehensive record of all identified issues that may impact transaction terms, purchase price, or post-acquisition integration.
-
-            **When to Call:**
-            - When identifying material risks that could affect deal valuation
-            - Upon discovering compliance or regulatory issues
-            - When uncovering operational inefficiencies or process weaknesses
-            - To document quality of earnings observations that support valuation adjustments
-          arguments:
+        - arguments:
             assignedAnalyst:
               type:
                 type: nullable
@@ -270,13 +248,38 @@ definition:
               type:
                 name: String
                 type: named
+          description: |-
+            **Description:**
+            This function creates and manages findings during the due diligence process. It documents key issues discovered, categorizes them by severity and workstream, and tracks their resolution status. The findings register serves as a comprehensive record of all identified issues that may impact transaction terms, purchase price, or post-acquisition integration.
+
+            **When to Call:**
+            - When identifying material risks that could affect deal valuation
+            - Upon discovering compliance or regulatory issues
+            - When uncovering operational inefficiencies or process weaknesses
+            - To document quality of earnings observations that support valuation adjustments
+          name: createFinding
           result_type:
             name: FindingResponse
             type: named
+      scalar_types:
+        Float:
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+          representation:
+            type: float64
+        String:
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+          representation:
+            type: string
     capabilities:
-      version: 0.1.6
       capabilities:
-        query:
-          variables: {}
-          nested_fields: {}
         mutation: {}
+        query:
+          nested_fields: {}
+          variables: {}
+      version: 0.2.0

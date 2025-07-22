@@ -1,0 +1,337 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: PublicSalesOrders
+  description: "Object type for public.sales_orders. Description: null"
+  fields:
+    - name: createdAt
+      type: Timestamp
+    - name: customerId
+      type: Int32!
+    - name: discountAmount
+      type: Bigdecimal
+    - name: orderDate
+      type: Date!
+    - name: orderId
+      type: Int32!
+    - name: orderNumber
+      type: String_1!
+    - name: paymentStatus
+      type: String_1
+    - name: requiredDate
+      type: Date
+    - name: salesRep
+      type: String_1
+    - name: shipToAddress
+      type: String_1
+    - name: shippedDate
+      type: Date
+    - name: shippingCost
+      type: Bigdecimal
+    - name: shippingMethod
+      type: String_1
+    - name: status
+      type: String_1
+    - name: subtotal
+      type: Bigdecimal!
+    - name: taxAmount
+      type: Bigdecimal
+    - name: totalAmount
+      type: Bigdecimal!
+    - name: unitId
+      type: Int32!
+    - name: updatedAt
+      type: Timestamp
+  graphql:
+    typeName: PublicSalesOrders
+    inputTypeName: PublicSalesOrdersInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: operations
+      dataConnectorObjectType: public.sales_orders
+      fieldMapping:
+        createdAt:
+          column:
+            name: created_at
+        customerId:
+          column:
+            name: customer_id
+        discountAmount:
+          column:
+            name: discount_amount
+        orderDate:
+          column:
+            name: order_date
+        orderId:
+          column:
+            name: order_id
+        orderNumber:
+          column:
+            name: order_number
+        paymentStatus:
+          column:
+            name: payment_status
+        requiredDate:
+          column:
+            name: required_date
+        salesRep:
+          column:
+            name: sales_rep
+        shipToAddress:
+          column:
+            name: ship_to_address
+        shippedDate:
+          column:
+            name: shipped_date
+        shippingCost:
+          column:
+            name: shipping_cost
+        shippingMethod:
+          column:
+            name: shipping_method
+        status:
+          column:
+            name: status
+        subtotal:
+          column:
+            name: subtotal
+        taxAmount:
+          column:
+            name: tax_amount
+        totalAmount:
+          column:
+            name: total_amount
+        unitId:
+          column:
+            name: unit_id
+        updatedAt:
+          column:
+            name: updated_at
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: PublicSalesOrders
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - createdAt
+          - customerId
+          - discountAmount
+          - orderDate
+          - orderId
+          - orderNumber
+          - paymentStatus
+          - requiredDate
+          - salesRep
+          - shipToAddress
+          - shippedDate
+          - shippingCost
+          - shippingMethod
+          - status
+          - subtotal
+          - taxAmount
+          - totalAmount
+          - unitId
+          - updatedAt
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PublicSalesOrdersBoolExp
+  operand:
+    object:
+      type: PublicSalesOrders
+      comparableFields:
+        - fieldName: createdAt
+          booleanExpressionType: TimestampWithoutTimeZoneBoolExp_1
+        - fieldName: customerId
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: discountAmount
+          booleanExpressionType: DecimalBoolExp_1
+        - fieldName: orderDate
+          booleanExpressionType: DateBoolExp_1
+        - fieldName: orderId
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: orderNumber
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: paymentStatus
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: requiredDate
+          booleanExpressionType: DateBoolExp_1
+        - fieldName: salesRep
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: shipToAddress
+          booleanExpressionType: TextBoolExp_1
+        - fieldName: shippedDate
+          booleanExpressionType: DateBoolExp_1
+        - fieldName: shippingCost
+          booleanExpressionType: DecimalBoolExp_1
+        - fieldName: shippingMethod
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: status
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: subtotal
+          booleanExpressionType: DecimalBoolExp_1
+        - fieldName: taxAmount
+          booleanExpressionType: DecimalBoolExp_1
+        - fieldName: totalAmount
+          booleanExpressionType: DecimalBoolExp_1
+        - fieldName: unitId
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: updatedAt
+          booleanExpressionType: TimestampWithoutTimeZoneBoolExp_1
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: PublicSalesOrdersBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PublicSalesOrdersAggExp
+  operand:
+    object:
+      aggregatedType: PublicSalesOrders
+      aggregatableFields:
+        - fieldName: createdAt
+          aggregateExpression: TimestampWithoutTimeZoneAggExp_1
+        - fieldName: customerId
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: discountAmount
+          aggregateExpression: DecimalAggExp_1
+        - fieldName: orderDate
+          aggregateExpression: DateAggExp_1
+        - fieldName: orderId
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: orderNumber
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: paymentStatus
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: requiredDate
+          aggregateExpression: DateAggExp_1
+        - fieldName: salesRep
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: shipToAddress
+          aggregateExpression: TextAggExp_1
+        - fieldName: shippedDate
+          aggregateExpression: DateAggExp_1
+        - fieldName: shippingCost
+          aggregateExpression: DecimalAggExp_1
+        - fieldName: shippingMethod
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: status
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: subtotal
+          aggregateExpression: DecimalAggExp_1
+        - fieldName: taxAmount
+          aggregateExpression: DecimalAggExp_1
+        - fieldName: totalAmount
+          aggregateExpression: DecimalAggExp_1
+        - fieldName: unitId
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: updatedAt
+          aggregateExpression: TimestampWithoutTimeZoneAggExp_1
+  count:
+    enable: true
+  graphql:
+    selectTypeName: PublicSalesOrdersAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PublicSalesOrdersOrderByExp
+  operand:
+    object:
+      orderedType: PublicSalesOrders
+      orderableFields:
+        - fieldName: createdAt
+          orderByExpression: TimestampOrderByExp
+        - fieldName: customerId
+          orderByExpression: Int32OrderByExp
+        - fieldName: discountAmount
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: orderDate
+          orderByExpression: DateOrderByExp
+        - fieldName: orderId
+          orderByExpression: Int32OrderByExp
+        - fieldName: orderNumber
+          orderByExpression: String1OrderByExp
+        - fieldName: paymentStatus
+          orderByExpression: String1OrderByExp
+        - fieldName: requiredDate
+          orderByExpression: DateOrderByExp
+        - fieldName: salesRep
+          orderByExpression: String1OrderByExp
+        - fieldName: shipToAddress
+          orderByExpression: String1OrderByExp
+        - fieldName: shippedDate
+          orderByExpression: DateOrderByExp
+        - fieldName: shippingCost
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: shippingMethod
+          orderByExpression: String1OrderByExp
+        - fieldName: status
+          orderByExpression: String1OrderByExp
+        - fieldName: subtotal
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: taxAmount
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: totalAmount
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: unitId
+          orderByExpression: Int32OrderByExp
+        - fieldName: updatedAt
+          orderByExpression: TimestampOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: PublicSalesOrdersOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: PublicSalesOrders
+  objectType: PublicSalesOrders
+  source:
+    dataConnectorName: operations
+    collection: public.sales_orders
+  filterExpressionType: PublicSalesOrdersBoolExp
+  aggregateExpression: PublicSalesOrdersAggExp
+  orderByExpression: PublicSalesOrdersOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: publicSalesOrders
+      subscription:
+        rootField: publicSalesOrders
+    selectUniques:
+      - queryRootField: publicSalesOrdersByOrderId
+        uniqueIdentifier:
+          - orderId
+        subscription:
+          rootField: publicSalesOrdersByOrderId
+    filterInputTypeName: PublicSalesOrdersFilterInput
+    aggregate:
+      queryRootField: publicSalesOrdersAggregate
+      subscription:
+        rootField: publicSalesOrdersAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: PublicSalesOrders
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

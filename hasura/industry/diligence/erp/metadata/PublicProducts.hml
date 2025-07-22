@@ -1,0 +1,301 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: PublicProducts
+  description: "Object type for public.products. Description: null"
+  fields:
+    - name: baseCost
+      type: Bigdecimal!
+    - name: categoryId
+      type: Int32!
+    - name: createdAt
+      type: Timestamp
+    - name: description
+      type: String_1
+    - name: launchDate
+      type: Date
+    - name: leadTimeDays
+      type: Int32
+    - name: listPrice
+      type: Bigdecimal!
+    - name: minimumOrderQuantity
+      type: Int32
+    - name: productCode
+      type: String_1!
+    - name: productId
+      type: Int32!
+    - name: productName
+      type: String_1!
+    - name: reorderPoint
+      type: Int32
+    - name: status
+      type: String_1
+    - name: targetInventoryLevel
+      type: Int32
+    - name: unitId
+      type: Int32!
+    - name: updatedAt
+      type: Timestamp
+  graphql:
+    typeName: PublicProducts
+    inputTypeName: PublicProductsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: operations
+      dataConnectorObjectType: public.products
+      fieldMapping:
+        baseCost:
+          column:
+            name: base_cost
+        categoryId:
+          column:
+            name: category_id
+        createdAt:
+          column:
+            name: created_at
+        description:
+          column:
+            name: description
+        launchDate:
+          column:
+            name: launch_date
+        leadTimeDays:
+          column:
+            name: lead_time_days
+        listPrice:
+          column:
+            name: list_price
+        minimumOrderQuantity:
+          column:
+            name: minimum_order_quantity
+        productCode:
+          column:
+            name: product_code
+        productId:
+          column:
+            name: product_id
+        productName:
+          column:
+            name: product_name
+        reorderPoint:
+          column:
+            name: reorder_point
+        status:
+          column:
+            name: status
+        targetInventoryLevel:
+          column:
+            name: target_inventory_level
+        unitId:
+          column:
+            name: unit_id
+        updatedAt:
+          column:
+            name: updated_at
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: PublicProducts
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - baseCost
+          - categoryId
+          - createdAt
+          - description
+          - launchDate
+          - leadTimeDays
+          - listPrice
+          - minimumOrderQuantity
+          - productCode
+          - productId
+          - productName
+          - reorderPoint
+          - status
+          - targetInventoryLevel
+          - unitId
+          - updatedAt
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PublicProductsBoolExp
+  operand:
+    object:
+      type: PublicProducts
+      comparableFields:
+        - fieldName: baseCost
+          booleanExpressionType: DecimalBoolExp_1
+        - fieldName: categoryId
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: createdAt
+          booleanExpressionType: TimestampWithoutTimeZoneBoolExp_1
+        - fieldName: description
+          booleanExpressionType: TextBoolExp_1
+        - fieldName: launchDate
+          booleanExpressionType: DateBoolExp_1
+        - fieldName: leadTimeDays
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: listPrice
+          booleanExpressionType: DecimalBoolExp_1
+        - fieldName: minimumOrderQuantity
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: productCode
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: productId
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: productName
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: reorderPoint
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: status
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: targetInventoryLevel
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: unitId
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: updatedAt
+          booleanExpressionType: TimestampWithoutTimeZoneBoolExp_1
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: PublicProductsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PublicProductsAggExp
+  operand:
+    object:
+      aggregatedType: PublicProducts
+      aggregatableFields:
+        - fieldName: baseCost
+          aggregateExpression: DecimalAggExp_1
+        - fieldName: categoryId
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: createdAt
+          aggregateExpression: TimestampWithoutTimeZoneAggExp_1
+        - fieldName: description
+          aggregateExpression: TextAggExp_1
+        - fieldName: launchDate
+          aggregateExpression: DateAggExp_1
+        - fieldName: leadTimeDays
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: listPrice
+          aggregateExpression: DecimalAggExp_1
+        - fieldName: minimumOrderQuantity
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: productCode
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: productId
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: productName
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: reorderPoint
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: status
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: targetInventoryLevel
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: unitId
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: updatedAt
+          aggregateExpression: TimestampWithoutTimeZoneAggExp_1
+  count:
+    enable: true
+  graphql:
+    selectTypeName: PublicProductsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PublicProductsOrderByExp
+  operand:
+    object:
+      orderedType: PublicProducts
+      orderableFields:
+        - fieldName: baseCost
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: categoryId
+          orderByExpression: Int32OrderByExp
+        - fieldName: createdAt
+          orderByExpression: TimestampOrderByExp
+        - fieldName: description
+          orderByExpression: String1OrderByExp
+        - fieldName: launchDate
+          orderByExpression: DateOrderByExp
+        - fieldName: leadTimeDays
+          orderByExpression: Int32OrderByExp
+        - fieldName: listPrice
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: minimumOrderQuantity
+          orderByExpression: Int32OrderByExp
+        - fieldName: productCode
+          orderByExpression: String1OrderByExp
+        - fieldName: productId
+          orderByExpression: Int32OrderByExp
+        - fieldName: productName
+          orderByExpression: String1OrderByExp
+        - fieldName: reorderPoint
+          orderByExpression: Int32OrderByExp
+        - fieldName: status
+          orderByExpression: String1OrderByExp
+        - fieldName: targetInventoryLevel
+          orderByExpression: Int32OrderByExp
+        - fieldName: unitId
+          orderByExpression: Int32OrderByExp
+        - fieldName: updatedAt
+          orderByExpression: TimestampOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: PublicProductsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: PublicProducts
+  objectType: PublicProducts
+  source:
+    dataConnectorName: operations
+    collection: public.products
+  filterExpressionType: PublicProductsBoolExp
+  aggregateExpression: PublicProductsAggExp
+  orderByExpression: PublicProductsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: publicProducts
+      subscription:
+        rootField: publicProducts
+    selectUniques:
+      - queryRootField: publicProductsByProductId
+        uniqueIdentifier:
+          - productId
+        subscription:
+          rootField: publicProductsByProductId
+    filterInputTypeName: PublicProductsFilterInput
+    aggregate:
+      queryRootField: publicProductsAggregate
+      subscription:
+        rootField: publicProductsAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: PublicProducts
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

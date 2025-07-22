@@ -1,0 +1,265 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: PublicCashFlow
+  description: "Object type for public.cash_flow. Description: null"
+  fields:
+    - name: accountId
+      type: Int32!
+    - name: amount
+      type: Bigdecimal!
+    - name: cashFlowId
+      type: Int32!
+    - name: category
+      type: String_1!
+    - name: createdAt
+      type: Timestamp
+    - name: description
+      type: String_1
+    - name: fiscalMonth
+      type: Int32!
+    - name: fiscalQuarter
+      type: Int32!
+    - name: fiscalYear
+      type: Int32!
+    - name: flowType
+      type: String_1!
+    - name: referenceNumber
+      type: String_1
+    - name: transactionDate
+      type: Date!
+    - name: updatedAt
+      type: Timestamp
+  graphql:
+    typeName: PublicCashFlow
+    inputTypeName: PublicCashFlowInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: financials
+      dataConnectorObjectType: public.cash_flow
+      fieldMapping:
+        accountId:
+          column:
+            name: account_id
+        amount:
+          column:
+            name: amount
+        cashFlowId:
+          column:
+            name: cash_flow_id
+        category:
+          column:
+            name: category
+        createdAt:
+          column:
+            name: created_at
+        description:
+          column:
+            name: description
+        fiscalMonth:
+          column:
+            name: fiscal_month
+        fiscalQuarter:
+          column:
+            name: fiscal_quarter
+        fiscalYear:
+          column:
+            name: fiscal_year
+        flowType:
+          column:
+            name: flow_type
+        referenceNumber:
+          column:
+            name: reference_number
+        transactionDate:
+          column:
+            name: transaction_date
+        updatedAt:
+          column:
+            name: updated_at
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: PublicCashFlow
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - accountId
+          - amount
+          - cashFlowId
+          - category
+          - createdAt
+          - description
+          - fiscalMonth
+          - fiscalQuarter
+          - fiscalYear
+          - flowType
+          - referenceNumber
+          - transactionDate
+          - updatedAt
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PublicCashFlowBoolExp
+  operand:
+    object:
+      type: PublicCashFlow
+      comparableFields:
+        - fieldName: accountId
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: amount
+          booleanExpressionType: DecimalBoolExp
+        - fieldName: cashFlowId
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: category
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: createdAt
+          booleanExpressionType: TimestampWithoutTimeZoneBoolExp
+        - fieldName: description
+          booleanExpressionType: TextBoolExp
+        - fieldName: fiscalMonth
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: fiscalQuarter
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: fiscalYear
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: flowType
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: referenceNumber
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: transactionDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: updatedAt
+          booleanExpressionType: TimestampWithoutTimeZoneBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: PublicCashFlowBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PublicCashFlowAggExp
+  operand:
+    object:
+      aggregatedType: PublicCashFlow
+      aggregatableFields:
+        - fieldName: accountId
+          aggregateExpression: IntegerAggExp
+        - fieldName: amount
+          aggregateExpression: DecimalAggExp
+        - fieldName: cashFlowId
+          aggregateExpression: IntegerAggExp
+        - fieldName: category
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: createdAt
+          aggregateExpression: TimestampWithoutTimeZoneAggExp
+        - fieldName: description
+          aggregateExpression: TextAggExp
+        - fieldName: fiscalMonth
+          aggregateExpression: IntegerAggExp
+        - fieldName: fiscalQuarter
+          aggregateExpression: IntegerAggExp
+        - fieldName: fiscalYear
+          aggregateExpression: IntegerAggExp
+        - fieldName: flowType
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: referenceNumber
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: transactionDate
+          aggregateExpression: DateAggExp
+        - fieldName: updatedAt
+          aggregateExpression: TimestampWithoutTimeZoneAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: PublicCashFlowAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PublicCashFlowOrderByExp
+  operand:
+    object:
+      orderedType: PublicCashFlow
+      orderableFields:
+        - fieldName: accountId
+          orderByExpression: Int32OrderByExp
+        - fieldName: amount
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: cashFlowId
+          orderByExpression: Int32OrderByExp
+        - fieldName: category
+          orderByExpression: String1OrderByExp
+        - fieldName: createdAt
+          orderByExpression: TimestampOrderByExp
+        - fieldName: description
+          orderByExpression: String1OrderByExp
+        - fieldName: fiscalMonth
+          orderByExpression: Int32OrderByExp
+        - fieldName: fiscalQuarter
+          orderByExpression: Int32OrderByExp
+        - fieldName: fiscalYear
+          orderByExpression: Int32OrderByExp
+        - fieldName: flowType
+          orderByExpression: String1OrderByExp
+        - fieldName: referenceNumber
+          orderByExpression: String1OrderByExp
+        - fieldName: transactionDate
+          orderByExpression: DateOrderByExp
+        - fieldName: updatedAt
+          orderByExpression: TimestampOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: PublicCashFlowOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: PublicCashFlow
+  objectType: PublicCashFlow
+  source:
+    dataConnectorName: financials
+    collection: public.cash_flow
+  filterExpressionType: PublicCashFlowBoolExp
+  aggregateExpression: PublicCashFlowAggExp
+  orderByExpression: PublicCashFlowOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: publicCashFlow
+      subscription:
+        rootField: publicCashFlow
+    selectUniques:
+      - queryRootField: publicCashFlowByCashFlowId
+        uniqueIdentifier:
+          - cashFlowId
+        subscription:
+          rootField: publicCashFlowByCashFlowId
+    filterInputTypeName: PublicCashFlowFilterInput
+    aggregate:
+      queryRootField: publicCashFlowAggregate
+      subscription:
+        rootField: publicCashFlowAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: PublicCashFlow
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

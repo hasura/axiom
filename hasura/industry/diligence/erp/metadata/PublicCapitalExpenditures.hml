@@ -1,0 +1,301 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: PublicCapitalExpenditures
+  description: "Object type for public.capital_expenditures. Description: null"
+  fields:
+    - name: accumulatedDepreciation
+      type: Bigdecimal
+    - name: acquisitionCost
+      type: Bigdecimal!
+    - name: annualDepreciation
+      type: Bigdecimal!
+    - name: approvalDate
+      type: Date
+    - name: assetType
+      type: String_1!
+    - name: capexId
+      type: Int32!
+    - name: createdAt
+      type: Timestamp
+    - name: department
+      type: String_1
+    - name: depreciationMethod
+      type: String_1!
+    - name: expectedUsefulLifeYears
+      type: Int32!
+    - name: netBookValue
+      type: Bigdecimal
+    - name: projectManager
+      type: String_1
+    - name: projectName
+      type: String_1!
+    - name: purchaseDate
+      type: Date
+    - name: status
+      type: String_1
+    - name: updatedAt
+      type: Timestamp
+  graphql:
+    typeName: PublicCapitalExpenditures
+    inputTypeName: PublicCapitalExpendituresInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: financials
+      dataConnectorObjectType: public.capital_expenditures
+      fieldMapping:
+        accumulatedDepreciation:
+          column:
+            name: accumulated_depreciation
+        acquisitionCost:
+          column:
+            name: acquisition_cost
+        annualDepreciation:
+          column:
+            name: annual_depreciation
+        approvalDate:
+          column:
+            name: approval_date
+        assetType:
+          column:
+            name: asset_type
+        capexId:
+          column:
+            name: capex_id
+        createdAt:
+          column:
+            name: created_at
+        department:
+          column:
+            name: department
+        depreciationMethod:
+          column:
+            name: depreciation_method
+        expectedUsefulLifeYears:
+          column:
+            name: expected_useful_life_years
+        netBookValue:
+          column:
+            name: net_book_value
+        projectManager:
+          column:
+            name: project_manager
+        projectName:
+          column:
+            name: project_name
+        purchaseDate:
+          column:
+            name: purchase_date
+        status:
+          column:
+            name: status
+        updatedAt:
+          column:
+            name: updated_at
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: PublicCapitalExpenditures
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - accumulatedDepreciation
+          - acquisitionCost
+          - annualDepreciation
+          - approvalDate
+          - assetType
+          - capexId
+          - createdAt
+          - department
+          - depreciationMethod
+          - expectedUsefulLifeYears
+          - netBookValue
+          - projectManager
+          - projectName
+          - purchaseDate
+          - status
+          - updatedAt
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PublicCapitalExpendituresBoolExp
+  operand:
+    object:
+      type: PublicCapitalExpenditures
+      comparableFields:
+        - fieldName: accumulatedDepreciation
+          booleanExpressionType: DecimalBoolExp
+        - fieldName: acquisitionCost
+          booleanExpressionType: DecimalBoolExp
+        - fieldName: annualDepreciation
+          booleanExpressionType: DecimalBoolExp
+        - fieldName: approvalDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: assetType
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: capexId
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: createdAt
+          booleanExpressionType: TimestampWithoutTimeZoneBoolExp
+        - fieldName: department
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: depreciationMethod
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: expectedUsefulLifeYears
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: netBookValue
+          booleanExpressionType: DecimalBoolExp
+        - fieldName: projectManager
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: projectName
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: purchaseDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: status
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: updatedAt
+          booleanExpressionType: TimestampWithoutTimeZoneBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: PublicCapitalExpendituresBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PublicCapitalExpendituresAggExp
+  operand:
+    object:
+      aggregatedType: PublicCapitalExpenditures
+      aggregatableFields:
+        - fieldName: accumulatedDepreciation
+          aggregateExpression: DecimalAggExp
+        - fieldName: acquisitionCost
+          aggregateExpression: DecimalAggExp
+        - fieldName: annualDepreciation
+          aggregateExpression: DecimalAggExp
+        - fieldName: approvalDate
+          aggregateExpression: DateAggExp
+        - fieldName: assetType
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: capexId
+          aggregateExpression: IntegerAggExp
+        - fieldName: createdAt
+          aggregateExpression: TimestampWithoutTimeZoneAggExp
+        - fieldName: department
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: depreciationMethod
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: expectedUsefulLifeYears
+          aggregateExpression: IntegerAggExp
+        - fieldName: netBookValue
+          aggregateExpression: DecimalAggExp
+        - fieldName: projectManager
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: projectName
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: purchaseDate
+          aggregateExpression: DateAggExp
+        - fieldName: status
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: updatedAt
+          aggregateExpression: TimestampWithoutTimeZoneAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: PublicCapitalExpendituresAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PublicCapitalExpendituresOrderByExp
+  operand:
+    object:
+      orderedType: PublicCapitalExpenditures
+      orderableFields:
+        - fieldName: accumulatedDepreciation
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: acquisitionCost
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: annualDepreciation
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: approvalDate
+          orderByExpression: DateOrderByExp
+        - fieldName: assetType
+          orderByExpression: String1OrderByExp
+        - fieldName: capexId
+          orderByExpression: Int32OrderByExp
+        - fieldName: createdAt
+          orderByExpression: TimestampOrderByExp
+        - fieldName: department
+          orderByExpression: String1OrderByExp
+        - fieldName: depreciationMethod
+          orderByExpression: String1OrderByExp
+        - fieldName: expectedUsefulLifeYears
+          orderByExpression: Int32OrderByExp
+        - fieldName: netBookValue
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: projectManager
+          orderByExpression: String1OrderByExp
+        - fieldName: projectName
+          orderByExpression: String1OrderByExp
+        - fieldName: purchaseDate
+          orderByExpression: DateOrderByExp
+        - fieldName: status
+          orderByExpression: String1OrderByExp
+        - fieldName: updatedAt
+          orderByExpression: TimestampOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: PublicCapitalExpendituresOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: PublicCapitalExpenditures
+  objectType: PublicCapitalExpenditures
+  source:
+    dataConnectorName: financials
+    collection: public.capital_expenditures
+  filterExpressionType: PublicCapitalExpendituresBoolExp
+  aggregateExpression: PublicCapitalExpendituresAggExp
+  orderByExpression: PublicCapitalExpendituresOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: publicCapitalExpenditures
+      subscription:
+        rootField: publicCapitalExpenditures
+    selectUniques:
+      - queryRootField: publicCapitalExpendituresByCapexId
+        uniqueIdentifier:
+          - capexId
+        subscription:
+          rootField: publicCapitalExpendituresByCapexId
+    filterInputTypeName: PublicCapitalExpendituresFilterInput
+    aggregate:
+      queryRootField: publicCapitalExpendituresAggregate
+      subscription:
+        rootField: publicCapitalExpendituresAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: PublicCapitalExpenditures
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

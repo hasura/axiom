@@ -2,11 +2,11 @@
 kind: ObjectType
 version: v1
 definition:
-  name: finding_response
+  name: FindingResponse
   fields:
-    - name: assigned_to
+    - name: assignedTo
       type: String
-    - name: finding_id
+    - name: findingId
       type: String
     - name: severity
       type: String!
@@ -15,23 +15,39 @@ definition:
     - name: workstream
       type: String!
   graphql:
-    typeName: finding_response
-    inputTypeName: finding_response_input
+    typeName: FindingResponse
+    inputTypeName: FindingResponseInput
   dataConnectorTypeMapping:
     - dataConnectorName: valuation_operations
       dataConnectorObjectType: FindingResponse
+      fieldMapping:
+        assignedTo:
+          column:
+            name: assigned_to
+        findingId:
+          column:
+            name: finding_id
+        severity:
+          column:
+            name: severity
+        status:
+          column:
+            name: status
+        workstream:
+          column:
+            name: workstream
 
 ---
 kind: TypePermissions
 version: v1
 definition:
-  typeName: finding_response
+  typeName: FindingResponse
   permissions:
     - role: admin
       output:
         allowedFields:
-          - assigned_to
-          - finding_id
+          - assignedTo
+          - findingId
           - severity
           - status
           - workstream
@@ -40,10 +56,10 @@ definition:
 kind: Command
 version: v1
 definition:
-  name: create_finding
-  outputType: finding_response!
+  name: CreateFinding
+  outputType: FindingResponse!
   arguments:
-    - name: assigned_analyst
+    - name: assignedAnalyst
       type: String
     - name: description
       type: String!
@@ -53,7 +69,7 @@ definition:
       type: String!
     - name: severity
       type: String!
-    - name: supporting_evidence
+    - name: supportingEvidence
       type: "[String!]!"
     - name: title
       type: String!
@@ -63,17 +79,8 @@ definition:
     dataConnectorName: valuation_operations
     dataConnectorCommand:
       procedure: createFinding
-    argumentMapping:
-      assigned_analyst: assignedAnalyst
-      description: description
-      impact: impact
-      recommendation: recommendation
-      severity: severity
-      supporting_evidence: supportingEvidence
-      title: title
-      workstream: workstream
   graphql:
-    rootFieldName: create_finding
+    rootFieldName: createFinding
     rootFieldKind: Mutation
   description: >-
     **Description:**
@@ -95,7 +102,7 @@ definition:
 kind: CommandPermissions
 version: v1
 definition:
-  commandName: create_finding
+  commandName: CreateFinding
   permissions:
     - role: admin
       allowExecution: true
