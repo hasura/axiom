@@ -1,0 +1,31 @@
+---
+kind: Command
+version: v1
+definition:
+  name: create_sequence
+  outputType: action_response!
+  arguments:
+    - name: created_by
+      type: String
+    - name: description
+      type: String
+    - name: name
+      type: String!
+  source:
+    dataConnectorName: actions
+    dataConnectorCommand:
+      procedure: createSequence
+  graphql:
+    rootFieldName: create_sequence
+    rootFieldKind: Mutation
+  description: Creates a new sequence (mock)
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: create_sequence
+  permissions:
+    - role: admin
+      allowExecution: true
+

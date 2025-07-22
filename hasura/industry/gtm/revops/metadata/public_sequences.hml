@@ -1,0 +1,153 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_sequences
+  description: "Object type for public.sequences. Description: null"
+  fields:
+    - name: created_at
+      type: Timestamptz
+    - name: created_by
+      type: String_1
+    - name: description
+      type: String_1
+    - name: id
+      type: Int32!
+    - name: name
+      type: String_1
+  graphql:
+    typeName: public_sequences
+    inputTypeName: public_sequences_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: salesforce
+      dataConnectorObjectType: public.sequences
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_sequences
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - created_at
+          - created_by
+          - description
+          - id
+          - name
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_sequences_bool_exp
+  operand:
+    object:
+      type: public_sequences
+      comparableFields:
+        - fieldName: created_at
+          booleanExpressionType: TimestampWithTimeZoneBoolExp
+        - fieldName: created_by
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: description
+          booleanExpressionType: TextBoolExp_1
+        - fieldName: id
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: name
+          booleanExpressionType: CharacterVaryingBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_sequences_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_sequences_agg_exp
+  operand:
+    object:
+      aggregatedType: public_sequences
+      aggregatableFields:
+        - fieldName: created_at
+          aggregateExpression: TimestampWithTimeZoneAggExp
+        - fieldName: created_by
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: description
+          aggregateExpression: TextAggExp_1
+        - fieldName: id
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: name
+          aggregateExpression: CharacterVaryingAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_sequences_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_sequences_order_by_exp
+  operand:
+    object:
+      orderedType: public_sequences
+      orderableFields:
+        - fieldName: created_at
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: created_by
+          orderByExpression: String1OrderByExp
+        - fieldName: description
+          orderByExpression: String1OrderByExp
+        - fieldName: id
+          orderByExpression: Int32OrderByExp
+        - fieldName: name
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_sequences_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_sequences
+  objectType: public_sequences
+  source:
+    dataConnectorName: salesforce
+    collection: public.sequences
+  filterExpressionType: public_sequences_bool_exp
+  aggregateExpression: public_sequences_agg_exp
+  orderByExpression: public_sequences_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_sequences
+      subscription:
+        rootField: public_sequences
+    selectUniques:
+      - queryRootField: public_sequences_by_id
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: public_sequences_by_id
+    filterInputTypeName: public_sequences_filter_input
+    aggregate:
+      queryRootField: public_sequences_aggregate
+      subscription:
+        rootField: public_sequences_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_sequences
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

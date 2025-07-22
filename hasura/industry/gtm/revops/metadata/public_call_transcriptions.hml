@@ -1,0 +1,180 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_call_transcriptions
+  description: "Object type for public.call_transcriptions. Description: null"
+  fields:
+    - name: call_id
+      type: String_1!
+    - name: call_person_id
+      type: String_1
+    - name: end_time
+      type: Float64!
+    - name: person_id
+      type: Int32!
+    - name: start_time
+      type: Float64!
+    - name: text
+      type: String_1!
+    - name: text_embedding
+      type: Json
+    - name: transcription_id
+      type: String_1!
+  graphql:
+    typeName: public_call_transcriptions
+    inputTypeName: public_call_transcriptions_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: clari
+      dataConnectorObjectType: public.call_transcriptions
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_call_transcriptions
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - call_id
+          - call_person_id
+          - end_time
+          - person_id
+          - start_time
+          - text
+          - text_embedding
+          - transcription_id
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_call_transcriptions_bool_exp
+  operand:
+    object:
+      type: public_call_transcriptions
+      comparableFields:
+        - fieldName: call_id
+          booleanExpressionType: TextBoolExp
+        - fieldName: call_person_id
+          booleanExpressionType: TextBoolExp
+        - fieldName: end_time
+          booleanExpressionType: DoublePrecisionBoolExp
+        - fieldName: person_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: start_time
+          booleanExpressionType: DoublePrecisionBoolExp
+        - fieldName: text
+          booleanExpressionType: TextBoolExp
+        - fieldName: text_embedding
+          booleanExpressionType: Vector3BoolExp
+        - fieldName: transcription_id
+          booleanExpressionType: TextBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_call_transcriptions_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_call_transcriptions_agg_exp
+  operand:
+    object:
+      aggregatedType: public_call_transcriptions
+      aggregatableFields:
+        - fieldName: call_id
+          aggregateExpression: TextAggExp
+        - fieldName: call_person_id
+          aggregateExpression: TextAggExp
+        - fieldName: end_time
+          aggregateExpression: DoublePrecisionAggExp
+        - fieldName: person_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: start_time
+          aggregateExpression: DoublePrecisionAggExp
+        - fieldName: text
+          aggregateExpression: TextAggExp
+        - fieldName: text_embedding
+          aggregateExpression: Vector3AggExp
+        - fieldName: transcription_id
+          aggregateExpression: TextAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_call_transcriptions_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_call_transcriptions_order_by_exp
+  operand:
+    object:
+      orderedType: public_call_transcriptions
+      orderableFields:
+        - fieldName: call_id
+          orderByExpression: String1OrderByExp
+        - fieldName: call_person_id
+          orderByExpression: String1OrderByExp
+        - fieldName: end_time
+          orderByExpression: Float64OrderByExp
+        - fieldName: person_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: start_time
+          orderByExpression: Float64OrderByExp
+        - fieldName: text
+          orderByExpression: String1OrderByExp
+        - fieldName: text_embedding
+          orderByExpression: JsonOrderByExp
+        - fieldName: transcription_id
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_call_transcriptions_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_call_transcriptions
+  objectType: public_call_transcriptions
+  source:
+    dataConnectorName: clari
+    collection: public.call_transcriptions
+  filterExpressionType: public_call_transcriptions_bool_exp
+  aggregateExpression: public_call_transcriptions_agg_exp
+  orderByExpression: public_call_transcriptions_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_call_transcriptions
+      subscription:
+        rootField: public_call_transcriptions
+    selectUniques:
+      - queryRootField: public_call_transcriptions_by_transcription_id
+        uniqueIdentifier:
+          - transcription_id
+        subscription:
+          rootField: public_call_transcriptions_by_transcription_id
+    filterInputTypeName: public_call_transcriptions_filter_input
+    aggregate:
+      queryRootField: public_call_transcriptions_aggregate
+      subscription:
+        rootField: public_call_transcriptions_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_call_transcriptions
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

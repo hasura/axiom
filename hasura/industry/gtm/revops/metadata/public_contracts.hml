@@ -1,0 +1,207 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_contracts
+  description: "Object type for public.contracts. Description: null"
+  fields:
+    - name: account_id
+      type: String_1
+    - name: activated_date
+      type: String_1
+    - name: agreement_status_c
+      type: String_1
+    - name: agreement_type_c
+      type: String_1
+    - name: contract_opportunity_c
+      type: String_1
+    - name: end_date
+      type: String_1
+    - name: id
+      type: String_1!
+    - name: last_status_change_c
+      type: String_1
+    - name: name
+      type: String_1
+    - name: start_date
+      type: String_1
+    - name: status
+      type: String_1
+  graphql:
+    typeName: public_contracts
+    inputTypeName: public_contracts_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: salesforce
+      dataConnectorObjectType: public.contracts
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_contracts
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - account_id
+          - activated_date
+          - agreement_status_c
+          - agreement_type_c
+          - contract_opportunity_c
+          - end_date
+          - id
+          - last_status_change_c
+          - name
+          - start_date
+          - status
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_contracts_bool_exp
+  operand:
+    object:
+      type: public_contracts
+      comparableFields:
+        - fieldName: account_id
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: activated_date
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: agreement_status_c
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: agreement_type_c
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: contract_opportunity_c
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: end_date
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: id
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: last_status_change_c
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: name
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: start_date
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: status
+          booleanExpressionType: CharacterVaryingBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_contracts_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_contracts_agg_exp
+  operand:
+    object:
+      aggregatedType: public_contracts
+      aggregatableFields:
+        - fieldName: account_id
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: activated_date
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: agreement_status_c
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: agreement_type_c
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: contract_opportunity_c
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: end_date
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: id
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: last_status_change_c
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: name
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: start_date
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: status
+          aggregateExpression: CharacterVaryingAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_contracts_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_contracts_order_by_exp
+  operand:
+    object:
+      orderedType: public_contracts
+      orderableFields:
+        - fieldName: account_id
+          orderByExpression: String1OrderByExp
+        - fieldName: activated_date
+          orderByExpression: String1OrderByExp
+        - fieldName: agreement_status_c
+          orderByExpression: String1OrderByExp
+        - fieldName: agreement_type_c
+          orderByExpression: String1OrderByExp
+        - fieldName: contract_opportunity_c
+          orderByExpression: String1OrderByExp
+        - fieldName: end_date
+          orderByExpression: String1OrderByExp
+        - fieldName: id
+          orderByExpression: String1OrderByExp
+        - fieldName: last_status_change_c
+          orderByExpression: String1OrderByExp
+        - fieldName: name
+          orderByExpression: String1OrderByExp
+        - fieldName: start_date
+          orderByExpression: String1OrderByExp
+        - fieldName: status
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_contracts_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_contracts
+  objectType: public_contracts
+  source:
+    dataConnectorName: salesforce
+    collection: public.contracts
+  filterExpressionType: public_contracts_bool_exp
+  aggregateExpression: public_contracts_agg_exp
+  orderByExpression: public_contracts_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_contracts
+      subscription:
+        rootField: public_contracts
+    selectUniques:
+      - queryRootField: public_contracts_by_id
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: public_contracts_by_id
+    filterInputTypeName: public_contracts_filter_input
+    aggregate:
+      queryRootField: public_contracts_aggregate
+      subscription:
+        rootField: public_contracts_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_contracts
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
