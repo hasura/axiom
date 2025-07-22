@@ -2,24 +2,25 @@
 kind: ObjectType
 version: v1
 definition:
-  name: ProcedureCodes
+  name: PublicProcedureCodes
+  description: "Object type for public.procedure_codes. Description: null"
   fields:
     - name: avgDurationMinutes
-      type: Int4
+      type: Int32
     - name: category
-      type: Varchar
+      type: String_1
     - name: hcpc
-      type: Varchar!
+      type: String_1!
     - name: longDescription
-      type: Text!
+      type: String_1!
     - name: shortDescription
-      type: Varchar
+      type: String_1
   graphql:
-    typeName: ProcedureCodes
-    inputTypeName: ProcedureCodesInput
+    typeName: PublicProcedureCodes
+    inputTypeName: PublicProcedureCodesInput
   dataConnectorTypeMapping:
     - dataConnectorName: reference
-      dataConnectorObjectType: procedure_codes
+      dataConnectorObjectType: public.procedure_codes
       fieldMapping:
         avgDurationMinutes:
           column:
@@ -41,7 +42,7 @@ definition:
 kind: TypePermissions
 version: v1
 definition:
-  typeName: ProcedureCodes
+  typeName: PublicProcedureCodes
   permissions:
     - role: admin
       output:
@@ -56,110 +57,110 @@ definition:
 kind: BooleanExpressionType
 version: v1
 definition:
-  name: ProcedureCodesBoolExp
+  name: PublicProcedureCodesBoolExp
   operand:
     object:
-      type: ProcedureCodes
+      type: PublicProcedureCodes
       comparableFields:
         - fieldName: avgDurationMinutes
-          booleanExpressionType: Int4BoolExp
+          booleanExpressionType: IntegerBoolExp
         - fieldName: category
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: CharacterVaryingBoolExp
         - fieldName: hcpc
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: CharacterVaryingBoolExp
         - fieldName: longDescription
           booleanExpressionType: TextBoolExp
         - fieldName: shortDescription
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: CharacterVaryingBoolExp
       comparableRelationships: []
   logicalOperators:
     enable: true
   isNull:
     enable: true
   graphql:
-    typeName: ProcedureCodesBoolExp
+    typeName: PublicProcedureCodesBoolExp
 
 ---
 kind: AggregateExpression
 version: v1
 definition:
-  name: ProcedureCodesAggExp
+  name: PublicProcedureCodesAggExp
   operand:
     object:
-      aggregatedType: ProcedureCodes
+      aggregatedType: PublicProcedureCodes
       aggregatableFields:
         - fieldName: avgDurationMinutes
-          aggregateExpression: Int4AggExp
+          aggregateExpression: IntegerAggExp
         - fieldName: category
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: CharacterVaryingAggExp
         - fieldName: hcpc
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: CharacterVaryingAggExp
         - fieldName: longDescription
           aggregateExpression: TextAggExp
         - fieldName: shortDescription
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: CharacterVaryingAggExp
   count:
     enable: true
   graphql:
-    selectTypeName: ProcedureCodesAggExp
+    selectTypeName: PublicProcedureCodesAggExp
 
 ---
 kind: OrderByExpression
 version: v1
 definition:
-  name: ProcedureCodesOrderByExp
+  name: PublicProcedureCodesOrderByExp
   operand:
     object:
-      orderedType: ProcedureCodes
+      orderedType: PublicProcedureCodes
       orderableFields:
         - fieldName: avgDurationMinutes
-          orderByExpression: Int4OrderByExp
+          orderByExpression: Int32OrderByExp
         - fieldName: category
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: String1OrderByExp
         - fieldName: hcpc
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: String1OrderByExp
         - fieldName: longDescription
-          orderByExpression: TextOrderByExp
+          orderByExpression: String1OrderByExp
         - fieldName: shortDescription
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: String1OrderByExp
       orderableRelationships: []
   graphql:
-    expressionTypeName: ProcedureCodesOrderByExp
+    expressionTypeName: PublicProcedureCodesOrderByExp
 
 ---
 kind: Model
 version: v2
 definition:
-  name: ProcedureCodes
-  objectType: ProcedureCodes
+  name: PublicProcedureCodes
+  objectType: PublicProcedureCodes
   source:
     dataConnectorName: reference
-    collection: procedure_codes
-  filterExpressionType: ProcedureCodesBoolExp
-  aggregateExpression: ProcedureCodesAggExp
-  orderByExpression: ProcedureCodesOrderByExp
+    collection: public.procedure_codes
+  filterExpressionType: PublicProcedureCodesBoolExp
+  aggregateExpression: PublicProcedureCodesAggExp
+  orderByExpression: PublicProcedureCodesOrderByExp
   graphql:
     selectMany:
-      queryRootField: procedureCodes
+      queryRootField: publicProcedureCodes
       subscription:
-        rootField: procedureCodes
+        rootField: publicProcedureCodes
     selectUniques:
-      - queryRootField: procedureCodesByHcpc
+      - queryRootField: publicProcedureCodesByHcpc
         uniqueIdentifier:
           - hcpc
         subscription:
-          rootField: procedureCodesByHcpc
-    filterInputTypeName: ProcedureCodesFilterInput
+          rootField: publicProcedureCodesByHcpc
+    filterInputTypeName: PublicProcedureCodesFilterInput
     aggregate:
-      queryRootField: procedureCodesAggregate
+      queryRootField: publicProcedureCodesAggregate
       subscription:
-        rootField: procedureCodesAggregate
+        rootField: publicProcedureCodesAggregate
 
 ---
 kind: ModelPermissions
 version: v1
 definition:
-  modelName: ProcedureCodes
+  modelName: PublicProcedureCodes
   permissions:
     - role: admin
       select:

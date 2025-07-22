@@ -1,0 +1,145 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: PublicDrugPackaging
+  description: "Object type for public.drug_packaging. Description: null"
+  fields:
+    - name: ndcPackageCode
+      type: String_1!
+    - name: packageDescription
+      type: String_1
+    - name: productNdc
+      type: String_1
+  graphql:
+    typeName: PublicDrugPackaging
+    inputTypeName: PublicDrugPackagingInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: reference
+      dataConnectorObjectType: public.drug_packaging
+      fieldMapping:
+        ndcPackageCode:
+          column:
+            name: ndc_package_code
+        packageDescription:
+          column:
+            name: package_description
+        productNdc:
+          column:
+            name: product_ndc
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: PublicDrugPackaging
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - ndcPackageCode
+          - packageDescription
+          - productNdc
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PublicDrugPackagingBoolExp
+  operand:
+    object:
+      type: PublicDrugPackaging
+      comparableFields:
+        - fieldName: ndcPackageCode
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: packageDescription
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: productNdc
+          booleanExpressionType: CharacterVaryingBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: PublicDrugPackagingBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PublicDrugPackagingAggExp
+  operand:
+    object:
+      aggregatedType: PublicDrugPackaging
+      aggregatableFields:
+        - fieldName: ndcPackageCode
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: packageDescription
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: productNdc
+          aggregateExpression: CharacterVaryingAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: PublicDrugPackagingAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PublicDrugPackagingOrderByExp
+  operand:
+    object:
+      orderedType: PublicDrugPackaging
+      orderableFields:
+        - fieldName: ndcPackageCode
+          orderByExpression: String1OrderByExp
+        - fieldName: packageDescription
+          orderByExpression: String1OrderByExp
+        - fieldName: productNdc
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: PublicDrugPackagingOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: PublicDrugPackaging
+  objectType: PublicDrugPackaging
+  source:
+    dataConnectorName: reference
+    collection: public.drug_packaging
+  filterExpressionType: PublicDrugPackagingBoolExp
+  aggregateExpression: PublicDrugPackagingAggExp
+  orderByExpression: PublicDrugPackagingOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: publicDrugPackaging
+      subscription:
+        rootField: publicDrugPackaging
+    selectUniques:
+      - queryRootField: publicDrugPackagingByNdcPackageCode
+        uniqueIdentifier:
+          - ndcPackageCode
+        subscription:
+          rootField: publicDrugPackagingByNdcPackageCode
+    filterInputTypeName: PublicDrugPackagingFilterInput
+    aggregate:
+      queryRootField: publicDrugPackagingAggregate
+      subscription:
+        rootField: publicDrugPackagingAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: PublicDrugPackaging
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

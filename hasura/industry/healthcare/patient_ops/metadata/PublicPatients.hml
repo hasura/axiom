@@ -1,0 +1,193 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: PublicPatients
+  description: "Object type for public.patients. Description: null"
+  fields:
+    - name: dateOfBirth
+      type: Date
+    - name: firstName
+      type: String_1
+    - name: insurancePlanId
+      type: String_1
+    - name: lastName
+      type: String_1
+    - name: patientCreditcard
+      type: String_1
+    - name: patientId
+      type: String_1!
+    - name: patientSsn
+      type: String_1
+  graphql:
+    typeName: PublicPatients
+    inputTypeName: PublicPatientsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: patients
+      dataConnectorObjectType: public.patients
+      fieldMapping:
+        dateOfBirth:
+          column:
+            name: date_of_birth
+        firstName:
+          column:
+            name: first_name
+        insurancePlanId:
+          column:
+            name: insurance_plan_id
+        lastName:
+          column:
+            name: last_name
+        patientCreditcard:
+          column:
+            name: patient_creditcard
+        patientId:
+          column:
+            name: patient_id
+        patientSsn:
+          column:
+            name: patient_ssn
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: PublicPatients
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - dateOfBirth
+          - firstName
+          - insurancePlanId
+          - lastName
+          - patientCreditcard
+          - patientId
+          - patientSsn
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PublicPatientsBoolExp
+  operand:
+    object:
+      type: PublicPatients
+      comparableFields:
+        - fieldName: dateOfBirth
+          booleanExpressionType: DateBoolExp
+        - fieldName: firstName
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: insurancePlanId
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: lastName
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: patientCreditcard
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: patientId
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: patientSsn
+          booleanExpressionType: CharacterVaryingBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: PublicPatientsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PublicPatientsAggExp
+  operand:
+    object:
+      aggregatedType: PublicPatients
+      aggregatableFields:
+        - fieldName: dateOfBirth
+          aggregateExpression: DateAggExp
+        - fieldName: firstName
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: insurancePlanId
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: lastName
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: patientCreditcard
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: patientId
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: patientSsn
+          aggregateExpression: CharacterVaryingAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: PublicPatientsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PublicPatientsOrderByExp
+  operand:
+    object:
+      orderedType: PublicPatients
+      orderableFields:
+        - fieldName: dateOfBirth
+          orderByExpression: DateOrderByExp
+        - fieldName: firstName
+          orderByExpression: String1OrderByExp
+        - fieldName: insurancePlanId
+          orderByExpression: String1OrderByExp
+        - fieldName: lastName
+          orderByExpression: String1OrderByExp
+        - fieldName: patientCreditcard
+          orderByExpression: String1OrderByExp
+        - fieldName: patientId
+          orderByExpression: String1OrderByExp
+        - fieldName: patientSsn
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: PublicPatientsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: PublicPatients
+  objectType: PublicPatients
+  source:
+    dataConnectorName: patients
+    collection: public.patients
+  filterExpressionType: PublicPatientsBoolExp
+  aggregateExpression: PublicPatientsAggExp
+  orderByExpression: PublicPatientsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: publicPatients
+      subscription:
+        rootField: publicPatients
+    selectUniques:
+      - queryRootField: publicPatientsByPatientId
+        uniqueIdentifier:
+          - patientId
+        subscription:
+          rootField: publicPatientsByPatientId
+    filterInputTypeName: PublicPatientsFilterInput
+    aggregate:
+      queryRootField: publicPatientsAggregate
+      subscription:
+        rootField: publicPatientsAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: PublicPatients
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

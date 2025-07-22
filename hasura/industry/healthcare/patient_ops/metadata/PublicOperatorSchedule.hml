@@ -1,0 +1,169 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: PublicOperatorSchedule
+  description: "Object type for public.operator_schedule. Description: null"
+  fields:
+    - name: bookedMinutes
+      type: Int32
+    - name: maxMinutes
+      type: Int32
+    - name: operatorId
+      type: String_1
+    - name: scheduleId
+      type: Int32!
+    - name: workDate
+      type: Date
+  graphql:
+    typeName: PublicOperatorSchedule
+    inputTypeName: PublicOperatorScheduleInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: operations
+      dataConnectorObjectType: public.operator_schedule
+      fieldMapping:
+        bookedMinutes:
+          column:
+            name: booked_minutes
+        maxMinutes:
+          column:
+            name: max_minutes
+        operatorId:
+          column:
+            name: operator_id
+        scheduleId:
+          column:
+            name: schedule_id
+        workDate:
+          column:
+            name: work_date
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: PublicOperatorSchedule
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - bookedMinutes
+          - maxMinutes
+          - operatorId
+          - scheduleId
+          - workDate
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PublicOperatorScheduleBoolExp
+  operand:
+    object:
+      type: PublicOperatorSchedule
+      comparableFields:
+        - fieldName: bookedMinutes
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: maxMinutes
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: operatorId
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: scheduleId
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: workDate
+          booleanExpressionType: DateBoolExp_1
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: PublicOperatorScheduleBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PublicOperatorScheduleAggExp
+  operand:
+    object:
+      aggregatedType: PublicOperatorSchedule
+      aggregatableFields:
+        - fieldName: bookedMinutes
+          aggregateExpression: IntegerAggExp
+        - fieldName: maxMinutes
+          aggregateExpression: IntegerAggExp
+        - fieldName: operatorId
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: scheduleId
+          aggregateExpression: IntegerAggExp
+        - fieldName: workDate
+          aggregateExpression: DateAggExp_1
+  count:
+    enable: true
+  graphql:
+    selectTypeName: PublicOperatorScheduleAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PublicOperatorScheduleOrderByExp
+  operand:
+    object:
+      orderedType: PublicOperatorSchedule
+      orderableFields:
+        - fieldName: bookedMinutes
+          orderByExpression: Int32OrderByExp
+        - fieldName: maxMinutes
+          orderByExpression: Int32OrderByExp
+        - fieldName: operatorId
+          orderByExpression: String1OrderByExp
+        - fieldName: scheduleId
+          orderByExpression: Int32OrderByExp
+        - fieldName: workDate
+          orderByExpression: DateOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: PublicOperatorScheduleOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: PublicOperatorSchedule
+  objectType: PublicOperatorSchedule
+  source:
+    dataConnectorName: operations
+    collection: public.operator_schedule
+  filterExpressionType: PublicOperatorScheduleBoolExp
+  aggregateExpression: PublicOperatorScheduleAggExp
+  orderByExpression: PublicOperatorScheduleOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: publicOperatorSchedule
+      subscription:
+        rootField: publicOperatorSchedule
+    selectUniques:
+      - queryRootField: publicOperatorScheduleByScheduleId
+        uniqueIdentifier:
+          - scheduleId
+        subscription:
+          rootField: publicOperatorScheduleByScheduleId
+    filterInputTypeName: PublicOperatorScheduleFilterInput
+    aggregate:
+      queryRootField: publicOperatorScheduleAggregate
+      subscription:
+        rootField: publicOperatorScheduleAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: PublicOperatorSchedule
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
