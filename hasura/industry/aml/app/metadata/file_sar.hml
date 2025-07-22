@@ -2,54 +2,44 @@
 kind: ObjectType
 version: v1
 definition:
-  name: SarFilingResponse
+  name: sarfiling_response
   fields:
-    - name: accountId
+    - name: account_id
       type: Float!
-    - name: sarId
+    - name: sar_id
       type: String
     - name: status
       type: String!
   graphql:
-    typeName: SarFilingResponse
-    inputTypeName: SarFilingResponseInput
+    typeName: sarfiling_response
+    inputTypeName: sarfiling_response_input
   dataConnectorTypeMapping:
     - dataConnectorName: account_operations
       dataConnectorObjectType: SARFilingResponse
-      fieldMapping:
-        accountId:
-          column:
-            name: account_id
-        sarId:
-          column:
-            name: sar_id
-        status:
-          column:
-            name: status
 
 ---
 kind: TypePermissions
 version: v1
 definition:
-  typeName: SarFilingResponse
+  typeName: sarfiling_response
   permissions:
     - role: admin
       output:
         allowedFields:
-          - accountId
-          - sarId
+          - account_id
+          - sar_id
           - status
 
 ---
 kind: Command
 version: v1
 definition:
-  name: FileSar
-  outputType: SarFilingResponse!
+  name: file_sar
+  outputType: sarfiling_response!
   arguments:
-    - name: accountId
+    - name: account_id
       type: Float!
-    - name: accountName
+    - name: account_name
       type: String!
     - name: reason
       type: String!
@@ -57,8 +47,12 @@ definition:
     dataConnectorName: account_operations
     dataConnectorCommand:
       procedure: fileSAR
+    argumentMapping:
+      account_id: accountId
+      account_name: accountName
+      reason: reason
   graphql:
-    rootFieldName: fileSar
+    rootFieldName: file_sar
     rootFieldKind: Mutation
   description: >-
     **Description:**
@@ -78,7 +72,7 @@ definition:
 kind: CommandPermissions
 version: v1
 definition:
-  commandName: FileSar
+  commandName: file_sar
   permissions:
     - role: admin
       allowExecution: true

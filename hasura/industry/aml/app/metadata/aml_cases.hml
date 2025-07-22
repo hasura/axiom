@@ -2,41 +2,31 @@
 kind: ObjectType
 version: v1
 definition:
-  name: AmlCasesAmlFlags
+  name: aml_cases_aml_flags
   fields:
-    - name: crossBorder
+    - name: cross_border
       type: Boolean_1
     - name: darknet
       type: Boolean_1
     - name: structuring
       type: Boolean_1
   graphql:
-    typeName: AmlCasesAmlFlags
-    inputTypeName: AmlCasesAmlFlagsInput
+    typeName: aml_cases_aml_flags
+    inputTypeName: aml_cases_aml_flags_input
   dataConnectorTypeMapping:
     - dataConnectorName: aml_monitoring
       dataConnectorObjectType: aml_cases_aml_flags
-      fieldMapping:
-        crossBorder:
-          column:
-            name: cross_border
-        darknet:
-          column:
-            name: darknet
-        structuring:
-          column:
-            name: structuring
 
 ---
 kind: TypePermissions
 version: v1
 definition:
-  typeName: AmlCasesAmlFlags
+  typeName: aml_cases_aml_flags
   permissions:
     - role: admin
       output:
         allowedFields:
-          - crossBorder
+          - cross_border
           - darknet
           - structuring
 
@@ -44,33 +34,33 @@ definition:
 kind: ObjectType
 version: v1
 definition:
-  name: AmlCases
+  name: aml_cases
   fields:
     - name: id
       type: String_1!
-    - name: amlFlags
-      type: AmlCasesAmlFlags
+    - name: aml_flags
+      type: aml_cases_aml_flags
     - name: amount
       type: Float64
-    - name: beneficiaryAddress
+    - name: beneficiary_address
       type: String
-    - name: beneficiaryId
+    - name: beneficiary_id
       type: Int
-    - name: beneficiaryName
+    - name: beneficiary_name
       type: String
-    - name: originatorAddress
+    - name: originator_address
       type: String
-    - name: originatorId
+    - name: originator_id
       type: Int
-    - name: originatorName
+    - name: originator_name
       type: String
-    - name: transactionDate
+    - name: transaction_date
       type: String
-    - name: transactionId
+    - name: transaction_id
       type: Int
   graphql:
-    typeName: AmlCases
-    inputTypeName: AmlCasesInput
+    typeName: aml_cases
+    inputTypeName: aml_cases_input
   dataConnectorTypeMapping:
     - dataConnectorName: aml_monitoring
       dataConnectorObjectType: aml_cases
@@ -78,34 +68,34 @@ definition:
         id:
           column:
             name: _id
-        amlFlags:
+        aml_flags:
           column:
             name: aml_flags
         amount:
           column:
             name: amount
-        beneficiaryAddress:
+        beneficiary_address:
           column:
             name: beneficiary_address
-        beneficiaryId:
+        beneficiary_id:
           column:
             name: beneficiary_id
-        beneficiaryName:
+        beneficiary_name:
           column:
             name: beneficiary_name
-        originatorAddress:
+        originator_address:
           column:
             name: originator_address
-        originatorId:
+        originator_id:
           column:
             name: originator_id
-        originatorName:
+        originator_name:
           column:
             name: originator_name
-        transactionDate:
+        transaction_date:
           column:
             name: transaction_date
-        transactionId:
+        transaction_id:
           column:
             name: transaction_id
 
@@ -113,45 +103,33 @@ definition:
 kind: TypePermissions
 version: v1
 definition:
-  typeName: AmlCases
+  typeName: aml_cases
   permissions:
     - role: admin
       output:
         allowedFields:
           - id
-          - amlFlags
+          - aml_flags
           - amount
-          - beneficiaryAddress
-          - beneficiaryId
-          - beneficiaryName
-          - originatorAddress
-          - originatorId
-          - originatorName
-          - transactionDate
-          - transactionId
-    - role: customer
-      output:
-        allowedFields:
-          - amlFlags
-          - amount
-          - beneficiaryId
-          - beneficiaryName
-          - originatorAddress
-          - originatorId
-          - originatorName
-          - transactionDate
-          - transactionId
+          - beneficiary_address
+          - beneficiary_id
+          - beneficiary_name
+          - originator_address
+          - originator_id
+          - originator_name
+          - transaction_date
+          - transaction_id
 
 ---
 kind: BooleanExpressionType
 version: v1
 definition:
-  name: AmlCasesAmlFlagsBoolExp
+  name: aml_cases_aml_flags_bool_exp
   operand:
     object:
-      type: AmlCasesAmlFlags
+      type: aml_cases_aml_flags
       comparableFields:
-        - fieldName: crossBorder
+        - fieldName: cross_border
           booleanExpressionType: BoolBoolExp
         - fieldName: darknet
           booleanExpressionType: BoolBoolExp
@@ -163,38 +141,38 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: AmlCasesAmlFlagsBoolExp
+    typeName: aml_cases_aml_flags_bool_exp
 
 ---
 kind: BooleanExpressionType
 version: v1
 definition:
-  name: AmlCasesBoolExp
+  name: aml_cases_bool_exp
   operand:
     object:
-      type: AmlCases
+      type: aml_cases
       comparableFields:
         - fieldName: id
           booleanExpressionType: ObjectIdBoolExp
-        - fieldName: amlFlags
-          booleanExpressionType: AmlCasesAmlFlagsBoolExp
+        - fieldName: aml_flags
+          booleanExpressionType: aml_cases_aml_flags_bool_exp
         - fieldName: amount
           booleanExpressionType: DoubleBoolExp
-        - fieldName: beneficiaryAddress
+        - fieldName: beneficiary_address
           booleanExpressionType: StringBoolExp_1
-        - fieldName: beneficiaryId
+        - fieldName: beneficiary_id
           booleanExpressionType: IntBoolExp_1
-        - fieldName: beneficiaryName
+        - fieldName: beneficiary_name
           booleanExpressionType: StringBoolExp_1
-        - fieldName: originatorAddress
+        - fieldName: originator_address
           booleanExpressionType: StringBoolExp_1
-        - fieldName: originatorId
+        - fieldName: originator_id
           booleanExpressionType: IntBoolExp_1
-        - fieldName: originatorName
+        - fieldName: originator_name
           booleanExpressionType: StringBoolExp_1
-        - fieldName: transactionDate
+        - fieldName: transaction_date
           booleanExpressionType: StringBoolExp_1
-        - fieldName: transactionId
+        - fieldName: transaction_id
           booleanExpressionType: IntBoolExp_1
       comparableRelationships: []
   logicalOperators:
@@ -202,52 +180,52 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: AmlCasesBoolExp
+    typeName: aml_cases_bool_exp
 
 ---
 kind: AggregateExpression
 version: v1
 definition:
-  name: AmlCasesAggExp
+  name: aml_cases_agg_exp
   operand:
     object:
-      aggregatedType: AmlCases
+      aggregatedType: aml_cases
       aggregatableFields:
         - fieldName: id
           aggregateExpression: ObjectIdAggExp
         - fieldName: amount
           aggregateExpression: DoubleAggExp
-        - fieldName: beneficiaryAddress
+        - fieldName: beneficiary_address
           aggregateExpression: StringAggExp
-        - fieldName: beneficiaryId
+        - fieldName: beneficiary_id
           aggregateExpression: IntAggExp
-        - fieldName: beneficiaryName
+        - fieldName: beneficiary_name
           aggregateExpression: StringAggExp
-        - fieldName: originatorAddress
+        - fieldName: originator_address
           aggregateExpression: StringAggExp
-        - fieldName: originatorId
+        - fieldName: originator_id
           aggregateExpression: IntAggExp
-        - fieldName: originatorName
+        - fieldName: originator_name
           aggregateExpression: StringAggExp
-        - fieldName: transactionDate
+        - fieldName: transaction_date
           aggregateExpression: StringAggExp
-        - fieldName: transactionId
+        - fieldName: transaction_id
           aggregateExpression: IntAggExp
   count:
     enable: true
   graphql:
-    selectTypeName: AmlCasesAggExp
+    selectTypeName: aml_cases_agg_exp
 
 ---
 kind: OrderByExpression
 version: v1
 definition:
-  name: AmlCasesAmlFlagsOrderByExp
+  name: aml_cases_aml_flags_order_by_exp
   operand:
     object:
-      orderedType: AmlCasesAmlFlags
+      orderedType: aml_cases_aml_flags
       orderableFields:
-        - fieldName: crossBorder
+        - fieldName: cross_border
           orderByExpression: Boolean1OrderByExp
         - fieldName: darknet
           orderByExpression: Boolean1OrderByExp
@@ -255,123 +233,80 @@ definition:
           orderByExpression: Boolean1OrderByExp
       orderableRelationships: []
   graphql:
-    expressionTypeName: AmlCasesAmlFlagsOrderByExp
+    expressionTypeName: aml_cases_aml_flags_order_by_exp
 
 ---
 kind: OrderByExpression
 version: v1
 definition:
-  name: AmlCasesOrderByExp
+  name: aml_cases_order_by_exp
   operand:
     object:
-      orderedType: AmlCases
+      orderedType: aml_cases
       orderableFields:
         - fieldName: id
           orderByExpression: String1OrderByExp
-        - fieldName: amlFlags
-          orderByExpression: AmlCasesAmlFlagsOrderByExp
+        - fieldName: aml_flags
+          orderByExpression: aml_cases_aml_flags_order_by_exp
         - fieldName: amount
           orderByExpression: Float64OrderByExp
-        - fieldName: beneficiaryAddress
+        - fieldName: beneficiary_address
           orderByExpression: StringOrderByExp
-        - fieldName: beneficiaryId
+        - fieldName: beneficiary_id
           orderByExpression: IntOrderByExp
-        - fieldName: beneficiaryName
+        - fieldName: beneficiary_name
           orderByExpression: StringOrderByExp
-        - fieldName: originatorAddress
+        - fieldName: originator_address
           orderByExpression: StringOrderByExp
-        - fieldName: originatorId
+        - fieldName: originator_id
           orderByExpression: IntOrderByExp
-        - fieldName: originatorName
+        - fieldName: originator_name
           orderByExpression: StringOrderByExp
-        - fieldName: transactionDate
+        - fieldName: transaction_date
           orderByExpression: StringOrderByExp
-        - fieldName: transactionId
+        - fieldName: transaction_id
           orderByExpression: IntOrderByExp
       orderableRelationships: []
   graphql:
-    expressionTypeName: AmlCasesOrderByExp
+    expressionTypeName: aml_cases_order_by_exp
 
 ---
 kind: Model
 version: v2
 definition:
-  name: AmlCases
-  objectType: AmlCases
+  name: aml_cases
+  objectType: aml_cases
   source:
     dataConnectorName: aml_monitoring
     collection: aml_cases
-  filterExpressionType: AmlCasesBoolExp
-  aggregateExpression: AmlCasesAggExp
-  orderByExpression: AmlCasesOrderByExp
+  filterExpressionType: aml_cases_bool_exp
+  aggregateExpression: aml_cases_agg_exp
+  orderByExpression: aml_cases_order_by_exp
   graphql:
     selectMany:
-      queryRootField: amlCases
+      queryRootField: aml_cases
       subscription:
-        rootField: amlCases
+        rootField: aml_cases
     selectUniques:
-      - queryRootField: amlCasesById
+      - queryRootField: aml_cases_by_id
         uniqueIdentifier:
           - id
         subscription:
-          rootField: amlCasesById
-    filterInputTypeName: AmlCasesFilterInput
+          rootField: aml_cases_by_id
+    filterInputTypeName: aml_cases_filter_input
     aggregate:
-      queryRootField: amlCasesAggregate
+      queryRootField: aml_cases_aggregate
       subscription:
-        rootField: amlCasesAggregate
+        rootField: aml_cases_aggregate
 
 ---
 kind: ModelPermissions
 version: v1
 definition:
-  modelName: AmlCases
+  modelName: aml_cases
   permissions:
     - role: admin
       select:
         filter: null
         allowSubscriptions: true
-    - role: customer
-      select:
-        filter:
-          fieldComparison:
-            field: amount
-            operator: _lte
-            value:
-              literal: 1000
 
----
-kind: Relationship
-version: v1
-definition:
-  name: originator_account
-  sourceType: AmlCases
-  target:
-    model:
-      name: Accounts
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: originatorId
-      target:
-        modelField:
-          - fieldName: accountId
-
----
-kind: Relationship
-version: v1
-definition:
-  name: beneficiary_account
-  sourceType: AmlCases
-  target:
-    model:
-      name: Accounts
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: beneficiaryId
-      target:
-        modelField:
-          - fieldName: accountId

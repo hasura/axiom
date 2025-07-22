@@ -2,67 +2,63 @@
 kind: ObjectType
 version: v1
 definition:
-  name: TransactionHoldResponse
+  name: transaction_hold_response
   fields:
-    - name: accountId
+    - name: account_id
       type: Float!
-    - name: holdId
+    - name: hold_id
       type: String
     - name: status
       type: String!
   graphql:
-    typeName: TransactionHoldResponse
-    inputTypeName: TransactionHoldResponseInput
+    typeName: transaction_hold_response
+    inputTypeName: transaction_hold_response_input
   dataConnectorTypeMapping:
     - dataConnectorName: account_operations
       dataConnectorObjectType: TransactionHoldResponse
-      fieldMapping:
-        accountId:
-          column:
-            name: account_id
-        holdId:
-          column:
-            name: hold_id
-        status:
-          column:
-            name: status
 
 ---
 kind: TypePermissions
 version: v1
 definition:
-  typeName: TransactionHoldResponse
+  typeName: transaction_hold_response
   permissions:
     - role: admin
       output:
         allowedFields:
-          - accountId
-          - holdId
+          - account_id
+          - hold_id
           - status
 
 ---
 kind: Command
 version: v1
 definition:
-  name: HoldTransactions
-  outputType: TransactionHoldResponse!
+  name: hold_transactions
+  outputType: transaction_hold_response!
   arguments:
-    - name: accountId
+    - name: account_id
       type: Float!
-    - name: accountName
+    - name: account_name
       type: String!
-    - name: holdDuration
+    - name: hold_duration
       type: Float!
     - name: reason
       type: String!
-    - name: thresholdAmount
+    - name: threshold_amount
       type: Float!
   source:
     dataConnectorName: account_operations
     dataConnectorCommand:
       procedure: holdTransactions
+    argumentMapping:
+      account_id: accountId
+      account_name: accountName
+      hold_duration: holdDuration
+      reason: reason
+      threshold_amount: thresholdAmount
   graphql:
-    rootFieldName: holdTransactions
+    rootFieldName: hold_transactions
     rootFieldKind: Mutation
   description: >-
     **Description:**
@@ -82,7 +78,7 @@ definition:
 kind: CommandPermissions
 version: v1
 definition:
-  commandName: HoldTransactions
+  commandName: hold_transactions
   permissions:
     - role: admin
       allowExecution: true

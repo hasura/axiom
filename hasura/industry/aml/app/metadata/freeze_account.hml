@@ -2,67 +2,63 @@
 kind: ObjectType
 version: v1
 definition:
-  name: AccountFreezeResponse
+  name: account_freeze_response
   fields:
-    - name: accountId
+    - name: account_id
       type: Float!
-    - name: freezeId
+    - name: freeze_id
       type: String
     - name: status
       type: String!
   graphql:
-    typeName: AccountFreezeResponse
-    inputTypeName: AccountFreezeResponseInput
+    typeName: account_freeze_response
+    inputTypeName: account_freeze_response_input
   dataConnectorTypeMapping:
     - dataConnectorName: account_operations
       dataConnectorObjectType: AccountFreezeResponse
-      fieldMapping:
-        accountId:
-          column:
-            name: account_id
-        freezeId:
-          column:
-            name: freeze_id
-        status:
-          column:
-            name: status
 
 ---
 kind: TypePermissions
 version: v1
 definition:
-  typeName: AccountFreezeResponse
+  typeName: account_freeze_response
   permissions:
     - role: admin
       output:
         allowedFields:
-          - accountId
-          - freezeId
+          - account_id
+          - freeze_id
           - status
 
 ---
 kind: Command
 version: v1
 definition:
-  name: FreezeAccount
-  outputType: AccountFreezeResponse!
+  name: freeze_account
+  outputType: account_freeze_response!
   arguments:
-    - name: accountId
+    - name: account_id
       type: Float!
-    - name: accountName
+    - name: account_name
       type: String!
-    - name: freezeLevel
+    - name: freeze_level
       type: String!
     - name: reason
       type: String!
-    - name: transactionThreshold
+    - name: transaction_threshold
       type: Float
   source:
     dataConnectorName: account_operations
     dataConnectorCommand:
       procedure: freezeAccount
+    argumentMapping:
+      account_id: accountId
+      account_name: accountName
+      freeze_level: freezeLevel
+      reason: reason
+      transaction_threshold: transactionThreshold
   graphql:
-    rootFieldName: freezeAccount
+    rootFieldName: freeze_account
     rootFieldKind: Mutation
   description: >-
     **Description:**
@@ -82,7 +78,7 @@ definition:
 kind: CommandPermissions
 version: v1
 definition:
-  commandName: FreezeAccount
+  commandName: freeze_account
   permissions:
     - role: admin
       allowExecution: true

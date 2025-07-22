@@ -2,7 +2,7 @@
 kind: ObjectType
 version: v1
 definition:
-  name: PublicCustomers
+  name: public_customers
   description: "Object type for public.customers. Description: null"
   fields:
     - name: account
@@ -11,7 +11,7 @@ definition:
       type: String_1
     - name: blacklisted
       type: Boolean_1
-    - name: customerId
+    - name: customer_id
       type: Int32!
     - name: dob
       type: Date
@@ -19,50 +19,22 @@ definition:
       type: String_1!
     - name: nationality
       type: String_1
-    - name: pepStatus
+    - name: pep_status
       type: Boolean_1
-    - name: riskLevel
+    - name: risk_level
       type: String_1
   graphql:
-    typeName: PublicCustomers
-    inputTypeName: PublicCustomersInput
+    typeName: public_customers
+    inputTypeName: public_customers_input
   dataConnectorTypeMapping:
     - dataConnectorName: banking_core
       dataConnectorObjectType: public.customers
-      fieldMapping:
-        account:
-          column:
-            name: account
-        address:
-          column:
-            name: address
-        blacklisted:
-          column:
-            name: blacklisted
-        customerId:
-          column:
-            name: customer_id
-        dob:
-          column:
-            name: dob
-        name:
-          column:
-            name: name
-        nationality:
-          column:
-            name: nationality
-        pepStatus:
-          column:
-            name: pep_status
-        riskLevel:
-          column:
-            name: risk_level
 
 ---
 kind: TypePermissions
 version: v1
 definition:
-  typeName: PublicCustomers
+  typeName: public_customers
   permissions:
     - role: admin
       output:
@@ -70,21 +42,21 @@ definition:
           - account
           - address
           - blacklisted
-          - customerId
+          - customer_id
           - dob
           - name
           - nationality
-          - pepStatus
-          - riskLevel
+          - pep_status
+          - risk_level
 
 ---
 kind: BooleanExpressionType
 version: v1
 definition:
-  name: PublicCustomersBoolExp
+  name: public_customers_bool_exp
   operand:
     object:
-      type: PublicCustomers
+      type: public_customers
       comparableFields:
         - fieldName: account
           booleanExpressionType: IntegerBoolExp
@@ -92,7 +64,7 @@ definition:
           booleanExpressionType: TextBoolExp
         - fieldName: blacklisted
           booleanExpressionType: BooleanBoolExp
-        - fieldName: customerId
+        - fieldName: customer_id
           booleanExpressionType: IntegerBoolExp
         - fieldName: dob
           booleanExpressionType: DateBoolExp
@@ -100,9 +72,9 @@ definition:
           booleanExpressionType: CharacterVaryingBoolExp
         - fieldName: nationality
           booleanExpressionType: CharacterVaryingBoolExp
-        - fieldName: pepStatus
+        - fieldName: pep_status
           booleanExpressionType: BooleanBoolExp
-        - fieldName: riskLevel
+        - fieldName: risk_level
           booleanExpressionType: CharacterVaryingBoolExp
       comparableRelationships: []
   logicalOperators:
@@ -110,16 +82,16 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: PublicCustomersBoolExp
+    typeName: public_customers_bool_exp
 
 ---
 kind: AggregateExpression
 version: v1
 definition:
-  name: PublicCustomersAggExp
+  name: public_customers_agg_exp
   operand:
     object:
-      aggregatedType: PublicCustomers
+      aggregatedType: public_customers
       aggregatableFields:
         - fieldName: account
           aggregateExpression: IntegerAggExp
@@ -127,7 +99,7 @@ definition:
           aggregateExpression: TextAggExp
         - fieldName: blacklisted
           aggregateExpression: BooleanAggExp
-        - fieldName: customerId
+        - fieldName: customer_id
           aggregateExpression: IntegerAggExp
         - fieldName: dob
           aggregateExpression: DateAggExp
@@ -135,23 +107,23 @@ definition:
           aggregateExpression: CharacterVaryingAggExp
         - fieldName: nationality
           aggregateExpression: CharacterVaryingAggExp
-        - fieldName: pepStatus
+        - fieldName: pep_status
           aggregateExpression: BooleanAggExp
-        - fieldName: riskLevel
+        - fieldName: risk_level
           aggregateExpression: CharacterVaryingAggExp
   count:
     enable: true
   graphql:
-    selectTypeName: PublicCustomersAggExp
+    selectTypeName: public_customers_agg_exp
 
 ---
 kind: OrderByExpression
 version: v1
 definition:
-  name: PublicCustomersOrderByExp
+  name: public_customers_order_by_exp
   operand:
     object:
-      orderedType: PublicCustomers
+      orderedType: public_customers
       orderableFields:
         - fieldName: account
           orderByExpression: Int32OrderByExp
@@ -159,7 +131,7 @@ definition:
           orderByExpression: String1OrderByExp
         - fieldName: blacklisted
           orderByExpression: Boolean1OrderByExp
-        - fieldName: customerId
+        - fieldName: customer_id
           orderByExpression: Int32OrderByExp
         - fieldName: dob
           orderByExpression: DateOrderByExp
@@ -167,90 +139,51 @@ definition:
           orderByExpression: String1OrderByExp
         - fieldName: nationality
           orderByExpression: String1OrderByExp
-        - fieldName: pepStatus
+        - fieldName: pep_status
           orderByExpression: Boolean1OrderByExp
-        - fieldName: riskLevel
+        - fieldName: risk_level
           orderByExpression: String1OrderByExp
       orderableRelationships: []
   graphql:
-    expressionTypeName: PublicCustomersOrderByExp
+    expressionTypeName: public_customers_order_by_exp
 
 ---
 kind: Model
 version: v2
 definition:
-  name: PublicCustomers
-  objectType: PublicCustomers
+  name: public_customers
+  objectType: public_customers
   source:
     dataConnectorName: banking_core
     collection: public.customers
-  filterExpressionType: PublicCustomersBoolExp
-  aggregateExpression: PublicCustomersAggExp
-  orderByExpression: PublicCustomersOrderByExp
+  filterExpressionType: public_customers_bool_exp
+  aggregateExpression: public_customers_agg_exp
+  orderByExpression: public_customers_order_by_exp
   graphql:
     selectMany:
-      queryRootField: publicCustomers
+      queryRootField: public_customers
       subscription:
-        rootField: publicCustomers
+        rootField: public_customers
     selectUniques:
-      - queryRootField: publicCustomersByCustomerId
+      - queryRootField: public_customers_by_customer_id
         uniqueIdentifier:
-          - customerId
+          - customer_id
         subscription:
-          rootField: publicCustomersByCustomerId
-    filterInputTypeName: PublicCustomersFilterInput
+          rootField: public_customers_by_customer_id
+    filterInputTypeName: public_customers_filter_input
     aggregate:
-      queryRootField: publicCustomersAggregate
+      queryRootField: public_customers_aggregate
       subscription:
-        rootField: publicCustomersAggregate
+        rootField: public_customers_aggregate
 
 ---
 kind: ModelPermissions
 version: v1
 definition:
-  modelName: PublicCustomers
+  modelName: public_customers
   permissions:
     - role: admin
       select:
         filter: null
         allowSubscriptions: true
 
----
-kind: Relationship
-version: v1
-definition:
-  name: sars
-  sourceType: PublicCustomers
-  target:
-    model:
-      name: PublicSars
-      relationshipType: Array
-      aggregate:
-        aggregateExpression: PublicSarsAggExp
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: customerId
-      target:
-        modelField:
-          - fieldName: customerId
-  graphql:
-    aggregateFieldName: sarsAggregate
-
----
-kind: Relationship
-version: v1
-definition:
-  name: account_details
-  sourceType: PublicCustomers
-  target:
-    model:
-      name: Accounts
-      relationshipType: Array
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: account
-      target:
-        modelField:
-          - fieldName: accountId
