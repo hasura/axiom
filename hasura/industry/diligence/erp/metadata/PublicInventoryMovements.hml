@@ -1,0 +1,205 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: PublicInventoryMovements
+  description: "Object type for public.inventory_movements. Description: null"
+  fields:
+    - name: createdAt
+      type: Timestamp
+    - name: inventoryId
+      type: Int32!
+    - name: movementId
+      type: Int32!
+    - name: notes
+      type: String_1
+    - name: quantity
+      type: Int32!
+    - name: referenceDocument
+      type: String_1
+    - name: transactionDate
+      type: Timestamp!
+    - name: transactionType
+      type: String_1
+  graphql:
+    typeName: PublicInventoryMovements
+    inputTypeName: PublicInventoryMovementsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: operations
+      dataConnectorObjectType: public.inventory_movements
+      fieldMapping:
+        createdAt:
+          column:
+            name: created_at
+        inventoryId:
+          column:
+            name: inventory_id
+        movementId:
+          column:
+            name: movement_id
+        notes:
+          column:
+            name: notes
+        quantity:
+          column:
+            name: quantity
+        referenceDocument:
+          column:
+            name: reference_document
+        transactionDate:
+          column:
+            name: transaction_date
+        transactionType:
+          column:
+            name: transaction_type
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: PublicInventoryMovements
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - createdAt
+          - inventoryId
+          - movementId
+          - notes
+          - quantity
+          - referenceDocument
+          - transactionDate
+          - transactionType
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PublicInventoryMovementsBoolExp
+  operand:
+    object:
+      type: PublicInventoryMovements
+      comparableFields:
+        - fieldName: createdAt
+          booleanExpressionType: TimestampWithoutTimeZoneBoolExp_1
+        - fieldName: inventoryId
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: movementId
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: notes
+          booleanExpressionType: TextBoolExp_1
+        - fieldName: quantity
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: referenceDocument
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: transactionDate
+          booleanExpressionType: TimestampWithoutTimeZoneBoolExp_1
+        - fieldName: transactionType
+          booleanExpressionType: CharacterVaryingBoolExp_1
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: PublicInventoryMovementsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PublicInventoryMovementsAggExp
+  operand:
+    object:
+      aggregatedType: PublicInventoryMovements
+      aggregatableFields:
+        - fieldName: createdAt
+          aggregateExpression: TimestampWithoutTimeZoneAggExp_1
+        - fieldName: inventoryId
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: movementId
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: notes
+          aggregateExpression: TextAggExp_1
+        - fieldName: quantity
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: referenceDocument
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: transactionDate
+          aggregateExpression: TimestampWithoutTimeZoneAggExp_1
+        - fieldName: transactionType
+          aggregateExpression: CharacterVaryingAggExp_1
+  count:
+    enable: true
+  graphql:
+    selectTypeName: PublicInventoryMovementsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PublicInventoryMovementsOrderByExp
+  operand:
+    object:
+      orderedType: PublicInventoryMovements
+      orderableFields:
+        - fieldName: createdAt
+          orderByExpression: TimestampOrderByExp
+        - fieldName: inventoryId
+          orderByExpression: Int32OrderByExp
+        - fieldName: movementId
+          orderByExpression: Int32OrderByExp
+        - fieldName: notes
+          orderByExpression: String1OrderByExp
+        - fieldName: quantity
+          orderByExpression: Int32OrderByExp
+        - fieldName: referenceDocument
+          orderByExpression: String1OrderByExp
+        - fieldName: transactionDate
+          orderByExpression: TimestampOrderByExp
+        - fieldName: transactionType
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: PublicInventoryMovementsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: PublicInventoryMovements
+  objectType: PublicInventoryMovements
+  source:
+    dataConnectorName: operations
+    collection: public.inventory_movements
+  filterExpressionType: PublicInventoryMovementsBoolExp
+  aggregateExpression: PublicInventoryMovementsAggExp
+  orderByExpression: PublicInventoryMovementsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: publicInventoryMovements
+      subscription:
+        rootField: publicInventoryMovements
+    selectUniques:
+      - queryRootField: publicInventoryMovementsByMovementId
+        uniqueIdentifier:
+          - movementId
+        subscription:
+          rootField: publicInventoryMovementsByMovementId
+    filterInputTypeName: PublicInventoryMovementsFilterInput
+    aggregate:
+      queryRootField: publicInventoryMovementsAggregate
+      subscription:
+        rootField: publicInventoryMovementsAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: PublicInventoryMovements
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

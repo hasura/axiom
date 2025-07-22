@@ -1,0 +1,265 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: PublicGeneralLedger
+  description: "Object type for public.general_ledger. Description: null"
+  fields:
+    - name: accountId
+      type: Int32
+    - name: createdAt
+      type: Timestamp
+    - name: creditAmount
+      type: Bigdecimal
+    - name: debitAmount
+      type: Bigdecimal
+    - name: description
+      type: String_1
+    - name: entryDate
+      type: Date!
+    - name: entryId
+      type: Int32!
+    - name: entrySource
+      type: String_1!
+    - name: fiscalMonth
+      type: Int32!
+    - name: fiscalQuarter
+      type: Int32!
+    - name: fiscalYear
+      type: Int32!
+    - name: referenceNumber
+      type: String_1
+    - name: updatedAt
+      type: Timestamp
+  graphql:
+    typeName: PublicGeneralLedger
+    inputTypeName: PublicGeneralLedgerInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: financials
+      dataConnectorObjectType: public.general_ledger
+      fieldMapping:
+        accountId:
+          column:
+            name: account_id
+        createdAt:
+          column:
+            name: created_at
+        creditAmount:
+          column:
+            name: credit_amount
+        debitAmount:
+          column:
+            name: debit_amount
+        description:
+          column:
+            name: description
+        entryDate:
+          column:
+            name: entry_date
+        entryId:
+          column:
+            name: entry_id
+        entrySource:
+          column:
+            name: entry_source
+        fiscalMonth:
+          column:
+            name: fiscal_month
+        fiscalQuarter:
+          column:
+            name: fiscal_quarter
+        fiscalYear:
+          column:
+            name: fiscal_year
+        referenceNumber:
+          column:
+            name: reference_number
+        updatedAt:
+          column:
+            name: updated_at
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: PublicGeneralLedger
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - accountId
+          - createdAt
+          - creditAmount
+          - debitAmount
+          - description
+          - entryDate
+          - entryId
+          - entrySource
+          - fiscalMonth
+          - fiscalQuarter
+          - fiscalYear
+          - referenceNumber
+          - updatedAt
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PublicGeneralLedgerBoolExp
+  operand:
+    object:
+      type: PublicGeneralLedger
+      comparableFields:
+        - fieldName: accountId
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: createdAt
+          booleanExpressionType: TimestampWithoutTimeZoneBoolExp
+        - fieldName: creditAmount
+          booleanExpressionType: DecimalBoolExp
+        - fieldName: debitAmount
+          booleanExpressionType: DecimalBoolExp
+        - fieldName: description
+          booleanExpressionType: TextBoolExp
+        - fieldName: entryDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: entryId
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: entrySource
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: fiscalMonth
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: fiscalQuarter
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: fiscalYear
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: referenceNumber
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: updatedAt
+          booleanExpressionType: TimestampWithoutTimeZoneBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: PublicGeneralLedgerBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PublicGeneralLedgerAggExp
+  operand:
+    object:
+      aggregatedType: PublicGeneralLedger
+      aggregatableFields:
+        - fieldName: accountId
+          aggregateExpression: IntegerAggExp
+        - fieldName: createdAt
+          aggregateExpression: TimestampWithoutTimeZoneAggExp
+        - fieldName: creditAmount
+          aggregateExpression: DecimalAggExp
+        - fieldName: debitAmount
+          aggregateExpression: DecimalAggExp
+        - fieldName: description
+          aggregateExpression: TextAggExp
+        - fieldName: entryDate
+          aggregateExpression: DateAggExp
+        - fieldName: entryId
+          aggregateExpression: IntegerAggExp
+        - fieldName: entrySource
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: fiscalMonth
+          aggregateExpression: IntegerAggExp
+        - fieldName: fiscalQuarter
+          aggregateExpression: IntegerAggExp
+        - fieldName: fiscalYear
+          aggregateExpression: IntegerAggExp
+        - fieldName: referenceNumber
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: updatedAt
+          aggregateExpression: TimestampWithoutTimeZoneAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: PublicGeneralLedgerAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PublicGeneralLedgerOrderByExp
+  operand:
+    object:
+      orderedType: PublicGeneralLedger
+      orderableFields:
+        - fieldName: accountId
+          orderByExpression: Int32OrderByExp
+        - fieldName: createdAt
+          orderByExpression: TimestampOrderByExp
+        - fieldName: creditAmount
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: debitAmount
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: description
+          orderByExpression: String1OrderByExp
+        - fieldName: entryDate
+          orderByExpression: DateOrderByExp
+        - fieldName: entryId
+          orderByExpression: Int32OrderByExp
+        - fieldName: entrySource
+          orderByExpression: String1OrderByExp
+        - fieldName: fiscalMonth
+          orderByExpression: Int32OrderByExp
+        - fieldName: fiscalQuarter
+          orderByExpression: Int32OrderByExp
+        - fieldName: fiscalYear
+          orderByExpression: Int32OrderByExp
+        - fieldName: referenceNumber
+          orderByExpression: String1OrderByExp
+        - fieldName: updatedAt
+          orderByExpression: TimestampOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: PublicGeneralLedgerOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: PublicGeneralLedger
+  objectType: PublicGeneralLedger
+  source:
+    dataConnectorName: financials
+    collection: public.general_ledger
+  filterExpressionType: PublicGeneralLedgerBoolExp
+  aggregateExpression: PublicGeneralLedgerAggExp
+  orderByExpression: PublicGeneralLedgerOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: publicGeneralLedger
+      subscription:
+        rootField: publicGeneralLedger
+    selectUniques:
+      - queryRootField: publicGeneralLedgerByEntryId
+        uniqueIdentifier:
+          - entryId
+        subscription:
+          rootField: publicGeneralLedgerByEntryId
+    filterInputTypeName: PublicGeneralLedgerFilterInput
+    aggregate:
+      queryRootField: publicGeneralLedgerAggregate
+      subscription:
+        rootField: publicGeneralLedgerAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: PublicGeneralLedger
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

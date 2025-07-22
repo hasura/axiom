@@ -1,0 +1,229 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: PublicCustomerContacts
+  description: "Object type for public.customer_contacts. Description: null"
+  fields:
+    - name: contactId
+      type: Int32!
+    - name: createdAt
+      type: Timestamp
+    - name: customerId
+      type: Int32!
+    - name: email
+      type: String_1!
+    - name: firstName
+      type: String_1!
+    - name: isPrimary
+      type: Boolean_1
+    - name: jobTitle
+      type: String_1
+    - name: lastName
+      type: String_1!
+    - name: phone
+      type: String_1
+    - name: updatedAt
+      type: Timestamp
+  graphql:
+    typeName: PublicCustomerContacts
+    inputTypeName: PublicCustomerContactsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: operations
+      dataConnectorObjectType: public.customer_contacts
+      fieldMapping:
+        contactId:
+          column:
+            name: contact_id
+        createdAt:
+          column:
+            name: created_at
+        customerId:
+          column:
+            name: customer_id
+        email:
+          column:
+            name: email
+        firstName:
+          column:
+            name: first_name
+        isPrimary:
+          column:
+            name: is_primary
+        jobTitle:
+          column:
+            name: job_title
+        lastName:
+          column:
+            name: last_name
+        phone:
+          column:
+            name: phone
+        updatedAt:
+          column:
+            name: updated_at
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: PublicCustomerContacts
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - contactId
+          - createdAt
+          - customerId
+          - email
+          - firstName
+          - isPrimary
+          - jobTitle
+          - lastName
+          - phone
+          - updatedAt
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PublicCustomerContactsBoolExp
+  operand:
+    object:
+      type: PublicCustomerContacts
+      comparableFields:
+        - fieldName: contactId
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: createdAt
+          booleanExpressionType: TimestampWithoutTimeZoneBoolExp_1
+        - fieldName: customerId
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: email
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: firstName
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: isPrimary
+          booleanExpressionType: BooleanBoolExp_1
+        - fieldName: jobTitle
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: lastName
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: phone
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: updatedAt
+          booleanExpressionType: TimestampWithoutTimeZoneBoolExp_1
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: PublicCustomerContactsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PublicCustomerContactsAggExp
+  operand:
+    object:
+      aggregatedType: PublicCustomerContacts
+      aggregatableFields:
+        - fieldName: contactId
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: createdAt
+          aggregateExpression: TimestampWithoutTimeZoneAggExp_1
+        - fieldName: customerId
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: email
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: firstName
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: isPrimary
+          aggregateExpression: BooleanAggExp_1
+        - fieldName: jobTitle
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: lastName
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: phone
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: updatedAt
+          aggregateExpression: TimestampWithoutTimeZoneAggExp_1
+  count:
+    enable: true
+  graphql:
+    selectTypeName: PublicCustomerContactsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PublicCustomerContactsOrderByExp
+  operand:
+    object:
+      orderedType: PublicCustomerContacts
+      orderableFields:
+        - fieldName: contactId
+          orderByExpression: Int32OrderByExp
+        - fieldName: createdAt
+          orderByExpression: TimestampOrderByExp
+        - fieldName: customerId
+          orderByExpression: Int32OrderByExp
+        - fieldName: email
+          orderByExpression: String1OrderByExp
+        - fieldName: firstName
+          orderByExpression: String1OrderByExp
+        - fieldName: isPrimary
+          orderByExpression: Boolean1OrderByExp
+        - fieldName: jobTitle
+          orderByExpression: String1OrderByExp
+        - fieldName: lastName
+          orderByExpression: String1OrderByExp
+        - fieldName: phone
+          orderByExpression: String1OrderByExp
+        - fieldName: updatedAt
+          orderByExpression: TimestampOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: PublicCustomerContactsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: PublicCustomerContacts
+  objectType: PublicCustomerContacts
+  source:
+    dataConnectorName: operations
+    collection: public.customer_contacts
+  filterExpressionType: PublicCustomerContactsBoolExp
+  aggregateExpression: PublicCustomerContactsAggExp
+  orderByExpression: PublicCustomerContactsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: publicCustomerContacts
+      subscription:
+        rootField: publicCustomerContacts
+    selectUniques:
+      - queryRootField: publicCustomerContactsByContactId
+        uniqueIdentifier:
+          - contactId
+        subscription:
+          rootField: publicCustomerContactsByContactId
+    filterInputTypeName: PublicCustomerContactsFilterInput
+    aggregate:
+      queryRootField: publicCustomerContactsAggregate
+      subscription:
+        rootField: publicCustomerContactsAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: PublicCustomerContacts
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

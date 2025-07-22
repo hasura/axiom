@@ -1,0 +1,301 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: PublicMarketingCampaigns
+  description: "Object type for public.marketing_campaigns. Description: null"
+  fields:
+    - name: actualRevenue
+      type: Bigdecimal
+    - name: actualSpend
+      type: Bigdecimal
+    - name: budget
+      type: Bigdecimal!
+    - name: campaignId
+      type: Int32!
+    - name: campaignName
+      type: String_1!
+    - name: campaignType
+      type: String_1!
+    - name: createdAt
+      type: Timestamp
+    - name: endDate
+      type: Date
+    - name: expectedRevenue
+      type: Bigdecimal
+    - name: roiPercentage
+      type: Bigdecimal
+    - name: startDate
+      type: Date!
+    - name: status
+      type: String_1
+    - name: targetAudience
+      type: String_1
+    - name: targetProducts
+      type: String_1
+    - name: targetRegion
+      type: Int32
+    - name: updatedAt
+      type: Timestamp
+  graphql:
+    typeName: PublicMarketingCampaigns
+    inputTypeName: PublicMarketingCampaignsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: operations
+      dataConnectorObjectType: public.marketing_campaigns
+      fieldMapping:
+        actualRevenue:
+          column:
+            name: actual_revenue
+        actualSpend:
+          column:
+            name: actual_spend
+        budget:
+          column:
+            name: budget
+        campaignId:
+          column:
+            name: campaign_id
+        campaignName:
+          column:
+            name: campaign_name
+        campaignType:
+          column:
+            name: campaign_type
+        createdAt:
+          column:
+            name: created_at
+        endDate:
+          column:
+            name: end_date
+        expectedRevenue:
+          column:
+            name: expected_revenue
+        roiPercentage:
+          column:
+            name: roi_percentage
+        startDate:
+          column:
+            name: start_date
+        status:
+          column:
+            name: status
+        targetAudience:
+          column:
+            name: target_audience
+        targetProducts:
+          column:
+            name: target_products
+        targetRegion:
+          column:
+            name: target_region
+        updatedAt:
+          column:
+            name: updated_at
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: PublicMarketingCampaigns
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - actualRevenue
+          - actualSpend
+          - budget
+          - campaignId
+          - campaignName
+          - campaignType
+          - createdAt
+          - endDate
+          - expectedRevenue
+          - roiPercentage
+          - startDate
+          - status
+          - targetAudience
+          - targetProducts
+          - targetRegion
+          - updatedAt
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PublicMarketingCampaignsBoolExp
+  operand:
+    object:
+      type: PublicMarketingCampaigns
+      comparableFields:
+        - fieldName: actualRevenue
+          booleanExpressionType: DecimalBoolExp_1
+        - fieldName: actualSpend
+          booleanExpressionType: DecimalBoolExp_1
+        - fieldName: budget
+          booleanExpressionType: DecimalBoolExp_1
+        - fieldName: campaignId
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: campaignName
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: campaignType
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: createdAt
+          booleanExpressionType: TimestampWithoutTimeZoneBoolExp_1
+        - fieldName: endDate
+          booleanExpressionType: DateBoolExp_1
+        - fieldName: expectedRevenue
+          booleanExpressionType: DecimalBoolExp_1
+        - fieldName: roiPercentage
+          booleanExpressionType: DecimalBoolExp_1
+        - fieldName: startDate
+          booleanExpressionType: DateBoolExp_1
+        - fieldName: status
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: targetAudience
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: targetProducts
+          booleanExpressionType: TextBoolExp_1
+        - fieldName: targetRegion
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: updatedAt
+          booleanExpressionType: TimestampWithoutTimeZoneBoolExp_1
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: PublicMarketingCampaignsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PublicMarketingCampaignsAggExp
+  operand:
+    object:
+      aggregatedType: PublicMarketingCampaigns
+      aggregatableFields:
+        - fieldName: actualRevenue
+          aggregateExpression: DecimalAggExp_1
+        - fieldName: actualSpend
+          aggregateExpression: DecimalAggExp_1
+        - fieldName: budget
+          aggregateExpression: DecimalAggExp_1
+        - fieldName: campaignId
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: campaignName
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: campaignType
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: createdAt
+          aggregateExpression: TimestampWithoutTimeZoneAggExp_1
+        - fieldName: endDate
+          aggregateExpression: DateAggExp_1
+        - fieldName: expectedRevenue
+          aggregateExpression: DecimalAggExp_1
+        - fieldName: roiPercentage
+          aggregateExpression: DecimalAggExp_1
+        - fieldName: startDate
+          aggregateExpression: DateAggExp_1
+        - fieldName: status
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: targetAudience
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: targetProducts
+          aggregateExpression: TextAggExp_1
+        - fieldName: targetRegion
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: updatedAt
+          aggregateExpression: TimestampWithoutTimeZoneAggExp_1
+  count:
+    enable: true
+  graphql:
+    selectTypeName: PublicMarketingCampaignsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PublicMarketingCampaignsOrderByExp
+  operand:
+    object:
+      orderedType: PublicMarketingCampaigns
+      orderableFields:
+        - fieldName: actualRevenue
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: actualSpend
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: budget
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: campaignId
+          orderByExpression: Int32OrderByExp
+        - fieldName: campaignName
+          orderByExpression: String1OrderByExp
+        - fieldName: campaignType
+          orderByExpression: String1OrderByExp
+        - fieldName: createdAt
+          orderByExpression: TimestampOrderByExp
+        - fieldName: endDate
+          orderByExpression: DateOrderByExp
+        - fieldName: expectedRevenue
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: roiPercentage
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: startDate
+          orderByExpression: DateOrderByExp
+        - fieldName: status
+          orderByExpression: String1OrderByExp
+        - fieldName: targetAudience
+          orderByExpression: String1OrderByExp
+        - fieldName: targetProducts
+          orderByExpression: String1OrderByExp
+        - fieldName: targetRegion
+          orderByExpression: Int32OrderByExp
+        - fieldName: updatedAt
+          orderByExpression: TimestampOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: PublicMarketingCampaignsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: PublicMarketingCampaigns
+  objectType: PublicMarketingCampaigns
+  source:
+    dataConnectorName: operations
+    collection: public.marketing_campaigns
+  filterExpressionType: PublicMarketingCampaignsBoolExp
+  aggregateExpression: PublicMarketingCampaignsAggExp
+  orderByExpression: PublicMarketingCampaignsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: publicMarketingCampaigns
+      subscription:
+        rootField: publicMarketingCampaigns
+    selectUniques:
+      - queryRootField: publicMarketingCampaignsByCampaignId
+        uniqueIdentifier:
+          - campaignId
+        subscription:
+          rootField: publicMarketingCampaignsByCampaignId
+    filterInputTypeName: PublicMarketingCampaignsFilterInput
+    aggregate:
+      queryRootField: publicMarketingCampaignsAggregate
+      subscription:
+        rootField: publicMarketingCampaignsAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: PublicMarketingCampaigns
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

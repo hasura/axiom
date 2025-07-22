@@ -1,0 +1,229 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: PublicFinancialStatements
+  description: "Object type for public.financial_statements. Description: null"
+  fields:
+    - name: approvedBy
+      type: String_1
+    - name: createdAt
+      type: Timestamp
+    - name: fiscalMonth
+      type: Int32
+    - name: fiscalQuarter
+      type: Int32
+    - name: fiscalYear
+      type: Int32!
+    - name: isAudited
+      type: Boolean_1
+    - name: preparedBy
+      type: String_1
+    - name: statementId
+      type: Int32!
+    - name: statementType
+      type: String_1!
+    - name: updatedAt
+      type: Timestamp
+  graphql:
+    typeName: PublicFinancialStatements
+    inputTypeName: PublicFinancialStatementsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: financials
+      dataConnectorObjectType: public.financial_statements
+      fieldMapping:
+        approvedBy:
+          column:
+            name: approved_by
+        createdAt:
+          column:
+            name: created_at
+        fiscalMonth:
+          column:
+            name: fiscal_month
+        fiscalQuarter:
+          column:
+            name: fiscal_quarter
+        fiscalYear:
+          column:
+            name: fiscal_year
+        isAudited:
+          column:
+            name: is_audited
+        preparedBy:
+          column:
+            name: prepared_by
+        statementId:
+          column:
+            name: statement_id
+        statementType:
+          column:
+            name: statement_type
+        updatedAt:
+          column:
+            name: updated_at
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: PublicFinancialStatements
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - approvedBy
+          - createdAt
+          - fiscalMonth
+          - fiscalQuarter
+          - fiscalYear
+          - isAudited
+          - preparedBy
+          - statementId
+          - statementType
+          - updatedAt
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PublicFinancialStatementsBoolExp
+  operand:
+    object:
+      type: PublicFinancialStatements
+      comparableFields:
+        - fieldName: approvedBy
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: createdAt
+          booleanExpressionType: TimestampWithoutTimeZoneBoolExp
+        - fieldName: fiscalMonth
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: fiscalQuarter
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: fiscalYear
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: isAudited
+          booleanExpressionType: BooleanBoolExp
+        - fieldName: preparedBy
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: statementId
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: statementType
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: updatedAt
+          booleanExpressionType: TimestampWithoutTimeZoneBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: PublicFinancialStatementsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PublicFinancialStatementsAggExp
+  operand:
+    object:
+      aggregatedType: PublicFinancialStatements
+      aggregatableFields:
+        - fieldName: approvedBy
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: createdAt
+          aggregateExpression: TimestampWithoutTimeZoneAggExp
+        - fieldName: fiscalMonth
+          aggregateExpression: IntegerAggExp
+        - fieldName: fiscalQuarter
+          aggregateExpression: IntegerAggExp
+        - fieldName: fiscalYear
+          aggregateExpression: IntegerAggExp
+        - fieldName: isAudited
+          aggregateExpression: BooleanAggExp
+        - fieldName: preparedBy
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: statementId
+          aggregateExpression: IntegerAggExp
+        - fieldName: statementType
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: updatedAt
+          aggregateExpression: TimestampWithoutTimeZoneAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: PublicFinancialStatementsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PublicFinancialStatementsOrderByExp
+  operand:
+    object:
+      orderedType: PublicFinancialStatements
+      orderableFields:
+        - fieldName: approvedBy
+          orderByExpression: String1OrderByExp
+        - fieldName: createdAt
+          orderByExpression: TimestampOrderByExp
+        - fieldName: fiscalMonth
+          orderByExpression: Int32OrderByExp
+        - fieldName: fiscalQuarter
+          orderByExpression: Int32OrderByExp
+        - fieldName: fiscalYear
+          orderByExpression: Int32OrderByExp
+        - fieldName: isAudited
+          orderByExpression: Boolean1OrderByExp
+        - fieldName: preparedBy
+          orderByExpression: String1OrderByExp
+        - fieldName: statementId
+          orderByExpression: Int32OrderByExp
+        - fieldName: statementType
+          orderByExpression: String1OrderByExp
+        - fieldName: updatedAt
+          orderByExpression: TimestampOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: PublicFinancialStatementsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: PublicFinancialStatements
+  objectType: PublicFinancialStatements
+  source:
+    dataConnectorName: financials
+    collection: public.financial_statements
+  filterExpressionType: PublicFinancialStatementsBoolExp
+  aggregateExpression: PublicFinancialStatementsAggExp
+  orderByExpression: PublicFinancialStatementsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: publicFinancialStatements
+      subscription:
+        rootField: publicFinancialStatements
+    selectUniques:
+      - queryRootField: publicFinancialStatementsByStatementId
+        uniqueIdentifier:
+          - statementId
+        subscription:
+          rootField: publicFinancialStatementsByStatementId
+    filterInputTypeName: PublicFinancialStatementsFilterInput
+    aggregate:
+      queryRootField: publicFinancialStatementsAggregate
+      subscription:
+        rootField: publicFinancialStatementsAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: PublicFinancialStatements
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

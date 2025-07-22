@@ -1,0 +1,181 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: PublicRegions
+  description: "Object type for public.regions. Description: null"
+  fields:
+    - name: country
+      type: String_1!
+    - name: createdAt
+      type: Timestamp
+    - name: currencyCode
+      type: String_1!
+    - name: regionId
+      type: Int32!
+    - name: regionName
+      type: String_1!
+    - name: updatedAt
+      type: Timestamp
+  graphql:
+    typeName: PublicRegions
+    inputTypeName: PublicRegionsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: operations
+      dataConnectorObjectType: public.regions
+      fieldMapping:
+        country:
+          column:
+            name: country
+        createdAt:
+          column:
+            name: created_at
+        currencyCode:
+          column:
+            name: currency_code
+        regionId:
+          column:
+            name: region_id
+        regionName:
+          column:
+            name: region_name
+        updatedAt:
+          column:
+            name: updated_at
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: PublicRegions
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - country
+          - createdAt
+          - currencyCode
+          - regionId
+          - regionName
+          - updatedAt
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PublicRegionsBoolExp
+  operand:
+    object:
+      type: PublicRegions
+      comparableFields:
+        - fieldName: country
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: createdAt
+          booleanExpressionType: TimestampWithoutTimeZoneBoolExp_1
+        - fieldName: currencyCode
+          booleanExpressionType: CharacterBoolExp
+        - fieldName: regionId
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: regionName
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: updatedAt
+          booleanExpressionType: TimestampWithoutTimeZoneBoolExp_1
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: PublicRegionsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PublicRegionsAggExp
+  operand:
+    object:
+      aggregatedType: PublicRegions
+      aggregatableFields:
+        - fieldName: country
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: createdAt
+          aggregateExpression: TimestampWithoutTimeZoneAggExp_1
+        - fieldName: currencyCode
+          aggregateExpression: CharacterAggExp
+        - fieldName: regionId
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: regionName
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: updatedAt
+          aggregateExpression: TimestampWithoutTimeZoneAggExp_1
+  count:
+    enable: true
+  graphql:
+    selectTypeName: PublicRegionsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PublicRegionsOrderByExp
+  operand:
+    object:
+      orderedType: PublicRegions
+      orderableFields:
+        - fieldName: country
+          orderByExpression: String1OrderByExp
+        - fieldName: createdAt
+          orderByExpression: TimestampOrderByExp
+        - fieldName: currencyCode
+          orderByExpression: String1OrderByExp
+        - fieldName: regionId
+          orderByExpression: Int32OrderByExp
+        - fieldName: regionName
+          orderByExpression: String1OrderByExp
+        - fieldName: updatedAt
+          orderByExpression: TimestampOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: PublicRegionsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: PublicRegions
+  objectType: PublicRegions
+  source:
+    dataConnectorName: operations
+    collection: public.regions
+  filterExpressionType: PublicRegionsBoolExp
+  aggregateExpression: PublicRegionsAggExp
+  orderByExpression: PublicRegionsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: publicRegions
+      subscription:
+        rootField: publicRegions
+    selectUniques:
+      - queryRootField: publicRegionsByRegionId
+        uniqueIdentifier:
+          - regionId
+        subscription:
+          rootField: publicRegionsByRegionId
+    filterInputTypeName: PublicRegionsFilterInput
+    aggregate:
+      queryRootField: publicRegionsAggregate
+      subscription:
+        rootField: publicRegionsAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: PublicRegions
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
