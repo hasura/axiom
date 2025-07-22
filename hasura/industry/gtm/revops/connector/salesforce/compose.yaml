@@ -4,11 +4,11 @@ services:
       context: .
       dockerfile: .hasura-connector/Dockerfile.salesforce
     environment:
-      CONNECTION_URI: $REVOPS_SALESFORCE_CONNECTION_URI
       HASURA_SERVICE_TOKEN_SECRET: $REVOPS_SALESFORCE_HASURA_SERVICE_TOKEN_SECRET
+      JDBC_URL: $REVOPS_SALESFORCE_JDBC_URL
       OTEL_EXPORTER_OTLP_ENDPOINT: $REVOPS_SALESFORCE_OTEL_EXPORTER_OTLP_ENDPOINT
       OTEL_SERVICE_NAME: $REVOPS_SALESFORCE_OTEL_SERVICE_NAME
     extra_hosts:
       - local.hasura.dev:host-gateway
     ports:
-      - 7853:8080
+      - 8395:8080

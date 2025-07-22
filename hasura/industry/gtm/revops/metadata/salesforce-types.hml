@@ -1,163 +1,123 @@
 ---
-kind: ScalarType
-version: v1
-definition:
-  name: varchar
-  graphql:
-    typeName: varchar
-
----
 kind: BooleanExpressionType
 version: v1
 definition:
-  name: varchar_bool_exp
+  name: CharacterVaryingBoolExp
   operand:
     scalar:
-      type: varchar
+      type: String_1
       comparisonOperators:
         - name: _eq
-          argumentType: varchar!
+          argumentType: String_1!
         - name: _gt
-          argumentType: varchar!
+          argumentType: String_1!
         - name: _gte
-          argumentType: varchar!
+          argumentType: String_1!
         - name: _ilike
-          argumentType: varchar!
+          argumentType: String_1!
         - name: _in
-          argumentType: "[varchar!]!"
+          argumentType: "[String_1!]!"
         - name: _iregex
-          argumentType: varchar!
+          argumentType: String_1!
         - name: _like
-          argumentType: varchar!
+          argumentType: String_1!
         - name: _lt
-          argumentType: varchar!
+          argumentType: String_1!
         - name: _lte
-          argumentType: varchar!
+          argumentType: String_1!
         - name: _neq
-          argumentType: varchar!
+          argumentType: String_1!
         - name: _nilike
-          argumentType: varchar!
+          argumentType: String_1!
         - name: _niregex
-          argumentType: varchar!
+          argumentType: String_1!
         - name: _nlike
-          argumentType: varchar!
+          argumentType: String_1!
         - name: _nregex
-          argumentType: varchar!
+          argumentType: String_1!
         - name: _regex
-          argumentType: varchar!
-        - name: starts_with
-          argumentType: varchar!
-        - name: ts_match_tt
-          argumentType: varchar!
+          argumentType: String_1!
       dataConnectorOperatorMapping:
         - dataConnectorName: salesforce
-          dataConnectorScalarType: varchar
+          dataConnectorScalarType: character_varying
           operatorMapping: {}
   logicalOperators:
     enable: true
   isNull:
     enable: true
   graphql:
-    typeName: varchar_bool_exp
+    typeName: CharacterVaryingBoolExp_1
 
 ---
 kind: DataConnectorScalarRepresentation
 version: v1
 definition:
   dataConnectorName: salesforce
-  dataConnectorScalarType: varchar
-  representation: varchar
+  dataConnectorScalarType: character_varying
+  representation: String_1
   graphql:
-    comparisonExpressionTypeName: varchar_comparison_exp
-
----
-kind: ScalarType
-version: v1
-definition:
-  name: text
-  graphql:
-    typeName: text
+    comparisonExpressionTypeName: String1ComparisonExp_2
 
 ---
 kind: BooleanExpressionType
 version: v1
 definition:
-  name: text_bool_exp
+  name: IntegerBoolExp_1
   operand:
     scalar:
-      type: text
+      type: Int32
       comparisonOperators:
         - name: _eq
-          argumentType: text!
+          argumentType: Int32!
         - name: _gt
-          argumentType: text!
+          argumentType: Int32!
         - name: _gte
-          argumentType: text!
-        - name: _ilike
-          argumentType: text!
+          argumentType: Int32!
         - name: _in
-          argumentType: "[text!]!"
-        - name: _iregex
-          argumentType: text!
-        - name: _like
-          argumentType: text!
+          argumentType: "[Int32!]!"
         - name: _lt
-          argumentType: text!
+          argumentType: Int32!
         - name: _lte
-          argumentType: text!
+          argumentType: Int32!
         - name: _neq
-          argumentType: text!
-        - name: _nilike
-          argumentType: text!
-        - name: _niregex
-          argumentType: text!
-        - name: _nlike
-          argumentType: text!
-        - name: _nregex
-          argumentType: text!
-        - name: _regex
-          argumentType: text!
-        - name: starts_with
-          argumentType: text!
-        - name: ts_match_tt
-          argumentType: text!
+          argumentType: Int32!
       dataConnectorOperatorMapping:
         - dataConnectorName: salesforce
-          dataConnectorScalarType: text
+          dataConnectorScalarType: integer
           operatorMapping: {}
   logicalOperators:
     enable: true
   isNull:
     enable: true
   graphql:
-    typeName: text_bool_exp
+    typeName: IntegerBoolExp1
 
 ---
 kind: DataConnectorScalarRepresentation
 version: v1
 definition:
   dataConnectorName: salesforce
-  dataConnectorScalarType: text
-  representation: text
+  dataConnectorScalarType: integer
+  representation: Int32
   graphql:
-    comparisonExpressionTypeName: text_comparison_exp
+    comparisonExpressionTypeName: Int32ComparisonExp_2
 
 ---
 kind: AggregateExpression
 version: v1
 definition:
-  name: varchar_agg_exp
+  name: CharacterVaryingAggExp
   operand:
     scalar:
-      aggregatedType: varchar
+      aggregatedType: String_1
       aggregationFunctions:
         - name: max
-          returnType: text
+          returnType: String_1
         - name: min
-          returnType: text
+          returnType: String_1
       dataConnectorAggregationFunctionMapping:
         - dataConnectorName: salesforce
-          dataConnectorScalarType: varchar
+          dataConnectorScalarType: character_varying
           functionMapping:
             max:
               name: max
@@ -168,323 +128,131 @@ definition:
   countDistinct:
     enable: true
   graphql:
-    selectTypeName: varchar_agg_exp
+    selectTypeName: CharacterVaryingAggExp_1
 
 ---
-kind: OrderByExpression
+kind: BooleanExpressionType
 version: v1
 definition:
-  name: varchar_order_by_exp
+  name: DecimalBoolExp_1
   operand:
     scalar:
-      orderedType: varchar
-      enableOrderByDirections:
-        enableAll: true
+      type: Bigdecimal
+      comparisonOperators:
+        - name: _eq
+          argumentType: Bigdecimal!
+        - name: _gt
+          argumentType: Bigdecimal!
+        - name: _gte
+          argumentType: Bigdecimal!
+        - name: _in
+          argumentType: "[Bigdecimal!]!"
+        - name: _lt
+          argumentType: Bigdecimal!
+        - name: _lte
+          argumentType: Bigdecimal!
+        - name: _neq
+          argumentType: Bigdecimal!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: salesforce
+          dataConnectorScalarType: decimal
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
   graphql:
-    expressionTypeName: varchar_order_by_exp
+    typeName: DecimalBoolExp1
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: salesforce
+  dataConnectorScalarType: decimal
+  representation: Bigdecimal
+  graphql:
+    comparisonExpressionTypeName: BigdecimalComparisonExp_2
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: BigintBoolExp_1
+  operand:
+    scalar:
+      type: Biginteger
+      comparisonOperators:
+        - name: _eq
+          argumentType: Biginteger!
+        - name: _gt
+          argumentType: Biginteger!
+        - name: _gte
+          argumentType: Biginteger!
+        - name: _in
+          argumentType: "[Biginteger!]!"
+        - name: _lt
+          argumentType: Biginteger!
+        - name: _lte
+          argumentType: Biginteger!
+        - name: _neq
+          argumentType: Biginteger!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: salesforce
+          dataConnectorScalarType: bigint
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: BigintBoolExp1
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: salesforce
+  dataConnectorScalarType: bigint
+  representation: Biginteger
+  graphql:
+    comparisonExpressionTypeName: BigintegerComparisonExp_2
 
 ---
 kind: AggregateExpression
 version: v1
 definition:
-  name: text_agg_exp
+  name: IntegerAggExp_1
   operand:
     scalar:
-      aggregatedType: text
-      aggregationFunctions:
-        - name: max
-          returnType: text
-        - name: min
-          returnType: text
-      dataConnectorAggregationFunctionMapping:
-        - dataConnectorName: salesforce
-          dataConnectorScalarType: text
-          functionMapping:
-            max:
-              name: max
-            min:
-              name: min
-  count:
-    enable: true
-  countDistinct:
-    enable: true
-  graphql:
-    selectTypeName: text_agg_exp
-
----
-kind: OrderByExpression
-version: v1
-definition:
-  name: text_order_by_exp
-  operand:
-    scalar:
-      orderedType: text
-      enableOrderByDirections:
-        enableAll: true
-  graphql:
-    expressionTypeName: text_order_by_exp
-
----
-kind: ScalarType
-version: v1
-definition:
-  name: int_4
-  graphql:
-    typeName: int_4
-
----
-kind: BooleanExpressionType
-version: v1
-definition:
-  name: int_4_bool_exp
-  operand:
-    scalar:
-      type: int_4
-      comparisonOperators:
-        - name: _eq
-          argumentType: int_4!
-        - name: _gt
-          argumentType: int_4!
-        - name: _gte
-          argumentType: int_4!
-        - name: _in
-          argumentType: "[int_4!]!"
-        - name: _lt
-          argumentType: int_4!
-        - name: _lte
-          argumentType: int_4!
-        - name: _neq
-          argumentType: int_4!
-      dataConnectorOperatorMapping:
-        - dataConnectorName: salesforce
-          dataConnectorScalarType: int4
-          operatorMapping: {}
-  logicalOperators:
-    enable: true
-  isNull:
-    enable: true
-  graphql:
-    typeName: int_4_bool_exp
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: salesforce
-  dataConnectorScalarType: int4
-  representation: int_4
-  graphql:
-    comparisonExpressionTypeName: int_4_comparison_exp
-
----
-kind: ScalarType
-version: v1
-definition:
-  name: timestamptz
-  graphql:
-    typeName: timestamptz
-
----
-kind: BooleanExpressionType
-version: v1
-definition:
-  name: timestamptz_bool_exp
-  operand:
-    scalar:
-      type: timestamptz
-      comparisonOperators:
-        - name: _eq
-          argumentType: timestamptz!
-        - name: _gt
-          argumentType: timestamptz!
-        - name: _gte
-          argumentType: timestamptz!
-        - name: _in
-          argumentType: "[timestamptz!]!"
-        - name: _lt
-          argumentType: timestamptz!
-        - name: _lte
-          argumentType: timestamptz!
-        - name: _neq
-          argumentType: timestamptz!
-      dataConnectorOperatorMapping:
-        - dataConnectorName: salesforce
-          dataConnectorScalarType: timestamptz
-          operatorMapping: {}
-  logicalOperators:
-    enable: true
-  isNull:
-    enable: true
-  graphql:
-    typeName: timestamptz_bool_exp
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: salesforce
-  dataConnectorScalarType: timestamptz
-  representation: timestamptz
-  graphql:
-    comparisonExpressionTypeName: timestamptz_comparison_exp
-
----
-kind: ScalarType
-version: v1
-definition:
-  name: numeric
-  graphql:
-    typeName: numeric
-
----
-kind: BooleanExpressionType
-version: v1
-definition:
-  name: numeric_bool_exp
-  operand:
-    scalar:
-      type: numeric
-      comparisonOperators:
-        - name: _eq
-          argumentType: numeric!
-        - name: _gt
-          argumentType: numeric!
-        - name: _gte
-          argumentType: numeric!
-        - name: _in
-          argumentType: "[numeric!]!"
-        - name: _lt
-          argumentType: numeric!
-        - name: _lte
-          argumentType: numeric!
-        - name: _neq
-          argumentType: numeric!
-      dataConnectorOperatorMapping:
-        - dataConnectorName: salesforce
-          dataConnectorScalarType: numeric
-          operatorMapping: {}
-  logicalOperators:
-    enable: true
-  isNull:
-    enable: true
-  graphql:
-    typeName: numeric_bool_exp
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: salesforce
-  dataConnectorScalarType: numeric
-  representation: numeric
-  graphql:
-    comparisonExpressionTypeName: numeric_comparison_exp
-
----
-kind: ScalarType
-version: v1
-definition:
-  name: int_8
-  graphql:
-    typeName: int_8
-
----
-kind: BooleanExpressionType
-version: v1
-definition:
-  name: int_8_bool_exp
-  operand:
-    scalar:
-      type: int_8
-      comparisonOperators:
-        - name: _eq
-          argumentType: int_8!
-        - name: _gt
-          argumentType: int_8!
-        - name: _gte
-          argumentType: int_8!
-        - name: _in
-          argumentType: "[int_8!]!"
-        - name: _lt
-          argumentType: int_8!
-        - name: _lte
-          argumentType: int_8!
-        - name: _neq
-          argumentType: int_8!
-      dataConnectorOperatorMapping:
-        - dataConnectorName: salesforce
-          dataConnectorScalarType: int8
-          operatorMapping: {}
-  logicalOperators:
-    enable: true
-  isNull:
-    enable: true
-  graphql:
-    typeName: int_8_bool_exp
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: salesforce
-  dataConnectorScalarType: int8
-  representation: int_8
-  graphql:
-    comparisonExpressionTypeName: int_8_comparison_exp
-
----
-kind: AggregateExpression
-version: v1
-definition:
-  name: int_4_agg_exp
-  operand:
-    scalar:
-      aggregatedType: int_4
+      aggregatedType: Int32
       aggregationFunctions:
         - name: avg
-          returnType: numeric
-        - name: bit_and
-          returnType: int_4
-        - name: bit_or
-          returnType: int_4
-        - name: bit_xor
-          returnType: int_4
+          returnType: Bigdecimal
         - name: max
-          returnType: int_4
+          returnType: Int32
         - name: min
-          returnType: int_4
-        - name: stddev
-          returnType: numeric
+          returnType: Int32
         - name: stddev_pop
-          returnType: numeric
+          returnType: Int32!
         - name: stddev_samp
-          returnType: numeric
+          returnType: Int32!
         - name: sum
-          returnType: int_8
+          returnType: Biginteger
         - name: var_pop
-          returnType: numeric
+          returnType: Int32!
         - name: var_samp
-          returnType: numeric
-        - name: variance
-          returnType: numeric
+          returnType: Int32!
       dataConnectorAggregationFunctionMapping:
         - dataConnectorName: salesforce
-          dataConnectorScalarType: int4
+          dataConnectorScalarType: integer
           functionMapping:
             avg:
               name: avg
-            bit_and:
-              name: bit_and
-            bit_or:
-              name: bit_or
-            bit_xor:
-              name: bit_xor
             max:
               name: max
             min:
               name: min
-            stddev:
-              name: stddev
             stddev_pop:
               name: stddev_pop
             stddev_samp:
@@ -495,31 +263,89 @@ definition:
               name: var_pop
             var_samp:
               name: var_samp
-            variance:
-              name: variance
   count:
     enable: true
   countDistinct:
     enable: true
   graphql:
-    selectTypeName: int_4_agg_exp
+    selectTypeName: IntegerAggExp1
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: TextBoolExp_1
+  operand:
+    scalar:
+      type: String_1
+      comparisonOperators:
+        - name: _eq
+          argumentType: String_1!
+        - name: _gt
+          argumentType: String_1!
+        - name: _gte
+          argumentType: String_1!
+        - name: _ilike
+          argumentType: String_1!
+        - name: _in
+          argumentType: "[String_1!]!"
+        - name: _iregex
+          argumentType: String_1!
+        - name: _like
+          argumentType: String_1!
+        - name: _lt
+          argumentType: String_1!
+        - name: _lte
+          argumentType: String_1!
+        - name: _neq
+          argumentType: String_1!
+        - name: _nilike
+          argumentType: String_1!
+        - name: _niregex
+          argumentType: String_1!
+        - name: _nlike
+          argumentType: String_1!
+        - name: _nregex
+          argumentType: String_1!
+        - name: _regex
+          argumentType: String_1!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: salesforce
+          dataConnectorScalarType: text
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: TextBoolExp1
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: salesforce
+  dataConnectorScalarType: text
+  representation: String_1
+  graphql:
+    comparisonExpressionTypeName: String1ComparisonExp_3
 
 ---
 kind: AggregateExpression
 version: v1
 definition:
-  name: timestamptz_agg_exp
+  name: TextAggExp_1
   operand:
     scalar:
-      aggregatedType: timestamptz
+      aggregatedType: String_1
       aggregationFunctions:
         - name: max
-          returnType: timestamptz
+          returnType: String_1
         - name: min
-          returnType: timestamptz
+          returnType: String_1
       dataConnectorAggregationFunctionMapping:
         - dataConnectorName: salesforce
-          dataConnectorScalarType: timestamptz
+          dataConnectorScalarType: text
           functionMapping:
             max:
               name: max
@@ -530,31 +356,98 @@ definition:
   countDistinct:
     enable: true
   graphql:
-    selectTypeName: timestamptz_agg_exp
+    selectTypeName: TextAggExp1
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: Timestamptz
+  graphql:
+    typeName: Timestamptz_1
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: TimestampWithTimeZoneBoolExp
+  operand:
+    scalar:
+      type: Timestamptz
+      comparisonOperators:
+        - name: _eq
+          argumentType: Timestamptz!
+        - name: _gt
+          argumentType: Timestamptz!
+        - name: _gte
+          argumentType: Timestamptz!
+        - name: _in
+          argumentType: "[Timestamptz!]!"
+        - name: _lt
+          argumentType: Timestamptz!
+        - name: _lte
+          argumentType: Timestamptz!
+        - name: _neq
+          argumentType: Timestamptz!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: salesforce
+          dataConnectorScalarType: timestamp_with_time_zone
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: TimestampWithTimeZoneBoolExp_1
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: salesforce
+  dataConnectorScalarType: timestamp_with_time_zone
+  representation: Timestamptz
+  graphql:
+    comparisonExpressionTypeName: TimestamptzComparisonExp_1
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: TimestampWithTimeZoneAggExp
+  operand:
+    scalar:
+      aggregatedType: Timestamptz
+      aggregationFunctions:
+        - name: max
+          returnType: Timestamptz
+        - name: min
+          returnType: Timestamptz
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: salesforce
+          dataConnectorScalarType: timestamp_with_time_zone
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: TimestampWithTimeZoneAggExp_1
 
 ---
 kind: OrderByExpression
 version: v1
 definition:
-  name: int_4_order_by_exp
+  name: TimestamptzOrderByExp
   operand:
     scalar:
-      orderedType: int_4
+      orderedType: Timestamptz
       enableOrderByDirections:
         enableAll: true
   graphql:
-    expressionTypeName: int_4_order_by_exp
-
----
-kind: OrderByExpression
-version: v1
-definition:
-  name: timestamptz_order_by_exp
-  operand:
-    scalar:
-      orderedType: timestamptz
-      enableOrderByDirections:
-        enableAll: true
-  graphql:
-    expressionTypeName: timestamptz_order_by_exp
+    expressionTypeName: TimestamptzOrderByExp_1
 

@@ -1,0 +1,169 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: PublicSequences
+  description: "Object type for public.sequences. Description: null"
+  fields:
+    - name: createdAt
+      type: Timestamptz
+    - name: createdBy
+      type: String_1
+    - name: description
+      type: String_1
+    - name: id
+      type: Int32!
+    - name: name
+      type: String_1
+  graphql:
+    typeName: PublicSequences
+    inputTypeName: PublicSequencesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: salesforce
+      dataConnectorObjectType: public.sequences
+      fieldMapping:
+        createdAt:
+          column:
+            name: created_at
+        createdBy:
+          column:
+            name: created_by
+        description:
+          column:
+            name: description
+        id:
+          column:
+            name: id
+        name:
+          column:
+            name: name
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: PublicSequences
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - createdAt
+          - createdBy
+          - description
+          - id
+          - name
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PublicSequencesBoolExp
+  operand:
+    object:
+      type: PublicSequences
+      comparableFields:
+        - fieldName: createdAt
+          booleanExpressionType: TimestampWithTimeZoneBoolExp
+        - fieldName: createdBy
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: description
+          booleanExpressionType: TextBoolExp_1
+        - fieldName: id
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: name
+          booleanExpressionType: CharacterVaryingBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: PublicSequencesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PublicSequencesAggExp
+  operand:
+    object:
+      aggregatedType: PublicSequences
+      aggregatableFields:
+        - fieldName: createdAt
+          aggregateExpression: TimestampWithTimeZoneAggExp
+        - fieldName: createdBy
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: description
+          aggregateExpression: TextAggExp_1
+        - fieldName: id
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: name
+          aggregateExpression: CharacterVaryingAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: PublicSequencesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PublicSequencesOrderByExp
+  operand:
+    object:
+      orderedType: PublicSequences
+      orderableFields:
+        - fieldName: createdAt
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: createdBy
+          orderByExpression: String1OrderByExp
+        - fieldName: description
+          orderByExpression: String1OrderByExp
+        - fieldName: id
+          orderByExpression: Int32OrderByExp
+        - fieldName: name
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: PublicSequencesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: PublicSequences
+  objectType: PublicSequences
+  source:
+    dataConnectorName: salesforce
+    collection: public.sequences
+  filterExpressionType: PublicSequencesBoolExp
+  aggregateExpression: PublicSequencesAggExp
+  orderByExpression: PublicSequencesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: publicSequences
+      subscription:
+        rootField: publicSequences
+    selectUniques:
+      - queryRootField: publicSequencesById
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: publicSequencesById
+    filterInputTypeName: PublicSequencesFilterInput
+    aggregate:
+      queryRootField: publicSequencesAggregate
+      subscription:
+        rootField: publicSequencesAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: PublicSequences
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

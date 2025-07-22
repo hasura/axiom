@@ -12,2378 +12,3089 @@ definition:
     Authorization:
       valueFromEnv: REVOPS_CLARI_AUTHORIZATION_HEADER
   schema:
-    version: v0.1
+    version: v0.2
     schema:
+      collections:
+        - arguments: {}
+          name: public.call_action_items
+          type: public.call_action_items
+          uniqueness_constraints: {}
+        - arguments: {}
+          name: public.call_participants
+          type: public.call_participants
+          uniqueness_constraints:
+            primary_key:
+              unique_columns:
+                - call_person_id
+        - arguments: {}
+          name: public.call_topics
+          type: public.call_topics
+          uniqueness_constraints: {}
+        - arguments: {}
+          name: public.call_transcriptions
+          type: public.call_transcriptions
+          uniqueness_constraints:
+            primary_key:
+              unique_columns:
+                - transcription_id
+        - arguments: {}
+          name: public.calls
+          type: public.calls
+          uniqueness_constraints:
+            primary_key:
+              unique_columns:
+                - id
+      functions: []
+      object_types:
+        array_set_input:
+          description: Wrapper for setting scalar array
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar array
+              type:
+                type: nullable
+                underlying_type:
+                  name: array
+                  type: named
+          foreign_keys: {}
+        bigint_set_input:
+          description: Wrapper for setting scalar bigint
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar bigint
+              type:
+                type: nullable
+                underlying_type:
+                  name: bigint
+                  type: named
+          foreign_keys: {}
+        boolean_set_input:
+          description: Wrapper for setting scalar boolean
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar boolean
+              type:
+                type: nullable
+                underlying_type:
+                  name: boolean
+                  type: named
+          foreign_keys: {}
+        decimal_set_input:
+          description: Wrapper for setting scalar decimal
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar decimal
+              type:
+                type: nullable
+                underlying_type:
+                  name: decimal
+                  type: named
+          foreign_keys: {}
+        delete_public.call_action_items_result:
+          description: delete from public.call_action_items result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by delete
+              type:
+                element_type:
+                  name: public.call_action_items
+                  type: named
+                type: array
+          foreign_keys: {}
+        delete_public.call_participants_result:
+          description: delete from public.call_participants result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by delete
+              type:
+                element_type:
+                  name: public.call_participants
+                  type: named
+                type: array
+          foreign_keys: {}
+        delete_public.call_topics_result:
+          description: delete from public.call_topics result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by delete
+              type:
+                element_type:
+                  name: public.call_topics
+                  type: named
+                type: array
+          foreign_keys: {}
+        delete_public.call_transcriptions_result:
+          description: delete from public.call_transcriptions result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by delete
+              type:
+                element_type:
+                  name: public.call_transcriptions
+                  type: named
+                type: array
+          foreign_keys: {}
+        delete_public.calls_result:
+          description: delete from public.calls result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by delete
+              type:
+                element_type:
+                  name: public.calls
+                  type: named
+                type: array
+          foreign_keys: {}
+        double_precision_set_input:
+          description: Wrapper for setting scalar double_precision
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar double_precision
+              type:
+                type: nullable
+                underlying_type:
+                  name: double_precision
+                  type: named
+          foreign_keys: {}
+        insert_public.call_action_items_result:
+          description: insert from public.call_action_items result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by insert
+              type:
+                element_type:
+                  name: public.call_action_items
+                  type: named
+                type: array
+          foreign_keys: {}
+        insert_public.call_participants_result:
+          description: insert from public.call_participants result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by insert
+              type:
+                element_type:
+                  name: public.call_participants
+                  type: named
+                type: array
+          foreign_keys: {}
+        insert_public.call_topics_result:
+          description: insert from public.call_topics result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by insert
+              type:
+                element_type:
+                  name: public.call_topics
+                  type: named
+                type: array
+          foreign_keys: {}
+        insert_public.call_transcriptions_result:
+          description: insert from public.call_transcriptions result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by insert
+              type:
+                element_type:
+                  name: public.call_transcriptions
+                  type: named
+                type: array
+          foreign_keys: {}
+        insert_public.calls_result:
+          description: insert from public.calls result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by insert
+              type:
+                element_type:
+                  name: public.calls
+                  type: named
+                type: array
+          foreign_keys: {}
+        int_set_input:
+          description: Wrapper for setting scalar int
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar int
+              type:
+                type: nullable
+                underlying_type:
+                  name: int
+                  type: named
+          foreign_keys: {}
+        integer_set_input:
+          description: Wrapper for setting scalar integer
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar integer
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+          foreign_keys: {}
+        public.call_action_items:
+          description: 'Object type for public.call_action_items. Description: null'
+          fields:
+            action_item:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            call_id:
+              arguments: {}
+              type:
+                name: text
+                type: named
+            end_timestamp:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: time_without_time_zone
+                  type: named
+            owner_name:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            reasoning:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            speaker_name:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            start_timestamp:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: time_without_time_zone
+                  type: named
+            timeline:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+          foreign_keys: {}
+        public.call_action_items_insert_input:
+          description: Input type for inserting into public.call_action_items
+          fields:
+            action_item:
+              arguments: {}
+              description: New value for public.call_action_items.action_item
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            call_id:
+              arguments: {}
+              description: New value for public.call_action_items.call_id
+              type:
+                name: text
+                type: named
+            end_timestamp:
+              arguments: {}
+              description: New value for public.call_action_items.end_timestamp
+              type:
+                type: nullable
+                underlying_type:
+                  name: time_without_time_zone
+                  type: named
+            owner_name:
+              arguments: {}
+              description: New value for public.call_action_items.owner_name
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            reasoning:
+              arguments: {}
+              description: New value for public.call_action_items.reasoning
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            speaker_name:
+              arguments: {}
+              description: New value for public.call_action_items.speaker_name
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            start_timestamp:
+              arguments: {}
+              description: New value for public.call_action_items.start_timestamp
+              type:
+                type: nullable
+                underlying_type:
+                  name: time_without_time_zone
+                  type: named
+            timeline:
+              arguments: {}
+              description: New value for public.call_action_items.timeline
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+          foreign_keys: {}
+        public.call_action_items_set_input:
+          description: Input type for updating public.call_action_items
+          fields:
+            action_item:
+              arguments: {}
+              description: New value wrapper for public.call_action_items.action_item
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            call_id:
+              arguments: {}
+              description: New value wrapper for public.call_action_items.call_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            end_timestamp:
+              arguments: {}
+              description: New value wrapper for public.call_action_items.end_timestamp
+              type:
+                type: nullable
+                underlying_type:
+                  name: time_without_time_zone_set_input
+                  type: named
+            owner_name:
+              arguments: {}
+              description: New value wrapper for public.call_action_items.owner_name
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            reasoning:
+              arguments: {}
+              description: New value wrapper for public.call_action_items.reasoning
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            speaker_name:
+              arguments: {}
+              description: New value wrapper for public.call_action_items.speaker_name
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            start_timestamp:
+              arguments: {}
+              description: New value wrapper for public.call_action_items.start_timestamp
+              type:
+                type: nullable
+                underlying_type:
+                  name: time_without_time_zone_set_input
+                  type: named
+            timeline:
+              arguments: {}
+              description: New value wrapper for public.call_action_items.timeline
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+          foreign_keys: {}
+        public.call_participants:
+          description: 'Object type for public.call_participants. Description: null'
+          fields:
+            call_id:
+              arguments: {}
+              type:
+                name: text
+                type: named
+            call_person_id:
+              arguments: {}
+              type:
+                name: text
+                type: named
+            email:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            is_organizer:
+              arguments: {}
+              type:
+                name: boolean
+                type: named
+            name:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            person_id:
+              arguments: {}
+              type:
+                name: integer
+                type: named
+            user_id:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+          foreign_keys: {}
+        public.call_participants_insert_input:
+          description: Input type for inserting into public.call_participants
+          fields:
+            call_id:
+              arguments: {}
+              description: New value for public.call_participants.call_id
+              type:
+                name: text
+                type: named
+            call_person_id:
+              arguments: {}
+              description: New value for public.call_participants.call_person_id
+              type:
+                name: text
+                type: named
+            email:
+              arguments: {}
+              description: New value for public.call_participants.email
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            is_organizer:
+              arguments: {}
+              description: New value for public.call_participants.is_organizer
+              type:
+                name: boolean
+                type: named
+            name:
+              arguments: {}
+              description: New value for public.call_participants.name
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            person_id:
+              arguments: {}
+              description: New value for public.call_participants.person_id
+              type:
+                name: integer
+                type: named
+            user_id:
+              arguments: {}
+              description: New value for public.call_participants.user_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+          foreign_keys: {}
+        public.call_participants_set_input:
+          description: Input type for updating public.call_participants
+          fields:
+            call_id:
+              arguments: {}
+              description: New value wrapper for public.call_participants.call_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            call_person_id:
+              arguments: {}
+              description: New value wrapper for public.call_participants.call_person_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            email:
+              arguments: {}
+              description: New value wrapper for public.call_participants.email
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            is_organizer:
+              arguments: {}
+              description: New value wrapper for public.call_participants.is_organizer
+              type:
+                type: nullable
+                underlying_type:
+                  name: boolean_set_input
+                  type: named
+            name:
+              arguments: {}
+              description: New value wrapper for public.call_participants.name
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            person_id:
+              arguments: {}
+              description: New value wrapper for public.call_participants.person_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            user_id:
+              arguments: {}
+              description: New value wrapper for public.call_participants.user_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+          foreign_keys: {}
+        public.call_topics:
+          description: 'Object type for public.call_topics. Description: null'
+          fields:
+            call_id:
+              arguments: {}
+              type:
+                name: text
+                type: named
+            end_timestamp:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: time_without_time_zone
+                  type: named
+            name:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            start_timestamp:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: time_without_time_zone
+                  type: named
+            summary:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+          foreign_keys: {}
+        public.call_topics_insert_input:
+          description: Input type for inserting into public.call_topics
+          fields:
+            call_id:
+              arguments: {}
+              description: New value for public.call_topics.call_id
+              type:
+                name: text
+                type: named
+            end_timestamp:
+              arguments: {}
+              description: New value for public.call_topics.end_timestamp
+              type:
+                type: nullable
+                underlying_type:
+                  name: time_without_time_zone
+                  type: named
+            name:
+              arguments: {}
+              description: New value for public.call_topics.name
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            start_timestamp:
+              arguments: {}
+              description: New value for public.call_topics.start_timestamp
+              type:
+                type: nullable
+                underlying_type:
+                  name: time_without_time_zone
+                  type: named
+            summary:
+              arguments: {}
+              description: New value for public.call_topics.summary
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+          foreign_keys: {}
+        public.call_topics_set_input:
+          description: Input type for updating public.call_topics
+          fields:
+            call_id:
+              arguments: {}
+              description: New value wrapper for public.call_topics.call_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            end_timestamp:
+              arguments: {}
+              description: New value wrapper for public.call_topics.end_timestamp
+              type:
+                type: nullable
+                underlying_type:
+                  name: time_without_time_zone_set_input
+                  type: named
+            name:
+              arguments: {}
+              description: New value wrapper for public.call_topics.name
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            start_timestamp:
+              arguments: {}
+              description: New value wrapper for public.call_topics.start_timestamp
+              type:
+                type: nullable
+                underlying_type:
+                  name: time_without_time_zone_set_input
+                  type: named
+            summary:
+              arguments: {}
+              description: New value wrapper for public.call_topics.summary
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+          foreign_keys: {}
+        public.call_transcriptions:
+          description: 'Object type for public.call_transcriptions. Description: null'
+          fields:
+            call_id:
+              arguments: {}
+              type:
+                name: text
+                type: named
+            call_person_id:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            end_time:
+              arguments: {}
+              type:
+                name: double_precision
+                type: named
+            person_id:
+              arguments: {}
+              type:
+                name: integer
+                type: named
+            start_time:
+              arguments: {}
+              type:
+                name: double_precision
+                type: named
+            text:
+              arguments: {}
+              type:
+                name: text
+                type: named
+            text_embedding:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: vector(3)
+                  type: named
+            transcription_id:
+              arguments: {}
+              type:
+                name: text
+                type: named
+          foreign_keys: {}
+        public.call_transcriptions_insert_input:
+          description: Input type for inserting into public.call_transcriptions
+          fields:
+            call_id:
+              arguments: {}
+              description: New value for public.call_transcriptions.call_id
+              type:
+                name: text
+                type: named
+            call_person_id:
+              arguments: {}
+              description: New value for public.call_transcriptions.call_person_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            end_time:
+              arguments: {}
+              description: New value for public.call_transcriptions.end_time
+              type:
+                name: double_precision
+                type: named
+            person_id:
+              arguments: {}
+              description: New value for public.call_transcriptions.person_id
+              type:
+                name: integer
+                type: named
+            start_time:
+              arguments: {}
+              description: New value for public.call_transcriptions.start_time
+              type:
+                name: double_precision
+                type: named
+            text:
+              arguments: {}
+              description: New value for public.call_transcriptions.text
+              type:
+                name: text
+                type: named
+            text_embedding:
+              arguments: {}
+              description: New value for public.call_transcriptions.text_embedding
+              type:
+                type: nullable
+                underlying_type:
+                  name: vector(3)
+                  type: named
+            transcription_id:
+              arguments: {}
+              description: New value for public.call_transcriptions.transcription_id
+              type:
+                name: text
+                type: named
+          foreign_keys: {}
+        public.call_transcriptions_set_input:
+          description: Input type for updating public.call_transcriptions
+          fields:
+            call_id:
+              arguments: {}
+              description: New value wrapper for public.call_transcriptions.call_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            call_person_id:
+              arguments: {}
+              description: New value wrapper for public.call_transcriptions.call_person_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            end_time:
+              arguments: {}
+              description: New value wrapper for public.call_transcriptions.end_time
+              type:
+                type: nullable
+                underlying_type:
+                  name: double_precision_set_input
+                  type: named
+            person_id:
+              arguments: {}
+              description: New value wrapper for public.call_transcriptions.person_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            start_time:
+              arguments: {}
+              description: New value wrapper for public.call_transcriptions.start_time
+              type:
+                type: nullable
+                underlying_type:
+                  name: double_precision_set_input
+                  type: named
+            text:
+              arguments: {}
+              description: New value wrapper for public.call_transcriptions.text
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            text_embedding:
+              arguments: {}
+              description: New value wrapper for public.call_transcriptions.text_embedding
+              type:
+                type: nullable
+                underlying_type:
+                  name: vector(3)_set_input
+                  type: named
+            transcription_id:
+              arguments: {}
+              description: New value wrapper for public.call_transcriptions.transcription_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+          foreign_keys: {}
+        public.calls:
+          description: 'Object type for public.calls. Description: null'
+          fields:
+            account_name:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            call_action_items_discussed:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            call_action_items_discussed_embedding:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: vector(3)
+                  type: named
+            call_full_transcript:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            call_full_transcript_embedding:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: vector(3)
+                  type: named
+            call_key_takeaways:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            call_key_takeaways_embedding:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: vector(3)
+                  type: named
+            call_review_page:
+              arguments: {}
+              type:
+                name: text
+                type: named
+            call_summary:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            call_summary_embedding:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: vector(3)
+                  type: named
+            call_topics_discussed:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            call_topics_discussed_embedding:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: vector(3)
+                  type: named
+            id:
+              arguments: {}
+              type:
+                name: text
+                type: named
+            last_modified_time:
+              arguments: {}
+              type:
+                name: timestamp_without_time_zone
+                type: named
+            salesforce_account_id:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            salesforce_contact_ids:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: array
+                  type: named
+            salesforce_deal_id:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            source_id:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            time:
+              arguments: {}
+              type:
+                name: timestamp_without_time_zone
+                type: named
+            title:
+              arguments: {}
+              type:
+                name: text
+                type: named
+            type:
+              arguments: {}
+              type:
+                name: text
+                type: named
+          foreign_keys: {}
+        public.calls_insert_input:
+          description: Input type for inserting into public.calls
+          fields:
+            account_name:
+              arguments: {}
+              description: New value for public.calls.account_name
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            call_action_items_discussed:
+              arguments: {}
+              description: New value for public.calls.call_action_items_discussed
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            call_action_items_discussed_embedding:
+              arguments: {}
+              description: New value for public.calls.call_action_items_discussed_embedding
+              type:
+                type: nullable
+                underlying_type:
+                  name: vector(3)
+                  type: named
+            call_full_transcript:
+              arguments: {}
+              description: New value for public.calls.call_full_transcript
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            call_full_transcript_embedding:
+              arguments: {}
+              description: New value for public.calls.call_full_transcript_embedding
+              type:
+                type: nullable
+                underlying_type:
+                  name: vector(3)
+                  type: named
+            call_key_takeaways:
+              arguments: {}
+              description: New value for public.calls.call_key_takeaways
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            call_key_takeaways_embedding:
+              arguments: {}
+              description: New value for public.calls.call_key_takeaways_embedding
+              type:
+                type: nullable
+                underlying_type:
+                  name: vector(3)
+                  type: named
+            call_review_page:
+              arguments: {}
+              description: New value for public.calls.call_review_page
+              type:
+                name: text
+                type: named
+            call_summary:
+              arguments: {}
+              description: New value for public.calls.call_summary
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            call_summary_embedding:
+              arguments: {}
+              description: New value for public.calls.call_summary_embedding
+              type:
+                type: nullable
+                underlying_type:
+                  name: vector(3)
+                  type: named
+            call_topics_discussed:
+              arguments: {}
+              description: New value for public.calls.call_topics_discussed
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            call_topics_discussed_embedding:
+              arguments: {}
+              description: New value for public.calls.call_topics_discussed_embedding
+              type:
+                type: nullable
+                underlying_type:
+                  name: vector(3)
+                  type: named
+            id:
+              arguments: {}
+              description: New value for public.calls.id
+              type:
+                name: text
+                type: named
+            last_modified_time:
+              arguments: {}
+              description: New value for public.calls.last_modified_time
+              type:
+                name: timestamp_without_time_zone
+                type: named
+            salesforce_account_id:
+              arguments: {}
+              description: New value for public.calls.salesforce_account_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            salesforce_contact_ids:
+              arguments: {}
+              description: New value for public.calls.salesforce_contact_ids
+              type:
+                type: nullable
+                underlying_type:
+                  name: array
+                  type: named
+            salesforce_deal_id:
+              arguments: {}
+              description: New value for public.calls.salesforce_deal_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            source_id:
+              arguments: {}
+              description: New value for public.calls.source_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            time:
+              arguments: {}
+              description: New value for public.calls.time
+              type:
+                name: timestamp_without_time_zone
+                type: named
+            title:
+              arguments: {}
+              description: New value for public.calls.title
+              type:
+                name: text
+                type: named
+            type:
+              arguments: {}
+              description: New value for public.calls.type
+              type:
+                name: text
+                type: named
+          foreign_keys: {}
+        public.calls_set_input:
+          description: Input type for updating public.calls
+          fields:
+            account_name:
+              arguments: {}
+              description: New value wrapper for public.calls.account_name
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            call_action_items_discussed:
+              arguments: {}
+              description: New value wrapper for public.calls.call_action_items_discussed
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            call_action_items_discussed_embedding:
+              arguments: {}
+              description: New value wrapper for public.calls.call_action_items_discussed_embedding
+              type:
+                type: nullable
+                underlying_type:
+                  name: vector(3)_set_input
+                  type: named
+            call_full_transcript:
+              arguments: {}
+              description: New value wrapper for public.calls.call_full_transcript
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            call_full_transcript_embedding:
+              arguments: {}
+              description: New value wrapper for public.calls.call_full_transcript_embedding
+              type:
+                type: nullable
+                underlying_type:
+                  name: vector(3)_set_input
+                  type: named
+            call_key_takeaways:
+              arguments: {}
+              description: New value wrapper for public.calls.call_key_takeaways
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            call_key_takeaways_embedding:
+              arguments: {}
+              description: New value wrapper for public.calls.call_key_takeaways_embedding
+              type:
+                type: nullable
+                underlying_type:
+                  name: vector(3)_set_input
+                  type: named
+            call_review_page:
+              arguments: {}
+              description: New value wrapper for public.calls.call_review_page
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            call_summary:
+              arguments: {}
+              description: New value wrapper for public.calls.call_summary
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            call_summary_embedding:
+              arguments: {}
+              description: New value wrapper for public.calls.call_summary_embedding
+              type:
+                type: nullable
+                underlying_type:
+                  name: vector(3)_set_input
+                  type: named
+            call_topics_discussed:
+              arguments: {}
+              description: New value wrapper for public.calls.call_topics_discussed
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            call_topics_discussed_embedding:
+              arguments: {}
+              description: New value wrapper for public.calls.call_topics_discussed_embedding
+              type:
+                type: nullable
+                underlying_type:
+                  name: vector(3)_set_input
+                  type: named
+            id:
+              arguments: {}
+              description: New value wrapper for public.calls.id
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            last_modified_time:
+              arguments: {}
+              description: New value wrapper for public.calls.last_modified_time
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone_set_input
+                  type: named
+            salesforce_account_id:
+              arguments: {}
+              description: New value wrapper for public.calls.salesforce_account_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            salesforce_contact_ids:
+              arguments: {}
+              description: New value wrapper for public.calls.salesforce_contact_ids
+              type:
+                type: nullable
+                underlying_type:
+                  name: array_set_input
+                  type: named
+            salesforce_deal_id:
+              arguments: {}
+              description: New value wrapper for public.calls.salesforce_deal_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            source_id:
+              arguments: {}
+              description: New value wrapper for public.calls.source_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            time:
+              arguments: {}
+              description: New value wrapper for public.calls.time
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone_set_input
+                  type: named
+            title:
+              arguments: {}
+              description: New value wrapper for public.calls.title
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            type:
+              arguments: {}
+              description: New value wrapper for public.calls.type
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+          foreign_keys: {}
+        string_set_input:
+          description: Wrapper for setting scalar string
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar string
+              type:
+                type: nullable
+                underlying_type:
+                  name: string
+                  type: named
+          foreign_keys: {}
+        text_set_input:
+          description: Wrapper for setting scalar text
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar text
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+          foreign_keys: {}
+        time_without_time_zone_set_input:
+          description: Wrapper for setting scalar time_without_time_zone
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar time_without_time_zone
+              type:
+                type: nullable
+                underlying_type:
+                  name: time_without_time_zone
+                  type: named
+          foreign_keys: {}
+        timestamp_without_time_zone_set_input:
+          description: Wrapper for setting scalar timestamp_without_time_zone
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar timestamp_without_time_zone
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+          foreign_keys: {}
+        update_public.call_action_items_result:
+          description: update from public.call_action_items result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by update
+              type:
+                element_type:
+                  name: public.call_action_items
+                  type: named
+                type: array
+          foreign_keys: {}
+        update_public.call_participants_result:
+          description: update from public.call_participants result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by update
+              type:
+                element_type:
+                  name: public.call_participants
+                  type: named
+                type: array
+          foreign_keys: {}
+        update_public.call_topics_result:
+          description: update from public.call_topics result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by update
+              type:
+                element_type:
+                  name: public.call_topics
+                  type: named
+                type: array
+          foreign_keys: {}
+        update_public.call_transcriptions_result:
+          description: update from public.call_transcriptions result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by update
+              type:
+                element_type:
+                  name: public.call_transcriptions
+                  type: named
+                type: array
+          foreign_keys: {}
+        update_public.calls_result:
+          description: update from public.calls result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by update
+              type:
+                element_type:
+                  name: public.calls
+                  type: named
+                type: array
+          foreign_keys: {}
+        vector(3)_set_input:
+          description: Wrapper for setting scalar vector(3)
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar vector(3)
+              type:
+                type: nullable
+                underlying_type:
+                  name: vector(3)
+                  type: named
+          foreign_keys: {}
+      procedures:
+        - arguments:
+            objects:
+              description: Objects to insert
+              type:
+                element_type:
+                  name: public.call_action_items_insert_input
+                  type: named
+                type: array
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+          description: Insert into public.call_action_items
+          name: insert_public.call_action_items
+          result_type:
+            name: insert_public.call_action_items_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            set:
+              description: Values to set
+              type:
+                name: public.call_action_items_set_input
+                type: named
+            where:
+              description: Filter for rows to update
+              type:
+                object_type_name: public.call_action_items
+                type: predicate
+          description: Update public.call_action_items
+          name: update_public.call_action_items
+          result_type:
+            name: update_public.call_action_items_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            where:
+              description: Filter for rows to delete
+              type:
+                object_type_name: public.call_action_items
+                type: predicate
+          description: Delete from public.call_action_items
+          name: delete_public.call_action_items
+          result_type:
+            name: delete_public.call_action_items_result
+            type: named
+        - arguments:
+            objects:
+              description: Objects to insert
+              type:
+                element_type:
+                  name: public.call_participants_insert_input
+                  type: named
+                type: array
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+          description: Insert into public.call_participants
+          name: insert_public.call_participants
+          result_type:
+            name: insert_public.call_participants_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            set:
+              description: Values to set
+              type:
+                name: public.call_participants_set_input
+                type: named
+            where:
+              description: Filter for rows to update
+              type:
+                object_type_name: public.call_participants
+                type: predicate
+          description: Update public.call_participants
+          name: update_public.call_participants
+          result_type:
+            name: update_public.call_participants_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            where:
+              description: Filter for rows to delete
+              type:
+                object_type_name: public.call_participants
+                type: predicate
+          description: Delete from public.call_participants
+          name: delete_public.call_participants
+          result_type:
+            name: delete_public.call_participants_result
+            type: named
+        - arguments:
+            objects:
+              description: Objects to insert
+              type:
+                element_type:
+                  name: public.call_topics_insert_input
+                  type: named
+                type: array
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+          description: Insert into public.call_topics
+          name: insert_public.call_topics
+          result_type:
+            name: insert_public.call_topics_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            set:
+              description: Values to set
+              type:
+                name: public.call_topics_set_input
+                type: named
+            where:
+              description: Filter for rows to update
+              type:
+                object_type_name: public.call_topics
+                type: predicate
+          description: Update public.call_topics
+          name: update_public.call_topics
+          result_type:
+            name: update_public.call_topics_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            where:
+              description: Filter for rows to delete
+              type:
+                object_type_name: public.call_topics
+                type: predicate
+          description: Delete from public.call_topics
+          name: delete_public.call_topics
+          result_type:
+            name: delete_public.call_topics_result
+            type: named
+        - arguments:
+            objects:
+              description: Objects to insert
+              type:
+                element_type:
+                  name: public.call_transcriptions_insert_input
+                  type: named
+                type: array
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+          description: Insert into public.call_transcriptions
+          name: insert_public.call_transcriptions
+          result_type:
+            name: insert_public.call_transcriptions_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            set:
+              description: Values to set
+              type:
+                name: public.call_transcriptions_set_input
+                type: named
+            where:
+              description: Filter for rows to update
+              type:
+                object_type_name: public.call_transcriptions
+                type: predicate
+          description: Update public.call_transcriptions
+          name: update_public.call_transcriptions
+          result_type:
+            name: update_public.call_transcriptions_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            where:
+              description: Filter for rows to delete
+              type:
+                object_type_name: public.call_transcriptions
+                type: predicate
+          description: Delete from public.call_transcriptions
+          name: delete_public.call_transcriptions
+          result_type:
+            name: delete_public.call_transcriptions_result
+            type: named
+        - arguments:
+            objects:
+              description: Objects to insert
+              type:
+                element_type:
+                  name: public.calls_insert_input
+                  type: named
+                type: array
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+          description: Insert into public.calls
+          name: insert_public.calls
+          result_type:
+            name: insert_public.calls_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            set:
+              description: Values to set
+              type:
+                name: public.calls_set_input
+                type: named
+            where:
+              description: Filter for rows to update
+              type:
+                object_type_name: public.calls
+                type: predicate
+          description: Update public.calls
+          name: update_public.calls
+          result_type:
+            name: update_public.calls_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            where:
+              description: Filter for rows to delete
+              type:
+                object_type_name: public.calls
+                type: predicate
+          description: Delete from public.calls
+          name: delete_public.calls
+          result_type:
+            name: delete_public.calls_result
+            type: named
       scalar_types:
-        bool:
+        array:
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+            _in:
+              type: in
+            _neq:
+              argument_type:
+                name: array
+                type: named
+              type: custom
+          representation:
+            type: json
+        bigint:
+          aggregate_functions:
+            avg:
+              result_type: decimal
+              type: average
+            max:
+              type: max
+            min:
+              type: min
+            stddev_pop:
+              result_type:
+                name: bigint
+                type: named
+              type: custom
+            stddev_samp:
+              result_type:
+                name: bigint
+                type: named
+              type: custom
+            sum:
+              result_type: bigint
+              type: sum
+            var_pop:
+              result_type:
+                name: bigint
+                type: named
+              type: custom
+            var_samp:
+              result_type:
+                name: bigint
+                type: named
+              type: custom
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _in:
+              type: in
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: bigint
+                type: named
+              type: custom
+          representation:
+            type: biginteger
+        boolean:
+          aggregate_functions:
+            max:
+              type: max
+            min:
+              type: min
+          comparison_operators:
+            _eq:
+              type: equal
+            _in:
+              type: in
+            _neq:
+              argument_type:
+                name: boolean
+                type: named
+              type: custom
           representation:
             type: boolean
-          aggregate_functions:
-            bool_and:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: bool
-            bool_or:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: bool
-            every:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: bool
-          comparison_operators:
-            _eq:
-              type: equal
-            _gt:
-              type: custom
-              argument_type:
-                type: named
-                name: bool
-            _gte:
-              type: custom
-              argument_type:
-                type: named
-                name: bool
-            _in:
-              type: in
-            _lt:
-              type: custom
-              argument_type:
-                type: named
-                name: bool
-            _lte:
-              type: custom
-              argument_type:
-                type: named
-                name: bool
-            _neq:
-              type: custom
-              argument_type:
-                type: named
-                name: bool
-        float8:
-          representation:
-            type: float64
+        decimal:
           aggregate_functions:
             avg:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: float8
+              result_type: decimal
+              type: average
             max:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: float8
+              type: max
             min:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: float8
-            stddev:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: float8
+              type: min
             stddev_pop:
               result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: float8
+                name: decimal
+                type: named
+              type: custom
             stddev_samp:
               result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: float8
+                name: decimal
+                type: named
+              type: custom
             sum:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: float8
+              result_type: decimal
+              type: sum
             var_pop:
               result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: float8
+                name: decimal
+                type: named
+              type: custom
             var_samp:
               result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: float8
-            variance:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: float8
+                name: decimal
+                type: named
+              type: custom
           comparison_operators:
             _eq:
               type: equal
             _gt:
-              type: custom
-              argument_type:
-                type: named
-                name: float8
+              type: greater_than
             _gte:
-              type: custom
-              argument_type:
-                type: named
-                name: float8
+              type: greater_than_or_equal
             _in:
               type: in
             _lt:
-              type: custom
-              argument_type:
-                type: named
-                name: float8
+              type: less_than
             _lte:
-              type: custom
-              argument_type:
-                type: named
-                name: float8
+              type: less_than_or_equal
             _neq:
-              type: custom
               argument_type:
+                name: decimal
                 type: named
-                name: float8
-        int4:
-          representation:
-            type: int32
-          aggregate_functions:
-            avg:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
-            bit_and:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: int4
-            bit_or:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: int4
-            bit_xor:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: int4
-            max:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: int4
-            min:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: int4
-            stddev:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
-            stddev_pop:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
-            stddev_samp:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
-            sum:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: int8
-            var_pop:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
-            var_samp:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
-            variance:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
-          comparison_operators:
-            _eq:
-              type: equal
-            _gt:
               type: custom
-              argument_type:
-                type: named
-                name: int4
-            _gte:
-              type: custom
-              argument_type:
-                type: named
-                name: int4
-            _in:
-              type: in
-            _lt:
-              type: custom
-              argument_type:
-                type: named
-                name: int4
-            _lte:
-              type: custom
-              argument_type:
-                type: named
-                name: int4
-            _neq:
-              type: custom
-              argument_type:
-                type: named
-                name: int4
-        int8:
-          representation:
-            type: int64
-          aggregate_functions:
-            avg:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
-            bit_and:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: int8
-            bit_or:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: int8
-            bit_xor:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: int8
-            max:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: int8
-            min:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: int8
-            stddev:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
-            stddev_pop:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
-            stddev_samp:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
-            sum:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
-            var_pop:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
-            var_samp:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
-            variance:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
-          comparison_operators:
-            _eq:
-              type: equal
-            _gt:
-              type: custom
-              argument_type:
-                type: named
-                name: int8
-            _gte:
-              type: custom
-              argument_type:
-                type: named
-                name: int8
-            _in:
-              type: in
-            _lt:
-              type: custom
-              argument_type:
-                type: named
-                name: int8
-            _lte:
-              type: custom
-              argument_type:
-                type: named
-                name: int8
-            _neq:
-              type: custom
-              argument_type:
-                type: named
-                name: int8
-        interval:
-          aggregate_functions:
-            avg:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: interval
-            max:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: interval
-            min:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: interval
-            sum:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: interval
-          comparison_operators:
-            _eq:
-              type: equal
-            _gt:
-              type: custom
-              argument_type:
-                type: named
-                name: interval
-            _gte:
-              type: custom
-              argument_type:
-                type: named
-                name: interval
-            _in:
-              type: in
-            _lt:
-              type: custom
-              argument_type:
-                type: named
-                name: interval
-            _lte:
-              type: custom
-              argument_type:
-                type: named
-                name: interval
-            _neq:
-              type: custom
-              argument_type:
-                type: named
-                name: interval
-        numeric:
           representation:
             type: bigdecimal
+        double_precision:
           aggregate_functions:
             avg:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
+              result_type: decimal
+              type: average
             max:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
+              type: max
             min:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
-            stddev:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
+              type: min
             stddev_pop:
               result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
+                name: double_precision
+                type: named
+              type: custom
             stddev_samp:
               result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
+                name: double_precision
+                type: named
+              type: custom
             sum:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
+              result_type: decimal
+              type: sum
             var_pop:
               result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
+                name: double_precision
+                type: named
+              type: custom
             var_samp:
               result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
-            variance:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
+                name: double_precision
+                type: named
+              type: custom
           comparison_operators:
             _eq:
               type: equal
             _gt:
-              type: custom
-              argument_type:
-                type: named
-                name: numeric
+              type: greater_than
             _gte:
-              type: custom
-              argument_type:
-                type: named
-                name: numeric
+              type: greater_than_or_equal
             _in:
               type: in
             _lt:
-              type: custom
-              argument_type:
-                type: named
-                name: numeric
+              type: less_than
             _lte:
-              type: custom
-              argument_type:
-                type: named
-                name: numeric
+              type: less_than_or_equal
             _neq:
-              type: custom
               argument_type:
+                name: double_precision
                 type: named
-                name: numeric
-        text:
+              type: custom
           representation:
-            type: string
+            type: float64
+        int:
           aggregate_functions:
+            avg:
+              result_type: decimal
+              type: average
             max:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
+              type: max
             min:
+              type: min
+            stddev_pop:
               result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
+                name: int
+                type: named
+              type: custom
+            stddev_samp:
+              result_type:
+                name: int
+                type: named
+              type: custom
+            sum:
+              result_type: bigint
+              type: sum
+            var_pop:
+              result_type:
+                name: int
+                type: named
+              type: custom
+            var_samp:
+              result_type:
+                name: int
+                type: named
+              type: custom
           comparison_operators:
             _eq:
               type: equal
             _gt:
-              type: custom
-              argument_type:
-                type: named
-                name: text
+              type: greater_than
             _gte:
-              type: custom
+              type: greater_than_or_equal
+            _in:
+              type: in
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
               argument_type:
+                name: int
                 type: named
-                name: text
+              type: custom
+          representation:
+            type: int32
+        integer:
+          aggregate_functions:
+            avg:
+              result_type: decimal
+              type: average
+            max:
+              type: max
+            min:
+              type: min
+            stddev_pop:
+              result_type:
+                name: integer
+                type: named
+              type: custom
+            stddev_samp:
+              result_type:
+                name: integer
+                type: named
+              type: custom
+            sum:
+              result_type: bigint
+              type: sum
+            var_pop:
+              result_type:
+                name: integer
+                type: named
+              type: custom
+            var_samp:
+              result_type:
+                name: integer
+                type: named
+              type: custom
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _in:
+              type: in
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: integer
+                type: named
+              type: custom
+          representation:
+            type: int32
+        string:
+          aggregate_functions:
+            max:
+              type: max
+            min:
+              type: min
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
             _ilike:
-              type: custom
-              argument_type:
-                type: named
-                name: text
+              type: contains_insensitive
             _in:
               type: in
             _iregex:
-              type: custom
               argument_type:
+                name: string
                 type: named
-                name: text
+              type: custom
             _like:
-              type: custom
-              argument_type:
-                type: named
-                name: text
+              type: contains
             _lt:
-              type: custom
-              argument_type:
-                type: named
-                name: text
+              type: less_than
             _lte:
-              type: custom
-              argument_type:
-                type: named
-                name: text
+              type: less_than_or_equal
             _neq:
-              type: custom
               argument_type:
+                name: string
                 type: named
-                name: text
+              type: custom
             _nilike:
-              type: custom
               argument_type:
+                name: string
                 type: named
-                name: text
+              type: custom
             _niregex:
-              type: custom
               argument_type:
+                name: string
                 type: named
-                name: text
+              type: custom
             _nlike:
-              type: custom
               argument_type:
+                name: string
                 type: named
-                name: text
+              type: custom
             _nregex:
-              type: custom
               argument_type:
+                name: string
                 type: named
-                name: text
+              type: custom
             _regex:
-              type: custom
               argument_type:
+                name: string
                 type: named
-                name: text
-            starts_with:
               type: custom
-              argument_type:
-                type: named
-                name: text
-            ts_match_tt:
-              type: custom
-              argument_type:
-                type: named
-                name: text
-        time:
           representation:
             type: string
+        text:
           aggregate_functions:
-            avg:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: interval
             max:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: time
+              type: max
             min:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: time
-            sum:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: interval
+              type: min
           comparison_operators:
             _eq:
               type: equal
             _gt:
-              type: custom
-              argument_type:
-                type: named
-                name: time
+              type: greater_than
             _gte:
-              type: custom
+              type: greater_than_or_equal
+            _ilike:
+              type: contains_insensitive
+            _in:
+              type: in
+            _iregex:
               argument_type:
+                name: text
                 type: named
-                name: time
+              type: custom
+            _like:
+              type: contains
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: text
+                type: named
+              type: custom
+            _nilike:
+              argument_type:
+                name: text
+                type: named
+              type: custom
+            _niregex:
+              argument_type:
+                name: text
+                type: named
+              type: custom
+            _nlike:
+              argument_type:
+                name: text
+                type: named
+              type: custom
+            _nregex:
+              argument_type:
+                name: text
+                type: named
+              type: custom
+            _regex:
+              argument_type:
+                name: text
+                type: named
+              type: custom
+          representation:
+            type: string
+        time_without_time_zone:
+          aggregate_functions:
+            max:
+              type: max
+            min:
+              type: min
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
             _in:
               type: in
             _lt:
-              type: custom
-              argument_type:
-                type: named
-                name: time
+              type: less_than
             _lte:
-              type: custom
-              argument_type:
-                type: named
-                name: time
+              type: less_than_or_equal
             _neq:
-              type: custom
               argument_type:
+                name: time_without_time_zone
                 type: named
-                name: time
-        timestamp:
+              type: custom
           representation:
             type: timestamp
+        timestamp_without_time_zone:
           aggregate_functions:
             max:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: timestamp
+              type: max
             min:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: timestamp
+              type: min
           comparison_operators:
             _eq:
               type: equal
             _gt:
-              type: custom
-              argument_type:
-                type: named
-                name: timestamp
+              type: greater_than
             _gte:
-              type: custom
-              argument_type:
-                type: named
-                name: timestamp
+              type: greater_than_or_equal
             _in:
               type: in
             _lt:
-              type: custom
-              argument_type:
-                type: named
-                name: timestamp
+              type: less_than
             _lte:
-              type: custom
-              argument_type:
-                type: named
-                name: timestamp
+              type: less_than_or_equal
             _neq:
-              type: custom
               argument_type:
+                name: timestamp_without_time_zone
                 type: named
-                name: timestamp
-        vector:
-          aggregate_functions:
-            avg:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: vector
-            sum:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: vector
+              type: custom
+          representation:
+            type: timestamp
+        vector(3):
+          aggregate_functions: {}
           comparison_operators:
             _eq:
               type: equal
-            _gt:
-              type: custom
-              argument_type:
-                type: named
-                name: vector
-            _gte:
-              type: custom
-              argument_type:
-                type: named
-                name: vector
             _in:
               type: in
-            _lt:
-              type: custom
-              argument_type:
-                type: named
-                name: vector
-            _lte:
-              type: custom
-              argument_type:
-                type: named
-                name: vector
             _neq:
-              type: custom
               argument_type:
-                type: named
-                name: vector
-      object_types:
-        call_action_items:
-          fields:
-            action_item:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-            call_id:
-              type:
-                type: named
-                name: text
-            end_timestamp:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: time
-            owner_name:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-            reasoning:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-            speaker_name:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-            start_timestamp:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: time
-            timeline:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-        call_participants:
-          fields:
-            call_id:
-              type:
-                type: named
-                name: text
-            call_person_id:
-              type:
-                type: named
-                name: text
-            email:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-            is_organizer:
-              type:
-                type: named
-                name: bool
-            name:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-            person_id:
-              type:
-                type: named
-                name: int4
-            user_id:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-        call_topics:
-          fields:
-            call_id:
-              type:
-                type: named
-                name: text
-            end_timestamp:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: time
-            name:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-            start_timestamp:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: time
-            summary:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-        call_transcriptions:
-          fields:
-            call_id:
-              type:
-                type: named
-                name: text
-            call_person_id:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-            end_time:
-              type:
-                type: named
-                name: float8
-            person_id:
-              type:
-                type: named
-                name: int4
-            start_time:
-              type:
-                type: named
-                name: float8
-            text:
-              type:
-                type: named
-                name: text
-            text_embedding:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: vector
-            transcription_id:
-              type:
-                type: named
-                name: text
-        calls:
-          fields:
-            account_name:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-            call_action_items_discussed:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-            call_action_items_discussed_embedding:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: vector
-            call_full_transcript:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-            call_full_transcript_embedding:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: vector
-            call_key_takeaways:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-            call_key_takeaways_embedding:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: vector
-            call_review_page:
-              type:
-                type: named
-                name: text
-            call_summary:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-            call_summary_embedding:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: vector
-            call_topics_discussed:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-            call_topics_discussed_embedding:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: vector
-            id:
-              type:
-                type: named
-                name: text
-            last_modified_time:
-              type:
-                type: named
-                name: timestamp
-            salesforce_account_id:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-            salesforce_contact_ids:
-              type:
-                type: nullable
-                underlying_type:
-                  type: array
-                  element_type:
-                    type: nullable
-                    underlying_type:
-                      type: named
-                      name: text
-            salesforce_deal_id:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-            source_id:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-            time:
-              type:
-                type: named
-                name: timestamp
-            title:
-              type:
-                type: named
-                name: text
-            type:
-              type:
-                type: named
-                name: text
-        delete_call_participants_by_call_person_id_response:
-          description: Responses from the 'delete_call_participants_by_call_person_id' procedure
-          fields:
-            affected_rows:
-              description: The number of rows affected by the mutation
-              type:
-                type: named
-                name: int4
-            returning:
-              description: Data from rows affected by the mutation
-              type:
-                type: array
-                element_type:
-                  type: named
-                  name: call_participants
-        delete_call_transcriptions_by_transcription_id_response:
-          description: Responses from the 'delete_call_transcriptions_by_transcription_id' procedure
-          fields:
-            affected_rows:
-              description: The number of rows affected by the mutation
-              type:
-                type: named
-                name: int4
-            returning:
-              description: Data from rows affected by the mutation
-              type:
-                type: array
-                element_type:
-                  type: named
-                  name: call_transcriptions
-        delete_calls_by_id_response:
-          description: Responses from the 'delete_calls_by_id' procedure
-          fields:
-            affected_rows:
-              description: The number of rows affected by the mutation
-              type:
-                type: named
-                name: int4
-            returning:
-              description: Data from rows affected by the mutation
-              type:
-                type: array
-                element_type:
-                  type: named
-                  name: calls
-        insert_call_action_items_object:
-          fields:
-            action_item:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-            call_id:
-              type:
-                type: named
-                name: text
-            end_timestamp:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: time
-            owner_name:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-            reasoning:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-            speaker_name:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-            start_timestamp:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: time
-            timeline:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-        insert_call_action_items_response:
-          description: Responses from the 'insert_call_action_items' procedure
-          fields:
-            affected_rows:
-              description: The number of rows affected by the mutation
-              type:
-                type: named
-                name: int4
-            returning:
-              description: Data from rows affected by the mutation
-              type:
-                type: array
-                element_type:
-                  type: named
-                  name: call_action_items
-        insert_call_participants_object:
-          fields:
-            call_id:
-              type:
-                type: named
-                name: text
-            call_person_id:
-              type:
-                type: named
-                name: text
-            email:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-            is_organizer:
-              type:
-                type: named
-                name: bool
-            name:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-            person_id:
-              type:
-                type: named
-                name: int4
-            user_id:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-        insert_call_participants_response:
-          description: Responses from the 'insert_call_participants' procedure
-          fields:
-            affected_rows:
-              description: The number of rows affected by the mutation
-              type:
-                type: named
-                name: int4
-            returning:
-              description: Data from rows affected by the mutation
-              type:
-                type: array
-                element_type:
-                  type: named
-                  name: call_participants
-        insert_call_topics_object:
-          fields:
-            call_id:
-              type:
-                type: named
-                name: text
-            end_timestamp:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: time
-            name:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-            start_timestamp:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: time
-            summary:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-        insert_call_topics_response:
-          description: Responses from the 'insert_call_topics' procedure
-          fields:
-            affected_rows:
-              description: The number of rows affected by the mutation
-              type:
-                type: named
-                name: int4
-            returning:
-              description: Data from rows affected by the mutation
-              type:
-                type: array
-                element_type:
-                  type: named
-                  name: call_topics
-        insert_call_transcriptions_object:
-          fields:
-            call_id:
-              type:
-                type: named
-                name: text
-            call_person_id:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-            end_time:
-              type:
-                type: named
-                name: float8
-            person_id:
-              type:
-                type: named
-                name: int4
-            start_time:
-              type:
-                type: named
-                name: float8
-            text:
-              type:
-                type: named
-                name: text
-            text_embedding:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: vector
-            transcription_id:
-              type:
-                type: named
-                name: text
-        insert_call_transcriptions_response:
-          description: Responses from the 'insert_call_transcriptions' procedure
-          fields:
-            affected_rows:
-              description: The number of rows affected by the mutation
-              type:
-                type: named
-                name: int4
-            returning:
-              description: Data from rows affected by the mutation
-              type:
-                type: array
-                element_type:
-                  type: named
-                  name: call_transcriptions
-        insert_calls_object:
-          fields:
-            account_name:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-            call_action_items_discussed:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-            call_action_items_discussed_embedding:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: vector
-            call_full_transcript:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-            call_full_transcript_embedding:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: vector
-            call_key_takeaways:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-            call_key_takeaways_embedding:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: vector
-            call_review_page:
-              type:
-                type: named
-                name: text
-            call_summary:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-            call_summary_embedding:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: vector
-            call_topics_discussed:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-            call_topics_discussed_embedding:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: vector
-            id:
-              type:
-                type: named
-                name: text
-            last_modified_time:
-              type:
-                type: named
-                name: timestamp
-            salesforce_account_id:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-            salesforce_contact_ids:
-              type:
-                type: nullable
-                underlying_type:
-                  type: array
-                  element_type:
-                    type: nullable
-                    underlying_type:
-                      type: named
-                      name: text
-            salesforce_deal_id:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-            source_id:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-            time:
-              type:
-                type: named
-                name: timestamp
-            title:
-              type:
-                type: named
-                name: text
-            type:
-              type:
-                type: named
-                name: text
-        insert_calls_response:
-          description: Responses from the 'insert_calls' procedure
-          fields:
-            affected_rows:
-              description: The number of rows affected by the mutation
-              type:
-                type: named
-                name: int4
-            returning:
-              description: Data from rows affected by the mutation
-              type:
-                type: array
-                element_type:
-                  type: named
-                  name: calls
-        update_call_participants_by_call_person_id_response:
-          description: Responses from the 'update_call_participants_by_call_person_id' procedure
-          fields:
-            affected_rows:
-              description: The number of rows affected by the mutation
-              type:
-                type: named
-                name: int4
-            returning:
-              description: Data from rows affected by the mutation
-              type:
-                type: array
-                element_type:
-                  type: named
-                  name: call_participants
-        update_call_participants_by_call_person_id_update_columns:
-          description: Update the columns of the 'call_participants' collection
-          fields:
-            call_id:
-              description: Update the 'call_id' column in the 'call_participants' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_call_participants_call_id
-            call_person_id:
-              description: Update the 'call_person_id' column in the 'call_participants' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_call_participants_call_person_id
-            email:
-              description: Update the 'email' column in the 'call_participants' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_call_participants_email
-            is_organizer:
-              description: Update the 'is_organizer' column in the 'call_participants' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_call_participants_is_organizer
-            name:
-              description: Update the 'name' column in the 'call_participants' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_call_participants_name
-            person_id:
-              description: Update the 'person_id' column in the 'call_participants' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_call_participants_person_id
-            user_id:
-              description: Update the 'user_id' column in the 'call_participants' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_call_participants_user_id
-        update_call_transcriptions_by_transcription_id_response:
-          description: Responses from the 'update_call_transcriptions_by_transcription_id' procedure
-          fields:
-            affected_rows:
-              description: The number of rows affected by the mutation
-              type:
-                type: named
-                name: int4
-            returning:
-              description: Data from rows affected by the mutation
-              type:
-                type: array
-                element_type:
-                  type: named
-                  name: call_transcriptions
-        update_call_transcriptions_by_transcription_id_update_columns:
-          description: Update the columns of the 'call_transcriptions' collection
-          fields:
-            call_id:
-              description: Update the 'call_id' column in the 'call_transcriptions' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_call_transcriptions_call_id
-            call_person_id:
-              description: Update the 'call_person_id' column in the 'call_transcriptions' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_call_transcriptions_call_person_id
-            end_time:
-              description: Update the 'end_time' column in the 'call_transcriptions' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_call_transcriptions_end_time
-            person_id:
-              description: Update the 'person_id' column in the 'call_transcriptions' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_call_transcriptions_person_id
-            start_time:
-              description: Update the 'start_time' column in the 'call_transcriptions' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_call_transcriptions_start_time
-            text:
-              description: Update the 'text' column in the 'call_transcriptions' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_call_transcriptions_text
-            text_embedding:
-              description: Update the 'text_embedding' column in the 'call_transcriptions' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_call_transcriptions_text_embedding
-            transcription_id:
-              description: Update the 'transcription_id' column in the 'call_transcriptions' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_call_transcriptions_transcription_id
-        update_calls_by_id_response:
-          description: Responses from the 'update_calls_by_id' procedure
-          fields:
-            affected_rows:
-              description: The number of rows affected by the mutation
-              type:
-                type: named
-                name: int4
-            returning:
-              description: Data from rows affected by the mutation
-              type:
-                type: array
-                element_type:
-                  type: named
-                  name: calls
-        update_calls_by_id_update_columns:
-          description: Update the columns of the 'calls' collection
-          fields:
-            account_name:
-              description: Update the 'account_name' column in the 'calls' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_calls_account_name
-            call_action_items_discussed:
-              description: Update the 'call_action_items_discussed' column in the 'calls' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_calls_call_action_items_discussed
-            call_action_items_discussed_embedding:
-              description: Update the 'call_action_items_discussed_embedding' column in the 'calls' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_calls_call_action_items_discussed_embedding
-            call_full_transcript:
-              description: Update the 'call_full_transcript' column in the 'calls' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_calls_call_full_transcript
-            call_full_transcript_embedding:
-              description: Update the 'call_full_transcript_embedding' column in the 'calls' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_calls_call_full_transcript_embedding
-            call_key_takeaways:
-              description: Update the 'call_key_takeaways' column in the 'calls' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_calls_call_key_takeaways
-            call_key_takeaways_embedding:
-              description: Update the 'call_key_takeaways_embedding' column in the 'calls' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_calls_call_key_takeaways_embedding
-            call_review_page:
-              description: Update the 'call_review_page' column in the 'calls' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_calls_call_review_page
-            call_summary:
-              description: Update the 'call_summary' column in the 'calls' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_calls_call_summary
-            call_summary_embedding:
-              description: Update the 'call_summary_embedding' column in the 'calls' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_calls_call_summary_embedding
-            call_topics_discussed:
-              description: Update the 'call_topics_discussed' column in the 'calls' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_calls_call_topics_discussed
-            call_topics_discussed_embedding:
-              description: Update the 'call_topics_discussed_embedding' column in the 'calls' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_calls_call_topics_discussed_embedding
-            id:
-              description: Update the 'id' column in the 'calls' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_calls_id
-            last_modified_time:
-              description: Update the 'last_modified_time' column in the 'calls' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_calls_last_modified_time
-            salesforce_account_id:
-              description: Update the 'salesforce_account_id' column in the 'calls' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_calls_salesforce_account_id
-            salesforce_contact_ids:
-              description: Update the 'salesforce_contact_ids' column in the 'calls' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_calls_salesforce_contact_ids
-            salesforce_deal_id:
-              description: Update the 'salesforce_deal_id' column in the 'calls' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_calls_salesforce_deal_id
-            source_id:
-              description: Update the 'source_id' column in the 'calls' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_calls_source_id
-            time:
-              description: Update the 'time' column in the 'calls' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_calls_time
-            title:
-              description: Update the 'title' column in the 'calls' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_calls_title
-            type:
-              description: Update the 'type' column in the 'calls' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_calls_type
-        update_column_call_participants_call_id:
-          description: Update the 'call_id' column in the 'call_participants' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: named
-                name: text
-        update_column_call_participants_call_person_id:
-          description: Update the 'call_person_id' column in the 'call_participants' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: named
-                name: text
-        update_column_call_participants_email:
-          description: Update the 'email' column in the 'call_participants' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-        update_column_call_participants_is_organizer:
-          description: Update the 'is_organizer' column in the 'call_participants' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: named
-                name: bool
-        update_column_call_participants_name:
-          description: Update the 'name' column in the 'call_participants' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-        update_column_call_participants_person_id:
-          description: Update the 'person_id' column in the 'call_participants' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: named
-                name: int4
-        update_column_call_participants_user_id:
-          description: Update the 'user_id' column in the 'call_participants' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-        update_column_call_transcriptions_call_id:
-          description: Update the 'call_id' column in the 'call_transcriptions' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: named
-                name: text
-        update_column_call_transcriptions_call_person_id:
-          description: Update the 'call_person_id' column in the 'call_transcriptions' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-        update_column_call_transcriptions_end_time:
-          description: Update the 'end_time' column in the 'call_transcriptions' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: named
-                name: float8
-        update_column_call_transcriptions_person_id:
-          description: Update the 'person_id' column in the 'call_transcriptions' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: named
-                name: int4
-        update_column_call_transcriptions_start_time:
-          description: Update the 'start_time' column in the 'call_transcriptions' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: named
-                name: float8
-        update_column_call_transcriptions_text:
-          description: Update the 'text' column in the 'call_transcriptions' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: named
-                name: text
-        update_column_call_transcriptions_text_embedding:
-          description: Update the 'text_embedding' column in the 'call_transcriptions' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: vector
-        update_column_call_transcriptions_transcription_id:
-          description: Update the 'transcription_id' column in the 'call_transcriptions' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: named
-                name: text
-        update_column_calls_account_name:
-          description: Update the 'account_name' column in the 'calls' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-        update_column_calls_call_action_items_discussed:
-          description: Update the 'call_action_items_discussed' column in the 'calls' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-        update_column_calls_call_action_items_discussed_embedding:
-          description: Update the 'call_action_items_discussed_embedding' column in the 'calls' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: vector
-        update_column_calls_call_full_transcript:
-          description: Update the 'call_full_transcript' column in the 'calls' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-        update_column_calls_call_full_transcript_embedding:
-          description: Update the 'call_full_transcript_embedding' column in the 'calls' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: vector
-        update_column_calls_call_key_takeaways:
-          description: Update the 'call_key_takeaways' column in the 'calls' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-        update_column_calls_call_key_takeaways_embedding:
-          description: Update the 'call_key_takeaways_embedding' column in the 'calls' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: vector
-        update_column_calls_call_review_page:
-          description: Update the 'call_review_page' column in the 'calls' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: named
-                name: text
-        update_column_calls_call_summary:
-          description: Update the 'call_summary' column in the 'calls' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-        update_column_calls_call_summary_embedding:
-          description: Update the 'call_summary_embedding' column in the 'calls' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: vector
-        update_column_calls_call_topics_discussed:
-          description: Update the 'call_topics_discussed' column in the 'calls' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-        update_column_calls_call_topics_discussed_embedding:
-          description: Update the 'call_topics_discussed_embedding' column in the 'calls' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: vector
-        update_column_calls_id:
-          description: Update the 'id' column in the 'calls' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: named
-                name: text
-        update_column_calls_last_modified_time:
-          description: Update the 'last_modified_time' column in the 'calls' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: named
-                name: timestamp
-        update_column_calls_salesforce_account_id:
-          description: Update the 'salesforce_account_id' column in the 'calls' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-        update_column_calls_salesforce_contact_ids:
-          description: Update the 'salesforce_contact_ids' column in the 'calls' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  type: array
-                  element_type:
-                    type: nullable
-                    underlying_type:
-                      type: named
-                      name: text
-        update_column_calls_salesforce_deal_id:
-          description: Update the 'salesforce_deal_id' column in the 'calls' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-        update_column_calls_source_id:
-          description: Update the 'source_id' column in the 'calls' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-        update_column_calls_time:
-          description: Update the 'time' column in the 'calls' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: named
-                name: timestamp
-        update_column_calls_title:
-          description: Update the 'title' column in the 'calls' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: named
-                name: text
-        update_column_calls_type:
-          description: Update the 'type' column in the 'calls' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: named
-                name: text
-      collections:
-        - name: call_action_items
-          arguments: {}
-          type: call_action_items
-          uniqueness_constraints: {}
-          foreign_keys:
-            call_action_items_call_id_fkey:
-              column_mapping:
-                call_id: id
-              foreign_collection: calls
-        - name: call_participants
-          arguments: {}
-          type: call_participants
-          uniqueness_constraints:
-            call_participants_pkey:
-              unique_columns:
-                - call_person_id
-          foreign_keys:
-            call_participants_call_id_fkey:
-              column_mapping:
-                call_id: id
-              foreign_collection: calls
-        - name: call_topics
-          arguments: {}
-          type: call_topics
-          uniqueness_constraints: {}
-          foreign_keys:
-            call_topics_call_id_fkey:
-              column_mapping:
-                call_id: id
-              foreign_collection: calls
-        - name: call_transcriptions
-          arguments: {}
-          type: call_transcriptions
-          uniqueness_constraints:
-            call_transcriptions_pkey:
-              unique_columns:
-                - transcription_id
-          foreign_keys:
-            call_transcriptions_call_id_fkey:
-              column_mapping:
-                call_id: id
-              foreign_collection: calls
-            call_transcriptions_call_person_id_fkey:
-              column_mapping:
-                call_person_id: call_person_id
-              foreign_collection: call_participants
-        - name: calls
-          arguments: {}
-          type: calls
-          uniqueness_constraints:
-            calls_pkey:
-              unique_columns:
-                - id
-          foreign_keys: {}
-      functions: []
-      procedures:
-        - name: delete_call_participants_by_call_person_id
-          description: Delete any row on the 'call_participants' collection using the 'call_person_id' key
-          arguments:
-            key_call_person_id:
-              type:
-                type: named
-                name: text
-            pre_check:
-              description: Delete permission predicate over the 'call_participants' collection
-              type:
-                type: nullable
-                underlying_type:
-                  type: predicate
-                  object_type_name: call_participants
-          result_type:
-            type: named
-            name: delete_call_participants_by_call_person_id_response
-        - name: delete_call_transcriptions_by_transcription_id
-          description: Delete any row on the 'call_transcriptions' collection using the 'transcription_id' key
-          arguments:
-            key_transcription_id:
-              type:
-                type: named
-                name: text
-            pre_check:
-              description: Delete permission predicate over the 'call_transcriptions' collection
-              type:
-                type: nullable
-                underlying_type:
-                  type: predicate
-                  object_type_name: call_transcriptions
-          result_type:
-            type: named
-            name: delete_call_transcriptions_by_transcription_id_response
-        - name: delete_calls_by_id
-          description: Delete any row on the 'calls' collection using the 'id' key
-          arguments:
-            key_id:
-              type:
-                type: named
-                name: text
-            pre_check:
-              description: Delete permission predicate over the 'calls' collection
-              type:
-                type: nullable
-                underlying_type:
-                  type: predicate
-                  object_type_name: calls
-          result_type:
-            type: named
-            name: delete_calls_by_id_response
-        - name: insert_call_action_items
-          description: Insert into the call_action_items table
-          arguments:
-            objects:
-              type:
-                type: array
-                element_type:
-                  type: named
-                  name: insert_call_action_items_object
-            post_check:
-              description: Insert permission predicate over the 'call_action_items' collection
-              type:
-                type: nullable
-                underlying_type:
-                  type: predicate
-                  object_type_name: call_action_items
-          result_type:
-            type: named
-            name: insert_call_action_items_response
-        - name: insert_call_participants
-          description: Insert into the call_participants table
-          arguments:
-            objects:
-              type:
-                type: array
-                element_type:
-                  type: named
-                  name: insert_call_participants_object
-            post_check:
-              description: Insert permission predicate over the 'call_participants' collection
-              type:
-                type: nullable
-                underlying_type:
-                  type: predicate
-                  object_type_name: call_participants
-          result_type:
-            type: named
-            name: insert_call_participants_response
-        - name: insert_call_topics
-          description: Insert into the call_topics table
-          arguments:
-            objects:
-              type:
-                type: array
-                element_type:
-                  type: named
-                  name: insert_call_topics_object
-            post_check:
-              description: Insert permission predicate over the 'call_topics' collection
-              type:
-                type: nullable
-                underlying_type:
-                  type: predicate
-                  object_type_name: call_topics
-          result_type:
-            type: named
-            name: insert_call_topics_response
-        - name: insert_call_transcriptions
-          description: Insert into the call_transcriptions table
-          arguments:
-            objects:
-              type:
-                type: array
-                element_type:
-                  type: named
-                  name: insert_call_transcriptions_object
-            post_check:
-              description: Insert permission predicate over the 'call_transcriptions' collection
-              type:
-                type: nullable
-                underlying_type:
-                  type: predicate
-                  object_type_name: call_transcriptions
-          result_type:
-            type: named
-            name: insert_call_transcriptions_response
-        - name: insert_calls
-          description: Insert into the calls table
-          arguments:
-            objects:
-              type:
-                type: array
-                element_type:
-                  type: named
-                  name: insert_calls_object
-            post_check:
-              description: Insert permission predicate over the 'calls' collection
-              type:
-                type: nullable
-                underlying_type:
-                  type: predicate
-                  object_type_name: calls
-          result_type:
-            type: named
-            name: insert_calls_response
-        - name: update_call_participants_by_call_person_id
-          description: Update any row on the 'call_participants' collection using the 'call_person_id' key
-          arguments:
-            key_call_person_id:
-              type:
-                type: named
-                name: text
-            post_check:
-              description: Update permission post-condition predicate over the 'call_participants' collection
-              type:
-                type: nullable
-                underlying_type:
-                  type: predicate
-                  object_type_name: call_participants
-            pre_check:
-              description: Update permission pre-condition predicate over the 'call_participants' collection
-              type:
-                type: nullable
-                underlying_type:
-                  type: predicate
-                  object_type_name: call_participants
-            update_columns:
-              type:
-                type: named
-                name: update_call_participants_by_call_person_id_update_columns
-          result_type:
-            type: named
-            name: update_call_participants_by_call_person_id_response
-        - name: update_call_transcriptions_by_transcription_id
-          description: Update any row on the 'call_transcriptions' collection using the 'transcription_id' key
-          arguments:
-            key_transcription_id:
-              type:
-                type: named
-                name: text
-            post_check:
-              description: Update permission post-condition predicate over the 'call_transcriptions' collection
-              type:
-                type: nullable
-                underlying_type:
-                  type: predicate
-                  object_type_name: call_transcriptions
-            pre_check:
-              description: Update permission pre-condition predicate over the 'call_transcriptions' collection
-              type:
-                type: nullable
-                underlying_type:
-                  type: predicate
-                  object_type_name: call_transcriptions
-            update_columns:
-              type:
-                type: named
-                name: update_call_transcriptions_by_transcription_id_update_columns
-          result_type:
-            type: named
-            name: update_call_transcriptions_by_transcription_id_response
-        - name: update_calls_by_id
-          description: Update any row on the 'calls' collection using the 'id' key
-          arguments:
-            key_id:
-              type:
-                type: named
-                name: text
-            post_check:
-              description: Update permission post-condition predicate over the 'calls' collection
-              type:
-                type: nullable
-                underlying_type:
-                  type: predicate
-                  object_type_name: calls
-            pre_check:
-              description: Update permission pre-condition predicate over the 'calls' collection
-              type:
-                type: nullable
-                underlying_type:
-                  type: predicate
-                  object_type_name: calls
-            update_columns:
-              type:
-                type: named
-                name: update_calls_by_id_update_columns
-          result_type:
-            type: named
-            name: update_calls_by_id_response
+                name: vector(3)
+                type: named
+              type: custom
+          representation:
+            type: json
     capabilities:
-      version: 0.1.6
       capabilities:
-        query:
-          aggregates: {}
-          variables: {}
-          explain: {}
-          nested_fields:
-            filter_by: {}
-            order_by: {}
-          exists:
-            nested_collections: {}
         mutation:
-          transactional: {}
           explain: {}
-        relationships:
-          relation_comparisons: {}
-          order_by_aggregate: {}
+          transactional: {}
+        query:
+          aggregates:
+            filter_by: {}
+          exists: {}
+          explain: {}
+          nested_fields: {}
+          variables: {}
+        relational_query:
+          aggregate:
+            expression:
+              aggregate:
+                approx_distinct: {}
+                approx_percentile_cont: {}
+                avg: {}
+                bool_and: {}
+                bool_or: {}
+                count:
+                  distinct: {}
+                first_value: {}
+                last_value: {}
+                max: {}
+                median: {}
+                min: {}
+                stddev: {}
+                stddev_pop: {}
+                string_agg: {}
+                sum: {}
+                var: {}
+              comparison:
+                between: {}
+                contains: {}
+                greater_than: {}
+                greater_than_eq: {}
+                ilike: {}
+                in_list: {}
+                is_false: {}
+                is_nan: {}
+                is_null: {}
+                is_true: {}
+                is_zero: {}
+                less_than: {}
+                less_than_eq: {}
+                like: {}
+              conditional:
+                case: {}
+                nullif: {}
+              scalar:
+                abs: {}
+                and: {}
+                array_element: {}
+                binary_concat: {}
+                btrim: {}
+                ceil: {}
+                character_length: {}
+                coalesce: {}
+                concat: {}
+                cos: {}
+                current_date: {}
+                current_time: {}
+                current_timestamp: {}
+                date_part:
+                  day: {}
+                  day_of_week: {}
+                  day_of_year: {}
+                  epoch: {}
+                  hour: {}
+                  microsecond: {}
+                  millisecond: {}
+                  minute: {}
+                  month: {}
+                  nanosecond: {}
+                  quarter: {}
+                  second: {}
+                  week: {}
+                  year: {}
+                date_trunc: {}
+                divide: {}
+                exp: {}
+                floor: {}
+                get_field: {}
+                greatest: {}
+                least: {}
+                left: {}
+                ln: {}
+                log: {}
+                log2: {}
+                log10: {}
+                lpad: {}
+                ltrim: {}
+                minus: {}
+                modulo: {}
+                multiply: {}
+                negate: {}
+                not: {}
+                nvl: {}
+                or: {}
+                plus: {}
+                power: {}
+                random: {}
+                replace: {}
+                reverse: {}
+                right: {}
+                round: {}
+                rpad: {}
+                rtrim: {}
+                sqrt: {}
+                str_pos: {}
+                substr: {}
+                substr_index: {}
+                tan: {}
+                to_date: {}
+                to_lower: {}
+                to_timestamp: {}
+                to_upper: {}
+                trunc: {}
+              window:
+                cume_dist: {}
+                dense_rank: {}
+                ntile: {}
+                percent_rank: {}
+                rank: {}
+                row_number: {}
+            group_by: {}
+          filter:
+            aggregate:
+              approx_distinct: {}
+              approx_percentile_cont: {}
+              avg: {}
+              bool_and: {}
+              bool_or: {}
+              count:
+                distinct: {}
+              first_value: {}
+              last_value: {}
+              max: {}
+              median: {}
+              min: {}
+              stddev: {}
+              stddev_pop: {}
+              string_agg: {}
+              sum: {}
+              var: {}
+            comparison:
+              between: {}
+              contains: {}
+              greater_than: {}
+              greater_than_eq: {}
+              ilike: {}
+              in_list: {}
+              is_false: {}
+              is_nan: {}
+              is_null: {}
+              is_true: {}
+              is_zero: {}
+              less_than: {}
+              less_than_eq: {}
+              like: {}
+            conditional:
+              case: {}
+              nullif: {}
+            scalar:
+              abs: {}
+              and: {}
+              array_element: {}
+              binary_concat: {}
+              btrim: {}
+              ceil: {}
+              character_length: {}
+              coalesce: {}
+              concat: {}
+              cos: {}
+              current_date: {}
+              current_time: {}
+              current_timestamp: {}
+              date_part:
+                day: {}
+                day_of_week: {}
+                day_of_year: {}
+                epoch: {}
+                hour: {}
+                microsecond: {}
+                millisecond: {}
+                minute: {}
+                month: {}
+                nanosecond: {}
+                quarter: {}
+                second: {}
+                week: {}
+                year: {}
+              date_trunc: {}
+              divide: {}
+              exp: {}
+              floor: {}
+              get_field: {}
+              greatest: {}
+              least: {}
+              left: {}
+              ln: {}
+              log: {}
+              log2: {}
+              log10: {}
+              lpad: {}
+              ltrim: {}
+              minus: {}
+              modulo: {}
+              multiply: {}
+              negate: {}
+              not: {}
+              nvl: {}
+              or: {}
+              plus: {}
+              power: {}
+              random: {}
+              replace: {}
+              reverse: {}
+              right: {}
+              round: {}
+              rpad: {}
+              rtrim: {}
+              sqrt: {}
+              str_pos: {}
+              substr: {}
+              substr_index: {}
+              tan: {}
+              to_date: {}
+              to_lower: {}
+              to_timestamp: {}
+              to_upper: {}
+              trunc: {}
+            window:
+              cume_dist: {}
+              dense_rank: {}
+              ntile: {}
+              percent_rank: {}
+              rank: {}
+              row_number: {}
+          join:
+            expression:
+              aggregate:
+                approx_distinct: {}
+                approx_percentile_cont: {}
+                avg: {}
+                bool_and: {}
+                bool_or: {}
+                count:
+                  distinct: {}
+                first_value: {}
+                last_value: {}
+                max: {}
+                median: {}
+                min: {}
+                stddev: {}
+                stddev_pop: {}
+                string_agg: {}
+                sum: {}
+                var: {}
+              comparison:
+                between: {}
+                contains: {}
+                greater_than: {}
+                greater_than_eq: {}
+                ilike: {}
+                in_list: {}
+                is_false: {}
+                is_nan: {}
+                is_null: {}
+                is_true: {}
+                is_zero: {}
+                less_than: {}
+                less_than_eq: {}
+                like: {}
+              conditional:
+                case: {}
+                nullif: {}
+              scalar:
+                abs: {}
+                and: {}
+                array_element: {}
+                binary_concat: {}
+                btrim: {}
+                ceil: {}
+                character_length: {}
+                coalesce: {}
+                concat: {}
+                cos: {}
+                current_date: {}
+                current_time: {}
+                current_timestamp: {}
+                date_part:
+                  day: {}
+                  day_of_week: {}
+                  day_of_year: {}
+                  epoch: {}
+                  hour: {}
+                  microsecond: {}
+                  millisecond: {}
+                  minute: {}
+                  month: {}
+                  nanosecond: {}
+                  quarter: {}
+                  second: {}
+                  week: {}
+                  year: {}
+                date_trunc: {}
+                divide: {}
+                exp: {}
+                floor: {}
+                get_field: {}
+                greatest: {}
+                least: {}
+                left: {}
+                ln: {}
+                log: {}
+                log2: {}
+                log10: {}
+                lpad: {}
+                ltrim: {}
+                minus: {}
+                modulo: {}
+                multiply: {}
+                negate: {}
+                not: {}
+                nvl: {}
+                or: {}
+                plus: {}
+                power: {}
+                random: {}
+                replace: {}
+                reverse: {}
+                right: {}
+                round: {}
+                rpad: {}
+                rtrim: {}
+                sqrt: {}
+                str_pos: {}
+                substr: {}
+                substr_index: {}
+                tan: {}
+                to_date: {}
+                to_lower: {}
+                to_timestamp: {}
+                to_upper: {}
+                trunc: {}
+              window:
+                cume_dist: {}
+                dense_rank: {}
+                ntile: {}
+                percent_rank: {}
+                rank: {}
+                row_number: {}
+            join_types:
+              full: {}
+              inner: {}
+              left: {}
+              left_anti: {}
+              left_semi: {}
+              right: {}
+              right_anti: {}
+              right_semi: {}
+          project:
+            expression:
+              aggregate:
+                approx_distinct: {}
+                approx_percentile_cont: {}
+                avg: {}
+                bool_and: {}
+                bool_or: {}
+                count:
+                  distinct: {}
+                first_value: {}
+                last_value: {}
+                max: {}
+                median: {}
+                min: {}
+                stddev: {}
+                stddev_pop: {}
+                string_agg: {}
+                sum: {}
+                var: {}
+              comparison:
+                between: {}
+                contains: {}
+                greater_than: {}
+                greater_than_eq: {}
+                ilike: {}
+                in_list: {}
+                is_false: {}
+                is_nan: {}
+                is_null: {}
+                is_true: {}
+                is_zero: {}
+                less_than: {}
+                less_than_eq: {}
+                like: {}
+              conditional:
+                case: {}
+                nullif: {}
+              scalar:
+                abs: {}
+                and: {}
+                array_element: {}
+                binary_concat: {}
+                btrim: {}
+                ceil: {}
+                character_length: {}
+                coalesce: {}
+                concat: {}
+                cos: {}
+                current_date: {}
+                current_time: {}
+                current_timestamp: {}
+                date_part:
+                  day: {}
+                  day_of_week: {}
+                  day_of_year: {}
+                  epoch: {}
+                  hour: {}
+                  microsecond: {}
+                  millisecond: {}
+                  minute: {}
+                  month: {}
+                  nanosecond: {}
+                  quarter: {}
+                  second: {}
+                  week: {}
+                  year: {}
+                date_trunc: {}
+                divide: {}
+                exp: {}
+                floor: {}
+                get_field: {}
+                greatest: {}
+                least: {}
+                left: {}
+                ln: {}
+                log: {}
+                log2: {}
+                log10: {}
+                lpad: {}
+                ltrim: {}
+                minus: {}
+                modulo: {}
+                multiply: {}
+                negate: {}
+                not: {}
+                nvl: {}
+                or: {}
+                plus: {}
+                power: {}
+                random: {}
+                replace: {}
+                reverse: {}
+                right: {}
+                round: {}
+                rpad: {}
+                rtrim: {}
+                sqrt: {}
+                str_pos: {}
+                substr: {}
+                substr_index: {}
+                tan: {}
+                to_date: {}
+                to_lower: {}
+                to_timestamp: {}
+                to_upper: {}
+                trunc: {}
+              window:
+                cume_dist: {}
+                dense_rank: {}
+                ntile: {}
+                percent_rank: {}
+                rank: {}
+                row_number: {}
+          sort:
+            expression:
+              aggregate:
+                approx_distinct: {}
+                approx_percentile_cont: {}
+                avg: {}
+                bool_and: {}
+                bool_or: {}
+                count:
+                  distinct: {}
+                first_value: {}
+                last_value: {}
+                max: {}
+                median: {}
+                min: {}
+                stddev: {}
+                stddev_pop: {}
+                string_agg: {}
+                sum: {}
+                var: {}
+              comparison:
+                between: {}
+                contains: {}
+                greater_than: {}
+                greater_than_eq: {}
+                ilike: {}
+                in_list: {}
+                is_false: {}
+                is_nan: {}
+                is_null: {}
+                is_true: {}
+                is_zero: {}
+                less_than: {}
+                less_than_eq: {}
+                like: {}
+              conditional:
+                case: {}
+                nullif: {}
+              scalar:
+                abs: {}
+                and: {}
+                array_element: {}
+                binary_concat: {}
+                btrim: {}
+                ceil: {}
+                character_length: {}
+                coalesce: {}
+                concat: {}
+                cos: {}
+                current_date: {}
+                current_time: {}
+                current_timestamp: {}
+                date_part:
+                  day: {}
+                  day_of_week: {}
+                  day_of_year: {}
+                  epoch: {}
+                  hour: {}
+                  microsecond: {}
+                  millisecond: {}
+                  minute: {}
+                  month: {}
+                  nanosecond: {}
+                  quarter: {}
+                  second: {}
+                  week: {}
+                  year: {}
+                date_trunc: {}
+                divide: {}
+                exp: {}
+                floor: {}
+                get_field: {}
+                greatest: {}
+                least: {}
+                left: {}
+                ln: {}
+                log: {}
+                log2: {}
+                log10: {}
+                lpad: {}
+                ltrim: {}
+                minus: {}
+                modulo: {}
+                multiply: {}
+                negate: {}
+                not: {}
+                nvl: {}
+                or: {}
+                plus: {}
+                power: {}
+                random: {}
+                replace: {}
+                reverse: {}
+                right: {}
+                round: {}
+                rpad: {}
+                rtrim: {}
+                sqrt: {}
+                str_pos: {}
+                substr: {}
+                substr_index: {}
+                tan: {}
+                to_date: {}
+                to_lower: {}
+                to_timestamp: {}
+                to_upper: {}
+                trunc: {}
+              window:
+                cume_dist: {}
+                dense_rank: {}
+                ntile: {}
+                percent_rank: {}
+                rank: {}
+                row_number: {}
+          union: {}
+          window:
+            expression:
+              aggregate:
+                approx_distinct: {}
+                approx_percentile_cont: {}
+                avg: {}
+                bool_and: {}
+                bool_or: {}
+                count:
+                  distinct: {}
+                first_value: {}
+                last_value: {}
+                max: {}
+                median: {}
+                min: {}
+                stddev: {}
+                stddev_pop: {}
+                string_agg: {}
+                sum: {}
+                var: {}
+              comparison:
+                between: {}
+                contains: {}
+                greater_than: {}
+                greater_than_eq: {}
+                ilike: {}
+                in_list: {}
+                is_false: {}
+                is_nan: {}
+                is_null: {}
+                is_true: {}
+                is_zero: {}
+                less_than: {}
+                less_than_eq: {}
+                like: {}
+              conditional:
+                case: {}
+                nullif: {}
+              scalar:
+                abs: {}
+                and: {}
+                array_element: {}
+                binary_concat: {}
+                btrim: {}
+                ceil: {}
+                character_length: {}
+                coalesce: {}
+                concat: {}
+                cos: {}
+                current_date: {}
+                current_time: {}
+                current_timestamp: {}
+                date_part:
+                  day: {}
+                  day_of_week: {}
+                  day_of_year: {}
+                  epoch: {}
+                  hour: {}
+                  microsecond: {}
+                  millisecond: {}
+                  minute: {}
+                  month: {}
+                  nanosecond: {}
+                  quarter: {}
+                  second: {}
+                  week: {}
+                  year: {}
+                date_trunc: {}
+                divide: {}
+                exp: {}
+                floor: {}
+                get_field: {}
+                greatest: {}
+                least: {}
+                left: {}
+                ln: {}
+                log: {}
+                log2: {}
+                log10: {}
+                lpad: {}
+                ltrim: {}
+                minus: {}
+                modulo: {}
+                multiply: {}
+                negate: {}
+                not: {}
+                nvl: {}
+                or: {}
+                plus: {}
+                power: {}
+                random: {}
+                replace: {}
+                reverse: {}
+                right: {}
+                round: {}
+                rpad: {}
+                rtrim: {}
+                sqrt: {}
+                str_pos: {}
+                substr: {}
+                substr_index: {}
+                tan: {}
+                to_date: {}
+                to_lower: {}
+                to_timestamp: {}
+                to_upper: {}
+                trunc: {}
+              window:
+                cume_dist: {}
+                dense_rank: {}
+                ntile: {}
+                percent_rank: {}
+                rank: {}
+                row_number: {}
+      version: 0.2.5

@@ -1,0 +1,157 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: PublicUsers
+  description: "Object type for public.users. Description: null"
+  fields:
+    - name: firstName
+      type: String_1
+    - name: id
+      type: String_1!
+    - name: lastName
+      type: String_1
+    - name: userRoleId
+      type: String_1
+  graphql:
+    typeName: PublicUsers_1
+    inputTypeName: PublicUsersInput_1
+  dataConnectorTypeMapping:
+    - dataConnectorName: salesforce
+      dataConnectorObjectType: public.users
+      fieldMapping:
+        firstName:
+          column:
+            name: first_name
+        id:
+          column:
+            name: id
+        lastName:
+          column:
+            name: last_name
+        userRoleId:
+          column:
+            name: user_role_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: PublicUsers
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - firstName
+          - id
+          - lastName
+          - userRoleId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PublicUsersBoolExp
+  operand:
+    object:
+      type: PublicUsers
+      comparableFields:
+        - fieldName: firstName
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: id
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: lastName
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: userRoleId
+          booleanExpressionType: CharacterVaryingBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: PublicUsersBoolExp_1
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PublicUsersAggExp
+  operand:
+    object:
+      aggregatedType: PublicUsers
+      aggregatableFields:
+        - fieldName: firstName
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: id
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: lastName
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: userRoleId
+          aggregateExpression: CharacterVaryingAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: PublicUsersAggExp_1
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PublicUsersOrderByExp
+  operand:
+    object:
+      orderedType: PublicUsers
+      orderableFields:
+        - fieldName: firstName
+          orderByExpression: String1OrderByExp
+        - fieldName: id
+          orderByExpression: String1OrderByExp
+        - fieldName: lastName
+          orderByExpression: String1OrderByExp
+        - fieldName: userRoleId
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: PublicUsersOrderByExp_1
+
+---
+kind: Model
+version: v2
+definition:
+  name: PublicUsers
+  objectType: PublicUsers
+  source:
+    dataConnectorName: salesforce
+    collection: public.users
+  filterExpressionType: PublicUsersBoolExp
+  aggregateExpression: PublicUsersAggExp
+  orderByExpression: PublicUsersOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: publicUsers_1
+      subscription:
+        rootField: publicUsers_1
+    selectUniques:
+      - queryRootField: publicUsersById_1
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: publicUsersById_1
+    filterInputTypeName: PublicUsersFilterInput_1
+    aggregate:
+      queryRootField: publicUsersAggregate_1
+      subscription:
+        rootField: publicUsersAggregate_1
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: PublicUsers
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
