@@ -1,0 +1,205 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: PublicPricingHistory
+  description: "Object type for public.pricing_history. Description: null"
+  fields:
+    - name: actualPrice
+      type: Bigdecimal!
+    - name: basePrice
+      type: Bigdecimal!
+    - name: effectiveDate
+      type: Date!
+    - name: endDate
+      type: Date
+    - name: pricingId
+      type: Int32!
+    - name: productId
+      type: Int32
+    - name: promotionId
+      type: Int32
+    - name: retailerId
+      type: Int32
+  graphql:
+    typeName: PublicPricingHistory
+    inputTypeName: PublicPricingHistoryInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: sales
+      dataConnectorObjectType: public.pricing_history
+      fieldMapping:
+        actualPrice:
+          column:
+            name: actual_price
+        basePrice:
+          column:
+            name: base_price
+        effectiveDate:
+          column:
+            name: effective_date
+        endDate:
+          column:
+            name: end_date
+        pricingId:
+          column:
+            name: pricing_id
+        productId:
+          column:
+            name: product_id
+        promotionId:
+          column:
+            name: promotion_id
+        retailerId:
+          column:
+            name: retailer_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: PublicPricingHistory
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - actualPrice
+          - basePrice
+          - effectiveDate
+          - endDate
+          - pricingId
+          - productId
+          - promotionId
+          - retailerId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PublicPricingHistoryBoolExp
+  operand:
+    object:
+      type: PublicPricingHistory
+      comparableFields:
+        - fieldName: actualPrice
+          booleanExpressionType: DecimalBoolExp
+        - fieldName: basePrice
+          booleanExpressionType: DecimalBoolExp
+        - fieldName: effectiveDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: endDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: pricingId
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: productId
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: promotionId
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: retailerId
+          booleanExpressionType: IntegerBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: PublicPricingHistoryBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PublicPricingHistoryAggExp
+  operand:
+    object:
+      aggregatedType: PublicPricingHistory
+      aggregatableFields:
+        - fieldName: actualPrice
+          aggregateExpression: DecimalAggExp
+        - fieldName: basePrice
+          aggregateExpression: DecimalAggExp
+        - fieldName: effectiveDate
+          aggregateExpression: DateAggExp
+        - fieldName: endDate
+          aggregateExpression: DateAggExp
+        - fieldName: pricingId
+          aggregateExpression: IntegerAggExp
+        - fieldName: productId
+          aggregateExpression: IntegerAggExp
+        - fieldName: promotionId
+          aggregateExpression: IntegerAggExp
+        - fieldName: retailerId
+          aggregateExpression: IntegerAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: PublicPricingHistoryAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PublicPricingHistoryOrderByExp
+  operand:
+    object:
+      orderedType: PublicPricingHistory
+      orderableFields:
+        - fieldName: actualPrice
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: basePrice
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: effectiveDate
+          orderByExpression: DateOrderByExp
+        - fieldName: endDate
+          orderByExpression: DateOrderByExp
+        - fieldName: pricingId
+          orderByExpression: Int32OrderByExp
+        - fieldName: productId
+          orderByExpression: Int32OrderByExp
+        - fieldName: promotionId
+          orderByExpression: Int32OrderByExp
+        - fieldName: retailerId
+          orderByExpression: Int32OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: PublicPricingHistoryOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: PublicPricingHistory
+  objectType: PublicPricingHistory
+  source:
+    dataConnectorName: sales
+    collection: public.pricing_history
+  filterExpressionType: PublicPricingHistoryBoolExp
+  aggregateExpression: PublicPricingHistoryAggExp
+  orderByExpression: PublicPricingHistoryOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: publicPricingHistory
+      subscription:
+        rootField: publicPricingHistory
+    selectUniques:
+      - queryRootField: publicPricingHistoryByPricingId
+        uniqueIdentifier:
+          - pricingId
+        subscription:
+          rootField: publicPricingHistoryByPricingId
+    filterInputTypeName: PublicPricingHistoryFilterInput
+    aggregate:
+      queryRootField: publicPricingHistoryAggregate
+      subscription:
+        rootField: publicPricingHistoryAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: PublicPricingHistory
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

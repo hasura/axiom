@@ -2,72 +2,77 @@
 kind: ObjectType
 version: v1
 definition:
-  name: pricing_update_response
+  name: PricingUpdateResponse
   fields:
-    - name: product_id
+    - name: productId
       type: Float!
-    - name: retailer_id
+    - name: retailerId
       type: Float!
     - name: status
       type: String!
-    - name: update_id
+    - name: updateId
       type: String
   graphql:
-    typeName: pricing_update_response
-    inputTypeName: pricing_update_response_input
+    typeName: PricingUpdateResponse
+    inputTypeName: PricingUpdateResponseInput
   dataConnectorTypeMapping:
     - dataConnectorName: retail_execution
       dataConnectorObjectType: PricingUpdateResponse
+      fieldMapping:
+        productId:
+          column:
+            name: product_id
+        retailerId:
+          column:
+            name: retailer_id
+        status:
+          column:
+            name: status
+        updateId:
+          column:
+            name: update_id
 
 ---
 kind: TypePermissions
 version: v1
 definition:
-  typeName: pricing_update_response
+  typeName: PricingUpdateResponse
   permissions:
     - role: admin
       output:
         allowedFields:
-          - product_id
-          - retailer_id
+          - productId
+          - retailerId
           - status
-          - update_id
+          - updateId
 
 ---
 kind: Command
 version: v1
 definition:
-  name: update_product_pricing
-  outputType: pricing_update_response!
+  name: UpdateProductPricing
+  outputType: PricingUpdateResponse!
   arguments:
-    - name: effective_date
+    - name: effectiveDate
       type: String!
-    - name: new_msrp
+    - name: newMsrp
       type: Float!
-    - name: new_wholesale_price
+    - name: newWholesalePrice
       type: Float!
-    - name: product_id
+    - name: productId
       type: Float!
-    - name: product_name
+    - name: productName
       type: String!
     - name: reason
       type: String!
-    - name: retailer_id
+    - name: retailerId
       type: Float!
   source:
     dataConnectorName: retail_execution
     dataConnectorCommand:
       procedure: updateProductPricing
-    argumentMapping:
-      effective_date: effectiveDate
-      new_msrp: newMsrp
-      new_wholesale_price: newWholesalePrice
-      product_id: productId
-      product_name: productName
-      reason: reason
-      retailer_id: retailerId
   graphql:
-    rootFieldName: update_product_pricing
+    rootFieldName: updateProductPricing
     rootFieldKind: Mutation
   description: >-
     **Description:**
@@ -89,7 +94,7 @@ definition:
 kind: CommandPermissions
 version: v1
 definition:
-  commandName: update_product_pricing
+  commandName: UpdateProductPricing
   permissions:
     - role: admin
       allowExecution: true
