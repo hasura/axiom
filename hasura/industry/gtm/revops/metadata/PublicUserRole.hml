@@ -1,0 +1,126 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: PublicUserRole
+  description: "Object type for public.user_role. Description: null"
+  fields:
+    - name: id
+      type: String_1!
+    - name: name
+      type: String_1
+  graphql:
+    typeName: PublicUserRole
+    inputTypeName: PublicUserRoleInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: salesforce
+      dataConnectorObjectType: public.user_role
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: PublicUserRole
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - id
+          - name
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PublicUserRoleBoolExp
+  operand:
+    object:
+      type: PublicUserRole
+      comparableFields:
+        - fieldName: id
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: name
+          booleanExpressionType: CharacterVaryingBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: PublicUserRoleBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PublicUserRoleAggExp
+  operand:
+    object:
+      aggregatedType: PublicUserRole
+      aggregatableFields:
+        - fieldName: id
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: name
+          aggregateExpression: CharacterVaryingAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: PublicUserRoleAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PublicUserRoleOrderByExp
+  operand:
+    object:
+      orderedType: PublicUserRole
+      orderableFields:
+        - fieldName: id
+          orderByExpression: String1OrderByExp
+        - fieldName: name
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: PublicUserRoleOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: PublicUserRole
+  objectType: PublicUserRole
+  source:
+    dataConnectorName: salesforce
+    collection: public.user_role
+  filterExpressionType: PublicUserRoleBoolExp
+  aggregateExpression: PublicUserRoleAggExp
+  orderByExpression: PublicUserRoleOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: publicUserRole
+      subscription:
+        rootField: publicUserRole
+    selectUniques:
+      - queryRootField: publicUserRoleById
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: publicUserRoleById
+    filterInputTypeName: PublicUserRoleFilterInput
+    aggregate:
+      queryRootField: publicUserRoleAggregate
+      subscription:
+        rootField: publicUserRoleAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: PublicUserRole
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

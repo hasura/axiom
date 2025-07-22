@@ -1,0 +1,169 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: PublicProcedureCodes
+  description: "Object type for public.procedure_codes. Description: null"
+  fields:
+    - name: avgDurationMinutes
+      type: Int32
+    - name: category
+      type: String_1
+    - name: hcpc
+      type: String_1!
+    - name: longDescription
+      type: String_1!
+    - name: shortDescription
+      type: String_1
+  graphql:
+    typeName: PublicProcedureCodes
+    inputTypeName: PublicProcedureCodesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: reference
+      dataConnectorObjectType: public.procedure_codes
+      fieldMapping:
+        avgDurationMinutes:
+          column:
+            name: avg_duration_minutes
+        category:
+          column:
+            name: category
+        hcpc:
+          column:
+            name: hcpc
+        longDescription:
+          column:
+            name: long_description
+        shortDescription:
+          column:
+            name: short_description
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: PublicProcedureCodes
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - avgDurationMinutes
+          - category
+          - hcpc
+          - longDescription
+          - shortDescription
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PublicProcedureCodesBoolExp
+  operand:
+    object:
+      type: PublicProcedureCodes
+      comparableFields:
+        - fieldName: avgDurationMinutes
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: category
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: hcpc
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: longDescription
+          booleanExpressionType: TextBoolExp
+        - fieldName: shortDescription
+          booleanExpressionType: CharacterVaryingBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: PublicProcedureCodesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PublicProcedureCodesAggExp
+  operand:
+    object:
+      aggregatedType: PublicProcedureCodes
+      aggregatableFields:
+        - fieldName: avgDurationMinutes
+          aggregateExpression: IntegerAggExp
+        - fieldName: category
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: hcpc
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: longDescription
+          aggregateExpression: TextAggExp
+        - fieldName: shortDescription
+          aggregateExpression: CharacterVaryingAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: PublicProcedureCodesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PublicProcedureCodesOrderByExp
+  operand:
+    object:
+      orderedType: PublicProcedureCodes
+      orderableFields:
+        - fieldName: avgDurationMinutes
+          orderByExpression: Int32OrderByExp
+        - fieldName: category
+          orderByExpression: String1OrderByExp
+        - fieldName: hcpc
+          orderByExpression: String1OrderByExp
+        - fieldName: longDescription
+          orderByExpression: String1OrderByExp
+        - fieldName: shortDescription
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: PublicProcedureCodesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: PublicProcedureCodes
+  objectType: PublicProcedureCodes
+  source:
+    dataConnectorName: reference
+    collection: public.procedure_codes
+  filterExpressionType: PublicProcedureCodesBoolExp
+  aggregateExpression: PublicProcedureCodesAggExp
+  orderByExpression: PublicProcedureCodesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: publicProcedureCodes
+      subscription:
+        rootField: publicProcedureCodes
+    selectUniques:
+      - queryRootField: publicProcedureCodesByHcpc
+        uniqueIdentifier:
+          - hcpc
+        subscription:
+          rootField: publicProcedureCodesByHcpc
+    filterInputTypeName: PublicProcedureCodesFilterInput
+    aggregate:
+      queryRootField: publicProcedureCodesAggregate
+      subscription:
+        rootField: publicProcedureCodesAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: PublicProcedureCodes
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

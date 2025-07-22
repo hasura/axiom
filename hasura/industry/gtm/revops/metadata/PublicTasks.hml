@@ -1,0 +1,265 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: PublicTasks
+  description: "Object type for public.tasks. Description: null"
+  fields:
+    - name: activityDate
+      type: String_1
+    - name: callDisposition
+      type: String_1
+    - name: callType
+      type: String_1
+    - name: completedDateTime
+      type: String_1
+    - name: description
+      type: String_1
+    - name: id
+      type: String_1!
+    - name: ownerId
+      type: String_1
+    - name: status
+      type: String_1
+    - name: subject
+      type: String_1
+    - name: taskSubtype
+      type: String_1
+    - name: type
+      type: String_1
+    - name: whatId
+      type: String_1
+    - name: whoId
+      type: String_1
+  graphql:
+    typeName: PublicTasks
+    inputTypeName: PublicTasksInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: salesforce
+      dataConnectorObjectType: public.tasks
+      fieldMapping:
+        activityDate:
+          column:
+            name: activity_date
+        callDisposition:
+          column:
+            name: call_disposition
+        callType:
+          column:
+            name: call_type
+        completedDateTime:
+          column:
+            name: completed_date_time
+        description:
+          column:
+            name: description
+        id:
+          column:
+            name: id
+        ownerId:
+          column:
+            name: owner_id
+        status:
+          column:
+            name: status
+        subject:
+          column:
+            name: subject
+        taskSubtype:
+          column:
+            name: task_subtype
+        type:
+          column:
+            name: type
+        whatId:
+          column:
+            name: what_id
+        whoId:
+          column:
+            name: who_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: PublicTasks
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - activityDate
+          - callDisposition
+          - callType
+          - completedDateTime
+          - description
+          - id
+          - ownerId
+          - status
+          - subject
+          - taskSubtype
+          - type
+          - whatId
+          - whoId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PublicTasksBoolExp
+  operand:
+    object:
+      type: PublicTasks
+      comparableFields:
+        - fieldName: activityDate
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: callDisposition
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: callType
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: completedDateTime
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: description
+          booleanExpressionType: TextBoolExp_1
+        - fieldName: id
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: ownerId
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: status
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: subject
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: taskSubtype
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: type
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: whatId
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: whoId
+          booleanExpressionType: CharacterVaryingBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: PublicTasksBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PublicTasksAggExp
+  operand:
+    object:
+      aggregatedType: PublicTasks
+      aggregatableFields:
+        - fieldName: activityDate
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: callDisposition
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: callType
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: completedDateTime
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: description
+          aggregateExpression: TextAggExp_1
+        - fieldName: id
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: ownerId
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: status
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: subject
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: taskSubtype
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: type
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: whatId
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: whoId
+          aggregateExpression: CharacterVaryingAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: PublicTasksAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PublicTasksOrderByExp
+  operand:
+    object:
+      orderedType: PublicTasks
+      orderableFields:
+        - fieldName: activityDate
+          orderByExpression: String1OrderByExp
+        - fieldName: callDisposition
+          orderByExpression: String1OrderByExp
+        - fieldName: callType
+          orderByExpression: String1OrderByExp
+        - fieldName: completedDateTime
+          orderByExpression: String1OrderByExp
+        - fieldName: description
+          orderByExpression: String1OrderByExp
+        - fieldName: id
+          orderByExpression: String1OrderByExp
+        - fieldName: ownerId
+          orderByExpression: String1OrderByExp
+        - fieldName: status
+          orderByExpression: String1OrderByExp
+        - fieldName: subject
+          orderByExpression: String1OrderByExp
+        - fieldName: taskSubtype
+          orderByExpression: String1OrderByExp
+        - fieldName: type
+          orderByExpression: String1OrderByExp
+        - fieldName: whatId
+          orderByExpression: String1OrderByExp
+        - fieldName: whoId
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: PublicTasksOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: PublicTasks
+  objectType: PublicTasks
+  source:
+    dataConnectorName: salesforce
+    collection: public.tasks
+  filterExpressionType: PublicTasksBoolExp
+  aggregateExpression: PublicTasksAggExp
+  orderByExpression: PublicTasksOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: publicTasks
+      subscription:
+        rootField: publicTasks
+    selectUniques:
+      - queryRootField: publicTasksById
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: publicTasksById
+    filterInputTypeName: PublicTasksFilterInput
+    aggregate:
+      queryRootField: publicTasksAggregate
+      subscription:
+        rootField: publicTasksAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: PublicTasks
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

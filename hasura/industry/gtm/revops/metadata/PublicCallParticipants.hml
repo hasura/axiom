@@ -1,0 +1,193 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: PublicCallParticipants
+  description: "Object type for public.call_participants. Description: null"
+  fields:
+    - name: callId
+      type: String_1!
+    - name: callPersonId
+      type: String_1!
+    - name: email
+      type: String_1
+    - name: isOrganizer
+      type: Boolean_1!
+    - name: name
+      type: String_1
+    - name: personId
+      type: Int32!
+    - name: userId
+      type: String_1
+  graphql:
+    typeName: PublicCallParticipants
+    inputTypeName: PublicCallParticipantsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: clari
+      dataConnectorObjectType: public.call_participants
+      fieldMapping:
+        callId:
+          column:
+            name: call_id
+        callPersonId:
+          column:
+            name: call_person_id
+        email:
+          column:
+            name: email
+        isOrganizer:
+          column:
+            name: is_organizer
+        name:
+          column:
+            name: name
+        personId:
+          column:
+            name: person_id
+        userId:
+          column:
+            name: user_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: PublicCallParticipants
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - callId
+          - callPersonId
+          - email
+          - isOrganizer
+          - name
+          - personId
+          - userId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PublicCallParticipantsBoolExp
+  operand:
+    object:
+      type: PublicCallParticipants
+      comparableFields:
+        - fieldName: callId
+          booleanExpressionType: TextBoolExp
+        - fieldName: callPersonId
+          booleanExpressionType: TextBoolExp
+        - fieldName: email
+          booleanExpressionType: TextBoolExp
+        - fieldName: isOrganizer
+          booleanExpressionType: BooleanBoolExp
+        - fieldName: name
+          booleanExpressionType: TextBoolExp
+        - fieldName: personId
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: userId
+          booleanExpressionType: TextBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: PublicCallParticipantsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PublicCallParticipantsAggExp
+  operand:
+    object:
+      aggregatedType: PublicCallParticipants
+      aggregatableFields:
+        - fieldName: callId
+          aggregateExpression: TextAggExp
+        - fieldName: callPersonId
+          aggregateExpression: TextAggExp
+        - fieldName: email
+          aggregateExpression: TextAggExp
+        - fieldName: isOrganizer
+          aggregateExpression: BooleanAggExp
+        - fieldName: name
+          aggregateExpression: TextAggExp
+        - fieldName: personId
+          aggregateExpression: IntegerAggExp
+        - fieldName: userId
+          aggregateExpression: TextAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: PublicCallParticipantsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PublicCallParticipantsOrderByExp
+  operand:
+    object:
+      orderedType: PublicCallParticipants
+      orderableFields:
+        - fieldName: callId
+          orderByExpression: String1OrderByExp
+        - fieldName: callPersonId
+          orderByExpression: String1OrderByExp
+        - fieldName: email
+          orderByExpression: String1OrderByExp
+        - fieldName: isOrganizer
+          orderByExpression: Boolean1OrderByExp
+        - fieldName: name
+          orderByExpression: String1OrderByExp
+        - fieldName: personId
+          orderByExpression: Int32OrderByExp
+        - fieldName: userId
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: PublicCallParticipantsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: PublicCallParticipants
+  objectType: PublicCallParticipants
+  source:
+    dataConnectorName: clari
+    collection: public.call_participants
+  filterExpressionType: PublicCallParticipantsBoolExp
+  aggregateExpression: PublicCallParticipantsAggExp
+  orderByExpression: PublicCallParticipantsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: publicCallParticipants
+      subscription:
+        rootField: publicCallParticipants
+    selectUniques:
+      - queryRootField: publicCallParticipantsByCallPersonId
+        uniqueIdentifier:
+          - callPersonId
+        subscription:
+          rootField: publicCallParticipantsByCallPersonId
+    filterInputTypeName: PublicCallParticipantsFilterInput
+    aggregate:
+      queryRootField: publicCallParticipantsAggregate
+      subscription:
+        rootField: publicCallParticipantsAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: PublicCallParticipants
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

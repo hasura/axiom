@@ -83,7 +83,7 @@ definition:
   name: Accounts
   fields:
     - name: id
-      type: ObjectId!
+      type: String_1!
     - name: accountId
       type: Int
     - name: contactInformation
@@ -152,11 +152,11 @@ definition:
       type: AccountsContactInformation
       comparableFields:
         - fieldName: address
-          booleanExpressionType: StringBoolExp
+          booleanExpressionType: StringBoolExp_1
         - fieldName: email
-          booleanExpressionType: StringBoolExp
+          booleanExpressionType: StringBoolExp_1
         - fieldName: phoneNumber
-          booleanExpressionType: StringBoolExp
+          booleanExpressionType: StringBoolExp_1
       comparableRelationships: []
   logicalOperators:
     enable: true
@@ -175,9 +175,9 @@ definition:
       type: AccountsTransactionLimits
       comparableFields:
         - fieldName: maxNumTransactions
-          booleanExpressionType: IntBoolExp
+          booleanExpressionType: IntBoolExp_1
         - fieldName: maxTransactionLimit
-          booleanExpressionType: IntBoolExp
+          booleanExpressionType: IntBoolExp_1
       comparableRelationships: []
   logicalOperators:
     enable: true
@@ -198,15 +198,15 @@ definition:
         - fieldName: id
           booleanExpressionType: ObjectIdBoolExp
         - fieldName: accountId
-          booleanExpressionType: IntBoolExp
+          booleanExpressionType: IntBoolExp_1
         - fieldName: contactInformation
           booleanExpressionType: AccountsContactInformationBoolExp
         - fieldName: entityType
-          booleanExpressionType: StringBoolExp
+          booleanExpressionType: StringBoolExp_1
         - fieldName: name
-          booleanExpressionType: StringBoolExp
+          booleanExpressionType: StringBoolExp_1
         - fieldName: risk
-          booleanExpressionType: StringBoolExp
+          booleanExpressionType: StringBoolExp_1
         - fieldName: transactionLimits
           booleanExpressionType: AccountsTransactionLimitsBoolExp
       comparableRelationships: []
@@ -287,7 +287,7 @@ definition:
       orderedType: Accounts
       orderableFields:
         - fieldName: id
-          orderByExpression: ObjectIdOrderByExp
+          orderByExpression: String1OrderByExp
         - fieldName: accountId
           orderByExpression: IntOrderByExp
         - fieldName: contactInformation
@@ -344,56 +344,3 @@ definition:
         filter: null
         allowSubscriptions: true
 
----
-kind: Relationship
-version: v1
-definition:
-  name: aml_beneficiary_cases
-  sourceType: Accounts
-  target:
-    model:
-      name: AmlCases
-      relationshipType: Array
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: accountId
-      target:
-        modelField:
-          - fieldName: beneficiaryId
-
----
-kind: Relationship
-version: v1
-definition:
-  name: aml_originator_cases
-  sourceType: Accounts
-  target:
-    model:
-      name: AmlCases
-      relationshipType: Array
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: accountId
-      target:
-        modelField:
-          - fieldName: originatorId
-
----
-kind: Relationship
-version: v1
-definition:
-  name: customer
-  sourceType: Accounts
-  target:
-    model:
-      name: Customers
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: accountId
-      target:
-        modelField:
-          - fieldName: account

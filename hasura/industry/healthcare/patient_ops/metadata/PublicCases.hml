@@ -1,0 +1,229 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: PublicCases
+  description: "Object type for public.cases. Description: null"
+  fields:
+    - name: caseId
+      type: Int32!
+    - name: clinicId
+      type: String_1!
+    - name: createdAt
+      type: Timestamp
+    - name: operatorId
+      type: String_1
+    - name: patientId
+      type: String_1
+    - name: procedureCode
+      type: String_1
+    - name: recommendedDate
+      type: Timestamp!
+    - name: region
+      type: String_1
+    - name: status
+      type: String_1
+    - name: urgencyLevel
+      type: String_1
+  graphql:
+    typeName: PublicCases
+    inputTypeName: PublicCasesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: operations
+      dataConnectorObjectType: public.cases
+      fieldMapping:
+        caseId:
+          column:
+            name: case_id
+        clinicId:
+          column:
+            name: clinic_id
+        createdAt:
+          column:
+            name: created_at
+        operatorId:
+          column:
+            name: operator_id
+        patientId:
+          column:
+            name: patient_id
+        procedureCode:
+          column:
+            name: procedure_code
+        recommendedDate:
+          column:
+            name: recommended_date
+        region:
+          column:
+            name: region
+        status:
+          column:
+            name: status
+        urgencyLevel:
+          column:
+            name: urgency_level
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: PublicCases
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - caseId
+          - clinicId
+          - createdAt
+          - operatorId
+          - patientId
+          - procedureCode
+          - recommendedDate
+          - region
+          - status
+          - urgencyLevel
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PublicCasesBoolExp
+  operand:
+    object:
+      type: PublicCases
+      comparableFields:
+        - fieldName: caseId
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: clinicId
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: createdAt
+          booleanExpressionType: TimestampWithoutTimeZoneBoolExp
+        - fieldName: operatorId
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: patientId
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: procedureCode
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: recommendedDate
+          booleanExpressionType: TimestampWithoutTimeZoneBoolExp
+        - fieldName: region
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: status
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: urgencyLevel
+          booleanExpressionType: CharacterVaryingBoolExp_1
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: PublicCasesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PublicCasesAggExp
+  operand:
+    object:
+      aggregatedType: PublicCases
+      aggregatableFields:
+        - fieldName: caseId
+          aggregateExpression: IntegerAggExp
+        - fieldName: clinicId
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: createdAt
+          aggregateExpression: TimestampWithoutTimeZoneAggExp
+        - fieldName: operatorId
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: patientId
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: procedureCode
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: recommendedDate
+          aggregateExpression: TimestampWithoutTimeZoneAggExp
+        - fieldName: region
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: status
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: urgencyLevel
+          aggregateExpression: CharacterVaryingAggExp_1
+  count:
+    enable: true
+  graphql:
+    selectTypeName: PublicCasesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PublicCasesOrderByExp
+  operand:
+    object:
+      orderedType: PublicCases
+      orderableFields:
+        - fieldName: caseId
+          orderByExpression: Int32OrderByExp
+        - fieldName: clinicId
+          orderByExpression: String1OrderByExp
+        - fieldName: createdAt
+          orderByExpression: TimestampOrderByExp
+        - fieldName: operatorId
+          orderByExpression: String1OrderByExp
+        - fieldName: patientId
+          orderByExpression: String1OrderByExp
+        - fieldName: procedureCode
+          orderByExpression: String1OrderByExp
+        - fieldName: recommendedDate
+          orderByExpression: TimestampOrderByExp
+        - fieldName: region
+          orderByExpression: String1OrderByExp
+        - fieldName: status
+          orderByExpression: String1OrderByExp
+        - fieldName: urgencyLevel
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: PublicCasesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: PublicCases
+  objectType: PublicCases
+  source:
+    dataConnectorName: operations
+    collection: public.cases
+  filterExpressionType: PublicCasesBoolExp
+  aggregateExpression: PublicCasesAggExp
+  orderByExpression: PublicCasesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: publicCases
+      subscription:
+        rootField: publicCases
+    selectUniques:
+      - queryRootField: publicCasesByCaseId
+        uniqueIdentifier:
+          - caseId
+        subscription:
+          rootField: publicCasesByCaseId
+    filterInputTypeName: PublicCasesFilterInput
+    aggregate:
+      queryRootField: publicCasesAggregate
+      subscription:
+        rootField: publicCasesAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: PublicCases
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

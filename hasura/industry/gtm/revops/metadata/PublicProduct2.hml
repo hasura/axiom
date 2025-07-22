@@ -1,0 +1,205 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: PublicProduct2
+  description: "Object type for public.product_2. Description: null"
+  fields:
+    - name: description
+      type: String_1
+    - name: family
+      type: String_1
+    - name: id
+      type: String_1!
+    - name: name
+      type: String_1
+    - name: productCode
+      type: String_1
+    - name: skuFamilyC
+      type: String_1
+    - name: stockKeepingUnit
+      type: String_1
+    - name: supportLevelC
+      type: String_1
+  graphql:
+    typeName: PublicProduct2
+    inputTypeName: PublicProduct2Input
+  dataConnectorTypeMapping:
+    - dataConnectorName: salesforce
+      dataConnectorObjectType: public.product_2
+      fieldMapping:
+        description:
+          column:
+            name: description
+        family:
+          column:
+            name: family
+        id:
+          column:
+            name: id
+        name:
+          column:
+            name: name
+        productCode:
+          column:
+            name: product_code
+        skuFamilyC:
+          column:
+            name: sku_family_c
+        stockKeepingUnit:
+          column:
+            name: stock_keeping_unit
+        supportLevelC:
+          column:
+            name: support_level_c
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: PublicProduct2
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - description
+          - family
+          - id
+          - name
+          - productCode
+          - skuFamilyC
+          - stockKeepingUnit
+          - supportLevelC
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PublicProduct2BoolExp
+  operand:
+    object:
+      type: PublicProduct2
+      comparableFields:
+        - fieldName: description
+          booleanExpressionType: TextBoolExp_1
+        - fieldName: family
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: id
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: name
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: productCode
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: skuFamilyC
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: stockKeepingUnit
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: supportLevelC
+          booleanExpressionType: CharacterVaryingBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: PublicProduct2BoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PublicProduct2AggExp
+  operand:
+    object:
+      aggregatedType: PublicProduct2
+      aggregatableFields:
+        - fieldName: description
+          aggregateExpression: TextAggExp_1
+        - fieldName: family
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: id
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: name
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: productCode
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: skuFamilyC
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: stockKeepingUnit
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: supportLevelC
+          aggregateExpression: CharacterVaryingAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: PublicProduct2AggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PublicProduct2OrderByExp
+  operand:
+    object:
+      orderedType: PublicProduct2
+      orderableFields:
+        - fieldName: description
+          orderByExpression: String1OrderByExp
+        - fieldName: family
+          orderByExpression: String1OrderByExp
+        - fieldName: id
+          orderByExpression: String1OrderByExp
+        - fieldName: name
+          orderByExpression: String1OrderByExp
+        - fieldName: productCode
+          orderByExpression: String1OrderByExp
+        - fieldName: skuFamilyC
+          orderByExpression: String1OrderByExp
+        - fieldName: stockKeepingUnit
+          orderByExpression: String1OrderByExp
+        - fieldName: supportLevelC
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: PublicProduct2OrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: PublicProduct2
+  objectType: PublicProduct2
+  source:
+    dataConnectorName: salesforce
+    collection: public.product_2
+  filterExpressionType: PublicProduct2BoolExp
+  aggregateExpression: PublicProduct2AggExp
+  orderByExpression: PublicProduct2OrderByExp
+  graphql:
+    selectMany:
+      queryRootField: publicProduct2
+      subscription:
+        rootField: publicProduct2
+    selectUniques:
+      - queryRootField: publicProduct2ById
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: publicProduct2ById
+    filterInputTypeName: PublicProduct2FilterInput
+    aggregate:
+      queryRootField: publicProduct2Aggregate
+      subscription:
+        rootField: publicProduct2Aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: PublicProduct2
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

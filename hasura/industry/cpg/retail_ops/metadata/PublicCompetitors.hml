@@ -1,0 +1,169 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: PublicCompetitors
+  description: "Object type for public.competitors. Description: null"
+  fields:
+    - name: competitorId
+      type: Int32!
+    - name: competitorName
+      type: String_1!
+    - name: competitorType
+      type: String_1
+    - name: notes
+      type: String_1
+    - name: primaryCategories
+      type: Json
+  graphql:
+    typeName: PublicCompetitors
+    inputTypeName: PublicCompetitorsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: sales
+      dataConnectorObjectType: public.competitors
+      fieldMapping:
+        competitorId:
+          column:
+            name: competitor_id
+        competitorName:
+          column:
+            name: competitor_name
+        competitorType:
+          column:
+            name: competitor_type
+        notes:
+          column:
+            name: notes
+        primaryCategories:
+          column:
+            name: primary_categories
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: PublicCompetitors
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - competitorId
+          - competitorName
+          - competitorType
+          - notes
+          - primaryCategories
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PublicCompetitorsBoolExp
+  operand:
+    object:
+      type: PublicCompetitors
+      comparableFields:
+        - fieldName: competitorId
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: competitorName
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: competitorType
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: notes
+          booleanExpressionType: TextBoolExp
+        - fieldName: primaryCategories
+          booleanExpressionType: ArrayBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: PublicCompetitorsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PublicCompetitorsAggExp
+  operand:
+    object:
+      aggregatedType: PublicCompetitors
+      aggregatableFields:
+        - fieldName: competitorId
+          aggregateExpression: IntegerAggExp
+        - fieldName: competitorName
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: competitorType
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: notes
+          aggregateExpression: TextAggExp
+        - fieldName: primaryCategories
+          aggregateExpression: ArrayAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: PublicCompetitorsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PublicCompetitorsOrderByExp
+  operand:
+    object:
+      orderedType: PublicCompetitors
+      orderableFields:
+        - fieldName: competitorId
+          orderByExpression: Int32OrderByExp
+        - fieldName: competitorName
+          orderByExpression: String1OrderByExp
+        - fieldName: competitorType
+          orderByExpression: String1OrderByExp
+        - fieldName: notes
+          orderByExpression: String1OrderByExp
+        - fieldName: primaryCategories
+          orderByExpression: JsonOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: PublicCompetitorsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: PublicCompetitors
+  objectType: PublicCompetitors
+  source:
+    dataConnectorName: sales
+    collection: public.competitors
+  filterExpressionType: PublicCompetitorsBoolExp
+  aggregateExpression: PublicCompetitorsAggExp
+  orderByExpression: PublicCompetitorsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: publicCompetitors
+      subscription:
+        rootField: publicCompetitors
+    selectUniques:
+      - queryRootField: publicCompetitorsByCompetitorId
+        uniqueIdentifier:
+          - competitorId
+        subscription:
+          rootField: publicCompetitorsByCompetitorId
+    filterInputTypeName: PublicCompetitorsFilterInput
+    aggregate:
+      queryRootField: publicCompetitorsAggregate
+      subscription:
+        rootField: publicCompetitorsAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: PublicCompetitors
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

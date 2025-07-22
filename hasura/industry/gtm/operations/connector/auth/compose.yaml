@@ -4,11 +4,11 @@ services:
       context: .
       dockerfile: .hasura-connector/Dockerfile.auth
     environment:
-      CONNECTION_URI: $OPERATIONS_AUTH_CONNECTION_URI
       HASURA_SERVICE_TOKEN_SECRET: $OPERATIONS_AUTH_HASURA_SERVICE_TOKEN_SECRET
+      JDBC_URL: $OPERATIONS_AUTH_JDBC_URL
       OTEL_EXPORTER_OTLP_ENDPOINT: $OPERATIONS_AUTH_OTEL_EXPORTER_OTLP_ENDPOINT
       OTEL_SERVICE_NAME: $OPERATIONS_AUTH_OTEL_SERVICE_NAME
     extra_hosts:
       - local.hasura.dev:host-gateway
     ports:
-      - 5098:8080
+      - 4389:8080
