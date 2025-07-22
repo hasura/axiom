@@ -1,0 +1,189 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: PublicTexts
+  description: "Object type for public.texts. Description: null"
+  fields:
+    - name: customerid
+      type: Int32!
+    - name: deviceid
+      type: Int32!
+    - name: latitude
+      type: Bigdecimal
+    - name: longitude
+      type: Bigdecimal
+    - name: messagetype
+      type: String_1
+    - name: nodeid
+      type: Int32
+    - name: receivernumber
+      type: String_1
+    - name: textid
+      type: Int32!
+    - name: timestamp
+      type: Timestamptz!
+  graphql:
+    typeName: network_PublicTexts
+    inputTypeName: network_PublicTextsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: kafka_sink
+      dataConnectorObjectType: public.texts
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: PublicTexts
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - customerid
+          - deviceid
+          - latitude
+          - longitude
+          - messagetype
+          - nodeid
+          - receivernumber
+          - textid
+          - timestamp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PublicTextsBoolExp
+  operand:
+    object:
+      type: PublicTexts
+      comparableFields:
+        - fieldName: customerid
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: deviceid
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: latitude
+          booleanExpressionType: DecimalBoolExp_1
+        - fieldName: longitude
+          booleanExpressionType: DecimalBoolExp_1
+        - fieldName: messagetype
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: nodeid
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: receivernumber
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: textid
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: timestamp
+          booleanExpressionType: TimestampWithTimeZoneBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: network_PublicTextsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PublicTextsAggExp
+  operand:
+    object:
+      aggregatedType: PublicTexts
+      aggregatableFields:
+        - fieldName: customerid
+          aggregateExpression: IntegerAggExp
+        - fieldName: deviceid
+          aggregateExpression: IntegerAggExp
+        - fieldName: latitude
+          aggregateExpression: DecimalAggExp
+        - fieldName: longitude
+          aggregateExpression: DecimalAggExp
+        - fieldName: messagetype
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: nodeid
+          aggregateExpression: IntegerAggExp
+        - fieldName: receivernumber
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: textid
+          aggregateExpression: IntegerAggExp
+        - fieldName: timestamp
+          aggregateExpression: TimestampWithTimeZoneAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: network_PublicTextsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PublicTextsOrderByExp
+  operand:
+    object:
+      orderedType: PublicTexts
+      orderableFields:
+        - fieldName: customerid
+          orderByExpression: Int32OrderByExp
+        - fieldName: deviceid
+          orderByExpression: Int32OrderByExp
+        - fieldName: latitude
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: longitude
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: messagetype
+          orderByExpression: String1OrderByExp
+        - fieldName: nodeid
+          orderByExpression: Int32OrderByExp
+        - fieldName: receivernumber
+          orderByExpression: String1OrderByExp
+        - fieldName: textid
+          orderByExpression: Int32OrderByExp
+        - fieldName: timestamp
+          orderByExpression: TimestamptzOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: network_PublicTextsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: PublicTexts
+  objectType: PublicTexts
+  source:
+    dataConnectorName: kafka_sink
+    collection: public.texts
+  filterExpressionType: PublicTextsBoolExp
+  aggregateExpression: PublicTextsAggExp
+  orderByExpression: PublicTextsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: publicTexts
+      subscription:
+        rootField: publicTexts
+    selectUniques:
+      - queryRootField: publicTextsByTextid
+        uniqueIdentifier:
+          - textid
+        subscription:
+          rootField: publicTextsByTextid
+    filterInputTypeName: network_PublicTextsFilterInput
+    aggregate:
+      queryRootField: publicTextsAggregate
+      subscription:
+        rootField: publicTextsAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: PublicTexts
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

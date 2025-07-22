@@ -4,11 +4,11 @@ services:
       context: .
       dockerfile: .hasura-connector/Dockerfile.kafka_sink
     environment:
-      CONNECTION_URI: $NETWORK_KAFKA_SINK_CONNECTION_URI
       HASURA_SERVICE_TOKEN_SECRET: $NETWORK_KAFKA_SINK_HASURA_SERVICE_TOKEN_SECRET
+      JDBC_URL: $NETWORK_KAFKA_SINK_JDBC_URL
       OTEL_EXPORTER_OTLP_ENDPOINT: $NETWORK_KAFKA_SINK_OTEL_EXPORTER_OTLP_ENDPOINT
       OTEL_SERVICE_NAME: $NETWORK_KAFKA_SINK_OTEL_SERVICE_NAME
     extra_hosts:
       - local.hasura.dev:host-gateway
     ports:
-      - 4040:8080
+      - 9204:8080

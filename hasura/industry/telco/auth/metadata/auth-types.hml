@@ -4,59 +4,13 @@ version: v1
 definition:
   name: Timestamptz
   graphql:
-    typeName: Auth_Timestamptz
-
----
-kind: ScalarType
-version: v1
-definition:
-  name: Varchar
-  graphql:
-    typeName: Auth_Varchar
-
----
-kind: ScalarType
-version: v1
-definition:
-  name: Int4
-  graphql:
-    typeName: Auth_Int4
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: auth
-  dataConnectorScalarType: timestamptz
-  representation: Timestamptz
-  graphql:
-    comparisonExpressionTypeName: Auth_TimestamptzComparisonExp
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: auth
-  dataConnectorScalarType: varchar
-  representation: Varchar
-  graphql:
-    comparisonExpressionTypeName: Auth_VarcharComparisonExp
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: auth
-  dataConnectorScalarType: int4
-  representation: Int4
-  graphql:
-    comparisonExpressionTypeName: Auth_Int4ComparisonExp
+    typeName: auth_Timestamptz
 
 ---
 kind: BooleanExpressionType
 version: v1
 definition:
-  name: TimestamptzBoolExp
+  name: TimestampWithTimeZoneBoolExp
   operand:
     scalar:
       type: Timestamptz
@@ -77,108 +31,150 @@ definition:
           argumentType: Timestamptz!
       dataConnectorOperatorMapping:
         - dataConnectorName: auth
-          dataConnectorScalarType: timestamptz
+          dataConnectorScalarType: timestamp_with_time_zone
           operatorMapping: {}
   logicalOperators:
     enable: true
   isNull:
     enable: true
   graphql:
-    typeName: TimestamptzBoolExp_2
+    typeName: auth_TimestampWithTimeZoneBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: auth
+  dataConnectorScalarType: timestamp_with_time_zone
+  representation: Timestamptz
+  graphql:
+    comparisonExpressionTypeName: auth_TimestamptzComparisonExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: String_1
+  graphql:
+    typeName: auth_String1
 
 ---
 kind: BooleanExpressionType
 version: v1
 definition:
-  name: VarcharBoolExp
+  name: CharacterVaryingBoolExp
   operand:
     scalar:
-      type: Varchar
+      type: String_1
       comparisonOperators:
         - name: _eq
-          argumentType: Varchar!
+          argumentType: String_1!
         - name: _gt
-          argumentType: Varchar!
+          argumentType: String_1!
         - name: _gte
-          argumentType: Varchar!
+          argumentType: String_1!
         - name: _ilike
-          argumentType: Varchar!
+          argumentType: String_1!
         - name: _in
-          argumentType: "[Varchar!]!"
+          argumentType: "[String_1!]!"
         - name: _iregex
-          argumentType: Varchar!
+          argumentType: String_1!
         - name: _like
-          argumentType: Varchar!
+          argumentType: String_1!
         - name: _lt
-          argumentType: Varchar!
+          argumentType: String_1!
         - name: _lte
-          argumentType: Varchar!
+          argumentType: String_1!
         - name: _neq
-          argumentType: Varchar!
+          argumentType: String_1!
         - name: _nilike
-          argumentType: Varchar!
+          argumentType: String_1!
         - name: _niregex
-          argumentType: Varchar!
+          argumentType: String_1!
         - name: _nlike
-          argumentType: Varchar!
+          argumentType: String_1!
         - name: _nregex
-          argumentType: Varchar!
+          argumentType: String_1!
         - name: _regex
-          argumentType: Varchar!
-        - name: starts_with
-          argumentType: Varchar!
-        - name: ts_match_tt
-          argumentType: Varchar!
+          argumentType: String_1!
       dataConnectorOperatorMapping:
         - dataConnectorName: auth
-          dataConnectorScalarType: varchar
+          dataConnectorScalarType: character_varying
           operatorMapping: {}
   logicalOperators:
     enable: true
   isNull:
     enable: true
   graphql:
-    typeName: VarcharBoolExp_1
+    typeName: auth_CharacterVaryingBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: auth
+  dataConnectorScalarType: character_varying
+  representation: String_1
+  graphql:
+    comparisonExpressionTypeName: auth_String1ComparisonExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: Int32
+  graphql:
+    typeName: auth_Int32
 
 ---
 kind: BooleanExpressionType
 version: v1
 definition:
-  name: Int4BoolExp
+  name: IntegerBoolExp
   operand:
     scalar:
-      type: Int4
+      type: Int32
       comparisonOperators:
         - name: _eq
-          argumentType: Int4!
+          argumentType: Int32!
         - name: _gt
-          argumentType: Int4!
+          argumentType: Int32!
         - name: _gte
-          argumentType: Int4!
+          argumentType: Int32!
         - name: _in
-          argumentType: "[Int4!]!"
+          argumentType: "[Int32!]!"
         - name: _lt
-          argumentType: Int4!
+          argumentType: Int32!
         - name: _lte
-          argumentType: Int4!
+          argumentType: Int32!
         - name: _neq
-          argumentType: Int4!
+          argumentType: Int32!
       dataConnectorOperatorMapping:
         - dataConnectorName: auth
-          dataConnectorScalarType: int4
+          dataConnectorScalarType: integer
           operatorMapping: {}
   logicalOperators:
     enable: true
   isNull:
     enable: true
   graphql:
-    typeName: Int4BoolExp_2
+    typeName: auth_IntegerBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: auth
+  dataConnectorScalarType: integer
+  representation: Int32
+  graphql:
+    comparisonExpressionTypeName: auth_Int32ComparisonExp
 
 ---
 kind: AggregateExpression
 version: v1
 definition:
-  name: TimestamptzAggExp
+  name: TimestampWithTimeZoneAggExp
   operand:
     scalar:
       aggregatedType: Timestamptz
@@ -189,7 +185,7 @@ definition:
           returnType: Timestamptz
       dataConnectorAggregationFunctionMapping:
         - dataConnectorName: auth
-          dataConnectorScalarType: timestamptz
+          dataConnectorScalarType: timestamp_with_time_zone
           functionMapping:
             max:
               name: max
@@ -200,96 +196,24 @@ definition:
   countDistinct:
     enable: true
   graphql:
-    selectTypeName: TimestamptzAggExp_2
-
----
-kind: ScalarType
-version: v1
-definition:
-  name: Text
-  graphql:
-    typeName: Text_1
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: auth
-  dataConnectorScalarType: text
-  representation: Text
-  graphql:
-    comparisonExpressionTypeName: TextComparisonExp_1
-
----
-kind: BooleanExpressionType
-version: v1
-definition:
-  name: TextBoolExp
-  operand:
-    scalar:
-      type: Text
-      comparisonOperators:
-        - name: _eq
-          argumentType: Text!
-        - name: _gt
-          argumentType: Text!
-        - name: _gte
-          argumentType: Text!
-        - name: _ilike
-          argumentType: Text!
-        - name: _in
-          argumentType: "[Text!]!"
-        - name: _iregex
-          argumentType: Text!
-        - name: _like
-          argumentType: Text!
-        - name: _lt
-          argumentType: Text!
-        - name: _lte
-          argumentType: Text!
-        - name: _neq
-          argumentType: Text!
-        - name: _nilike
-          argumentType: Text!
-        - name: _niregex
-          argumentType: Text!
-        - name: _nlike
-          argumentType: Text!
-        - name: _nregex
-          argumentType: Text!
-        - name: _regex
-          argumentType: Text!
-        - name: starts_with
-          argumentType: Text!
-        - name: ts_match_tt
-          argumentType: Text!
-      dataConnectorOperatorMapping:
-        - dataConnectorName: auth
-          dataConnectorScalarType: text
-          operatorMapping: {}
-  logicalOperators:
-    enable: true
-  isNull:
-    enable: true
-  graphql:
-    typeName: TextBoolExp_2
+    selectTypeName: auth_TimestampWithTimeZoneAggExp
 
 ---
 kind: AggregateExpression
 version: v1
 definition:
-  name: VarcharAggExp
+  name: CharacterVaryingAggExp
   operand:
     scalar:
-      aggregatedType: Varchar
+      aggregatedType: String_1
       aggregationFunctions:
         - name: max
-          returnType: Text
+          returnType: String_1
         - name: min
-          returnType: Text
+          returnType: String_1
       dataConnectorAggregationFunctionMapping:
         - dataConnectorName: auth
-          dataConnectorScalarType: varchar
+          dataConnectorScalarType: character_varying
           functionMapping:
             max:
               name: max
@@ -300,165 +224,147 @@ definition:
   countDistinct:
     enable: true
   graphql:
-    selectTypeName: VarcharAggExp_1
+    selectTypeName: auth_CharacterVaryingAggExp
 
 ---
 kind: ScalarType
 version: v1
 definition:
-  name: Numeric_1
+  name: Bigdecimal
   graphql:
-    typeName: Numeric_1
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: auth
-  dataConnectorScalarType: numeric
-  representation: Numeric_1
-  graphql:
-    comparisonExpressionTypeName: NumericComparisonExp_1
+    typeName: auth_Bigdecimal
 
 ---
 kind: BooleanExpressionType
 version: v1
 definition:
-  name: NumericBoolExp
+  name: DecimalBoolExp
   operand:
     scalar:
-      type: Numeric_1
+      type: Bigdecimal
       comparisonOperators:
         - name: _eq
-          argumentType: Numeric_1!
+          argumentType: Bigdecimal!
         - name: _gt
-          argumentType: Numeric_1!
+          argumentType: Bigdecimal!
         - name: _gte
-          argumentType: Numeric_1!
+          argumentType: Bigdecimal!
         - name: _in
-          argumentType: "[Numeric_1!]!"
+          argumentType: "[Bigdecimal!]!"
         - name: _lt
-          argumentType: Numeric_1!
+          argumentType: Bigdecimal!
         - name: _lte
-          argumentType: Numeric_1!
+          argumentType: Bigdecimal!
         - name: _neq
-          argumentType: Numeric_1!
+          argumentType: Bigdecimal!
       dataConnectorOperatorMapping:
         - dataConnectorName: auth
-          dataConnectorScalarType: numeric
+          dataConnectorScalarType: decimal
           operatorMapping: {}
   logicalOperators:
     enable: true
   isNull:
     enable: true
   graphql:
-    typeName: NumericBoolExp_2
-
----
-kind: ScalarType
-version: v1
-definition:
-  name: Int8
-  graphql:
-    typeName: Int8_2
+    typeName: auth_DecimalBoolExp
 
 ---
 kind: DataConnectorScalarRepresentation
 version: v1
 definition:
   dataConnectorName: auth
-  dataConnectorScalarType: int8
-  representation: Int8
+  dataConnectorScalarType: decimal
+  representation: Bigdecimal
   graphql:
-    comparisonExpressionTypeName: Int8ComparisonExp_2
+    comparisonExpressionTypeName: auth_BigdecimalComparisonExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: Biginteger
+  graphql:
+    typeName: auth_Biginteger
 
 ---
 kind: BooleanExpressionType
 version: v1
 definition:
-  name: Int8BoolExp
+  name: BigintBoolExp
   operand:
     scalar:
-      type: Int8
+      type: Biginteger
       comparisonOperators:
         - name: _eq
-          argumentType: Int8!
+          argumentType: Biginteger!
         - name: _gt
-          argumentType: Int8!
+          argumentType: Biginteger!
         - name: _gte
-          argumentType: Int8!
+          argumentType: Biginteger!
         - name: _in
-          argumentType: "[Int8!]!"
+          argumentType: "[Biginteger!]!"
         - name: _lt
-          argumentType: Int8!
+          argumentType: Biginteger!
         - name: _lte
-          argumentType: Int8!
+          argumentType: Biginteger!
         - name: _neq
-          argumentType: Int8!
+          argumentType: Biginteger!
       dataConnectorOperatorMapping:
         - dataConnectorName: auth
-          dataConnectorScalarType: int8
+          dataConnectorScalarType: bigint
           operatorMapping: {}
   logicalOperators:
     enable: true
   isNull:
     enable: true
   graphql:
-    typeName: Int8BoolExp_2
+    typeName: auth_BigintBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: auth
+  dataConnectorScalarType: bigint
+  representation: Biginteger
+  graphql:
+    comparisonExpressionTypeName: auth_BigintegerComparisonExp
 
 ---
 kind: AggregateExpression
 version: v1
 definition:
-  name: Int4AggExp
+  name: IntegerAggExp
   operand:
     scalar:
-      aggregatedType: Int4
+      aggregatedType: Int32
       aggregationFunctions:
         - name: avg
-          returnType: Numeric_1
-        - name: bit_and
-          returnType: Int4
-        - name: bit_or
-          returnType: Int4
-        - name: bit_xor
-          returnType: Int4
+          returnType: Bigdecimal
         - name: max
-          returnType: Int4
+          returnType: Int32
         - name: min
-          returnType: Int4
-        - name: stddev
-          returnType: Numeric_1
+          returnType: Int32
         - name: stddev_pop
-          returnType: Numeric_1
+          returnType: Int32!
         - name: stddev_samp
-          returnType: Numeric_1
+          returnType: Int32!
         - name: sum
-          returnType: Int8
+          returnType: Biginteger
         - name: var_pop
-          returnType: Numeric_1
+          returnType: Int32!
         - name: var_samp
-          returnType: Numeric_1
-        - name: variance
-          returnType: Numeric_1
+          returnType: Int32!
       dataConnectorAggregationFunctionMapping:
         - dataConnectorName: auth
-          dataConnectorScalarType: int4
+          dataConnectorScalarType: integer
           functionMapping:
             avg:
               name: avg
-            bit_and:
-              name: bit_and
-            bit_or:
-              name: bit_or
-            bit_xor:
-              name: bit_xor
             max:
               name: max
             min:
               name: min
-            stddev:
-              name: stddev
             stddev_pop:
               name: stddev_pop
             stddev_samp:
@@ -469,14 +375,12 @@ definition:
               name: var_pop
             var_samp:
               name: var_samp
-            variance:
-              name: variance
   count:
     enable: true
   countDistinct:
     enable: true
   graphql:
-    selectTypeName: Int4AggExp_2
+    selectTypeName: auth_IntegerAggExp
 
 ---
 kind: OrderByExpression
@@ -495,25 +399,25 @@ definition:
 kind: OrderByExpression
 version: v1
 definition:
-  name: VarcharOrderByExp
+  name: String1OrderByExp
   operand:
     scalar:
-      orderedType: Varchar
+      orderedType: String_1
       enableOrderByDirections:
         enableAll: true
   graphql:
-    expressionTypeName: auth_VarcharOrderByExp
+    expressionTypeName: auth_String1OrderByExp
 
 ---
 kind: OrderByExpression
 version: v1
 definition:
-  name: Int4OrderByExp
+  name: Int32OrderByExp
   operand:
     scalar:
-      orderedType: Int4
+      orderedType: Int32
       enableOrderByDirections:
         enableAll: true
   graphql:
-    expressionTypeName: auth_Int4OrderByExp
+    expressionTypeName: auth_Int32OrderByExp
 

@@ -1,10 +1,20 @@
 ---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: logic
+  dataConnectorScalarType: String
+  representation: String
+  graphql:
+    comparisonExpressionTypeName: customer_StringComparisonExp
+
+---
 kind: ScalarType
 version: v1
 definition:
-  name: DateTime
+  name: Timestamp
   graphql:
-    typeName: customer_DateTime
+    typeName: customer_Timestamp
 
 ---
 kind: BooleanExpressionType
@@ -13,10 +23,10 @@ definition:
   name: DateTimeBoolExp
   operand:
     scalar:
-      type: DateTime
+      type: Timestamp
       comparisonOperators:
         - name: _eq
-          argumentType: DateTime!
+          argumentType: Timestamp!
       dataConnectorOperatorMapping:
         - dataConnectorName: logic
           dataConnectorScalarType: DateTime
@@ -34,7 +44,7 @@ version: v1
 definition:
   dataConnectorName: logic
   dataConnectorScalarType: DateTime
-  representation: DateTime
+  representation: Timestamp
   graphql:
-    comparisonExpressionTypeName: customer_DateTimeComparisonExp
+    comparisonExpressionTypeName: customer_TimestampComparisonExp
 

@@ -4,11 +4,11 @@ services:
       context: .
       dockerfile: .hasura-connector/Dockerfile.aurora
     environment:
-      CONNECTION_URI: $CUSTOMER_AURORA_CONNECTION_URI
       HASURA_SERVICE_TOKEN_SECRET: $CUSTOMER_AURORA_HASURA_SERVICE_TOKEN_SECRET
+      JDBC_URL: $CUSTOMER_AURORA_JDBC_URL
       OTEL_EXPORTER_OTLP_ENDPOINT: $CUSTOMER_AURORA_OTEL_EXPORTER_OTLP_ENDPOINT
       OTEL_SERVICE_NAME: $CUSTOMER_AURORA_OTEL_SERVICE_NAME
     extra_hosts:
       - local.hasura.dev:host-gateway
     ports:
-      - 8043:8080
+      - 7159:8080

@@ -1,10 +1,12 @@
+version: v2
+ndcSpecGeneration: v0.2
 packagingDefinition:
   type: ManagedDockerBuild
 supportedEnvironmentVariables: []
 commands:
   upgradeConfiguration:
     type: Dockerized
-    dockerImage: ghcr.io/hasura/ndc-nodejs-lambda:v1.13.0
+    dockerImage: ghcr.io/hasura/ndc-nodejs-lambda:v1.16.0
     commandArgs:
       - /scripts/upgrade.sh
 dockerComposeWatch:
@@ -30,7 +32,7 @@ nativeToolchainDefinition:
     upgradeConfiguration:
       type: ShellScript
       bash: |
-        ./upgrade-connector.sh "$HASURA_PLUGIN_CONNECTOR_CONTEXT_PATH" "1.13.0"
+        ./upgrade-connector.sh "$HASURA_PLUGIN_CONNECTOR_CONTEXT_PATH" "1.16.0"
       powershell: |
-        & ./upgrade-connector.ps1 "$env:HASURA_PLUGIN_CONNECTOR_CONTEXT_PATH" "1.13.0"
+        & ./upgrade-connector.ps1 "$env:HASURA_PLUGIN_CONNECTOR_CONTEXT_PATH" "1.16.0"
 documentationPage: https://hasura.info/nodejs-getting-started

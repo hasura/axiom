@@ -4,11 +4,11 @@ services:
       context: .
       dockerfile: .hasura-connector/Dockerfile.vector
     environment:
-      CONNECTION_URI: $SUPPORT_VECTOR_CONNECTION_URI
       HASURA_SERVICE_TOKEN_SECRET: $SUPPORT_VECTOR_HASURA_SERVICE_TOKEN_SECRET
+      JDBC_URL: $SUPPORT_VECTOR_JDBC_URL
       OTEL_EXPORTER_OTLP_ENDPOINT: $SUPPORT_VECTOR_OTEL_EXPORTER_OTLP_ENDPOINT
       OTEL_SERVICE_NAME: $SUPPORT_VECTOR_OTEL_SERVICE_NAME
     extra_hosts:
       - local.hasura.dev:host-gateway
     ports:
-      - 8848:8080
+      - 6755:8080

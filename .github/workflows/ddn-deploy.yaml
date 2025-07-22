@@ -38,11 +38,14 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y jq
 
-      - name: Create .env.cloud.telco-dev
+      - name: Create .env.cloud.telco-dev securely
         working-directory: ./hasura
         if: env.no_op != 'true'
+        env:
+          ENV_CLOUD_DEFAULT: ${{ secrets.ENV_CLOUD_DEFAULT }}
         run: |
-          echo "${{ secrets.ENV_CLOUD_DEFAULT }}" > .env.cloud.telco-dev
+          echo "::add-mask::$ENV_CLOUD_DEFAULT"
+          echo "$ENV_CLOUD_DEFAULT" > .env.cloud.telco-dev
 
       - name: Detect Connector Changes
         if: env.no_op != 'true'
