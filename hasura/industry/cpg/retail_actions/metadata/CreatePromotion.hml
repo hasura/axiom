@@ -2,75 +2,79 @@
 kind: ObjectType
 version: v1
 definition:
-  name: promotion_creation_response
+  name: PromotionCreationResponse
   fields:
-    - name: product_id
+    - name: productId
       type: Float!
-    - name: promotion_id
+    - name: promotionId
       type: String
-    - name: retailer_id
+    - name: retailerId
       type: Float!
     - name: status
       type: String!
   graphql:
-    typeName: promotion_creation_response
-    inputTypeName: promotion_creation_response_input
+    typeName: PromotionCreationResponse
+    inputTypeName: PromotionCreationResponseInput
   dataConnectorTypeMapping:
     - dataConnectorName: retail_execution
       dataConnectorObjectType: PromotionCreationResponse
+      fieldMapping:
+        productId:
+          column:
+            name: product_id
+        promotionId:
+          column:
+            name: promotion_id
+        retailerId:
+          column:
+            name: retailer_id
+        status:
+          column:
+            name: status
 
 ---
 kind: TypePermissions
 version: v1
 definition:
-  typeName: promotion_creation_response
+  typeName: PromotionCreationResponse
   permissions:
     - role: admin
       output:
         allowedFields:
-          - product_id
-          - promotion_id
-          - retailer_id
+          - productId
+          - promotionId
+          - retailerId
           - status
 
 ---
 kind: Command
 version: v1
 definition:
-  name: create_promotion
-  outputType: promotion_creation_response!
+  name: CreatePromotion
+  outputType: PromotionCreationResponse!
   arguments:
-    - name: discount_type
+    - name: discountType
       type: String!
-    - name: discount_value
+    - name: discountValue
       type: Float!
-    - name: end_date
+    - name: endDate
       type: String!
-    - name: min_purchase_qty
+    - name: minPurchaseQty
       type: Float
-    - name: product_id
+    - name: productId
       type: Float!
-    - name: product_name
+    - name: productName
       type: String!
-    - name: retailer_id
+    - name: retailerId
       type: Float!
-    - name: start_date
+    - name: startDate
       type: String!
   source:
     dataConnectorName: retail_execution
     dataConnectorCommand:
       procedure: createPromotion
-    argumentMapping:
-      discount_type: discountType
-      discount_value: discountValue
-      end_date: endDate
-      min_purchase_qty: minPurchaseQty
-      product_id: productId
-      product_name: productName
-      retailer_id: retailerId
-      start_date: startDate
   graphql:
-    rootFieldName: create_promotion
+    rootFieldName: createPromotion
     rootFieldKind: Mutation
   description: >-
     **Description:**
@@ -92,7 +96,7 @@ definition:
 kind: CommandPermissions
 version: v1
 definition:
-  commandName: create_promotion
+  commandName: CreatePromotion
   permissions:
     - role: admin
       allowExecution: true

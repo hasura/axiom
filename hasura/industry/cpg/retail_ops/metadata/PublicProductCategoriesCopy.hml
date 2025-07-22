@@ -1,0 +1,181 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: PublicProductCategoriesCopy
+  description: "Object type for public.product_categories_copy. Description: null"
+  fields:
+    - name: categoryDescription
+      type: String_1
+    - name: categoryId
+      type: Int32!
+    - name: categoryName
+      type: String_1!
+    - name: isSeasonal
+      type: Boolean_1
+    - name: parentCategoryId
+      type: Int32
+    - name: typicalMarginPercentage
+      type: Bigdecimal
+  graphql:
+    typeName: PublicProductCategoriesCopy
+    inputTypeName: PublicProductCategoriesCopyInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: inventory
+      dataConnectorObjectType: public.product_categories_copy
+      fieldMapping:
+        categoryDescription:
+          column:
+            name: category_description
+        categoryId:
+          column:
+            name: category_id
+        categoryName:
+          column:
+            name: category_name
+        isSeasonal:
+          column:
+            name: is_seasonal
+        parentCategoryId:
+          column:
+            name: parent_category_id
+        typicalMarginPercentage:
+          column:
+            name: typical_margin_percentage
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: PublicProductCategoriesCopy
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - categoryDescription
+          - categoryId
+          - categoryName
+          - isSeasonal
+          - parentCategoryId
+          - typicalMarginPercentage
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PublicProductCategoriesCopyBoolExp
+  operand:
+    object:
+      type: PublicProductCategoriesCopy
+      comparableFields:
+        - fieldName: categoryDescription
+          booleanExpressionType: TextBoolExp_1
+        - fieldName: categoryId
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: categoryName
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: isSeasonal
+          booleanExpressionType: BooleanBoolExp_1
+        - fieldName: parentCategoryId
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: typicalMarginPercentage
+          booleanExpressionType: DecimalBoolExp_1
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: PublicProductCategoriesCopyBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PublicProductCategoriesCopyAggExp
+  operand:
+    object:
+      aggregatedType: PublicProductCategoriesCopy
+      aggregatableFields:
+        - fieldName: categoryDescription
+          aggregateExpression: TextAggExp_1
+        - fieldName: categoryId
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: categoryName
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: isSeasonal
+          aggregateExpression: BooleanAggExp_1
+        - fieldName: parentCategoryId
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: typicalMarginPercentage
+          aggregateExpression: DecimalAggExp_1
+  count:
+    enable: true
+  graphql:
+    selectTypeName: PublicProductCategoriesCopyAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PublicProductCategoriesCopyOrderByExp
+  operand:
+    object:
+      orderedType: PublicProductCategoriesCopy
+      orderableFields:
+        - fieldName: categoryDescription
+          orderByExpression: String1OrderByExp
+        - fieldName: categoryId
+          orderByExpression: Int32OrderByExp
+        - fieldName: categoryName
+          orderByExpression: String1OrderByExp
+        - fieldName: isSeasonal
+          orderByExpression: Boolean1OrderByExp
+        - fieldName: parentCategoryId
+          orderByExpression: Int32OrderByExp
+        - fieldName: typicalMarginPercentage
+          orderByExpression: BigdecimalOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: PublicProductCategoriesCopyOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: PublicProductCategoriesCopy
+  objectType: PublicProductCategoriesCopy
+  source:
+    dataConnectorName: inventory
+    collection: public.product_categories_copy
+  filterExpressionType: PublicProductCategoriesCopyBoolExp
+  aggregateExpression: PublicProductCategoriesCopyAggExp
+  orderByExpression: PublicProductCategoriesCopyOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: publicProductCategoriesCopy
+      subscription:
+        rootField: publicProductCategoriesCopy
+    selectUniques:
+      - queryRootField: publicProductCategoriesCopyByCategoryId
+        uniqueIdentifier:
+          - categoryId
+        subscription:
+          rootField: publicProductCategoriesCopyByCategoryId
+    filterInputTypeName: PublicProductCategoriesCopyFilterInput
+    aggregate:
+      queryRootField: publicProductCategoriesCopyAggregate
+      subscription:
+        rootField: publicProductCategoriesCopyAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: PublicProductCategoriesCopy
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
