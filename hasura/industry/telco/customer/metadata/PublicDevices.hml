@@ -1,0 +1,280 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: PublicDevices
+  description: "Object type for public.devices. Description: null"
+  fields:
+    - name: brand
+      type: String_1!
+    - name: createdAt
+      type: Timestamptz!
+    - name: deviceId
+      type: Int32!
+    - name: image
+      type: String_1
+    - name: model
+      type: String_1!
+    - name: sfRecord
+      type: String_1
+    - name: updatedAt
+      type: Timestamptz!
+  graphql:
+    typeName: customer_PublicDevices
+    inputTypeName: customer_PublicDevicesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: public.devices
+      fieldMapping:
+        brand:
+          column:
+            name: brand
+        createdAt:
+          column:
+            name: created_at
+        deviceId:
+          column:
+            name: device_id
+        image:
+          column:
+            name: image
+        model:
+          column:
+            name: model
+        sfRecord:
+          column:
+            name: sf_record
+        updatedAt:
+          column:
+            name: updated_at
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: PublicDevices
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - brand
+          - createdAt
+          - deviceId
+          - image
+          - model
+          - sfRecord
+          - updatedAt
+    - role: customer
+      output:
+        allowedFields:
+          - brand
+          - image
+          - model
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PublicDevicesBoolExp
+  operand:
+    object:
+      type: PublicDevices
+      comparableFields:
+        - fieldName: brand
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: createdAt
+          booleanExpressionType: TimestampWithTimeZoneBoolExp
+        - fieldName: deviceId
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: image
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: model
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: sfRecord
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: updatedAt
+          booleanExpressionType: TimestampWithTimeZoneBoolExp
+      comparableRelationships:
+        - relationshipName: customerPlanDevices
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customer_PublicDevicesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PublicDevicesAggExp
+  operand:
+    object:
+      aggregatedType: PublicDevices
+      aggregatableFields:
+        - fieldName: brand
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: createdAt
+          aggregateExpression: TimestampWithTimeZoneAggExp
+        - fieldName: deviceId
+          aggregateExpression: IntegerAggExp
+        - fieldName: image
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: model
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: sfRecord
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: updatedAt
+          aggregateExpression: TimestampWithTimeZoneAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: customer_PublicDevicesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PublicDevicesOrderByExp
+  operand:
+    object:
+      orderedType: PublicDevices
+      orderableFields:
+        - fieldName: brand
+          orderByExpression: String1OrderByExp
+        - fieldName: createdAt
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: deviceId
+          orderByExpression: Int32OrderByExp
+        - fieldName: image
+          orderByExpression: String1OrderByExp
+        - fieldName: model
+          orderByExpression: String1OrderByExp
+        - fieldName: sfRecord
+          orderByExpression: String1OrderByExp
+        - fieldName: updatedAt
+          orderByExpression: TimestamptzOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: customer_PublicDevicesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: PublicDevices
+  objectType: PublicDevices
+  source:
+    dataConnectorName: aurora
+    collection: public.devices
+  filterExpressionType: PublicDevicesBoolExp
+  aggregateExpression: PublicDevicesAggExp
+  orderByExpression: PublicDevicesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: publicDevices
+      subscription:
+        rootField: publicDevices
+    selectUniques:
+      - queryRootField: publicDevicesByDeviceId
+        uniqueIdentifier:
+          - deviceId
+        subscription:
+          rootField: publicDevicesByDeviceId
+    filterInputTypeName: customer_PublicDevicesFilterInput
+    aggregate:
+      queryRootField: publicDevicesAggregate
+      subscription:
+        rootField: publicDevicesAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: PublicDevices
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+    - role: customer
+      select:
+        filter: 
+          relationship:
+            name: customerPlanDevices
+            predicate: 
+              relationship:
+                name: customerPlan
+                predicate: 
+                  fieldComparison:
+                    field: customerId
+                    operator: _eq
+                    value: 
+                      sessionVariable: x-hasura-user-id
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customerPlanDevices
+  sourceType: PublicDevices
+  target:
+    model:
+      name: PublicCustomerPlanDevices
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: PublicCustomerPlanDevicesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: deviceId
+      target:
+        modelField:
+          - fieldName: deviceId
+  graphql:
+    aggregateFieldName: customerPlanDevicesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: deviceUpgrades
+  sourceType: PublicDevices
+  target:
+    model:
+      name: PublicDeviceUpgrades
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: PublicDeviceUpgradesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: deviceId
+      target:
+        modelField:
+          - fieldName: newDeviceId
+  graphql:
+    aggregateFieldName: deviceUpgradesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: deviceUpgradesByOldDeviceId
+  sourceType: PublicDevices
+  target:
+    model:
+      name: PublicDeviceUpgrades
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: PublicDeviceUpgradesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: deviceId
+      target:
+        modelField:
+          - fieldName: oldDeviceId
+  graphql:
+    aggregateFieldName: deviceUpgradesByOldDeviceIdAggregate

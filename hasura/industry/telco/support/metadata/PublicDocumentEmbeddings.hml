@@ -1,0 +1,133 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: PublicDocumentEmbeddings
+  description: "Object type for public.document_embeddings. Description: null"
+  fields:
+    - name: documentUuid
+      type: String_1!
+    - name: embeddings
+      type: Json
+  graphql:
+    typeName: support_PublicDocumentEmbeddings
+    inputTypeName: support_PublicDocumentEmbeddingsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: vector
+      dataConnectorObjectType: public.document_embeddings
+      fieldMapping:
+        documentUuid:
+          column:
+            name: document_uuid
+        embeddings:
+          column:
+            name: embeddings
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: PublicDocumentEmbeddings
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - documentUuid
+          - embeddings
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PublicDocumentEmbeddingsBoolExp
+  operand:
+    object:
+      type: PublicDocumentEmbeddings
+      comparableFields:
+        - fieldName: documentUuid
+          booleanExpressionType: UuidBoolExp
+        - fieldName: embeddings
+          booleanExpressionType: Vector1536BoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: support_PublicDocumentEmbeddingsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PublicDocumentEmbeddingsAggExp
+  operand:
+    object:
+      aggregatedType: PublicDocumentEmbeddings
+      aggregatableFields:
+        - fieldName: documentUuid
+          aggregateExpression: UuidAggExp
+        - fieldName: embeddings
+          aggregateExpression: Vector1536AggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: support_PublicDocumentEmbeddingsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PublicDocumentEmbeddingsOrderByExp
+  operand:
+    object:
+      orderedType: PublicDocumentEmbeddings
+      orderableFields:
+        - fieldName: documentUuid
+          orderByExpression: String1OrderByExp
+        - fieldName: embeddings
+          orderByExpression: JsonOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: support_PublicDocumentEmbeddingsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: PublicDocumentEmbeddings
+  objectType: PublicDocumentEmbeddings
+  source:
+    dataConnectorName: vector
+    collection: public.document_embeddings
+  filterExpressionType: PublicDocumentEmbeddingsBoolExp
+  aggregateExpression: PublicDocumentEmbeddingsAggExp
+  orderByExpression: PublicDocumentEmbeddingsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: publicDocumentEmbeddings
+      subscription:
+        rootField: publicDocumentEmbeddings
+    selectUniques:
+      - queryRootField: publicDocumentEmbeddingsByDocumentUuid
+        uniqueIdentifier:
+          - documentUuid
+        subscription:
+          rootField: publicDocumentEmbeddingsByDocumentUuid
+    filterInputTypeName: support_PublicDocumentEmbeddingsFilterInput
+    aggregate:
+      queryRootField: publicDocumentEmbeddingsAggregate
+      subscription:
+        rootField: publicDocumentEmbeddingsAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: PublicDocumentEmbeddings
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

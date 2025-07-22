@@ -1,0 +1,214 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: PublicCustomerPlanDevices
+  description: "Object type for public.customer_plan_devices. Description: null"
+  fields:
+    - name: customerPlanId
+      type: Int32!
+    - name: deviceId
+      type: Int32!
+    - name: deviceImei
+      type: String_1
+    - name: simIccid
+      type: String_1
+  graphql:
+    typeName: customer_PublicCustomerPlanDevices
+    inputTypeName: customer_PublicCustomerPlanDevicesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: public.customer_plan_devices
+      fieldMapping:
+        customerPlanId:
+          column:
+            name: customer_plan_id
+        deviceId:
+          column:
+            name: device_id
+        deviceImei:
+          column:
+            name: device_imei
+        simIccid:
+          column:
+            name: sim_iccid
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: PublicCustomerPlanDevices
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - customerPlanId
+          - deviceId
+          - deviceImei
+          - simIccid
+    - role: customer
+      output:
+        allowedFields:
+          - customerPlanId
+          - deviceId
+          - deviceImei
+          - simIccid
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PublicCustomerPlanDevicesBoolExp
+  operand:
+    object:
+      type: PublicCustomerPlanDevices
+      comparableFields:
+        - fieldName: customerPlanId
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: deviceId
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: deviceImei
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: simIccid
+          booleanExpressionType: CharacterVaryingBoolExp
+      comparableRelationships:
+        - relationshipName: customerPlan
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customer_PublicCustomerPlanDevicesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PublicCustomerPlanDevicesAggExp
+  operand:
+    object:
+      aggregatedType: PublicCustomerPlanDevices
+      aggregatableFields:
+        - fieldName: customerPlanId
+          aggregateExpression: IntegerAggExp
+        - fieldName: deviceId
+          aggregateExpression: IntegerAggExp
+        - fieldName: deviceImei
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: simIccid
+          aggregateExpression: CharacterVaryingAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: customer_PublicCustomerPlanDevicesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PublicCustomerPlanDevicesOrderByExp
+  operand:
+    object:
+      orderedType: PublicCustomerPlanDevices
+      orderableFields:
+        - fieldName: customerPlanId
+          orderByExpression: Int32OrderByExp
+        - fieldName: deviceId
+          orderByExpression: Int32OrderByExp
+        - fieldName: deviceImei
+          orderByExpression: String1OrderByExp
+        - fieldName: simIccid
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: customer_PublicCustomerPlanDevicesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: PublicCustomerPlanDevices
+  objectType: PublicCustomerPlanDevices
+  source:
+    dataConnectorName: aurora
+    collection: public.customer_plan_devices
+  filterExpressionType: PublicCustomerPlanDevicesBoolExp
+  aggregateExpression: PublicCustomerPlanDevicesAggExp
+  orderByExpression: PublicCustomerPlanDevicesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: publicCustomerPlanDevices
+      subscription:
+        rootField: publicCustomerPlanDevices
+    selectUniques:
+      - queryRootField: publicCustomerPlanDevicesByPrimaryKey
+        uniqueIdentifier:
+          - customerPlanId
+          - deviceId
+        subscription:
+          rootField: publicCustomerPlanDevicesByPrimaryKey
+    filterInputTypeName: customer_PublicCustomerPlanDevicesFilterInput
+    aggregate:
+      queryRootField: publicCustomerPlanDevicesAggregate
+      subscription:
+        rootField: publicCustomerPlanDevicesAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: PublicCustomerPlanDevices
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+    - role: customer
+      select:
+        filter: 
+          relationship:
+            name: customerPlan
+            predicate: 
+              fieldComparison:
+                field: customerId
+                operator: _eq
+                value: 
+                  sessionVariable: x-hasura-user-id
+        allowSubscriptions: true
+
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customerPlan
+  sourceType: PublicCustomerPlanDevices
+  target:
+    model:
+      name: PublicCustomerPlans
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerPlanId
+      target:
+        modelField:
+          - fieldName: customerPlanId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: device
+  sourceType: PublicCustomerPlanDevices
+  target:
+    model:
+      name: PublicDevices
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: deviceId
+      target:
+        modelField:
+          - fieldName: deviceId

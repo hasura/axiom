@@ -1,0 +1,263 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: PublicServiceInteractions
+  description: "Object type for public.service_interactions. Description: null"
+  fields:
+    - name: agentId
+      type: Int32
+    - name: category
+      type: String_1
+    - name: channel
+      type: String_1
+    - name: customerId
+      type: Int32
+    - name: interactionDate
+      type: Timestamptz
+    - name: interactionId
+      type: Int32!
+    - name: notes
+      type: String_1
+    - name: resolutionStatus
+      type: String_1
+    - name: resolutionTimeMinutes
+      type: Int32
+    - name: satisfactionScore
+      type: Int32
+  graphql:
+    typeName: customer_PublicServiceInteractions
+    inputTypeName: customer_PublicServiceInteractionsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: public.service_interactions
+      fieldMapping:
+        agentId:
+          column:
+            name: agent_id
+        category:
+          column:
+            name: category
+        channel:
+          column:
+            name: channel
+        customerId:
+          column:
+            name: customer_id
+        interactionDate:
+          column:
+            name: interaction_date
+        interactionId:
+          column:
+            name: interaction_id
+        notes:
+          column:
+            name: notes
+        resolutionStatus:
+          column:
+            name: resolution_status
+        resolutionTimeMinutes:
+          column:
+            name: resolution_time_minutes
+        satisfactionScore:
+          column:
+            name: satisfaction_score
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: PublicServiceInteractions
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - agentId
+          - category
+          - channel
+          - customerId
+          - interactionDate
+          - interactionId
+          - notes
+          - resolutionStatus
+          - resolutionTimeMinutes
+          - satisfactionScore
+    - role: customer
+      output:
+        allowedFields:
+          - category
+          - interactionDate
+          - resolutionStatus
+          - resolutionTimeMinutes
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PublicServiceInteractionsBoolExp
+  operand:
+    object:
+      type: PublicServiceInteractions
+      comparableFields:
+        - fieldName: agentId
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: category
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: channel
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: customerId
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: interactionDate
+          booleanExpressionType: TimestampWithTimeZoneBoolExp
+        - fieldName: interactionId
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: notes
+          booleanExpressionType: TextBoolExp
+        - fieldName: resolutionStatus
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: resolutionTimeMinutes
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: satisfactionScore
+          booleanExpressionType: IntegerBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customer_PublicServiceInteractionsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PublicServiceInteractionsAggExp
+  operand:
+    object:
+      aggregatedType: PublicServiceInteractions
+      aggregatableFields:
+        - fieldName: agentId
+          aggregateExpression: IntegerAggExp
+        - fieldName: category
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: channel
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: customerId
+          aggregateExpression: IntegerAggExp
+        - fieldName: interactionDate
+          aggregateExpression: TimestampWithTimeZoneAggExp
+        - fieldName: interactionId
+          aggregateExpression: IntegerAggExp
+        - fieldName: notes
+          aggregateExpression: TextAggExp
+        - fieldName: resolutionStatus
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: resolutionTimeMinutes
+          aggregateExpression: IntegerAggExp
+        - fieldName: satisfactionScore
+          aggregateExpression: IntegerAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: customer_PublicServiceInteractionsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PublicServiceInteractionsOrderByExp
+  operand:
+    object:
+      orderedType: PublicServiceInteractions
+      orderableFields:
+        - fieldName: agentId
+          orderByExpression: Int32OrderByExp
+        - fieldName: category
+          orderByExpression: String1OrderByExp
+        - fieldName: channel
+          orderByExpression: String1OrderByExp
+        - fieldName: customerId
+          orderByExpression: Int32OrderByExp
+        - fieldName: interactionDate
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: interactionId
+          orderByExpression: Int32OrderByExp
+        - fieldName: notes
+          orderByExpression: String1OrderByExp
+        - fieldName: resolutionStatus
+          orderByExpression: String1OrderByExp
+        - fieldName: resolutionTimeMinutes
+          orderByExpression: Int32OrderByExp
+        - fieldName: satisfactionScore
+          orderByExpression: Int32OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: customer_PublicServiceInteractionsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: PublicServiceInteractions
+  objectType: PublicServiceInteractions
+  source:
+    dataConnectorName: aurora
+    collection: public.service_interactions
+  filterExpressionType: PublicServiceInteractionsBoolExp
+  aggregateExpression: PublicServiceInteractionsAggExp
+  orderByExpression: PublicServiceInteractionsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: publicServiceInteractions
+      subscription:
+        rootField: publicServiceInteractions
+    selectUniques:
+      - queryRootField: publicServiceInteractionsByInteractionId
+        uniqueIdentifier:
+          - interactionId
+        subscription:
+          rootField: publicServiceInteractionsByInteractionId
+    filterInputTypeName: customer_PublicServiceInteractionsFilterInput
+    aggregate:
+      queryRootField: publicServiceInteractionsAggregate
+      subscription:
+        rootField: publicServiceInteractionsAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: PublicServiceInteractions
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+    - role: customer
+      select:
+        filter: 
+          fieldComparison:
+            field: customerId
+            operator: _eq
+            value: 
+              sessionVariable: x-hasura-user-id
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer
+  sourceType: PublicServiceInteractions
+  target:
+    model:
+      name: PublicCustomers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId
+

@@ -1,0 +1,182 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: DefaultNetworkPerformance
+  description: "Object type for default.network_performance. Description: null"
+  fields:
+    - name: cuid
+      type: Int32!
+    - name: downloadSpeed
+      type: Float32!
+    - name: guid
+      type: String_1!
+    - name: latency
+      type: Int32!
+    - name: timestamp
+      type: Timestamptz!
+    - name: uploadSpeed
+      type: Float32!
+  graphql:
+    typeName: network_DefaultNetworkPerformance
+    inputTypeName: network_DefaultNetworkPerformanceInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: clickhouse
+      dataConnectorObjectType: default.network_performance
+      fieldMapping:
+        cuid:
+          column:
+            name: CUID
+        downloadSpeed:
+          column:
+            name: Download_Speed
+        guid:
+          column:
+            name: GUID
+        latency:
+          column:
+            name: Latency
+        timestamp:
+          column:
+            name: Timestamp
+        uploadSpeed:
+          column:
+            name: Upload_Speed
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: DefaultNetworkPerformance
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - cuid
+          - downloadSpeed
+          - guid
+          - latency
+          - timestamp
+          - uploadSpeed
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: DefaultNetworkPerformanceBoolExp
+  operand:
+    object:
+      type: DefaultNetworkPerformance
+      comparableFields:
+        - fieldName: cuid
+          booleanExpressionType: Int32BoolExp
+        - fieldName: downloadSpeed
+          booleanExpressionType: Float32BoolExp
+        - fieldName: guid
+          booleanExpressionType: StringBoolExp
+        - fieldName: latency
+          booleanExpressionType: Int32BoolExp
+        - fieldName: timestamp
+          booleanExpressionType: Datetime64BoolExp
+        - fieldName: uploadSpeed
+          booleanExpressionType: Float32BoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: network_DefaultNetworkPerformanceBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: DefaultNetworkPerformanceAggExp
+  operand:
+    object:
+      aggregatedType: DefaultNetworkPerformance
+      aggregatableFields:
+        - fieldName: cuid
+          aggregateExpression: Int32AggExp
+        - fieldName: downloadSpeed
+          aggregateExpression: Float32AggExp
+        - fieldName: guid
+          aggregateExpression: StringAggExp
+        - fieldName: latency
+          aggregateExpression: Int32AggExp
+        - fieldName: timestamp
+          aggregateExpression: Datetime64AggExp
+        - fieldName: uploadSpeed
+          aggregateExpression: Float32AggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: network_DefaultNetworkPerformanceAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: DefaultNetworkPerformanceOrderByExp
+  operand:
+    object:
+      orderedType: DefaultNetworkPerformance
+      orderableFields:
+        - fieldName: cuid
+          orderByExpression: Int32OrderByExp
+        - fieldName: downloadSpeed
+          orderByExpression: Float32OrderByExp
+        - fieldName: guid
+          orderByExpression: String1OrderByExp
+        - fieldName: latency
+          orderByExpression: Int32OrderByExp
+        - fieldName: timestamp
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: uploadSpeed
+          orderByExpression: Float32OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: network_DefaultNetworkPerformanceOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: DefaultNetworkPerformance
+  objectType: DefaultNetworkPerformance
+  source:
+    dataConnectorName: clickhouse
+    collection: default.network_performance
+  filterExpressionType: DefaultNetworkPerformanceBoolExp
+  aggregateExpression: DefaultNetworkPerformanceAggExp
+  orderByExpression: DefaultNetworkPerformanceOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: defaultNetworkPerformance
+      subscription:
+        rootField: defaultNetworkPerformance
+    selectUniques:
+      - queryRootField: defaultNetworkPerformanceByPrimaryKey
+        uniqueIdentifier:
+          - guid
+          - timestamp
+        subscription:
+          rootField: defaultNetworkPerformanceByPrimaryKey
+    filterInputTypeName: network_DefaultNetworkPerformanceFilterInput
+    aggregate:
+      queryRootField: defaultNetworkPerformanceAggregate
+      subscription:
+        rootField: defaultNetworkPerformanceAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: DefaultNetworkPerformance
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

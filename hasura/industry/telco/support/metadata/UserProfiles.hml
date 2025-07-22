@@ -69,7 +69,7 @@ definition:
   name: UserProfilesPreferencesCommunicationAppNotifications
   fields:
     - name: enabled
-      type: Bool
+      type: Boolean_1
     - name: frequency
       type: String
   graphql:
@@ -100,9 +100,9 @@ definition:
     - name: appNotifications
       type: UserProfilesPreferencesCommunicationAppNotifications
     - name: emailUpdates
-      type: Bool
+      type: Boolean_1
     - name: smsNotifications
-      type: Bool
+      type: Boolean_1
   graphql:
     typeName: support_UserProfilesPreferencesCommunication
     inputTypeName: support_UserProfilesPreferencesCommunicationInput
@@ -130,9 +130,9 @@ definition:
   name: UserProfilesPreferencesPrivacySettings
   fields:
     - name: adPersonalization
-      type: Bool
+      type: Boolean_1
     - name: shareDataForImprovements
-      type: Bool
+      type: Boolean_1
   graphql:
     typeName: support_UserProfilesPreferencesPrivacySettings
     inputTypeName: support_UserProfilesPreferencesPrivacySettingsInput
@@ -159,9 +159,9 @@ definition:
   name: UserProfilesPreferencesServicePreferencesFavoriteLocationsCoordinates
   fields:
     - name: lat
-      type: Double
+      type: Float64
     - name: long
-      type: Double
+      type: Float64
   graphql:
     typeName: support_UserProfilesPreferencesServicePreferencesFavoriteLocationsCoordinates
     inputTypeName: support_UserProfilesPreferencesServicePreferencesFavoriteLocationsCoordinatesInput
@@ -217,7 +217,7 @@ definition:
   name: UserProfilesPreferencesServicePreferencesNetworkSettings
   fields:
     - name: dataSaverMode
-      type: Bool
+      type: Boolean_1
     - name: preferredNetworkType
       type: String
   graphql:
@@ -306,7 +306,11 @@ version: v1
 definition:
   name: UserProfilesSupportHistory
   fields:
+    - name: category
+      type: String
     - name: date
+      type: String
+    - name: description
       type: String
     - name: issue
       type: String
@@ -332,16 +336,11 @@ definition:
     - role: admin
       output:
         allowedFields:
+          - category
           - date
+          - description
           - issue
           - resolutionNotes
-          - status
-          - ticketId
-    - role: customer
-      output:
-        allowedFields:
-          - date
-          - issue
           - status
           - ticketId
 
@@ -369,11 +368,6 @@ definition:
   typeName: UserProfilesUsageStatsAppUsage
   permissions:
     - role: admin
-      output:
-        allowedFields:
-          - name
-          - usage
-    - role: customer
       output:
         allowedFields:
           - name
@@ -407,11 +401,6 @@ definition:
         allowedFields:
           - internationalMinutes
           - totalMinutes
-    - role: customer
-      output:
-        allowedFields:
-          - internationalMinutes
-          - totalMinutes
 
 ---
 kind: ObjectType
@@ -437,11 +426,6 @@ definition:
   typeName: UserProfilesUsageStatsDataUsage
   permissions:
     - role: admin
-      output:
-        allowedFields:
-          - currentMonth
-          - total
-    - role: customer
       output:
         allowedFields:
           - currentMonth
@@ -473,12 +457,6 @@ definition:
   typeName: UserProfilesUsageStats
   permissions:
     - role: admin
-      output:
-        allowedFields:
-          - appUsage
-          - callStats
-          - dataUsage
-    - role: customer
       output:
         allowedFields:
           - appUsage
@@ -560,13 +538,6 @@ definition:
           - memberId
           - notes
           - preferences
-          - supportHistory
-          - usageStats
-    - role: customer
-      output:
-        allowedFields:
-          - id
-          - customerId
           - supportHistory
           - usageStats
 
@@ -797,7 +768,11 @@ definition:
     object:
       type: UserProfilesSupportHistory
       comparableFields:
+        - fieldName: category
+          booleanExpressionType: StringBoolExp
         - fieldName: date
+          booleanExpressionType: StringBoolExp
+        - fieldName: description
           booleanExpressionType: StringBoolExp
         - fieldName: issue
           booleanExpressionType: StringBoolExp
@@ -1006,7 +981,7 @@ definition:
       orderedType: UserProfilesPreferencesCommunicationAppNotifications
       orderableFields:
         - fieldName: enabled
-          orderByExpression: BoolOrderByExp
+          orderByExpression: Boolean1OrderByExp
         - fieldName: frequency
           orderByExpression: StringOrderByExp
       orderableRelationships: []
@@ -1025,9 +1000,9 @@ definition:
         - fieldName: appNotifications
           orderByExpression: UserProfilesPreferencesCommunicationAppNotificationsOrderByExp
         - fieldName: emailUpdates
-          orderByExpression: BoolOrderByExp
+          orderByExpression: Boolean1OrderByExp
         - fieldName: smsNotifications
-          orderByExpression: BoolOrderByExp
+          orderByExpression: Boolean1OrderByExp
       orderableRelationships: []
   graphql:
     expressionTypeName: support_UserProfilesPreferencesCommunicationOrderByExp
@@ -1042,9 +1017,9 @@ definition:
       orderedType: UserProfilesPreferencesPrivacySettings
       orderableFields:
         - fieldName: adPersonalization
-          orderByExpression: BoolOrderByExp
+          orderByExpression: Boolean1OrderByExp
         - fieldName: shareDataForImprovements
-          orderByExpression: BoolOrderByExp
+          orderByExpression: Boolean1OrderByExp
       orderableRelationships: []
   graphql:
     expressionTypeName: support_UserProfilesPreferencesPrivacySettingsOrderByExp
@@ -1059,7 +1034,7 @@ definition:
       orderedType: UserProfilesPreferencesServicePreferencesNetworkSettings
       orderableFields:
         - fieldName: dataSaverMode
-          orderByExpression: BoolOrderByExp
+          orderByExpression: Boolean1OrderByExp
         - fieldName: preferredNetworkType
           orderByExpression: StringOrderByExp
       orderableRelationships: []
@@ -1218,14 +1193,5 @@ definition:
     - role: admin
       select:
         filter: null
-        allowSubscriptions: true
-    - role: customer
-      select:
-        filter: 
-          fieldComparison:
-            field: customerId
-            operator: _eq
-            value: 
-              sessionVariable: x-hasura-user-id
         allowSubscriptions: true
 

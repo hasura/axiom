@@ -12,1271 +12,1802 @@ definition:
     Authorization:
       valueFromEnv: SUPPORT_VECTOR_AUTHORIZATION_HEADER
   schema:
-    version: v0.1
+    version: v0.2
     schema:
+      collections:
+        - arguments: {}
+          name: public.document_embeddings
+          type: public.document_embeddings
+          uniqueness_constraints:
+            primary_key:
+              unique_columns:
+                - document_uuid
+        - arguments: {}
+          name: public.documents
+          type: public.documents
+          uniqueness_constraints:
+            primary_key:
+              unique_columns:
+                - uuid
+      functions: []
+      object_types:
+        bigint_set_input:
+          description: Wrapper for setting scalar bigint
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar bigint
+              type:
+                type: nullable
+                underlying_type:
+                  name: bigint
+                  type: named
+          foreign_keys: {}
+        decimal_set_input:
+          description: Wrapper for setting scalar decimal
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar decimal
+              type:
+                type: nullable
+                underlying_type:
+                  name: decimal
+                  type: named
+          foreign_keys: {}
+        delete_public.document_embeddings_result:
+          description: delete from public.document_embeddings result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by delete
+              type:
+                element_type:
+                  name: public.document_embeddings
+                  type: named
+                type: array
+          foreign_keys: {}
+        delete_public.documents_result:
+          description: delete from public.documents result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by delete
+              type:
+                element_type:
+                  name: public.documents
+                  type: named
+                type: array
+          foreign_keys: {}
+        insert_public.document_embeddings_result:
+          description: insert from public.document_embeddings result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by insert
+              type:
+                element_type:
+                  name: public.document_embeddings
+                  type: named
+                type: array
+          foreign_keys: {}
+        insert_public.documents_result:
+          description: insert from public.documents result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by insert
+              type:
+                element_type:
+                  name: public.documents
+                  type: named
+                type: array
+          foreign_keys: {}
+        int_set_input:
+          description: Wrapper for setting scalar int
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar int
+              type:
+                type: nullable
+                underlying_type:
+                  name: int
+                  type: named
+          foreign_keys: {}
+        integer_set_input:
+          description: Wrapper for setting scalar integer
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar integer
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+          foreign_keys: {}
+        public.document_embeddings:
+          description: 'Object type for public.document_embeddings. Description: null'
+          fields:
+            document_uuid:
+              arguments: {}
+              type:
+                name: uuid
+                type: named
+            embeddings:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: vector(1536)
+                  type: named
+          foreign_keys: {}
+        public.document_embeddings_insert_input:
+          description: Input type for inserting into public.document_embeddings
+          fields:
+            document_uuid:
+              arguments: {}
+              description: New value for public.document_embeddings.document_uuid
+              type:
+                name: uuid
+                type: named
+            embeddings:
+              arguments: {}
+              description: New value for public.document_embeddings.embeddings
+              type:
+                type: nullable
+                underlying_type:
+                  name: vector(1536)
+                  type: named
+          foreign_keys: {}
+        public.document_embeddings_set_input:
+          description: Input type for updating public.document_embeddings
+          fields:
+            document_uuid:
+              arguments: {}
+              description: New value wrapper for public.document_embeddings.document_uuid
+              type:
+                type: nullable
+                underlying_type:
+                  name: uuid_set_input
+                  type: named
+            embeddings:
+              arguments: {}
+              description: New value wrapper for public.document_embeddings.embeddings
+              type:
+                type: nullable
+                underlying_type:
+                  name: vector(1536)_set_input
+                  type: named
+          foreign_keys: {}
+        public.documents:
+          description: 'Object type for public.documents. Description: null'
+          fields:
+            body:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            created_at:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_with_time_zone
+                  type: named
+            language:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            rating:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            status:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            tags:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            title:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            updated_at:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_with_time_zone
+                  type: named
+            uuid:
+              arguments: {}
+              type:
+                name: uuid
+                type: named
+            view_count:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+          foreign_keys: {}
+        public.documents_insert_input:
+          description: Input type for inserting into public.documents
+          fields:
+            body:
+              arguments: {}
+              description: New value for public.documents.body
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            created_at:
+              arguments: {}
+              description: New value for public.documents.created_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_with_time_zone
+                  type: named
+            language:
+              arguments: {}
+              description: New value for public.documents.language
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            rating:
+              arguments: {}
+              description: New value for public.documents.rating
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            status:
+              arguments: {}
+              description: New value for public.documents.status
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            tags:
+              arguments: {}
+              description: New value for public.documents.tags
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            title:
+              arguments: {}
+              description: New value for public.documents.title
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            updated_at:
+              arguments: {}
+              description: New value for public.documents.updated_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_with_time_zone
+                  type: named
+            uuid:
+              arguments: {}
+              description: New value for public.documents.uuid
+              type:
+                name: uuid
+                type: named
+            view_count:
+              arguments: {}
+              description: New value for public.documents.view_count
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+          foreign_keys: {}
+        public.documents_set_input:
+          description: Input type for updating public.documents
+          fields:
+            body:
+              arguments: {}
+              description: New value wrapper for public.documents.body
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            created_at:
+              arguments: {}
+              description: New value wrapper for public.documents.created_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_with_time_zone_set_input
+                  type: named
+            language:
+              arguments: {}
+              description: New value wrapper for public.documents.language
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            rating:
+              arguments: {}
+              description: New value wrapper for public.documents.rating
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            status:
+              arguments: {}
+              description: New value wrapper for public.documents.status
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            tags:
+              arguments: {}
+              description: New value wrapper for public.documents.tags
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            title:
+              arguments: {}
+              description: New value wrapper for public.documents.title
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            updated_at:
+              arguments: {}
+              description: New value wrapper for public.documents.updated_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_with_time_zone_set_input
+                  type: named
+            uuid:
+              arguments: {}
+              description: New value wrapper for public.documents.uuid
+              type:
+                type: nullable
+                underlying_type:
+                  name: uuid_set_input
+                  type: named
+            view_count:
+              arguments: {}
+              description: New value wrapper for public.documents.view_count
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+          foreign_keys: {}
+        string_set_input:
+          description: Wrapper for setting scalar string
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar string
+              type:
+                type: nullable
+                underlying_type:
+                  name: string
+                  type: named
+          foreign_keys: {}
+        text_set_input:
+          description: Wrapper for setting scalar text
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar text
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+          foreign_keys: {}
+        timestamp_with_time_zone_set_input:
+          description: Wrapper for setting scalar timestamp_with_time_zone
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar timestamp_with_time_zone
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_with_time_zone
+                  type: named
+          foreign_keys: {}
+        update_public.document_embeddings_result:
+          description: update from public.document_embeddings result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by update
+              type:
+                element_type:
+                  name: public.document_embeddings
+                  type: named
+                type: array
+          foreign_keys: {}
+        update_public.documents_result:
+          description: update from public.documents result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by update
+              type:
+                element_type:
+                  name: public.documents
+                  type: named
+                type: array
+          foreign_keys: {}
+        uuid_set_input:
+          description: Wrapper for setting scalar uuid
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar uuid
+              type:
+                type: nullable
+                underlying_type:
+                  name: uuid
+                  type: named
+          foreign_keys: {}
+        vector(1536)_set_input:
+          description: Wrapper for setting scalar vector(1536)
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar vector(1536)
+              type:
+                type: nullable
+                underlying_type:
+                  name: vector(1536)
+                  type: named
+          foreign_keys: {}
+      procedures:
+        - arguments:
+            objects:
+              description: Objects to insert
+              type:
+                element_type:
+                  name: public.document_embeddings_insert_input
+                  type: named
+                type: array
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+          description: Insert into public.document_embeddings
+          name: insert_public.document_embeddings
+          result_type:
+            name: insert_public.document_embeddings_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            set:
+              description: Values to set
+              type:
+                name: public.document_embeddings_set_input
+                type: named
+            where:
+              description: Filter for rows to update
+              type:
+                object_type_name: public.document_embeddings
+                type: predicate
+          description: Update public.document_embeddings
+          name: update_public.document_embeddings
+          result_type:
+            name: update_public.document_embeddings_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            where:
+              description: Filter for rows to delete
+              type:
+                object_type_name: public.document_embeddings
+                type: predicate
+          description: Delete from public.document_embeddings
+          name: delete_public.document_embeddings
+          result_type:
+            name: delete_public.document_embeddings_result
+            type: named
+        - arguments:
+            objects:
+              description: Objects to insert
+              type:
+                element_type:
+                  name: public.documents_insert_input
+                  type: named
+                type: array
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+          description: Insert into public.documents
+          name: insert_public.documents
+          result_type:
+            name: insert_public.documents_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            set:
+              description: Values to set
+              type:
+                name: public.documents_set_input
+                type: named
+            where:
+              description: Filter for rows to update
+              type:
+                object_type_name: public.documents
+                type: predicate
+          description: Update public.documents
+          name: update_public.documents
+          result_type:
+            name: update_public.documents_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            where:
+              description: Filter for rows to delete
+              type:
+                object_type_name: public.documents
+                type: predicate
+          description: Delete from public.documents
+          name: delete_public.documents
+          result_type:
+            name: delete_public.documents_result
+            type: named
       scalar_types:
-        float8:
-          representation:
-            type: float64
+        bigint:
           aggregate_functions:
             avg:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: float8
+              result_type: decimal
+              type: average
             max:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: float8
+              type: max
             min:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: float8
-            stddev:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: float8
+              type: min
             stddev_pop:
               result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: float8
+                name: bigint
+                type: named
+              type: custom
             stddev_samp:
               result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: float8
+                name: bigint
+                type: named
+              type: custom
             sum:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: float8
+              result_type: bigint
+              type: sum
             var_pop:
               result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: float8
+                name: bigint
+                type: named
+              type: custom
             var_samp:
               result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: float8
-            variance:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: float8
+                name: bigint
+                type: named
+              type: custom
           comparison_operators:
             _eq:
               type: equal
             _gt:
-              type: custom
-              argument_type:
-                type: named
-                name: float8
+              type: greater_than
             _gte:
-              type: custom
-              argument_type:
-                type: named
-                name: float8
+              type: greater_than_or_equal
             _in:
               type: in
             _lt:
-              type: custom
-              argument_type:
-                type: named
-                name: float8
+              type: less_than
             _lte:
-              type: custom
-              argument_type:
-                type: named
-                name: float8
+              type: less_than_or_equal
             _neq:
-              type: custom
               argument_type:
+                name: bigint
                 type: named
-                name: float8
-        int4:
+              type: custom
           representation:
-            type: int32
+            type: biginteger
+        decimal:
           aggregate_functions:
             avg:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
-            bit_and:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: int4
-            bit_or:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: int4
-            bit_xor:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: int4
+              result_type: decimal
+              type: average
             max:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: int4
+              type: max
             min:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: int4
-            stddev:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
+              type: min
             stddev_pop:
               result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
+                name: decimal
+                type: named
+              type: custom
             stddev_samp:
               result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
+                name: decimal
+                type: named
+              type: custom
             sum:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: int8
+              result_type: decimal
+              type: sum
             var_pop:
               result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
+                name: decimal
+                type: named
+              type: custom
             var_samp:
               result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
-            variance:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
+                name: decimal
+                type: named
+              type: custom
           comparison_operators:
             _eq:
               type: equal
             _gt:
-              type: custom
-              argument_type:
-                type: named
-                name: int4
+              type: greater_than
             _gte:
-              type: custom
-              argument_type:
-                type: named
-                name: int4
+              type: greater_than_or_equal
             _in:
               type: in
             _lt:
-              type: custom
-              argument_type:
-                type: named
-                name: int4
+              type: less_than
             _lte:
-              type: custom
-              argument_type:
-                type: named
-                name: int4
+              type: less_than_or_equal
             _neq:
-              type: custom
               argument_type:
+                name: decimal
                 type: named
-                name: int4
-        int8:
-          representation:
-            type: int64
-          aggregate_functions:
-            avg:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
-            bit_and:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: int8
-            bit_or:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: int8
-            bit_xor:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: int8
-            max:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: int8
-            min:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: int8
-            stddev:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
-            stddev_pop:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
-            stddev_samp:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
-            sum:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
-            var_pop:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
-            var_samp:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
-            variance:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
-          comparison_operators:
-            _eq:
-              type: equal
-            _gt:
               type: custom
-              argument_type:
-                type: named
-                name: int8
-            _gte:
-              type: custom
-              argument_type:
-                type: named
-                name: int8
-            _in:
-              type: in
-            _lt:
-              type: custom
-              argument_type:
-                type: named
-                name: int8
-            _lte:
-              type: custom
-              argument_type:
-                type: named
-                name: int8
-            _neq:
-              type: custom
-              argument_type:
-                type: named
-                name: int8
-        numeric:
           representation:
             type: bigdecimal
+        int:
           aggregate_functions:
             avg:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
+              result_type: decimal
+              type: average
             max:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
+              type: max
             min:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
-            stddev:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
+              type: min
             stddev_pop:
               result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
+                name: int
+                type: named
+              type: custom
             stddev_samp:
               result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
+                name: int
+                type: named
+              type: custom
             sum:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
+              result_type: bigint
+              type: sum
             var_pop:
               result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
+                name: int
+                type: named
+              type: custom
             var_samp:
               result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
-            variance:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: numeric
+                name: int
+                type: named
+              type: custom
           comparison_operators:
             _eq:
               type: equal
             _gt:
-              type: custom
-              argument_type:
-                type: named
-                name: numeric
+              type: greater_than
             _gte:
-              type: custom
-              argument_type:
-                type: named
-                name: numeric
+              type: greater_than_or_equal
             _in:
               type: in
             _lt:
-              type: custom
-              argument_type:
-                type: named
-                name: numeric
+              type: less_than
             _lte:
-              type: custom
-              argument_type:
-                type: named
-                name: numeric
+              type: less_than_or_equal
             _neq:
-              type: custom
               argument_type:
+                name: int
                 type: named
-                name: numeric
-        text:
+              type: custom
           representation:
-            type: string
+            type: int32
+        integer:
           aggregate_functions:
+            avg:
+              result_type: decimal
+              type: average
             max:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
+              type: max
             min:
+              type: min
+            stddev_pop:
               result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
+                name: integer
+                type: named
+              type: custom
+            stddev_samp:
+              result_type:
+                name: integer
+                type: named
+              type: custom
+            sum:
+              result_type: bigint
+              type: sum
+            var_pop:
+              result_type:
+                name: integer
+                type: named
+              type: custom
+            var_samp:
+              result_type:
+                name: integer
+                type: named
+              type: custom
           comparison_operators:
             _eq:
               type: equal
             _gt:
-              type: custom
-              argument_type:
-                type: named
-                name: text
+              type: greater_than
             _gte:
-              type: custom
+              type: greater_than_or_equal
+            _in:
+              type: in
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
               argument_type:
+                name: integer
                 type: named
-                name: text
+              type: custom
+          representation:
+            type: int32
+        string:
+          aggregate_functions:
+            max:
+              type: max
+            min:
+              type: min
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
             _ilike:
-              type: custom
-              argument_type:
-                type: named
-                name: text
+              type: contains_insensitive
             _in:
               type: in
             _iregex:
-              type: custom
               argument_type:
+                name: string
                 type: named
-                name: text
+              type: custom
             _like:
-              type: custom
-              argument_type:
-                type: named
-                name: text
+              type: contains
             _lt:
-              type: custom
-              argument_type:
-                type: named
-                name: text
+              type: less_than
             _lte:
-              type: custom
-              argument_type:
-                type: named
-                name: text
+              type: less_than_or_equal
             _neq:
-              type: custom
               argument_type:
+                name: string
                 type: named
-                name: text
+              type: custom
             _nilike:
-              type: custom
               argument_type:
+                name: string
                 type: named
-                name: text
+              type: custom
             _niregex:
-              type: custom
               argument_type:
+                name: string
                 type: named
-                name: text
+              type: custom
             _nlike:
-              type: custom
               argument_type:
+                name: string
                 type: named
-                name: text
+              type: custom
             _nregex:
-              type: custom
               argument_type:
+                name: string
                 type: named
-                name: text
+              type: custom
             _regex:
-              type: custom
               argument_type:
+                name: string
                 type: named
-                name: text
-            starts_with:
               type: custom
-              argument_type:
-                type: named
-                name: text
-            ts_match_tt:
-              type: custom
-              argument_type:
-                type: named
-                name: text
-        timestamptz:
           representation:
-            type: timestamptz
+            type: string
+        text:
           aggregate_functions:
             max:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: timestamptz
+              type: max
             min:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: timestamptz
+              type: min
           comparison_operators:
             _eq:
               type: equal
             _gt:
-              type: custom
-              argument_type:
-                type: named
-                name: timestamptz
+              type: greater_than
             _gte:
-              type: custom
+              type: greater_than_or_equal
+            _ilike:
+              type: contains_insensitive
+            _in:
+              type: in
+            _iregex:
               argument_type:
+                name: text
                 type: named
-                name: timestamptz
+              type: custom
+            _like:
+              type: contains
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: text
+                type: named
+              type: custom
+            _nilike:
+              argument_type:
+                name: text
+                type: named
+              type: custom
+            _niregex:
+              argument_type:
+                name: text
+                type: named
+              type: custom
+            _nlike:
+              argument_type:
+                name: text
+                type: named
+              type: custom
+            _nregex:
+              argument_type:
+                name: text
+                type: named
+              type: custom
+            _regex:
+              argument_type:
+                name: text
+                type: named
+              type: custom
+          representation:
+            type: string
+        timestamp_with_time_zone:
+          aggregate_functions:
+            max:
+              type: max
+            min:
+              type: min
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
             _in:
               type: in
             _lt:
-              type: custom
-              argument_type:
-                type: named
-                name: timestamptz
+              type: less_than
             _lte:
-              type: custom
-              argument_type:
-                type: named
-                name: timestamptz
+              type: less_than_or_equal
             _neq:
-              type: custom
               argument_type:
+                name: timestamp_with_time_zone
                 type: named
-                name: timestamptz
-        uuid:
+              type: custom
           representation:
-            type: uuid
+            type: timestamptz
+        uuid:
+          aggregate_functions:
+            max:
+              type: max
+            min:
+              type: min
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _ilike:
+              type: contains_insensitive
+            _in:
+              type: in
+            _iregex:
+              argument_type:
+                name: uuid
+                type: named
+              type: custom
+            _like:
+              type: contains
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: uuid
+                type: named
+              type: custom
+            _nilike:
+              argument_type:
+                name: uuid
+                type: named
+              type: custom
+            _niregex:
+              argument_type:
+                name: uuid
+                type: named
+              type: custom
+            _nlike:
+              argument_type:
+                name: uuid
+                type: named
+              type: custom
+            _nregex:
+              argument_type:
+                name: uuid
+                type: named
+              type: custom
+            _regex:
+              argument_type:
+                name: uuid
+                type: named
+              type: custom
+          representation:
+            type: string
+        vector(1536):
           aggregate_functions: {}
           comparison_operators:
             _eq:
               type: equal
-            _gt:
-              type: custom
-              argument_type:
-                type: named
-                name: uuid
-            _gte:
-              type: custom
-              argument_type:
-                type: named
-                name: uuid
             _in:
               type: in
-            _lt:
-              type: custom
-              argument_type:
-                type: named
-                name: uuid
-            _lte:
-              type: custom
-              argument_type:
-                type: named
-                name: uuid
             _neq:
-              type: custom
               argument_type:
+                name: vector(1536)
                 type: named
-                name: uuid
-        vector:
-          aggregate_functions:
-            avg:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: vector
-            sum:
-              result_type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: vector
-          comparison_operators:
-            _eq:
-              type: equal
-            _gt:
               type: custom
-              argument_type:
-                type: named
-                name: vector
-            _gte:
-              type: custom
-              argument_type:
-                type: named
-                name: vector
-            _in:
-              type: in
-            _lt:
-              type: custom
-              argument_type:
-                type: named
-                name: vector
-            _lte:
-              type: custom
-              argument_type:
-                type: named
-                name: vector
-            _neq:
-              type: custom
-              argument_type:
-                type: named
-                name: vector
-      object_types:
-        delete_document_embeddings_by_document_uuid_response:
-          description: Responses from the 'delete_document_embeddings_by_document_uuid' procedure
-          fields:
-            affected_rows:
-              description: The number of rows affected by the mutation
-              type:
-                type: named
-                name: int4
-            returning:
-              description: Data from rows affected by the mutation
-              type:
-                type: array
-                element_type:
-                  type: named
-                  name: document_embeddings
-        delete_documents_by_uuid_response:
-          description: Responses from the 'delete_documents_by_uuid' procedure
-          fields:
-            affected_rows:
-              description: The number of rows affected by the mutation
-              type:
-                type: named
-                name: int4
-            returning:
-              description: Data from rows affected by the mutation
-              type:
-                type: array
-                element_type:
-                  type: named
-                  name: documents
-        document_embeddings:
-          fields:
-            document_uuid:
-              type:
-                type: named
-                name: uuid
-            embeddings:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: vector
-        document_vector_search:
-          fields:
-            distance:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: float8
-            document_uuid:
-              type:
-                type: named
-                name: uuid
-        documents:
-          fields:
-            body:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-            created_at:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: timestamptz
-            language:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-            rating:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: int4
-            status:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-            tags:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-            title:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-            updated_at:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: timestamptz
-            uuid:
-              type:
-                type: named
-                name: uuid
-            view_count:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: int4
-        insert_document_embeddings_object:
-          fields:
-            document_uuid:
-              type:
-                type: named
-                name: uuid
-            embeddings:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: vector
-        insert_document_embeddings_response:
-          description: Responses from the 'insert_document_embeddings' procedure
-          fields:
-            affected_rows:
-              description: The number of rows affected by the mutation
-              type:
-                type: named
-                name: int4
-            returning:
-              description: Data from rows affected by the mutation
-              type:
-                type: array
-                element_type:
-                  type: named
-                  name: document_embeddings
-        insert_documents_object:
-          fields:
-            body:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-            created_at:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: timestamptz
-            language:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-            rating:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: int4
-            status:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-            tags:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-            title:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-            updated_at:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: timestamptz
-            uuid:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: uuid
-            view_count:
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: int4
-        insert_documents_response:
-          description: Responses from the 'insert_documents' procedure
-          fields:
-            affected_rows:
-              description: The number of rows affected by the mutation
-              type:
-                type: named
-                name: int4
-            returning:
-              description: Data from rows affected by the mutation
-              type:
-                type: array
-                element_type:
-                  type: named
-                  name: documents
-        update_column_document_embeddings_document_uuid:
-          description: Update the 'document_uuid' column in the 'document_embeddings' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: named
-                name: uuid
-        update_column_document_embeddings_embeddings:
-          description: Update the 'embeddings' column in the 'document_embeddings' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: vector
-        update_column_documents_body:
-          description: Update the 'body' column in the 'documents' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-        update_column_documents_created_at:
-          description: Update the 'created_at' column in the 'documents' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: timestamptz
-        update_column_documents_language:
-          description: Update the 'language' column in the 'documents' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-        update_column_documents_rating:
-          description: Update the 'rating' column in the 'documents' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: int4
-        update_column_documents_status:
-          description: Update the 'status' column in the 'documents' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-        update_column_documents_tags:
-          description: Update the 'tags' column in the 'documents' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-        update_column_documents_title:
-          description: Update the 'title' column in the 'documents' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: text
-        update_column_documents_updated_at:
-          description: Update the 'updated_at' column in the 'documents' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: timestamptz
-        update_column_documents_uuid:
-          description: Update the 'uuid' column in the 'documents' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: named
-                name: uuid
-        update_column_documents_view_count:
-          description: Update the 'view_count' column in the 'documents' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: int4
-        update_document_embeddings_by_document_uuid_response:
-          description: Responses from the 'update_document_embeddings_by_document_uuid' procedure
-          fields:
-            affected_rows:
-              description: The number of rows affected by the mutation
-              type:
-                type: named
-                name: int4
-            returning:
-              description: Data from rows affected by the mutation
-              type:
-                type: array
-                element_type:
-                  type: named
-                  name: document_embeddings
-        update_document_embeddings_by_document_uuid_update_columns:
-          description: Update the columns of the 'document_embeddings' collection
-          fields:
-            document_uuid:
-              description: Update the 'document_uuid' column in the 'document_embeddings' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_document_embeddings_document_uuid
-            embeddings:
-              description: Update the 'embeddings' column in the 'document_embeddings' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_document_embeddings_embeddings
-        update_documents_by_uuid_response:
-          description: Responses from the 'update_documents_by_uuid' procedure
-          fields:
-            affected_rows:
-              description: The number of rows affected by the mutation
-              type:
-                type: named
-                name: int4
-            returning:
-              description: Data from rows affected by the mutation
-              type:
-                type: array
-                element_type:
-                  type: named
-                  name: documents
-        update_documents_by_uuid_update_columns:
-          description: Update the columns of the 'documents' collection
-          fields:
-            body:
-              description: Update the 'body' column in the 'documents' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_documents_body
-            created_at:
-              description: Update the 'created_at' column in the 'documents' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_documents_created_at
-            language:
-              description: Update the 'language' column in the 'documents' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_documents_language
-            rating:
-              description: Update the 'rating' column in the 'documents' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_documents_rating
-            status:
-              description: Update the 'status' column in the 'documents' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_documents_status
-            tags:
-              description: Update the 'tags' column in the 'documents' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_documents_tags
-            title:
-              description: Update the 'title' column in the 'documents' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_documents_title
-            updated_at:
-              description: Update the 'updated_at' column in the 'documents' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_documents_updated_at
-            uuid:
-              description: Update the 'uuid' column in the 'documents' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_documents_uuid
-            view_count:
-              description: Update the 'view_count' column in the 'documents' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_documents_view_count
-      collections:
-        - name: document_embeddings
-          arguments: {}
-          type: document_embeddings
-          uniqueness_constraints:
-            document_embeddings_pkey:
-              unique_columns:
-                - document_uuid
-          foreign_keys:
-            document_embeddings_document_uuid_fkey:
-              column_mapping:
-                document_uuid: uuid
-              foreign_collection: documents
-        - name: documents
-          arguments: {}
-          type: documents
-          uniqueness_constraints:
-            documents_pkey:
-              unique_columns:
-                - uuid
-          foreign_keys: {}
-        - name: document_vector_search
-          arguments:
-            query_vector:
-              type:
-                type: named
-                name: vector
-          type: document_vector_search
-          uniqueness_constraints: {}
-          foreign_keys: {}
-      functions: []
-      procedures:
-        - name: delete_document_embeddings_by_document_uuid
-          description: Delete any row on the 'document_embeddings' collection using the 'document_uuid' key
-          arguments:
-            key_document_uuid:
-              type:
-                type: named
-                name: uuid
-            pre_check:
-              description: Delete permission predicate over the 'document_embeddings' collection
-              type:
-                type: nullable
-                underlying_type:
-                  type: predicate
-                  object_type_name: document_embeddings
-          result_type:
-            type: named
-            name: delete_document_embeddings_by_document_uuid_response
-        - name: delete_documents_by_uuid
-          description: Delete any row on the 'documents' collection using the 'uuid' key
-          arguments:
-            key_uuid:
-              type:
-                type: named
-                name: uuid
-            pre_check:
-              description: Delete permission predicate over the 'documents' collection
-              type:
-                type: nullable
-                underlying_type:
-                  type: predicate
-                  object_type_name: documents
-          result_type:
-            type: named
-            name: delete_documents_by_uuid_response
-        - name: insert_document_embeddings
-          description: Insert into the document_embeddings table
-          arguments:
-            objects:
-              type:
-                type: array
-                element_type:
-                  type: named
-                  name: insert_document_embeddings_object
-            post_check:
-              description: Insert permission predicate over the 'document_embeddings' collection
-              type:
-                type: nullable
-                underlying_type:
-                  type: predicate
-                  object_type_name: document_embeddings
-          result_type:
-            type: named
-            name: insert_document_embeddings_response
-        - name: insert_documents
-          description: Insert into the documents table
-          arguments:
-            objects:
-              type:
-                type: array
-                element_type:
-                  type: named
-                  name: insert_documents_object
-            post_check:
-              description: Insert permission predicate over the 'documents' collection
-              type:
-                type: nullable
-                underlying_type:
-                  type: predicate
-                  object_type_name: documents
-          result_type:
-            type: named
-            name: insert_documents_response
-        - name: update_document_embeddings_by_document_uuid
-          description: Update any row on the 'document_embeddings' collection using the 'document_uuid' key
-          arguments:
-            key_document_uuid:
-              type:
-                type: named
-                name: uuid
-            post_check:
-              description: Update permission post-condition predicate over the 'document_embeddings' collection
-              type:
-                type: nullable
-                underlying_type:
-                  type: predicate
-                  object_type_name: document_embeddings
-            pre_check:
-              description: Update permission pre-condition predicate over the 'document_embeddings' collection
-              type:
-                type: nullable
-                underlying_type:
-                  type: predicate
-                  object_type_name: document_embeddings
-            update_columns:
-              type:
-                type: named
-                name: update_document_embeddings_by_document_uuid_update_columns
-          result_type:
-            type: named
-            name: update_document_embeddings_by_document_uuid_response
-        - name: update_documents_by_uuid
-          description: Update any row on the 'documents' collection using the 'uuid' key
-          arguments:
-            key_uuid:
-              type:
-                type: named
-                name: uuid
-            post_check:
-              description: Update permission post-condition predicate over the 'documents' collection
-              type:
-                type: nullable
-                underlying_type:
-                  type: predicate
-                  object_type_name: documents
-            pre_check:
-              description: Update permission pre-condition predicate over the 'documents' collection
-              type:
-                type: nullable
-                underlying_type:
-                  type: predicate
-                  object_type_name: documents
-            update_columns:
-              type:
-                type: named
-                name: update_documents_by_uuid_update_columns
-          result_type:
-            type: named
-            name: update_documents_by_uuid_response
+          representation:
+            type: json
     capabilities:
-      version: 0.1.6
       capabilities:
-        query:
-          aggregates: {}
-          variables: {}
-          explain: {}
-          nested_fields:
-            filter_by: {}
-            order_by: {}
-          exists:
-            nested_collections: {}
         mutation:
-          transactional: {}
           explain: {}
-        relationships:
-          relation_comparisons: {}
-          order_by_aggregate: {}
+          transactional: {}
+        query:
+          aggregates:
+            filter_by: {}
+          exists: {}
+          explain: {}
+          nested_fields: {}
+          variables: {}
+        relational_query:
+          aggregate:
+            expression:
+              aggregate:
+                approx_distinct: {}
+                approx_percentile_cont: {}
+                avg: {}
+                bool_and: {}
+                bool_or: {}
+                count:
+                  distinct: {}
+                first_value: {}
+                last_value: {}
+                max: {}
+                median: {}
+                min: {}
+                stddev: {}
+                stddev_pop: {}
+                string_agg: {}
+                sum: {}
+                var: {}
+              comparison:
+                between: {}
+                contains: {}
+                greater_than: {}
+                greater_than_eq: {}
+                ilike: {}
+                in_list: {}
+                is_false: {}
+                is_nan: {}
+                is_null: {}
+                is_true: {}
+                is_zero: {}
+                less_than: {}
+                less_than_eq: {}
+                like: {}
+              conditional:
+                case: {}
+                nullif: {}
+              scalar:
+                abs: {}
+                and: {}
+                array_element: {}
+                binary_concat: {}
+                btrim: {}
+                ceil: {}
+                character_length: {}
+                coalesce: {}
+                concat: {}
+                cos: {}
+                current_date: {}
+                current_time: {}
+                current_timestamp: {}
+                date_part:
+                  day: {}
+                  day_of_week: {}
+                  day_of_year: {}
+                  epoch: {}
+                  hour: {}
+                  microsecond: {}
+                  millisecond: {}
+                  minute: {}
+                  month: {}
+                  nanosecond: {}
+                  quarter: {}
+                  second: {}
+                  week: {}
+                  year: {}
+                date_trunc: {}
+                divide: {}
+                exp: {}
+                floor: {}
+                get_field: {}
+                greatest: {}
+                least: {}
+                left: {}
+                ln: {}
+                log: {}
+                log2: {}
+                log10: {}
+                lpad: {}
+                ltrim: {}
+                minus: {}
+                modulo: {}
+                multiply: {}
+                negate: {}
+                not: {}
+                nvl: {}
+                or: {}
+                plus: {}
+                power: {}
+                random: {}
+                replace: {}
+                reverse: {}
+                right: {}
+                round: {}
+                rpad: {}
+                rtrim: {}
+                sqrt: {}
+                str_pos: {}
+                substr: {}
+                substr_index: {}
+                tan: {}
+                to_date: {}
+                to_lower: {}
+                to_timestamp: {}
+                to_upper: {}
+                trunc: {}
+              window:
+                cume_dist: {}
+                dense_rank: {}
+                ntile: {}
+                percent_rank: {}
+                rank: {}
+                row_number: {}
+            group_by: {}
+          filter:
+            aggregate:
+              approx_distinct: {}
+              approx_percentile_cont: {}
+              avg: {}
+              bool_and: {}
+              bool_or: {}
+              count:
+                distinct: {}
+              first_value: {}
+              last_value: {}
+              max: {}
+              median: {}
+              min: {}
+              stddev: {}
+              stddev_pop: {}
+              string_agg: {}
+              sum: {}
+              var: {}
+            comparison:
+              between: {}
+              contains: {}
+              greater_than: {}
+              greater_than_eq: {}
+              ilike: {}
+              in_list: {}
+              is_false: {}
+              is_nan: {}
+              is_null: {}
+              is_true: {}
+              is_zero: {}
+              less_than: {}
+              less_than_eq: {}
+              like: {}
+            conditional:
+              case: {}
+              nullif: {}
+            scalar:
+              abs: {}
+              and: {}
+              array_element: {}
+              binary_concat: {}
+              btrim: {}
+              ceil: {}
+              character_length: {}
+              coalesce: {}
+              concat: {}
+              cos: {}
+              current_date: {}
+              current_time: {}
+              current_timestamp: {}
+              date_part:
+                day: {}
+                day_of_week: {}
+                day_of_year: {}
+                epoch: {}
+                hour: {}
+                microsecond: {}
+                millisecond: {}
+                minute: {}
+                month: {}
+                nanosecond: {}
+                quarter: {}
+                second: {}
+                week: {}
+                year: {}
+              date_trunc: {}
+              divide: {}
+              exp: {}
+              floor: {}
+              get_field: {}
+              greatest: {}
+              least: {}
+              left: {}
+              ln: {}
+              log: {}
+              log2: {}
+              log10: {}
+              lpad: {}
+              ltrim: {}
+              minus: {}
+              modulo: {}
+              multiply: {}
+              negate: {}
+              not: {}
+              nvl: {}
+              or: {}
+              plus: {}
+              power: {}
+              random: {}
+              replace: {}
+              reverse: {}
+              right: {}
+              round: {}
+              rpad: {}
+              rtrim: {}
+              sqrt: {}
+              str_pos: {}
+              substr: {}
+              substr_index: {}
+              tan: {}
+              to_date: {}
+              to_lower: {}
+              to_timestamp: {}
+              to_upper: {}
+              trunc: {}
+            window:
+              cume_dist: {}
+              dense_rank: {}
+              ntile: {}
+              percent_rank: {}
+              rank: {}
+              row_number: {}
+          join:
+            expression:
+              aggregate:
+                approx_distinct: {}
+                approx_percentile_cont: {}
+                avg: {}
+                bool_and: {}
+                bool_or: {}
+                count:
+                  distinct: {}
+                first_value: {}
+                last_value: {}
+                max: {}
+                median: {}
+                min: {}
+                stddev: {}
+                stddev_pop: {}
+                string_agg: {}
+                sum: {}
+                var: {}
+              comparison:
+                between: {}
+                contains: {}
+                greater_than: {}
+                greater_than_eq: {}
+                ilike: {}
+                in_list: {}
+                is_false: {}
+                is_nan: {}
+                is_null: {}
+                is_true: {}
+                is_zero: {}
+                less_than: {}
+                less_than_eq: {}
+                like: {}
+              conditional:
+                case: {}
+                nullif: {}
+              scalar:
+                abs: {}
+                and: {}
+                array_element: {}
+                binary_concat: {}
+                btrim: {}
+                ceil: {}
+                character_length: {}
+                coalesce: {}
+                concat: {}
+                cos: {}
+                current_date: {}
+                current_time: {}
+                current_timestamp: {}
+                date_part:
+                  day: {}
+                  day_of_week: {}
+                  day_of_year: {}
+                  epoch: {}
+                  hour: {}
+                  microsecond: {}
+                  millisecond: {}
+                  minute: {}
+                  month: {}
+                  nanosecond: {}
+                  quarter: {}
+                  second: {}
+                  week: {}
+                  year: {}
+                date_trunc: {}
+                divide: {}
+                exp: {}
+                floor: {}
+                get_field: {}
+                greatest: {}
+                least: {}
+                left: {}
+                ln: {}
+                log: {}
+                log2: {}
+                log10: {}
+                lpad: {}
+                ltrim: {}
+                minus: {}
+                modulo: {}
+                multiply: {}
+                negate: {}
+                not: {}
+                nvl: {}
+                or: {}
+                plus: {}
+                power: {}
+                random: {}
+                replace: {}
+                reverse: {}
+                right: {}
+                round: {}
+                rpad: {}
+                rtrim: {}
+                sqrt: {}
+                str_pos: {}
+                substr: {}
+                substr_index: {}
+                tan: {}
+                to_date: {}
+                to_lower: {}
+                to_timestamp: {}
+                to_upper: {}
+                trunc: {}
+              window:
+                cume_dist: {}
+                dense_rank: {}
+                ntile: {}
+                percent_rank: {}
+                rank: {}
+                row_number: {}
+            join_types:
+              full: {}
+              inner: {}
+              left: {}
+              left_anti: {}
+              left_semi: {}
+              right: {}
+              right_anti: {}
+              right_semi: {}
+          project:
+            expression:
+              aggregate:
+                approx_distinct: {}
+                approx_percentile_cont: {}
+                avg: {}
+                bool_and: {}
+                bool_or: {}
+                count:
+                  distinct: {}
+                first_value: {}
+                last_value: {}
+                max: {}
+                median: {}
+                min: {}
+                stddev: {}
+                stddev_pop: {}
+                string_agg: {}
+                sum: {}
+                var: {}
+              comparison:
+                between: {}
+                contains: {}
+                greater_than: {}
+                greater_than_eq: {}
+                ilike: {}
+                in_list: {}
+                is_false: {}
+                is_nan: {}
+                is_null: {}
+                is_true: {}
+                is_zero: {}
+                less_than: {}
+                less_than_eq: {}
+                like: {}
+              conditional:
+                case: {}
+                nullif: {}
+              scalar:
+                abs: {}
+                and: {}
+                array_element: {}
+                binary_concat: {}
+                btrim: {}
+                ceil: {}
+                character_length: {}
+                coalesce: {}
+                concat: {}
+                cos: {}
+                current_date: {}
+                current_time: {}
+                current_timestamp: {}
+                date_part:
+                  day: {}
+                  day_of_week: {}
+                  day_of_year: {}
+                  epoch: {}
+                  hour: {}
+                  microsecond: {}
+                  millisecond: {}
+                  minute: {}
+                  month: {}
+                  nanosecond: {}
+                  quarter: {}
+                  second: {}
+                  week: {}
+                  year: {}
+                date_trunc: {}
+                divide: {}
+                exp: {}
+                floor: {}
+                get_field: {}
+                greatest: {}
+                least: {}
+                left: {}
+                ln: {}
+                log: {}
+                log2: {}
+                log10: {}
+                lpad: {}
+                ltrim: {}
+                minus: {}
+                modulo: {}
+                multiply: {}
+                negate: {}
+                not: {}
+                nvl: {}
+                or: {}
+                plus: {}
+                power: {}
+                random: {}
+                replace: {}
+                reverse: {}
+                right: {}
+                round: {}
+                rpad: {}
+                rtrim: {}
+                sqrt: {}
+                str_pos: {}
+                substr: {}
+                substr_index: {}
+                tan: {}
+                to_date: {}
+                to_lower: {}
+                to_timestamp: {}
+                to_upper: {}
+                trunc: {}
+              window:
+                cume_dist: {}
+                dense_rank: {}
+                ntile: {}
+                percent_rank: {}
+                rank: {}
+                row_number: {}
+          sort:
+            expression:
+              aggregate:
+                approx_distinct: {}
+                approx_percentile_cont: {}
+                avg: {}
+                bool_and: {}
+                bool_or: {}
+                count:
+                  distinct: {}
+                first_value: {}
+                last_value: {}
+                max: {}
+                median: {}
+                min: {}
+                stddev: {}
+                stddev_pop: {}
+                string_agg: {}
+                sum: {}
+                var: {}
+              comparison:
+                between: {}
+                contains: {}
+                greater_than: {}
+                greater_than_eq: {}
+                ilike: {}
+                in_list: {}
+                is_false: {}
+                is_nan: {}
+                is_null: {}
+                is_true: {}
+                is_zero: {}
+                less_than: {}
+                less_than_eq: {}
+                like: {}
+              conditional:
+                case: {}
+                nullif: {}
+              scalar:
+                abs: {}
+                and: {}
+                array_element: {}
+                binary_concat: {}
+                btrim: {}
+                ceil: {}
+                character_length: {}
+                coalesce: {}
+                concat: {}
+                cos: {}
+                current_date: {}
+                current_time: {}
+                current_timestamp: {}
+                date_part:
+                  day: {}
+                  day_of_week: {}
+                  day_of_year: {}
+                  epoch: {}
+                  hour: {}
+                  microsecond: {}
+                  millisecond: {}
+                  minute: {}
+                  month: {}
+                  nanosecond: {}
+                  quarter: {}
+                  second: {}
+                  week: {}
+                  year: {}
+                date_trunc: {}
+                divide: {}
+                exp: {}
+                floor: {}
+                get_field: {}
+                greatest: {}
+                least: {}
+                left: {}
+                ln: {}
+                log: {}
+                log2: {}
+                log10: {}
+                lpad: {}
+                ltrim: {}
+                minus: {}
+                modulo: {}
+                multiply: {}
+                negate: {}
+                not: {}
+                nvl: {}
+                or: {}
+                plus: {}
+                power: {}
+                random: {}
+                replace: {}
+                reverse: {}
+                right: {}
+                round: {}
+                rpad: {}
+                rtrim: {}
+                sqrt: {}
+                str_pos: {}
+                substr: {}
+                substr_index: {}
+                tan: {}
+                to_date: {}
+                to_lower: {}
+                to_timestamp: {}
+                to_upper: {}
+                trunc: {}
+              window:
+                cume_dist: {}
+                dense_rank: {}
+                ntile: {}
+                percent_rank: {}
+                rank: {}
+                row_number: {}
+          union: {}
+          window:
+            expression:
+              aggregate:
+                approx_distinct: {}
+                approx_percentile_cont: {}
+                avg: {}
+                bool_and: {}
+                bool_or: {}
+                count:
+                  distinct: {}
+                first_value: {}
+                last_value: {}
+                max: {}
+                median: {}
+                min: {}
+                stddev: {}
+                stddev_pop: {}
+                string_agg: {}
+                sum: {}
+                var: {}
+              comparison:
+                between: {}
+                contains: {}
+                greater_than: {}
+                greater_than_eq: {}
+                ilike: {}
+                in_list: {}
+                is_false: {}
+                is_nan: {}
+                is_null: {}
+                is_true: {}
+                is_zero: {}
+                less_than: {}
+                less_than_eq: {}
+                like: {}
+              conditional:
+                case: {}
+                nullif: {}
+              scalar:
+                abs: {}
+                and: {}
+                array_element: {}
+                binary_concat: {}
+                btrim: {}
+                ceil: {}
+                character_length: {}
+                coalesce: {}
+                concat: {}
+                cos: {}
+                current_date: {}
+                current_time: {}
+                current_timestamp: {}
+                date_part:
+                  day: {}
+                  day_of_week: {}
+                  day_of_year: {}
+                  epoch: {}
+                  hour: {}
+                  microsecond: {}
+                  millisecond: {}
+                  minute: {}
+                  month: {}
+                  nanosecond: {}
+                  quarter: {}
+                  second: {}
+                  week: {}
+                  year: {}
+                date_trunc: {}
+                divide: {}
+                exp: {}
+                floor: {}
+                get_field: {}
+                greatest: {}
+                least: {}
+                left: {}
+                ln: {}
+                log: {}
+                log2: {}
+                log10: {}
+                lpad: {}
+                ltrim: {}
+                minus: {}
+                modulo: {}
+                multiply: {}
+                negate: {}
+                not: {}
+                nvl: {}
+                or: {}
+                plus: {}
+                power: {}
+                random: {}
+                replace: {}
+                reverse: {}
+                right: {}
+                round: {}
+                rpad: {}
+                rtrim: {}
+                sqrt: {}
+                str_pos: {}
+                substr: {}
+                substr_index: {}
+                tan: {}
+                to_date: {}
+                to_lower: {}
+                to_timestamp: {}
+                to_upper: {}
+                trunc: {}
+              window:
+                cume_dist: {}
+                dense_rank: {}
+                ntile: {}
+                percent_rank: {}
+                rank: {}
+                row_number: {}
+      version: 0.2.5
