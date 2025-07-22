@@ -1,0 +1,256 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: PublicCustomers
+  description: "Object type for public.customers. Description: null"
+  fields:
+    - name: account
+      type: Int32!
+    - name: address
+      type: String_1
+    - name: blacklisted
+      type: Boolean_1
+    - name: customerId
+      type: Int32!
+    - name: dob
+      type: Date
+    - name: name
+      type: String_1!
+    - name: nationality
+      type: String_1
+    - name: pepStatus
+      type: Boolean_1
+    - name: riskLevel
+      type: String_1
+  graphql:
+    typeName: PublicCustomers
+    inputTypeName: PublicCustomersInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: banking_core
+      dataConnectorObjectType: public.customers
+      fieldMapping:
+        account:
+          column:
+            name: account
+        address:
+          column:
+            name: address
+        blacklisted:
+          column:
+            name: blacklisted
+        customerId:
+          column:
+            name: customer_id
+        dob:
+          column:
+            name: dob
+        name:
+          column:
+            name: name
+        nationality:
+          column:
+            name: nationality
+        pepStatus:
+          column:
+            name: pep_status
+        riskLevel:
+          column:
+            name: risk_level
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: PublicCustomers
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - account
+          - address
+          - blacklisted
+          - customerId
+          - dob
+          - name
+          - nationality
+          - pepStatus
+          - riskLevel
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PublicCustomersBoolExp
+  operand:
+    object:
+      type: PublicCustomers
+      comparableFields:
+        - fieldName: account
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: address
+          booleanExpressionType: TextBoolExp
+        - fieldName: blacklisted
+          booleanExpressionType: BooleanBoolExp
+        - fieldName: customerId
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: dob
+          booleanExpressionType: DateBoolExp
+        - fieldName: name
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: nationality
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: pepStatus
+          booleanExpressionType: BooleanBoolExp
+        - fieldName: riskLevel
+          booleanExpressionType: CharacterVaryingBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: PublicCustomersBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PublicCustomersAggExp
+  operand:
+    object:
+      aggregatedType: PublicCustomers
+      aggregatableFields:
+        - fieldName: account
+          aggregateExpression: IntegerAggExp
+        - fieldName: address
+          aggregateExpression: TextAggExp
+        - fieldName: blacklisted
+          aggregateExpression: BooleanAggExp
+        - fieldName: customerId
+          aggregateExpression: IntegerAggExp
+        - fieldName: dob
+          aggregateExpression: DateAggExp
+        - fieldName: name
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: nationality
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: pepStatus
+          aggregateExpression: BooleanAggExp
+        - fieldName: riskLevel
+          aggregateExpression: CharacterVaryingAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: PublicCustomersAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PublicCustomersOrderByExp
+  operand:
+    object:
+      orderedType: PublicCustomers
+      orderableFields:
+        - fieldName: account
+          orderByExpression: Int32OrderByExp
+        - fieldName: address
+          orderByExpression: String1OrderByExp
+        - fieldName: blacklisted
+          orderByExpression: Boolean1OrderByExp
+        - fieldName: customerId
+          orderByExpression: Int32OrderByExp
+        - fieldName: dob
+          orderByExpression: DateOrderByExp
+        - fieldName: name
+          orderByExpression: String1OrderByExp
+        - fieldName: nationality
+          orderByExpression: String1OrderByExp
+        - fieldName: pepStatus
+          orderByExpression: Boolean1OrderByExp
+        - fieldName: riskLevel
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: PublicCustomersOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: PublicCustomers
+  objectType: PublicCustomers
+  source:
+    dataConnectorName: banking_core
+    collection: public.customers
+  filterExpressionType: PublicCustomersBoolExp
+  aggregateExpression: PublicCustomersAggExp
+  orderByExpression: PublicCustomersOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: publicCustomers
+      subscription:
+        rootField: publicCustomers
+    selectUniques:
+      - queryRootField: publicCustomersByCustomerId
+        uniqueIdentifier:
+          - customerId
+        subscription:
+          rootField: publicCustomersByCustomerId
+    filterInputTypeName: PublicCustomersFilterInput
+    aggregate:
+      queryRootField: publicCustomersAggregate
+      subscription:
+        rootField: publicCustomersAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: PublicCustomers
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: sars
+  sourceType: PublicCustomers
+  target:
+    model:
+      name: PublicSars
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: PublicSarsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: customerId
+  graphql:
+    aggregateFieldName: sarsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: account_details
+  sourceType: PublicCustomers
+  target:
+    model:
+      name: Accounts
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: account
+      target:
+        modelField:
+          - fieldName: accountId

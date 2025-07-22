@@ -4,11 +4,11 @@ services:
       context: .
       dockerfile: .hasura-connector/Dockerfile.banking_core
     environment:
-      CONNECTION_URI: $APP_BANKING_CORE_CONNECTION_URI
       HASURA_SERVICE_TOKEN_SECRET: $APP_BANKING_CORE_HASURA_SERVICE_TOKEN_SECRET
+      JDBC_URL: $APP_BANKING_CORE_JDBC_URL
       OTEL_EXPORTER_OTLP_ENDPOINT: $APP_BANKING_CORE_OTEL_EXPORTER_OTLP_ENDPOINT
       OTEL_SERVICE_NAME: $APP_BANKING_CORE_OTEL_SERVICE_NAME
     extra_hosts:
       - local.hasura.dev:host-gateway
     ports:
-      - 5544:8080
+      - 6421:8080

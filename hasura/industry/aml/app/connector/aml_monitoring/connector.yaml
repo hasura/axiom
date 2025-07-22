@@ -3,9 +3,11 @@ version: v2
 definition:
   name: aml_monitoring
   subgraph: app
-  source: hasura/mongodb:v1.6.0
+  source: hasura/mongodb:v1.8.3
   context: .
   envMapping:
+    HASURA_CONNECTOR_PORT:
+      fromEnv: APP_AML_MONITORING_HASURA_CONNECTOR_PORT
     HASURA_SERVICE_TOKEN_SECRET:
       fromEnv: APP_AML_MONITORING_HASURA_SERVICE_TOKEN_SECRET
     MONGODB_DATABASE_URI:
