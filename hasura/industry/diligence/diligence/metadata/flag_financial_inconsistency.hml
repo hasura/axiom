@@ -2,89 +2,78 @@
 kind: ObjectType
 version: v1
 definition:
-  name: FinancialInconsistencyResponse
+  name: financial_inconsistency_response
   fields:
-    - name: accountId
+    - name: account_id
       type: Float!
-    - name: assignedTo
+    - name: assigned_to
       type: String
-    - name: flagId
+    - name: flag_id
       type: String
     - name: severity
       type: String!
     - name: status
       type: String!
-    - name: transactionDate
+    - name: transaction_date
       type: String!
   graphql:
-    typeName: FinancialInconsistencyResponse
-    inputTypeName: FinancialInconsistencyResponseInput
+    typeName: financial_inconsistency_response
+    inputTypeName: financial_inconsistency_response_input
   dataConnectorTypeMapping:
     - dataConnectorName: valuation_operations
       dataConnectorObjectType: FinancialInconsistencyResponse
-      fieldMapping:
-        accountId:
-          column:
-            name: account_id
-        assignedTo:
-          column:
-            name: assigned_to
-        flagId:
-          column:
-            name: flag_id
-        severity:
-          column:
-            name: severity
-        status:
-          column:
-            name: status
-        transactionDate:
-          column:
-            name: transaction_date
 
 ---
 kind: TypePermissions
 version: v1
 definition:
-  typeName: FinancialInconsistencyResponse
+  typeName: financial_inconsistency_response
   permissions:
     - role: admin
       output:
         allowedFields:
-          - accountId
-          - assignedTo
-          - flagId
+          - account_id
+          - assigned_to
+          - flag_id
           - severity
           - status
-          - transactionDate
+          - transaction_date
 
 ---
 kind: Command
 version: v1
 definition:
-  name: FlagFinancialInconsistency
-  outputType: FinancialInconsistencyResponse!
+  name: flag_financial_inconsistency
+  outputType: financial_inconsistency_response!
   arguments:
-    - name: accountId
+    - name: account_id
       type: Float!
-    - name: accountName
+    - name: account_name
       type: String!
     - name: amount
       type: Float!
-    - name: assignedAnalyst
+    - name: assigned_analyst
       type: String
     - name: description
       type: String!
     - name: severity
       type: String!
-    - name: transactionDate
+    - name: transaction_date
       type: String!
   source:
     dataConnectorName: valuation_operations
     dataConnectorCommand:
       procedure: flagFinancialInconsistency
+    argumentMapping:
+      account_id: accountId
+      account_name: accountName
+      amount: amount
+      assigned_analyst: assignedAnalyst
+      description: description
+      severity: severity
+      transaction_date: transactionDate
   graphql:
-    rootFieldName: flagFinancialInconsistency
+    rootFieldName: flag_financial_inconsistency
     rootFieldKind: Mutation
   description: >-
     **Description:**
@@ -106,7 +95,7 @@ definition:
 kind: CommandPermissions
 version: v1
 definition:
-  commandName: FlagFinancialInconsistency
+  commandName: flag_financial_inconsistency
   permissions:
     - role: admin
       allowExecution: true

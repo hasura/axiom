@@ -2,86 +2,67 @@
 kind: ObjectType
 version: v1
 definition:
-  name: AdjustmentScenarioResponse
+  name: adjustment_scenario_response
   fields:
-    - name: accountId
+    - name: account_id
       type: Float!
-    - name: adjustmentAmount
+    - name: adjustment_amount
       type: Float!
-    - name: adjustmentType
+    - name: adjustment_type
       type: String!
-    - name: impactOnValuation
+    - name: impact_on_valuation
       type: Float
-    - name: scenarioId
+    - name: scenario_id
       type: String
     - name: status
       type: String!
   graphql:
-    typeName: AdjustmentScenarioResponse
-    inputTypeName: AdjustmentScenarioResponseInput
+    typeName: adjustment_scenario_response
+    inputTypeName: adjustment_scenario_response_input
   dataConnectorTypeMapping:
     - dataConnectorName: valuation_operations
       dataConnectorObjectType: AdjustmentScenarioResponse
-      fieldMapping:
-        accountId:
-          column:
-            name: account_id
-        adjustmentAmount:
-          column:
-            name: adjustment_amount
-        adjustmentType:
-          column:
-            name: adjustment_type
-        impactOnValuation:
-          column:
-            name: impact_on_valuation
-        scenarioId:
-          column:
-            name: scenario_id
-        status:
-          column:
-            name: status
 
 ---
 kind: TypePermissions
 version: v1
 definition:
-  typeName: AdjustmentScenarioResponse
+  typeName: adjustment_scenario_response
   permissions:
     - role: admin
       output:
         allowedFields:
-          - accountId
-          - adjustmentAmount
-          - adjustmentType
-          - impactOnValuation
-          - scenarioId
+          - account_id
+          - adjustment_amount
+          - adjustment_type
+          - impact_on_valuation
+          - scenario_id
           - status
 
 ---
 kind: Command
 version: v1
 definition:
-  name: CreateAdjustmentScenario
-  outputType: AdjustmentScenarioResponse!
+  name: create_adjustment_scenario
+  outputType: adjustment_scenario_response!
   arguments:
-    - name: accountId
+    - name: account_id
       type: Float!
-    - name: accountName
+    - name: account_name
       type: String!
-    - name: adjustmentAmount
+    - name: adjustment_amount
       type: Float!
-    - name: adjustmentType
+    - name: adjustment_type
       type: String!
     - name: description
       type: String!
-    - name: ebitdaMultiple
+    - name: ebitda_multiple
       type: Float
-    - name: enterpriseValue
+    - name: enterprise_value
       type: Float
-    - name: fiscalPeriod
+    - name: fiscal_period
       type: Float
-    - name: fiscalYear
+    - name: fiscal_year
       type: Float!
     - name: justification
       type: String!
@@ -89,8 +70,19 @@ definition:
     dataConnectorName: valuation_operations
     dataConnectorCommand:
       procedure: createAdjustmentScenario
+    argumentMapping:
+      account_id: accountId
+      account_name: accountName
+      adjustment_amount: adjustmentAmount
+      adjustment_type: adjustmentType
+      description: description
+      ebitda_multiple: ebitdaMultiple
+      enterprise_value: enterpriseValue
+      fiscal_period: fiscalPeriod
+      fiscal_year: fiscalYear
+      justification: justification
   graphql:
-    rootFieldName: createAdjustmentScenario
+    rootFieldName: create_adjustment_scenario
     rootFieldKind: Mutation
   description: >-
     **Description:**
@@ -112,7 +104,7 @@ definition:
 kind: CommandPermissions
 version: v1
 definition:
-  commandName: CreateAdjustmentScenario
+  commandName: create_adjustment_scenario
   permissions:
     - role: admin
       allowExecution: true
