@@ -1,0 +1,162 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: us_productionorders
+  description: "Object type for us.productionorders. Description: null"
+  fields:
+    - name: expected_completion
+      type: date
+    - name: factory_id
+      type: int32
+    - name: order_id
+      type: int32!
+    - name: quantity
+      type: int32
+    - name: shoe_id
+      type: int32
+    - name: start_date
+      type: date
+  graphql:
+    typeName: SCMS_us_productionorders
+    inputTypeName: SCMS_us_productionorders_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: scms_postgres
+      dataConnectorObjectType: us.productionorders
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: us_productionorders
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - expected_completion
+          - factory_id
+          - order_id
+          - quantity
+          - shoe_id
+          - start_date
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: us_productionorders_bool_exp
+  operand:
+    object:
+      type: us_productionorders
+      comparableFields:
+        - fieldName: expected_completion
+          booleanExpressionType: date_bool_exp
+        - fieldName: factory_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: order_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: quantity
+          booleanExpressionType: integer_bool_exp
+        - fieldName: shoe_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: start_date
+          booleanExpressionType: date_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: SCMS_us_productionorders_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: us_productionorders_agg_exp
+  operand:
+    object:
+      aggregatedType: us_productionorders
+      aggregatableFields:
+        - fieldName: expected_completion
+          aggregateExpression: date_agg_exp
+        - fieldName: factory_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: order_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: quantity
+          aggregateExpression: integer_agg_exp
+        - fieldName: shoe_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: start_date
+          aggregateExpression: date_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: SCMS_us_productionorders_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: us_productionorders_order_by_exp
+  operand:
+    object:
+      orderedType: us_productionorders
+      orderableFields:
+        - fieldName: expected_completion
+          orderByExpression: date_order_by_exp
+        - fieldName: factory_id
+          orderByExpression: int32_order_by_exp
+        - fieldName: order_id
+          orderByExpression: int32_order_by_exp
+        - fieldName: quantity
+          orderByExpression: int32_order_by_exp
+        - fieldName: shoe_id
+          orderByExpression: int32_order_by_exp
+        - fieldName: start_date
+          orderByExpression: date_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: SCMS_us_productionorders_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: us_productionorders
+  objectType: us_productionorders
+  source:
+    dataConnectorName: scms_postgres
+    collection: us.productionorders
+  filterExpressionType: us_productionorders_bool_exp
+  aggregateExpression: us_productionorders_agg_exp
+  orderByExpression: us_productionorders_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: scmsus_productionorders
+      subscription:
+        rootField: scmsus_productionorders
+    selectUniques:
+      - queryRootField: scmsus_productionorders_by_order_id
+        uniqueIdentifier:
+          - order_id
+        subscription:
+          rootField: scmsus_productionorders_by_order_id
+    filterInputTypeName: SCMS_us_productionorders_filter_input
+    aggregate:
+      queryRootField: scmsus_productionorders_aggregate
+      subscription:
+        rootField: scmsus_productionorders_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: us_productionorders
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

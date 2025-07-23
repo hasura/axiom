@@ -1,0 +1,69 @@
+version: v2
+ndcSpecGeneration: v0.2
+packagingDefinition:
+  type: PrebuiltDockerImage
+  dockerImage: ghcr.io/hasura/ndc-postgres-jdbc:v1.2.7
+supportedEnvironmentVariables:
+  - name: JDBC_URL
+    description: The JDBC URL to connect to the database
+  - name: JDBC_SCHEMAS
+    description: A comma-separated list of schemas to include in the metadata
+commands:
+  update:
+    type: Dockerized
+    dockerImage: ghcr.io/hasura/ndc-postgres-jdbc-cli:v1.2.7
+    commandArgs:
+      - update
+      - --jdbc-url
+      - JDBC_URL
+      - --schemas
+      - $JDBC_SCHEMAS
+      - --outfile
+      - /etc/connector/configuration.json
+  upgradeConfiguration:
+    type: Dockerized
+    dockerImage: ghcr.io/hasura/ndc-postgres-jdbc-cli:v1.2.7
+    commandArgs:
+      - upgrade
+      - --config-file
+      - /etc/connector/configuration.json
+      - --outfile
+      - /etc/connector/configuration.json
+cliPlugin:
+  type: Docker
+  dockerImage: ghcr.io/hasura/ndc-postgres-jdbc-cli:v1.2.7
+dockerComposeWatch: []
+nativeToolchainDefinition:
+  commands:
+    start:
+      type: ShellScript
+      bash: |
+        #!/usr/bin/env bash
+        set -eu -o pipefail
+        HASURA_CONFIGURATION_DIRECTORY="$HASURA_PLUGIN_CONNECTOR_CONTEXT_PATH" \
+        "$HASURA_DDN_NATIVE_CONNECTOR_DIR/entrypoint.sh"
+      powershell: |
+        $ErrorActionPreference = "Stop"
+        $env:HASURA_CONFIGURATION_DIRECTORY="$env:HASURA_PLUGIN_CONNECTOR_CONTEXT_PATH";
+        & "$env:HASURA_DDN_NATIVE_CONNECTOR_DIR\entrypoint.bat"
+    watch:
+      type: ShellScript
+      bash: |
+        #!/usr/bin/env bash
+        echo "Watch is not supported for this connector"
+        exit 1
+      powershell: |
+        Write-Output "Watch is not supported for this connector"
+        exit 1
+    update:
+      type: ShellScript
+      bash: set -e -o pipefail; "$HASURA_DDN_NATIVE_CONNECTOR_PLUGIN_DIR/entrypoint.sh" update --jdbc-url JDBC_URL --schemas $JDBC_SCHEMAS --outfile "$HASURA_PLUGIN_CONNECTOR_CONTEXT_PATH/configuration.json"
+      powershell: $ErrorActionPreference = "Stop"; & "$env:HASURA_DDN_NATIVE_CONNECTOR_PLUGIN_DIR\entrypoint.bat" update --jdbc-url JDBC_URL --schemas `$env:JDBC_SCHEMAS --outfile "$env:HASURA_PLUGIN_CONNECTOR_CONTEXT_PATH\configuration.json"
+    upgradeConfiguration:
+      type: ShellScript
+      bash: set -e -o pipefail; "$HASURA_DDN_NATIVE_CONNECTOR_PLUGIN_DIR/entrypoint.sh" upgrade --config-file "$HASURA_PLUGIN_CONNECTOR_CONTEXT_PATH/configuration.json" --outfile "$HASURA_PLUGIN_CONNECTOR_CONTEXT_PATH/configuration.json"
+      powershell: $ErrorActionPreference = "Stop"; & "$env:HASURA_DDN_NATIVE_CONNECTOR_PLUGIN_DIR\entrypoint.bat" upgrade --config-file "$env:HASURA_PLUGIN_CONNECTOR_CONTEXT_PATH\configuration.json" --outfile "$env:HASURA_PLUGIN_CONNECTOR_CONTEXT_PATH\configuration.json"
+    cliPluginEntrypoint:
+      type: ShellScript
+      bash: set -e -o pipefail; "$HASURA_DDN_NATIVE_CONNECTOR_PLUGIN_DIR/entrypoint.sh"
+      powershell: $ErrorActionPreference = "Stop"; & "$env:HASURA_DDN_NATIVE_CONNECTOR_PLUGIN_DIR/entrypoint.bat"

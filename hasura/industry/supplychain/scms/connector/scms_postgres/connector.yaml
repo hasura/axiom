@@ -1,0 +1,20 @@
+kind: Connector
+version: v2
+definition:
+  name: scms_postgres
+  subgraph: scms
+  source: hasura/postgres-promptql:v1.2.7
+  context: .
+  envMapping:
+    HASURA_CONNECTOR_PORT:
+      fromEnv: SCMS_SCMS_POSTGRES_HASURA_CONNECTOR_PORT
+    HASURA_SERVICE_TOKEN_SECRET:
+      fromEnv: SCMS_SCMS_POSTGRES_HASURA_SERVICE_TOKEN_SECRET
+    JDBC_SCHEMAS:
+      fromEnv: SCMS_SCMS_POSTGRES_JDBC_SCHEMAS
+    JDBC_URL:
+      fromEnv: SCMS_SCMS_POSTGRES_JDBC_URL
+    OTEL_EXPORTER_OTLP_ENDPOINT:
+      fromEnv: SCMS_SCMS_POSTGRES_OTEL_EXPORTER_OTLP_ENDPOINT
+    OTEL_SERVICE_NAME:
+      fromEnv: SCMS_SCMS_POSTGRES_OTEL_SERVICE_NAME

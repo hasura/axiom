@@ -72,6 +72,16 @@ definition:
           - paper_process_c
           - probability
           - stage
+    - role: customer
+      output:
+        allowedFields:
+          - amount
+          - close_date
+          - created_date
+          - name
+          - owner_id
+          - probability
+          - stage
 
 ---
 kind: BooleanExpressionType
@@ -257,5 +267,14 @@ definition:
     - role: admin
       select:
         filter: null
+        allowSubscriptions: true
+    - role: customer
+      select:
+        filter:
+          fieldComparison:
+            field: owner_id
+            operator: _eq
+            value:
+              sessionVariable: x-hasura-user-id
         allowSubscriptions: true
 

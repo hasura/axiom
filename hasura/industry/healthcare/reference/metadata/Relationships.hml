@@ -1,0 +1,35 @@
+---
+kind: Relationship
+version: v1
+definition:
+  name: drugReference
+  sourceType: public_drug_packaging
+  target:
+    model:
+      name: public_drug_reference
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: product_ndc
+      target:
+        modelField:
+          - fieldName: product_ndc
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: drugPackagings
+  sourceType: public_drug_reference
+  target:
+    model:
+      name: public_drug_packaging
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: product_ndc
+      target:
+        modelField:
+          - fieldName: product_ndc

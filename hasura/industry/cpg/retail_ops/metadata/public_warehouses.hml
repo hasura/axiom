@@ -48,6 +48,17 @@ definition:
           - warehouse_id
           - warehouse_name
           - warehouse_type
+    - role: customer
+      output:
+        allowedFields:
+          - location_city
+          - location_country
+          - location_state
+          - max_capacity_pallets
+          - square_footage
+          - warehouse_id
+          - warehouse_name
+          - warehouse_type
 
 ---
 kind: BooleanExpressionType
@@ -185,5 +196,14 @@ definition:
     - role: admin
       select:
         filter: null
+        allowSubscriptions: true
+    - role: admin
+      select:
+        filter: 
+          fieldComparison:
+            field: warehouse_id
+            operator: _eq
+            value: 
+              sessionVariable: x-hasura-user-id
         allowSubscriptions: true
 

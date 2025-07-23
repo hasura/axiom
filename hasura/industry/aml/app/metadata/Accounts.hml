@@ -124,6 +124,14 @@ definition:
           - name
           - risk
           - transaction_limits
+    - role: customer
+      output:
+        allowedFields:
+          - id
+          - account_id
+          - contact_information
+          - entity_type
+          - name
 
 ---
 kind: BooleanExpressionType
@@ -192,7 +200,8 @@ definition:
           booleanExpressionType: StringBoolExp_1
         - fieldName: transaction_limits
           booleanExpressionType: accounts_transaction_limits_bool_exp
-      comparableRelationships: []
+      comparableRelationships:
+        - relationshipName: customer
   logicalOperators:
     enable: true
   isNull:
@@ -326,4 +335,15 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
+    - role: customer
+      select:
+        filter: 
+          relationship:
+            name: customer
+            predicate: 
+              fieldComparison:
+                field: customer_id
+                operator: _eq
+                value: 
+                  sessionVariable: x-hasura-user-id
 

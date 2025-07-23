@@ -48,6 +48,15 @@ definition:
           - nationality
           - pep_status
           - risk_level
+    - role: customer
+      output:
+        allowedFields:
+          - account
+          - address
+          - customer_id
+          - dob
+          - name
+          - nationality
 
 ---
 kind: BooleanExpressionType
@@ -186,4 +195,11 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
-
+    - role: customer
+      select:
+        filter: 
+          fieldComparison:
+            field: customer_id
+            operator: _eq
+            value: 
+              sessionVariable: x-hasura-user-id

@@ -1,0 +1,144 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: us_suppliers
+  description: "Object type for us.suppliers. Description: null"
+  fields:
+    - name: contact_email
+      type: string
+    - name: country
+      type: string
+    - name: name
+      type: string!
+    - name: supplier_id
+      type: int32!
+  graphql:
+    typeName: SCMS_us_suppliers
+    inputTypeName: SCMS_us_suppliers_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: scms_postgres
+      dataConnectorObjectType: us.suppliers
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: us_suppliers
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - contact_email
+          - country
+          - name
+          - supplier_id
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: us_suppliers_bool_exp
+  operand:
+    object:
+      type: us_suppliers
+      comparableFields:
+        - fieldName: contact_email
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: country
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: name
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: supplier_id
+          booleanExpressionType: integer_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: SCMS_us_suppliers_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: us_suppliers_agg_exp
+  operand:
+    object:
+      aggregatedType: us_suppliers
+      aggregatableFields:
+        - fieldName: contact_email
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: country
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: name
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: supplier_id
+          aggregateExpression: integer_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: SCMS_us_suppliers_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: us_suppliers_order_by_exp
+  operand:
+    object:
+      orderedType: us_suppliers
+      orderableFields:
+        - fieldName: contact_email
+          orderByExpression: string_order_by_exp
+        - fieldName: country
+          orderByExpression: string_order_by_exp
+        - fieldName: name
+          orderByExpression: string_order_by_exp
+        - fieldName: supplier_id
+          orderByExpression: int32_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: SCMS_us_suppliers_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: us_suppliers
+  objectType: us_suppliers
+  source:
+    dataConnectorName: scms_postgres
+    collection: us.suppliers
+  filterExpressionType: us_suppliers_bool_exp
+  aggregateExpression: us_suppliers_agg_exp
+  orderByExpression: us_suppliers_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: scmsus_suppliers
+      subscription:
+        rootField: scmsus_suppliers
+    selectUniques:
+      - queryRootField: scmsus_suppliers_by_supplier_id
+        uniqueIdentifier:
+          - supplier_id
+        subscription:
+          rootField: scmsus_suppliers_by_supplier_id
+    filterInputTypeName: SCMS_us_suppliers_filter_input
+    aggregate:
+      queryRootField: scmsus_suppliers_aggregate
+      subscription:
+        rootField: scmsus_suppliers_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: us_suppliers
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

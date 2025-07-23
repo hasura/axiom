@@ -60,6 +60,18 @@ definition:
           - region_id
           - total_lifetime_value
           - updated_at
+    - role: customer
+      output:
+        allowedFields:
+          - account_manager
+          - business_name
+          - business_type
+          - created_at
+          - customer_id
+          - industry
+          - is_active
+          - region_id
+          - updated_at
 
 ---
 kind: BooleanExpressionType
@@ -221,5 +233,14 @@ definition:
     - role: admin
       select:
         filter: null
+        allowSubscriptions: true
+    - role: customer
+      select:
+        filter: 
+          fieldComparison:
+            field: customer_id
+            operator: _eq
+            value: 
+              sessionVariable: x-hasura-user-id
         allowSubscriptions: true
 

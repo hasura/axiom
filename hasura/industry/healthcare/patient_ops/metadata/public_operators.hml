@@ -33,6 +33,13 @@ definition:
           - operator_id
           - region
           - specialty
+    - role: customer
+      output:
+        allowedFields:
+          - full_name
+          - operator_id
+          - region
+          - specialty
 
 ---
 kind: BooleanExpressionType
@@ -140,5 +147,14 @@ definition:
     - role: admin
       select:
         filter: null
+        allowSubscriptions: true
+    - role: customer
+      select:
+        filter: 
+          fieldComparison:
+            field: operator_id
+            operator: _like
+            value: 
+              sessionVariable: x-hasura-user_id
         allowSubscriptions: true
 
