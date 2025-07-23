@@ -1,0 +1,90 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: case_urgency_update_response
+  fields:
+    - name: case_id
+      type: Float!
+    - name: status
+      type: String!
+    - name: update_id
+      type: String
+  graphql:
+    typeName: case_urgency_update_response
+    inputTypeName: case_urgency_update_response_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: ops_mgmt
+      dataConnectorObjectType: CaseUrgencyUpdateResponse
+      fieldMapping:
+        case_id:
+          column:
+            name: caseId
+        status:
+          column:
+            name: status
+        update_id:
+          column:
+            name: updateId
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: case_urgency_update_response
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - case_id
+          - status
+          - update_id
+
+---
+kind: Command
+version: v1
+definition:
+  name: update_case_urgency
+  outputType: case_urgency_update_response!
+  arguments:
+    - name: case_id
+      type: Float!
+    - name: new_urgency
+      type: String!
+    - name: previous_urgency
+      type: String!
+    - name: reason
+      type: String!
+  source:
+    dataConnectorName: ops_mgmt
+    dataConnectorCommand:
+      procedure: updateCaseUrgency
+    argumentMapping:
+      case_id: caseId
+      new_urgency: newUrgency
+      previous_urgency: previousUrgency
+      reason: reason
+  graphql:
+    rootFieldName: update_case_urgency
+    rootFieldKind: Mutation
+  description: >-
+    **Description:**
+
+    Updates a case's urgency level to reflect changing patient conditions or operational requirements.
+
+
+    **When to Call:**
+
+    - When a case’s urgency escalates or de-escalates due to new information.
+
+    - To ensure proper prioritization in scheduling.
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: update_case_urgency
+  permissions:
+    - role: admin
+      allowExecution: true
+

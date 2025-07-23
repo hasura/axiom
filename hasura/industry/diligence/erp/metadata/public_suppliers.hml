@@ -1,0 +1,234 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_suppliers
+  description: "Object type for public.suppliers. Description: null"
+  fields:
+    - name: address
+      type: String_1
+    - name: contact_email
+      type: String_1
+    - name: contact_name
+      type: String_1
+    - name: contact_phone
+      type: String_1
+    - name: country
+      type: String_1
+    - name: created_at
+      type: Timestamp
+    - name: is_active
+      type: Boolean_1
+    - name: lead_time_days
+      type: Int32
+    - name: payment_terms
+      type: String_1
+    - name: primary_category
+      type: String_1
+    - name: supplier_id
+      type: Int32!
+    - name: supplier_name
+      type: String_1!
+    - name: supplier_rating
+      type: Int32
+    - name: updated_at
+      type: Timestamp
+  graphql:
+    typeName: public_suppliers
+    inputTypeName: public_suppliers_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: operations
+      dataConnectorObjectType: public.suppliers
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_suppliers
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - address
+          - contact_email
+          - contact_name
+          - contact_phone
+          - country
+          - created_at
+          - is_active
+          - lead_time_days
+          - payment_terms
+          - primary_category
+          - supplier_id
+          - supplier_name
+          - supplier_rating
+          - updated_at
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_suppliers_bool_exp
+  operand:
+    object:
+      type: public_suppliers
+      comparableFields:
+        - fieldName: address
+          booleanExpressionType: TextBoolExp_1
+        - fieldName: contact_email
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: contact_name
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: contact_phone
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: country
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: created_at
+          booleanExpressionType: TimestampWithoutTimeZoneBoolExp_1
+        - fieldName: is_active
+          booleanExpressionType: BooleanBoolExp_1
+        - fieldName: lead_time_days
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: payment_terms
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: primary_category
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: supplier_id
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: supplier_name
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: supplier_rating
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: updated_at
+          booleanExpressionType: TimestampWithoutTimeZoneBoolExp_1
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_suppliers_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_suppliers_agg_exp
+  operand:
+    object:
+      aggregatedType: public_suppliers
+      aggregatableFields:
+        - fieldName: address
+          aggregateExpression: TextAggExp_1
+        - fieldName: contact_email
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: contact_name
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: contact_phone
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: country
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: created_at
+          aggregateExpression: TimestampWithoutTimeZoneAggExp_1
+        - fieldName: is_active
+          aggregateExpression: BooleanAggExp_1
+        - fieldName: lead_time_days
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: payment_terms
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: primary_category
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: supplier_id
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: supplier_name
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: supplier_rating
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: updated_at
+          aggregateExpression: TimestampWithoutTimeZoneAggExp_1
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_suppliers_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_suppliers_order_by_exp
+  operand:
+    object:
+      orderedType: public_suppliers
+      orderableFields:
+        - fieldName: address
+          orderByExpression: String1OrderByExp
+        - fieldName: contact_email
+          orderByExpression: String1OrderByExp
+        - fieldName: contact_name
+          orderByExpression: String1OrderByExp
+        - fieldName: contact_phone
+          orderByExpression: String1OrderByExp
+        - fieldName: country
+          orderByExpression: String1OrderByExp
+        - fieldName: created_at
+          orderByExpression: TimestampOrderByExp
+        - fieldName: is_active
+          orderByExpression: Boolean1OrderByExp
+        - fieldName: lead_time_days
+          orderByExpression: Int32OrderByExp
+        - fieldName: payment_terms
+          orderByExpression: String1OrderByExp
+        - fieldName: primary_category
+          orderByExpression: String1OrderByExp
+        - fieldName: supplier_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: supplier_name
+          orderByExpression: String1OrderByExp
+        - fieldName: supplier_rating
+          orderByExpression: Int32OrderByExp
+        - fieldName: updated_at
+          orderByExpression: TimestampOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_suppliers_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_suppliers
+  objectType: public_suppliers
+  source:
+    dataConnectorName: operations
+    collection: public.suppliers
+  filterExpressionType: public_suppliers_bool_exp
+  aggregateExpression: public_suppliers_agg_exp
+  orderByExpression: public_suppliers_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_suppliers
+      subscription:
+        rootField: public_suppliers
+    selectUniques:
+      - queryRootField: public_suppliers_by_supplier_id
+        uniqueIdentifier:
+          - supplier_id
+        subscription:
+          rootField: public_suppliers_by_supplier_id
+    filterInputTypeName: public_suppliers_filter_input
+    aggregate:
+      queryRootField: public_suppliers_aggregate
+      subscription:
+        rootField: public_suppliers_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_suppliers
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

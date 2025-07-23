@@ -1,0 +1,207 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_market_shares
+  description: "Object type for public.market_shares. Description: null"
+  fields:
+    - name: brand_id
+      type: Int32
+    - name: category_id
+      type: Int32
+    - name: channel_id
+      type: Int32
+    - name: data_source
+      type: String_1
+    - name: dollar_sales
+      type: Bigdecimal
+    - name: measurement_period
+      type: String_1
+    - name: report_date
+      type: Date!
+    - name: share_id
+      type: Int32!
+    - name: share_percentage
+      type: Bigdecimal!
+    - name: volume_sales
+      type: Bigdecimal
+    - name: volume_share_percentage
+      type: Bigdecimal
+  graphql:
+    typeName: public_market_shares
+    inputTypeName: public_market_shares_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: sales
+      dataConnectorObjectType: public.market_shares
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_market_shares
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - brand_id
+          - category_id
+          - channel_id
+          - data_source
+          - dollar_sales
+          - measurement_period
+          - report_date
+          - share_id
+          - share_percentage
+          - volume_sales
+          - volume_share_percentage
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_market_shares_bool_exp
+  operand:
+    object:
+      type: public_market_shares
+      comparableFields:
+        - fieldName: brand_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: category_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: channel_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: data_source
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: dollar_sales
+          booleanExpressionType: DecimalBoolExp
+        - fieldName: measurement_period
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: report_date
+          booleanExpressionType: DateBoolExp
+        - fieldName: share_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: share_percentage
+          booleanExpressionType: DecimalBoolExp
+        - fieldName: volume_sales
+          booleanExpressionType: DecimalBoolExp
+        - fieldName: volume_share_percentage
+          booleanExpressionType: DecimalBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_market_shares_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_market_shares_agg_exp
+  operand:
+    object:
+      aggregatedType: public_market_shares
+      aggregatableFields:
+        - fieldName: brand_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: category_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: channel_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: data_source
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: dollar_sales
+          aggregateExpression: DecimalAggExp
+        - fieldName: measurement_period
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: report_date
+          aggregateExpression: DateAggExp
+        - fieldName: share_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: share_percentage
+          aggregateExpression: DecimalAggExp
+        - fieldName: volume_sales
+          aggregateExpression: DecimalAggExp
+        - fieldName: volume_share_percentage
+          aggregateExpression: DecimalAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_market_shares_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_market_shares_order_by_exp
+  operand:
+    object:
+      orderedType: public_market_shares
+      orderableFields:
+        - fieldName: brand_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: category_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: channel_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: data_source
+          orderByExpression: String1OrderByExp
+        - fieldName: dollar_sales
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: measurement_period
+          orderByExpression: String1OrderByExp
+        - fieldName: report_date
+          orderByExpression: DateOrderByExp
+        - fieldName: share_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: share_percentage
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: volume_sales
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: volume_share_percentage
+          orderByExpression: BigdecimalOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_market_shares_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_market_shares
+  objectType: public_market_shares
+  source:
+    dataConnectorName: sales
+    collection: public.market_shares
+  filterExpressionType: public_market_shares_bool_exp
+  aggregateExpression: public_market_shares_agg_exp
+  orderByExpression: public_market_shares_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_market_shares
+      subscription:
+        rootField: public_market_shares
+    selectUniques:
+      - queryRootField: public_market_shares_by_share_id
+        uniqueIdentifier:
+          - share_id
+        subscription:
+          rootField: public_market_shares_by_share_id
+    filterInputTypeName: public_market_shares_filter_input
+    aggregate:
+      queryRootField: public_market_shares_aggregate
+      subscription:
+        rootField: public_market_shares_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_market_shares
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

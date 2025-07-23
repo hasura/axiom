@@ -1,0 +1,79 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: sarfiling_response
+  fields:
+    - name: account_id
+      type: Float!
+    - name: sar_id
+      type: String
+    - name: status
+      type: String!
+  graphql:
+    typeName: sarfiling_response
+    inputTypeName: sarfiling_response_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: account_operations
+      dataConnectorObjectType: SARFilingResponse
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: sarfiling_response
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - account_id
+          - sar_id
+          - status
+
+---
+kind: Command
+version: v1
+definition:
+  name: file_sar
+  outputType: sarfiling_response!
+  arguments:
+    - name: account_id
+      type: Float!
+    - name: account_name
+      type: String!
+    - name: reason
+      type: String!
+  source:
+    dataConnectorName: account_operations
+    dataConnectorCommand:
+      procedure: fileSAR
+    argumentMapping:
+      account_id: accountId
+      account_name: accountName
+      reason: reason
+  graphql:
+    rootFieldName: file_sar
+    rootFieldKind: Mutation
+  description: >-
+    **Description:**
+
+    This function generates and files a Suspicious Activity Report (SAR) when a pattern of high-risk transactions or behaviors suggests potential financial crimes such as money laundering or fraud. The SAR filing provides documented evidence for compliance teams and regulatory bodies to review and take appropriate actions.
+
+
+    **When to Call:**
+
+    - When an account exhibits transactions or behaviors consistent with known fraud patterns or money laundering schemes.
+
+    - If internal risk teams identify multiple suspicious transactions requiring formal documentation.
+
+    - When compliance regulations mandate the reporting of unusual account activities for further investigation.
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: file_sar
+  permissions:
+    - role: admin
+      allowExecution: true
+

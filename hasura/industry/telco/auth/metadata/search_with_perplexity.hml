@@ -1,0 +1,55 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: perplexity_response
+  fields:
+    - name: references
+      type: "[String!]!"
+    - name: text
+      type: String!
+  graphql:
+    typeName: auth_perplexity_response
+    inputTypeName: auth_perplexity_response_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: search
+      dataConnectorObjectType: PerplexityResponse
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: perplexity_response
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - references
+          - text
+
+---
+kind: Command
+version: v1
+definition:
+  name: search_with_perplexity
+  outputType: perplexity_response!
+  arguments:
+    - name: query
+      type: String!
+  source:
+    dataConnectorName: search
+    dataConnectorCommand:
+      function: searchWithPerplexity
+  graphql:
+    rootFieldName: search_with_perplexity
+    rootFieldKind: Query
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: search_with_perplexity
+  permissions:
+    - role: admin
+      allowExecution: true
+

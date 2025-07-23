@@ -1,0 +1,225 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_plans
+  description: "Object type for public.plans. Description: null"
+  fields:
+    - name: data_limit_gb
+      type: Int32
+    - name: description
+      type: String_1
+    - name: international_roaming
+      type: Boolean_1
+    - name: monthly_fee
+      type: Bigdecimal
+    - name: plan_id
+      type: Int32!
+    - name: plan_name
+      type: String_1
+    - name: roaming_countries
+      type: Json
+    - name: roaming_data_gb
+      type: Bigdecimal
+    - name: roaming_voice_minutes
+      type: Int32
+    - name: sf_record
+      type: String_1
+    - name: sms_limit
+      type: Int32
+    - name: type
+      type: String_1
+    - name: voice_limit_minutes
+      type: Int32
+  graphql:
+    typeName: customer_public_plans
+    inputTypeName: customer_public_plans_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: public.plans
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_plans
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - data_limit_gb
+          - description
+          - international_roaming
+          - monthly_fee
+          - plan_id
+          - plan_name
+          - roaming_countries
+          - roaming_data_gb
+          - roaming_voice_minutes
+          - sf_record
+          - sms_limit
+          - type
+          - voice_limit_minutes
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_plans_bool_exp
+  operand:
+    object:
+      type: public_plans
+      comparableFields:
+        - fieldName: data_limit_gb
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: description
+          booleanExpressionType: TextBoolExp
+        - fieldName: international_roaming
+          booleanExpressionType: BooleanBoolExp
+        - fieldName: monthly_fee
+          booleanExpressionType: DecimalBoolExp
+        - fieldName: plan_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: plan_name
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: roaming_countries
+          booleanExpressionType: ArrayBoolExp
+        - fieldName: roaming_data_gb
+          booleanExpressionType: DecimalBoolExp
+        - fieldName: roaming_voice_minutes
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: sf_record
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: sms_limit
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: type
+          booleanExpressionType: TextBoolExp
+        - fieldName: voice_limit_minutes
+          booleanExpressionType: IntegerBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customer_public_plans_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_plans_agg_exp
+  operand:
+    object:
+      aggregatedType: public_plans
+      aggregatableFields:
+        - fieldName: data_limit_gb
+          aggregateExpression: IntegerAggExp
+        - fieldName: description
+          aggregateExpression: TextAggExp
+        - fieldName: international_roaming
+          aggregateExpression: BooleanAggExp
+        - fieldName: monthly_fee
+          aggregateExpression: DecimalAggExp
+        - fieldName: plan_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: plan_name
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: roaming_countries
+          aggregateExpression: ArrayAggExp
+        - fieldName: roaming_data_gb
+          aggregateExpression: DecimalAggExp
+        - fieldName: roaming_voice_minutes
+          aggregateExpression: IntegerAggExp
+        - fieldName: sf_record
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: sms_limit
+          aggregateExpression: IntegerAggExp
+        - fieldName: type
+          aggregateExpression: TextAggExp
+        - fieldName: voice_limit_minutes
+          aggregateExpression: IntegerAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: customer_public_plans_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_plans_order_by_exp
+  operand:
+    object:
+      orderedType: public_plans
+      orderableFields:
+        - fieldName: data_limit_gb
+          orderByExpression: Int32OrderByExp
+        - fieldName: description
+          orderByExpression: String1OrderByExp
+        - fieldName: international_roaming
+          orderByExpression: Boolean1OrderByExp
+        - fieldName: monthly_fee
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: plan_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: plan_name
+          orderByExpression: String1OrderByExp
+        - fieldName: roaming_countries
+          orderByExpression: JsonOrderByExp
+        - fieldName: roaming_data_gb
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: roaming_voice_minutes
+          orderByExpression: Int32OrderByExp
+        - fieldName: sf_record
+          orderByExpression: String1OrderByExp
+        - fieldName: sms_limit
+          orderByExpression: Int32OrderByExp
+        - fieldName: type
+          orderByExpression: String1OrderByExp
+        - fieldName: voice_limit_minutes
+          orderByExpression: Int32OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: customer_public_plans_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_plans
+  objectType: public_plans
+  source:
+    dataConnectorName: aurora
+    collection: public.plans
+  filterExpressionType: public_plans_bool_exp
+  aggregateExpression: public_plans_agg_exp
+  orderByExpression: public_plans_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_plans
+      subscription:
+        rootField: public_plans
+    selectUniques:
+      - queryRootField: public_plans_by_plan_id
+        uniqueIdentifier:
+          - plan_id
+        subscription:
+          rootField: public_plans_by_plan_id
+    filterInputTypeName: customer_public_plans_filter_input
+    aggregate:
+      queryRootField: public_plans_aggregate
+      subscription:
+        rootField: public_plans_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_plans
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

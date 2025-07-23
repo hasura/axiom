@@ -1,0 +1,85 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: account_freeze_response
+  fields:
+    - name: account_id
+      type: Float!
+    - name: freeze_id
+      type: String
+    - name: status
+      type: String!
+  graphql:
+    typeName: account_freeze_response
+    inputTypeName: account_freeze_response_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: account_operations
+      dataConnectorObjectType: AccountFreezeResponse
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: account_freeze_response
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - account_id
+          - freeze_id
+          - status
+
+---
+kind: Command
+version: v1
+definition:
+  name: freeze_account
+  outputType: account_freeze_response!
+  arguments:
+    - name: account_id
+      type: Float!
+    - name: account_name
+      type: String!
+    - name: freeze_level
+      type: String!
+    - name: reason
+      type: String!
+    - name: transaction_threshold
+      type: Float
+  source:
+    dataConnectorName: account_operations
+    dataConnectorCommand:
+      procedure: freezeAccount
+    argumentMapping:
+      account_id: accountId
+      account_name: accountName
+      freeze_level: freezeLevel
+      reason: reason
+      transaction_threshold: transactionThreshold
+  graphql:
+    rootFieldName: freeze_account
+    rootFieldKind: Mutation
+  description: >-
+    **Description:**
+
+    This function fully or partially freezes an account to prevent unauthorized transactions. A full freeze blocks all transactions, while a partial freeze imposes specific restrictions based on transaction limits. This function is crucial for fraud mitigation, regulatory compliance, and safeguarding customer funds in cases of suspected account compromise.
+
+
+    **When to Call:**
+
+    - Immediately after identifying suspicious activities indicative of account takeover or fraud.
+
+    - When law enforcement or regulatory agencies require an account freeze as part of an investigation.
+
+    - If a customer reports unauthorized access or requests a temporary block on their account.
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: freeze_account
+  permissions:
+    - role: admin
+      allowExecution: true
+

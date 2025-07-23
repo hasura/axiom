@@ -1,0 +1,99 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: promotion_creation_response
+  fields:
+    - name: product_id
+      type: Float!
+    - name: promotion_id
+      type: String
+    - name: retailer_id
+      type: Float!
+    - name: status
+      type: String!
+  graphql:
+    typeName: promotion_creation_response
+    inputTypeName: promotion_creation_response_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: retail_execution
+      dataConnectorObjectType: PromotionCreationResponse
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: promotion_creation_response
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - product_id
+          - promotion_id
+          - retailer_id
+          - status
+
+---
+kind: Command
+version: v1
+definition:
+  name: create_promotion
+  outputType: promotion_creation_response!
+  arguments:
+    - name: discount_type
+      type: String!
+    - name: discount_value
+      type: Float!
+    - name: end_date
+      type: String!
+    - name: min_purchase_qty
+      type: Float
+    - name: product_id
+      type: Float!
+    - name: product_name
+      type: String!
+    - name: retailer_id
+      type: Float!
+    - name: start_date
+      type: String!
+  source:
+    dataConnectorName: retail_execution
+    dataConnectorCommand:
+      procedure: createPromotion
+    argumentMapping:
+      discount_type: discountType
+      discount_value: discountValue
+      end_date: endDate
+      min_purchase_qty: minPurchaseQty
+      product_id: productId
+      product_name: productName
+      retailer_id: retailerId
+      start_date: startDate
+  graphql:
+    rootFieldName: create_promotion
+    rootFieldKind: Mutation
+  description: >-
+    **Description:**
+
+    This function creates a new promotional campaign for specific products at targeted retailers. It establishes the promotion parameters including discount type, value, and duration. The function helps CPG companies drive sales, increase market share, and manage product lifecycle through strategic promotional activities. It automatically validates promotion parameters and ensures compliance with trade spending policies.
+
+
+    **When to Call:**
+
+    - When launching new products to drive trial and awareness in the market.
+
+    - During seasonal peaks to maximize sales opportunities and market presence.
+
+    - To counter competitive activities and protect market share in key retailers.
+
+    - For inventory management of products approaching expiration or discontinuation.
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: create_promotion
+  permissions:
+    - role: admin
+      allowExecution: true
+

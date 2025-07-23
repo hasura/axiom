@@ -1,0 +1,144 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: us_rawmaterials
+  description: "Object type for us.rawmaterials. Description: null"
+  fields:
+    - name: cost_per_unit
+      type: bigdecimal
+    - name: material_id
+      type: int32!
+    - name: name
+      type: string!
+    - name: unit
+      type: string
+  graphql:
+    typeName: SCMS_us_rawmaterials
+    inputTypeName: SCMS_us_rawmaterials_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: scms_postgres
+      dataConnectorObjectType: us.rawmaterials
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: us_rawmaterials
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - cost_per_unit
+          - material_id
+          - name
+          - unit
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: us_rawmaterials_bool_exp
+  operand:
+    object:
+      type: us_rawmaterials
+      comparableFields:
+        - fieldName: cost_per_unit
+          booleanExpressionType: decimal_bool_exp
+        - fieldName: material_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: name
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: unit
+          booleanExpressionType: character_varying_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: SCMS_us_rawmaterials_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: us_rawmaterials_agg_exp
+  operand:
+    object:
+      aggregatedType: us_rawmaterials
+      aggregatableFields:
+        - fieldName: cost_per_unit
+          aggregateExpression: decimal_agg_exp
+        - fieldName: material_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: name
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: unit
+          aggregateExpression: character_varying_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: SCMS_us_rawmaterials_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: us_rawmaterials_order_by_exp
+  operand:
+    object:
+      orderedType: us_rawmaterials
+      orderableFields:
+        - fieldName: cost_per_unit
+          orderByExpression: bigdecimal_order_by_exp
+        - fieldName: material_id
+          orderByExpression: int32_order_by_exp
+        - fieldName: name
+          orderByExpression: string_order_by_exp
+        - fieldName: unit
+          orderByExpression: string_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: SCMS_us_rawmaterials_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: us_rawmaterials
+  objectType: us_rawmaterials
+  source:
+    dataConnectorName: scms_postgres
+    collection: us.rawmaterials
+  filterExpressionType: us_rawmaterials_bool_exp
+  aggregateExpression: us_rawmaterials_agg_exp
+  orderByExpression: us_rawmaterials_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: scmsus_rawmaterials
+      subscription:
+        rootField: scmsus_rawmaterials
+    selectUniques:
+      - queryRootField: scmsus_rawmaterials_by_material_id
+        uniqueIdentifier:
+          - material_id
+        subscription:
+          rootField: scmsus_rawmaterials_by_material_id
+    filterInputTypeName: SCMS_us_rawmaterials_filter_input
+    aggregate:
+      queryRootField: scmsus_rawmaterials_aggregate
+      subscription:
+        rootField: scmsus_rawmaterials_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: us_rawmaterials
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

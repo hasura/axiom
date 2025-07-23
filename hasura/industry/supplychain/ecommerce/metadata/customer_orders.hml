@@ -1,0 +1,492 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: customer_orders_customer_address
+  fields:
+    - name: city
+      type: String
+    - name: country
+      type: String
+    - name: state
+      type: String
+    - name: street
+      type: String
+    - name: zip
+      type: String
+  graphql:
+    typeName: eCommerce_customer_orders_customer_address
+    inputTypeName: eCommerce_customer_orders_customer_address_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: ecommerce_mongodb
+      dataConnectorObjectType: customer_orders_customer_address
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: customer_orders_customer_address
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - city
+          - country
+          - state
+          - street
+          - zip
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: customer_orders_customer
+  fields:
+    - name: address
+      type: customer_orders_customer_address
+    - name: customer_id
+      type: String
+    - name: email
+      type: String
+    - name: name
+      type: String
+    - name: phone
+      type: String
+  graphql:
+    typeName: eCommerce_customer_orders_customer
+    inputTypeName: eCommerce_customer_orders_customer_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: ecommerce_mongodb
+      dataConnectorObjectType: customer_orders_customer
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: customer_orders_customer
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - address
+          - customer_id
+          - email
+          - name
+          - phone
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: customer_orders_items
+  fields:
+    - name: category
+      type: String
+    - name: model_id
+      type: String
+    - name: name
+      type: String
+    - name: quantity
+      type: Int
+    - name: subtotal
+      type: float64
+    - name: unit_price
+      type: float64
+  graphql:
+    typeName: eCommerce_customer_orders_items
+    inputTypeName: eCommerce_customer_orders_items_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: ecommerce_mongodb
+      dataConnectorObjectType: customer_orders_items
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: customer_orders_items
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - category
+          - model_id
+          - name
+          - quantity
+          - subtotal
+          - unit_price
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: customer_orders
+  fields:
+    - name: id
+      type: string!
+    - name: customer
+      type: customer_orders_customer
+    - name: expected_delivery
+      type: timestamp
+    - name: items
+      type: "[customer_orders_items!]"
+    - name: last_updated
+      type: timestamp
+    - name: order_date
+      type: timestamp
+    - name: order_id
+      type: String
+    - name: payment_method
+      type: String
+    - name: shipping_cost
+      type: float64
+    - name: shipping_method
+      type: String
+    - name: status
+      type: String
+    - name: total_price
+      type: float64
+  graphql:
+    typeName: eCommerce_customer_orders
+    inputTypeName: eCommerce_customer_orders_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: ecommerce_mongodb
+      dataConnectorObjectType: customer_orders
+      fieldMapping:
+        id:
+          column:
+            name: _id
+        customer:
+          column:
+            name: customer
+        expected_delivery:
+          column:
+            name: expected_delivery
+        items:
+          column:
+            name: items
+        last_updated:
+          column:
+            name: last_updated
+        order_date:
+          column:
+            name: order_date
+        order_id:
+          column:
+            name: order_id
+        payment_method:
+          column:
+            name: payment_method
+        shipping_cost:
+          column:
+            name: shipping_cost
+        shipping_method:
+          column:
+            name: shipping_method
+        status:
+          column:
+            name: status
+        total_price:
+          column:
+            name: total_price
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: customer_orders
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - id
+          - customer
+          - expected_delivery
+          - items
+          - last_updated
+          - order_date
+          - order_id
+          - payment_method
+          - shipping_cost
+          - shipping_method
+          - status
+          - total_price
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: customer_orders_customer_address_bool_exp
+  operand:
+    object:
+      type: customer_orders_customer_address
+      comparableFields:
+        - fieldName: city
+          booleanExpressionType: string_bool_exp
+        - fieldName: country
+          booleanExpressionType: string_bool_exp
+        - fieldName: state
+          booleanExpressionType: string_bool_exp
+        - fieldName: street
+          booleanExpressionType: string_bool_exp
+        - fieldName: zip
+          booleanExpressionType: string_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: eCommerce_customer_orders_customer_address_bool_exp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: customer_orders_customer_bool_exp
+  operand:
+    object:
+      type: customer_orders_customer
+      comparableFields:
+        - fieldName: address
+          booleanExpressionType: customer_orders_customer_address_bool_exp
+        - fieldName: customer_id
+          booleanExpressionType: string_bool_exp
+        - fieldName: email
+          booleanExpressionType: string_bool_exp
+        - fieldName: name
+          booleanExpressionType: string_bool_exp
+        - fieldName: phone
+          booleanExpressionType: string_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: eCommerce_customer_orders_customer_bool_exp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: customer_orders_items_bool_exp
+  operand:
+    object:
+      type: customer_orders_items
+      comparableFields:
+        - fieldName: category
+          booleanExpressionType: string_bool_exp
+        - fieldName: model_id
+          booleanExpressionType: string_bool_exp
+        - fieldName: name
+          booleanExpressionType: string_bool_exp
+        - fieldName: quantity
+          booleanExpressionType: int_bool_exp
+        - fieldName: subtotal
+          booleanExpressionType: double_bool_exp
+        - fieldName: unit_price
+          booleanExpressionType: double_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: eCommerce_customer_orders_items_bool_exp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: customer_orders_bool_exp
+  operand:
+    object:
+      type: customer_orders
+      comparableFields:
+        - fieldName: id
+          booleanExpressionType: object_id_bool_exp
+        - fieldName: customer
+          booleanExpressionType: customer_orders_customer_bool_exp
+        - fieldName: expected_delivery
+          booleanExpressionType: date_bool_exp
+        - fieldName: items
+          booleanExpressionType: customer_orders_items_bool_exp
+        - fieldName: last_updated
+          booleanExpressionType: date_bool_exp
+        - fieldName: order_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: order_id
+          booleanExpressionType: string_bool_exp
+        - fieldName: payment_method
+          booleanExpressionType: string_bool_exp
+        - fieldName: shipping_cost
+          booleanExpressionType: double_bool_exp
+        - fieldName: shipping_method
+          booleanExpressionType: string_bool_exp
+        - fieldName: status
+          booleanExpressionType: string_bool_exp
+        - fieldName: total_price
+          booleanExpressionType: double_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: eCommerce_customer_orders_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: customer_orders_agg_exp
+  operand:
+    object:
+      aggregatedType: customer_orders
+      aggregatableFields:
+        - fieldName: id
+          aggregateExpression: object_id_agg_exp
+        - fieldName: expected_delivery
+          aggregateExpression: date_agg_exp
+        - fieldName: last_updated
+          aggregateExpression: date_agg_exp
+        - fieldName: order_date
+          aggregateExpression: date_agg_exp
+        - fieldName: order_id
+          aggregateExpression: string_agg_exp
+        - fieldName: payment_method
+          aggregateExpression: string_agg_exp
+        - fieldName: shipping_cost
+          aggregateExpression: double_agg_exp
+        - fieldName: shipping_method
+          aggregateExpression: string_agg_exp
+        - fieldName: status
+          aggregateExpression: string_agg_exp
+        - fieldName: total_price
+          aggregateExpression: double_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: eCommerce_customer_orders_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: customer_orders_customer_address_order_by_exp
+  operand:
+    object:
+      orderedType: customer_orders_customer_address
+      orderableFields:
+        - fieldName: city
+          orderByExpression: string_order_by_exp_1
+        - fieldName: country
+          orderByExpression: string_order_by_exp_1
+        - fieldName: state
+          orderByExpression: string_order_by_exp_1
+        - fieldName: street
+          orderByExpression: string_order_by_exp_1
+        - fieldName: zip
+          orderByExpression: string_order_by_exp_1
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: eCommerce_customer_orders_customer_address_order_by_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: customer_orders_customer_order_by_exp
+  operand:
+    object:
+      orderedType: customer_orders_customer
+      orderableFields:
+        - fieldName: address
+          orderByExpression: customer_orders_customer_address_order_by_exp
+        - fieldName: customer_id
+          orderByExpression: string_order_by_exp_1
+        - fieldName: email
+          orderByExpression: string_order_by_exp_1
+        - fieldName: name
+          orderByExpression: string_order_by_exp_1
+        - fieldName: phone
+          orderByExpression: string_order_by_exp_1
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: eCommerce_customer_orders_customer_order_by_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: customer_orders_order_by_exp
+  operand:
+    object:
+      orderedType: customer_orders
+      orderableFields:
+        - fieldName: id
+          orderByExpression: string_order_by_exp
+        - fieldName: customer
+          orderByExpression: customer_orders_customer_order_by_exp
+        - fieldName: expected_delivery
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: last_updated
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: order_date
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: order_id
+          orderByExpression: string_order_by_exp_1
+        - fieldName: payment_method
+          orderByExpression: string_order_by_exp_1
+        - fieldName: shipping_cost
+          orderByExpression: float64_order_by_exp
+        - fieldName: shipping_method
+          orderByExpression: string_order_by_exp_1
+        - fieldName: status
+          orderByExpression: string_order_by_exp_1
+        - fieldName: total_price
+          orderByExpression: float64_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: eCommerce_customer_orders_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: customer_orders
+  objectType: customer_orders
+  source:
+    dataConnectorName: ecommerce_mongodb
+    collection: customer_orders
+  filterExpressionType: customer_orders_bool_exp
+  aggregateExpression: customer_orders_agg_exp
+  orderByExpression: customer_orders_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: ecommerce_customer_orders
+      subscription:
+        rootField: ecommerce_customer_orders
+    selectUniques:
+      - queryRootField: ecommerce_customer_orders_by_id
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: ecommerce_customer_orders_by_id
+    filterInputTypeName: eCommerce_customer_orders_filter_input
+    aggregate:
+      queryRootField: ecommerce_customer_orders_aggregate
+      subscription:
+        rootField: ecommerce_customer_orders_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: customer_orders
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

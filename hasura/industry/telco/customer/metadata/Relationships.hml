@@ -3,16 +3,16 @@ kind: Relationship
 version: v1
 definition:
   name: texts
-  sourceType: PublicCustomers
+  sourceType: public_customers
   target:
     model:
-      name: PublicTexts
+      name: public_texts
       relationshipType: Array
       subgraph: network
   mapping:
     - source:
         fieldPath:
-          - fieldName: customerId
+          - fieldName: customer_id
       target:
         modelField:
           - fieldName: customerid
@@ -22,16 +22,16 @@ kind: Relationship
 version: v1
 definition:
   name: calls
-  sourceType: PublicCustomers
+  sourceType: public_customers
   target:
     model:
-      name: PublicCalls
+      name: public_calls
       relationshipType: Array
       subgraph: network
   mapping:
     - source:
         fieldPath:
-          - fieldName: customerId
+          - fieldName: customer_id
       target:
         modelField:
           - fieldName: customerid
@@ -41,19 +41,19 @@ kind: Relationship
 version: v1
 definition:
   name: node
-  sourceType: PublicNetwork
+  sourceType: public_network
   target:
     model:
-      name: PublicEquipment
+      name: public_equipment
       relationshipType: Object
       subgraph: network
   mapping:
     - source:
         fieldPath:
-          - fieldName: nodeId
+          - fieldName: node_id
       target:
         modelField:
-          - fieldName: nodeId
+          - fieldName: node_id
 
 ---
 kind: Relationship
@@ -61,54 +61,54 @@ version: v1
 definition:
   name: supportDB
   description: This relationship should be used as the predominant souce for support tickets
-  sourceType: PublicCustomers
+  sourceType: public_customers
   target:
     model:
-      name: UserProfiles
+      name: user_profiles
       relationshipType: Object
       subgraph: support
   mapping:
     - source:
         fieldPath:
-          - fieldName: customerId
+          - fieldName: customer_id
       target:
         modelField:
-          - fieldName: customerId
+          - fieldName: customer_id
 
 ---
 kind: Relationship
 version: v1
 definition:
   name: userProfiles
-  sourceType: CustomerPreferences
+  sourceType: customer_preferences
   target:
     model:
-      name: UserProfiles
+      name: user_profiles
       relationshipType: Object
       subgraph: support
   mapping:
     - source:
         fieldPath:
-          - fieldName: customerGuid
+          - fieldName: customer_guid
       target:
         modelField:
-          - fieldName: memberId
+          - fieldName: member_id
 
 ---
 kind: Relationship
 version: v1
 definition:
   name: CDR
-  sourceType: PublicCustomerLink
+  sourceType: public_customer_link
   target:
     model:
       subgraph: network
-      name: DefaultCdr
+      name: default_cdr
       relationshipType: Object
   mapping:
     - source:
         fieldPath:
-          - fieldName: customerGuid
+          - fieldName: customer_guid
       target:
         modelField:
           - fieldName: guid
@@ -118,16 +118,16 @@ kind: Relationship
 version: v1
 definition:
   name: NetworkPerformance
-  sourceType: PublicCustomerLink
+  sourceType: public_customer_link
   target:
     model:
       subgraph: network
-      name: DefaultNetworkPerformance
+      name: default_network_performance
       relationshipType: Object
   mapping:
     - source:
         fieldPath:
-          - fieldName: customerGuid
+          - fieldName: customer_guid
       target:
         modelField:
           - fieldName: guid
@@ -137,16 +137,16 @@ kind: Relationship
 version: v1
 definition:
   name: DataUsage
-  sourceType: PublicCustomerLink
+  sourceType: public_customer_link
   target:
     model:
       subgraph: network
-      name: DefaultDataUsage
+      name: default_data_usage
       relationshipType: Object
   mapping:
     - source:
         fieldPath:
-          - fieldName: customerGuid
+          - fieldName: customer_guid
       target:
         modelField:
           - fieldName: guid
@@ -156,15 +156,1023 @@ kind: Relationship
 version: v1
 definition:
   name: prefs
-  sourceType: PublicCustomerLink
+  sourceType: public_customer_link
   target:
     model:
-      name: CustomerPreferences
+      name: customer_preferences
       relationshipType: Object
   mapping:
     - source:
         fieldPath:
-          - fieldName: customerGuid
+          - fieldName: customer_guid
       target:
         modelField:
-          - fieldName: customerGuid
+          - fieldName: customer_guid
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer
+  sourceType: public_billing
+  target:
+    model:
+      name: public_customers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customer_id
+      target:
+        modelField:
+          - fieldName: customer_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mask_card_number
+  sourceType: public_credit_cards
+  target:
+    command:
+      name: MaskCardNumber
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: number
+      target:
+        argument:
+          argumentName: card_number
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer
+  sourceType: public_credit_cards
+  target:
+    model:
+      name: public_customers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customer_id
+      target:
+        modelField:
+          - fieldName: customer_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer
+  sourceType: public_customer_link
+  target:
+    model:
+      name: public_customers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customer_id
+      target:
+        modelField:
+          - fieldName: customer_id
+
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer
+  sourceType: public_customer_network
+  target:
+    model:
+      name: public_customers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customer_id
+      target:
+        modelField:
+          - fieldName: customer_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: network
+  sourceType: public_customer_network
+  target:
+    model:
+      name: public_network
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: node_id
+      target:
+        modelField:
+          - fieldName: node_id
+
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customerPlan
+  sourceType: public_customer_plan_devices
+  target:
+    model:
+      name: public_customer_plans
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customer_plan_id
+      target:
+        modelField:
+          - fieldName: customer_plan_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: device
+  sourceType: public_customer_plan_devices
+  target:
+    model:
+      name: public_devices
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: device_id
+      target:
+        modelField:
+          - fieldName: device_id
+
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customerPlanDevices
+  sourceType: public_customer_plans
+  target:
+    model:
+      name: public_customer_plan_devices
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customer_plan_id
+      target:
+        modelField:
+          - fieldName: customer_plan_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: billings
+  sourceType: public_customers
+  target:
+    model:
+      name: public_billing
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: public_billing_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customer_id
+      target:
+        modelField:
+          - fieldName: customer_id
+  graphql:
+    aggregateFieldName: billingsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: creditCards
+  sourceType: public_customers
+  target:
+    model:
+      name: public_credit_cards
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: public_credit_cards_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customer_id
+      target:
+        modelField:
+          - fieldName: customer_id
+  graphql:
+    aggregateFieldName: creditCardsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customerLinks
+  sourceType: public_customers
+  target:
+    model:
+      name: public_customer_link
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: public_customer_link_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customer_id
+      target:
+        modelField:
+          - fieldName: customer_id
+  graphql:
+    aggregateFieldName: customerLinksAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customerNetworks
+  sourceType: public_customers
+  target:
+    model:
+      name: public_customer_network
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: public_customer_network_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customer_id
+      target:
+        modelField:
+          - fieldName: customer_id
+  graphql:
+    aggregateFieldName: customerNetworksAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customerPlans
+  sourceType: public_customers
+  target:
+    model:
+      name: public_customer_plans
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: public_customer_plans_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customer_id
+      target:
+        modelField:
+          - fieldName: customer_id
+  graphql:
+    aggregateFieldName: customerPlansAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: deviceUpgrades
+  sourceType: public_customers
+  target:
+    model:
+      name: public_device_upgrades
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: public_device_upgrades_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customer_id
+      target:
+        modelField:
+          - fieldName: customer_id
+  graphql:
+    aggregateFieldName: deviceUpgradesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: familyPlanMembers
+  sourceType: public_customers
+  target:
+    model:
+      name: public_family_plan_members
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: public_family_plan_members_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customer_id
+      target:
+        modelField:
+          - fieldName: customer_id
+  graphql:
+    aggregateFieldName: familyPlanMembersAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: familyPlans
+  sourceType: public_customers
+  target:
+    model:
+      name: public_family_plans
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: public_family_plans_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customer_id
+      target:
+        modelField:
+          - fieldName: primary_customer_id
+  graphql:
+    aggregateFieldName: familyPlansAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: feedbacks
+  sourceType: public_customers
+  target:
+    model:
+      name: public_feedback
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: public_feedback_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customer_id
+      target:
+        modelField:
+          - fieldName: customer_id
+  graphql:
+    aggregateFieldName: feedbacksAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: interactions
+  sourceType: public_customers
+  target:
+    model:
+      name: public_interactions
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: public_interactions_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customer_id
+      target:
+        modelField:
+          - fieldName: customer_id
+  graphql:
+    aggregateFieldName: interactionsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: iotDevices
+  sourceType: public_customers
+  target:
+    model:
+      name: public_iot_devices
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: public_iot_devices_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customer_id
+      target:
+        modelField:
+          - fieldName: customer_id
+  graphql:
+    aggregateFieldName: iotDevicesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: loyaltyRewards
+  sourceType: public_customers
+  target:
+    model:
+      name: public_loyalty_rewards
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: public_loyalty_rewards_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customer_id
+      target:
+        modelField:
+          - fieldName: customer_id
+  graphql:
+    aggregateFieldName: loyaltyRewardsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: numberPortabilities
+  sourceType: public_customers
+  target:
+    model:
+      name: public_number_portability
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: public_number_portability_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customer_id
+      target:
+        modelField:
+          - fieldName: customer_id
+  graphql:
+    aggregateFieldName: numberPortabilitiesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: referrals
+  sourceType: public_customers
+  target:
+    model:
+      name: public_referrals
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: public_referrals_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customer_id
+      target:
+        modelField:
+          - fieldName: referred_id
+  graphql:
+    aggregateFieldName: referralsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: referralsByReferrerId
+  sourceType: public_customers
+  target:
+    model:
+      name: public_referrals
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: public_referrals_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customer_id
+      target:
+        modelField:
+          - fieldName: referrer_id
+  graphql:
+    aggregateFieldName: referralsByReferrerIdAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: serviceInteractions
+  sourceType: public_customers
+  target:
+    model:
+      name: public_service_interactions
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: public_service_interactions_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customer_id
+      target:
+        modelField:
+          - fieldName: customer_id
+  graphql:
+    aggregateFieldName: serviceInteractionsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: voipServices
+  sourceType: public_customers
+  target:
+    model:
+      name: public_voip_services
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: public_voip_services_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customer_id
+      target:
+        modelField:
+          - fieldName: customer_id
+  graphql:
+    aggregateFieldName: voipServicesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customerPlanDevices
+  sourceType: public_devices
+  target:
+    model:
+      name: public_customer_plan_devices
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: public_customer_plan_devices_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: device_id
+      target:
+        modelField:
+          - fieldName: device_id
+  graphql:
+    aggregateFieldName: customerPlanDevicesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: deviceUpgrades
+  sourceType: public_devices
+  target:
+    model:
+      name: public_device_upgrades
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: public_device_upgrades_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: device_id
+      target:
+        modelField:
+          - fieldName: new_device_id
+  graphql:
+    aggregateFieldName: deviceUpgradesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: deviceUpgradesByOlddevice_id
+  sourceType: public_devices
+  target:
+    model:
+      name: public_device_upgrades
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: public_device_upgrades_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: device_id
+      target:
+        modelField:
+          - fieldName: old_device_id
+  graphql:
+    aggregateFieldName: deviceUpgradesByOlddevice_idAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer
+  sourceType: public_device_upgrades
+  target:
+    model:
+      name: public_customers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customer_id
+      target:
+        modelField:
+          - fieldName: customer_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: device
+  sourceType: public_device_upgrades
+  target:
+    model:
+      name: public_devices
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: new_device_id
+      target:
+        modelField:
+          - fieldName: device_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: deviceByOlddevice_id
+  sourceType: public_device_upgrades
+  target:
+    model:
+      name: public_devices
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: old_device_id
+      target:
+        modelField:
+          - fieldName: device_id
+
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer
+  sourceType: public_family_plan_members
+  target:
+    model:
+      name: public_customers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customer_id
+      target:
+        modelField:
+          - fieldName: customer_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: familyPlan
+  sourceType: public_family_plan_members
+  target:
+    model:
+      name: public_family_plans
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: family_plan_id
+      target:
+        modelField:
+          - fieldName: family_plan_id
+
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: familyPlanMembers
+  sourceType: public_family_plans
+  target:
+    model:
+      name: public_family_plan_members
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: public_family_plan_members_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: family_plan_id
+      target:
+        modelField:
+          - fieldName: family_plan_id
+  graphql:
+    aggregateFieldName: familyPlanMembersAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer
+  sourceType: public_family_plans
+  target:
+    model:
+      name: public_customers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: primary_customer_id
+      target:
+        modelField:
+          - fieldName: customer_id
+
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer
+  sourceType: public_feedback
+  target:
+    model:
+      name: public_customers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customer_id
+      target:
+        modelField:
+          - fieldName: customer_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer
+  sourceType: public_interactions
+  target:
+    model:
+      name: public_customers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customer_id
+      target:
+        modelField:
+          - fieldName: customer_id
+
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer
+  sourceType: public_iot_devices
+  target:
+    model:
+      name: public_customers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customer_id
+      target:
+        modelField:
+          - fieldName: customer_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: plan
+  sourceType: public_iot_devices
+  target:
+    model:
+      name: public_plans
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: data_plan_id
+      target:
+        modelField:
+          - fieldName: plan_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer
+  sourceType: public_loyalty_rewards
+  target:
+    model:
+      name: public_customers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customer_id
+      target:
+        modelField:
+          - fieldName: customer_id
+
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customerNetworks
+  sourceType: public_network
+  target:
+    model:
+      name: public_customer_network
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: public_customer_network_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: node_id
+      target:
+        modelField:
+          - fieldName: node_id
+  graphql:
+    aggregateFieldName: customerNetworksAggregate
+
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer
+  sourceType: public_number_portability
+  target:
+    model:
+      name: public_customers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customer_id
+      target:
+        modelField:
+          - fieldName: customer_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customerPlans
+  sourceType: public_plans
+  target:
+    model:
+      name: public_customer_plans
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: public_customer_plans_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: plan_id
+      target:
+        modelField:
+          - fieldName: plan_id
+  graphql:
+    aggregateFieldName: customerPlansAggregate
+
+---
+
+kind: Relationship
+version: v1
+definition:
+  name: iotDevices
+  sourceType: public_plans
+  target:
+    model:
+      name: public_iot_devices
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: public_iot_devices_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: plan_id
+      target:
+        modelField:
+          - fieldName: data_plan_id
+  graphql:
+    aggregateFieldName: iotDevicesAggregate
+
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer
+  sourceType: public_referrals
+  target:
+    model:
+      name: public_customers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: referred_id
+      target:
+        modelField:
+          - fieldName: customer_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customerByReferrerId
+  sourceType: public_referrals
+  target:
+    model:
+      name: public_customers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: referrer_id
+      target:
+        modelField:
+          - fieldName: customer_id
+
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer
+  sourceType: public_service_interactions
+  target:
+    model:
+      name: public_customers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customer_id
+      target:
+        modelField:
+          - fieldName: customer_id
+
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer
+  sourceType: public_voip_services
+  target:
+    model:
+      name: public_customers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customer_id
+      target:
+        modelField:
+          - fieldName: customer_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer
+  sourceType: public_customer_plans
+  target:
+    model:
+      name: public_customers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customer_id
+      target:
+        modelField:
+          - fieldName: customer_id

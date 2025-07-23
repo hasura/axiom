@@ -1,0 +1,90 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: operator_availability_response
+  fields:
+    - name: adjustment_id
+      type: String
+    - name: operator_id
+      type: String!
+    - name: status
+      type: String!
+  graphql:
+    typeName: operator_availability_response
+    inputTypeName: operator_availability_response_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: ops_mgmt
+      dataConnectorObjectType: OperatorAvailabilityResponse
+      fieldMapping:
+        adjustment_id:
+          column:
+            name: adjustmentId
+        operator_id:
+          column:
+            name: operatorId
+        status:
+          column:
+            name: status
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: operator_availability_response
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - adjustment_id
+          - operator_id
+          - status
+
+---
+kind: Command
+version: v1
+definition:
+  name: adjust_operator_availability
+  outputType: operator_availability_response!
+  arguments:
+    - name: new_end_time
+      type: String
+    - name: new_start_time
+      type: String
+    - name: operator_id
+      type: String!
+    - name: reason
+      type: String!
+  source:
+    dataConnectorName: ops_mgmt
+    dataConnectorCommand:
+      procedure: adjustOperatorAvailability
+    argumentMapping:
+      new_end_time: newEndTime
+      new_start_time: newStartTime
+      operator_id: operatorId
+      reason: reason
+  graphql:
+    rootFieldName: adjust_operator_availability
+    rootFieldKind: Mutation
+  description: >-
+    **Description:**
+
+    Adjusts an operator's available hours due to schedule changes, emergencies, or workload balancing.
+
+
+    **When to Call:**
+
+    - To accommodate an operator’s shift adjustment.
+
+    - To align available capacity with case demand.
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: adjust_operator_availability
+  permissions:
+    - role: admin
+      allowExecution: true
+

@@ -1,0 +1,189 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_budget_plans
+  description: "Object type for public.budget_plans. Description: null"
+  fields:
+    - name: approved_by
+      type: String_1
+    - name: budget_id
+      type: Int32!
+    - name: budget_name
+      type: String_1!
+    - name: created_at
+      type: Timestamp
+    - name: description
+      type: String_1
+    - name: fiscal_year
+      type: Int32!
+    - name: prepared_by
+      type: String_1
+    - name: status
+      type: String_1
+    - name: updated_at
+      type: Timestamp
+  graphql:
+    typeName: public_budget_plans
+    inputTypeName: public_budget_plans_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: financials
+      dataConnectorObjectType: public.budget_plans
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_budget_plans
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - approved_by
+          - budget_id
+          - budget_name
+          - created_at
+          - description
+          - fiscal_year
+          - prepared_by
+          - status
+          - updated_at
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_budget_plans_bool_exp
+  operand:
+    object:
+      type: public_budget_plans
+      comparableFields:
+        - fieldName: approved_by
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: budget_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: budget_name
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: created_at
+          booleanExpressionType: TimestampWithoutTimeZoneBoolExp
+        - fieldName: description
+          booleanExpressionType: TextBoolExp
+        - fieldName: fiscal_year
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: prepared_by
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: status
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: updated_at
+          booleanExpressionType: TimestampWithoutTimeZoneBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_budget_plans_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_budget_plans_agg_exp
+  operand:
+    object:
+      aggregatedType: public_budget_plans
+      aggregatableFields:
+        - fieldName: approved_by
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: budget_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: budget_name
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: created_at
+          aggregateExpression: TimestampWithoutTimeZoneAggExp
+        - fieldName: description
+          aggregateExpression: TextAggExp
+        - fieldName: fiscal_year
+          aggregateExpression: IntegerAggExp
+        - fieldName: prepared_by
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: status
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: updated_at
+          aggregateExpression: TimestampWithoutTimeZoneAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_budget_plans_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_budget_plans_order_by_exp
+  operand:
+    object:
+      orderedType: public_budget_plans
+      orderableFields:
+        - fieldName: approved_by
+          orderByExpression: String1OrderByExp
+        - fieldName: budget_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: budget_name
+          orderByExpression: String1OrderByExp
+        - fieldName: created_at
+          orderByExpression: TimestampOrderByExp
+        - fieldName: description
+          orderByExpression: String1OrderByExp
+        - fieldName: fiscal_year
+          orderByExpression: Int32OrderByExp
+        - fieldName: prepared_by
+          orderByExpression: String1OrderByExp
+        - fieldName: status
+          orderByExpression: String1OrderByExp
+        - fieldName: updated_at
+          orderByExpression: TimestampOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_budget_plans_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_budget_plans
+  objectType: public_budget_plans
+  source:
+    dataConnectorName: financials
+    collection: public.budget_plans
+  filterExpressionType: public_budget_plans_bool_exp
+  aggregateExpression: public_budget_plans_agg_exp
+  orderByExpression: public_budget_plans_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_budget_plans
+      subscription:
+        rootField: public_budget_plans
+    selectUniques:
+      - queryRootField: public_budget_plans_by_budget_id
+        uniqueIdentifier:
+          - budget_id
+        subscription:
+          rootField: public_budget_plans_by_budget_id
+    filterInputTypeName: public_budget_plans_filter_input
+    aggregate:
+      queryRootField: public_budget_plans_aggregate
+      subscription:
+        rootField: public_budget_plans_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_budget_plans
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

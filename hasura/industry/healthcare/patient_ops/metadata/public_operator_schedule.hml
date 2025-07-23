@@ -1,0 +1,153 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_operator_schedule
+  description: "Object type for public.operator_schedule. Description: null"
+  fields:
+    - name: booked_minutes
+      type: Int32
+    - name: max_minutes
+      type: Int32
+    - name: operator_id
+      type: String_1
+    - name: schedule_id
+      type: Int32!
+    - name: work_date
+      type: Date
+  graphql:
+    typeName: public_operator_schedule
+    inputTypeName: public_operator_schedule_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: operations
+      dataConnectorObjectType: public.operator_schedule
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_operator_schedule
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - booked_minutes
+          - max_minutes
+          - operator_id
+          - schedule_id
+          - work_date
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_operator_schedule_bool_exp
+  operand:
+    object:
+      type: public_operator_schedule
+      comparableFields:
+        - fieldName: booked_minutes
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: max_minutes
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: operator_id
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: schedule_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: work_date
+          booleanExpressionType: DateBoolExp_1
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_operator_schedule_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_operator_schedule_agg_exp
+  operand:
+    object:
+      aggregatedType: public_operator_schedule
+      aggregatableFields:
+        - fieldName: booked_minutes
+          aggregateExpression: IntegerAggExp
+        - fieldName: max_minutes
+          aggregateExpression: IntegerAggExp
+        - fieldName: operator_id
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: schedule_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: work_date
+          aggregateExpression: DateAggExp_1
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_operator_schedule_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_operator_schedule_order_by_exp
+  operand:
+    object:
+      orderedType: public_operator_schedule
+      orderableFields:
+        - fieldName: booked_minutes
+          orderByExpression: Int32OrderByExp
+        - fieldName: max_minutes
+          orderByExpression: Int32OrderByExp
+        - fieldName: operator_id
+          orderByExpression: String1OrderByExp
+        - fieldName: schedule_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: work_date
+          orderByExpression: DateOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_operator_schedule_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_operator_schedule
+  objectType: public_operator_schedule
+  source:
+    dataConnectorName: operations
+    collection: public.operator_schedule
+  filterExpressionType: public_operator_schedule_bool_exp
+  aggregateExpression: public_operator_schedule_agg_exp
+  orderByExpression: public_operator_schedule_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_operator_schedule
+      subscription:
+        rootField: public_operator_schedule
+    selectUniques:
+      - queryRootField: public_operator_schedule_by_schedule_id
+        uniqueIdentifier:
+          - schedule_id
+        subscription:
+          rootField: public_operator_schedule_by_schedule_id
+    filterInputTypeName: public_operator_schedule_filter_input
+    aggregate:
+      queryRootField: public_operator_schedule_aggregate
+      subscription:
+        rootField: public_operator_schedule_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_operator_schedule
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

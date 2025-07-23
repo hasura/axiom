@@ -1,0 +1,270 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_products
+  description: "Object type for public.products. Description: null"
+  fields:
+    - name: brand_id
+      type: Int32
+    - name: case_pack
+      type: Int32
+    - name: category_id
+      type: Int32
+    - name: discontinue_date
+      type: Date
+    - name: high_velocity
+      type: Boolean_1
+    - name: is_glutenfree
+      type: Boolean_1
+    - name: is_organic
+      type: Boolean_1
+    - name: is_seasonal
+      type: Boolean_1
+    - name: launch_date
+      type: Date
+    - name: msrp
+      type: Bigdecimal
+    - name: product_id
+      type: Int32!
+    - name: product_name
+      type: String_1!
+    - name: product_sku
+      type: String_1!
+    - name: subcategory_id
+      type: Int32
+    - name: unit_measure
+      type: String_1
+    - name: unit_size
+      type: String_1
+    - name: weight_oz
+      type: Bigdecimal
+    - name: wholesale_price
+      type: Bigdecimal
+  graphql:
+    typeName: public_products
+    inputTypeName: public_products_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: sales
+      dataConnectorObjectType: public.products
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_products
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - brand_id
+          - case_pack
+          - category_id
+          - discontinue_date
+          - high_velocity
+          - is_glutenfree
+          - is_organic
+          - is_seasonal
+          - launch_date
+          - msrp
+          - product_id
+          - product_name
+          - product_sku
+          - subcategory_id
+          - unit_measure
+          - unit_size
+          - weight_oz
+          - wholesale_price
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_products_bool_exp
+  operand:
+    object:
+      type: public_products
+      comparableFields:
+        - fieldName: brand_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: case_pack
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: category_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: discontinue_date
+          booleanExpressionType: DateBoolExp
+        - fieldName: high_velocity
+          booleanExpressionType: BooleanBoolExp
+        - fieldName: is_glutenfree
+          booleanExpressionType: BooleanBoolExp
+        - fieldName: is_organic
+          booleanExpressionType: BooleanBoolExp
+        - fieldName: is_seasonal
+          booleanExpressionType: BooleanBoolExp
+        - fieldName: launch_date
+          booleanExpressionType: DateBoolExp
+        - fieldName: msrp
+          booleanExpressionType: DecimalBoolExp
+        - fieldName: product_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: product_name
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: product_sku
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: subcategory_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: unit_measure
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: unit_size
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: weight_oz
+          booleanExpressionType: DecimalBoolExp
+        - fieldName: wholesale_price
+          booleanExpressionType: DecimalBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_products_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_products_agg_exp
+  operand:
+    object:
+      aggregatedType: public_products
+      aggregatableFields:
+        - fieldName: brand_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: case_pack
+          aggregateExpression: IntegerAggExp
+        - fieldName: category_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: discontinue_date
+          aggregateExpression: DateAggExp
+        - fieldName: high_velocity
+          aggregateExpression: BooleanAggExp
+        - fieldName: is_glutenfree
+          aggregateExpression: BooleanAggExp
+        - fieldName: is_organic
+          aggregateExpression: BooleanAggExp
+        - fieldName: is_seasonal
+          aggregateExpression: BooleanAggExp
+        - fieldName: launch_date
+          aggregateExpression: DateAggExp
+        - fieldName: msrp
+          aggregateExpression: DecimalAggExp
+        - fieldName: product_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: product_name
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: product_sku
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: subcategory_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: unit_measure
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: unit_size
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: weight_oz
+          aggregateExpression: DecimalAggExp
+        - fieldName: wholesale_price
+          aggregateExpression: DecimalAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_products_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_products_order_by_exp
+  operand:
+    object:
+      orderedType: public_products
+      orderableFields:
+        - fieldName: brand_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: case_pack
+          orderByExpression: Int32OrderByExp
+        - fieldName: category_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: discontinue_date
+          orderByExpression: DateOrderByExp
+        - fieldName: high_velocity
+          orderByExpression: Boolean1OrderByExp
+        - fieldName: is_glutenfree
+          orderByExpression: Boolean1OrderByExp
+        - fieldName: is_organic
+          orderByExpression: Boolean1OrderByExp
+        - fieldName: is_seasonal
+          orderByExpression: Boolean1OrderByExp
+        - fieldName: launch_date
+          orderByExpression: DateOrderByExp
+        - fieldName: msrp
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: product_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: product_name
+          orderByExpression: String1OrderByExp
+        - fieldName: product_sku
+          orderByExpression: String1OrderByExp
+        - fieldName: subcategory_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: unit_measure
+          orderByExpression: String1OrderByExp
+        - fieldName: unit_size
+          orderByExpression: String1OrderByExp
+        - fieldName: weight_oz
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: wholesale_price
+          orderByExpression: BigdecimalOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_products_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_products
+  objectType: public_products
+  source:
+    dataConnectorName: sales
+    collection: public.products
+  filterExpressionType: public_products_bool_exp
+  aggregateExpression: public_products_agg_exp
+  orderByExpression: public_products_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_products
+      subscription:
+        rootField: public_products
+    selectUniques:
+      - queryRootField: public_products_by_product_id
+        uniqueIdentifier:
+          - product_id
+        subscription:
+          rootField: public_products_by_product_id
+    filterInputTypeName: public_products_filter_input
+    aggregate:
+      queryRootField: public_products_aggregate
+      subscription:
+        rootField: public_products_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_products
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

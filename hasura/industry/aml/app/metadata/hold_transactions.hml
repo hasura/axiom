@@ -1,0 +1,85 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: transaction_hold_response
+  fields:
+    - name: account_id
+      type: Float!
+    - name: hold_id
+      type: String
+    - name: status
+      type: String!
+  graphql:
+    typeName: transaction_hold_response
+    inputTypeName: transaction_hold_response_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: account_operations
+      dataConnectorObjectType: TransactionHoldResponse
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: transaction_hold_response
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - account_id
+          - hold_id
+          - status
+
+---
+kind: Command
+version: v1
+definition:
+  name: hold_transactions
+  outputType: transaction_hold_response!
+  arguments:
+    - name: account_id
+      type: Float!
+    - name: account_name
+      type: String!
+    - name: hold_duration
+      type: Float!
+    - name: reason
+      type: String!
+    - name: threshold_amount
+      type: Float!
+  source:
+    dataConnectorName: account_operations
+    dataConnectorCommand:
+      procedure: holdTransactions
+    argumentMapping:
+      account_id: accountId
+      account_name: accountName
+      hold_duration: holdDuration
+      reason: reason
+      threshold_amount: thresholdAmount
+  graphql:
+    rootFieldName: hold_transactions
+    rootFieldKind: Mutation
+  description: >-
+    **Description:**
+
+    This function places a temporary hold on transactions exceeding a specified threshold amount for a defined duration. It is designed to ensure that high-value transactions undergo additional scrutiny before being processed. By temporarily restricting transactions, this function helps prevent unauthorized access, mitigate fraud, and comply with regulatory requirements.
+
+
+    **When to Call:**
+
+    - Before processing large withdrawals, wire transfers, or high-value purchases that require verification.
+
+    - When a customer requests a temporary spending limit as a security measure.
+
+    - As part of an automated fraud detection workflow to prevent potentially fraudulent transactions.
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: hold_transactions
+  permissions:
+    - role: admin
+      allowExecution: true
+

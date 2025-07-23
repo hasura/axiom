@@ -1,0 +1,296 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: functions_array
+  fields:
+    - name: price_id
+      type: String!
+    - name: quantity
+      type: Float
+  graphql:
+    typeName: customer_functions_array
+    inputTypeName: customer_functions_array_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: stripe
+      dataConnectorObjectType: functions_array
+      fieldMapping:
+        price_id:
+          column:
+            name: priceId
+        quantity:
+          column:
+            name: quantity
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: functions_array
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - price_id
+          - quantity
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: create_telco_subscription_subscription_data
+  fields:
+    - name: contract_months
+      type: Float
+    - name: customer_id
+      type: String!
+    - name: plan_code
+      type: String!
+    - name: plan_items
+      type: "[functions_array!]!"
+    - name: promo_code
+      type: String
+  graphql:
+    typeName: customer_create_telco_subscription_subscription_data
+    inputTypeName: customer_create_telco_subscription_subscription_data_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: stripe
+      dataConnectorObjectType: createTelcoSubscription_subscriptionData
+      fieldMapping:
+        contract_months:
+          column:
+            name: contractMonths
+        customer_id:
+          column:
+            name: customerId
+        plan_code:
+          column:
+            name: planCode
+        plan_items:
+          column:
+            name: planItems
+        promo_code:
+          column:
+            name: promoCode
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: create_telco_subscription_subscription_data
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - contract_months
+          - customer_id
+          - plan_code
+          - plan_items
+          - promo_code
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: array_price
+  fields:
+    - name: id
+      type: String!
+    - name: nickname
+      type: String!
+    - name: product
+      type: String!
+    - name: unit_amount
+      type: Float!
+  graphql:
+    typeName: customer_array_price
+    inputTypeName: customer_array_price_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: stripe
+      dataConnectorObjectType: array_price
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: array_price
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - id
+          - nickname
+          - product
+          - unit_amount
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: functions_array2
+  fields:
+    - name: id
+      type: String!
+    - name: price
+      type: array_price!
+  graphql:
+    typeName: customer_functions_array2
+    inputTypeName: customer_functions_array2_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: stripe
+      dataConnectorObjectType: functions_array2
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: functions_array2
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - id
+          - price
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: telco_subscription_items
+  fields:
+    - name: data
+      type: "[functions_array2!]!"
+  graphql:
+    typeName: customer_telco_subscription_items
+    inputTypeName: customer_telco_subscription_items_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: stripe
+      dataConnectorObjectType: TelcoSubscription_items
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: telco_subscription_items
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - data
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: telco_subscription_metadata
+  fields:
+    - name: contract_end_date
+      type: String
+    - name: plan_code
+      type: String!
+    - name: promo_code
+      type: String
+  graphql:
+    typeName: customer_telco_subscription_metadata
+    inputTypeName: customer_telco_subscription_metadata_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: stripe
+      dataConnectorObjectType: TelcoSubscription_metadata
+      fieldMapping:
+        contract_end_date:
+          column:
+            name: contractEndDate
+        plan_code:
+          column:
+            name: planCode
+        promo_code:
+          column:
+            name: promoCode
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: telco_subscription_metadata
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - contract_end_date
+          - plan_code
+          - promo_code
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: telco_subscription
+  fields:
+    - name: current_period_end
+      type: Float!
+    - name: current_period_start
+      type: Float!
+    - name: customer
+      type: String!
+    - name: id
+      type: String!
+    - name: items
+      type: telco_subscription_items!
+    - name: metadata
+      type: telco_subscription_metadata!
+    - name: status
+      type: String!
+  graphql:
+    typeName: customer_telco_subscription
+    inputTypeName: customer_telco_subscription_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: stripe
+      dataConnectorObjectType: TelcoSubscription
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: telco_subscription
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - current_period_end
+          - current_period_start
+          - customer
+          - id
+          - items
+          - metadata
+          - status
+
+---
+kind: Command
+version: v1
+definition:
+  name: create_telco_subscription
+  outputType: telco_subscription!
+  arguments:
+    - name: subscription_data
+      type: create_telco_subscription_subscription_data!
+      description: Data for the new subscription
+  source:
+    dataConnectorName: stripe
+    dataConnectorCommand:
+      procedure: createTelcoSubscription
+    argumentMapping:
+      subscription_data: subscriptionData
+  graphql:
+    rootFieldName: create_telco_subscription
+    rootFieldKind: Mutation
+  description: Simulates creating a telecommunications service subscription
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: create_telco_subscription
+  permissions:
+    - role: admin
+      allowExecution: true
+

@@ -1,0 +1,162 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_product_categories_copy
+  description: "Object type for public.product_categories_copy. Description: null"
+  fields:
+    - name: category_description
+      type: String_1
+    - name: category_id
+      type: Int32!
+    - name: category_name
+      type: String_1!
+    - name: is_seasonal
+      type: Boolean_1
+    - name: parent_category_id
+      type: Int32
+    - name: typical_margin_percentage
+      type: Bigdecimal
+  graphql:
+    typeName: public_product_categories_copy
+    inputTypeName: public_product_categories_copy_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: inventory
+      dataConnectorObjectType: public.product_categories_copy
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_product_categories_copy
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - category_description
+          - category_id
+          - category_name
+          - is_seasonal
+          - parent_category_id
+          - typical_margin_percentage
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_product_categories_copy_bool_exp
+  operand:
+    object:
+      type: public_product_categories_copy
+      comparableFields:
+        - fieldName: category_description
+          booleanExpressionType: TextBoolExp_1
+        - fieldName: category_id
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: category_name
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: is_seasonal
+          booleanExpressionType: BooleanBoolExp_1
+        - fieldName: parent_category_id
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: typical_margin_percentage
+          booleanExpressionType: DecimalBoolExp_1
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_product_categories_copy_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_product_categories_copy_agg_exp
+  operand:
+    object:
+      aggregatedType: public_product_categories_copy
+      aggregatableFields:
+        - fieldName: category_description
+          aggregateExpression: TextAggExp_1
+        - fieldName: category_id
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: category_name
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: is_seasonal
+          aggregateExpression: BooleanAggExp_1
+        - fieldName: parent_category_id
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: typical_margin_percentage
+          aggregateExpression: DecimalAggExp_1
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_product_categories_copy_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_product_categories_copy_order_by_exp
+  operand:
+    object:
+      orderedType: public_product_categories_copy
+      orderableFields:
+        - fieldName: category_description
+          orderByExpression: String1OrderByExp
+        - fieldName: category_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: category_name
+          orderByExpression: String1OrderByExp
+        - fieldName: is_seasonal
+          orderByExpression: Boolean1OrderByExp
+        - fieldName: parent_category_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: typical_margin_percentage
+          orderByExpression: BigdecimalOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_product_categories_copy_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_product_categories_copy
+  objectType: public_product_categories_copy
+  source:
+    dataConnectorName: inventory
+    collection: public.product_categories_copy
+  filterExpressionType: public_product_categories_copy_bool_exp
+  aggregateExpression: public_product_categories_copy_agg_exp
+  orderByExpression: public_product_categories_copy_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_product_categories_copy
+      subscription:
+        rootField: public_product_categories_copy
+    selectUniques:
+      - queryRootField: public_product_categories_copy_by_category_id
+        uniqueIdentifier:
+          - category_id
+        subscription:
+          rootField: public_product_categories_copy_by_category_id
+    filterInputTypeName: public_product_categories_copy_filter_input
+    aggregate:
+      queryRootField: public_product_categories_copy_aggregate
+      subscription:
+        rootField: public_product_categories_copy_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_product_categories_copy
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

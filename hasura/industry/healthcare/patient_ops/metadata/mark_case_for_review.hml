@@ -1,0 +1,87 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: case_review_marking_response
+  fields:
+    - name: case_id
+      type: Float!
+    - name: review_id
+      type: String
+    - name: status
+      type: String!
+  graphql:
+    typeName: case_review_marking_response
+    inputTypeName: case_review_marking_response_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: ops_mgmt
+      dataConnectorObjectType: CaseReviewMarkingResponse
+      fieldMapping:
+        case_id:
+          column:
+            name: caseId
+        review_id:
+          column:
+            name: reviewId
+        status:
+          column:
+            name: status
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: case_review_marking_response
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - case_id
+          - review_id
+          - status
+
+---
+kind: Command
+version: v1
+definition:
+  name: mark_case_for_review
+  outputType: case_review_marking_response!
+  arguments:
+    - name: case_id
+      type: Float!
+    - name: reason
+      type: String!
+    - name: reviewer_id
+      type: Float!
+  source:
+    dataConnectorName: ops_mgmt
+    dataConnectorCommand:
+      procedure: markCaseForReview
+    argumentMapping:
+      case_id: caseId
+      reason: reason
+      reviewer_id: reviewerId
+  graphql:
+    rootFieldName: mark_case_for_review
+    rootFieldKind: Mutation
+  description: >-
+    **Description:**
+
+    Marks a case for review by a designated reviewer to ensure compliance, accuracy, or additional assessment.
+
+
+    **When to Call:**
+
+    - When a case requires further evaluation.
+
+    - To confirm that the right decisions and treatments are being followed.
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: mark_case_for_review
+  permissions:
+    - role: admin
+      allowExecution: true
+

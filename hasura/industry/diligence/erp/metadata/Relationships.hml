@@ -1,0 +1,735 @@
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: business_units
+  sourceType: public_regions
+  target:
+    model:
+      name: public_business_units
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: region_id
+      target:
+        modelField:
+          - fieldName: region_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customers
+  sourceType: public_regions
+  target:
+    model:
+      name: public_customers
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: region_id
+      target:
+        modelField:
+          - fieldName: region_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: marketing_campaigns
+  sourceType: public_regions
+  target:
+    model:
+      name: public_marketing_campaigns
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: region_id
+      target:
+        modelField:
+          - fieldName: target_region
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer
+  sourceType: public_customer_contacts
+  target:
+    model:
+      name: public_customers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customer_id
+      target:
+        modelField:
+          - fieldName: customer_id
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer_contacts
+  sourceType: public_customers
+  target:
+    model:
+      name: public_customer_contacts
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customer_id
+      target:
+        modelField:
+          - fieldName: customer_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: region
+  sourceType: public_customers
+  target:
+    model:
+      name: public_regions
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: region_id
+      target:
+        modelField:
+          - fieldName: region_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: sales_orders
+  sourceType: public_customers
+  target:
+    model:
+      name: public_sales_orders
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customer_id
+      target:
+        modelField:
+          - fieldName: customer_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: chart_of_account
+  sourceType: public_cash_flow
+  target:
+    model:
+      name: public_chart_of_accounts
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: account_id
+      target:
+        modelField:
+          - fieldName: account_id
+---
+kind: Relationship
+version: v1
+definition:
+  name: financial_statement_items
+  sourceType: public_financial_statements
+  target:
+    model:
+      name: public_financial_statement_items
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: statement_id
+      target:
+        modelField:
+          - fieldName: statement_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: sales_order
+  sourceType: public_order_items
+  target:
+    model:
+      name: public_sales_orders
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: order_id
+      target:
+        modelField:
+          - fieldName: order_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: product
+  sourceType: public_order_items
+  target:
+    model:
+      name: public_products
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: product_id
+      target:
+        modelField:
+          - fieldName: product_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: product_category
+  sourceType: public_product_categories
+  target:
+    model:
+      name: public_product_categories
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: parent_category_id
+      target:
+        modelField:
+          - fieldName: category_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: product_categories
+  sourceType: public_product_categories
+  target:
+    model:
+      name: public_product_categories
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: category_id
+      target:
+        modelField:
+          - fieldName: parent_category_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: products
+  sourceType: public_product_categories
+  target:
+    model:
+      name: public_products
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: category_id
+      target:
+        modelField:
+          - fieldName: category_id
+---
+kind: Relationship
+version: v1
+definition:
+  name: inventory
+  sourceType: public_inventory_movements
+  target:
+    model:
+      name: public_inventory
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: inventory_id
+      target:
+        modelField:
+          - fieldName: inventory_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: cash_flows
+  sourceType: public_chart_of_accounts
+  target:
+    model:
+      name: public_cash_flow
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: account_id
+      target:
+        modelField:
+          - fieldName: account_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: budget_vs_actuals
+  sourceType: public_chart_of_accounts
+  target:
+    model:
+      name: public_budget_vs_actual
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: account_id
+      target:
+        modelField:
+          - fieldName: account_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: purchase_orders
+  sourceType: public_suppliers
+  target:
+    model:
+      name: public_purchase_orders
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: supplier_id
+      target:
+        modelField:
+          - fieldName: supplier_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: inventories
+  sourceType: public_products
+  target:
+    model:
+      name: public_inventory
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: product_id
+      target:
+        modelField:
+          - fieldName: product_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: order_items
+  sourceType: public_products
+  target:
+    model:
+      name: public_order_items
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: product_id
+      target:
+        modelField:
+          - fieldName: product_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: po_items
+  sourceType: public_products
+  target:
+    model:
+      name: public_po_items
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: product_id
+      target:
+        modelField:
+          - fieldName: product_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: product_category
+  sourceType: public_products
+  target:
+    model:
+      name: public_product_categories
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: category_id
+      target:
+        modelField:
+          - fieldName: category_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: business_unit
+  sourceType: public_products
+  target:
+    model:
+      name: public_business_units
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: unit_id
+      target:
+        modelField:
+          - fieldName: unit_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: order_items
+  sourceType: public_sales_orders
+  target:
+    model:
+      name: public_order_items
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: order_id
+      target:
+        modelField:
+          - fieldName: order_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer
+  sourceType: public_sales_orders
+  target:
+    model:
+      name: public_customers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customer_id
+      target:
+        modelField:
+          - fieldName: customer_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: business_unit
+  sourceType: public_sales_orders
+  target:
+    model:
+      name: public_business_units
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: unit_id
+      target:
+        modelField:
+          - fieldName: unit_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: region
+  sourceType: public_business_units
+  target:
+    model:
+      name: public_regions
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: region_id
+      target:
+        modelField:
+          - fieldName: region_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: products
+  sourceType: public_business_units
+  target:
+    model:
+      name: public_products
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: unit_id
+      target:
+        modelField:
+          - fieldName: unit_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: sales_orders
+  sourceType: public_business_units
+  target:
+    model:
+      name: public_sales_orders
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: unit_id
+      target:
+        modelField:
+          - fieldName: unit_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: purchase_order
+  sourceType: public_po_items
+  target:
+    model:
+      name: public_purchase_orders
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: po_id
+      target:
+        modelField:
+          - fieldName: po_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: product
+  sourceType: public_po_items
+  target:
+    model:
+      name: public_products
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: product_id
+      target:
+        modelField:
+          - fieldName: product_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: financial_statement
+  sourceType: public_financial_statement_items
+  target:
+    model:
+      name: public_financial_statements
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: statement_id
+      target:
+        modelField:
+          - fieldName: statement_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: financial_statement_item
+  sourceType: public_financial_statement_items
+  target:
+    model:
+      name: public_financial_statement_items
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: parent_item_id
+      target:
+        modelField:
+          - fieldName: item_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: financial_statement_items
+  sourceType: public_financial_statement_items
+  target:
+    model:
+      name: public_financial_statement_items
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: item_id
+      target:
+        modelField:
+          - fieldName: parent_item_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: po_items
+  sourceType: public_purchase_orders
+  target:
+    model:
+      name: public_po_items
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: po_id
+      target:
+        modelField:
+          - fieldName: po_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: supplier
+  sourceType: public_purchase_orders
+  target:
+    model:
+      name: public_suppliers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: supplier_id
+      target:
+        modelField:
+          - fieldName: supplier_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: chart_of_account
+  sourceType: public_budget_vs_actual
+  target:
+    model:
+      name: public_chart_of_accounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: account_id
+      target:
+        modelField:
+          - fieldName: account_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: budget_plan
+  sourceType: public_budget_vs_actual
+  target:
+    model:
+      name: public_budget_plans
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: budget_id
+      target:
+        modelField:
+          - fieldName: budget_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: product
+  sourceType: public_inventory
+  target:
+    model:
+      name: public_products
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: product_id
+      target:
+        modelField:
+          - fieldName: product_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: inventory_movements
+  sourceType: public_inventory
+  target:
+    model:
+      name: public_inventory_movements
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: inventory_id
+      target:
+        modelField:
+          - fieldName: inventory_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: region
+  sourceType: public_marketing_campaigns
+  target:
+    model:
+      name: public_regions
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: target_region
+      target:
+        modelField:
+          - fieldName: region_id

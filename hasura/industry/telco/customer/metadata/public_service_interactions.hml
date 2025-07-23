@@ -1,0 +1,198 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_service_interactions
+  description: "Object type for public.service_interactions. Description: null"
+  fields:
+    - name: agent_id
+      type: Int32
+    - name: category
+      type: String_1
+    - name: channel
+      type: String_1
+    - name: customer_id
+      type: Int32
+    - name: interaction_date
+      type: Timestamptz
+    - name: interaction_id
+      type: Int32!
+    - name: notes
+      type: String_1
+    - name: resolution_status
+      type: String_1
+    - name: resolution_time_minutes
+      type: Int32
+    - name: satisfaction_score
+      type: Int32
+  graphql:
+    typeName: customer_public_service_interactions
+    inputTypeName: customer_public_service_interactions_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: public.service_interactions
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_service_interactions
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - agent_id
+          - category
+          - channel
+          - customer_id
+          - interaction_date
+          - interaction_id
+          - notes
+          - resolution_status
+          - resolution_time_minutes
+          - satisfaction_score
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_service_interactions_bool_exp
+  operand:
+    object:
+      type: public_service_interactions
+      comparableFields:
+        - fieldName: agent_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: category
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: channel
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: customer_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: interaction_date
+          booleanExpressionType: TimestampWithTimeZoneBoolExp
+        - fieldName: interaction_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: notes
+          booleanExpressionType: TextBoolExp
+        - fieldName: resolution_status
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: resolution_time_minutes
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: satisfaction_score
+          booleanExpressionType: IntegerBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customer_public_service_interactions_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_service_interactions_agg_exp
+  operand:
+    object:
+      aggregatedType: public_service_interactions
+      aggregatableFields:
+        - fieldName: agent_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: category
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: channel
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: customer_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: interaction_date
+          aggregateExpression: TimestampWithTimeZoneAggExp
+        - fieldName: interaction_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: notes
+          aggregateExpression: TextAggExp
+        - fieldName: resolution_status
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: resolution_time_minutes
+          aggregateExpression: IntegerAggExp
+        - fieldName: satisfaction_score
+          aggregateExpression: IntegerAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: customer_public_service_interactions_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_service_interactions_order_by_exp
+  operand:
+    object:
+      orderedType: public_service_interactions
+      orderableFields:
+        - fieldName: agent_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: category
+          orderByExpression: String1OrderByExp
+        - fieldName: channel
+          orderByExpression: String1OrderByExp
+        - fieldName: customer_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: interaction_date
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: interaction_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: notes
+          orderByExpression: String1OrderByExp
+        - fieldName: resolution_status
+          orderByExpression: String1OrderByExp
+        - fieldName: resolution_time_minutes
+          orderByExpression: Int32OrderByExp
+        - fieldName: satisfaction_score
+          orderByExpression: Int32OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: customer_public_service_interactions_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_service_interactions
+  objectType: public_service_interactions
+  source:
+    dataConnectorName: aurora
+    collection: public.service_interactions
+  filterExpressionType: public_service_interactions_bool_exp
+  aggregateExpression: public_service_interactions_agg_exp
+  orderByExpression: public_service_interactions_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_service_interactions
+      subscription:
+        rootField: public_service_interactions
+    selectUniques:
+      - queryRootField: public_service_interactions_by_interaction_id
+        uniqueIdentifier:
+          - interaction_id
+        subscription:
+          rootField: public_service_interactions_by_interaction_id
+    filterInputTypeName: customer_public_service_interactions_filter_input
+    aggregate:
+      queryRootField: public_service_interactions_aggregate
+      subscription:
+        rootField: public_service_interactions_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_service_interactions
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

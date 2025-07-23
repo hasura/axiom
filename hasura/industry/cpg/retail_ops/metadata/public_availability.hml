@@ -1,0 +1,198 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_availability
+  description: "Object type for public.availability. Description: null"
+  fields:
+    - name: availability_id
+      type: Int32!
+    - name: date
+      type: Date!
+    - name: days_of_supply
+      type: Int32
+    - name: in_stock_percentage
+      type: Bigdecimal
+    - name: is_online
+      type: Boolean_1
+    - name: notes
+      type: String_1
+    - name: on_shelf_availability_percentage
+      type: Bigdecimal
+    - name: out_of_stock_incidents
+      type: Int32
+    - name: product_id
+      type: Int32
+    - name: retailer_id
+      type: Int32
+  graphql:
+    typeName: public_availability
+    inputTypeName: public_availability_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: inventory
+      dataConnectorObjectType: public.availability
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_availability
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - availability_id
+          - date
+          - days_of_supply
+          - in_stock_percentage
+          - is_online
+          - notes
+          - on_shelf_availability_percentage
+          - out_of_stock_incidents
+          - product_id
+          - retailer_id
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_availability_bool_exp
+  operand:
+    object:
+      type: public_availability
+      comparableFields:
+        - fieldName: availability_id
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: date
+          booleanExpressionType: DateBoolExp_1
+        - fieldName: days_of_supply
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: in_stock_percentage
+          booleanExpressionType: DecimalBoolExp_1
+        - fieldName: is_online
+          booleanExpressionType: BooleanBoolExp_1
+        - fieldName: notes
+          booleanExpressionType: TextBoolExp_1
+        - fieldName: on_shelf_availability_percentage
+          booleanExpressionType: DecimalBoolExp_1
+        - fieldName: out_of_stock_incidents
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: product_id
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: retailer_id
+          booleanExpressionType: IntegerBoolExp_1
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_availability_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_availability_agg_exp
+  operand:
+    object:
+      aggregatedType: public_availability
+      aggregatableFields:
+        - fieldName: availability_id
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: date
+          aggregateExpression: DateAggExp_1
+        - fieldName: days_of_supply
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: in_stock_percentage
+          aggregateExpression: DecimalAggExp_1
+        - fieldName: is_online
+          aggregateExpression: BooleanAggExp_1
+        - fieldName: notes
+          aggregateExpression: TextAggExp_1
+        - fieldName: on_shelf_availability_percentage
+          aggregateExpression: DecimalAggExp_1
+        - fieldName: out_of_stock_incidents
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: product_id
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: retailer_id
+          aggregateExpression: IntegerAggExp_1
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_availability_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_availability_order_by_exp
+  operand:
+    object:
+      orderedType: public_availability
+      orderableFields:
+        - fieldName: availability_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: date
+          orderByExpression: DateOrderByExp
+        - fieldName: days_of_supply
+          orderByExpression: Int32OrderByExp
+        - fieldName: in_stock_percentage
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: is_online
+          orderByExpression: Boolean1OrderByExp
+        - fieldName: notes
+          orderByExpression: String1OrderByExp
+        - fieldName: on_shelf_availability_percentage
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: out_of_stock_incidents
+          orderByExpression: Int32OrderByExp
+        - fieldName: product_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: retailer_id
+          orderByExpression: Int32OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_availability_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_availability
+  objectType: public_availability
+  source:
+    dataConnectorName: inventory
+    collection: public.availability
+  filterExpressionType: public_availability_bool_exp
+  aggregateExpression: public_availability_agg_exp
+  orderByExpression: public_availability_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_availability
+      subscription:
+        rootField: public_availability
+    selectUniques:
+      - queryRootField: public_availability_by_availability_id
+        uniqueIdentifier:
+          - availability_id
+        subscription:
+          rootField: public_availability_by_availability_id
+    filterInputTypeName: public_availability_filter_input
+    aggregate:
+      queryRootField: public_availability_aggregate
+      subscription:
+        rootField: public_availability_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_availability
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

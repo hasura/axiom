@@ -1,0 +1,63 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: search_result
+  fields:
+    - name: description
+      type: String!
+    - name: link
+      type: String!
+    - name: published
+      type: String
+    - name: title
+      type: String!
+  graphql:
+    typeName: auth_search_result
+    inputTypeName: auth_search_result_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: search
+      dataConnectorObjectType: SearchResult
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: search_result
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - description
+          - link
+          - published
+          - title
+
+---
+kind: Command
+version: v1
+definition:
+  name: brave_search
+  outputType: "[search_result!]!"
+  arguments:
+    - name: query
+      type: String!
+      description: Search query string
+  source:
+    dataConnectorName: search
+    dataConnectorCommand:
+      function: braveSearch
+  graphql:
+    rootFieldName: brave_search
+    rootFieldKind: Query
+  description: Make a web search with brave, returns 10 results
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: brave_search
+  permissions:
+    - role: admin
+      allowExecution: true
+

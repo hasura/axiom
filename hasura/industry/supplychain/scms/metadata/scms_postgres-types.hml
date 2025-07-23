@@ -1,0 +1,488 @@
+---
+kind: ScalarType
+version: v1
+definition:
+  name: int32
+  graphql:
+    typeName: SCMS_int32
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: integer_bool_exp
+  operand:
+    scalar:
+      type: int32
+      comparisonOperators:
+        - name: _eq
+          argumentType: int32!
+        - name: _gt
+          argumentType: int32!
+        - name: _gte
+          argumentType: int32!
+        - name: _in
+          argumentType: "[int32!]!"
+        - name: _lt
+          argumentType: int32!
+        - name: _lte
+          argumentType: int32!
+        - name: _neq
+          argumentType: int32!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: scms_postgres
+          dataConnectorScalarType: integer
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: SCMS_integer_bool_exp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: scms_postgres
+  dataConnectorScalarType: integer
+  representation: int32
+  graphql:
+    comparisonExpressionTypeName: SCMS_int32_comparison_exp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: bigdecimal
+  graphql:
+    typeName: SCMS_bigdecimal
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: decimal_bool_exp
+  operand:
+    scalar:
+      type: bigdecimal
+      comparisonOperators:
+        - name: _eq
+          argumentType: bigdecimal!
+        - name: _gt
+          argumentType: bigdecimal!
+        - name: _gte
+          argumentType: bigdecimal!
+        - name: _in
+          argumentType: "[bigdecimal!]!"
+        - name: _lt
+          argumentType: bigdecimal!
+        - name: _lte
+          argumentType: bigdecimal!
+        - name: _neq
+          argumentType: bigdecimal!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: scms_postgres
+          dataConnectorScalarType: decimal
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: SCMS_decimal_bool_exp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: scms_postgres
+  dataConnectorScalarType: decimal
+  representation: bigdecimal
+  graphql:
+    comparisonExpressionTypeName: SCMS_bigdecimal_comparison_exp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: biginteger
+  graphql:
+    typeName: SCMS_biginteger
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: bigint_bool_exp
+  operand:
+    scalar:
+      type: biginteger
+      comparisonOperators:
+        - name: _eq
+          argumentType: biginteger!
+        - name: _gt
+          argumentType: biginteger!
+        - name: _gte
+          argumentType: biginteger!
+        - name: _in
+          argumentType: "[biginteger!]!"
+        - name: _lt
+          argumentType: biginteger!
+        - name: _lte
+          argumentType: biginteger!
+        - name: _neq
+          argumentType: biginteger!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: scms_postgres
+          dataConnectorScalarType: bigint
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: SCMS_bigint_bool_exp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: scms_postgres
+  dataConnectorScalarType: bigint
+  representation: biginteger
+  graphql:
+    comparisonExpressionTypeName: SCMS_biginteger_comparison_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: integer_agg_exp
+  operand:
+    scalar:
+      aggregatedType: int32
+      aggregationFunctions:
+        - name: avg
+          returnType: bigdecimal
+        - name: max
+          returnType: int32
+        - name: min
+          returnType: int32
+        - name: stddev_pop
+          returnType: int32!
+        - name: stddev_samp
+          returnType: int32!
+        - name: sum
+          returnType: biginteger
+        - name: var_pop
+          returnType: int32!
+        - name: var_samp
+          returnType: int32!
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: scms_postgres
+          dataConnectorScalarType: integer
+          functionMapping:
+            avg:
+              name: avg
+            max:
+              name: max
+            min:
+              name: min
+            stddev_pop:
+              name: stddev_pop
+            stddev_samp:
+              name: stddev_samp
+            sum:
+              name: sum
+            var_pop:
+              name: var_pop
+            var_samp:
+              name: var_samp
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: SCMS_integer_agg_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: decimal_agg_exp
+  operand:
+    scalar:
+      aggregatedType: bigdecimal
+      aggregationFunctions:
+        - name: avg
+          returnType: bigdecimal
+        - name: max
+          returnType: bigdecimal
+        - name: min
+          returnType: bigdecimal
+        - name: stddev_pop
+          returnType: bigdecimal!
+        - name: stddev_samp
+          returnType: bigdecimal!
+        - name: sum
+          returnType: bigdecimal
+        - name: var_pop
+          returnType: bigdecimal!
+        - name: var_samp
+          returnType: bigdecimal!
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: scms_postgres
+          dataConnectorScalarType: decimal
+          functionMapping:
+            avg:
+              name: avg
+            max:
+              name: max
+            min:
+              name: min
+            stddev_pop:
+              name: stddev_pop
+            stddev_samp:
+              name: stddev_samp
+            sum:
+              name: sum
+            var_pop:
+              name: var_pop
+            var_samp:
+              name: var_samp
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: SCMS_decimal_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: int32_order_by_exp
+  operand:
+    scalar:
+      orderedType: int32
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: SCMS_int32_order_by_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: bigdecimal_order_by_exp
+  operand:
+    scalar:
+      orderedType: bigdecimal
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: SCMS_bigdecimal_order_by_exp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: string
+  graphql:
+    typeName: SCMS_string
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: character_varying_bool_exp
+  operand:
+    scalar:
+      type: string
+      comparisonOperators:
+        - name: _eq
+          argumentType: string!
+        - name: _gt
+          argumentType: string!
+        - name: _gte
+          argumentType: string!
+        - name: _ilike
+          argumentType: string!
+        - name: _in
+          argumentType: "[string!]!"
+        - name: _iregex
+          argumentType: string!
+        - name: _like
+          argumentType: string!
+        - name: _lt
+          argumentType: string!
+        - name: _lte
+          argumentType: string!
+        - name: _neq
+          argumentType: string!
+        - name: _nilike
+          argumentType: string!
+        - name: _niregex
+          argumentType: string!
+        - name: _nlike
+          argumentType: string!
+        - name: _nregex
+          argumentType: string!
+        - name: _regex
+          argumentType: string!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: scms_postgres
+          dataConnectorScalarType: character_varying
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: SCMS_character_varying_bool_exp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: scms_postgres
+  dataConnectorScalarType: character_varying
+  representation: string
+  graphql:
+    comparisonExpressionTypeName: SCMS_string_comparison_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: character_varying_agg_exp
+  operand:
+    scalar:
+      aggregatedType: string
+      aggregationFunctions:
+        - name: max
+          returnType: string
+        - name: min
+          returnType: string
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: scms_postgres
+          dataConnectorScalarType: character_varying
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: SCMS_character_varying_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: string_order_by_exp
+  operand:
+    scalar:
+      orderedType: string
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: SCMS_string_order_by_exp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: date
+  graphql:
+    typeName: SCMS_date
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: date_bool_exp
+  operand:
+    scalar:
+      type: date
+      comparisonOperators:
+        - name: _eq
+          argumentType: date!
+        - name: _gt
+          argumentType: date!
+        - name: _gte
+          argumentType: date!
+        - name: _in
+          argumentType: "[date!]!"
+        - name: _lt
+          argumentType: date!
+        - name: _lte
+          argumentType: date!
+        - name: _neq
+          argumentType: date!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: scms_postgres
+          dataConnectorScalarType: date
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: SCMS_date_bool_exp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: scms_postgres
+  dataConnectorScalarType: date
+  representation: date
+  graphql:
+    comparisonExpressionTypeName: SCMS_date_comparison_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: date_agg_exp
+  operand:
+    scalar:
+      aggregatedType: date
+      aggregationFunctions:
+        - name: max
+          returnType: date
+        - name: min
+          returnType: date
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: scms_postgres
+          dataConnectorScalarType: date
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: SCMS_date_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: date_order_by_exp
+  operand:
+    scalar:
+      orderedType: date
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: SCMS_date_order_by_exp
+

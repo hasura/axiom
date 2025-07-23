@@ -1,0 +1,180 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_campaign_members
+  description: "Object type for public.campaign_members. Description: null"
+  fields:
+    - name: campaign_id
+      type: String_1
+    - name: company_or_account
+      type: String_1
+    - name: contact_id
+      type: String_1
+    - name: created_date
+      type: String_1
+    - name: id
+      type: String_1!
+    - name: lead_id
+      type: String_1
+    - name: net_new_lead_c
+      type: String_1
+    - name: status
+      type: String_1
+  graphql:
+    typeName: public_campaign_members
+    inputTypeName: public_campaign_members_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: salesforce
+      dataConnectorObjectType: public.campaign_members
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_campaign_members
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - campaign_id
+          - company_or_account
+          - contact_id
+          - created_date
+          - id
+          - lead_id
+          - net_new_lead_c
+          - status
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_campaign_members_bool_exp
+  operand:
+    object:
+      type: public_campaign_members
+      comparableFields:
+        - fieldName: campaign_id
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: company_or_account
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: contact_id
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: created_date
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: id
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: lead_id
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: net_new_lead_c
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: status
+          booleanExpressionType: CharacterVaryingBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_campaign_members_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_campaign_members_agg_exp
+  operand:
+    object:
+      aggregatedType: public_campaign_members
+      aggregatableFields:
+        - fieldName: campaign_id
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: company_or_account
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: contact_id
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: created_date
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: id
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: lead_id
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: net_new_lead_c
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: status
+          aggregateExpression: CharacterVaryingAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_campaign_members_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_campaign_members_order_by_exp
+  operand:
+    object:
+      orderedType: public_campaign_members
+      orderableFields:
+        - fieldName: campaign_id
+          orderByExpression: String1OrderByExp
+        - fieldName: company_or_account
+          orderByExpression: String1OrderByExp
+        - fieldName: contact_id
+          orderByExpression: String1OrderByExp
+        - fieldName: created_date
+          orderByExpression: String1OrderByExp
+        - fieldName: id
+          orderByExpression: String1OrderByExp
+        - fieldName: lead_id
+          orderByExpression: String1OrderByExp
+        - fieldName: net_new_lead_c
+          orderByExpression: String1OrderByExp
+        - fieldName: status
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_campaign_members_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_campaign_members
+  objectType: public_campaign_members
+  source:
+    dataConnectorName: salesforce
+    collection: public.campaign_members
+  filterExpressionType: public_campaign_members_bool_exp
+  aggregateExpression: public_campaign_members_agg_exp
+  orderByExpression: public_campaign_members_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_campaign_members
+      subscription:
+        rootField: public_campaign_members
+    selectUniques:
+      - queryRootField: public_campaign_members_by_id
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: public_campaign_members_by_id
+    filterInputTypeName: public_campaign_members_filter_input
+    aggregate:
+      queryRootField: public_campaign_members_aggregate
+      subscription:
+        rootField: public_campaign_members_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_campaign_members
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

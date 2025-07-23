@@ -1,0 +1,216 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_equipment
+  description: "Object type for public.equipment. Description: null"
+  fields:
+    - name: capacity_mbps
+      type: Int32
+    - name: equipment_id
+      type: Int32!
+    - name: equipment_type
+      type: String_1
+    - name: firmware_version
+      type: String_1
+    - name: installation_date
+      type: Date
+    - name: last_maintenance_date
+      type: Date
+    - name: manufacturer
+      type: String_1
+    - name: model
+      type: String_1
+    - name: node_id
+      type: Int32
+    - name: power_consumption_watts
+      type: Int32
+    - name: serial_number
+      type: String_1
+    - name: status
+      type: String_1
+  graphql:
+    typeName: network_public_equipment
+    inputTypeName: network_public_equipment_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: kafka_sink
+      dataConnectorObjectType: public.equipment
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_equipment
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - capacity_mbps
+          - equipment_id
+          - equipment_type
+          - firmware_version
+          - installation_date
+          - last_maintenance_date
+          - manufacturer
+          - model
+          - node_id
+          - power_consumption_watts
+          - serial_number
+          - status
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_equipment_bool_exp
+  operand:
+    object:
+      type: public_equipment
+      comparableFields:
+        - fieldName: capacity_mbps
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: equipment_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: equipment_type
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: firmware_version
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: installation_date
+          booleanExpressionType: DateBoolExp
+        - fieldName: last_maintenance_date
+          booleanExpressionType: DateBoolExp
+        - fieldName: manufacturer
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: model
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: node_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: power_consumption_watts
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: serial_number
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: status
+          booleanExpressionType: CharacterVaryingBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: network_public_equipment_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_equipment_agg_exp
+  operand:
+    object:
+      aggregatedType: public_equipment
+      aggregatableFields:
+        - fieldName: capacity_mbps
+          aggregateExpression: IntegerAggExp
+        - fieldName: equipment_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: equipment_type
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: firmware_version
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: installation_date
+          aggregateExpression: DateAggExp
+        - fieldName: last_maintenance_date
+          aggregateExpression: DateAggExp
+        - fieldName: manufacturer
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: model
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: node_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: power_consumption_watts
+          aggregateExpression: IntegerAggExp
+        - fieldName: serial_number
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: status
+          aggregateExpression: CharacterVaryingAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: network_public_equipment_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_equipment_order_by_exp
+  operand:
+    object:
+      orderedType: public_equipment
+      orderableFields:
+        - fieldName: capacity_mbps
+          orderByExpression: Int32OrderByExp
+        - fieldName: equipment_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: equipment_type
+          orderByExpression: String1OrderByExp
+        - fieldName: firmware_version
+          orderByExpression: String1OrderByExp
+        - fieldName: installation_date
+          orderByExpression: DateOrderByExp
+        - fieldName: last_maintenance_date
+          orderByExpression: DateOrderByExp
+        - fieldName: manufacturer
+          orderByExpression: String1OrderByExp
+        - fieldName: model
+          orderByExpression: String1OrderByExp
+        - fieldName: node_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: power_consumption_watts
+          orderByExpression: Int32OrderByExp
+        - fieldName: serial_number
+          orderByExpression: String1OrderByExp
+        - fieldName: status
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: network_public_equipment_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_equipment
+  objectType: public_equipment
+  source:
+    dataConnectorName: kafka_sink
+    collection: public.equipment
+  filterExpressionType: public_equipment_bool_exp
+  aggregateExpression: public_equipment_agg_exp
+  orderByExpression: public_equipment_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_equipment
+      subscription:
+        rootField: public_equipment
+    selectUniques:
+      - queryRootField: public_equipment_by_equipment_id
+        uniqueIdentifier:
+          - equipment_id
+        subscription:
+          rootField: public_equipment_by_equipment_id
+    filterInputTypeName: network_public_equipment_filter_input
+    aggregate:
+      queryRootField: public_equipment_aggregate
+      subscription:
+        rootField: public_equipment_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_equipment
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

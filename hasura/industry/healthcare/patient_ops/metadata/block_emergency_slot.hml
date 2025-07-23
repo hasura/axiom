@@ -1,0 +1,90 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: emergency_slot_block_response
+  fields:
+    - name: block_id
+      type: String
+    - name: slot_id
+      type: Float!
+    - name: status
+      type: String!
+  graphql:
+    typeName: emergency_slot_block_response
+    inputTypeName: emergency_slot_block_response_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: ops_mgmt
+      dataConnectorObjectType: EmergencySlotBlockResponse
+      fieldMapping:
+        block_id:
+          column:
+            name: blockId
+        slot_id:
+          column:
+            name: slotId
+        status:
+          column:
+            name: status
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: emergency_slot_block_response
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - block_id
+          - slot_id
+          - status
+
+---
+kind: Command
+version: v1
+definition:
+  name: block_emergency_slot
+  outputType: emergency_slot_block_response!
+  arguments:
+    - name: end_time
+      type: String!
+    - name: reason
+      type: String!
+    - name: slot_id
+      type: Float!
+    - name: start_time
+      type: String!
+  source:
+    dataConnectorName: ops_mgmt
+    dataConnectorCommand:
+      procedure: blockEmergencySlot
+    argumentMapping:
+      end_time: endTime
+      reason: reason
+      slot_id: slotId
+      start_time: startTime
+  graphql:
+    rootFieldName: block_emergency_slot
+    rootFieldKind: Mutation
+  description: >-
+    **Description:**
+
+    Blocks out emergency slots to prioritize urgent procedures or critical patient care.
+
+
+    **When to Call:**
+
+    - When an unexpected emergency arises requiring an open time slot.
+
+    - To manage hospital or clinic workflow more efficiently.
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: block_emergency_slot
+  permissions:
+    - role: admin
+      allowExecution: true
+

@@ -1,0 +1,216 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_purchase_orders
+  description: "Object type for public.purchase_orders. Description: null"
+  fields:
+    - name: actual_delivery_date
+      type: Date
+    - name: created_at
+      type: Timestamp
+    - name: expected_delivery_date
+      type: Date
+    - name: notes
+      type: String_1
+    - name: order_date
+      type: Date!
+    - name: payment_status
+      type: String_1
+    - name: po_id
+      type: Int32!
+    - name: po_number
+      type: String_1!
+    - name: status
+      type: String_1
+    - name: supplier_id
+      type: Int32!
+    - name: total_amount
+      type: Bigdecimal!
+    - name: updated_at
+      type: Timestamp
+  graphql:
+    typeName: public_purchase_orders
+    inputTypeName: public_purchase_orders_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: operations
+      dataConnectorObjectType: public.purchase_orders
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_purchase_orders
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - actual_delivery_date
+          - created_at
+          - expected_delivery_date
+          - notes
+          - order_date
+          - payment_status
+          - po_id
+          - po_number
+          - status
+          - supplier_id
+          - total_amount
+          - updated_at
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_purchase_orders_bool_exp
+  operand:
+    object:
+      type: public_purchase_orders
+      comparableFields:
+        - fieldName: actual_delivery_date
+          booleanExpressionType: DateBoolExp_1
+        - fieldName: created_at
+          booleanExpressionType: TimestampWithoutTimeZoneBoolExp_1
+        - fieldName: expected_delivery_date
+          booleanExpressionType: DateBoolExp_1
+        - fieldName: notes
+          booleanExpressionType: TextBoolExp_1
+        - fieldName: order_date
+          booleanExpressionType: DateBoolExp_1
+        - fieldName: payment_status
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: po_id
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: po_number
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: status
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: supplier_id
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: total_amount
+          booleanExpressionType: DecimalBoolExp_1
+        - fieldName: updated_at
+          booleanExpressionType: TimestampWithoutTimeZoneBoolExp_1
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_purchase_orders_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_purchase_orders_agg_exp
+  operand:
+    object:
+      aggregatedType: public_purchase_orders
+      aggregatableFields:
+        - fieldName: actual_delivery_date
+          aggregateExpression: DateAggExp_1
+        - fieldName: created_at
+          aggregateExpression: TimestampWithoutTimeZoneAggExp_1
+        - fieldName: expected_delivery_date
+          aggregateExpression: DateAggExp_1
+        - fieldName: notes
+          aggregateExpression: TextAggExp_1
+        - fieldName: order_date
+          aggregateExpression: DateAggExp_1
+        - fieldName: payment_status
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: po_id
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: po_number
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: status
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: supplier_id
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: total_amount
+          aggregateExpression: DecimalAggExp_1
+        - fieldName: updated_at
+          aggregateExpression: TimestampWithoutTimeZoneAggExp_1
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_purchase_orders_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_purchase_orders_order_by_exp
+  operand:
+    object:
+      orderedType: public_purchase_orders
+      orderableFields:
+        - fieldName: actual_delivery_date
+          orderByExpression: DateOrderByExp
+        - fieldName: created_at
+          orderByExpression: TimestampOrderByExp
+        - fieldName: expected_delivery_date
+          orderByExpression: DateOrderByExp
+        - fieldName: notes
+          orderByExpression: String1OrderByExp
+        - fieldName: order_date
+          orderByExpression: DateOrderByExp
+        - fieldName: payment_status
+          orderByExpression: String1OrderByExp
+        - fieldName: po_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: po_number
+          orderByExpression: String1OrderByExp
+        - fieldName: status
+          orderByExpression: String1OrderByExp
+        - fieldName: supplier_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: total_amount
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: updated_at
+          orderByExpression: TimestampOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_purchase_orders_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_purchase_orders
+  objectType: public_purchase_orders
+  source:
+    dataConnectorName: operations
+    collection: public.purchase_orders
+  filterExpressionType: public_purchase_orders_bool_exp
+  aggregateExpression: public_purchase_orders_agg_exp
+  orderByExpression: public_purchase_orders_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_purchase_orders
+      subscription:
+        rootField: public_purchase_orders
+    selectUniques:
+      - queryRootField: public_purchase_orders_by_po_id
+        uniqueIdentifier:
+          - po_id
+        subscription:
+          rootField: public_purchase_orders_by_po_id
+    filterInputTypeName: public_purchase_orders_filter_input
+    aggregate:
+      queryRootField: public_purchase_orders_aggregate
+      subscription:
+        rootField: public_purchase_orders_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_purchase_orders
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

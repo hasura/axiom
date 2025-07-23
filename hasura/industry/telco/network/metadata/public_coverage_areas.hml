@@ -1,0 +1,180 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_coverage_areas
+  description: "Object type for public.coverage_areas. Description: null"
+  fields:
+    - name: coverage_id
+      type: Int32!
+    - name: coverage_radius_km
+      type: Bigdecimal
+    - name: last_upgraded
+      type: Date
+    - name: node_id
+      type: Int32
+    - name: population_covered
+      type: Int32
+    - name: signal_strength_dbm
+      type: Int32
+    - name: technology
+      type: String_1
+    - name: terrain_type
+      type: String_1
+  graphql:
+    typeName: network_public_coverage_areas
+    inputTypeName: network_public_coverage_areas_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: kafka_sink
+      dataConnectorObjectType: public.coverage_areas
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_coverage_areas
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - coverage_id
+          - coverage_radius_km
+          - last_upgraded
+          - node_id
+          - population_covered
+          - signal_strength_dbm
+          - technology
+          - terrain_type
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_coverage_areas_bool_exp
+  operand:
+    object:
+      type: public_coverage_areas
+      comparableFields:
+        - fieldName: coverage_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: coverage_radius_km
+          booleanExpressionType: DecimalBoolExp_1
+        - fieldName: last_upgraded
+          booleanExpressionType: DateBoolExp
+        - fieldName: node_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: population_covered
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: signal_strength_dbm
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: technology
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: terrain_type
+          booleanExpressionType: CharacterVaryingBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: network_public_coverage_areas_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_coverage_areas_agg_exp
+  operand:
+    object:
+      aggregatedType: public_coverage_areas
+      aggregatableFields:
+        - fieldName: coverage_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: coverage_radius_km
+          aggregateExpression: DecimalAggExp
+        - fieldName: last_upgraded
+          aggregateExpression: DateAggExp
+        - fieldName: node_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: population_covered
+          aggregateExpression: IntegerAggExp
+        - fieldName: signal_strength_dbm
+          aggregateExpression: IntegerAggExp
+        - fieldName: technology
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: terrain_type
+          aggregateExpression: CharacterVaryingAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: network_public_coverage_areas_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_coverage_areas_order_by_exp
+  operand:
+    object:
+      orderedType: public_coverage_areas
+      orderableFields:
+        - fieldName: coverage_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: coverage_radius_km
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: last_upgraded
+          orderByExpression: DateOrderByExp
+        - fieldName: node_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: population_covered
+          orderByExpression: Int32OrderByExp
+        - fieldName: signal_strength_dbm
+          orderByExpression: Int32OrderByExp
+        - fieldName: technology
+          orderByExpression: String1OrderByExp
+        - fieldName: terrain_type
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: network_public_coverage_areas_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_coverage_areas
+  objectType: public_coverage_areas
+  source:
+    dataConnectorName: kafka_sink
+    collection: public.coverage_areas
+  filterExpressionType: public_coverage_areas_bool_exp
+  aggregateExpression: public_coverage_areas_agg_exp
+  orderByExpression: public_coverage_areas_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_coverage_areas
+      subscription:
+        rootField: public_coverage_areas
+    selectUniques:
+      - queryRootField: public_coverage_areas_by_coverage_id
+        uniqueIdentifier:
+          - coverage_id
+        subscription:
+          rootField: public_coverage_areas_by_coverage_id
+    filterInputTypeName: network_public_coverage_areas_filter_input
+    aggregate:
+      queryRootField: public_coverage_areas_aggregate
+      subscription:
+        rootField: public_coverage_areas_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_coverage_areas
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

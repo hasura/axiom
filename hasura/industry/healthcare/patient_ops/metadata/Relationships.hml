@@ -1,0 +1,109 @@
+---
+kind: Relationship
+version: v1
+definition:
+  name: insurancePlan
+  sourceType: public_patients
+  target:
+    model:
+      name: public_insurance_plans
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: insurance_plan_id
+      target:
+        modelField:
+          - fieldName: plan_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: operator
+  sourceType: public_operator_schedule
+  target:
+    model:
+      name: public_operators
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: operator_id
+      target:
+        modelField:
+          - fieldName: operator_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: operator
+  sourceType: public_cases
+  target:
+    model:
+      name: public_operators
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: operator_id
+      target:
+        modelField:
+          - fieldName: operator_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: patients
+  sourceType: public_insurance_plans
+  target:
+    model:
+      name: public_patients
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: plan_id
+      target:
+        modelField:
+          - fieldName: insurance_plan_id
+
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: cases
+  sourceType: public_operators
+  target:
+    model:
+      name: public_cases
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: operator_id
+      target:
+        modelField:
+          - fieldName: operator_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: operatorSchedules
+  sourceType: public_operators
+  target:
+    model:
+      name: public_operator_schedule
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: operator_id
+      target:
+        modelField:
+          - fieldName: operator_id
+

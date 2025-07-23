@@ -1,0 +1,248 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: default_detailed_user_activity_mv
+  description: "Object type for default.detailed_user_activity_mv. Description: null"
+  fields:
+    - name: cdr_guid
+      type: String_1!
+    - name: cdr_timestamp
+      type: Timestamptz!
+    - name: call_duration
+      type: Int32!
+    - name: call_type
+      type: String_1!
+    - name: du_guid
+      type: String_1!
+    - name: du_timestamp
+      type: Timestamptz!
+    - name: data_usage
+      type: Float32!
+    - name: download_speed
+      type: Float32!
+    - name: latency
+      type: Int32!
+    - name: np_guid
+      type: String_1!
+    - name: np_timestamp
+      type: Timestamptz!
+    - name: upload_speed
+      type: Float32!
+  graphql:
+    typeName: network_default_detailed_user_activity_mv
+    inputTypeName: network_default_detailed_user_activity_mv_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: clickhouse
+      dataConnectorObjectType: default.detailed_user_activity_mv
+      fieldMapping:
+        cdr_guid:
+          column:
+            name: CDR_GUID
+        cdr_timestamp:
+          column:
+            name: CDR_Timestamp
+        call_duration:
+          column:
+            name: Call_Duration
+        call_type:
+          column:
+            name: Call_Type
+        du_guid:
+          column:
+            name: DU_GUID
+        du_timestamp:
+          column:
+            name: DU_Timestamp
+        data_usage:
+          column:
+            name: Data_Usage
+        download_speed:
+          column:
+            name: Download_Speed
+        latency:
+          column:
+            name: Latency
+        np_guid:
+          column:
+            name: NP_GUID
+        np_timestamp:
+          column:
+            name: NP_Timestamp
+        upload_speed:
+          column:
+            name: Upload_Speed
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: default_detailed_user_activity_mv
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - cdr_guid
+          - cdr_timestamp
+          - call_duration
+          - call_type
+          - du_guid
+          - du_timestamp
+          - data_usage
+          - download_speed
+          - latency
+          - np_guid
+          - np_timestamp
+          - upload_speed
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: default_detailed_user_activity_mv_bool_exp
+  operand:
+    object:
+      type: default_detailed_user_activity_mv
+      comparableFields:
+        - fieldName: cdr_guid
+          booleanExpressionType: StringBoolExp
+        - fieldName: cdr_timestamp
+          booleanExpressionType: Datetime64BoolExp
+        - fieldName: call_duration
+          booleanExpressionType: Int32BoolExp
+        - fieldName: call_type
+          booleanExpressionType: StringBoolExp
+        - fieldName: du_guid
+          booleanExpressionType: StringBoolExp
+        - fieldName: du_timestamp
+          booleanExpressionType: Datetime64BoolExp
+        - fieldName: data_usage
+          booleanExpressionType: Float32BoolExp
+        - fieldName: download_speed
+          booleanExpressionType: Float32BoolExp
+        - fieldName: latency
+          booleanExpressionType: Int32BoolExp
+        - fieldName: np_guid
+          booleanExpressionType: StringBoolExp
+        - fieldName: np_timestamp
+          booleanExpressionType: Datetime64BoolExp
+        - fieldName: upload_speed
+          booleanExpressionType: Float32BoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: network_default_detailed_user_activity_mv_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: default_detailed_user_activity_mv_agg_exp
+  operand:
+    object:
+      aggregatedType: default_detailed_user_activity_mv
+      aggregatableFields:
+        - fieldName: cdr_guid
+          aggregateExpression: StringAggExp
+        - fieldName: cdr_timestamp
+          aggregateExpression: Datetime64AggExp
+        - fieldName: call_duration
+          aggregateExpression: Int32AggExp
+        - fieldName: call_type
+          aggregateExpression: StringAggExp
+        - fieldName: du_guid
+          aggregateExpression: StringAggExp
+        - fieldName: du_timestamp
+          aggregateExpression: Datetime64AggExp
+        - fieldName: data_usage
+          aggregateExpression: Float32AggExp
+        - fieldName: download_speed
+          aggregateExpression: Float32AggExp
+        - fieldName: latency
+          aggregateExpression: Int32AggExp
+        - fieldName: np_guid
+          aggregateExpression: StringAggExp
+        - fieldName: np_timestamp
+          aggregateExpression: Datetime64AggExp
+        - fieldName: upload_speed
+          aggregateExpression: Float32AggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: network_default_detailed_user_activity_mv_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: default_detailed_user_activity_mv_order_by_exp
+  operand:
+    object:
+      orderedType: default_detailed_user_activity_mv
+      orderableFields:
+        - fieldName: cdr_guid
+          orderByExpression: String1OrderByExp
+        - fieldName: cdr_timestamp
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: call_duration
+          orderByExpression: Int32OrderByExp
+        - fieldName: call_type
+          orderByExpression: String1OrderByExp
+        - fieldName: du_guid
+          orderByExpression: String1OrderByExp
+        - fieldName: du_timestamp
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: data_usage
+          orderByExpression: Float32OrderByExp
+        - fieldName: download_speed
+          orderByExpression: Float32OrderByExp
+        - fieldName: latency
+          orderByExpression: Int32OrderByExp
+        - fieldName: np_guid
+          orderByExpression: String1OrderByExp
+        - fieldName: np_timestamp
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: upload_speed
+          orderByExpression: Float32OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: network_default_detailed_user_activity_mv_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: default_detailed_user_activity_mv
+  objectType: default_detailed_user_activity_mv
+  source:
+    dataConnectorName: clickhouse
+    collection: default.detailed_user_activity_mv
+  filterExpressionType: default_detailed_user_activity_mv_bool_exp
+  aggregateExpression: default_detailed_user_activity_mv_agg_exp
+  orderByExpression: default_detailed_user_activity_mv_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: default_detailed_user_activity_mv
+      subscription:
+        rootField: default_detailed_user_activity_mv
+    selectUniques: []
+    filterInputTypeName: network_default_detailed_user_activity_mv_filter_input
+    aggregate:
+      queryRootField: default_detailed_user_activity_mv_aggregate
+      subscription:
+        rootField: default_detailed_user_activity_mv_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: default_detailed_user_activity_mv
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

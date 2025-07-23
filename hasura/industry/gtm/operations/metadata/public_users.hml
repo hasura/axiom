@@ -1,0 +1,162 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_users
+  description: "Object type for public.users. Description: null"
+  fields:
+    - name: created_at
+      type: Timestamptz!
+    - name: email
+      type: String_1
+    - name: id
+      type: Int32!
+    - name: password
+      type: String_1
+    - name: roles
+      type: String_1
+    - name: updated_at
+      type: Timestamptz!
+  graphql:
+    typeName: public_users
+    inputTypeName: public_users_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: auth
+      dataConnectorObjectType: public.users
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_users
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - created_at
+          - email
+          - id
+          - password
+          - roles
+          - updated_at
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_users_bool_exp
+  operand:
+    object:
+      type: public_users
+      comparableFields:
+        - fieldName: created_at
+          booleanExpressionType: TimestampWithTimeZoneBoolExp
+        - fieldName: email
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: password
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: roles
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: updated_at
+          booleanExpressionType: TimestampWithTimeZoneBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_users_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_users_agg_exp
+  operand:
+    object:
+      aggregatedType: public_users
+      aggregatableFields:
+        - fieldName: created_at
+          aggregateExpression: TimestampWithTimeZoneAggExp
+        - fieldName: email
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: id
+          aggregateExpression: IntegerAggExp
+        - fieldName: password
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: roles
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: updated_at
+          aggregateExpression: TimestampWithTimeZoneAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_users_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_users_order_by_exp
+  operand:
+    object:
+      orderedType: public_users
+      orderableFields:
+        - fieldName: created_at
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: email
+          orderByExpression: String1OrderByExp
+        - fieldName: id
+          orderByExpression: Int32OrderByExp
+        - fieldName: password
+          orderByExpression: String1OrderByExp
+        - fieldName: roles
+          orderByExpression: String1OrderByExp
+        - fieldName: updated_at
+          orderByExpression: TimestamptzOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_users_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_users
+  objectType: public_users
+  source:
+    dataConnectorName: auth
+    collection: public.users
+  filterExpressionType: public_users_bool_exp
+  aggregateExpression: public_users_agg_exp
+  orderByExpression: public_users_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_users
+      subscription:
+        rootField: public_users
+    selectUniques:
+      - queryRootField: public_users_by_id
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: public_users_by_id
+    filterInputTypeName: public_users_filter_input
+    aggregate:
+      queryRootField: public_users_aggregate
+      subscription:
+        rootField: public_users_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_users
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

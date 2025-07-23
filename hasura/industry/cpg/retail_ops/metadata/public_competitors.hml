@@ -1,0 +1,153 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_competitors
+  description: "Object type for public.competitors. Description: null"
+  fields:
+    - name: competitor_id
+      type: Int32!
+    - name: competitor_name
+      type: String_1!
+    - name: competitor_type
+      type: String_1
+    - name: notes
+      type: String_1
+    - name: primary_categories
+      type: Json
+  graphql:
+    typeName: public_competitors
+    inputTypeName: public_competitors_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: sales
+      dataConnectorObjectType: public.competitors
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_competitors
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - competitor_id
+          - competitor_name
+          - competitor_type
+          - notes
+          - primary_categories
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_competitors_bool_exp
+  operand:
+    object:
+      type: public_competitors
+      comparableFields:
+        - fieldName: competitor_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: competitor_name
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: competitor_type
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: notes
+          booleanExpressionType: TextBoolExp
+        - fieldName: primary_categories
+          booleanExpressionType: ArrayBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_competitors_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_competitors_agg_exp
+  operand:
+    object:
+      aggregatedType: public_competitors
+      aggregatableFields:
+        - fieldName: competitor_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: competitor_name
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: competitor_type
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: notes
+          aggregateExpression: TextAggExp
+        - fieldName: primary_categories
+          aggregateExpression: ArrayAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_competitors_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_competitors_order_by_exp
+  operand:
+    object:
+      orderedType: public_competitors
+      orderableFields:
+        - fieldName: competitor_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: competitor_name
+          orderByExpression: String1OrderByExp
+        - fieldName: competitor_type
+          orderByExpression: String1OrderByExp
+        - fieldName: notes
+          orderByExpression: String1OrderByExp
+        - fieldName: primary_categories
+          orderByExpression: JsonOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_competitors_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_competitors
+  objectType: public_competitors
+  source:
+    dataConnectorName: sales
+    collection: public.competitors
+  filterExpressionType: public_competitors_bool_exp
+  aggregateExpression: public_competitors_agg_exp
+  orderByExpression: public_competitors_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_competitors
+      subscription:
+        rootField: public_competitors
+    selectUniques:
+      - queryRootField: public_competitors_by_competitor_id
+        uniqueIdentifier:
+          - competitor_id
+        subscription:
+          rootField: public_competitors_by_competitor_id
+    filterInputTypeName: public_competitors_filter_input
+    aggregate:
+      queryRootField: public_competitors_aggregate
+      subscription:
+        rootField: public_competitors_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_competitors
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

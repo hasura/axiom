@@ -1,0 +1,32 @@
+---
+kind: Command
+version: v1
+definition:
+  name: deactivate_device
+  outputType: device_action_response!
+  arguments:
+    - name: customer_id
+      type: String!
+    - name: device_id
+      type: String!
+    - name: email
+      type: String!
+  source:
+    dataConnectorName: logic
+    dataConnectorCommand:
+      procedure: deactivateDevice
+  graphql:
+    rootFieldName: deactivate_device
+    rootFieldKind: Mutation
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: deactivate_device
+  permissions:
+    - role: admin
+      allowExecution: true
+    - role: customer
+      allowExecution: true
+

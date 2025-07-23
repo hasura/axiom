@@ -1,0 +1,122 @@
+kind: DataConnectorLink
+version: v1
+definition:
+  name: operations_nodejs
+  url:
+    readWriteUrls:
+      read:
+        valueFromEnv: OPERATIONS_OPERATIONS_NODEJS_READ_URL
+      write:
+        valueFromEnv: OPERATIONS_OPERATIONS_NODEJS_WRITE_URL
+  headers:
+    Authorization:
+      valueFromEnv: OPERATIONS_OPERATIONS_NODEJS_AUTHORIZATION_HEADER
+  schema:
+    version: v0.2
+    schema:
+      collections: []
+      functions: []
+      object_types:
+        LoyaltyRewardsRequest:
+          description: Creates a new Loyalty Reward Request
+          fields:
+            amount:
+              type:
+                name: Float
+                type: named
+            message:
+              type:
+                name: String
+                type: named
+            name:
+              type:
+                name: String
+                type: named
+          foreign_keys: {}
+        ShipmentRequest:
+          description: Creates a new Warehouse Shipment Request
+          fields:
+            destination:
+              type:
+                name: String
+                type: named
+            name:
+              type:
+                name: String
+                type: named
+            units:
+              type:
+                name: Float
+                type: named
+          foreign_keys: {}
+        createLoyaltyRewardsRequest_rewardData:
+          fields:
+            customer_name:
+              type:
+                name: String
+                type: named
+            reward_amount:
+              type:
+                name: Float
+                type: named
+            reward_message:
+              type:
+                name: String
+                type: named
+          foreign_keys: {}
+        createShipmentRequest_shipmentData:
+          fields:
+            product_name:
+              type:
+                name: String
+                type: named
+            unit_quantity:
+              type:
+                name: Float
+                type: named
+            warehouse_destination:
+              type:
+                name: String
+                type: named
+          foreign_keys: {}
+      procedures:
+        - arguments:
+            shipmentData:
+              type:
+                name: createShipmentRequest_shipmentData
+                type: named
+          name: createShipmentRequest
+          result_type:
+            name: ShipmentRequest
+            type: named
+        - arguments:
+            rewardData:
+              type:
+                name: createLoyaltyRewardsRequest_rewardData
+                type: named
+          name: createLoyaltyRewardsRequest
+          result_type:
+            name: LoyaltyRewardsRequest
+            type: named
+      scalar_types:
+        Float:
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+          representation:
+            type: float64
+        String:
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+          representation:
+            type: string
+    capabilities:
+      capabilities:
+        mutation: {}
+        query:
+          nested_fields: {}
+          variables: {}
+      version: 0.2.0

@@ -1,0 +1,198 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_documents
+  description: "Object type for public.documents. Description: null"
+  fields:
+    - name: body
+      type: String_1
+    - name: created_at
+      type: Timestamptz
+    - name: language
+      type: String_1
+    - name: rating
+      type: Int32
+    - name: status
+      type: String_1
+    - name: tags
+      type: String_1
+    - name: title
+      type: String_1
+    - name: updated_at
+      type: Timestamptz
+    - name: uuid
+      type: String_1!
+    - name: view_count
+      type: Int32
+  graphql:
+    typeName: support_public_documents
+    inputTypeName: support_public_documents_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: vector
+      dataConnectorObjectType: public.documents
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_documents
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - body
+          - created_at
+          - language
+          - rating
+          - status
+          - tags
+          - title
+          - updated_at
+          - uuid
+          - view_count
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_documents_bool_exp
+  operand:
+    object:
+      type: public_documents
+      comparableFields:
+        - fieldName: body
+          booleanExpressionType: TextBoolExp
+        - fieldName: created_at
+          booleanExpressionType: TimestampWithTimeZoneBoolExp
+        - fieldName: language
+          booleanExpressionType: TextBoolExp
+        - fieldName: rating
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: status
+          booleanExpressionType: TextBoolExp
+        - fieldName: tags
+          booleanExpressionType: TextBoolExp
+        - fieldName: title
+          booleanExpressionType: TextBoolExp
+        - fieldName: updated_at
+          booleanExpressionType: TimestampWithTimeZoneBoolExp
+        - fieldName: uuid
+          booleanExpressionType: UuidBoolExp
+        - fieldName: view_count
+          booleanExpressionType: IntegerBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: support_public_documents_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_documents_agg_exp
+  operand:
+    object:
+      aggregatedType: public_documents
+      aggregatableFields:
+        - fieldName: body
+          aggregateExpression: TextAggExp
+        - fieldName: created_at
+          aggregateExpression: TimestampWithTimeZoneAggExp
+        - fieldName: language
+          aggregateExpression: TextAggExp
+        - fieldName: rating
+          aggregateExpression: IntegerAggExp
+        - fieldName: status
+          aggregateExpression: TextAggExp
+        - fieldName: tags
+          aggregateExpression: TextAggExp
+        - fieldName: title
+          aggregateExpression: TextAggExp
+        - fieldName: updated_at
+          aggregateExpression: TimestampWithTimeZoneAggExp
+        - fieldName: uuid
+          aggregateExpression: UuidAggExp
+        - fieldName: view_count
+          aggregateExpression: IntegerAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: support_public_documents_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_documents_order_by_exp
+  operand:
+    object:
+      orderedType: public_documents
+      orderableFields:
+        - fieldName: body
+          orderByExpression: String1OrderByExp
+        - fieldName: created_at
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: language
+          orderByExpression: String1OrderByExp
+        - fieldName: rating
+          orderByExpression: Int32OrderByExp
+        - fieldName: status
+          orderByExpression: String1OrderByExp
+        - fieldName: tags
+          orderByExpression: String1OrderByExp
+        - fieldName: title
+          orderByExpression: String1OrderByExp
+        - fieldName: updated_at
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: uuid
+          orderByExpression: String1OrderByExp
+        - fieldName: view_count
+          orderByExpression: Int32OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: support_public_documents_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_documents
+  objectType: public_documents
+  source:
+    dataConnectorName: vector
+    collection: public.documents
+  filterExpressionType: public_documents_bool_exp
+  aggregateExpression: public_documents_agg_exp
+  orderByExpression: public_documents_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_documents
+      subscription:
+        rootField: public_documents
+    selectUniques:
+      - queryRootField: public_documents_by_uuid
+        uniqueIdentifier:
+          - uuid
+        subscription:
+          rootField: public_documents_by_uuid
+    filterInputTypeName: support_public_documents_filter_input
+    aggregate:
+      queryRootField: public_documents_aggregate
+      subscription:
+        rootField: public_documents_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_documents
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

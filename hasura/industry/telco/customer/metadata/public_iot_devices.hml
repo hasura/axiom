@@ -1,0 +1,198 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_iot_devices
+  description: "Object type for public.iot_devices. Description: null"
+  fields:
+    - name: activation_date
+      type: Date
+    - name: customer_id
+      type: Int32
+    - name: data_plan_id
+      type: Int32
+    - name: device_type
+      type: String_1
+    - name: imei
+      type: String_1
+    - name: iot_device_id
+      type: Int32!
+    - name: last_active_date
+      type: Timestamptz
+    - name: monthly_data_usage_mb
+      type: Bigdecimal
+    - name: sim_iccid
+      type: String_1
+    - name: status
+      type: String_1
+  graphql:
+    typeName: customer_public_iot_devices
+    inputTypeName: customer_public_iot_devices_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: public.iot_devices
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_iot_devices
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - activation_date
+          - customer_id
+          - data_plan_id
+          - device_type
+          - imei
+          - iot_device_id
+          - last_active_date
+          - monthly_data_usage_mb
+          - sim_iccid
+          - status
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_iot_devices_bool_exp
+  operand:
+    object:
+      type: public_iot_devices
+      comparableFields:
+        - fieldName: activation_date
+          booleanExpressionType: DateBoolExp
+        - fieldName: customer_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: data_plan_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: device_type
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: imei
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: iot_device_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: last_active_date
+          booleanExpressionType: TimestampWithTimeZoneBoolExp
+        - fieldName: monthly_data_usage_mb
+          booleanExpressionType: DecimalBoolExp
+        - fieldName: sim_iccid
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: status
+          booleanExpressionType: CharacterVaryingBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customer_public_iot_devices_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_iot_devices_agg_exp
+  operand:
+    object:
+      aggregatedType: public_iot_devices
+      aggregatableFields:
+        - fieldName: activation_date
+          aggregateExpression: DateAggExp
+        - fieldName: customer_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: data_plan_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: device_type
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: imei
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: iot_device_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: last_active_date
+          aggregateExpression: TimestampWithTimeZoneAggExp
+        - fieldName: monthly_data_usage_mb
+          aggregateExpression: DecimalAggExp
+        - fieldName: sim_iccid
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: status
+          aggregateExpression: CharacterVaryingAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: customer_public_iot_devices_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_iot_devices_order_by_exp
+  operand:
+    object:
+      orderedType: public_iot_devices
+      orderableFields:
+        - fieldName: activation_date
+          orderByExpression: DateOrderByExp
+        - fieldName: customer_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: data_plan_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: device_type
+          orderByExpression: String1OrderByExp
+        - fieldName: imei
+          orderByExpression: String1OrderByExp
+        - fieldName: iot_device_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: last_active_date
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: monthly_data_usage_mb
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: sim_iccid
+          orderByExpression: String1OrderByExp
+        - fieldName: status
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: customer_public_iot_devices_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_iot_devices
+  objectType: public_iot_devices
+  source:
+    dataConnectorName: aurora
+    collection: public.iot_devices
+  filterExpressionType: public_iot_devices_bool_exp
+  aggregateExpression: public_iot_devices_agg_exp
+  orderByExpression: public_iot_devices_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_iot_devices
+      subscription:
+        rootField: public_iot_devices
+    selectUniques:
+      - queryRootField: public_iot_devices_by_iot_device_id
+        uniqueIdentifier:
+          - iot_device_id
+        subscription:
+          rootField: public_iot_devices_by_iot_device_id
+    filterInputTypeName: customer_public_iot_devices_filter_input
+    aggregate:
+      queryRootField: public_iot_devices_aggregate
+      subscription:
+        rootField: public_iot_devices_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_iot_devices
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

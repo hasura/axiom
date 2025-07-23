@@ -1,0 +1,225 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_financial_transfers
+  description: "Object type for public.financial_transfers. Description: null"
+  fields:
+    - name: amount
+      type: Bigdecimal
+    - name: date
+      type: Date
+    - name: is_laundering
+      type: Boolean_1
+    - name: laundering_type
+      type: String_1
+    - name: payment_currency
+      type: String_1
+    - name: payment_type
+      type: String_1
+    - name: received_currency
+      type: String_1
+    - name: receiver_account
+      type: Int32
+    - name: receiver_bank_location
+      type: String_1
+    - name: sender_account
+      type: Int32
+    - name: sender_bank_location
+      type: String_1
+    - name: time
+      type: String_1
+    - name: transaction_id
+      type: Int32!
+  graphql:
+    typeName: public_financial_transfers
+    inputTypeName: public_financial_transfers_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: banking_core
+      dataConnectorObjectType: public.financial_transfers
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_financial_transfers
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - amount
+          - date
+          - is_laundering
+          - laundering_type
+          - payment_currency
+          - payment_type
+          - received_currency
+          - receiver_account
+          - receiver_bank_location
+          - sender_account
+          - sender_bank_location
+          - time
+          - transaction_id
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_financial_transfers_bool_exp
+  operand:
+    object:
+      type: public_financial_transfers
+      comparableFields:
+        - fieldName: amount
+          booleanExpressionType: DecimalBoolExp
+        - fieldName: date
+          booleanExpressionType: DateBoolExp
+        - fieldName: is_laundering
+          booleanExpressionType: BooleanBoolExp
+        - fieldName: laundering_type
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: payment_currency
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: payment_type
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: received_currency
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: receiver_account
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: receiver_bank_location
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: sender_account
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: sender_bank_location
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: time
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: transaction_id
+          booleanExpressionType: IntegerBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_financial_transfers_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_financial_transfers_agg_exp
+  operand:
+    object:
+      aggregatedType: public_financial_transfers
+      aggregatableFields:
+        - fieldName: amount
+          aggregateExpression: DecimalAggExp
+        - fieldName: date
+          aggregateExpression: DateAggExp
+        - fieldName: is_laundering
+          aggregateExpression: BooleanAggExp
+        - fieldName: laundering_type
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: payment_currency
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: payment_type
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: received_currency
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: receiver_account
+          aggregateExpression: IntegerAggExp
+        - fieldName: receiver_bank_location
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: sender_account
+          aggregateExpression: IntegerAggExp
+        - fieldName: sender_bank_location
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: time
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: transaction_id
+          aggregateExpression: IntegerAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_financial_transfers_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_financial_transfers_order_by_exp
+  operand:
+    object:
+      orderedType: public_financial_transfers
+      orderableFields:
+        - fieldName: amount
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: date
+          orderByExpression: DateOrderByExp
+        - fieldName: is_laundering
+          orderByExpression: Boolean1OrderByExp
+        - fieldName: laundering_type
+          orderByExpression: String1OrderByExp
+        - fieldName: payment_currency
+          orderByExpression: String1OrderByExp
+        - fieldName: payment_type
+          orderByExpression: String1OrderByExp
+        - fieldName: received_currency
+          orderByExpression: String1OrderByExp
+        - fieldName: receiver_account
+          orderByExpression: Int32OrderByExp
+        - fieldName: receiver_bank_location
+          orderByExpression: String1OrderByExp
+        - fieldName: sender_account
+          orderByExpression: Int32OrderByExp
+        - fieldName: sender_bank_location
+          orderByExpression: String1OrderByExp
+        - fieldName: time
+          orderByExpression: String1OrderByExp
+        - fieldName: transaction_id
+          orderByExpression: Int32OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_financial_transfers_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_financial_transfers
+  objectType: public_financial_transfers
+  source:
+    dataConnectorName: banking_core
+    collection: public.financial_transfers
+  filterExpressionType: public_financial_transfers_bool_exp
+  aggregateExpression: public_financial_transfers_agg_exp
+  orderByExpression: public_financial_transfers_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_financial_transfers
+      subscription:
+        rootField: public_financial_transfers
+    selectUniques:
+      - queryRootField: public_financial_transfers_by_transaction_id
+        uniqueIdentifier:
+          - transaction_id
+        subscription:
+          rootField: public_financial_transfers_by_transaction_id
+    filterInputTypeName: public_financial_transfers_filter_input
+    aggregate:
+      queryRootField: public_financial_transfers_aggregate
+      subscription:
+        rootField: public_financial_transfers_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_financial_transfers
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

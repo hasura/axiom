@@ -1,0 +1,135 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_insurance_plans
+  description: "Object type for public.insurance_plans. Description: null"
+  fields:
+    - name: payer_name
+      type: String_1
+    - name: plan_id
+      type: String_1!
+    - name: plan_name
+      type: String_1
+  graphql:
+    typeName: public_insurance_plans
+    inputTypeName: public_insurance_plans_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: patients
+      dataConnectorObjectType: public.insurance_plans
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_insurance_plans
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - payer_name
+          - plan_id
+          - plan_name
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_insurance_plans_bool_exp
+  operand:
+    object:
+      type: public_insurance_plans
+      comparableFields:
+        - fieldName: payer_name
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: plan_id
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: plan_name
+          booleanExpressionType: CharacterVaryingBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_insurance_plans_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_insurance_plans_agg_exp
+  operand:
+    object:
+      aggregatedType: public_insurance_plans
+      aggregatableFields:
+        - fieldName: payer_name
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: plan_id
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: plan_name
+          aggregateExpression: CharacterVaryingAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_insurance_plans_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_insurance_plans_order_by_exp
+  operand:
+    object:
+      orderedType: public_insurance_plans
+      orderableFields:
+        - fieldName: payer_name
+          orderByExpression: String1OrderByExp
+        - fieldName: plan_id
+          orderByExpression: String1OrderByExp
+        - fieldName: plan_name
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_insurance_plans_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_insurance_plans
+  objectType: public_insurance_plans
+  source:
+    dataConnectorName: patients
+    collection: public.insurance_plans
+  filterExpressionType: public_insurance_plans_bool_exp
+  aggregateExpression: public_insurance_plans_agg_exp
+  orderByExpression: public_insurance_plans_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_insurance_plans
+      subscription:
+        rootField: public_insurance_plans
+    selectUniques:
+      - queryRootField: public_insurance_plans_by_plan_id
+        uniqueIdentifier:
+          - plan_id
+        subscription:
+          rootField: public_insurance_plans_by_plan_id
+    filterInputTypeName: public_insurance_plans_filter_input
+    aggregate:
+      queryRootField: public_insurance_plans_aggregate
+      subscription:
+        rootField: public_insurance_plans_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_insurance_plans
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

@@ -1,0 +1,3242 @@
+kind: DataConnectorLink
+version: v1
+definition:
+  name: scms_postgres
+  url:
+    readWriteUrls:
+      read:
+        valueFromEnv: SCMS_SCMS_POSTGRES_READ_URL
+      write:
+        valueFromEnv: SCMS_SCMS_POSTGRES_WRITE_URL
+  headers:
+    Authorization:
+      valueFromEnv: SCMS_SCMS_POSTGRES_AUTHORIZATION_HEADER
+  schema:
+    version: v0.2
+    schema:
+      collections:
+        - arguments: {}
+          name: us.billofmaterials
+          type: us.billofmaterials
+          uniqueness_constraints:
+            primary_key:
+              unique_columns:
+                - shoe_id
+                - material_id
+        - arguments: {}
+          name: us.factories
+          type: us.factories
+          uniqueness_constraints:
+            primary_key:
+              unique_columns:
+                - factory_id
+        - arguments: {}
+          name: us.productionorders
+          type: us.productionorders
+          uniqueness_constraints:
+            primary_key:
+              unique_columns:
+                - order_id
+        - arguments: {}
+          name: us.rawmaterials
+          type: us.rawmaterials
+          uniqueness_constraints:
+            primary_key:
+              unique_columns:
+                - material_id
+        - arguments: {}
+          name: us.shipments
+          type: us.shipments
+          uniqueness_constraints:
+            primary_key:
+              unique_columns:
+                - shipment_id
+        - arguments: {}
+          name: us.shoes
+          type: us.shoes
+          uniqueness_constraints:
+            primary_key:
+              unique_columns:
+                - shoe_id
+        - arguments: {}
+          name: us.suppliermaterials
+          type: us.suppliermaterials
+          uniqueness_constraints:
+            primary_key:
+              unique_columns:
+                - supplier_id
+                - material_id
+        - arguments: {}
+          name: us.suppliers
+          type: us.suppliers
+          uniqueness_constraints:
+            primary_key:
+              unique_columns:
+                - supplier_id
+        - arguments: {}
+          name: us.warehouses
+          type: us.warehouses
+          uniqueness_constraints:
+            primary_key:
+              unique_columns:
+                - warehouse_id
+      functions: []
+      object_types:
+        bigint_set_input:
+          description: Wrapper for setting scalar bigint
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar bigint
+              type:
+                type: nullable
+                underlying_type:
+                  name: bigint
+                  type: named
+          foreign_keys: {}
+        character_varying_set_input:
+          description: Wrapper for setting scalar character_varying
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar character_varying
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+          foreign_keys: {}
+        date_set_input:
+          description: Wrapper for setting scalar date
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar date
+              type:
+                type: nullable
+                underlying_type:
+                  name: date
+                  type: named
+          foreign_keys: {}
+        decimal_set_input:
+          description: Wrapper for setting scalar decimal
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar decimal
+              type:
+                type: nullable
+                underlying_type:
+                  name: decimal
+                  type: named
+          foreign_keys: {}
+        delete_us.billofmaterials_result:
+          description: delete from us.billofmaterials result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by delete
+              type:
+                element_type:
+                  name: us.billofmaterials
+                  type: named
+                type: array
+          foreign_keys: {}
+        delete_us.factories_result:
+          description: delete from us.factories result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by delete
+              type:
+                element_type:
+                  name: us.factories
+                  type: named
+                type: array
+          foreign_keys: {}
+        delete_us.productionorders_result:
+          description: delete from us.productionorders result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by delete
+              type:
+                element_type:
+                  name: us.productionorders
+                  type: named
+                type: array
+          foreign_keys: {}
+        delete_us.rawmaterials_result:
+          description: delete from us.rawmaterials result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by delete
+              type:
+                element_type:
+                  name: us.rawmaterials
+                  type: named
+                type: array
+          foreign_keys: {}
+        delete_us.shipments_result:
+          description: delete from us.shipments result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by delete
+              type:
+                element_type:
+                  name: us.shipments
+                  type: named
+                type: array
+          foreign_keys: {}
+        delete_us.shoes_result:
+          description: delete from us.shoes result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by delete
+              type:
+                element_type:
+                  name: us.shoes
+                  type: named
+                type: array
+          foreign_keys: {}
+        delete_us.suppliermaterials_result:
+          description: delete from us.suppliermaterials result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by delete
+              type:
+                element_type:
+                  name: us.suppliermaterials
+                  type: named
+                type: array
+          foreign_keys: {}
+        delete_us.suppliers_result:
+          description: delete from us.suppliers result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by delete
+              type:
+                element_type:
+                  name: us.suppliers
+                  type: named
+                type: array
+          foreign_keys: {}
+        delete_us.warehouses_result:
+          description: delete from us.warehouses result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by delete
+              type:
+                element_type:
+                  name: us.warehouses
+                  type: named
+                type: array
+          foreign_keys: {}
+        insert_us.billofmaterials_result:
+          description: insert from us.billofmaterials result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by insert
+              type:
+                element_type:
+                  name: us.billofmaterials
+                  type: named
+                type: array
+          foreign_keys: {}
+        insert_us.factories_result:
+          description: insert from us.factories result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by insert
+              type:
+                element_type:
+                  name: us.factories
+                  type: named
+                type: array
+          foreign_keys: {}
+        insert_us.productionorders_result:
+          description: insert from us.productionorders result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by insert
+              type:
+                element_type:
+                  name: us.productionorders
+                  type: named
+                type: array
+          foreign_keys: {}
+        insert_us.rawmaterials_result:
+          description: insert from us.rawmaterials result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by insert
+              type:
+                element_type:
+                  name: us.rawmaterials
+                  type: named
+                type: array
+          foreign_keys: {}
+        insert_us.shipments_result:
+          description: insert from us.shipments result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by insert
+              type:
+                element_type:
+                  name: us.shipments
+                  type: named
+                type: array
+          foreign_keys: {}
+        insert_us.shoes_result:
+          description: insert from us.shoes result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by insert
+              type:
+                element_type:
+                  name: us.shoes
+                  type: named
+                type: array
+          foreign_keys: {}
+        insert_us.suppliermaterials_result:
+          description: insert from us.suppliermaterials result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by insert
+              type:
+                element_type:
+                  name: us.suppliermaterials
+                  type: named
+                type: array
+          foreign_keys: {}
+        insert_us.suppliers_result:
+          description: insert from us.suppliers result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by insert
+              type:
+                element_type:
+                  name: us.suppliers
+                  type: named
+                type: array
+          foreign_keys: {}
+        insert_us.warehouses_result:
+          description: insert from us.warehouses result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by insert
+              type:
+                element_type:
+                  name: us.warehouses
+                  type: named
+                type: array
+          foreign_keys: {}
+        int_set_input:
+          description: Wrapper for setting scalar int
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar int
+              type:
+                type: nullable
+                underlying_type:
+                  name: int
+                  type: named
+          foreign_keys: {}
+        integer_set_input:
+          description: Wrapper for setting scalar integer
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar integer
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+          foreign_keys: {}
+        string_set_input:
+          description: Wrapper for setting scalar string
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar string
+              type:
+                type: nullable
+                underlying_type:
+                  name: string
+                  type: named
+          foreign_keys: {}
+        update_us.billofmaterials_result:
+          description: update from us.billofmaterials result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by update
+              type:
+                element_type:
+                  name: us.billofmaterials
+                  type: named
+                type: array
+          foreign_keys: {}
+        update_us.factories_result:
+          description: update from us.factories result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by update
+              type:
+                element_type:
+                  name: us.factories
+                  type: named
+                type: array
+          foreign_keys: {}
+        update_us.productionorders_result:
+          description: update from us.productionorders result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by update
+              type:
+                element_type:
+                  name: us.productionorders
+                  type: named
+                type: array
+          foreign_keys: {}
+        update_us.rawmaterials_result:
+          description: update from us.rawmaterials result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by update
+              type:
+                element_type:
+                  name: us.rawmaterials
+                  type: named
+                type: array
+          foreign_keys: {}
+        update_us.shipments_result:
+          description: update from us.shipments result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by update
+              type:
+                element_type:
+                  name: us.shipments
+                  type: named
+                type: array
+          foreign_keys: {}
+        update_us.shoes_result:
+          description: update from us.shoes result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by update
+              type:
+                element_type:
+                  name: us.shoes
+                  type: named
+                type: array
+          foreign_keys: {}
+        update_us.suppliermaterials_result:
+          description: update from us.suppliermaterials result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by update
+              type:
+                element_type:
+                  name: us.suppliermaterials
+                  type: named
+                type: array
+          foreign_keys: {}
+        update_us.suppliers_result:
+          description: update from us.suppliers result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by update
+              type:
+                element_type:
+                  name: us.suppliers
+                  type: named
+                type: array
+          foreign_keys: {}
+        update_us.warehouses_result:
+          description: update from us.warehouses result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by update
+              type:
+                element_type:
+                  name: us.warehouses
+                  type: named
+                type: array
+          foreign_keys: {}
+        us.billofmaterials:
+          description: 'Object type for us.billofmaterials. Description: null'
+          fields:
+            material_id:
+              arguments: {}
+              type:
+                name: integer
+                type: named
+            quantity_required:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: decimal
+                  type: named
+            shoe_id:
+              arguments: {}
+              type:
+                name: integer
+                type: named
+          foreign_keys: {}
+        us.billofmaterials_insert_input:
+          description: Input type for inserting into us.billofmaterials
+          fields:
+            material_id:
+              arguments: {}
+              description: New value for us.billofmaterials.material_id
+              type:
+                name: integer
+                type: named
+            quantity_required:
+              arguments: {}
+              description: New value for us.billofmaterials.quantity_required
+              type:
+                type: nullable
+                underlying_type:
+                  name: decimal
+                  type: named
+            shoe_id:
+              arguments: {}
+              description: New value for us.billofmaterials.shoe_id
+              type:
+                name: integer
+                type: named
+          foreign_keys: {}
+        us.billofmaterials_set_input:
+          description: Input type for updating us.billofmaterials
+          fields:
+            material_id:
+              arguments: {}
+              description: New value wrapper for us.billofmaterials.material_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            quantity_required:
+              arguments: {}
+              description: New value wrapper for us.billofmaterials.quantity_required
+              type:
+                type: nullable
+                underlying_type:
+                  name: decimal_set_input
+                  type: named
+            shoe_id:
+              arguments: {}
+              description: New value wrapper for us.billofmaterials.shoe_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+          foreign_keys: {}
+        us.factories:
+          description: 'Object type for us.factories. Description: null'
+          fields:
+            capacity:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            factory_id:
+              arguments: {}
+              type:
+                name: integer
+                type: named
+            location:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+            name:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+          foreign_keys: {}
+        us.factories_insert_input:
+          description: Input type for inserting into us.factories
+          fields:
+            capacity:
+              arguments: {}
+              description: New value for us.factories.capacity
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            factory_id:
+              arguments: {}
+              description: New value for us.factories.factory_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            location:
+              arguments: {}
+              description: New value for us.factories.location
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+            name:
+              arguments: {}
+              description: New value for us.factories.name
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+          foreign_keys: {}
+        us.factories_set_input:
+          description: Input type for updating us.factories
+          fields:
+            capacity:
+              arguments: {}
+              description: New value wrapper for us.factories.capacity
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            factory_id:
+              arguments: {}
+              description: New value wrapper for us.factories.factory_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            location:
+              arguments: {}
+              description: New value wrapper for us.factories.location
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying_set_input
+                  type: named
+            name:
+              arguments: {}
+              description: New value wrapper for us.factories.name
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying_set_input
+                  type: named
+          foreign_keys: {}
+        us.productionorders:
+          description: 'Object type for us.productionorders. Description: null'
+          fields:
+            expected_completion:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: date
+                  type: named
+            factory_id:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            order_id:
+              arguments: {}
+              type:
+                name: integer
+                type: named
+            quantity:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            shoe_id:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            start_date:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: date
+                  type: named
+          foreign_keys: {}
+        us.productionorders_insert_input:
+          description: Input type for inserting into us.productionorders
+          fields:
+            expected_completion:
+              arguments: {}
+              description: New value for us.productionorders.expected_completion
+              type:
+                type: nullable
+                underlying_type:
+                  name: date
+                  type: named
+            factory_id:
+              arguments: {}
+              description: New value for us.productionorders.factory_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            order_id:
+              arguments: {}
+              description: New value for us.productionorders.order_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            quantity:
+              arguments: {}
+              description: New value for us.productionorders.quantity
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            shoe_id:
+              arguments: {}
+              description: New value for us.productionorders.shoe_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            start_date:
+              arguments: {}
+              description: New value for us.productionorders.start_date
+              type:
+                type: nullable
+                underlying_type:
+                  name: date
+                  type: named
+          foreign_keys: {}
+        us.productionorders_set_input:
+          description: Input type for updating us.productionorders
+          fields:
+            expected_completion:
+              arguments: {}
+              description: New value wrapper for us.productionorders.expected_completion
+              type:
+                type: nullable
+                underlying_type:
+                  name: date_set_input
+                  type: named
+            factory_id:
+              arguments: {}
+              description: New value wrapper for us.productionorders.factory_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            order_id:
+              arguments: {}
+              description: New value wrapper for us.productionorders.order_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            quantity:
+              arguments: {}
+              description: New value wrapper for us.productionorders.quantity
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            shoe_id:
+              arguments: {}
+              description: New value wrapper for us.productionorders.shoe_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            start_date:
+              arguments: {}
+              description: New value wrapper for us.productionorders.start_date
+              type:
+                type: nullable
+                underlying_type:
+                  name: date_set_input
+                  type: named
+          foreign_keys: {}
+        us.rawmaterials:
+          description: 'Object type for us.rawmaterials. Description: null'
+          fields:
+            cost_per_unit:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: decimal
+                  type: named
+            material_id:
+              arguments: {}
+              type:
+                name: integer
+                type: named
+            name:
+              arguments: {}
+              type:
+                name: character_varying
+                type: named
+            unit:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+          foreign_keys: {}
+        us.rawmaterials_insert_input:
+          description: Input type for inserting into us.rawmaterials
+          fields:
+            cost_per_unit:
+              arguments: {}
+              description: New value for us.rawmaterials.cost_per_unit
+              type:
+                type: nullable
+                underlying_type:
+                  name: decimal
+                  type: named
+            material_id:
+              arguments: {}
+              description: New value for us.rawmaterials.material_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            name:
+              arguments: {}
+              description: New value for us.rawmaterials.name
+              type:
+                name: character_varying
+                type: named
+            unit:
+              arguments: {}
+              description: New value for us.rawmaterials.unit
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+          foreign_keys: {}
+        us.rawmaterials_set_input:
+          description: Input type for updating us.rawmaterials
+          fields:
+            cost_per_unit:
+              arguments: {}
+              description: New value wrapper for us.rawmaterials.cost_per_unit
+              type:
+                type: nullable
+                underlying_type:
+                  name: decimal_set_input
+                  type: named
+            material_id:
+              arguments: {}
+              description: New value wrapper for us.rawmaterials.material_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            name:
+              arguments: {}
+              description: New value wrapper for us.rawmaterials.name
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying_set_input
+                  type: named
+            unit:
+              arguments: {}
+              description: New value wrapper for us.rawmaterials.unit
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying_set_input
+                  type: named
+          foreign_keys: {}
+        us.shipments:
+          description: 'Object type for us.shipments. Description: null'
+          fields:
+            arrival_date:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: date
+                  type: named
+            order_id:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            quantity:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            shipment_id:
+              arguments: {}
+              type:
+                name: integer
+                type: named
+            shipped_date:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: date
+                  type: named
+            warehouse_id:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+          foreign_keys: {}
+        us.shipments_insert_input:
+          description: Input type for inserting into us.shipments
+          fields:
+            arrival_date:
+              arguments: {}
+              description: New value for us.shipments.arrival_date
+              type:
+                type: nullable
+                underlying_type:
+                  name: date
+                  type: named
+            order_id:
+              arguments: {}
+              description: New value for us.shipments.order_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            quantity:
+              arguments: {}
+              description: New value for us.shipments.quantity
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            shipment_id:
+              arguments: {}
+              description: New value for us.shipments.shipment_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            shipped_date:
+              arguments: {}
+              description: New value for us.shipments.shipped_date
+              type:
+                type: nullable
+                underlying_type:
+                  name: date
+                  type: named
+            warehouse_id:
+              arguments: {}
+              description: New value for us.shipments.warehouse_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+          foreign_keys: {}
+        us.shipments_set_input:
+          description: Input type for updating us.shipments
+          fields:
+            arrival_date:
+              arguments: {}
+              description: New value wrapper for us.shipments.arrival_date
+              type:
+                type: nullable
+                underlying_type:
+                  name: date_set_input
+                  type: named
+            order_id:
+              arguments: {}
+              description: New value wrapper for us.shipments.order_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            quantity:
+              arguments: {}
+              description: New value wrapper for us.shipments.quantity
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            shipment_id:
+              arguments: {}
+              description: New value wrapper for us.shipments.shipment_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            shipped_date:
+              arguments: {}
+              description: New value wrapper for us.shipments.shipped_date
+              type:
+                type: nullable
+                underlying_type:
+                  name: date_set_input
+                  type: named
+            warehouse_id:
+              arguments: {}
+              description: New value wrapper for us.shipments.warehouse_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+          foreign_keys: {}
+        us.shoes:
+          description: 'Object type for us.shoes. Description: null'
+          fields:
+            category:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+            model_name:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+            release_date:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: date
+                  type: named
+            shoe_id:
+              arguments: {}
+              type:
+                name: integer
+                type: named
+          foreign_keys: {}
+        us.shoes_insert_input:
+          description: Input type for inserting into us.shoes
+          fields:
+            category:
+              arguments: {}
+              description: New value for us.shoes.category
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+            model_name:
+              arguments: {}
+              description: New value for us.shoes.model_name
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+            release_date:
+              arguments: {}
+              description: New value for us.shoes.release_date
+              type:
+                type: nullable
+                underlying_type:
+                  name: date
+                  type: named
+            shoe_id:
+              arguments: {}
+              description: New value for us.shoes.shoe_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+          foreign_keys: {}
+        us.shoes_set_input:
+          description: Input type for updating us.shoes
+          fields:
+            category:
+              arguments: {}
+              description: New value wrapper for us.shoes.category
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying_set_input
+                  type: named
+            model_name:
+              arguments: {}
+              description: New value wrapper for us.shoes.model_name
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying_set_input
+                  type: named
+            release_date:
+              arguments: {}
+              description: New value wrapper for us.shoes.release_date
+              type:
+                type: nullable
+                underlying_type:
+                  name: date_set_input
+                  type: named
+            shoe_id:
+              arguments: {}
+              description: New value wrapper for us.shoes.shoe_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+          foreign_keys: {}
+        us.suppliermaterials:
+          description: 'Object type for us.suppliermaterials. Description: null'
+          fields:
+            lead_time_days:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            material_id:
+              arguments: {}
+              type:
+                name: integer
+                type: named
+            supplier_id:
+              arguments: {}
+              type:
+                name: integer
+                type: named
+          foreign_keys: {}
+        us.suppliermaterials_insert_input:
+          description: Input type for inserting into us.suppliermaterials
+          fields:
+            lead_time_days:
+              arguments: {}
+              description: New value for us.suppliermaterials.lead_time_days
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            material_id:
+              arguments: {}
+              description: New value for us.suppliermaterials.material_id
+              type:
+                name: integer
+                type: named
+            supplier_id:
+              arguments: {}
+              description: New value for us.suppliermaterials.supplier_id
+              type:
+                name: integer
+                type: named
+          foreign_keys: {}
+        us.suppliermaterials_set_input:
+          description: Input type for updating us.suppliermaterials
+          fields:
+            lead_time_days:
+              arguments: {}
+              description: New value wrapper for us.suppliermaterials.lead_time_days
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            material_id:
+              arguments: {}
+              description: New value wrapper for us.suppliermaterials.material_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            supplier_id:
+              arguments: {}
+              description: New value wrapper for us.suppliermaterials.supplier_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+          foreign_keys: {}
+        us.suppliers:
+          description: 'Object type for us.suppliers. Description: null'
+          fields:
+            contact_email:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+            country:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+            name:
+              arguments: {}
+              type:
+                name: character_varying
+                type: named
+            supplier_id:
+              arguments: {}
+              type:
+                name: integer
+                type: named
+          foreign_keys: {}
+        us.suppliers_insert_input:
+          description: Input type for inserting into us.suppliers
+          fields:
+            contact_email:
+              arguments: {}
+              description: New value for us.suppliers.contact_email
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+            country:
+              arguments: {}
+              description: New value for us.suppliers.country
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+            name:
+              arguments: {}
+              description: New value for us.suppliers.name
+              type:
+                name: character_varying
+                type: named
+            supplier_id:
+              arguments: {}
+              description: New value for us.suppliers.supplier_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+          foreign_keys: {}
+        us.suppliers_set_input:
+          description: Input type for updating us.suppliers
+          fields:
+            contact_email:
+              arguments: {}
+              description: New value wrapper for us.suppliers.contact_email
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying_set_input
+                  type: named
+            country:
+              arguments: {}
+              description: New value wrapper for us.suppliers.country
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying_set_input
+                  type: named
+            name:
+              arguments: {}
+              description: New value wrapper for us.suppliers.name
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying_set_input
+                  type: named
+            supplier_id:
+              arguments: {}
+              description: New value wrapper for us.suppliers.supplier_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+          foreign_keys: {}
+        us.warehouses:
+          description: 'Object type for us.warehouses. Description: null'
+          fields:
+            location:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+            name:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+            warehouse_id:
+              arguments: {}
+              type:
+                name: integer
+                type: named
+          foreign_keys: {}
+        us.warehouses_insert_input:
+          description: Input type for inserting into us.warehouses
+          fields:
+            location:
+              arguments: {}
+              description: New value for us.warehouses.location
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+            name:
+              arguments: {}
+              description: New value for us.warehouses.name
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+            warehouse_id:
+              arguments: {}
+              description: New value for us.warehouses.warehouse_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+          foreign_keys: {}
+        us.warehouses_set_input:
+          description: Input type for updating us.warehouses
+          fields:
+            location:
+              arguments: {}
+              description: New value wrapper for us.warehouses.location
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying_set_input
+                  type: named
+            name:
+              arguments: {}
+              description: New value wrapper for us.warehouses.name
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying_set_input
+                  type: named
+            warehouse_id:
+              arguments: {}
+              description: New value wrapper for us.warehouses.warehouse_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+          foreign_keys: {}
+      procedures:
+        - arguments:
+            objects:
+              description: Objects to insert
+              type:
+                element_type:
+                  name: us.billofmaterials_insert_input
+                  type: named
+                type: array
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+          description: Insert into us.billofmaterials
+          name: insert_us.billofmaterials
+          result_type:
+            name: insert_us.billofmaterials_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            set:
+              description: Values to set
+              type:
+                name: us.billofmaterials_set_input
+                type: named
+            where:
+              description: Filter for rows to update
+              type:
+                object_type_name: us.billofmaterials
+                type: predicate
+          description: Update us.billofmaterials
+          name: update_us.billofmaterials
+          result_type:
+            name: update_us.billofmaterials_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            where:
+              description: Filter for rows to delete
+              type:
+                object_type_name: us.billofmaterials
+                type: predicate
+          description: Delete from us.billofmaterials
+          name: delete_us.billofmaterials
+          result_type:
+            name: delete_us.billofmaterials_result
+            type: named
+        - arguments:
+            objects:
+              description: Objects to insert
+              type:
+                element_type:
+                  name: us.factories_insert_input
+                  type: named
+                type: array
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+          description: Insert into us.factories
+          name: insert_us.factories
+          result_type:
+            name: insert_us.factories_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            set:
+              description: Values to set
+              type:
+                name: us.factories_set_input
+                type: named
+            where:
+              description: Filter for rows to update
+              type:
+                object_type_name: us.factories
+                type: predicate
+          description: Update us.factories
+          name: update_us.factories
+          result_type:
+            name: update_us.factories_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            where:
+              description: Filter for rows to delete
+              type:
+                object_type_name: us.factories
+                type: predicate
+          description: Delete from us.factories
+          name: delete_us.factories
+          result_type:
+            name: delete_us.factories_result
+            type: named
+        - arguments:
+            objects:
+              description: Objects to insert
+              type:
+                element_type:
+                  name: us.productionorders_insert_input
+                  type: named
+                type: array
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+          description: Insert into us.productionorders
+          name: insert_us.productionorders
+          result_type:
+            name: insert_us.productionorders_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            set:
+              description: Values to set
+              type:
+                name: us.productionorders_set_input
+                type: named
+            where:
+              description: Filter for rows to update
+              type:
+                object_type_name: us.productionorders
+                type: predicate
+          description: Update us.productionorders
+          name: update_us.productionorders
+          result_type:
+            name: update_us.productionorders_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            where:
+              description: Filter for rows to delete
+              type:
+                object_type_name: us.productionorders
+                type: predicate
+          description: Delete from us.productionorders
+          name: delete_us.productionorders
+          result_type:
+            name: delete_us.productionorders_result
+            type: named
+        - arguments:
+            objects:
+              description: Objects to insert
+              type:
+                element_type:
+                  name: us.rawmaterials_insert_input
+                  type: named
+                type: array
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+          description: Insert into us.rawmaterials
+          name: insert_us.rawmaterials
+          result_type:
+            name: insert_us.rawmaterials_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            set:
+              description: Values to set
+              type:
+                name: us.rawmaterials_set_input
+                type: named
+            where:
+              description: Filter for rows to update
+              type:
+                object_type_name: us.rawmaterials
+                type: predicate
+          description: Update us.rawmaterials
+          name: update_us.rawmaterials
+          result_type:
+            name: update_us.rawmaterials_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            where:
+              description: Filter for rows to delete
+              type:
+                object_type_name: us.rawmaterials
+                type: predicate
+          description: Delete from us.rawmaterials
+          name: delete_us.rawmaterials
+          result_type:
+            name: delete_us.rawmaterials_result
+            type: named
+        - arguments:
+            objects:
+              description: Objects to insert
+              type:
+                element_type:
+                  name: us.shipments_insert_input
+                  type: named
+                type: array
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+          description: Insert into us.shipments
+          name: insert_us.shipments
+          result_type:
+            name: insert_us.shipments_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            set:
+              description: Values to set
+              type:
+                name: us.shipments_set_input
+                type: named
+            where:
+              description: Filter for rows to update
+              type:
+                object_type_name: us.shipments
+                type: predicate
+          description: Update us.shipments
+          name: update_us.shipments
+          result_type:
+            name: update_us.shipments_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            where:
+              description: Filter for rows to delete
+              type:
+                object_type_name: us.shipments
+                type: predicate
+          description: Delete from us.shipments
+          name: delete_us.shipments
+          result_type:
+            name: delete_us.shipments_result
+            type: named
+        - arguments:
+            objects:
+              description: Objects to insert
+              type:
+                element_type:
+                  name: us.shoes_insert_input
+                  type: named
+                type: array
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+          description: Insert into us.shoes
+          name: insert_us.shoes
+          result_type:
+            name: insert_us.shoes_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            set:
+              description: Values to set
+              type:
+                name: us.shoes_set_input
+                type: named
+            where:
+              description: Filter for rows to update
+              type:
+                object_type_name: us.shoes
+                type: predicate
+          description: Update us.shoes
+          name: update_us.shoes
+          result_type:
+            name: update_us.shoes_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            where:
+              description: Filter for rows to delete
+              type:
+                object_type_name: us.shoes
+                type: predicate
+          description: Delete from us.shoes
+          name: delete_us.shoes
+          result_type:
+            name: delete_us.shoes_result
+            type: named
+        - arguments:
+            objects:
+              description: Objects to insert
+              type:
+                element_type:
+                  name: us.suppliermaterials_insert_input
+                  type: named
+                type: array
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+          description: Insert into us.suppliermaterials
+          name: insert_us.suppliermaterials
+          result_type:
+            name: insert_us.suppliermaterials_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            set:
+              description: Values to set
+              type:
+                name: us.suppliermaterials_set_input
+                type: named
+            where:
+              description: Filter for rows to update
+              type:
+                object_type_name: us.suppliermaterials
+                type: predicate
+          description: Update us.suppliermaterials
+          name: update_us.suppliermaterials
+          result_type:
+            name: update_us.suppliermaterials_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            where:
+              description: Filter for rows to delete
+              type:
+                object_type_name: us.suppliermaterials
+                type: predicate
+          description: Delete from us.suppliermaterials
+          name: delete_us.suppliermaterials
+          result_type:
+            name: delete_us.suppliermaterials_result
+            type: named
+        - arguments:
+            objects:
+              description: Objects to insert
+              type:
+                element_type:
+                  name: us.suppliers_insert_input
+                  type: named
+                type: array
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+          description: Insert into us.suppliers
+          name: insert_us.suppliers
+          result_type:
+            name: insert_us.suppliers_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            set:
+              description: Values to set
+              type:
+                name: us.suppliers_set_input
+                type: named
+            where:
+              description: Filter for rows to update
+              type:
+                object_type_name: us.suppliers
+                type: predicate
+          description: Update us.suppliers
+          name: update_us.suppliers
+          result_type:
+            name: update_us.suppliers_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            where:
+              description: Filter for rows to delete
+              type:
+                object_type_name: us.suppliers
+                type: predicate
+          description: Delete from us.suppliers
+          name: delete_us.suppliers
+          result_type:
+            name: delete_us.suppliers_result
+            type: named
+        - arguments:
+            objects:
+              description: Objects to insert
+              type:
+                element_type:
+                  name: us.warehouses_insert_input
+                  type: named
+                type: array
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+          description: Insert into us.warehouses
+          name: insert_us.warehouses
+          result_type:
+            name: insert_us.warehouses_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            set:
+              description: Values to set
+              type:
+                name: us.warehouses_set_input
+                type: named
+            where:
+              description: Filter for rows to update
+              type:
+                object_type_name: us.warehouses
+                type: predicate
+          description: Update us.warehouses
+          name: update_us.warehouses
+          result_type:
+            name: update_us.warehouses_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            where:
+              description: Filter for rows to delete
+              type:
+                object_type_name: us.warehouses
+                type: predicate
+          description: Delete from us.warehouses
+          name: delete_us.warehouses
+          result_type:
+            name: delete_us.warehouses_result
+            type: named
+      scalar_types:
+        bigint:
+          aggregate_functions:
+            avg:
+              result_type: decimal
+              type: average
+            max:
+              type: max
+            min:
+              type: min
+            stddev_pop:
+              result_type:
+                name: bigint
+                type: named
+              type: custom
+            stddev_samp:
+              result_type:
+                name: bigint
+                type: named
+              type: custom
+            sum:
+              result_type: bigint
+              type: sum
+            var_pop:
+              result_type:
+                name: bigint
+                type: named
+              type: custom
+            var_samp:
+              result_type:
+                name: bigint
+                type: named
+              type: custom
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _in:
+              type: in
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: bigint
+                type: named
+              type: custom
+          representation:
+            type: biginteger
+        character_varying:
+          aggregate_functions:
+            max:
+              type: max
+            min:
+              type: min
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _ilike:
+              type: contains_insensitive
+            _in:
+              type: in
+            _iregex:
+              argument_type:
+                name: character_varying
+                type: named
+              type: custom
+            _like:
+              type: contains
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: character_varying
+                type: named
+              type: custom
+            _nilike:
+              argument_type:
+                name: character_varying
+                type: named
+              type: custom
+            _niregex:
+              argument_type:
+                name: character_varying
+                type: named
+              type: custom
+            _nlike:
+              argument_type:
+                name: character_varying
+                type: named
+              type: custom
+            _nregex:
+              argument_type:
+                name: character_varying
+                type: named
+              type: custom
+            _regex:
+              argument_type:
+                name: character_varying
+                type: named
+              type: custom
+          representation:
+            type: string
+        date:
+          aggregate_functions:
+            max:
+              type: max
+            min:
+              type: min
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _in:
+              type: in
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: date
+                type: named
+              type: custom
+          representation:
+            type: date
+        decimal:
+          aggregate_functions:
+            avg:
+              result_type: decimal
+              type: average
+            max:
+              type: max
+            min:
+              type: min
+            stddev_pop:
+              result_type:
+                name: decimal
+                type: named
+              type: custom
+            stddev_samp:
+              result_type:
+                name: decimal
+                type: named
+              type: custom
+            sum:
+              result_type: decimal
+              type: sum
+            var_pop:
+              result_type:
+                name: decimal
+                type: named
+              type: custom
+            var_samp:
+              result_type:
+                name: decimal
+                type: named
+              type: custom
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _in:
+              type: in
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: decimal
+                type: named
+              type: custom
+          representation:
+            type: bigdecimal
+        int:
+          aggregate_functions:
+            avg:
+              result_type: decimal
+              type: average
+            max:
+              type: max
+            min:
+              type: min
+            stddev_pop:
+              result_type:
+                name: int
+                type: named
+              type: custom
+            stddev_samp:
+              result_type:
+                name: int
+                type: named
+              type: custom
+            sum:
+              result_type: bigint
+              type: sum
+            var_pop:
+              result_type:
+                name: int
+                type: named
+              type: custom
+            var_samp:
+              result_type:
+                name: int
+                type: named
+              type: custom
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _in:
+              type: in
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: int
+                type: named
+              type: custom
+          representation:
+            type: int32
+        integer:
+          aggregate_functions:
+            avg:
+              result_type: decimal
+              type: average
+            max:
+              type: max
+            min:
+              type: min
+            stddev_pop:
+              result_type:
+                name: integer
+                type: named
+              type: custom
+            stddev_samp:
+              result_type:
+                name: integer
+                type: named
+              type: custom
+            sum:
+              result_type: bigint
+              type: sum
+            var_pop:
+              result_type:
+                name: integer
+                type: named
+              type: custom
+            var_samp:
+              result_type:
+                name: integer
+                type: named
+              type: custom
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _in:
+              type: in
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: integer
+                type: named
+              type: custom
+          representation:
+            type: int32
+        string:
+          aggregate_functions:
+            max:
+              type: max
+            min:
+              type: min
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _ilike:
+              type: contains_insensitive
+            _in:
+              type: in
+            _iregex:
+              argument_type:
+                name: string
+                type: named
+              type: custom
+            _like:
+              type: contains
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: string
+                type: named
+              type: custom
+            _nilike:
+              argument_type:
+                name: string
+                type: named
+              type: custom
+            _niregex:
+              argument_type:
+                name: string
+                type: named
+              type: custom
+            _nlike:
+              argument_type:
+                name: string
+                type: named
+              type: custom
+            _nregex:
+              argument_type:
+                name: string
+                type: named
+              type: custom
+            _regex:
+              argument_type:
+                name: string
+                type: named
+              type: custom
+          representation:
+            type: string
+    capabilities:
+      capabilities:
+        mutation:
+          explain: {}
+          transactional: {}
+        query:
+          aggregates:
+            filter_by: {}
+          exists: {}
+          explain: {}
+          nested_fields: {}
+          variables: {}
+        relational_query:
+          aggregate:
+            expression:
+              aggregate:
+                approx_distinct: {}
+                approx_percentile_cont: {}
+                avg: {}
+                bool_and: {}
+                bool_or: {}
+                count:
+                  distinct: {}
+                first_value: {}
+                last_value: {}
+                max: {}
+                median: {}
+                min: {}
+                stddev: {}
+                stddev_pop: {}
+                string_agg: {}
+                sum: {}
+                var: {}
+              comparison:
+                between: {}
+                contains: {}
+                greater_than: {}
+                greater_than_eq: {}
+                ilike: {}
+                in_list: {}
+                is_false: {}
+                is_nan: {}
+                is_null: {}
+                is_true: {}
+                is_zero: {}
+                less_than: {}
+                less_than_eq: {}
+                like: {}
+              conditional:
+                case: {}
+                nullif: {}
+              scalar:
+                abs: {}
+                and: {}
+                array_element: {}
+                binary_concat: {}
+                btrim: {}
+                ceil: {}
+                character_length: {}
+                coalesce: {}
+                concat: {}
+                cos: {}
+                current_date: {}
+                current_time: {}
+                current_timestamp: {}
+                date_part:
+                  day: {}
+                  day_of_week: {}
+                  day_of_year: {}
+                  epoch: {}
+                  hour: {}
+                  microsecond: {}
+                  millisecond: {}
+                  minute: {}
+                  month: {}
+                  nanosecond: {}
+                  quarter: {}
+                  second: {}
+                  week: {}
+                  year: {}
+                date_trunc: {}
+                divide: {}
+                exp: {}
+                floor: {}
+                get_field: {}
+                greatest: {}
+                least: {}
+                left: {}
+                ln: {}
+                log: {}
+                log2: {}
+                log10: {}
+                lpad: {}
+                ltrim: {}
+                minus: {}
+                modulo: {}
+                multiply: {}
+                negate: {}
+                not: {}
+                nvl: {}
+                or: {}
+                plus: {}
+                power: {}
+                random: {}
+                replace: {}
+                reverse: {}
+                right: {}
+                round: {}
+                rpad: {}
+                rtrim: {}
+                sqrt: {}
+                str_pos: {}
+                substr: {}
+                substr_index: {}
+                tan: {}
+                to_date: {}
+                to_lower: {}
+                to_timestamp: {}
+                to_upper: {}
+                trunc: {}
+              window:
+                cume_dist: {}
+                dense_rank: {}
+                ntile: {}
+                percent_rank: {}
+                rank: {}
+                row_number: {}
+            group_by: {}
+          filter:
+            aggregate:
+              approx_distinct: {}
+              approx_percentile_cont: {}
+              avg: {}
+              bool_and: {}
+              bool_or: {}
+              count:
+                distinct: {}
+              first_value: {}
+              last_value: {}
+              max: {}
+              median: {}
+              min: {}
+              stddev: {}
+              stddev_pop: {}
+              string_agg: {}
+              sum: {}
+              var: {}
+            comparison:
+              between: {}
+              contains: {}
+              greater_than: {}
+              greater_than_eq: {}
+              ilike: {}
+              in_list: {}
+              is_false: {}
+              is_nan: {}
+              is_null: {}
+              is_true: {}
+              is_zero: {}
+              less_than: {}
+              less_than_eq: {}
+              like: {}
+            conditional:
+              case: {}
+              nullif: {}
+            scalar:
+              abs: {}
+              and: {}
+              array_element: {}
+              binary_concat: {}
+              btrim: {}
+              ceil: {}
+              character_length: {}
+              coalesce: {}
+              concat: {}
+              cos: {}
+              current_date: {}
+              current_time: {}
+              current_timestamp: {}
+              date_part:
+                day: {}
+                day_of_week: {}
+                day_of_year: {}
+                epoch: {}
+                hour: {}
+                microsecond: {}
+                millisecond: {}
+                minute: {}
+                month: {}
+                nanosecond: {}
+                quarter: {}
+                second: {}
+                week: {}
+                year: {}
+              date_trunc: {}
+              divide: {}
+              exp: {}
+              floor: {}
+              get_field: {}
+              greatest: {}
+              least: {}
+              left: {}
+              ln: {}
+              log: {}
+              log2: {}
+              log10: {}
+              lpad: {}
+              ltrim: {}
+              minus: {}
+              modulo: {}
+              multiply: {}
+              negate: {}
+              not: {}
+              nvl: {}
+              or: {}
+              plus: {}
+              power: {}
+              random: {}
+              replace: {}
+              reverse: {}
+              right: {}
+              round: {}
+              rpad: {}
+              rtrim: {}
+              sqrt: {}
+              str_pos: {}
+              substr: {}
+              substr_index: {}
+              tan: {}
+              to_date: {}
+              to_lower: {}
+              to_timestamp: {}
+              to_upper: {}
+              trunc: {}
+            window:
+              cume_dist: {}
+              dense_rank: {}
+              ntile: {}
+              percent_rank: {}
+              rank: {}
+              row_number: {}
+          join:
+            expression:
+              aggregate:
+                approx_distinct: {}
+                approx_percentile_cont: {}
+                avg: {}
+                bool_and: {}
+                bool_or: {}
+                count:
+                  distinct: {}
+                first_value: {}
+                last_value: {}
+                max: {}
+                median: {}
+                min: {}
+                stddev: {}
+                stddev_pop: {}
+                string_agg: {}
+                sum: {}
+                var: {}
+              comparison:
+                between: {}
+                contains: {}
+                greater_than: {}
+                greater_than_eq: {}
+                ilike: {}
+                in_list: {}
+                is_false: {}
+                is_nan: {}
+                is_null: {}
+                is_true: {}
+                is_zero: {}
+                less_than: {}
+                less_than_eq: {}
+                like: {}
+              conditional:
+                case: {}
+                nullif: {}
+              scalar:
+                abs: {}
+                and: {}
+                array_element: {}
+                binary_concat: {}
+                btrim: {}
+                ceil: {}
+                character_length: {}
+                coalesce: {}
+                concat: {}
+                cos: {}
+                current_date: {}
+                current_time: {}
+                current_timestamp: {}
+                date_part:
+                  day: {}
+                  day_of_week: {}
+                  day_of_year: {}
+                  epoch: {}
+                  hour: {}
+                  microsecond: {}
+                  millisecond: {}
+                  minute: {}
+                  month: {}
+                  nanosecond: {}
+                  quarter: {}
+                  second: {}
+                  week: {}
+                  year: {}
+                date_trunc: {}
+                divide: {}
+                exp: {}
+                floor: {}
+                get_field: {}
+                greatest: {}
+                least: {}
+                left: {}
+                ln: {}
+                log: {}
+                log2: {}
+                log10: {}
+                lpad: {}
+                ltrim: {}
+                minus: {}
+                modulo: {}
+                multiply: {}
+                negate: {}
+                not: {}
+                nvl: {}
+                or: {}
+                plus: {}
+                power: {}
+                random: {}
+                replace: {}
+                reverse: {}
+                right: {}
+                round: {}
+                rpad: {}
+                rtrim: {}
+                sqrt: {}
+                str_pos: {}
+                substr: {}
+                substr_index: {}
+                tan: {}
+                to_date: {}
+                to_lower: {}
+                to_timestamp: {}
+                to_upper: {}
+                trunc: {}
+              window:
+                cume_dist: {}
+                dense_rank: {}
+                ntile: {}
+                percent_rank: {}
+                rank: {}
+                row_number: {}
+            join_types:
+              full: {}
+              inner: {}
+              left: {}
+              left_anti: {}
+              left_semi: {}
+              right: {}
+              right_anti: {}
+              right_semi: {}
+          project:
+            expression:
+              aggregate:
+                approx_distinct: {}
+                approx_percentile_cont: {}
+                avg: {}
+                bool_and: {}
+                bool_or: {}
+                count:
+                  distinct: {}
+                first_value: {}
+                last_value: {}
+                max: {}
+                median: {}
+                min: {}
+                stddev: {}
+                stddev_pop: {}
+                string_agg: {}
+                sum: {}
+                var: {}
+              comparison:
+                between: {}
+                contains: {}
+                greater_than: {}
+                greater_than_eq: {}
+                ilike: {}
+                in_list: {}
+                is_false: {}
+                is_nan: {}
+                is_null: {}
+                is_true: {}
+                is_zero: {}
+                less_than: {}
+                less_than_eq: {}
+                like: {}
+              conditional:
+                case: {}
+                nullif: {}
+              scalar:
+                abs: {}
+                and: {}
+                array_element: {}
+                binary_concat: {}
+                btrim: {}
+                ceil: {}
+                character_length: {}
+                coalesce: {}
+                concat: {}
+                cos: {}
+                current_date: {}
+                current_time: {}
+                current_timestamp: {}
+                date_part:
+                  day: {}
+                  day_of_week: {}
+                  day_of_year: {}
+                  epoch: {}
+                  hour: {}
+                  microsecond: {}
+                  millisecond: {}
+                  minute: {}
+                  month: {}
+                  nanosecond: {}
+                  quarter: {}
+                  second: {}
+                  week: {}
+                  year: {}
+                date_trunc: {}
+                divide: {}
+                exp: {}
+                floor: {}
+                get_field: {}
+                greatest: {}
+                least: {}
+                left: {}
+                ln: {}
+                log: {}
+                log2: {}
+                log10: {}
+                lpad: {}
+                ltrim: {}
+                minus: {}
+                modulo: {}
+                multiply: {}
+                negate: {}
+                not: {}
+                nvl: {}
+                or: {}
+                plus: {}
+                power: {}
+                random: {}
+                replace: {}
+                reverse: {}
+                right: {}
+                round: {}
+                rpad: {}
+                rtrim: {}
+                sqrt: {}
+                str_pos: {}
+                substr: {}
+                substr_index: {}
+                tan: {}
+                to_date: {}
+                to_lower: {}
+                to_timestamp: {}
+                to_upper: {}
+                trunc: {}
+              window:
+                cume_dist: {}
+                dense_rank: {}
+                ntile: {}
+                percent_rank: {}
+                rank: {}
+                row_number: {}
+          sort:
+            expression:
+              aggregate:
+                approx_distinct: {}
+                approx_percentile_cont: {}
+                avg: {}
+                bool_and: {}
+                bool_or: {}
+                count:
+                  distinct: {}
+                first_value: {}
+                last_value: {}
+                max: {}
+                median: {}
+                min: {}
+                stddev: {}
+                stddev_pop: {}
+                string_agg: {}
+                sum: {}
+                var: {}
+              comparison:
+                between: {}
+                contains: {}
+                greater_than: {}
+                greater_than_eq: {}
+                ilike: {}
+                in_list: {}
+                is_false: {}
+                is_nan: {}
+                is_null: {}
+                is_true: {}
+                is_zero: {}
+                less_than: {}
+                less_than_eq: {}
+                like: {}
+              conditional:
+                case: {}
+                nullif: {}
+              scalar:
+                abs: {}
+                and: {}
+                array_element: {}
+                binary_concat: {}
+                btrim: {}
+                ceil: {}
+                character_length: {}
+                coalesce: {}
+                concat: {}
+                cos: {}
+                current_date: {}
+                current_time: {}
+                current_timestamp: {}
+                date_part:
+                  day: {}
+                  day_of_week: {}
+                  day_of_year: {}
+                  epoch: {}
+                  hour: {}
+                  microsecond: {}
+                  millisecond: {}
+                  minute: {}
+                  month: {}
+                  nanosecond: {}
+                  quarter: {}
+                  second: {}
+                  week: {}
+                  year: {}
+                date_trunc: {}
+                divide: {}
+                exp: {}
+                floor: {}
+                get_field: {}
+                greatest: {}
+                least: {}
+                left: {}
+                ln: {}
+                log: {}
+                log2: {}
+                log10: {}
+                lpad: {}
+                ltrim: {}
+                minus: {}
+                modulo: {}
+                multiply: {}
+                negate: {}
+                not: {}
+                nvl: {}
+                or: {}
+                plus: {}
+                power: {}
+                random: {}
+                replace: {}
+                reverse: {}
+                right: {}
+                round: {}
+                rpad: {}
+                rtrim: {}
+                sqrt: {}
+                str_pos: {}
+                substr: {}
+                substr_index: {}
+                tan: {}
+                to_date: {}
+                to_lower: {}
+                to_timestamp: {}
+                to_upper: {}
+                trunc: {}
+              window:
+                cume_dist: {}
+                dense_rank: {}
+                ntile: {}
+                percent_rank: {}
+                rank: {}
+                row_number: {}
+          union: {}
+          window:
+            expression:
+              aggregate:
+                approx_distinct: {}
+                approx_percentile_cont: {}
+                avg: {}
+                bool_and: {}
+                bool_or: {}
+                count:
+                  distinct: {}
+                first_value: {}
+                last_value: {}
+                max: {}
+                median: {}
+                min: {}
+                stddev: {}
+                stddev_pop: {}
+                string_agg: {}
+                sum: {}
+                var: {}
+              comparison:
+                between: {}
+                contains: {}
+                greater_than: {}
+                greater_than_eq: {}
+                ilike: {}
+                in_list: {}
+                is_false: {}
+                is_nan: {}
+                is_null: {}
+                is_true: {}
+                is_zero: {}
+                less_than: {}
+                less_than_eq: {}
+                like: {}
+              conditional:
+                case: {}
+                nullif: {}
+              scalar:
+                abs: {}
+                and: {}
+                array_element: {}
+                binary_concat: {}
+                btrim: {}
+                ceil: {}
+                character_length: {}
+                coalesce: {}
+                concat: {}
+                cos: {}
+                current_date: {}
+                current_time: {}
+                current_timestamp: {}
+                date_part:
+                  day: {}
+                  day_of_week: {}
+                  day_of_year: {}
+                  epoch: {}
+                  hour: {}
+                  microsecond: {}
+                  millisecond: {}
+                  minute: {}
+                  month: {}
+                  nanosecond: {}
+                  quarter: {}
+                  second: {}
+                  week: {}
+                  year: {}
+                date_trunc: {}
+                divide: {}
+                exp: {}
+                floor: {}
+                get_field: {}
+                greatest: {}
+                least: {}
+                left: {}
+                ln: {}
+                log: {}
+                log2: {}
+                log10: {}
+                lpad: {}
+                ltrim: {}
+                minus: {}
+                modulo: {}
+                multiply: {}
+                negate: {}
+                not: {}
+                nvl: {}
+                or: {}
+                plus: {}
+                power: {}
+                random: {}
+                replace: {}
+                reverse: {}
+                right: {}
+                round: {}
+                rpad: {}
+                rtrim: {}
+                sqrt: {}
+                str_pos: {}
+                substr: {}
+                substr_index: {}
+                tan: {}
+                to_date: {}
+                to_lower: {}
+                to_timestamp: {}
+                to_upper: {}
+                trunc: {}
+              window:
+                cume_dist: {}
+                dense_rank: {}
+                ntile: {}
+                percent_rank: {}
+                rank: {}
+                row_number: {}
+      version: 0.2.5

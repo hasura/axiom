@@ -1,0 +1,153 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_procedure_codes
+  description: "Object type for public.procedure_codes. Description: null"
+  fields:
+    - name: avg_duration_minutes
+      type: Int32
+    - name: category
+      type: String_1
+    - name: hcpc
+      type: String_1!
+    - name: long_description
+      type: String_1!
+    - name: short_description
+      type: String_1
+  graphql:
+    typeName: public_procedure_codes
+    inputTypeName: public_procedure_codes_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: reference
+      dataConnectorObjectType: public.procedure_codes
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_procedure_codes
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - avg_duration_minutes
+          - category
+          - hcpc
+          - long_description
+          - short_description
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_procedure_codes_bool_exp
+  operand:
+    object:
+      type: public_procedure_codes
+      comparableFields:
+        - fieldName: avg_duration_minutes
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: category
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: hcpc
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: long_description
+          booleanExpressionType: TextBoolExp
+        - fieldName: short_description
+          booleanExpressionType: CharacterVaryingBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_procedure_codes_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_procedure_codes_agg_exp
+  operand:
+    object:
+      aggregatedType: public_procedure_codes
+      aggregatableFields:
+        - fieldName: avg_duration_minutes
+          aggregateExpression: IntegerAggExp
+        - fieldName: category
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: hcpc
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: long_description
+          aggregateExpression: TextAggExp
+        - fieldName: short_description
+          aggregateExpression: CharacterVaryingAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_procedure_codes_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_procedure_codes_order_by_exp
+  operand:
+    object:
+      orderedType: public_procedure_codes
+      orderableFields:
+        - fieldName: avg_duration_minutes
+          orderByExpression: Int32OrderByExp
+        - fieldName: category
+          orderByExpression: String1OrderByExp
+        - fieldName: hcpc
+          orderByExpression: String1OrderByExp
+        - fieldName: long_description
+          orderByExpression: String1OrderByExp
+        - fieldName: short_description
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_procedure_codes_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_procedure_codes
+  objectType: public_procedure_codes
+  source:
+    dataConnectorName: reference
+    collection: public.procedure_codes
+  filterExpressionType: public_procedure_codes_bool_exp
+  aggregateExpression: public_procedure_codes_agg_exp
+  orderByExpression: public_procedure_codes_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_procedure_codes
+      subscription:
+        rootField: public_procedure_codes
+    selectUniques:
+      - queryRootField: public_procedure_codes_by_hcpc
+        uniqueIdentifier:
+          - hcpc
+        subscription:
+          rootField: public_procedure_codes_by_hcpc
+    filterInputTypeName: public_procedure_codes_filter_input
+    aggregate:
+      queryRootField: public_procedure_codes_aggregate
+      subscription:
+        rootField: public_procedure_codes_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_procedure_codes
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

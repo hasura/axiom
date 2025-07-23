@@ -1,0 +1,160 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_operators
+  description: "Object type for public.operators. Description: null"
+  fields:
+    - name: full_name
+      type: String_1
+    - name: operator_id
+      type: String_1!
+    - name: region
+      type: String_1
+    - name: specialty
+      type: String_1
+  graphql:
+    typeName: public_operators
+    inputTypeName: public_operators_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: operations
+      dataConnectorObjectType: public.operators
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_operators
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - full_name
+          - operator_id
+          - region
+          - specialty
+    - role: customer
+      output:
+        allowedFields:
+          - full_name
+          - operator_id
+          - region
+          - specialty
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_operators_bool_exp
+  operand:
+    object:
+      type: public_operators
+      comparableFields:
+        - fieldName: full_name
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: operator_id
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: region
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: specialty
+          booleanExpressionType: CharacterVaryingBoolExp_1
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_operators_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_operators_agg_exp
+  operand:
+    object:
+      aggregatedType: public_operators
+      aggregatableFields:
+        - fieldName: full_name
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: operator_id
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: region
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: specialty
+          aggregateExpression: CharacterVaryingAggExp_1
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_operators_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_operators_order_by_exp
+  operand:
+    object:
+      orderedType: public_operators
+      orderableFields:
+        - fieldName: full_name
+          orderByExpression: String1OrderByExp
+        - fieldName: operator_id
+          orderByExpression: String1OrderByExp
+        - fieldName: region
+          orderByExpression: String1OrderByExp
+        - fieldName: specialty
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_operators_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_operators
+  objectType: public_operators
+  source:
+    dataConnectorName: operations
+    collection: public.operators
+  filterExpressionType: public_operators_bool_exp
+  aggregateExpression: public_operators_agg_exp
+  orderByExpression: public_operators_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_operators
+      subscription:
+        rootField: public_operators
+    selectUniques:
+      - queryRootField: public_operators_by_operator_id
+        uniqueIdentifier:
+          - operator_id
+        subscription:
+          rootField: public_operators_by_operator_id
+    filterInputTypeName: public_operators_filter_input
+    aggregate:
+      queryRootField: public_operators_aggregate
+      subscription:
+        rootField: public_operators_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_operators
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+    - role: customer
+      select:
+        filter: 
+          fieldComparison:
+            field: operator_id
+            operator: _like
+            value: 
+              sessionVariable: x-hasura-user_id
+        allowSubscriptions: true
+

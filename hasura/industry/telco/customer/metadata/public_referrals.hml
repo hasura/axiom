@@ -1,0 +1,171 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_referrals
+  description: "Object type for public.referrals. Description: null"
+  fields:
+    - name: bonus_amount
+      type: Bigdecimal
+    - name: bonus_paid
+      type: Boolean_1
+    - name: referral_date
+      type: Date!
+    - name: referral_id
+      type: Int32!
+    - name: referred_id
+      type: Int32
+    - name: referrer_id
+      type: Int32
+    - name: status
+      type: String_1
+  graphql:
+    typeName: customer_public_referrals
+    inputTypeName: customer_public_referrals_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: public.referrals
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_referrals
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - bonus_amount
+          - bonus_paid
+          - referral_date
+          - referral_id
+          - referred_id
+          - referrer_id
+          - status
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_referrals_bool_exp
+  operand:
+    object:
+      type: public_referrals
+      comparableFields:
+        - fieldName: bonus_amount
+          booleanExpressionType: DecimalBoolExp
+        - fieldName: bonus_paid
+          booleanExpressionType: BooleanBoolExp
+        - fieldName: referral_date
+          booleanExpressionType: DateBoolExp
+        - fieldName: referral_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: referred_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: referrer_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: status
+          booleanExpressionType: CharacterVaryingBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customer_public_referrals_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_referrals_agg_exp
+  operand:
+    object:
+      aggregatedType: public_referrals
+      aggregatableFields:
+        - fieldName: bonus_amount
+          aggregateExpression: DecimalAggExp
+        - fieldName: bonus_paid
+          aggregateExpression: BooleanAggExp
+        - fieldName: referral_date
+          aggregateExpression: DateAggExp
+        - fieldName: referral_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: referred_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: referrer_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: status
+          aggregateExpression: CharacterVaryingAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: customer_public_referrals_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_referrals_order_by_exp
+  operand:
+    object:
+      orderedType: public_referrals
+      orderableFields:
+        - fieldName: bonus_amount
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: bonus_paid
+          orderByExpression: Boolean1OrderByExp
+        - fieldName: referral_date
+          orderByExpression: DateOrderByExp
+        - fieldName: referral_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: referred_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: referrer_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: status
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: customer_public_referrals_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_referrals
+  objectType: public_referrals
+  source:
+    dataConnectorName: aurora
+    collection: public.referrals
+  filterExpressionType: public_referrals_bool_exp
+  aggregateExpression: public_referrals_agg_exp
+  orderByExpression: public_referrals_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_referrals
+      subscription:
+        rootField: public_referrals
+    selectUniques:
+      - queryRootField: public_referrals_by_referral_id
+        uniqueIdentifier:
+          - referral_id
+        subscription:
+          rootField: public_referrals_by_referral_id
+    filterInputTypeName: customer_public_referrals_filter_input
+    aggregate:
+      queryRootField: public_referrals_aggregate
+      subscription:
+        rootField: public_referrals_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_referrals
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

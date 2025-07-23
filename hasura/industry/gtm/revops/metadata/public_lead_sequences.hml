@@ -1,0 +1,162 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_lead_sequences
+  description: "Object type for public.lead_sequences. Description: null"
+  fields:
+    - name: current_step
+      type: Int32
+    - name: id
+      type: Int32!
+    - name: lead_id
+      type: String_1
+    - name: sequence_id
+      type: Int32
+    - name: started_at
+      type: Timestamptz
+    - name: status
+      type: String_1
+  graphql:
+    typeName: public_lead_sequences
+    inputTypeName: public_lead_sequences_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: salesforce
+      dataConnectorObjectType: public.lead_sequences
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_lead_sequences
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - current_step
+          - id
+          - lead_id
+          - sequence_id
+          - started_at
+          - status
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_lead_sequences_bool_exp
+  operand:
+    object:
+      type: public_lead_sequences
+      comparableFields:
+        - fieldName: current_step
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: id
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: lead_id
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: sequence_id
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: started_at
+          booleanExpressionType: TimestampWithTimeZoneBoolExp
+        - fieldName: status
+          booleanExpressionType: CharacterVaryingBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_lead_sequences_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_lead_sequences_agg_exp
+  operand:
+    object:
+      aggregatedType: public_lead_sequences
+      aggregatableFields:
+        - fieldName: current_step
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: id
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: lead_id
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: sequence_id
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: started_at
+          aggregateExpression: TimestampWithTimeZoneAggExp
+        - fieldName: status
+          aggregateExpression: CharacterVaryingAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_lead_sequences_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_lead_sequences_order_by_exp
+  operand:
+    object:
+      orderedType: public_lead_sequences
+      orderableFields:
+        - fieldName: current_step
+          orderByExpression: Int32OrderByExp
+        - fieldName: id
+          orderByExpression: Int32OrderByExp
+        - fieldName: lead_id
+          orderByExpression: String1OrderByExp
+        - fieldName: sequence_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: started_at
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: status
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_lead_sequences_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_lead_sequences
+  objectType: public_lead_sequences
+  source:
+    dataConnectorName: salesforce
+    collection: public.lead_sequences
+  filterExpressionType: public_lead_sequences_bool_exp
+  aggregateExpression: public_lead_sequences_agg_exp
+  orderByExpression: public_lead_sequences_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_lead_sequences
+      subscription:
+        rootField: public_lead_sequences
+    selectUniques:
+      - queryRootField: public_lead_sequences_by_id
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: public_lead_sequences_by_id
+    filterInputTypeName: public_lead_sequences_filter_input
+    aggregate:
+      queryRootField: public_lead_sequences_aggregate
+      subscription:
+        rootField: public_lead_sequences_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_lead_sequences
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

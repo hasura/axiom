@@ -1,0 +1,127 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_promotion_products
+  description: "Object type for public.promotion_products. Description: null"
+  fields:
+    - name: product_id
+      type: Int32!
+    - name: promotion_id
+      type: Int32!
+  graphql:
+    typeName: public_promotion_products
+    inputTypeName: public_promotion_products_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: sales
+      dataConnectorObjectType: public.promotion_products
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_promotion_products
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - product_id
+          - promotion_id
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_promotion_products_bool_exp
+  operand:
+    object:
+      type: public_promotion_products
+      comparableFields:
+        - fieldName: product_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: promotion_id
+          booleanExpressionType: IntegerBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_promotion_products_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_promotion_products_agg_exp
+  operand:
+    object:
+      aggregatedType: public_promotion_products
+      aggregatableFields:
+        - fieldName: product_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: promotion_id
+          aggregateExpression: IntegerAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_promotion_products_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_promotion_products_order_by_exp
+  operand:
+    object:
+      orderedType: public_promotion_products
+      orderableFields:
+        - fieldName: product_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: promotion_id
+          orderByExpression: Int32OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_promotion_products_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_promotion_products
+  objectType: public_promotion_products
+  source:
+    dataConnectorName: sales
+    collection: public.promotion_products
+  filterExpressionType: public_promotion_products_bool_exp
+  aggregateExpression: public_promotion_products_agg_exp
+  orderByExpression: public_promotion_products_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_promotion_products
+      subscription:
+        rootField: public_promotion_products
+    selectUniques:
+      - queryRootField: public_promotion_products_by_primary_key
+        uniqueIdentifier:
+          - promotion_id
+          - product_id
+        subscription:
+          rootField: public_promotion_products_by_primary_key
+    filterInputTypeName: public_promotion_products_filter_input
+    aggregate:
+      queryRootField: public_promotion_products_aggregate
+      subscription:
+        rootField: public_promotion_products_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_promotion_products
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

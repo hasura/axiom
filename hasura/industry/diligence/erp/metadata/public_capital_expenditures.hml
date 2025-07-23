@@ -1,0 +1,252 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_capital_expenditures
+  description: "Object type for public.capital_expenditures. Description: null"
+  fields:
+    - name: accumulated_depreciation
+      type: Bigdecimal
+    - name: acquisition_cost
+      type: Bigdecimal!
+    - name: annual_depreciation
+      type: Bigdecimal!
+    - name: approval_date
+      type: Date
+    - name: asset_type
+      type: String_1!
+    - name: capex_id
+      type: Int32!
+    - name: created_at
+      type: Timestamp
+    - name: department
+      type: String_1
+    - name: depreciation_method
+      type: String_1!
+    - name: expected_useful_life_years
+      type: Int32!
+    - name: net_book_value
+      type: Bigdecimal
+    - name: project_manager
+      type: String_1
+    - name: project_name
+      type: String_1!
+    - name: purchase_date
+      type: Date
+    - name: status
+      type: String_1
+    - name: updated_at
+      type: Timestamp
+  graphql:
+    typeName: public_capital_expenditures
+    inputTypeName: public_capital_expenditures_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: financials
+      dataConnectorObjectType: public.capital_expenditures
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_capital_expenditures
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - accumulated_depreciation
+          - acquisition_cost
+          - annual_depreciation
+          - approval_date
+          - asset_type
+          - capex_id
+          - created_at
+          - department
+          - depreciation_method
+          - expected_useful_life_years
+          - net_book_value
+          - project_manager
+          - project_name
+          - purchase_date
+          - status
+          - updated_at
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_capital_expenditures_bool_exp
+  operand:
+    object:
+      type: public_capital_expenditures
+      comparableFields:
+        - fieldName: accumulated_depreciation
+          booleanExpressionType: DecimalBoolExp
+        - fieldName: acquisition_cost
+          booleanExpressionType: DecimalBoolExp
+        - fieldName: annual_depreciation
+          booleanExpressionType: DecimalBoolExp
+        - fieldName: approval_date
+          booleanExpressionType: DateBoolExp
+        - fieldName: asset_type
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: capex_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: created_at
+          booleanExpressionType: TimestampWithoutTimeZoneBoolExp
+        - fieldName: department
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: depreciation_method
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: expected_useful_life_years
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: net_book_value
+          booleanExpressionType: DecimalBoolExp
+        - fieldName: project_manager
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: project_name
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: purchase_date
+          booleanExpressionType: DateBoolExp
+        - fieldName: status
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: updated_at
+          booleanExpressionType: TimestampWithoutTimeZoneBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_capital_expenditures_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_capital_expenditures_agg_exp
+  operand:
+    object:
+      aggregatedType: public_capital_expenditures
+      aggregatableFields:
+        - fieldName: accumulated_depreciation
+          aggregateExpression: DecimalAggExp
+        - fieldName: acquisition_cost
+          aggregateExpression: DecimalAggExp
+        - fieldName: annual_depreciation
+          aggregateExpression: DecimalAggExp
+        - fieldName: approval_date
+          aggregateExpression: DateAggExp
+        - fieldName: asset_type
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: capex_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: created_at
+          aggregateExpression: TimestampWithoutTimeZoneAggExp
+        - fieldName: department
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: depreciation_method
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: expected_useful_life_years
+          aggregateExpression: IntegerAggExp
+        - fieldName: net_book_value
+          aggregateExpression: DecimalAggExp
+        - fieldName: project_manager
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: project_name
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: purchase_date
+          aggregateExpression: DateAggExp
+        - fieldName: status
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: updated_at
+          aggregateExpression: TimestampWithoutTimeZoneAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_capital_expenditures_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_capital_expenditures_order_by_exp
+  operand:
+    object:
+      orderedType: public_capital_expenditures
+      orderableFields:
+        - fieldName: accumulated_depreciation
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: acquisition_cost
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: annual_depreciation
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: approval_date
+          orderByExpression: DateOrderByExp
+        - fieldName: asset_type
+          orderByExpression: String1OrderByExp
+        - fieldName: capex_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: created_at
+          orderByExpression: TimestampOrderByExp
+        - fieldName: department
+          orderByExpression: String1OrderByExp
+        - fieldName: depreciation_method
+          orderByExpression: String1OrderByExp
+        - fieldName: expected_useful_life_years
+          orderByExpression: Int32OrderByExp
+        - fieldName: net_book_value
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: project_manager
+          orderByExpression: String1OrderByExp
+        - fieldName: project_name
+          orderByExpression: String1OrderByExp
+        - fieldName: purchase_date
+          orderByExpression: DateOrderByExp
+        - fieldName: status
+          orderByExpression: String1OrderByExp
+        - fieldName: updated_at
+          orderByExpression: TimestampOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_capital_expenditures_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_capital_expenditures
+  objectType: public_capital_expenditures
+  source:
+    dataConnectorName: financials
+    collection: public.capital_expenditures
+  filterExpressionType: public_capital_expenditures_bool_exp
+  aggregateExpression: public_capital_expenditures_agg_exp
+  orderByExpression: public_capital_expenditures_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_capital_expenditures
+      subscription:
+        rootField: public_capital_expenditures
+    selectUniques:
+      - queryRootField: public_capital_expenditures_by_capex_id
+        uniqueIdentifier:
+          - capex_id
+        subscription:
+          rootField: public_capital_expenditures_by_capex_id
+    filterInputTypeName: public_capital_expenditures_filter_input
+    aggregate:
+      queryRootField: public_capital_expenditures_aggregate
+      subscription:
+        rootField: public_capital_expenditures_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_capital_expenditures
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

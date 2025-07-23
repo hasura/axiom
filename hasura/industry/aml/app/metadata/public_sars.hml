@@ -1,0 +1,162 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_sars
+  description: "Object type for public.sars. Description: null"
+  fields:
+    - name: customer_id
+      type: Int32
+    - name: filed_date
+      type: Timestamp
+    - name: reason
+      type: String_1
+    - name: sar_id
+      type: Int32!
+    - name: status
+      type: String_1
+    - name: transaction_id
+      type: Int32
+  graphql:
+    typeName: public_sars
+    inputTypeName: public_sars_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: banking_core
+      dataConnectorObjectType: public.sars
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_sars
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - customer_id
+          - filed_date
+          - reason
+          - sar_id
+          - status
+          - transaction_id
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_sars_bool_exp
+  operand:
+    object:
+      type: public_sars
+      comparableFields:
+        - fieldName: customer_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: filed_date
+          booleanExpressionType: TimestampWithoutTimeZoneBoolExp
+        - fieldName: reason
+          booleanExpressionType: TextBoolExp
+        - fieldName: sar_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: status
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: transaction_id
+          booleanExpressionType: IntegerBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_sars_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_sars_agg_exp
+  operand:
+    object:
+      aggregatedType: public_sars
+      aggregatableFields:
+        - fieldName: customer_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: filed_date
+          aggregateExpression: TimestampWithoutTimeZoneAggExp
+        - fieldName: reason
+          aggregateExpression: TextAggExp
+        - fieldName: sar_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: status
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: transaction_id
+          aggregateExpression: IntegerAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_sars_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_sars_order_by_exp
+  operand:
+    object:
+      orderedType: public_sars
+      orderableFields:
+        - fieldName: customer_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: filed_date
+          orderByExpression: TimestampOrderByExp
+        - fieldName: reason
+          orderByExpression: String1OrderByExp
+        - fieldName: sar_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: status
+          orderByExpression: String1OrderByExp
+        - fieldName: transaction_id
+          orderByExpression: Int32OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_sars_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_sars
+  objectType: public_sars
+  source:
+    dataConnectorName: banking_core
+    collection: public.sars
+  filterExpressionType: public_sars_bool_exp
+  aggregateExpression: public_sars_agg_exp
+  orderByExpression: public_sars_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_sars
+      subscription:
+        rootField: public_sars
+    selectUniques:
+      - queryRootField: public_sars_by_sar_id
+        uniqueIdentifier:
+          - sar_id
+        subscription:
+          rootField: public_sars_by_sar_id
+    filterInputTypeName: public_sars_filter_input
+    aggregate:
+      queryRootField: public_sars_aggregate
+      subscription:
+        rootField: public_sars_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_sars
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

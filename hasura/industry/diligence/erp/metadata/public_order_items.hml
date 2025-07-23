@@ -1,0 +1,189 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_order_items
+  description: "Object type for public.order_items. Description: null"
+  fields:
+    - name: created_at
+      type: Timestamp
+    - name: discount_percentage
+      type: Bigdecimal
+    - name: item_id
+      type: Int32!
+    - name: line_total
+      type: Bigdecimal!
+    - name: order_id
+      type: Int32!
+    - name: product_id
+      type: Int32!
+    - name: quantity
+      type: Int32!
+    - name: unit_price
+      type: Bigdecimal!
+    - name: updated_at
+      type: Timestamp
+  graphql:
+    typeName: public_order_items
+    inputTypeName: public_order_items_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: operations
+      dataConnectorObjectType: public.order_items
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_order_items
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - created_at
+          - discount_percentage
+          - item_id
+          - line_total
+          - order_id
+          - product_id
+          - quantity
+          - unit_price
+          - updated_at
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_order_items_bool_exp
+  operand:
+    object:
+      type: public_order_items
+      comparableFields:
+        - fieldName: created_at
+          booleanExpressionType: TimestampWithoutTimeZoneBoolExp_1
+        - fieldName: discount_percentage
+          booleanExpressionType: DecimalBoolExp_1
+        - fieldName: item_id
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: line_total
+          booleanExpressionType: DecimalBoolExp_1
+        - fieldName: order_id
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: product_id
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: quantity
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: unit_price
+          booleanExpressionType: DecimalBoolExp_1
+        - fieldName: updated_at
+          booleanExpressionType: TimestampWithoutTimeZoneBoolExp_1
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_order_items_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_order_items_agg_exp
+  operand:
+    object:
+      aggregatedType: public_order_items
+      aggregatableFields:
+        - fieldName: created_at
+          aggregateExpression: TimestampWithoutTimeZoneAggExp_1
+        - fieldName: discount_percentage
+          aggregateExpression: DecimalAggExp_1
+        - fieldName: item_id
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: line_total
+          aggregateExpression: DecimalAggExp_1
+        - fieldName: order_id
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: product_id
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: quantity
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: unit_price
+          aggregateExpression: DecimalAggExp_1
+        - fieldName: updated_at
+          aggregateExpression: TimestampWithoutTimeZoneAggExp_1
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_order_items_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_order_items_order_by_exp
+  operand:
+    object:
+      orderedType: public_order_items
+      orderableFields:
+        - fieldName: created_at
+          orderByExpression: TimestampOrderByExp
+        - fieldName: discount_percentage
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: item_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: line_total
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: order_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: product_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: quantity
+          orderByExpression: Int32OrderByExp
+        - fieldName: unit_price
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: updated_at
+          orderByExpression: TimestampOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_order_items_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_order_items
+  objectType: public_order_items
+  source:
+    dataConnectorName: operations
+    collection: public.order_items
+  filterExpressionType: public_order_items_bool_exp
+  aggregateExpression: public_order_items_agg_exp
+  orderByExpression: public_order_items_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_order_items
+      subscription:
+        rootField: public_order_items
+    selectUniques:
+      - queryRootField: public_order_items_by_item_id
+        uniqueIdentifier:
+          - item_id
+        subscription:
+          rootField: public_order_items_by_item_id
+    filterInputTypeName: public_order_items_filter_input
+    aggregate:
+      queryRootField: public_order_items_aggregate
+      subscription:
+        rootField: public_order_items_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_order_items
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

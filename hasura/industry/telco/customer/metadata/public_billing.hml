@@ -1,0 +1,174 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_billing
+  description: "Object type for public.billing. Description: null"
+  fields:
+    - name: billing_date
+      type: Date
+    - name: billing_id
+      type: Int32!
+    - name: customer_id
+      type: Int32
+    - name: payment_status
+      type: String_1
+    - name: total_amount
+      type: Bigdecimal
+  graphql:
+    typeName: customer_public_billing
+    inputTypeName: customer_public_billing_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: public.billing
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_billing
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - billing_date
+          - billing_id
+          - customer_id
+          - payment_status
+          - total_amount
+    - role: customer
+      output:
+        allowedFields:
+          - billing_date
+          - billing_id
+          - customer_id
+          - payment_status
+          - total_amount
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_billing_bool_exp
+  operand:
+    object:
+      type: public_billing
+      comparableFields:
+        - fieldName: billing_date
+          booleanExpressionType: DateBoolExp
+        - fieldName: billing_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: customer_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: payment_status
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: total_amount
+          booleanExpressionType: DecimalBoolExp
+      comparableRelationships:
+        - relationshipName: customer
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customer_public_billing_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_billing_agg_exp
+  operand:
+    object:
+      aggregatedType: public_billing
+      aggregatableFields:
+        - fieldName: billing_date
+          aggregateExpression: DateAggExp
+        - fieldName: billing_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: customer_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: payment_status
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: total_amount
+          aggregateExpression: DecimalAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: customer_public_billing_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_billing_order_by_exp
+  operand:
+    object:
+      orderedType: public_billing
+      orderableFields:
+        - fieldName: billing_date
+          orderByExpression: DateOrderByExp
+        - fieldName: billing_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: customer_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: payment_status
+          orderByExpression: String1OrderByExp
+        - fieldName: total_amount
+          orderByExpression: BigdecimalOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: customer_public_billing_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_billing
+  objectType: public_billing
+  source:
+    dataConnectorName: aurora
+    collection: public.billing
+  filterExpressionType: public_billing_bool_exp
+  aggregateExpression: public_billing_agg_exp
+  orderByExpression: public_billing_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_billing
+      subscription:
+        rootField: public_billing
+    selectUniques:
+      - queryRootField: public_billing_by_billing_id
+        uniqueIdentifier:
+          - billing_id
+        subscription:
+          rootField: public_billing_by_billing_id
+    filterInputTypeName: customer_public_billing_filter_input
+    aggregate:
+      queryRootField: public_billing_aggregate
+      subscription:
+        rootField: public_billing_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_billing
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+    - role: customer
+      select:
+        filter: 
+          relationship:
+            name: customer
+            predicate: 
+              fieldComparison:
+                field: customer_id
+                operator: _eq
+                value: 
+                  sessionVariable: x-hasura-user-id
+        allowSubscriptions: true
+

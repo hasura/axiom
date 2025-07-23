@@ -1,0 +1,171 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_loyalty_rewards
+  description: "Object type for public.loyalty_rewards. Description: null"
+  fields:
+    - name: customer_id
+      type: Int32
+    - name: last_activity_date
+      type: Date
+    - name: points_balance
+      type: Int32
+    - name: points_earned
+      type: Int32!
+    - name: points_redeemed
+      type: Int32
+    - name: reward_id
+      type: Int32!
+    - name: tier
+      type: String_1
+  graphql:
+    typeName: customer_public_loyalty_rewards
+    inputTypeName: customer_public_loyalty_rewards_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: public.loyalty_rewards
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_loyalty_rewards
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - customer_id
+          - last_activity_date
+          - points_balance
+          - points_earned
+          - points_redeemed
+          - reward_id
+          - tier
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_loyalty_rewards_bool_exp
+  operand:
+    object:
+      type: public_loyalty_rewards
+      comparableFields:
+        - fieldName: customer_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: last_activity_date
+          booleanExpressionType: DateBoolExp
+        - fieldName: points_balance
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: points_earned
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: points_redeemed
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: reward_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: tier
+          booleanExpressionType: CharacterVaryingBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customer_public_loyalty_rewards_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_loyalty_rewards_agg_exp
+  operand:
+    object:
+      aggregatedType: public_loyalty_rewards
+      aggregatableFields:
+        - fieldName: customer_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: last_activity_date
+          aggregateExpression: DateAggExp
+        - fieldName: points_balance
+          aggregateExpression: IntegerAggExp
+        - fieldName: points_earned
+          aggregateExpression: IntegerAggExp
+        - fieldName: points_redeemed
+          aggregateExpression: IntegerAggExp
+        - fieldName: reward_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: tier
+          aggregateExpression: CharacterVaryingAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: customer_public_loyalty_rewards_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_loyalty_rewards_order_by_exp
+  operand:
+    object:
+      orderedType: public_loyalty_rewards
+      orderableFields:
+        - fieldName: customer_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: last_activity_date
+          orderByExpression: DateOrderByExp
+        - fieldName: points_balance
+          orderByExpression: Int32OrderByExp
+        - fieldName: points_earned
+          orderByExpression: Int32OrderByExp
+        - fieldName: points_redeemed
+          orderByExpression: Int32OrderByExp
+        - fieldName: reward_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: tier
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: customer_public_loyalty_rewards_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_loyalty_rewards
+  objectType: public_loyalty_rewards
+  source:
+    dataConnectorName: aurora
+    collection: public.loyalty_rewards
+  filterExpressionType: public_loyalty_rewards_bool_exp
+  aggregateExpression: public_loyalty_rewards_agg_exp
+  orderByExpression: public_loyalty_rewards_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_loyalty_rewards
+      subscription:
+        rootField: public_loyalty_rewards
+    selectUniques:
+      - queryRootField: public_loyalty_rewards_by_reward_id
+        uniqueIdentifier:
+          - reward_id
+        subscription:
+          rootField: public_loyalty_rewards_by_reward_id
+    filterInputTypeName: customer_public_loyalty_rewards_filter_input
+    aggregate:
+      queryRootField: public_loyalty_rewards_aggregate
+      subscription:
+        rootField: public_loyalty_rewards_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_loyalty_rewards
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

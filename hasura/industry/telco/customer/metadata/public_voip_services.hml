@@ -1,0 +1,180 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_voip_services
+  description: "Object type for public.voip_services. Description: null"
+  fields:
+    - name: activation_date
+      type: Date
+    - name: customer_id
+      type: Int32
+    - name: features
+      type: Json
+    - name: monthly_fee
+      type: Bigdecimal
+    - name: service_number
+      type: String_1
+    - name: service_type
+      type: String_1
+    - name: status
+      type: String_1
+    - name: voip_id
+      type: Int32!
+  graphql:
+    typeName: customer_public_voip_services
+    inputTypeName: customer_public_voip_services_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: public.voip_services
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_voip_services
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - activation_date
+          - customer_id
+          - features
+          - monthly_fee
+          - service_number
+          - service_type
+          - status
+          - voip_id
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_voip_services_bool_exp
+  operand:
+    object:
+      type: public_voip_services
+      comparableFields:
+        - fieldName: activation_date
+          booleanExpressionType: DateBoolExp
+        - fieldName: customer_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: features
+          booleanExpressionType: ArrayBoolExp
+        - fieldName: monthly_fee
+          booleanExpressionType: DecimalBoolExp
+        - fieldName: service_number
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: service_type
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: status
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: voip_id
+          booleanExpressionType: IntegerBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customer_public_voip_services_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_voip_services_agg_exp
+  operand:
+    object:
+      aggregatedType: public_voip_services
+      aggregatableFields:
+        - fieldName: activation_date
+          aggregateExpression: DateAggExp
+        - fieldName: customer_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: features
+          aggregateExpression: ArrayAggExp
+        - fieldName: monthly_fee
+          aggregateExpression: DecimalAggExp
+        - fieldName: service_number
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: service_type
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: status
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: voip_id
+          aggregateExpression: IntegerAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: customer_public_voip_services_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_voip_services_order_by_exp
+  operand:
+    object:
+      orderedType: public_voip_services
+      orderableFields:
+        - fieldName: activation_date
+          orderByExpression: DateOrderByExp
+        - fieldName: customer_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: features
+          orderByExpression: JsonOrderByExp
+        - fieldName: monthly_fee
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: service_number
+          orderByExpression: String1OrderByExp
+        - fieldName: service_type
+          orderByExpression: String1OrderByExp
+        - fieldName: status
+          orderByExpression: String1OrderByExp
+        - fieldName: voip_id
+          orderByExpression: Int32OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: customer_public_voip_services_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_voip_services
+  objectType: public_voip_services
+  source:
+    dataConnectorName: aurora
+    collection: public.voip_services
+  filterExpressionType: public_voip_services_bool_exp
+  aggregateExpression: public_voip_services_agg_exp
+  orderByExpression: public_voip_services_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_voip_services
+      subscription:
+        rootField: public_voip_services
+    selectUniques:
+      - queryRootField: public_voip_services_by_voip_id
+        uniqueIdentifier:
+          - voip_id
+        subscription:
+          rootField: public_voip_services_by_voip_id
+    filterInputTypeName: customer_public_voip_services_filter_input
+    aggregate:
+      queryRootField: public_voip_services_aggregate
+      subscription:
+        rootField: public_voip_services_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_voip_services
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

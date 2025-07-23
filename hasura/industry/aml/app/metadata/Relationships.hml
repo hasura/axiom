@@ -1,0 +1,35 @@
+---
+kind: Relationship
+version: v1
+definition:
+  name: customer
+  sourceType: accounts
+  target:
+    model:
+      name: public_customers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: account_id
+      target:
+        modelField:
+          - fieldName: account
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: accounts
+  sourceType: public_customers
+  target:
+    model:
+      name: accounts
+      relationshipType: Array
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: account
+      target:
+        modelField:
+          - fieldName: account_id

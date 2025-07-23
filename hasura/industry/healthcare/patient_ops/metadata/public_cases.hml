@@ -1,0 +1,198 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_cases
+  description: "Object type for public.cases. Description: null"
+  fields:
+    - name: case_id
+      type: Int32!
+    - name: clinic_id
+      type: String_1!
+    - name: created_at
+      type: Timestamp
+    - name: operator_id
+      type: String_1
+    - name: patient_id
+      type: String_1
+    - name: procedure_code
+      type: String_1
+    - name: recommended_date
+      type: Timestamp!
+    - name: region
+      type: String_1
+    - name: status
+      type: String_1
+    - name: urgency_level
+      type: String_1
+  graphql:
+    typeName: public_cases
+    inputTypeName: public_cases_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: operations
+      dataConnectorObjectType: public.cases
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_cases
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - case_id
+          - clinic_id
+          - created_at
+          - operator_id
+          - patient_id
+          - procedure_code
+          - recommended_date
+          - region
+          - status
+          - urgency_level
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_cases_bool_exp
+  operand:
+    object:
+      type: public_cases
+      comparableFields:
+        - fieldName: case_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: clinic_id
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: created_at
+          booleanExpressionType: TimestampWithoutTimeZoneBoolExp
+        - fieldName: operator_id
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: patient_id
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: procedure_code
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: recommended_date
+          booleanExpressionType: TimestampWithoutTimeZoneBoolExp
+        - fieldName: region
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: status
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: urgency_level
+          booleanExpressionType: CharacterVaryingBoolExp_1
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_cases_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_cases_agg_exp
+  operand:
+    object:
+      aggregatedType: public_cases
+      aggregatableFields:
+        - fieldName: case_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: clinic_id
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: created_at
+          aggregateExpression: TimestampWithoutTimeZoneAggExp
+        - fieldName: operator_id
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: patient_id
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: procedure_code
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: recommended_date
+          aggregateExpression: TimestampWithoutTimeZoneAggExp
+        - fieldName: region
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: status
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: urgency_level
+          aggregateExpression: CharacterVaryingAggExp_1
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_cases_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_cases_order_by_exp
+  operand:
+    object:
+      orderedType: public_cases
+      orderableFields:
+        - fieldName: case_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: clinic_id
+          orderByExpression: String1OrderByExp
+        - fieldName: created_at
+          orderByExpression: TimestampOrderByExp
+        - fieldName: operator_id
+          orderByExpression: String1OrderByExp
+        - fieldName: patient_id
+          orderByExpression: String1OrderByExp
+        - fieldName: procedure_code
+          orderByExpression: String1OrderByExp
+        - fieldName: recommended_date
+          orderByExpression: TimestampOrderByExp
+        - fieldName: region
+          orderByExpression: String1OrderByExp
+        - fieldName: status
+          orderByExpression: String1OrderByExp
+        - fieldName: urgency_level
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_cases_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_cases
+  objectType: public_cases
+  source:
+    dataConnectorName: operations
+    collection: public.cases
+  filterExpressionType: public_cases_bool_exp
+  aggregateExpression: public_cases_agg_exp
+  orderByExpression: public_cases_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_cases
+      subscription:
+        rootField: public_cases
+    selectUniques:
+      - queryRootField: public_cases_by_case_id
+        uniqueIdentifier:
+          - case_id
+        subscription:
+          rootField: public_cases_by_case_id
+    filterInputTypeName: public_cases_filter_input
+    aggregate:
+      queryRootField: public_cases_aggregate
+      subscription:
+        rootField: public_cases_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_cases
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

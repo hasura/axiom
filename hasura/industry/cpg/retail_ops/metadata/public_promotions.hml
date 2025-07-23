@@ -1,0 +1,207 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_promotions
+  description: "Object type for public.promotions. Description: null"
+  fields:
+    - name: budget
+      type: Bigdecimal
+    - name: channel_id
+      type: Int32
+    - name: discount_type
+      type: String_1
+    - name: discount_value
+      type: Bigdecimal
+    - name: end_date
+      type: Date!
+    - name: min_purchase_qty
+      type: Int32
+    - name: notes
+      type: String_1
+    - name: promotion_id
+      type: Int32!
+    - name: promotion_name
+      type: String_1!
+    - name: promotion_type
+      type: String_1
+    - name: start_date
+      type: Date!
+  graphql:
+    typeName: public_promotions
+    inputTypeName: public_promotions_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: sales
+      dataConnectorObjectType: public.promotions
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_promotions
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - budget
+          - channel_id
+          - discount_type
+          - discount_value
+          - end_date
+          - min_purchase_qty
+          - notes
+          - promotion_id
+          - promotion_name
+          - promotion_type
+          - start_date
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_promotions_bool_exp
+  operand:
+    object:
+      type: public_promotions
+      comparableFields:
+        - fieldName: budget
+          booleanExpressionType: DecimalBoolExp
+        - fieldName: channel_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: discount_type
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: discount_value
+          booleanExpressionType: DecimalBoolExp
+        - fieldName: end_date
+          booleanExpressionType: DateBoolExp
+        - fieldName: min_purchase_qty
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: notes
+          booleanExpressionType: TextBoolExp
+        - fieldName: promotion_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: promotion_name
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: promotion_type
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: start_date
+          booleanExpressionType: DateBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_promotions_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_promotions_agg_exp
+  operand:
+    object:
+      aggregatedType: public_promotions
+      aggregatableFields:
+        - fieldName: budget
+          aggregateExpression: DecimalAggExp
+        - fieldName: channel_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: discount_type
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: discount_value
+          aggregateExpression: DecimalAggExp
+        - fieldName: end_date
+          aggregateExpression: DateAggExp
+        - fieldName: min_purchase_qty
+          aggregateExpression: IntegerAggExp
+        - fieldName: notes
+          aggregateExpression: TextAggExp
+        - fieldName: promotion_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: promotion_name
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: promotion_type
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: start_date
+          aggregateExpression: DateAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_promotions_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_promotions_order_by_exp
+  operand:
+    object:
+      orderedType: public_promotions
+      orderableFields:
+        - fieldName: budget
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: channel_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: discount_type
+          orderByExpression: String1OrderByExp
+        - fieldName: discount_value
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: end_date
+          orderByExpression: DateOrderByExp
+        - fieldName: min_purchase_qty
+          orderByExpression: Int32OrderByExp
+        - fieldName: notes
+          orderByExpression: String1OrderByExp
+        - fieldName: promotion_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: promotion_name
+          orderByExpression: String1OrderByExp
+        - fieldName: promotion_type
+          orderByExpression: String1OrderByExp
+        - fieldName: start_date
+          orderByExpression: DateOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_promotions_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_promotions
+  objectType: public_promotions
+  source:
+    dataConnectorName: sales
+    collection: public.promotions
+  filterExpressionType: public_promotions_bool_exp
+  aggregateExpression: public_promotions_agg_exp
+  orderByExpression: public_promotions_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_promotions
+      subscription:
+        rootField: public_promotions
+    selectUniques:
+      - queryRootField: public_promotions_by_promotion_id
+        uniqueIdentifier:
+          - promotion_id
+        subscription:
+          rootField: public_promotions_by_promotion_id
+    filterInputTypeName: public_promotions_filter_input
+    aggregate:
+      queryRootField: public_promotions_aggregate
+      subscription:
+        rootField: public_promotions_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_promotions
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

@@ -1,0 +1,280 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_opportunities
+  description: "Object type for public.opportunities. Description: null"
+  fields:
+    - name: account_id
+      type: String_1
+    - name: amount
+      type: String_1
+    - name: champion_c
+      type: String_1
+    - name: close_date
+      type: String_1
+    - name: competition_c
+      type: String_1
+    - name: created_date
+      type: String_1
+    - name: decision_criteria_c
+      type: String_1
+    - name: decision_process_c
+      type: String_1
+    - name: economic_buyer_c
+      type: String_1
+    - name: id
+      type: String_1!
+    - name: identified_pain_c
+      type: String_1
+    - name: metrics_c
+      type: String_1
+    - name: name
+      type: String_1
+    - name: owner_id
+      type: Int32
+    - name: paper_process_c
+      type: String_1
+    - name: probability
+      type: Int32
+    - name: stage
+      type: String_1
+  graphql:
+    typeName: public_opportunities
+    inputTypeName: public_opportunities_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: salesforce
+      dataConnectorObjectType: public.opportunities
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_opportunities
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - account_id
+          - amount
+          - champion_c
+          - close_date
+          - competition_c
+          - created_date
+          - decision_criteria_c
+          - decision_process_c
+          - economic_buyer_c
+          - id
+          - identified_pain_c
+          - metrics_c
+          - name
+          - owner_id
+          - paper_process_c
+          - probability
+          - stage
+    - role: customer
+      output:
+        allowedFields:
+          - amount
+          - close_date
+          - created_date
+          - name
+          - owner_id
+          - probability
+          - stage
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_opportunities_bool_exp
+  operand:
+    object:
+      type: public_opportunities
+      comparableFields:
+        - fieldName: account_id
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: amount
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: champion_c
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: close_date
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: competition_c
+          booleanExpressionType: TextBoolExp_1
+        - fieldName: created_date
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: decision_criteria_c
+          booleanExpressionType: TextBoolExp_1
+        - fieldName: decision_process_c
+          booleanExpressionType: TextBoolExp_1
+        - fieldName: economic_buyer_c
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: id
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: identified_pain_c
+          booleanExpressionType: TextBoolExp_1
+        - fieldName: metrics_c
+          booleanExpressionType: TextBoolExp_1
+        - fieldName: name
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: owner_id
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: paper_process_c
+          booleanExpressionType: TextBoolExp_1
+        - fieldName: probability
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: stage
+          booleanExpressionType: CharacterVaryingBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_opportunities_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_opportunities_agg_exp
+  operand:
+    object:
+      aggregatedType: public_opportunities
+      aggregatableFields:
+        - fieldName: account_id
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: amount
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: champion_c
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: close_date
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: competition_c
+          aggregateExpression: TextAggExp_1
+        - fieldName: created_date
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: decision_criteria_c
+          aggregateExpression: TextAggExp_1
+        - fieldName: decision_process_c
+          aggregateExpression: TextAggExp_1
+        - fieldName: economic_buyer_c
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: id
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: identified_pain_c
+          aggregateExpression: TextAggExp_1
+        - fieldName: metrics_c
+          aggregateExpression: TextAggExp_1
+        - fieldName: name
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: owner_id
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: paper_process_c
+          aggregateExpression: TextAggExp_1
+        - fieldName: probability
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: stage
+          aggregateExpression: CharacterVaryingAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_opportunities_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_opportunities_order_by_exp
+  operand:
+    object:
+      orderedType: public_opportunities
+      orderableFields:
+        - fieldName: account_id
+          orderByExpression: String1OrderByExp
+        - fieldName: amount
+          orderByExpression: String1OrderByExp
+        - fieldName: champion_c
+          orderByExpression: String1OrderByExp
+        - fieldName: close_date
+          orderByExpression: String1OrderByExp
+        - fieldName: competition_c
+          orderByExpression: String1OrderByExp
+        - fieldName: created_date
+          orderByExpression: String1OrderByExp
+        - fieldName: decision_criteria_c
+          orderByExpression: String1OrderByExp
+        - fieldName: decision_process_c
+          orderByExpression: String1OrderByExp
+        - fieldName: economic_buyer_c
+          orderByExpression: String1OrderByExp
+        - fieldName: id
+          orderByExpression: String1OrderByExp
+        - fieldName: identified_pain_c
+          orderByExpression: String1OrderByExp
+        - fieldName: metrics_c
+          orderByExpression: String1OrderByExp
+        - fieldName: name
+          orderByExpression: String1OrderByExp
+        - fieldName: owner_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: paper_process_c
+          orderByExpression: String1OrderByExp
+        - fieldName: probability
+          orderByExpression: Int32OrderByExp
+        - fieldName: stage
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_opportunities_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_opportunities
+  objectType: public_opportunities
+  source:
+    dataConnectorName: salesforce
+    collection: public.opportunities
+  filterExpressionType: public_opportunities_bool_exp
+  aggregateExpression: public_opportunities_agg_exp
+  orderByExpression: public_opportunities_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_opportunities
+      subscription:
+        rootField: public_opportunities
+    selectUniques:
+      - queryRootField: public_opportunities_by_id
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: public_opportunities_by_id
+    filterInputTypeName: public_opportunities_filter_input
+    aggregate:
+      queryRootField: public_opportunities_aggregate
+      subscription:
+        rootField: public_opportunities_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_opportunities
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+    - role: customer
+      select:
+        filter:
+          fieldComparison:
+            field: owner_id
+            operator: _eq
+            value:
+              sessionVariable: x-hasura-user-id
+        allowSubscriptions: true
+

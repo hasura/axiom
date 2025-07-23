@@ -1,0 +1,216 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_assortment
+  description: "Object type for public.assortment. Description: null"
+  fields:
+    - name: assortment_id
+      type: Int32!
+    - name: end_date
+      type: Date
+    - name: facings
+      type: Int32
+    - name: is_core_assortment
+      type: Boolean_1
+    - name: is_online_only
+      type: Boolean_1
+    - name: is_promotional_only
+      type: Boolean_1
+    - name: notes
+      type: String_1
+    - name: planogram_position
+      type: String_1
+    - name: product_id
+      type: Int32
+    - name: retailer_id
+      type: Int32
+    - name: start_date
+      type: Date!
+    - name: status
+      type: String_1
+  graphql:
+    typeName: public_assortment
+    inputTypeName: public_assortment_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: inventory
+      dataConnectorObjectType: public.assortment
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_assortment
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - assortment_id
+          - end_date
+          - facings
+          - is_core_assortment
+          - is_online_only
+          - is_promotional_only
+          - notes
+          - planogram_position
+          - product_id
+          - retailer_id
+          - start_date
+          - status
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_assortment_bool_exp
+  operand:
+    object:
+      type: public_assortment
+      comparableFields:
+        - fieldName: assortment_id
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: end_date
+          booleanExpressionType: DateBoolExp_1
+        - fieldName: facings
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: is_core_assortment
+          booleanExpressionType: BooleanBoolExp_1
+        - fieldName: is_online_only
+          booleanExpressionType: BooleanBoolExp_1
+        - fieldName: is_promotional_only
+          booleanExpressionType: BooleanBoolExp_1
+        - fieldName: notes
+          booleanExpressionType: TextBoolExp_1
+        - fieldName: planogram_position
+          booleanExpressionType: CharacterVaryingBoolExp_1
+        - fieldName: product_id
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: retailer_id
+          booleanExpressionType: IntegerBoolExp_1
+        - fieldName: start_date
+          booleanExpressionType: DateBoolExp_1
+        - fieldName: status
+          booleanExpressionType: CharacterVaryingBoolExp_1
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_assortment_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_assortment_agg_exp
+  operand:
+    object:
+      aggregatedType: public_assortment
+      aggregatableFields:
+        - fieldName: assortment_id
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: end_date
+          aggregateExpression: DateAggExp_1
+        - fieldName: facings
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: is_core_assortment
+          aggregateExpression: BooleanAggExp_1
+        - fieldName: is_online_only
+          aggregateExpression: BooleanAggExp_1
+        - fieldName: is_promotional_only
+          aggregateExpression: BooleanAggExp_1
+        - fieldName: notes
+          aggregateExpression: TextAggExp_1
+        - fieldName: planogram_position
+          aggregateExpression: CharacterVaryingAggExp_1
+        - fieldName: product_id
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: retailer_id
+          aggregateExpression: IntegerAggExp_1
+        - fieldName: start_date
+          aggregateExpression: DateAggExp_1
+        - fieldName: status
+          aggregateExpression: CharacterVaryingAggExp_1
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_assortment_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_assortment_order_by_exp
+  operand:
+    object:
+      orderedType: public_assortment
+      orderableFields:
+        - fieldName: assortment_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: end_date
+          orderByExpression: DateOrderByExp
+        - fieldName: facings
+          orderByExpression: Int32OrderByExp
+        - fieldName: is_core_assortment
+          orderByExpression: Boolean1OrderByExp
+        - fieldName: is_online_only
+          orderByExpression: Boolean1OrderByExp
+        - fieldName: is_promotional_only
+          orderByExpression: Boolean1OrderByExp
+        - fieldName: notes
+          orderByExpression: String1OrderByExp
+        - fieldName: planogram_position
+          orderByExpression: String1OrderByExp
+        - fieldName: product_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: retailer_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: start_date
+          orderByExpression: DateOrderByExp
+        - fieldName: status
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_assortment_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_assortment
+  objectType: public_assortment
+  source:
+    dataConnectorName: inventory
+    collection: public.assortment
+  filterExpressionType: public_assortment_bool_exp
+  aggregateExpression: public_assortment_agg_exp
+  orderByExpression: public_assortment_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_assortment
+      subscription:
+        rootField: public_assortment
+    selectUniques:
+      - queryRootField: public_assortment_by_assortment_id
+        uniqueIdentifier:
+          - assortment_id
+        subscription:
+          rootField: public_assortment_by_assortment_id
+    filterInputTypeName: public_assortment_filter_input
+    aggregate:
+      queryRootField: public_assortment_aggregate
+      subscription:
+        rootField: public_assortment_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_assortment
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
