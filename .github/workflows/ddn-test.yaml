@@ -87,10 +87,10 @@ jobs:
           sleep 20
 
           QUERY='{
-            "query": "query getUsers { publicCustomers(where: {customerId: {_eq: 7}}) { customerId firstName lastName email satisfactionScore churnRisk customerPlans { customerPlanDevices { device { brand } } } } }"
+            "query": "query getUsers { public_customers(where: {customer_id: {_eq: 7}}) { customer_id first_name last_name email satisfaction_score churn_risk customerPlans { customerPlanDevices { device { brand } } } } }"
           }'
 
-          EXPECTED_RESPONSE='{"data":{"publicCustomers":[{"customerId":7,"firstName":"Alexis","lastName":"Marchand","email":"alexis.marchand@gmail.com","satisfactionScore":5,"churnRisk":"0.55","customerPlans":[{"customerPlanDevices":[{"device":{"brand":"Apple"}}]}]}]}}'
+          EXPECTED_RESPONSE='{"data":{"public_customers":[{"customer_id":7,"first_name":"Alexis","last_name":"Marchand","email":"alexis.marchand@gmail.com","satisfaction_score":5,"churn_risk":"0.55","customerPlans":[{"customerPlanDevices":[{"device":{"brand":"Apple"}}]}]}]}}'
 
           RESPONSE=$(curl -s -X POST "http://localhost:3280/graphql" -H "Content-Type: application/json" -d "$QUERY")
 
