@@ -1,0 +1,189 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_spectrum_licenses
+  description: "Object type for public.spectrum_licenses. Description: null"
+  fields:
+    - name: acquisition_date
+      type: Date
+    - name: bandwidth_mhz
+      type: Bigdecimal
+    - name: cost_million_usd
+      type: Bigdecimal
+    - name: expiration_date
+      type: Date
+    - name: frequency_band
+      type: String_1
+    - name: geographic_area
+      type: String_1
+    - name: license_id
+      type: Int32!
+    - name: license_number
+      type: String_1
+    - name: regulatory_authority
+      type: String_1
+  graphql:
+    typeName: network_public_spectrum_licenses
+    inputTypeName: network_public_spectrum_licenses_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: kafka_sink
+      dataConnectorObjectType: public.spectrum_licenses
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_spectrum_licenses
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - acquisition_date
+          - bandwidth_mhz
+          - cost_million_usd
+          - expiration_date
+          - frequency_band
+          - geographic_area
+          - license_id
+          - license_number
+          - regulatory_authority
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_spectrum_licenses_bool_exp
+  operand:
+    object:
+      type: public_spectrum_licenses
+      comparableFields:
+        - fieldName: acquisition_date
+          booleanExpressionType: DateBoolExp
+        - fieldName: bandwidth_mhz
+          booleanExpressionType: DecimalBoolExp_1
+        - fieldName: cost_million_usd
+          booleanExpressionType: DecimalBoolExp_1
+        - fieldName: expiration_date
+          booleanExpressionType: DateBoolExp
+        - fieldName: frequency_band
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: geographic_area
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: license_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: license_number
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: regulatory_authority
+          booleanExpressionType: CharacterVaryingBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: network_public_spectrum_licenses_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_spectrum_licenses_agg_exp
+  operand:
+    object:
+      aggregatedType: public_spectrum_licenses
+      aggregatableFields:
+        - fieldName: acquisition_date
+          aggregateExpression: DateAggExp
+        - fieldName: bandwidth_mhz
+          aggregateExpression: DecimalAggExp
+        - fieldName: cost_million_usd
+          aggregateExpression: DecimalAggExp
+        - fieldName: expiration_date
+          aggregateExpression: DateAggExp
+        - fieldName: frequency_band
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: geographic_area
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: license_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: license_number
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: regulatory_authority
+          aggregateExpression: CharacterVaryingAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: network_public_spectrum_licenses_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_spectrum_licenses_order_by_exp
+  operand:
+    object:
+      orderedType: public_spectrum_licenses
+      orderableFields:
+        - fieldName: acquisition_date
+          orderByExpression: DateOrderByExp
+        - fieldName: bandwidth_mhz
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: cost_million_usd
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: expiration_date
+          orderByExpression: DateOrderByExp
+        - fieldName: frequency_band
+          orderByExpression: String1OrderByExp
+        - fieldName: geographic_area
+          orderByExpression: String1OrderByExp
+        - fieldName: license_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: license_number
+          orderByExpression: String1OrderByExp
+        - fieldName: regulatory_authority
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: network_public_spectrum_licenses_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_spectrum_licenses
+  objectType: public_spectrum_licenses
+  source:
+    dataConnectorName: kafka_sink
+    collection: public.spectrum_licenses
+  filterExpressionType: public_spectrum_licenses_bool_exp
+  aggregateExpression: public_spectrum_licenses_agg_exp
+  orderByExpression: public_spectrum_licenses_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_spectrum_licenses
+      subscription:
+        rootField: public_spectrum_licenses
+    selectUniques:
+      - queryRootField: public_spectrum_licenses_by_license_id
+        uniqueIdentifier:
+          - license_id
+        subscription:
+          rootField: public_spectrum_licenses_by_license_id
+    filterInputTypeName: network_public_spectrum_licenses_filter_input
+    aggregate:
+      queryRootField: public_spectrum_licenses_aggregate
+      subscription:
+        rootField: public_spectrum_licenses_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_spectrum_licenses
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

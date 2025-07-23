@@ -1,0 +1,189 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_feedback
+  description: "Object type for public.feedback. Description: null"
+  fields:
+    - name: category
+      type: String_1
+    - name: comments
+      type: String_1
+    - name: customer_id
+      type: Int32
+    - name: feedback_date
+      type: Timestamptz
+    - name: feedback_id
+      type: Int32!
+    - name: followup_date
+      type: Timestamptz
+    - name: followup_notes
+      type: String_1
+    - name: rating
+      type: Int32
+    - name: requires_followup
+      type: Boolean_1
+  graphql:
+    typeName: customer_public_feedback
+    inputTypeName: customer_public_feedback_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: public.feedback
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_feedback
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - category
+          - comments
+          - customer_id
+          - feedback_date
+          - feedback_id
+          - followup_date
+          - followup_notes
+          - rating
+          - requires_followup
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_feedback_bool_exp
+  operand:
+    object:
+      type: public_feedback
+      comparableFields:
+        - fieldName: category
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: comments
+          booleanExpressionType: TextBoolExp
+        - fieldName: customer_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: feedback_date
+          booleanExpressionType: TimestampWithTimeZoneBoolExp
+        - fieldName: feedback_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: followup_date
+          booleanExpressionType: TimestampWithTimeZoneBoolExp
+        - fieldName: followup_notes
+          booleanExpressionType: TextBoolExp
+        - fieldName: rating
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: requires_followup
+          booleanExpressionType: BooleanBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customer_public_feedback_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_feedback_agg_exp
+  operand:
+    object:
+      aggregatedType: public_feedback
+      aggregatableFields:
+        - fieldName: category
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: comments
+          aggregateExpression: TextAggExp
+        - fieldName: customer_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: feedback_date
+          aggregateExpression: TimestampWithTimeZoneAggExp
+        - fieldName: feedback_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: followup_date
+          aggregateExpression: TimestampWithTimeZoneAggExp
+        - fieldName: followup_notes
+          aggregateExpression: TextAggExp
+        - fieldName: rating
+          aggregateExpression: IntegerAggExp
+        - fieldName: requires_followup
+          aggregateExpression: BooleanAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: customer_public_feedback_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_feedback_order_by_exp
+  operand:
+    object:
+      orderedType: public_feedback
+      orderableFields:
+        - fieldName: category
+          orderByExpression: String1OrderByExp
+        - fieldName: comments
+          orderByExpression: String1OrderByExp
+        - fieldName: customer_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: feedback_date
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: feedback_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: followup_date
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: followup_notes
+          orderByExpression: String1OrderByExp
+        - fieldName: rating
+          orderByExpression: Int32OrderByExp
+        - fieldName: requires_followup
+          orderByExpression: Boolean1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: customer_public_feedback_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_feedback
+  objectType: public_feedback
+  source:
+    dataConnectorName: aurora
+    collection: public.feedback
+  filterExpressionType: public_feedback_bool_exp
+  aggregateExpression: public_feedback_agg_exp
+  orderByExpression: public_feedback_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_feedback
+      subscription:
+        rootField: public_feedback
+    selectUniques:
+      - queryRootField: public_feedback_by_feedback_id
+        uniqueIdentifier:
+          - feedback_id
+        subscription:
+          rootField: public_feedback_by_feedback_id
+    filterInputTypeName: customer_public_feedback_filter_input
+    aggregate:
+      queryRootField: public_feedback_aggregate
+      subscription:
+        rootField: public_feedback_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_feedback
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

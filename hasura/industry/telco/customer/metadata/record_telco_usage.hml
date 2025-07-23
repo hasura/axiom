@@ -1,0 +1,116 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: record_telco_usage_usage_data
+  fields:
+    - name: action
+      type: String
+    - name: quantity
+      type: Float!
+    - name: subscription_item_id
+      type: String!
+    - name: timestamp
+      type: Float
+  graphql:
+    typeName: customer_record_telco_usage_usage_data
+    inputTypeName: customer_record_telco_usage_usage_data_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: stripe
+      dataConnectorObjectType: recordTelcoUsage_usageData
+      fieldMapping:
+        action:
+          column:
+            name: action
+        quantity:
+          column:
+            name: quantity
+        subscription_item_id:
+          column:
+            name: subscriptionItemId
+        timestamp:
+          column:
+            name: timestamp
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: record_telco_usage_usage_data
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - action
+          - quantity
+          - subscription_item_id
+          - timestamp
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: telco_usage_record
+  fields:
+    - name: action
+      type: String!
+    - name: id
+      type: String!
+    - name: quantity
+      type: Float!
+    - name: subscription_item
+      type: String!
+    - name: timestamp
+      type: Float!
+  graphql:
+    typeName: customer_telco_usage_record
+    inputTypeName: customer_telco_usage_record_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: stripe
+      dataConnectorObjectType: TelcoUsageRecord
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: telco_usage_record
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - action
+          - id
+          - quantity
+          - subscription_item
+          - timestamp
+
+---
+kind: Command
+version: v1
+definition:
+  name: record_telco_usage
+  outputType: telco_usage_record!
+  arguments:
+    - name: usage_data
+      type: record_telco_usage_usage_data!
+      description: Data about the usage to record
+  source:
+    dataConnectorName: stripe
+    dataConnectorCommand:
+      procedure: recordTelcoUsage
+    argumentMapping:
+      usage_data: usageData
+  graphql:
+    rootFieldName: record_telco_usage
+    rootFieldKind: Mutation
+  description: Records usage for metered telecommunications services like data overages
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: record_telco_usage
+  permissions:
+    - role: admin
+      allowExecution: true
+

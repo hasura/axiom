@@ -1,0 +1,180 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_device_upgrades
+  description: "Object type for public.device_upgrades. Description: null"
+  fields:
+    - name: contract_extension_months
+      type: Int32
+    - name: customer_id
+      type: Int32
+    - name: new_device_id
+      type: Int32
+    - name: old_device_id
+      type: Int32
+    - name: promotion_applied
+      type: String_1
+    - name: trade_in_value
+      type: Bigdecimal
+    - name: upgrade_date
+      type: Date!
+    - name: upgrade_id
+      type: Int32!
+  graphql:
+    typeName: customer_public_device_upgrades
+    inputTypeName: customer_public_device_upgrades_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: public.device_upgrades
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_device_upgrades
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - contract_extension_months
+          - customer_id
+          - new_device_id
+          - old_device_id
+          - promotion_applied
+          - trade_in_value
+          - upgrade_date
+          - upgrade_id
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_device_upgrades_bool_exp
+  operand:
+    object:
+      type: public_device_upgrades
+      comparableFields:
+        - fieldName: contract_extension_months
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: customer_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: new_device_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: old_device_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: promotion_applied
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: trade_in_value
+          booleanExpressionType: DecimalBoolExp
+        - fieldName: upgrade_date
+          booleanExpressionType: DateBoolExp
+        - fieldName: upgrade_id
+          booleanExpressionType: IntegerBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customer_public_device_upgrades_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_device_upgrades_agg_exp
+  operand:
+    object:
+      aggregatedType: public_device_upgrades
+      aggregatableFields:
+        - fieldName: contract_extension_months
+          aggregateExpression: IntegerAggExp
+        - fieldName: customer_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: new_device_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: old_device_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: promotion_applied
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: trade_in_value
+          aggregateExpression: DecimalAggExp
+        - fieldName: upgrade_date
+          aggregateExpression: DateAggExp
+        - fieldName: upgrade_id
+          aggregateExpression: IntegerAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: customer_public_device_upgrades_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_device_upgrades_order_by_exp
+  operand:
+    object:
+      orderedType: public_device_upgrades
+      orderableFields:
+        - fieldName: contract_extension_months
+          orderByExpression: Int32OrderByExp
+        - fieldName: customer_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: new_device_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: old_device_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: promotion_applied
+          orderByExpression: String1OrderByExp
+        - fieldName: trade_in_value
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: upgrade_date
+          orderByExpression: DateOrderByExp
+        - fieldName: upgrade_id
+          orderByExpression: Int32OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: customer_public_device_upgrades_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_device_upgrades
+  objectType: public_device_upgrades
+  source:
+    dataConnectorName: aurora
+    collection: public.device_upgrades
+  filterExpressionType: public_device_upgrades_bool_exp
+  aggregateExpression: public_device_upgrades_agg_exp
+  orderByExpression: public_device_upgrades_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_device_upgrades
+      subscription:
+        rootField: public_device_upgrades
+    selectUniques:
+      - queryRootField: public_device_upgrades_by_upgrade_id
+        uniqueIdentifier:
+          - upgrade_id
+        subscription:
+          rootField: public_device_upgrades_by_upgrade_id
+    filterInputTypeName: customer_public_device_upgrades_filter_input
+    aggregate:
+      queryRootField: public_device_upgrades_aggregate
+      subscription:
+        rootField: public_device_upgrades_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_device_upgrades
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

@@ -1,0 +1,171 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_devices
+  description: "Object type for public.devices. Description: null"
+  fields:
+    - name: brand
+      type: String_1!
+    - name: created_at
+      type: Timestamptz!
+    - name: device_id
+      type: Int32!
+    - name: image
+      type: String_1
+    - name: model
+      type: String_1!
+    - name: sf_record
+      type: String_1
+    - name: updated_at
+      type: Timestamptz!
+  graphql:
+    typeName: customer_public_devices
+    inputTypeName: customer_public_devices_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: public.devices
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_devices
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - brand
+          - created_at
+          - device_id
+          - image
+          - model
+          - sf_record
+          - updated_at
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_devices_bool_exp
+  operand:
+    object:
+      type: public_devices
+      comparableFields:
+        - fieldName: brand
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: created_at
+          booleanExpressionType: TimestampWithTimeZoneBoolExp
+        - fieldName: device_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: image
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: model
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: sf_record
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: updated_at
+          booleanExpressionType: TimestampWithTimeZoneBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customer_public_devices_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_devices_agg_exp
+  operand:
+    object:
+      aggregatedType: public_devices
+      aggregatableFields:
+        - fieldName: brand
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: created_at
+          aggregateExpression: TimestampWithTimeZoneAggExp
+        - fieldName: device_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: image
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: model
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: sf_record
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: updated_at
+          aggregateExpression: TimestampWithTimeZoneAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: customer_public_devices_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_devices_order_by_exp
+  operand:
+    object:
+      orderedType: public_devices
+      orderableFields:
+        - fieldName: brand
+          orderByExpression: String1OrderByExp
+        - fieldName: created_at
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: device_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: image
+          orderByExpression: String1OrderByExp
+        - fieldName: model
+          orderByExpression: String1OrderByExp
+        - fieldName: sf_record
+          orderByExpression: String1OrderByExp
+        - fieldName: updated_at
+          orderByExpression: TimestamptzOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: customer_public_devices_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_devices
+  objectType: public_devices
+  source:
+    dataConnectorName: aurora
+    collection: public.devices
+  filterExpressionType: public_devices_bool_exp
+  aggregateExpression: public_devices_agg_exp
+  orderByExpression: public_devices_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_devices
+      subscription:
+        rootField: public_devices
+    selectUniques:
+      - queryRootField: public_devices_by_device_id
+        uniqueIdentifier:
+          - device_id
+        subscription:
+          rootField: public_devices_by_device_id
+    filterInputTypeName: customer_public_devices_filter_input
+    aggregate:
+      queryRootField: public_devices_aggregate
+      subscription:
+        rootField: public_devices_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_devices
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

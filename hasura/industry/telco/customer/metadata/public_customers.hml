@@ -1,0 +1,314 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_customers
+  description: "Object type for public.customers. Description: null"
+  fields:
+    - name: address
+      type: String_1
+    - name: auth_user_id
+      type: Int32
+    - name: churn_risk
+      type: Bigdecimal
+    - name: churn_risk_factors
+      type: Json
+    - name: city
+      type: String_1
+    - name: country
+      type: String_1
+    - name: customer_id
+      type: Int32!
+    - name: dob
+      type: Date
+    - name: email
+      type: String_1
+    - name: first_name
+      type: String_1
+    - name: image
+      type: String_1
+    - name: last_name
+      type: String_1
+    - name: last_survey_date
+      type: Date
+    - name: phone_number
+      type: String_1
+    - name: postcode
+      type: String_1
+    - name: satisfaction_score
+      type: Int32
+    - name: segment
+      type: String_1
+    - name: state
+      type: String_1
+  graphql:
+    typeName: customer_public_customers
+    inputTypeName: customer_public_customers_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: public.customers
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_customers
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - address
+          - auth_user_id
+          - churn_risk
+          - churn_risk_factors
+          - city
+          - country
+          - customer_id
+          - dob
+          - email
+          - first_name
+          - image
+          - last_name
+          - last_survey_date
+          - phone_number
+          - postcode
+          - satisfaction_score
+          - segment
+          - state
+    - role: customer
+      output:
+        allowedFields:
+          - address
+          - city
+          - country
+          - customer_id
+          - dob
+          - email
+          - first_name
+          - image
+          - last_name
+          - phone_number
+          - postcode
+          - state
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_customers_bool_exp
+  operand:
+    object:
+      type: public_customers
+      comparableFields:
+        - fieldName: address
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: auth_user_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: churn_risk
+          booleanExpressionType: DecimalBoolExp
+        - fieldName: churn_risk_factors
+          booleanExpressionType: ArrayBoolExp
+        - fieldName: city
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: country
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: customer_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: dob
+          booleanExpressionType: DateBoolExp
+        - fieldName: email
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: first_name
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: image
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: last_name
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: last_survey_date
+          booleanExpressionType: DateBoolExp
+        - fieldName: phone_number
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: postcode
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: satisfaction_score
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: segment
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: state
+          booleanExpressionType: CharacterVaryingBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customer_public_customers_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_customers_agg_exp
+  operand:
+    object:
+      aggregatedType: public_customers
+      aggregatableFields:
+        - fieldName: address
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: auth_user_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: churn_risk
+          aggregateExpression: DecimalAggExp
+        - fieldName: churn_risk_factors
+          aggregateExpression: ArrayAggExp
+        - fieldName: city
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: country
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: customer_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: dob
+          aggregateExpression: DateAggExp
+        - fieldName: email
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: first_name
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: image
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: last_name
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: last_survey_date
+          aggregateExpression: DateAggExp
+        - fieldName: phone_number
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: postcode
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: satisfaction_score
+          aggregateExpression: IntegerAggExp
+        - fieldName: segment
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: state
+          aggregateExpression: CharacterVaryingAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: customer_public_customers_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_customers_order_by_exp
+  operand:
+    object:
+      orderedType: public_customers
+      orderableFields:
+        - fieldName: address
+          orderByExpression: String1OrderByExp
+        - fieldName: auth_user_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: churn_risk
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: churn_risk_factors
+          orderByExpression: JsonOrderByExp
+        - fieldName: city
+          orderByExpression: String1OrderByExp
+        - fieldName: country
+          orderByExpression: String1OrderByExp
+        - fieldName: customer_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: dob
+          orderByExpression: DateOrderByExp
+        - fieldName: email
+          orderByExpression: String1OrderByExp
+        - fieldName: first_name
+          orderByExpression: String1OrderByExp
+        - fieldName: image
+          orderByExpression: String1OrderByExp
+        - fieldName: last_name
+          orderByExpression: String1OrderByExp
+        - fieldName: last_survey_date
+          orderByExpression: DateOrderByExp
+        - fieldName: phone_number
+          orderByExpression: String1OrderByExp
+        - fieldName: postcode
+          orderByExpression: String1OrderByExp
+        - fieldName: satisfaction_score
+          orderByExpression: Int32OrderByExp
+        - fieldName: segment
+          orderByExpression: String1OrderByExp
+        - fieldName: state
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: customer_public_customers_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_customers
+  description: >
+    # Telecommunications Customer Master Repository
+
+    Central subscriber datastore for the integrated telecommunications system. This is the authoritative
+    source of truth for all customer data across the organization including:
+
+    * **Service eligibility** and qualification status
+    * **Network preferences** and technical configurations
+    * **Billing profiles** and payment history references
+    * **Risk analytics** including churn prediction models
+    * **Customer journey** tracking across all touchpoints
+
+    ## Usage Guidelines
+
+    This model should be the primary reference for:
+    - Customer-facing applications and self-service portals
+    - Call center and technical support systems
+    - Network provisioning and service activation workflows
+    - Business intelligence and executive reporting dashboards
+    - Regulatory compliance and data governance processes
+  objectType: public_customers
+  source:
+    dataConnectorName: aurora
+    collection: public.customers
+  filterExpressionType: public_customers_bool_exp
+  aggregateExpression: public_customers_agg_exp
+  orderByExpression: public_customers_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_customers
+      subscription:
+        rootField: public_customers
+    selectUniques:
+      - queryRootField: public_customers_by_customer_id
+        uniqueIdentifier:
+          - customer_id
+        subscription:
+          rootField: public_customers_by_customer_id
+    filterInputTypeName: customer_public_customers_filter_input
+    aggregate:
+      queryRootField: public_customers_aggregate
+      subscription:
+        rootField: public_customers_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_customers
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+    - role: customer
+      select:
+        filter:
+          fieldComparison:
+            field: customer_id
+            operator: _eq
+            value:
+              sessionVariable: x-hasura-user-id
+        allowSubscriptions: true
+

@@ -1,0 +1,198 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_campaigns
+  description: "Object type for public.campaigns. Description: null"
+  fields:
+    - name: actual_conversions
+      type: Int32
+    - name: budget
+      type: Bigdecimal
+    - name: campaign_id
+      type: Int32!
+    - name: campaign_name
+      type: String_1!
+    - name: channel
+      type: String_1
+    - name: conversion_goal
+      type: Int32
+    - name: end_date
+      type: Date
+    - name: offer_details
+      type: String_1
+    - name: start_date
+      type: Date!
+    - name: target_segment
+      type: String_1
+  graphql:
+    typeName: customer_public_campaigns
+    inputTypeName: customer_public_campaigns_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: public.campaigns
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_campaigns
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - actual_conversions
+          - budget
+          - campaign_id
+          - campaign_name
+          - channel
+          - conversion_goal
+          - end_date
+          - offer_details
+          - start_date
+          - target_segment
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_campaigns_bool_exp
+  operand:
+    object:
+      type: public_campaigns
+      comparableFields:
+        - fieldName: actual_conversions
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: budget
+          booleanExpressionType: DecimalBoolExp
+        - fieldName: campaign_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: campaign_name
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: channel
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: conversion_goal
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: end_date
+          booleanExpressionType: DateBoolExp
+        - fieldName: offer_details
+          booleanExpressionType: TextBoolExp
+        - fieldName: start_date
+          booleanExpressionType: DateBoolExp
+        - fieldName: target_segment
+          booleanExpressionType: CharacterVaryingBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customer_public_campaigns_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_campaigns_agg_exp
+  operand:
+    object:
+      aggregatedType: public_campaigns
+      aggregatableFields:
+        - fieldName: actual_conversions
+          aggregateExpression: IntegerAggExp
+        - fieldName: budget
+          aggregateExpression: DecimalAggExp
+        - fieldName: campaign_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: campaign_name
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: channel
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: conversion_goal
+          aggregateExpression: IntegerAggExp
+        - fieldName: end_date
+          aggregateExpression: DateAggExp
+        - fieldName: offer_details
+          aggregateExpression: TextAggExp
+        - fieldName: start_date
+          aggregateExpression: DateAggExp
+        - fieldName: target_segment
+          aggregateExpression: CharacterVaryingAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: customer_public_campaigns_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_campaigns_order_by_exp
+  operand:
+    object:
+      orderedType: public_campaigns
+      orderableFields:
+        - fieldName: actual_conversions
+          orderByExpression: Int32OrderByExp
+        - fieldName: budget
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: campaign_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: campaign_name
+          orderByExpression: String1OrderByExp
+        - fieldName: channel
+          orderByExpression: String1OrderByExp
+        - fieldName: conversion_goal
+          orderByExpression: Int32OrderByExp
+        - fieldName: end_date
+          orderByExpression: DateOrderByExp
+        - fieldName: offer_details
+          orderByExpression: String1OrderByExp
+        - fieldName: start_date
+          orderByExpression: DateOrderByExp
+        - fieldName: target_segment
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: customer_public_campaigns_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_campaigns
+  objectType: public_campaigns
+  source:
+    dataConnectorName: aurora
+    collection: public.campaigns
+  filterExpressionType: public_campaigns_bool_exp
+  aggregateExpression: public_campaigns_agg_exp
+  orderByExpression: public_campaigns_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_campaigns
+      subscription:
+        rootField: public_campaigns
+    selectUniques:
+      - queryRootField: public_campaigns_by_campaign_id
+        uniqueIdentifier:
+          - campaign_id
+        subscription:
+          rootField: public_campaigns_by_campaign_id
+    filterInputTypeName: customer_public_campaigns_filter_input
+    aggregate:
+      queryRootField: public_campaigns_aggregate
+      subscription:
+        rootField: public_campaigns_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_campaigns
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

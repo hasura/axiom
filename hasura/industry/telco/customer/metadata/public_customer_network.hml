@@ -1,0 +1,127 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_customer_network
+  description: "Object type for public.customer_network. Description: null"
+  fields:
+    - name: customer_id
+      type: Int32!
+    - name: node_id
+      type: Int32!
+  graphql:
+    typeName: customer_public_customer_network
+    inputTypeName: customer_public_customer_network_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: public.customer_network
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_customer_network
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - customer_id
+          - node_id
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_customer_network_bool_exp
+  operand:
+    object:
+      type: public_customer_network
+      comparableFields:
+        - fieldName: customer_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: node_id
+          booleanExpressionType: IntegerBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customer_public_customer_network_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_customer_network_agg_exp
+  operand:
+    object:
+      aggregatedType: public_customer_network
+      aggregatableFields:
+        - fieldName: customer_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: node_id
+          aggregateExpression: IntegerAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: customer_public_customer_network_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_customer_network_order_by_exp
+  operand:
+    object:
+      orderedType: public_customer_network
+      orderableFields:
+        - fieldName: customer_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: node_id
+          orderByExpression: Int32OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: customer_public_customer_network_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_customer_network
+  objectType: public_customer_network
+  source:
+    dataConnectorName: aurora
+    collection: public.customer_network
+  filterExpressionType: public_customer_network_bool_exp
+  aggregateExpression: public_customer_network_agg_exp
+  orderByExpression: public_customer_network_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_customer_network
+      subscription:
+        rootField: public_customer_network
+    selectUniques:
+      - queryRootField: public_customer_network_by_primary_key
+        uniqueIdentifier:
+          - customer_id
+          - node_id
+        subscription:
+          rootField: public_customer_network_by_primary_key
+    filterInputTypeName: customer_public_customer_network_filter_input
+    aggregate:
+      queryRootField: public_customer_network_aggregate
+      subscription:
+        rootField: public_customer_network_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_customer_network
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

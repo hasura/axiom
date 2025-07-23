@@ -1,0 +1,222 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_customer_plans
+  description: "Object type for public.customer_plans. Description: null"
+  fields:
+    - name: cell_number
+      type: String_1
+    - name: customer_id
+      type: Int32
+    - name: customer_plan_id
+      type: Int32!
+    - name: data_allocation_gb
+      type: Int32
+    - name: data_used_gb
+      type: Bigdecimal
+    - name: end_date
+      type: Date
+    - name: plan_id
+      type: Int32
+    - name: rollover_data_gb
+      type: Bigdecimal
+    - name: start_date
+      type: Date
+    - name: status
+      type: String_1
+  graphql:
+    typeName: customer_public_customer_plans
+    inputTypeName: customer_public_customer_plans_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: public.customer_plans
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_customer_plans
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - cell_number
+          - customer_id
+          - customer_plan_id
+          - data_allocation_gb
+          - data_used_gb
+          - end_date
+          - plan_id
+          - rollover_data_gb
+          - start_date
+          - status
+    - role: customer
+      output:
+        allowedFields:
+          - cell_number
+          - customer_id
+          - customer_plan_id
+          - data_allocation_gb
+          - data_used_gb
+          - end_date
+          - plan_id
+          - rollover_data_gb
+          - start_date
+          - status
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_customer_plans_bool_exp
+  operand:
+    object:
+      type: public_customer_plans
+      comparableFields:
+        - fieldName: cell_number
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: customer_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: customer_plan_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: data_allocation_gb
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: data_used_gb
+          booleanExpressionType: DecimalBoolExp
+        - fieldName: end_date
+          booleanExpressionType: DateBoolExp
+        - fieldName: plan_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: rollover_data_gb
+          booleanExpressionType: DecimalBoolExp
+        - fieldName: start_date
+          booleanExpressionType: DateBoolExp
+        - fieldName: status
+          booleanExpressionType: CharacterVaryingBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customer_public_customer_plans_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_customer_plans_agg_exp
+  operand:
+    object:
+      aggregatedType: public_customer_plans
+      aggregatableFields:
+        - fieldName: cell_number
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: customer_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: customer_plan_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: data_allocation_gb
+          aggregateExpression: IntegerAggExp
+        - fieldName: data_used_gb
+          aggregateExpression: DecimalAggExp
+        - fieldName: end_date
+          aggregateExpression: DateAggExp
+        - fieldName: plan_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: rollover_data_gb
+          aggregateExpression: DecimalAggExp
+        - fieldName: start_date
+          aggregateExpression: DateAggExp
+        - fieldName: status
+          aggregateExpression: CharacterVaryingAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: customer_public_customer_plans_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_customer_plans_order_by_exp
+  operand:
+    object:
+      orderedType: public_customer_plans
+      orderableFields:
+        - fieldName: cell_number
+          orderByExpression: String1OrderByExp
+        - fieldName: customer_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: customer_plan_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: data_allocation_gb
+          orderByExpression: Int32OrderByExp
+        - fieldName: data_used_gb
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: end_date
+          orderByExpression: DateOrderByExp
+        - fieldName: plan_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: rollover_data_gb
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: start_date
+          orderByExpression: DateOrderByExp
+        - fieldName: status
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: customer_public_customer_plans_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_customer_plans
+  objectType: public_customer_plans
+  source:
+    dataConnectorName: aurora
+    collection: public.customer_plans
+  filterExpressionType: public_customer_plans_bool_exp
+  aggregateExpression: public_customer_plans_agg_exp
+  orderByExpression: public_customer_plans_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_customer_plans
+      subscription:
+        rootField: public_customer_plans
+    selectUniques:
+      - queryRootField: public_customer_plans_by_customer_plan_id
+        uniqueIdentifier:
+          - customer_plan_id
+        subscription:
+          rootField: public_customer_plans_by_customer_plan_id
+    filterInputTypeName: customer_public_customer_plans_filter_input
+    aggregate:
+      queryRootField: public_customer_plans_aggregate
+      subscription:
+        rootField: public_customer_plans_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_customer_plans
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+    - role: customer
+      select:
+        filter: 
+          relationship:
+            name: customer
+            predicate: 
+              fieldComparison:
+                field: customer_id
+                operator: _eq
+                value: 
+                  sessionVariable: x-hasura-user-id
+              

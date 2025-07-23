@@ -1,0 +1,92 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: create_campaign_obj
+  fields:
+    - name: budget
+      type: String
+    - name: campaign_id
+      type: String
+    - name: campaign_name
+      type: String
+    - name: channel
+      type: String!
+    - name: end_date
+      type: Timestamp!
+    - name: offer_details
+      type: String!
+    - name: target_segment
+      type: String!
+  graphql:
+    typeName: customer_create_campaign_obj
+    inputTypeName: customer_create_campaign_obj_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: logic
+      dataConnectorObjectType: CreateCampaignObj
+      fieldMapping:
+        budget:
+          column:
+            name: budget
+        campaign_id:
+          column:
+            name: campaignId
+        campaign_name:
+          column:
+            name: campaignName
+        channel:
+          column:
+            name: channel
+        end_date:
+          column:
+            name: endDate
+        offer_details:
+          column:
+            name: offerDetails
+        target_segment:
+          column:
+            name: targetSegment
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: create_campaign_obj
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - budget
+          - campaign_id
+          - campaign_name
+          - channel
+          - end_date
+          - offer_details
+          - target_segment
+
+---
+kind: Command
+version: v1
+definition:
+  name: create_campaign
+  outputType: create_campaign_obj!
+  arguments:
+    - name: camp
+      type: create_campaign_obj!
+  source:
+    dataConnectorName: logic
+    dataConnectorCommand:
+      procedure: CreateCampaign
+  graphql:
+    rootFieldName: create_campaign
+    rootFieldKind: Mutation
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: create_campaign
+  permissions:
+    - role: admin
+      allowExecution: true
+

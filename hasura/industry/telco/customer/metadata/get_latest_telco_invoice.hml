@@ -1,0 +1,203 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: array_period
+  fields:
+    - name: end
+      type: Float!
+    - name: start
+      type: Float!
+  graphql:
+    typeName: customer_array_period
+    inputTypeName: customer_array_period_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: stripe
+      dataConnectorObjectType: array_period
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: array_period
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - end
+          - start
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: functions_array23
+  fields:
+    - name: amount
+      type: Float!
+    - name: description
+      type: String!
+    - name: id
+      type: String!
+    - name: period
+      type: array_period!
+  graphql:
+    typeName: customer_functions_array23
+    inputTypeName: customer_functions_array23_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: stripe
+      dataConnectorObjectType: functions_array23
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: functions_array23
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - amount
+          - description
+          - id
+          - period
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: telco_invoice_lines
+  fields:
+    - name: data
+      type: "[functions_array23!]!"
+  graphql:
+    typeName: customer_telco_invoice_lines
+    inputTypeName: customer_telco_invoice_lines_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: stripe
+      dataConnectorObjectType: TelcoInvoice_lines
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: telco_invoice_lines
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - data
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: telco_invoice_metadata
+  fields:
+    - name: billing_cycle
+      type: String!
+    - name: statement_date
+      type: String!
+  graphql:
+    typeName: customer_telco_invoice_metadata
+    inputTypeName: customer_telco_invoice_metadata_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: stripe
+      dataConnectorObjectType: TelcoInvoice_metadata
+      fieldMapping:
+        billing_cycle:
+          column:
+            name: billingCycle
+        statement_date:
+          column:
+            name: statementDate
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: telco_invoice_metadata
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - billing_cycle
+          - statement_date
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: telco_invoice
+  fields:
+    - name: amount_due
+      type: Float!
+    - name: amount_paid
+      type: Float!
+    - name: customer
+      type: String!
+    - name: id
+      type: String!
+    - name: lines
+      type: telco_invoice_lines!
+    - name: metadata
+      type: telco_invoice_metadata!
+    - name: status
+      type: String!
+    - name: subscription
+      type: String!
+  graphql:
+    typeName: customer_telco_invoice
+    inputTypeName: customer_telco_invoice_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: stripe
+      dataConnectorObjectType: TelcoInvoice
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: telco_invoice
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - amount_due
+          - amount_paid
+          - customer
+          - id
+          - lines
+          - metadata
+          - status
+          - subscription
+
+---
+kind: Command
+version: v1
+definition:
+  name: get_latest_telco_invoice
+  outputType: telco_invoice!
+  arguments:
+    - name: customer_id
+      type: String!
+      description: Stripe customer ID
+  source:
+    dataConnectorName: stripe
+    dataConnectorCommand:
+      procedure: getLatestTelcoInvoice
+    argumentMapping:
+      customer_id: customerId
+  graphql:
+    rootFieldName: get_latest_telco_invoice
+    rootFieldKind: Mutation
+  description: Retrieves a customer's latest invoice
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: get_latest_telco_invoice
+  permissions:
+    - role: admin
+      allowExecution: true
+

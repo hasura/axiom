@@ -1,0 +1,126 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_document_embeddings
+  description: "Object type for public.document_embeddings. Description: null"
+  fields:
+    - name: document_uuid
+      type: String_1!
+    - name: embeddings
+      type: Json
+  graphql:
+    typeName: support_public_document_embeddings
+    inputTypeName: support_public_document_embeddings_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: vector
+      dataConnectorObjectType: public.document_embeddings
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_document_embeddings
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - document_uuid
+          - embeddings
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_document_embeddings_bool_exp
+  operand:
+    object:
+      type: public_document_embeddings
+      comparableFields:
+        - fieldName: document_uuid
+          booleanExpressionType: UuidBoolExp
+        - fieldName: embeddings
+          booleanExpressionType: Vector1536BoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: support_public_document_embeddings_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_document_embeddings_agg_exp
+  operand:
+    object:
+      aggregatedType: public_document_embeddings
+      aggregatableFields:
+        - fieldName: document_uuid
+          aggregateExpression: UuidAggExp
+        - fieldName: embeddings
+          aggregateExpression: Vector1536AggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: support_public_document_embeddings_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_document_embeddings_order_by_exp
+  operand:
+    object:
+      orderedType: public_document_embeddings
+      orderableFields:
+        - fieldName: document_uuid
+          orderByExpression: String1OrderByExp
+        - fieldName: embeddings
+          orderByExpression: JsonOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: support_public_document_embeddings_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_document_embeddings
+  objectType: public_document_embeddings
+  source:
+    dataConnectorName: vector
+    collection: public.document_embeddings
+  filterExpressionType: public_document_embeddings_bool_exp
+  aggregateExpression: public_document_embeddings_agg_exp
+  orderByExpression: public_document_embeddings_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_document_embeddings
+      subscription:
+        rootField: public_document_embeddings
+    selectUniques:
+      - queryRootField: public_document_embeddings_by_document_uuid
+        uniqueIdentifier:
+          - document_uuid
+        subscription:
+          rootField: public_document_embeddings_by_document_uuid
+    filterInputTypeName: support_public_document_embeddings_filter_input
+    aggregate:
+      queryRootField: public_document_embeddings_aggregate
+      subscription:
+        rootField: public_document_embeddings_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_document_embeddings
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

@@ -1,0 +1,198 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_interactions
+  description: "Object type for public.interactions. Description: null"
+  fields:
+    - name: agent_id
+      type: Int32
+    - name: channel
+      type: String_1!
+    - name: customer_id
+      type: Int32
+    - name: duration_seconds
+      type: Int32
+    - name: interaction_id
+      type: Int32!
+    - name: interaction_time
+      type: Timestamptz
+    - name: notes
+      type: String_1
+    - name: resolution_status
+      type: String_1
+    - name: satisfaction_rating
+      type: Int32
+    - name: topic
+      type: String_1
+  graphql:
+    typeName: customer_public_interactions
+    inputTypeName: customer_public_interactions_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: public.interactions
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_interactions
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - agent_id
+          - channel
+          - customer_id
+          - duration_seconds
+          - interaction_id
+          - interaction_time
+          - notes
+          - resolution_status
+          - satisfaction_rating
+          - topic
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_interactions_bool_exp
+  operand:
+    object:
+      type: public_interactions
+      comparableFields:
+        - fieldName: agent_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: channel
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: customer_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: duration_seconds
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: interaction_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: interaction_time
+          booleanExpressionType: TimestampWithTimeZoneBoolExp
+        - fieldName: notes
+          booleanExpressionType: TextBoolExp
+        - fieldName: resolution_status
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: satisfaction_rating
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: topic
+          booleanExpressionType: CharacterVaryingBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customer_public_interactions_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_interactions_agg_exp
+  operand:
+    object:
+      aggregatedType: public_interactions
+      aggregatableFields:
+        - fieldName: agent_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: channel
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: customer_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: duration_seconds
+          aggregateExpression: IntegerAggExp
+        - fieldName: interaction_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: interaction_time
+          aggregateExpression: TimestampWithTimeZoneAggExp
+        - fieldName: notes
+          aggregateExpression: TextAggExp
+        - fieldName: resolution_status
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: satisfaction_rating
+          aggregateExpression: IntegerAggExp
+        - fieldName: topic
+          aggregateExpression: CharacterVaryingAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: customer_public_interactions_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_interactions_order_by_exp
+  operand:
+    object:
+      orderedType: public_interactions
+      orderableFields:
+        - fieldName: agent_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: channel
+          orderByExpression: String1OrderByExp
+        - fieldName: customer_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: duration_seconds
+          orderByExpression: Int32OrderByExp
+        - fieldName: interaction_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: interaction_time
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: notes
+          orderByExpression: String1OrderByExp
+        - fieldName: resolution_status
+          orderByExpression: String1OrderByExp
+        - fieldName: satisfaction_rating
+          orderByExpression: Int32OrderByExp
+        - fieldName: topic
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: customer_public_interactions_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_interactions
+  objectType: public_interactions
+  source:
+    dataConnectorName: aurora
+    collection: public.interactions
+  filterExpressionType: public_interactions_bool_exp
+  aggregateExpression: public_interactions_agg_exp
+  orderByExpression: public_interactions_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_interactions
+      subscription:
+        rootField: public_interactions
+    selectUniques:
+      - queryRootField: public_interactions_by_interaction_id
+        uniqueIdentifier:
+          - interaction_id
+        subscription:
+          rootField: public_interactions_by_interaction_id
+    filterInputTypeName: customer_public_interactions_filter_input
+    aggregate:
+      queryRootField: public_interactions_aggregate
+      subscription:
+        rootField: public_interactions_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_interactions
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

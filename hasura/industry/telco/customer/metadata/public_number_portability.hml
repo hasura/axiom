@@ -1,0 +1,199 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_number_portability
+  description: "Object type for public.number_portability. Description: null"
+  fields:
+    - name: completion_date
+      type: Timestamptz
+    - name: customer_id
+      type: Int32
+    - name: notes
+      type: String_1
+    - name: phone_number
+      type: String_1
+    - name: port_date
+      type: Timestamptz
+    - name: portability_id
+      type: Int32!
+    - name: previous_carrier
+      type: String_1
+    - name: status
+      type: String_1
+  graphql:
+    typeName: customer_public_number_portability
+    inputTypeName: customer_public_number_portability_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: public.number_portability
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_number_portability
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - completion_date
+          - customer_id
+          - notes
+          - phone_number
+          - port_date
+          - portability_id
+          - previous_carrier
+          - status
+    - role: customer
+      output:
+        allowedFields:
+          - completion_date
+          - phone_number
+          - port_date
+          - status
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_number_portability_bool_exp
+  operand:
+    object:
+      type: public_number_portability
+      comparableFields:
+        - fieldName: completion_date
+          booleanExpressionType: TimestampWithTimeZoneBoolExp
+        - fieldName: customer_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: notes
+          booleanExpressionType: TextBoolExp
+        - fieldName: phone_number
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: port_date
+          booleanExpressionType: TimestampWithTimeZoneBoolExp
+        - fieldName: portability_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: previous_carrier
+          booleanExpressionType: CharacterVaryingBoolExp
+        - fieldName: status
+          booleanExpressionType: CharacterVaryingBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customer_public_number_portability_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_number_portability_agg_exp
+  operand:
+    object:
+      aggregatedType: public_number_portability
+      aggregatableFields:
+        - fieldName: completion_date
+          aggregateExpression: TimestampWithTimeZoneAggExp
+        - fieldName: customer_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: notes
+          aggregateExpression: TextAggExp
+        - fieldName: phone_number
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: port_date
+          aggregateExpression: TimestampWithTimeZoneAggExp
+        - fieldName: portability_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: previous_carrier
+          aggregateExpression: CharacterVaryingAggExp
+        - fieldName: status
+          aggregateExpression: CharacterVaryingAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: customer_public_number_portability_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_number_portability_order_by_exp
+  operand:
+    object:
+      orderedType: public_number_portability
+      orderableFields:
+        - fieldName: completion_date
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: customer_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: notes
+          orderByExpression: String1OrderByExp
+        - fieldName: phone_number
+          orderByExpression: String1OrderByExp
+        - fieldName: port_date
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: portability_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: previous_carrier
+          orderByExpression: String1OrderByExp
+        - fieldName: status
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: customer_public_number_portability_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_number_portability
+  objectType: public_number_portability
+  source:
+    dataConnectorName: aurora
+    collection: public.number_portability
+  filterExpressionType: public_number_portability_bool_exp
+  aggregateExpression: public_number_portability_agg_exp
+  orderByExpression: public_number_portability_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_number_portability
+      subscription:
+        rootField: public_number_portability
+    selectUniques:
+      - queryRootField: public_number_portability_by_portability_id
+        uniqueIdentifier:
+          - portability_id
+        subscription:
+          rootField: public_number_portability_by_portability_id
+    filterInputTypeName: customer_public_number_portability_filter_input
+    aggregate:
+      queryRootField: public_number_portability_aggregate
+      subscription:
+        rootField: public_number_portability_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_number_portability
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+    - role: customer
+      select:
+        filter: 
+          relationship:
+            name: customer
+            predicate: 
+              fieldComparison:
+                field: customer_id
+                operator: _eq
+                value: 
+                  sessionVariable: x-hasura-user-id
+        allowSubscriptions: true
+

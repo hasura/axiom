@@ -1,0 +1,153 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_customer_link
+  description: "Object type for public.customer_link. Description: null"
+  fields:
+    - name: customer_guid
+      type: String_1!
+    - name: customer_id
+      type: Int32
+    - name: id
+      type: Int32!
+  graphql:
+    typeName: customer_public_customer_link
+    inputTypeName: customer_public_customer_link_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: public.customer_link
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_customer_link
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - customer_guid
+          - customer_id
+          - id
+    - role: customer
+      output:
+        allowedFields:
+          - customer_guid
+          - customer_id
+          - id
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_customer_link_bool_exp
+  operand:
+    object:
+      type: public_customer_link
+      comparableFields:
+        - fieldName: customer_guid
+          booleanExpressionType: UuidBoolExp
+        - fieldName: customer_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: id
+          booleanExpressionType: IntegerBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customer_public_customer_link_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_customer_link_agg_exp
+  operand:
+    object:
+      aggregatedType: public_customer_link
+      aggregatableFields:
+        - fieldName: customer_guid
+          aggregateExpression: UuidAggExp
+        - fieldName: customer_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: id
+          aggregateExpression: IntegerAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: customer_public_customer_link_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_customer_link_order_by_exp
+  operand:
+    object:
+      orderedType: public_customer_link
+      orderableFields:
+        - fieldName: customer_guid
+          orderByExpression: String1OrderByExp
+        - fieldName: customer_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: id
+          orderByExpression: Int32OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: customer_public_customer_link_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_customer_link
+  objectType: public_customer_link
+  source:
+    dataConnectorName: aurora
+    collection: public.customer_link
+  filterExpressionType: public_customer_link_bool_exp
+  aggregateExpression: public_customer_link_agg_exp
+  orderByExpression: public_customer_link_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_customer_link
+      subscription:
+        rootField: public_customer_link
+    selectUniques:
+      - queryRootField: public_customer_link_by_id
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: public_customer_link_by_id
+    filterInputTypeName: customer_public_customer_link_filter_input
+    aggregate:
+      queryRootField: public_customer_link_aggregate
+      subscription:
+        rootField: public_customer_link_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_customer_link
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+    - role: customer
+      select:
+        filter: 
+          relationship:
+            name: customer
+            predicate: 
+              fieldComparison:
+                field: customer_id
+                operator: _eq
+                value: 
+                  sessionVariable: x-hasura-user-id
+        allowSubscriptions: true
+

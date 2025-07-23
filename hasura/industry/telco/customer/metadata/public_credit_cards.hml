@@ -1,0 +1,193 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_credit_cards
+  description: "Object type for public.credit_cards. Description: null"
+  fields:
+    - name: created_at
+      type: Timestamptz!
+    - name: credit_card_id
+      type: Int32!
+    - name: customer_id
+      type: Int32
+    - name: cvv
+      type: Int32!
+    - name: expiry
+      type: Date!
+    - name: number
+      type: String_1!
+    - name: updated_at
+      type: Timestamptz!
+  graphql:
+    typeName: customer_public_credit_cards
+    inputTypeName: customer_public_credit_cards_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: aurora
+      dataConnectorObjectType: public.credit_cards
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_credit_cards
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - created_at
+          - credit_card_id
+          - customer_id
+          - cvv
+          - expiry
+          - number
+          - updated_at
+    - role: customer
+      output:
+        allowedFields:
+          - created_at
+          - credit_card_id
+          - customer_id
+          - cvv
+          - expiry
+          - number
+          - updated_at
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_credit_cards_bool_exp
+  operand:
+    object:
+      type: public_credit_cards
+      comparableFields:
+        - fieldName: created_at
+          booleanExpressionType: TimestampWithTimeZoneBoolExp
+        - fieldName: credit_card_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: customer_id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: cvv
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: expiry
+          booleanExpressionType: DateBoolExp
+        - fieldName: number
+          booleanExpressionType: TextBoolExp
+        - fieldName: updated_at
+          booleanExpressionType: TimestampWithTimeZoneBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customer_public_credit_cards_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_credit_cards_agg_exp
+  operand:
+    object:
+      aggregatedType: public_credit_cards
+      aggregatableFields:
+        - fieldName: created_at
+          aggregateExpression: TimestampWithTimeZoneAggExp
+        - fieldName: credit_card_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: customer_id
+          aggregateExpression: IntegerAggExp
+        - fieldName: cvv
+          aggregateExpression: IntegerAggExp
+        - fieldName: expiry
+          aggregateExpression: DateAggExp
+        - fieldName: number
+          aggregateExpression: TextAggExp
+        - fieldName: updated_at
+          aggregateExpression: TimestampWithTimeZoneAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: customer_public_credit_cards_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_credit_cards_order_by_exp
+  operand:
+    object:
+      orderedType: public_credit_cards
+      orderableFields:
+        - fieldName: created_at
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: credit_card_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: customer_id
+          orderByExpression: Int32OrderByExp
+        - fieldName: cvv
+          orderByExpression: Int32OrderByExp
+        - fieldName: expiry
+          orderByExpression: DateOrderByExp
+        - fieldName: number
+          orderByExpression: String1OrderByExp
+        - fieldName: updated_at
+          orderByExpression: TimestamptzOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: customer_public_credit_cards_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_credit_cards
+  objectType: public_credit_cards
+  source:
+    dataConnectorName: aurora
+    collection: public.credit_cards
+  filterExpressionType: public_credit_cards_bool_exp
+  aggregateExpression: public_credit_cards_agg_exp
+  orderByExpression: public_credit_cards_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_credit_cards
+      subscription:
+        rootField: public_credit_cards
+    selectUniques:
+      - queryRootField: public_credit_cards_by_credit_card_id
+        uniqueIdentifier:
+          - credit_card_id
+        subscription:
+          rootField: public_credit_cards_by_credit_card_id
+    filterInputTypeName: customer_public_credit_cards_filter_input
+    aggregate:
+      queryRootField: public_credit_cards_aggregate
+      subscription:
+        rootField: public_credit_cards_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_credit_cards
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+    - role: customer
+      select:
+        filter: 
+          relationship:
+            name: customer
+            predicate: 
+              fieldComparison:
+                field: customer_id
+                operator: _eq
+                value: 
+                  sessionVariable: x-hasura-user-id
+        allowSubscriptions: true
+

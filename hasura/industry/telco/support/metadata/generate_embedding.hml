@@ -1,0 +1,58 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: text_embedding_response
+  description: Interface for text embedding response
+  fields:
+    - name: embedding
+      type: "[Float!]!"
+    - name: text
+      type: String!
+  graphql:
+    typeName: support_text_embedding_response
+    inputTypeName: support_text_embedding_response_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: vector_search_service
+      dataConnectorObjectType: TextEmbeddingResponse
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: text_embedding_response
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - embedding
+          - text
+
+---
+kind: Command
+version: v1
+definition:
+  name: generate_embedding
+  outputType: text_embedding_response!
+  arguments:
+    - name: text
+      type: String!
+      description: String input for converting into embedding
+  source:
+    dataConnectorName: vector_search_service
+    dataConnectorCommand:
+      function: generateEmbedding
+  graphql:
+    rootFieldName: generate_embedding
+    rootFieldKind: Query
+  description: Generate embeddings for a collection of documents
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: generate_embedding
+  permissions:
+    - role: admin
+      allowExecution: true
+

@@ -1,0 +1,52 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: gemini_search_response
+  fields:
+    - name: response
+      type: String!
+  graphql:
+    typeName: auth_gemini_search_response
+    inputTypeName: auth_gemini_search_response_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: search
+      dataConnectorObjectType: GeminiSearchResponse
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: gemini_search_response
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - response
+
+---
+kind: Command
+version: v1
+definition:
+  name: gemini_search
+  outputType: gemini_search_response!
+  arguments:
+    - name: query
+      type: String!
+  source:
+    dataConnectorName: search
+    dataConnectorCommand:
+      function: geminiSearch
+  graphql:
+    rootFieldName: gemini_search
+    rootFieldKind: Query
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: gemini_search
+  permissions:
+    - role: admin
+      allowExecution: true
+

@@ -1,0 +1,155 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: create_telco_product_product_data
+  fields:
+    - name: marketing_name
+      type: String
+    - name: name
+      type: String!
+    - name: network_type
+      type: String
+    - name: service_type
+      type: String!
+  graphql:
+    typeName: customer_create_telco_product_product_data
+    inputTypeName: customer_create_telco_product_product_data_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: stripe
+      dataConnectorObjectType: createTelcoProduct_productData
+      fieldMapping:
+        marketing_name:
+          column:
+            name: marketingName
+        name:
+          column:
+            name: name
+        network_type:
+          column:
+            name: networkType
+        service_type:
+          column:
+            name: serviceType
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: create_telco_product_product_data
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - marketing_name
+          - name
+          - network_type
+          - service_type
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: telco_product_metadata
+  fields:
+    - name: marketing_name
+      type: String
+    - name: network_type
+      type: String
+    - name: service_type
+      type: String!
+  graphql:
+    typeName: customer_telco_product_metadata
+    inputTypeName: customer_telco_product_metadata_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: stripe
+      dataConnectorObjectType: TelcoProduct_metadata
+      fieldMapping:
+        marketing_name:
+          column:
+            name: marketingName
+        network_type:
+          column:
+            name: networkType
+        service_type:
+          column:
+            name: serviceType
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: telco_product_metadata
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - marketing_name
+          - network_type
+          - service_type
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: telco_product
+  fields:
+    - name: active
+      type: Boolean!
+    - name: id
+      type: String!
+    - name: metadata
+      type: telco_product_metadata!
+    - name: name
+      type: String!
+  graphql:
+    typeName: customer_telco_product
+    inputTypeName: customer_telco_product_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: stripe
+      dataConnectorObjectType: TelcoProduct
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: telco_product
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - active
+          - id
+          - metadata
+          - name
+
+---
+kind: Command
+version: v1
+definition:
+  name: create_telco_product
+  outputType: telco_product!
+  arguments:
+    - name: product_data
+      type: create_telco_product_product_data!
+      description: Data for the new product
+  source:
+    dataConnectorName: stripe
+    dataConnectorCommand:
+      procedure: createTelcoProduct
+    argumentMapping:
+      product_data: productData
+  graphql:
+    rootFieldName: create_telco_product
+    rootFieldKind: Mutation
+  description: Creates a new telecommunications service product in Stripe
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: create_telco_product
+  permissions:
+    - role: admin
+      allowExecution: true
+

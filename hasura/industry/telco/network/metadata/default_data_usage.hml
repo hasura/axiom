@@ -1,0 +1,158 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: default_data_usage
+  description: "Object type for default.data_usage. Description: null"
+  fields:
+    - name: cuid
+      type: Int32!
+    - name: data_usage
+      type: Float32!
+    - name: guid
+      type: String_1!
+    - name: timestamp
+      type: Timestamptz!
+  graphql:
+    typeName: network_default_data_usage
+    inputTypeName: network_default_data_usage_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: clickhouse
+      dataConnectorObjectType: default.data_usage
+      fieldMapping:
+        cuid:
+          column:
+            name: CUID
+        data_usage:
+          column:
+            name: Data_Usage
+        guid:
+          column:
+            name: GUID
+        timestamp:
+          column:
+            name: Timestamp
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: default_data_usage
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - cuid
+          - data_usage
+          - guid
+          - timestamp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: default_data_usage_bool_exp
+  operand:
+    object:
+      type: default_data_usage
+      comparableFields:
+        - fieldName: cuid
+          booleanExpressionType: Int32BoolExp
+        - fieldName: data_usage
+          booleanExpressionType: Float32BoolExp
+        - fieldName: guid
+          booleanExpressionType: StringBoolExp
+        - fieldName: timestamp
+          booleanExpressionType: Datetime64BoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: network_default_data_usage_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: default_data_usage_agg_exp
+  operand:
+    object:
+      aggregatedType: default_data_usage
+      aggregatableFields:
+        - fieldName: cuid
+          aggregateExpression: Int32AggExp
+        - fieldName: data_usage
+          aggregateExpression: Float32AggExp
+        - fieldName: guid
+          aggregateExpression: StringAggExp
+        - fieldName: timestamp
+          aggregateExpression: Datetime64AggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: network_default_data_usage_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: default_data_usage_order_by_exp
+  operand:
+    object:
+      orderedType: default_data_usage
+      orderableFields:
+        - fieldName: cuid
+          orderByExpression: Int32OrderByExp
+        - fieldName: data_usage
+          orderByExpression: Float32OrderByExp
+        - fieldName: guid
+          orderByExpression: String1OrderByExp
+        - fieldName: timestamp
+          orderByExpression: TimestamptzOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: network_default_data_usage_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: default_data_usage
+  objectType: default_data_usage
+  source:
+    dataConnectorName: clickhouse
+    collection: default.data_usage
+  filterExpressionType: default_data_usage_bool_exp
+  aggregateExpression: default_data_usage_agg_exp
+  orderByExpression: default_data_usage_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: default_data_usage
+      subscription:
+        rootField: default_data_usage
+    selectUniques:
+      - queryRootField: default_data_usage_by_primary_key
+        uniqueIdentifier:
+          - guid
+          - timestamp
+        subscription:
+          rootField: default_data_usage_by_primary_key
+    filterInputTypeName: network_default_data_usage_filter_input
+    aggregate:
+      queryRootField: default_data_usage_aggregate
+      subscription:
+        rootField: default_data_usage_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: default_data_usage
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
