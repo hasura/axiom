@@ -1,0 +1,25 @@
+kind: Context
+version: v3
+definition:
+  current: telco
+  contexts:
+    telco:
+      project: supplychain
+      supergraph: ../supergraph.yaml
+      subgraph: ../customer/subgraph.yaml
+      localEnvFile: ../.env
+      cloudEnvFile: ../.env.cloud
+    sandbox-telco:
+      project: sandbox-supplychain
+      supergraph: ../supergraph.yaml
+      subgraph: ../customer/subgraph.yaml
+      localEnvFile: ../.env
+      cloudEnvFile: ../.env.cloud
+  scripts:
+    docker-start:
+      bash: HASURA_DDN_PAT=$(ddn auth print-access-token) PROMPTQL_SECRET_KEY=$(ddn auth print-promptql-secret-key) docker compose -f compose.yaml --env-file .env up --build --pull always
+      powershell: $Env:HASURA_DDN_PAT = ddn auth print-access-token; $Env:PROMPTQL_SECRET_KEY = ddn auth print-promptql-secret-key; docker compose -f compose.yaml --env-file .env up --build --pull always
+    jwt-gen:
+      bash: node ../scripts/jwt/jwt.mjs
+      powershell: node ../scripts/jwt/jwt.mjs
+  promptQL: true
