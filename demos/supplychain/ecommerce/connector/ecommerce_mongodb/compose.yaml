@@ -1,0 +1,14 @@
+services:
+  ecommerce_ecommerce_mongodb:
+    build:
+      context: .
+      dockerfile: .hasura-connector/Dockerfile.ecommerce_mongodb
+    environment:
+      HASURA_SERVICE_TOKEN_SECRET: $ECOMMERCE_ECOMMERCE_MONGODB_HASURA_SERVICE_TOKEN_SECRET
+      MONGODB_DATABASE_URI: $ECOMMERCE_ECOMMERCE_MONGODB_MONGODB_DATABASE_URI
+      OTEL_EXPORTER_OTLP_ENDPOINT: $ECOMMERCE_ECOMMERCE_MONGODB_OTEL_EXPORTER_OTLP_ENDPOINT
+      OTEL_SERVICE_NAME: $ECOMMERCE_ECOMMERCE_MONGODB_OTEL_SERVICE_NAME
+    extra_hosts:
+      - local.hasura.dev:host-gateway
+    ports:
+      - 8788:8080
