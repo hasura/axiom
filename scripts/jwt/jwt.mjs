@@ -6,11 +6,13 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
-import yaml from 'js-yaml';
 
 // Polyfill for __dirname in ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// Get the directory where this script is being executed from
+const callingDirectory = process.cwd();
 
 // Function to load environment variables from a .env file
 function loadEnvFile(envFilePath) {
@@ -28,35 +30,19 @@ program
   .option('-u, --userId <userId>', 'User ID')
   .option('-k, --key <key>', 'JWT key')
   .option('-e, --env <env>', 'Path to .env file')
-  .option('-c, --context <context>', 'Context from .hasura/context.yaml')
-  .option('-l, --local', 'Use localEnvFile rather than cloudEnvFile from context.yaml')
+  .option('-l, --local', 'Use .env instead of .env.cloud')
   .parse(process.argv);
 
 // Extract values from command line options or use default values
 const options = program.opts();
 const roles = options.roles ? options.roles.split(',') : ['customer'];
 const userId = options.userId && /^\d+$/.test(options.userId) ? Number(options.userId) : options.userId || 7;
-const context = options.context || 'telco-dev';
-
-const contextDir = path.resolve(__dirname, '../../hasura/.hasura');
-const contextData = yaml.load(fs.readFileSync(`${contextDir}/context.yaml`, 'utf8'));
-
-if (!contextData.definition.contexts[context]) {
-  console.error(`Error: Context '${context}' does not exist in ${contextDir}/context.yaml.`);
-  process.exit(1);
-}
-
-const envKey = options.local ? 'localEnvFile' : 'cloudEnvFile';
-if (!contextData.definition.contexts[context][envKey]) {
-  console.error(`Error: ${envKey} key not found in context '${context}' in ${contextDir}/context.yaml.`);
-  process.exit(1);
-}
-const contextEnv = path.resolve(__dirname, contextDir, contextData.definition.contexts[context][envKey]);
 
 // Determine which .env file to load
+const defaultEnvFile = options.local ? '.env' : '.env.cloud';
 const envFilePath = options.env
-  ? path.resolve(process.cwd(), options.env)
-  : path.resolve(contextEnv);
+  ? path.resolve(callingDirectory, options.env)
+  : path.resolve(callingDirectory, defaultEnvFile);
 
 loadEnvFile(envFilePath);
 
