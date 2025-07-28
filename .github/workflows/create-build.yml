@@ -126,6 +126,8 @@ jobs:
         id: build
         run: |
           BUILDS_JSON="[]"
+          echo "Starting build process..."
+          echo "Demos to build: ${{ steps.demo-setup.outputs.demos }}"
 
           while IFS= read -r demo; do
             echo "Building demo: $demo"
@@ -261,18 +263,47 @@ jobs:
             esac
             
             # Build this demo
+            echo "Running ddn supergraph build create for $demo..."
             BUILD_OUTPUT=$(ddn supergraph build create --out json -d "PR #${{ github.event.number }}: ${{ github.event.pull_request.title }} ($demo)")
+            echo "Raw build output for $demo:"
+            echo "$BUILD_OUTPUT"
             
             # Add demo name to build output and append to array
             BUILD_WITH_DEMO=$(echo "$BUILD_OUTPUT" | jq ". + {\"demo\": \"$demo\"}")
+            echo "Build with demo name added:"
+            echo "$BUILD_WITH_DEMO"
+            
             BUILDS_JSON=$(echo "$BUILDS_JSON" | jq ". += [$BUILD_WITH_DEMO]")
+            echo "Updated builds array:"
+            echo "$BUILDS_JSON"
             
             cd ../..
           done <<< "${{ steps.demo-setup.outputs.demos }}"
 
+          echo "Final builds output:"
+          echo "$BUILDS_JSON"
+
           echo "builds_output<<EOF" >> $GITHUB_OUTPUT
           echo "$BUILDS_JSON" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Debug build output
+        if: always()
+        run: |
+          echo "Build step outputs:"
+          echo "builds_output = ${{ steps.build.outputs.builds_output }}"
+
+          # Get length properly
+          BUILDS_OUTPUT='${{ steps.build.outputs.builds_output }}'
+          echo "Length of builds_output: ${#BUILDS_OUTPUT}"
+
+          # Try to parse it as JSON
+          if echo '${{ steps.build.outputs.builds_output }}' | jq . > /dev/null 2>&1; then
+            echo "✅ builds_output is valid JSON"
+            echo '${{ steps.build.outputs.builds_output }}' | jq .
+          else
+            echo "❌ builds_output is not valid JSON"
+          fi
 
       - name: Comment on PR
         if: always()
