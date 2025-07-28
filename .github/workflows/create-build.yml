@@ -306,11 +306,12 @@ jobs:
           fi
 
       - name: Comment on PR
-        if: always()
+        if: steps.demo-setup.outputs.no_changes != 'true'
         uses: actions/github-script@v7
         with:
           script: |
-            const builds = JSON.parse(`${{ steps.build.outputs.builds_output }}`);
+            const buildsJson = Buffer.from('${{ steps.build.outputs.builds_output }}', 'base64').toString();
+            const builds = JSON.parse(buildsJson);
             const commitSha = context.payload.pull_request.head.sha.substring(0, 7);
 
             let comment = `## 🚀 PromptQL Builds Complete (${commitSha})\n\n`;
@@ -335,7 +336,7 @@ jobs:
             });
 
       - name: Notify Slack
-        if: always() && steps.demo-setup.outputs.no_changes != 'true'
+        if: steps.demo-setup.outputs.no_changes != 'true'
         uses: actions/github-script@v7
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
