@@ -19,19 +19,20 @@ jobs:
       - name: Detect all changed demos
         id: demo-setup
         run: |
-          # Debug: Let's see what we've got
-          echo "Current HEAD: $(git rev-parse HEAD)"
-          echo "HEAD~1: $(git rev-parse HEAD~1 2>/dev/null || echo 'N/A')"
-          echo "Base ref: ${{ github.base_ref }}"
-          echo "Event name: ${{ github.event_name }}"
+          # Debug: Show commit history
+          echo "Last 3 commits:"
+          git log --oneline -3
 
           # Fetch the base branch
           git fetch origin ${{ github.base_ref }}
 
-          # For incremental builds, we want to compare against the previous commit
-          # But we need to handle the GitHub Actions checkout context properly
-          if [ "${{ github.event_name }}" = "pull_request" ] && git rev-parse --verify HEAD~1 >/dev/null 2>&1; then
-            echo "Comparing against previous commit for incremental build"
+          # For incremental builds, find the previous commit that actually exists
+          # Use GitHub's before SHA if available, otherwise fall back to HEAD~1
+          if [ -n "${{ github.event.before }}" ] && [ "${{ github.event.before }}" != "0000000000000000000000000000000000000000" ]; then
+            echo "Using GitHub's before SHA for comparison"
+            CHANGED_FILES=$(git diff --name-only ${{ github.event.before }}..HEAD)
+          elif git rev-parse --verify HEAD~1 >/dev/null 2>&1; then
+            echo "Using HEAD~1 for comparison"
             CHANGED_FILES=$(git diff --name-only HEAD~1..HEAD)
           else
             echo "Fallback: comparing against base branch"
