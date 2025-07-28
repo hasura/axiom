@@ -106,6 +106,21 @@ jobs:
             "op://Product ACT/axiom_supplychain/ECOMMERCE_ECOMMERCE_MONGODB_MONGODB_DATABASE_URI"
           SUPPLYCHAIN_SCMS_POSTGRES_JDBC_URL: "op://Product ACT/axiom_supplychain/SCMS_SCMS_POSTGRES_JDBC_URL"
           SUPPLYCHAIN_SCMS_POSTGRES_JDBC_SCHEMAS: "op://Product ACT/axiom_supplychain/SCMS_SCMS_POSTGRES_JDBC_SCHEMAS"
+          # Telco secrets
+          TELCO_HASURA_DDN_PAT: "op://Product ACT/axiom_telco/ddn-service-account"
+          TELCO_JWT_SECRET: "op://Product ACT/axiom_telco/JWT_SECRET"
+          TELCO_AUTH_AUTH_JDBC_URL: "op://Product ACT/axiom_telco/AUTH_AUTH_JDBC_URL"
+          TELCO_AUTH_SEARCH_BRAVE_API_KEY: "op://Product ACT/axiom_telco/AUTH_SEARCH_BRAVE_API_KEY"
+          TELCO_AUTH_SEARCH_GEMINI_API_KEY: "op://Product ACT/axiom_telco/AUTH_SEARCH_GEMINI_API_KEY"
+          TELCO_AUTH_SEARCH_PERPLEXITY_API_KEY: "op://Product ACT/axiom_telco/AUTH_SEARCH_PERPLEXITY_API_KEY"
+          TELCO_CUSTOMER_AURORA_JDBC_URL: "op://Product ACT/axiom_telco/CUSTOMER_AURORA_JDBC_URL"
+          TELCO_CUSTOMER_MONGO_MONGODB_DATABASE_URI: "op://Product ACT/axiom_telco/CUSTOMER_MONGO_MONGODB_DATABASE_URI"
+          TELCO_NETWORK_CLICKHOUSE_JDBC_URL: "op://Product ACT/axiom_telco/NETWORK_CLICKHOUSE_JDBC_URL"
+          TELCO_NETWORK_KAFKA_SINK_JDBC_URL: "op://Product ACT/axiom_telco/NETWORK_KAFKA_SINK_JDBC_URL"
+          TELCO_SUPPORT_ATLAS_MONGODB_DATABASE_URI: "op://Product ACT/axiom_telco/SUPPORT_ATLAS_MONGODB_DATABASE_URI"
+          TELCO_SUPPORT_VECTOR_JDBC_URL: "op://Product ACT/axiom_telco/SUPPORT_VECTOR_JDBC_URL"
+          TELCO_SUPPORT_VECTOR_SEARCH_SERVICE_OPENAI_API_KEY:
+            "op://Product ACT/axiom_telco/SUPPORT_VECTOR_SEARCH_SERVICE_OPENAI_API_KEY"
 
       - name: Build all changed demos
         id: build
@@ -155,6 +170,21 @@ jobs:
                 export ECOMMERCE_ECOMMERCE_MONGODB_MONGODB_DATABASE_URI="$SUPPLYCHAIN_ECOMMERCE_MONGODB_URI"
                 export SCMS_SCMS_POSTGRES_JDBC_URL="$SUPPLYCHAIN_SCMS_POSTGRES_JDBC_URL"
                 export SCMS_SCMS_POSTGRES_JDBC_SCHEMAS="$SUPPLYCHAIN_SCMS_POSTGRES_JDBC_SCHEMAS"
+                ;;
+              telco)
+                export HASURA_DDN_PAT="$TELCO_HASURA_DDN_PAT"
+                export JWT_SECRET="$TELCO_JWT_SECRET"
+                export AUTH_AUTH_JDBC_URL="$TELCO_AUTH_AUTH_JDBC_URL"
+                export AUTH_SEARCH_BRAVE_API_KEY="$TELCO_AUTH_SEARCH_BRAVE_API_KEY"
+                export AUTH_SEARCH_GEMINI_API_KEY="$TELCO_AUTH_SEARCH_GEMINI_API_KEY"
+                export AUTH_SEARCH_PERPLEXITY_API_KEY="$TELCO_AUTH_SEARCH_PERPLEXITY_API_KEY"
+                export CUSTOMER_AURORA_JDBC_URL="$TELCO_CUSTOMER_AURORA_JDBC_URL"
+                export CUSTOMER_MONGO_MONGODB_DATABASE_URI="$TELCO_CUSTOMER_MONGO_MONGODB_DATABASE_URI"
+                export NETWORK_CLICKHOUSE_JDBC_URL="$TELCO_NETWORK_CLICKHOUSE_JDBC_URL"
+                export NETWORK_KAFKA_SINK_JDBC_URL="$TELCO_NETWORK_KAFKA_SINK_JDBC_URL"
+                export SUPPORT_ATLAS_MONGODB_DATABASE_URI="$TELCO_SUPPORT_ATLAS_MONGODB_DATABASE_URI"
+                export SUPPORT_VECTOR_JDBC_URL="$TELCO_SUPPORT_VECTOR_JDBC_URL"
+                export SUPPORT_VECTOR_SEARCH_SERVICE_OPENAI_API_KEY="$TELCO_SUPPORT_VECTOR_SEARCH_SERVICE_OPENAI_API_KEY"
                 ;;
               *)
                 echo "Unknown demo: $demo - skipping"
@@ -212,6 +242,22 @@ jobs:
           SCMS_SCMS_POSTGRES_JDBC_SCHEMAS=$SCMS_SCMS_POSTGRES_JDBC_SCHEMAS
           EOF
                 ;;
+              telco)
+                cat > .env.cloud << EOF
+          JWT_SECRET=$JWT_SECRET
+          AUTH_AUTH_JDBC_URL=$AUTH_AUTH_JDBC_URL
+          AUTH_SEARCH_BRAVE_API_KEY=$AUTH_SEARCH_BRAVE_API_KEY
+          AUTH_SEARCH_GEMINI_API_KEY=$AUTH_SEARCH_GEMINI_API_KEY
+          AUTH_SEARCH_PERPLEXITY_API_KEY=$AUTH_SEARCH_PERPLEXITY_API_KEY
+          CUSTOMER_AURORA_JDBC_URL=$CUSTOMER_AURORA_JDBC_URL
+          CUSTOMER_MONGO_MONGODB_DATABASE_URI=$CUSTOMER_MONGO_MONGODB_DATABASE_URI
+          NETWORK_CLICKHOUSE_JDBC_URL=$NETWORK_CLICKHOUSE_JDBC_URL
+          NETWORK_KAFKA_SINK_JDBC_URL=$NETWORK_KAFKA_SINK_JDBC_URL
+          SUPPORT_ATLAS_MONGODB_DATABASE_URI=$SUPPORT_ATLAS_MONGODB_DATABASE_URI
+          SUPPORT_VECTOR_JDBC_URL=$SUPPORT_VECTOR_JDBC_URL
+          SUPPORT_VECTOR_SEARCH_SERVICE_OPENAI_API_KEY=$SUPPORT_VECTOR_SEARCH_SERVICE_OPENAI_API_KEY
+          EOF
+                ;;
             esac
             
             # Build this demo
@@ -234,8 +280,9 @@ jobs:
         with:
           script: |
             const builds = JSON.parse(`${{ steps.build.outputs.builds_output }}`);
+            const commitSha = context.payload.pull_request.head.sha.substring(0, 7);
 
-            let comment = `## 🚀 PromptQL Builds Complete\n\n`;
+            let comment = `## 🚀 PromptQL Builds Complete (${commitSha})\n\n`;
 
             builds.forEach(build => {
               comment += `### ${build.demo.toUpperCase()} Demo\n`;
@@ -248,31 +295,13 @@ jobs:
               comment += `\n`;
             });
 
-            const comments = await github.rest.issues.listComments({
+            // Always create a new comment
+            await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
+              body: comment
             });
-
-            const existingComment = comments.data.find(comment => 
-              comment.body.includes('🚀 PromptQL Builds Complete')
-            );
-
-            if (existingComment) {
-              await github.rest.issues.updateComment({
-                comment_id: existingComment.id,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body: comment
-              });
-            } else {
-              await github.rest.issues.createComment({
-                issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body: comment
-              });
-            }
 
       - name: Notify Slack
         if: always()
@@ -283,13 +312,10 @@ jobs:
         with:
           script: |
             const builds = JSON.parse(`${{ steps.build.outputs.builds_output }}`);
-
-            console.log('Environment check:');
-            console.log('SLACK_BOT_TOKEN exists:', !!process.env.SLACK_BOT_TOKEN);
-            console.log('SLACK_CHANNEL_ID:', process.env.SLACK_CHANNEL_ID);
+            const commitSha = context.payload.pull_request.head.sha.substring(0, 7);
 
             // Create message for each build
-            let slackMessage = `🚀 *PromptQL Builds Complete*\n\n`;
+            let slackMessage = `🚀 *PromptQL Builds Complete* (${commitSha})\n\n`;
 
             builds.forEach(build => {
               slackMessage += `*${build.demo.toUpperCase()} Demo*\n`;
@@ -302,7 +328,7 @@ jobs:
               slackMessage += `\n`;
             });
 
-            // Check if thread exists in PR metadata
+            // Find existing PR thread
             const comments = await github.rest.issues.listComments({
               issue_number: context.issue.number,
               owner: context.repo.owner,
@@ -317,11 +343,10 @@ jobs:
             if (threadComment) {
               const match = threadComment.body.match(/<!-- slack-thread-ts:([^-]+) -->/);
               threadTs = match ? match[1] : null;
-              console.log('Found existing thread:', threadTs);
             }
 
+            // Create PR thread if it doesn't exist
             if (!threadTs) {
-              console.log('Creating new Slack thread...');
               const prAuthor = context.payload.pull_request.user.login;
               const prTitle = context.payload.pull_request.title;
               const prNumber = context.payload.pull_request.number;
@@ -341,28 +366,22 @@ jobs:
               });
 
               const slackData = await response.json();
-              console.log('Slack thread response:', JSON.stringify(slackData, null, 2));
-
-              if (!slackData.ok) {
-                console.error('Failed to create Slack thread:', slackData.error);
-                return;
+              if (slackData.ok) {
+                threadTs = slackData.ts;
+                
+                // Store thread timestamp
+                await github.rest.issues.createComment({
+                  issue_number: context.issue.number,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  body: `<!-- slack-thread-ts:${threadTs} -->`
+                });
               }
-
-              threadTs = slackData.ts;
-
-              // Store thread timestamp in PR comment
-              await github.rest.issues.createComment({
-                issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body: `<!-- slack-thread-ts:${threadTs} -->`
-              });
             }
 
-            // Only post to thread if we have a valid threadTs
+            // Post build info as reply in thread
             if (threadTs) {
-              console.log('Posting build info to thread:', threadTs);
-              const buildResponse = await fetch('https://slack.com/api/chat.postMessage', {
+              await fetch('https://slack.com/api/chat.postMessage', {
                 method: 'POST',
                 headers: {
                   'Authorization': `Bearer ${process.env.SLACK_BOT_TOKEN}`,
@@ -374,13 +393,4 @@ jobs:
                   text: slackMessage,
                 }),
               });
-
-              const buildData = await buildResponse.json();
-              console.log('Slack build response:', JSON.stringify(buildData, null, 2));
-
-              if (!buildData.ok) {
-                console.error('Failed to post build info:', buildData.error);
-              }
-            } else {
-              console.error('No valid thread timestamp available');
             }
