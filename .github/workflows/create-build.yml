@@ -13,15 +13,24 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Detect all changed demos
         id: demo-setup
         run: |
-          # Fetch the base branch to compare against
+          # Fetch the base branch
           git fetch origin ${{ github.base_ref }}
 
-          # Get changed files between base and current branch
-          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}..HEAD)
+          # Check if this is the first commit on the branch
+          if git rev-parse --verify HEAD~1 >/dev/null 2>&1 && git merge-base --is-ancestor HEAD~1 origin/${{ github.base_ref }}; then
+            # Not the first commit, compare against previous commit
+            CHANGED_FILES=$(git diff --name-only HEAD~1..HEAD)
+          else
+            # First commit on branch, compare against base
+            CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}..HEAD)
+          fi
+
           CHANGED_DEMOS=$(echo "$CHANGED_FILES" | grep '^demos/' | cut -d'/' -f2 | sort -u)
 
           if [ -z "$CHANGED_DEMOS" ]; then
@@ -60,6 +69,11 @@ jobs:
             "op://Product ACT/axiom_healthcare/PATIENT_OPS_OPERATIONS_JDBC_URL"
           HEALTHCARE_PATIENT_OPS_PATIENTS_JDBC_URL: "op://Product ACT/axiom_healthcare/PATIENT_OPS_PATIENTS_JDBC_URL"
           HEALTHCARE_REFERENCE_REFERENCE_JDBC_URL: "op://Product ACT/axiom_healthcare/REFERENCE_REFERENCE_JDBC_URL"
+          # Diligence secrets
+          DILIGENCE_HASURA_DDN_PAT: "op://Product ACT/axiom_diligence/ddn-service-account"
+          DILIGENCE_JWT_SECRET: "op://Product ACT/axiom_diligence/JWT_SECRET"
+          DILIGENCE_ERP_FINANCIALS_JDBC_URL: "op://Product ACT/axiom_diligence/ERP_FINANCIALS_JDBC_URL"
+          DILIGENCE_ERP_OPERATIONS_JDBC_URL: "op://Product ACT/axiom_diligence/ERP_OPERATIONS_JDBC_URL"
 
       - name: Build all changed demos
         id: build
@@ -84,6 +98,12 @@ jobs:
                 export PATIENT_OPS_OPERATIONS_JDBC_URL="$HEALTHCARE_PATIENT_OPS_OPERATIONS_JDBC_URL"
                 export PATIENT_OPS_PATIENTS_JDBC_URL="$HEALTHCARE_PATIENT_OPS_PATIENTS_JDBC_URL"
                 export REFERENCE_REFERENCE_JDBC_URL="$HEALTHCARE_REFERENCE_REFERENCE_JDBC_URL"
+                ;;
+              diligence)
+                export HASURA_DDN_PAT="$DILIGENCE_HASURA_DDN_PAT"
+                export JWT_SECRET="$DILIGENCE_JWT_SECRET"
+                export ERP_FINANCIALS_JDBC_URL="$DILIGENCE_ERP_FINANCIALS_JDBC_URL"
+                export ERP_OPERATIONS_JDBC_URL="$DILIGENCE_ERP_OPERATIONS_JDBC_URL"
                 ;;
               *)
                 echo "Unknown demo: $demo - skipping"
@@ -110,6 +130,13 @@ jobs:
           PATIENT_OPS_OPERATIONS_JDBC_URL=$PATIENT_OPS_OPERATIONS_JDBC_URL
           PATIENT_OPS_PATIENTS_JDBC_URL=$PATIENT_OPS_PATIENTS_JDBC_URL
           REFERENCE_REFERENCE_JDBC_URL=$REFERENCE_REFERENCE_JDBC_URL
+          EOF
+                ;;
+              diligence)
+                cat > .env.cloud << EOF
+          JWT_SECRET=$JWT_SECRET
+          ERP_FINANCIALS_JDBC_URL=$ERP_FINANCIALS_JDBC_URL
+          ERP_OPERATIONS_JDBC_URL=$ERP_OPERATIONS_JDBC_URL
           EOF
                 ;;
             esac
