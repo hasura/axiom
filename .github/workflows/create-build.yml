@@ -74,6 +74,13 @@ jobs:
           DILIGENCE_JWT_SECRET: "op://Product ACT/axiom_diligence/JWT_SECRET"
           DILIGENCE_ERP_FINANCIALS_JDBC_URL: "op://Product ACT/axiom_diligence/ERP_FINANCIALS_JDBC_URL"
           DILIGENCE_ERP_OPERATIONS_JDBC_URL: "op://Product ACT/axiom_diligence/ERP_OPERATIONS_JDBC_URL"
+          # Supplychain secrets
+          SUPPLYCHAIN_HASURA_DDN_PAT: "op://Product ACT/axiom_supplychain/ddn-service-account"
+          SUPPLYCHAIN_JWT_SECRET: "op://Product ACT/axiom_supplychain/JWT_SECRET"
+          SUPPLYCHAIN_ECOMMERCE_MONGODB_URI:
+            "op://Product ACT/axiom_supplychain/ECOMMERCE_ECOMMERCE_MONGODB_MONGODB_DATABASE_URI"
+          SUPPLYCHAIN_SCMS_POSTGRES_JDBC_URL: "op://Product ACT/axiom_supplychain/SCMS_SCMS_POSTGRES_JDBC_URL"
+          SUPPLYCHAIN_SCMS_POSTGRES_JDBC_SCHEMAS: "op://Product ACT/axiom_supplychain/SCMS_SCMS_POSTGRES_JDBC_SCHEMAS"
 
       - name: Build all changed demos
         id: build
@@ -104,6 +111,13 @@ jobs:
                 export JWT_SECRET="$DILIGENCE_JWT_SECRET"
                 export ERP_FINANCIALS_JDBC_URL="$DILIGENCE_ERP_FINANCIALS_JDBC_URL"
                 export ERP_OPERATIONS_JDBC_URL="$DILIGENCE_ERP_OPERATIONS_JDBC_URL"
+                ;;
+              supplychain)
+                export HASURA_DDN_PAT="$SUPPLYCHAIN_HASURA_DDN_PAT"
+                export JWT_SECRET="$SUPPLYCHAIN_JWT_SECRET"
+                export ECOMMERCE_ECOMMERCE_MONGODB_MONGODB_DATABASE_URI="$SUPPLYCHAIN_ECOMMERCE_MONGODB_URI"
+                export SCMS_SCMS_POSTGRES_JDBC_URL="$SUPPLYCHAIN_SCMS_POSTGRES_JDBC_URL"
+                export SCMS_SCMS_POSTGRES_JDBC_SCHEMAS="$SUPPLYCHAIN_SCMS_POSTGRES_JDBC_SCHEMAS"
                 ;;
               *)
                 echo "Unknown demo: $demo - skipping"
@@ -137,6 +151,14 @@ jobs:
           JWT_SECRET=$JWT_SECRET
           ERP_FINANCIALS_JDBC_URL=$ERP_FINANCIALS_JDBC_URL
           ERP_OPERATIONS_JDBC_URL=$ERP_OPERATIONS_JDBC_URL
+          EOF
+                ;;
+              supplychain)
+                cat > .env.cloud << EOF
+          JWT_SECRET=$JWT_SECRET
+          ECOMMERCE_ECOMMERCE_MONGODB_MONGODB_DATABASE_URI=$ECOMMERCE_ECOMMERCE_MONGODB_MONGODB_DATABASE_URI
+          SCMS_SCMS_POSTGRES_JDBC_URL=$SCMS_SCMS_POSTGRES_JDBC_URL
+          SCMS_SCMS_POSTGRES_JDBC_SCHEMAS=$SCMS_SCMS_POSTGRES_JDBC_SCHEMAS
           EOF
                 ;;
             esac
