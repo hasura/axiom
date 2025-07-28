@@ -49,12 +49,14 @@ jobs:
 
           if [ -z "$CHANGED_DEMOS" ]; then
             echo "No demo changes detected"
-            exit 1
+            echo "demos=" >> $GITHUB_OUTPUT
+            echo "no_changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "demos<<EOF" >> $GITHUB_OUTPUT
+            echo "$CHANGED_DEMOS" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+            echo "no_changes=false" >> $GITHUB_OUTPUT
           fi
-
-          echo "demos<<EOF" >> $GITHUB_OUTPUT
-          echo "$CHANGED_DEMOS" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Install DDN CLI
         run: |
@@ -124,6 +126,7 @@ jobs:
 
       - name: Build all changed demos
         id: build
+        if: steps.demo-setup.outputs.no_changes != 'true'
         run: |
           BUILDS_JSON="[]"
           echo "Starting build process..."
@@ -303,7 +306,7 @@ jobs:
           fi
 
       - name: Comment on PR
-        if: always()
+        if: always() && steps.demo-setup.outputs.no_changes != 'true'
         uses: actions/github-script@v7
         with:
           script: |
