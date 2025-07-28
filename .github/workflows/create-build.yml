@@ -283,24 +283,21 @@ jobs:
           echo "Final builds output:"
           echo "$BUILDS_JSON"
 
-          echo "builds_output<<EOF" >> $GITHUB_OUTPUT
-          echo "$BUILDS_JSON" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          # Use base64 encoding to preserve the JSON structure
+          echo "builds_output=$(echo "$BUILDS_JSON" | base64 -w 0)" >> $GITHUB_OUTPUT
 
       - name: Debug build output
         if: always()
         run: |
           echo "Build step outputs:"
-          echo "builds_output = ${{ steps.build.outputs.builds_output }}"
-
-          # Get length properly
-          BUILDS_OUTPUT='${{ steps.build.outputs.builds_output }}'
+          BUILDS_OUTPUT=$(echo "${{ steps.build.outputs.builds_output }}" | base64 -d)
+          echo "builds_output = $BUILDS_OUTPUT"
           echo "Length of builds_output: ${#BUILDS_OUTPUT}"
 
           # Try to parse it as JSON
-          if echo '${{ steps.build.outputs.builds_output }}' | jq . > /dev/null 2>&1; then
+          if echo "$BUILDS_OUTPUT" | jq . > /dev/null 2>&1; then
             echo "✅ builds_output is valid JSON"
-            echo '${{ steps.build.outputs.builds_output }}' | jq .
+            echo "$BUILDS_OUTPUT" | jq .
           else
             echo "❌ builds_output is not valid JSON"
           fi
@@ -342,7 +339,20 @@ jobs:
           SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
         with:
           script: |
-            const builds = JSON.parse(`${{ steps.build.outputs.builds_output }}`);
+            // Debug: Check if secrets are available
+            if (!process.env.SLACK_BOT_TOKEN) {
+              console.log('❌ SLACK_BOT_TOKEN secret not found');
+              return;
+            }
+            if (!process.env.SLACK_CHANNEL_ID) {
+              console.log('❌ SLACK_CHANNEL_ID secret not found');
+              return;
+            }
+
+            console.log('✅ Slack secrets found');
+
+            const buildsJson = Buffer.from('${{ steps.build.outputs.builds_output }}', 'base64').toString();
+            const builds = JSON.parse(buildsJson);
             const commitSha = context.payload.pull_request.head.sha.substring(0, 7);
 
             // Create message for each build
