@@ -306,6 +306,7 @@ jobs:
           fi
 
       - name: Comment on PR
+        id: pr-comment
         if: steps.demo-setup.outputs.no_changes != 'true'
         uses: actions/github-script@v7
         with:
@@ -327,13 +328,15 @@ jobs:
               comment += `\n`;
             });
 
-            // Always create a new comment
-            await github.rest.issues.createComment({
+            // Create the comment and return its ID
+            const response = await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: comment
             });
+
+            return response.data.id;
 
       - name: Notify Slack
         if: steps.demo-setup.outputs.no_changes != 'true'
@@ -373,7 +376,7 @@ jobs:
               slackMessage += `\n`;
             });
 
-            // Find existing PR thread
+            // Find existing PR thread by looking for build comments
             const comments = await github.rest.issues.listComments({
               issue_number: context.issue.number,
               owner: context.repo.owner,
@@ -382,11 +385,12 @@ jobs:
 
             let threadTs = null;
             const threadComment = comments.data.find(comment => 
+              comment.body.includes('🚀 PromptQL Builds Complete') && 
               comment.body.includes('<!-- slack-thread-ts:')
             );
 
             if (threadComment) {
-              const match = threadComment.body.match(/<!-- slack-thread-ts:([^-]+) -->/);
+              const match = threadComment.body.match(/<!-- slack-thread-ts:([^-\s]+)/);
               threadTs = match ? match[1] : null;
             }
 
@@ -414,12 +418,19 @@ jobs:
               if (slackData.ok) {
                 threadTs = slackData.ts;
                 
-                // Store thread timestamp
-                await github.rest.issues.createComment({
-                  issue_number: context.issue.number,
+                // Update the GitHub comment with thread timestamp
+                const commentId = ${{ steps.pr-comment.outputs.result }};
+                const existingComment = await github.rest.issues.getComment({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
-                  body: `<!-- slack-thread-ts:${threadTs} -->`
+                  comment_id: commentId
+                });
+                
+                await github.rest.issues.updateComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: commentId,
+                  body: existingComment.data.body + `\n<!-- slack-thread-ts:${threadTs} -->`
                 });
               }
             }
