@@ -22,12 +22,12 @@ jobs:
           # Fetch the base branch
           git fetch origin ${{ github.base_ref }}
 
-          # Check if this is the first commit on the branch
-          if git rev-parse --verify HEAD~1 >/dev/null 2>&1 && git merge-base --is-ancestor HEAD~1 origin/${{ github.base_ref }}; then
-            # Not the first commit, compare against previous commit
+          # Check if HEAD~1 exists (not the first commit ever)
+          if git rev-parse --verify HEAD~1 >/dev/null 2>&1; then
+            # Compare against previous commit
             CHANGED_FILES=$(git diff --name-only HEAD~1..HEAD)
           else
-            # First commit on branch, compare against base
+            # Very first commit on branch, compare against base
             CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}..HEAD)
           fi
 
