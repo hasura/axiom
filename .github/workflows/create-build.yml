@@ -1,0 +1,279 @@
+name: Create PromptQL Build
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - "demos/**"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Detect all changed demos
+        id: demo-setup
+        run: |
+          # Fetch the base branch to compare against
+          git fetch origin ${{ github.base_ref }}
+
+          # Get changed files between base and current branch
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}..HEAD)
+          CHANGED_DEMOS=$(echo "$CHANGED_FILES" | grep '^demos/' | cut -d'/' -f2 | sort -u)
+
+          if [ -z "$CHANGED_DEMOS" ]; then
+            echo "No demo changes detected"
+            exit 1
+          fi
+
+          echo "demos<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGED_DEMOS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Load secrets from 1Password
+        uses: 1password/load-secrets-action@v1
+        with:
+          export-env: true
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+
+      - name: Install DDN CLI
+        run: |
+          curl -L https://graphql-engine-cdn.hasura.io/ddn/cli/v4/get.sh | bash
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Verify DDN CLI installation
+        run: ddn --version
+
+      - name: Build all changed demos
+        id: build
+        uses: 1password/load-secrets-action@v1
+        with:
+          export-env: true
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+        run: |
+          BUILDS_JSON="[]"
+
+          while IFS= read -r demo; do
+            echo "Building demo: $demo"
+            
+            # Load secrets for this specific demo from 1Password
+            case $demo in
+              gtm)
+                HASURA_DDN_PAT=$(op read "op://Product ACT/axiom_gtm/ddn-service-account")
+                JWT_SECRET=$(op read "op://Product ACT/axiom_gtm/JWT_SECRET")
+                OPERATIONS_AUTH_JDBC_URL=$(op read "op://Product ACT/axiom_gtm/OPERATIONS_AUTH_JDBC_URL")
+                REVOPS_CLARI_JDBC_URL=$(op read "op://Product ACT/axiom_gtm/REVOPS_CLARI_JDBC_URL")
+                REVOPS_SALESFORCE_JDBC_URL=$(op read "op://Product ACT/axiom_gtm/REVOPS_SALESFORCE_JDBC_URL")
+                ;;
+              healthcare)
+                HASURA_DDN_PAT=$(op read "op://Product ACT/axiom_healthcare/ddn-service-account")
+                JWT_SECRET=$(op read "op://Product ACT/axiom_healthcare/JWT_SECRET")
+                PATIENT_OPS_OPERATIONS_JDBC_URL=$(op read "op://Product ACT/axiom_healthcare/PATIENT_OPS_OPERATIONS_JDBC_URL")
+                PATIENT_OPS_PATIENTS_JDBC_URL=$(op read "op://Product ACT/axiom_healthcare/PATIENT_OPS_PATIENTS_JDBC_URL")
+                REFERENCE_REFERENCE_JDBC_URL=$(op read "op://Product ACT/axiom_healthcare/REFERENCE_REFERENCE_JDBC_URL")
+                ;;
+              aml|cpg|diligence|supplychain|telco)
+                echo "Demo $demo not configured for builds yet - skipping"
+                continue
+                ;;
+              *)
+                echo "Unknown demo: $demo"
+                continue
+                ;;
+            esac
+            
+            cd demos/$demo
+            ddn auth login --pat "$HASURA_DDN_PAT"
+            
+            # Create .env.cloud file
+            case $demo in
+              gtm)
+                cat > .env.cloud << EOF
+          JWT_SECRET=$JWT_SECRET
+          OPERATIONS_AUTH_JDBC_URL=$OPERATIONS_AUTH_JDBC_URL
+          REVOPS_CLARI_JDBC_URL=$REVOPS_CLARI_JDBC_URL
+          REVOPS_SALESFORCE_JDBC_URL=$REVOPS_SALESFORCE_JDBC_URL
+          EOF
+                ;;
+              healthcare)
+                cat > .env.cloud << EOF
+          JWT_SECRET=$JWT_SECRET
+          PATIENT_OPS_OPERATIONS_JDBC_URL=$PATIENT_OPS_OPERATIONS_JDBC_URL
+          PATIENT_OPS_PATIENTS_JDBC_URL=$PATIENT_OPS_PATIENTS_JDBC_URL
+          REFERENCE_REFERENCE_JDBC_URL=$REFERENCE_REFERENCE_JDBC_URL
+          EOF
+                ;;
+            esac
+            
+            # Build this demo
+            BUILD_OUTPUT=$(ddn supergraph build create --out json -d "PR #${{ github.event.number }}: ${{ github.event.pull_request.title }} ($demo)")
+            
+            # Add demo name to build output and append to array
+            BUILD_WITH_DEMO=$(echo "$BUILD_OUTPUT" | jq ". + {\"demo\": \"$demo\"}")
+            BUILDS_JSON=$(echo "$BUILDS_JSON" | jq ". += [$BUILD_WITH_DEMO]")
+            
+            cd ../..
+          done <<< "${{ steps.demo-setup.outputs.demos }}"
+
+          echo "builds_output<<EOF" >> $GITHUB_OUTPUT
+          echo "$BUILDS_JSON" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Comment on PR
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const builds = JSON.parse(`${{ steps.build.outputs.builds_output }}`);
+
+            let comment = `## 🚀 PromptQL Builds Complete\n\n`;
+
+            builds.forEach(build => {
+              comment += `### ${build.demo.toUpperCase()} Demo\n`;
+              comment += `**Build Version:** \`${build.build_version || 'N/A'}\`\n`;
+              comment += `**Project:** \`${build.project_name || 'pql-docs'}\`\n`;
+              comment += `**PromptQL Playground:** ${build.promptql_url ? `[Open Playground](${build.promptql_url})` : 'N/A'}\n`;
+              if (build.description) {
+                comment += `**Description:** ${build.description}\n`;
+              }
+              comment += `\n`;
+            });
+
+            // Find and update existing comment logic...
+            const comments = await github.rest.issues.listComments({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            });
+
+            const existingComment = comments.data.find(comment => 
+              comment.body.includes('🚀 PromptQL Build Complete')
+            );
+
+            if (existingComment) {
+              // Update existing comment
+              await github.rest.issues.updateComment({
+                comment_id: existingComment.id,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+              });
+            } else {
+              // Create new comment
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+              });
+            }
+
+      - name: Notify Slack
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
+        with:
+          script: |
+            const buildOutput = JSON.parse(`${{ steps.build.outputs.build_output }}`);
+
+            console.log('Environment check:');
+            console.log('SLACK_BOT_TOKEN exists:', !!process.env.SLACK_BOT_TOKEN);
+            console.log('SLACK_CHANNEL_ID:', process.env.SLACK_CHANNEL_ID);
+
+            const slackMessage = `🚀 *PromptQL Build Complete*
+
+            *Build Version:* \`${buildOutput.build_version || 'N/A'}\`
+            *Project:* \`${buildOutput.project_name || 'pql-docs'}\`
+            *PromptQL Playground:* ${buildOutput.promptql_url ? buildOutput.promptql_url : 'N/A'}
+
+            ${buildOutput.description ? `*Description:* ${buildOutput.description}` : ''}`;
+
+            // Check if thread exists in PR metadata
+            const comments = await github.rest.issues.listComments({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            });
+
+            let threadTs = null;
+            const threadComment = comments.data.find(comment => 
+              comment.body.includes('<!-- slack-thread-ts:')
+            );
+
+            if (threadComment) {
+              const match = threadComment.body.match(/<!-- slack-thread-ts:([^-]+) -->/);
+              threadTs = match ? match[1] : null;
+              console.log('Found existing thread:', threadTs);
+            }
+
+            if (!threadTs) {
+              console.log('Creating new Slack thread...');
+              const prAuthor = context.payload.pull_request.user.login;
+              const prTitle = context.payload.pull_request.title;
+              const prNumber = context.payload.pull_request.number;
+              
+              const initialMessage = `@${prAuthor} opened a PR »\n\n#${prNumber} ${prTitle}`;
+              
+              const response = await fetch('https://slack.com/api/chat.postMessage', {
+                method: 'POST',
+                headers: {
+                  'Authorization': `Bearer ${process.env.SLACK_BOT_TOKEN}`,
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  channel: process.env.SLACK_CHANNEL_ID,
+                  text: initialMessage,
+                }),
+              });
+
+              const slackData = await response.json();
+              console.log('Slack thread response:', JSON.stringify(slackData, null, 2));
+
+              if (!slackData.ok) {
+                console.error('Failed to create Slack thread:', slackData.error);
+                return;
+              }
+
+              threadTs = slackData.ts;
+
+              // Store thread timestamp in PR comment
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: `<!-- slack-thread-ts:${threadTs} -->`
+              });
+            }
+
+            // Only post to thread if we have a valid threadTs
+            if (threadTs) {
+              console.log('Posting build info to thread:', threadTs);
+              const buildResponse = await fetch('https://slack.com/api/chat.postMessage', {
+                method: 'POST',
+                headers: {
+                  'Authorization': `Bearer ${process.env.SLACK_BOT_TOKEN}`,
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  channel: process.env.SLACK_CHANNEL_ID,
+                  thread_ts: threadTs,
+                  text: slackMessage,
+                }),
+              });
+
+              const buildData = await buildResponse.json();
+              console.log('Slack build response:', JSON.stringify(buildData, null, 2));
+
+              if (!buildData.ok) {
+                console.error('Failed to post build info:', buildData.error);
+              }
+            } else {
+              console.error('No valid thread timestamp available');
+            }
