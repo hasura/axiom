@@ -75,6 +75,11 @@ jobs:
           AML_APP_AML_MONITORING_MONGODB_DATABASE_URI:
             "op://Product ACT/axiom_aml/APP_AML_MONITORING_MONGODB_DATABASE_URI"
           AML_APP_BANKING_CORE_JDBC_URL: "op://Product ACT/axiom_aml/APP_BANKING_CORE_JDBC_URL"
+          # CPG secrets
+          CPG_HASURA_DDN_PAT: "op://Product ACT/axiom_cpg/ddn-service-account"
+          CPG_JWT_SECRET: "op://Product ACT/axiom_cpg/JWT_SECRET"
+          CPG_RETAIL_OPS_INVENTORY_JDBC_URL: "op://Product ACT/axiom_cpg/RETAIL_OPS_INVENTORY_JDBC_URL"
+          CPG_RETAIL_OPS_SALES_JDBC_URL: "op://Product ACT/axiom_cpg/RETAIL_OPS_SALES_JDBC_URL"
           # GTM secrets
           GTM_HASURA_DDN_PAT: "op://Product ACT/axiom_gtm/ddn-service-account"
           GTM_JWT_SECRET: "op://Product ACT/axiom_gtm/JWT_SECRET"
@@ -116,6 +121,12 @@ jobs:
                 export JWT_SECRET="$AML_JWT_SECRET"
                 export APP_AML_MONITORING_MONGODB_DATABASE_URI="$AML_APP_AML_MONITORING_MONGODB_DATABASE_URI"
                 export APP_BANKING_CORE_JDBC_URL="$AML_APP_BANKING_CORE_JDBC_URL"
+                ;;
+              cpg)
+                export HASURA_DDN_PAT="$CPG_HASURA_DDN_PAT"
+                export JWT_SECRET="$CPG_JWT_SECRET"
+                export RETAIL_OPS_INVENTORY_JDBC_URL="$CPG_RETAIL_OPS_INVENTORY_JDBC_URL"
+                export RETAIL_OPS_SALES_JDBC_URL="$CPG_RETAIL_OPS_SALES_JDBC_URL"
                 ;;
               gtm)
                 export HASURA_DDN_PAT="$GTM_HASURA_DDN_PAT"
@@ -160,6 +171,13 @@ jobs:
           JWT_SECRET=$JWT_SECRET
           APP_AML_MONITORING_MONGODB_DATABASE_URI=$APP_AML_MONITORING_MONGODB_DATABASE_URI
           APP_BANKING_CORE_JDBC_URL=$APP_BANKING_CORE_JDBC_URL
+          EOF
+                ;;
+              cpg)
+                cat > .env.cloud << EOF
+          JWT_SECRET=$JWT_SECRET
+          RETAIL_OPS_INVENTORY_JDBC_URL=$RETAIL_OPS_INVENTORY_JDBC_URL
+          RETAIL_OPS_SALES_JDBC_URL=$RETAIL_OPS_SALES_JDBC_URL
           EOF
                 ;;
               gtm)
