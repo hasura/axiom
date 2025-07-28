@@ -19,19 +19,32 @@ jobs:
       - name: Detect all changed demos
         id: demo-setup
         run: |
+          # Debug: Let's see what we've got
+          echo "Current HEAD: $(git rev-parse HEAD)"
+          echo "HEAD~1: $(git rev-parse HEAD~1 2>/dev/null || echo 'N/A')"
+          echo "Base ref: ${{ github.base_ref }}"
+          echo "Event name: ${{ github.event_name }}"
+
           # Fetch the base branch
           git fetch origin ${{ github.base_ref }}
 
-          # Check if HEAD~1 exists (not the first commit ever)
-          if git rev-parse --verify HEAD~1 >/dev/null 2>&1; then
-            # Compare against previous commit
+          # For incremental builds, we want to compare against the previous commit
+          # But we need to handle the GitHub Actions checkout context properly
+          if [ "${{ github.event_name }}" = "pull_request" ] && git rev-parse --verify HEAD~1 >/dev/null 2>&1; then
+            echo "Comparing against previous commit for incremental build"
             CHANGED_FILES=$(git diff --name-only HEAD~1..HEAD)
           else
-            # Very first commit on branch, compare against base
+            echo "Fallback: comparing against base branch"
             CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}..HEAD)
           fi
 
+          echo "Changed files:"
+          echo "$CHANGED_FILES"
+
           CHANGED_DEMOS=$(echo "$CHANGED_FILES" | grep '^demos/' | cut -d'/' -f2 | sort -u)
+
+          echo "Changed demos:"
+          echo "$CHANGED_DEMOS"
 
           if [ -z "$CHANGED_DEMOS" ]; then
             echo "No demo changes detected"
@@ -56,6 +69,12 @@ jobs:
           export-env: true
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          # AML secrets
+          AML_HASURA_DDN_PAT: "op://Product ACT/axiom_aml/ddn-service-account"
+          AML_JWT_SECRET: "op://Product ACT/axiom_aml/JWT_SECRET"
+          AML_APP_AML_MONITORING_MONGODB_DATABASE_URI:
+            "op://Product ACT/axiom_aml/APP_AML_MONITORING_MONGODB_DATABASE_URI"
+          AML_APP_BANKING_CORE_JDBC_URL: "op://Product ACT/axiom_aml/APP_BANKING_CORE_JDBC_URL"
           # GTM secrets
           GTM_HASURA_DDN_PAT: "op://Product ACT/axiom_gtm/ddn-service-account"
           GTM_JWT_SECRET: "op://Product ACT/axiom_gtm/JWT_SECRET"
@@ -92,6 +111,12 @@ jobs:
             
             # Load secrets for this specific demo using already loaded env vars
             case $demo in
+              aml)
+                export HASURA_DDN_PAT="$AML_HASURA_DDN_PAT"
+                export JWT_SECRET="$AML_JWT_SECRET"
+                export APP_AML_MONITORING_MONGODB_DATABASE_URI="$AML_APP_AML_MONITORING_MONGODB_DATABASE_URI"
+                export APP_BANKING_CORE_JDBC_URL="$AML_APP_BANKING_CORE_JDBC_URL"
+                ;;
               gtm)
                 export HASURA_DDN_PAT="$GTM_HASURA_DDN_PAT"
                 export JWT_SECRET="$GTM_JWT_SECRET"
@@ -130,6 +155,13 @@ jobs:
             
             # Create .env.cloud file
             case $demo in
+              aml)
+                cat > .env.cloud << EOF
+          JWT_SECRET=$JWT_SECRET
+          APP_AML_MONITORING_MONGODB_DATABASE_URI=$APP_AML_MONITORING_MONGODB_DATABASE_URI
+          APP_BANKING_CORE_JDBC_URL=$APP_BANKING_CORE_JDBC_URL
+          EOF
+                ;;
               gtm)
                 cat > .env.cloud << EOF
           JWT_SECRET=$JWT_SECRET
