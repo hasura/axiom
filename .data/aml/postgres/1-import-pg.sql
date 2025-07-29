@@ -24,7 +24,7 @@ CREATE TABLE financial_transfers (
     receiver_bank_location VARCHAR(50),
     payment_type VARCHAR(10),
     is_laundering BOOLEAN,
-    laundering_type VARCHAR(20)
+    laundering_type VARCHAR(50)
 );
 
 CREATE TABLE sars (
