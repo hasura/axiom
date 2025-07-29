@@ -1,0 +1,52 @@
+include:
+  - path: revops/connector/salesforce/compose.yaml
+  - path: revops/connector/clari/compose.yaml
+  - path: operations/connector/auth/compose.yaml
+  - path: operations/connector/actions/compose.yaml
+services:
+  engine:
+    build:
+      context: engine
+      dockerfile: Dockerfile.engine
+      pull: true
+    environment:
+      AUTHN_CONFIG_PATH: /md/auth_config.json
+      ENABLE_CORS: "true"
+      ENABLE_SQL_INTERFACE: "true"
+      INTROSPECTION_METADATA_FILE: /md/metadata.json
+      METADATA_PATH: /md/open_dd.json
+      OTLP_ENDPOINT: http://local.hasura.dev:4317
+    extra_hosts:
+      - local.hasura.dev:host-gateway
+    labels:
+      io.hasura.ddn.service-name: engine
+    ports:
+      - 3280:3000
+  otel-collector:
+    command:
+      - --config=/etc/otel-collector-config.yaml
+    environment:
+      HASURA_DDN_PAT: ${HASURA_DDN_PAT}
+    image: otel/opentelemetry-collector:0.104.0
+    ports:
+      - 4317:4317
+      - 4318:4318
+    volumes:
+      - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
+  promptql-playground:
+    environment:
+      CONFIG_PATH: /app/promptql_config.json
+      CORS_ORIGINS: ${CORS_ORIGINS:-https://console.hasura.io,https://promptql.console.hasura.io}
+      DDN_URL: ${HASURA_DDN_URL:-http://engine:3000/v1/sql}
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT:-http://local.hasura.dev:4317}
+      PROMPTQL_SECRET_KEY: ${PROMPTQL_SECRET_KEY}
+    extra_hosts:
+      - local.hasura.dev:host-gateway
+    image: us-east4-docker.pkg.dev/promptql-execution-service/promptql-public/promptql-playground-local
+    labels:
+      io.hasura.ddn.service-name: promptql-playground
+    ports:
+      - 3282:5000
+    volumes:
+      - ./engine/build/promptql_config.json:/app/promptql_config.json
+      - ./.promptql_playground.db:/app/promptql_playground/promptql_playground.db

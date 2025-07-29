@@ -1,0 +1,22 @@
+kind: AuthConfig
+version: v4
+definition:
+  mode:
+    noAuth:
+      role: admin
+      sessionVariables: {}
+  alternativeModes:
+    - identifier: "jwt"
+      config:
+        jwt:
+          key:
+            fixed:
+              algorithm: HS256
+              key:
+                valueFromEnv: JWT_SECRET
+          tokenLocation:
+            type: BearerAuthorization
+          claimsConfig:
+            namespace:
+              claimsFormat: Json
+              location: "/claims.jwt.hasura.io"

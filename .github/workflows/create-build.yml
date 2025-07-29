@@ -1,0 +1,452 @@
+name: Create PromptQL Build
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - "demos/**"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect all changed demos
+        id: demo-setup
+        run: |
+          # Debug: Show commit history
+          echo "Last 3 commits:"
+          git log --oneline -3
+
+          # Fetch the base branch
+          git fetch origin ${{ github.base_ref }}
+
+          # For incremental builds, find the previous commit that actually exists
+          # Use GitHub's before SHA if available, otherwise fall back to HEAD~1
+          if [ -n "${{ github.event.before }}" ] && [ "${{ github.event.before }}" != "0000000000000000000000000000000000000000" ]; then
+            echo "Using GitHub's before SHA for comparison"
+            CHANGED_FILES=$(git diff --name-only ${{ github.event.before }}..HEAD)
+          elif git rev-parse --verify HEAD~1 >/dev/null 2>&1; then
+            echo "Using HEAD~1 for comparison"
+            CHANGED_FILES=$(git diff --name-only HEAD~1..HEAD)
+          else
+            echo "Fallback: comparing against base branch"
+            CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}..HEAD)
+          fi
+
+          echo "Changed files:"
+          echo "$CHANGED_FILES"
+
+          CHANGED_DEMOS=$(echo "$CHANGED_FILES" | grep '^demos/' | cut -d'/' -f2 | sort -u)
+
+          echo "Changed demos:"
+          echo "$CHANGED_DEMOS"
+
+          if [ -z "$CHANGED_DEMOS" ]; then
+            echo "No demo changes detected"
+            echo "demos=" >> $GITHUB_OUTPUT
+            echo "no_changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "demos<<EOF" >> $GITHUB_OUTPUT
+            echo "$CHANGED_DEMOS" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+            echo "no_changes=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Install DDN CLI
+        run: |
+          curl -L https://graphql-engine-cdn.hasura.io/ddn/cli/v4/get.sh | bash
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Verify DDN CLI installation
+        run: ddn --version
+
+      - name: Load secrets from 1Password
+        uses: 1password/load-secrets-action@v1
+        with:
+          export-env: true
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          # AML secrets
+          AML_HASURA_DDN_PAT: "op://Product ACT/axiom_aml/ddn-service-account"
+          AML_JWT_SECRET: "op://Product ACT/axiom_aml/JWT_SECRET"
+          AML_APP_AML_MONITORING_MONGODB_DATABASE_URI:
+            "op://Product ACT/axiom_aml/APP_AML_MONITORING_MONGODB_DATABASE_URI"
+          AML_APP_BANKING_CORE_JDBC_URL: "op://Product ACT/axiom_aml/APP_BANKING_CORE_JDBC_URL"
+          # CPG secrets
+          CPG_HASURA_DDN_PAT: "op://Product ACT/axiom_cpg/ddn-service-account"
+          CPG_JWT_SECRET: "op://Product ACT/axiom_cpg/JWT_SECRET"
+          CPG_RETAIL_OPS_INVENTORY_JDBC_URL: "op://Product ACT/axiom_cpg/RETAIL_OPS_INVENTORY_JDBC_URL"
+          CPG_RETAIL_OPS_SALES_JDBC_URL: "op://Product ACT/axiom_cpg/RETAIL_OPS_SALES_JDBC_URL"
+          # GTM secrets
+          GTM_HASURA_DDN_PAT: "op://Product ACT/axiom_gtm/ddn-service-account"
+          GTM_JWT_SECRET: "op://Product ACT/axiom_gtm/JWT_SECRET"
+          GTM_OPERATIONS_AUTH_JDBC_URL: "op://Product ACT/axiom_gtm/OPERATIONS_AUTH_JDBC_URL"
+          GTM_REVOPS_CLARI_JDBC_URL: "op://Product ACT/axiom_gtm/REVOPS_CLARI_JDBC_URL"
+          GTM_REVOPS_SALESFORCE_JDBC_URL: "op://Product ACT/axiom_gtm/REVOPS_SALESFORCE_JDBC_URL"
+          # Healthcare secrets
+          HEALTHCARE_HASURA_DDN_PAT: "op://Product ACT/axiom_healthcare/ddn-service-account"
+          HEALTHCARE_JWT_SECRET: "op://Product ACT/axiom_healthcare/JWT_SECRET"
+          HEALTHCARE_PATIENT_OPS_OPERATIONS_JDBC_URL:
+            "op://Product ACT/axiom_healthcare/PATIENT_OPS_OPERATIONS_JDBC_URL"
+          HEALTHCARE_PATIENT_OPS_PATIENTS_JDBC_URL: "op://Product ACT/axiom_healthcare/PATIENT_OPS_PATIENTS_JDBC_URL"
+          HEALTHCARE_REFERENCE_REFERENCE_JDBC_URL: "op://Product ACT/axiom_healthcare/REFERENCE_REFERENCE_JDBC_URL"
+          # Diligence secrets
+          DILIGENCE_HASURA_DDN_PAT: "op://Product ACT/axiom_diligence/ddn-service-account"
+          DILIGENCE_JWT_SECRET: "op://Product ACT/axiom_diligence/JWT_SECRET"
+          DILIGENCE_ERP_FINANCIALS_JDBC_URL: "op://Product ACT/axiom_diligence/ERP_FINANCIALS_JDBC_URL"
+          DILIGENCE_ERP_OPERATIONS_JDBC_URL: "op://Product ACT/axiom_diligence/ERP_OPERATIONS_JDBC_URL"
+          # Supplychain secrets
+          SUPPLYCHAIN_HASURA_DDN_PAT: "op://Product ACT/axiom_supplychain/ddn-service-account"
+          SUPPLYCHAIN_JWT_SECRET: "op://Product ACT/axiom_supplychain/JWT_SECRET"
+          SUPPLYCHAIN_ECOMMERCE_MONGODB_URI:
+            "op://Product ACT/axiom_supplychain/ECOMMERCE_ECOMMERCE_MONGODB_MONGODB_DATABASE_URI"
+          SUPPLYCHAIN_SCMS_POSTGRES_JDBC_URL: "op://Product ACT/axiom_supplychain/SCMS_SCMS_POSTGRES_JDBC_URL"
+          SUPPLYCHAIN_SCMS_POSTGRES_JDBC_SCHEMAS: "op://Product ACT/axiom_supplychain/SCMS_SCMS_POSTGRES_JDBC_SCHEMAS"
+          # Telco secrets
+          TELCO_HASURA_DDN_PAT: "op://Product ACT/axiom_telco/ddn-service-account"
+          TELCO_JWT_SECRET: "op://Product ACT/axiom_telco/JWT_SECRET"
+          TELCO_AUTH_AUTH_JDBC_URL: "op://Product ACT/axiom_telco/AUTH_AUTH_JDBC_URL"
+          TELCO_AUTH_SEARCH_BRAVE_API_KEY: "op://Product ACT/axiom_telco/AUTH_SEARCH_BRAVE_API_KEY"
+          TELCO_AUTH_SEARCH_GEMINI_API_KEY: "op://Product ACT/axiom_telco/AUTH_SEARCH_GEMINI_API_KEY"
+          TELCO_AUTH_SEARCH_PERPLEXITY_API_KEY: "op://Product ACT/axiom_telco/AUTH_SEARCH_PERPLEXITY_API_KEY"
+          TELCO_CUSTOMER_AURORA_JDBC_URL: "op://Product ACT/axiom_telco/CUSTOMER_AURORA_JDBC_URL"
+          TELCO_CUSTOMER_MONGO_MONGODB_DATABASE_URI: "op://Product ACT/axiom_telco/CUSTOMER_MONGO_MONGODB_DATABASE_URI"
+          TELCO_NETWORK_CLICKHOUSE_JDBC_URL: "op://Product ACT/axiom_telco/NETWORK_CLICKHOUSE_JDBC_URL"
+          TELCO_NETWORK_KAFKA_SINK_JDBC_URL: "op://Product ACT/axiom_telco/NETWORK_KAFKA_SINK_JDBC_URL"
+          TELCO_SUPPORT_ATLAS_MONGODB_DATABASE_URI: "op://Product ACT/axiom_telco/SUPPORT_ATLAS_MONGODB_DATABASE_URI"
+          TELCO_SUPPORT_VECTOR_JDBC_URL: "op://Product ACT/axiom_telco/SUPPORT_VECTOR_JDBC_URL"
+          TELCO_SUPPORT_VECTOR_SEARCH_SERVICE_OPENAI_API_KEY:
+            "op://Product ACT/axiom_telco/SUPPORT_VECTOR_SEARCH_SERVICE_OPENAI_API_KEY"
+
+      - name: Build all changed demos
+        id: build
+        if: steps.demo-setup.outputs.no_changes != 'true'
+        run: |
+          BUILDS_JSON="[]"
+          echo "Starting build process..."
+          echo "Demos to build: ${{ steps.demo-setup.outputs.demos }}"
+
+          while IFS= read -r demo; do
+            echo "Building demo: $demo"
+            
+            # Load secrets for this specific demo using already loaded env vars
+            case $demo in
+              aml)
+                export HASURA_DDN_PAT="$AML_HASURA_DDN_PAT"
+                export JWT_SECRET="$AML_JWT_SECRET"
+                export APP_AML_MONITORING_MONGODB_DATABASE_URI="$AML_APP_AML_MONITORING_MONGODB_DATABASE_URI"
+                export APP_BANKING_CORE_JDBC_URL="$AML_APP_BANKING_CORE_JDBC_URL"
+                ;;
+              cpg)
+                export HASURA_DDN_PAT="$CPG_HASURA_DDN_PAT"
+                export JWT_SECRET="$CPG_JWT_SECRET"
+                export RETAIL_OPS_INVENTORY_JDBC_URL="$CPG_RETAIL_OPS_INVENTORY_JDBC_URL"
+                export RETAIL_OPS_SALES_JDBC_URL="$CPG_RETAIL_OPS_SALES_JDBC_URL"
+                ;;
+              gtm)
+                export HASURA_DDN_PAT="$GTM_HASURA_DDN_PAT"
+                export JWT_SECRET="$GTM_JWT_SECRET"
+                export OPERATIONS_AUTH_JDBC_URL="$GTM_OPERATIONS_AUTH_JDBC_URL"
+                export REVOPS_CLARI_JDBC_URL="$GTM_REVOPS_CLARI_JDBC_URL"
+                export REVOPS_SALESFORCE_JDBC_URL="$GTM_REVOPS_SALESFORCE_JDBC_URL"
+                ;;
+              healthcare)
+                export HASURA_DDN_PAT="$HEALTHCARE_HASURA_DDN_PAT"
+                export JWT_SECRET="$HEALTHCARE_JWT_SECRET"
+                export PATIENT_OPS_OPERATIONS_JDBC_URL="$HEALTHCARE_PATIENT_OPS_OPERATIONS_JDBC_URL"
+                export PATIENT_OPS_PATIENTS_JDBC_URL="$HEALTHCARE_PATIENT_OPS_PATIENTS_JDBC_URL"
+                export REFERENCE_REFERENCE_JDBC_URL="$HEALTHCARE_REFERENCE_REFERENCE_JDBC_URL"
+                ;;
+              diligence)
+                export HASURA_DDN_PAT="$DILIGENCE_HASURA_DDN_PAT"
+                export JWT_SECRET="$DILIGENCE_JWT_SECRET"
+                export ERP_FINANCIALS_JDBC_URL="$DILIGENCE_ERP_FINANCIALS_JDBC_URL"
+                export ERP_OPERATIONS_JDBC_URL="$DILIGENCE_ERP_OPERATIONS_JDBC_URL"
+                ;;
+              supplychain)
+                export HASURA_DDN_PAT="$SUPPLYCHAIN_HASURA_DDN_PAT"
+                export JWT_SECRET="$SUPPLYCHAIN_JWT_SECRET"
+                export ECOMMERCE_ECOMMERCE_MONGODB_MONGODB_DATABASE_URI="$SUPPLYCHAIN_ECOMMERCE_MONGODB_URI"
+                export SCMS_SCMS_POSTGRES_JDBC_URL="$SUPPLYCHAIN_SCMS_POSTGRES_JDBC_URL"
+                export SCMS_SCMS_POSTGRES_JDBC_SCHEMAS="$SUPPLYCHAIN_SCMS_POSTGRES_JDBC_SCHEMAS"
+                ;;
+              telco)
+                export HASURA_DDN_PAT="$TELCO_HASURA_DDN_PAT"
+                export JWT_SECRET="$TELCO_JWT_SECRET"
+                export AUTH_AUTH_JDBC_URL="$TELCO_AUTH_AUTH_JDBC_URL"
+                export AUTH_SEARCH_BRAVE_API_KEY="$TELCO_AUTH_SEARCH_BRAVE_API_KEY"
+                export AUTH_SEARCH_GEMINI_API_KEY="$TELCO_AUTH_SEARCH_GEMINI_API_KEY"
+                export AUTH_SEARCH_PERPLEXITY_API_KEY="$TELCO_AUTH_SEARCH_PERPLEXITY_API_KEY"
+                export CUSTOMER_AURORA_JDBC_URL="$TELCO_CUSTOMER_AURORA_JDBC_URL"
+                export CUSTOMER_MONGO_MONGODB_DATABASE_URI="$TELCO_CUSTOMER_MONGO_MONGODB_DATABASE_URI"
+                export NETWORK_CLICKHOUSE_JDBC_URL="$TELCO_NETWORK_CLICKHOUSE_JDBC_URL"
+                export NETWORK_KAFKA_SINK_JDBC_URL="$TELCO_NETWORK_KAFKA_SINK_JDBC_URL"
+                export SUPPORT_ATLAS_MONGODB_DATABASE_URI="$TELCO_SUPPORT_ATLAS_MONGODB_DATABASE_URI"
+                export SUPPORT_VECTOR_JDBC_URL="$TELCO_SUPPORT_VECTOR_JDBC_URL"
+                export SUPPORT_VECTOR_SEARCH_SERVICE_OPENAI_API_KEY="$TELCO_SUPPORT_VECTOR_SEARCH_SERVICE_OPENAI_API_KEY"
+                ;;
+              *)
+                echo "Unknown demo: $demo - skipping"
+                continue
+                ;;
+            esac
+            
+            cd demos/$demo
+            ddn auth login --pat "$HASURA_DDN_PAT"
+            
+            # Create .env.cloud file
+            case $demo in
+              aml)
+                cat > .env.cloud << EOF
+          JWT_SECRET=$JWT_SECRET
+          APP_AML_MONITORING_MONGODB_DATABASE_URI=$APP_AML_MONITORING_MONGODB_DATABASE_URI
+          APP_BANKING_CORE_JDBC_URL=$APP_BANKING_CORE_JDBC_URL
+          EOF
+                ;;
+              cpg)
+                cat > .env.cloud << EOF
+          JWT_SECRET=$JWT_SECRET
+          RETAIL_OPS_INVENTORY_JDBC_URL=$RETAIL_OPS_INVENTORY_JDBC_URL
+          RETAIL_OPS_SALES_JDBC_URL=$RETAIL_OPS_SALES_JDBC_URL
+          EOF
+                ;;
+              gtm)
+                cat > .env.cloud << EOF
+          JWT_SECRET=$JWT_SECRET
+          OPERATIONS_AUTH_JDBC_URL=$OPERATIONS_AUTH_JDBC_URL
+          REVOPS_CLARI_JDBC_URL=$REVOPS_CLARI_JDBC_URL
+          REVOPS_SALESFORCE_JDBC_URL=$REVOPS_SALESFORCE_JDBC_URL
+          EOF
+                ;;
+              healthcare)
+                cat > .env.cloud << EOF
+          JWT_SECRET=$JWT_SECRET
+          PATIENT_OPS_OPERATIONS_JDBC_URL=$PATIENT_OPS_OPERATIONS_JDBC_URL
+          PATIENT_OPS_PATIENTS_JDBC_URL=$PATIENT_OPS_PATIENTS_JDBC_URL
+          REFERENCE_REFERENCE_JDBC_URL=$REFERENCE_REFERENCE_JDBC_URL
+          EOF
+                ;;
+              diligence)
+                cat > .env.cloud << EOF
+          JWT_SECRET=$JWT_SECRET
+          ERP_FINANCIALS_JDBC_URL=$ERP_FINANCIALS_JDBC_URL
+          ERP_OPERATIONS_JDBC_URL=$ERP_OPERATIONS_JDBC_URL
+          EOF
+                ;;
+              supplychain)
+                cat > .env.cloud << EOF
+          JWT_SECRET=$JWT_SECRET
+          ECOMMERCE_ECOMMERCE_MONGODB_MONGODB_DATABASE_URI=$ECOMMERCE_ECOMMERCE_MONGODB_MONGODB_DATABASE_URI
+          SCMS_SCMS_POSTGRES_JDBC_URL=$SCMS_SCMS_POSTGRES_JDBC_URL
+          SCMS_SCMS_POSTGRES_JDBC_SCHEMAS=$SCMS_SCMS_POSTGRES_JDBC_SCHEMAS
+          EOF
+                ;;
+              telco)
+                cat > .env.cloud << EOF
+          JWT_SECRET=$JWT_SECRET
+          AUTH_AUTH_JDBC_URL=$AUTH_AUTH_JDBC_URL
+          AUTH_SEARCH_BRAVE_API_KEY=$AUTH_SEARCH_BRAVE_API_KEY
+          AUTH_SEARCH_GEMINI_API_KEY=$AUTH_SEARCH_GEMINI_API_KEY
+          AUTH_SEARCH_PERPLEXITY_API_KEY=$AUTH_SEARCH_PERPLEXITY_API_KEY
+          CUSTOMER_AURORA_JDBC_URL=$CUSTOMER_AURORA_JDBC_URL
+          CUSTOMER_MONGO_MONGODB_DATABASE_URI=$CUSTOMER_MONGO_MONGODB_DATABASE_URI
+          NETWORK_CLICKHOUSE_JDBC_URL=$NETWORK_CLICKHOUSE_JDBC_URL
+          NETWORK_KAFKA_SINK_JDBC_URL=$NETWORK_KAFKA_SINK_JDBC_URL
+          SUPPORT_ATLAS_MONGODB_DATABASE_URI=$SUPPORT_ATLAS_MONGODB_DATABASE_URI
+          SUPPORT_VECTOR_JDBC_URL=$SUPPORT_VECTOR_JDBC_URL
+          SUPPORT_VECTOR_SEARCH_SERVICE_OPENAI_API_KEY=$SUPPORT_VECTOR_SEARCH_SERVICE_OPENAI_API_KEY
+          EOF
+                ;;
+            esac
+            
+            # Build this demo
+            echo "Running ddn supergraph build create for $demo..."
+            BUILD_OUTPUT=$(ddn supergraph build create --out json -d "PR #${{ github.event.number }}: ${{ github.event.pull_request.title }} ($demo)")
+            echo "Raw build output for $demo:"
+            echo "$BUILD_OUTPUT"
+            
+            # Add demo name to build output and append to array
+            BUILD_WITH_DEMO=$(echo "$BUILD_OUTPUT" | jq ". + {\"demo\": \"$demo\"}")
+            echo "Build with demo name added:"
+            echo "$BUILD_WITH_DEMO"
+            
+            BUILDS_JSON=$(echo "$BUILDS_JSON" | jq ". += [$BUILD_WITH_DEMO]")
+            echo "Updated builds array:"
+            echo "$BUILDS_JSON"
+            
+            cd ../..
+          done <<< "${{ steps.demo-setup.outputs.demos }}"
+
+          echo "Final builds output:"
+          echo "$BUILDS_JSON"
+
+          # Use base64 encoding to preserve the JSON structure
+          echo "builds_output=$(echo "$BUILDS_JSON" | base64 -w 0)" >> $GITHUB_OUTPUT
+
+      - name: Debug build output
+        if: always() && steps.demo-setup.outputs.no_changes != 'true'
+        run: |
+          echo "Build step outputs:"
+          BUILDS_OUTPUT=$(echo "${{ steps.build.outputs.builds_output }}" | base64 -d)
+          echo "builds_output = $BUILDS_OUTPUT"
+          echo "Length of builds_output: ${#BUILDS_OUTPUT}"
+
+          # Try to parse it as JSON
+          if echo "$BUILDS_OUTPUT" | jq . > /dev/null 2>&1; then
+            echo "✅ builds_output is valid JSON"
+            echo "$BUILDS_OUTPUT" | jq .
+          else
+            echo "❌ builds_output is not valid JSON"
+          fi
+
+      - name: Comment on PR
+        id: pr-comment
+        if: steps.demo-setup.outputs.no_changes != 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const buildsJson = Buffer.from('${{ steps.build.outputs.builds_output }}', 'base64').toString();
+            const builds = JSON.parse(buildsJson);
+            const commitSha = context.payload.pull_request.head.sha.substring(0, 7);
+
+            let comment = `## 🚀 PromptQL Builds Complete (${commitSha})\n\n`;
+
+            builds.forEach(build => {
+              comment += `### ${build.demo.toUpperCase()} Demo\n`;
+              comment += `**Build Version:** \`${build.build_version || 'N/A'}\`\n`;
+              comment += `**Project:** \`${build.project_name || 'pql-docs'}\`\n`;
+              comment += `**PromptQL Playground:** ${build.promptql_url ? `[Open Playground](${build.promptql_url})` : 'N/A'}\n`;
+              if (build.description) {
+                comment += `**Description:** ${build.description}\n`;
+              }
+              comment += `\n`;
+            });
+
+            // Create the comment and return its ID
+            const response = await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+
+            return response.data.id;
+
+      - name: Notify Slack
+        if: steps.demo-setup.outputs.no_changes != 'true'
+        uses: actions/github-script@v7
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
+        with:
+          script: |
+            // Debug: Check if secrets are available
+            if (!process.env.SLACK_BOT_TOKEN) {
+              console.log('❌ SLACK_BOT_TOKEN secret not found');
+              return;
+            }
+            if (!process.env.SLACK_CHANNEL_ID) {
+              console.log('❌ SLACK_CHANNEL_ID secret not found');
+              return;
+            }
+
+            console.log('✅ Slack secrets found');
+
+            const buildsJson = Buffer.from('${{ steps.build.outputs.builds_output }}', 'base64').toString();
+            const builds = JSON.parse(buildsJson);
+            const commitSha = context.payload.pull_request.head.sha.substring(0, 7);
+
+            // Create message for each build
+            let slackMessage = `🚀 *PromptQL Builds Complete* (${commitSha})\n\n`;
+
+            builds.forEach(build => {
+              slackMessage += `*${build.demo.toUpperCase()} Demo*\n`;
+              slackMessage += `*Build Version:* \`${build.build_version || 'N/A'}\`\n`;
+              slackMessage += `*Project:* \`${build.project_name || 'pql-docs'}\`\n`;
+              slackMessage += `*PromptQL Playground:* ${build.promptql_url ? build.promptql_url : 'N/A'}\n`;
+              if (build.description) {
+                slackMessage += `*Description:* ${build.description}\n`;
+              }
+              slackMessage += `\n`;
+            });
+
+            // Find existing PR thread by looking for build comments
+            const comments = await github.rest.issues.listComments({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            });
+
+            let threadTs = null;
+            const threadComment = comments.data.find(comment => 
+              comment.body.includes('🚀 PromptQL Builds Complete') && 
+              comment.body.includes('<!-- slack-thread-ts:')
+            );
+
+            if (threadComment) {
+              const match = threadComment.body.match(/<!-- slack-thread-ts:([^-\s]+)/);
+              threadTs = match ? match[1] : null;
+            }
+
+            // Create PR thread if it doesn't exist
+            if (!threadTs) {
+              const prAuthor = context.payload.pull_request.user.login;
+              const prTitle = context.payload.pull_request.title;
+              const prNumber = context.payload.pull_request.number;
+              
+              const initialMessage = `@${prAuthor} opened a PR »\n\n#${prNumber} ${prTitle}`;
+              
+              const response = await fetch('https://slack.com/api/chat.postMessage', {
+                method: 'POST',
+                headers: {
+                  'Authorization': `Bearer ${process.env.SLACK_BOT_TOKEN}`,
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  channel: process.env.SLACK_CHANNEL_ID,
+                  text: initialMessage,
+                }),
+              });
+
+              const slackData = await response.json();
+              if (slackData.ok) {
+                threadTs = slackData.ts;
+                
+                // Update the GitHub comment with thread timestamp
+                const commentId = ${{ steps.pr-comment.outputs.result }};
+                const existingComment = await github.rest.issues.getComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: commentId
+                });
+                
+                await github.rest.issues.updateComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: commentId,
+                  body: existingComment.data.body + `\n<!-- slack-thread-ts:${threadTs} -->`
+                });
+              }
+            }
+
+            // Post build info as reply in thread
+            if (threadTs) {
+              await fetch('https://slack.com/api/chat.postMessage', {
+                method: 'POST',
+                headers: {
+                  'Authorization': `Bearer ${process.env.SLACK_BOT_TOKEN}`,
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  channel: process.env.SLACK_CHANNEL_ID,
+                  thread_ts: threadTs,
+                  text: slackMessage,
+                }),
+              });
+            }

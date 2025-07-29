@@ -1,0 +1,29 @@
+kind: Context
+version: v3
+definition:
+  current: gtm
+  contexts:
+    gtm:
+      project: gtm
+      supergraph: ../supergraph.yaml
+      subgraph: ../revops/subgraph.yaml
+      localEnvFile: ../.env
+      cloudEnvFile: ../.env.cloud
+  scripts:
+    docker-start:
+      bash:
+        HASURA_DDN_PAT=$(ddn auth print-access-token) PROMPTQL_SECRET_KEY=$(ddn auth print-promptql-secret-key) docker
+        compose -f compose.yaml --env-file .env up --build --pull always
+      powershell:
+        $Env:HASURA_DDN_PAT = ddn auth print-access-token; $Env:PROMPTQL_SECRET_KEY = ddn auth
+        print-promptql-secret-key; docker compose -f compose.yaml --env-file .env up --build --pull always
+    dataset-up:
+      bash: ../../scripts/ddn-run/dataset-up.sh gtm
+      powershell: ../../scripts/ddn-run/dataset-up.ps1 gtm
+    dataset-down:
+      bash: ../../scripts/ddn-run/dataset-down.sh gtm
+      powershell: ../../scripts/ddn-run/dataset-down.ps1 gtm
+    jwt-gen:
+      bash: node ../../scripts/jwt/jwt.mjs
+      powershell: node ../../scripts/jwt/jwt.mjs
+  promptQL: true

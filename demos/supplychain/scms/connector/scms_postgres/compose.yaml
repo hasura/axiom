@@ -1,0 +1,15 @@
+services:
+  scms_scms_postgres:
+    build:
+      context: .
+      dockerfile: .hasura-connector/Dockerfile.scms_postgres
+    environment:
+      HASURA_SERVICE_TOKEN_SECRET: $SCMS_SCMS_POSTGRES_HASURA_SERVICE_TOKEN_SECRET
+      JDBC_SCHEMAS: $SCMS_SCMS_POSTGRES_JDBC_SCHEMAS
+      JDBC_URL: $SCMS_SCMS_POSTGRES_JDBC_URL
+      OTEL_EXPORTER_OTLP_ENDPOINT: $SCMS_SCMS_POSTGRES_OTEL_EXPORTER_OTLP_ENDPOINT
+      OTEL_SERVICE_NAME: $SCMS_SCMS_POSTGRES_OTEL_SERVICE_NAME
+    extra_hosts:
+      - local.hasura.dev:host-gateway
+    ports:
+      - 5238:8080
