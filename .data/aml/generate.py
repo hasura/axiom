@@ -38,6 +38,32 @@ def load_ofac_names():
 # Load OFAC names at startup
 OFAC_INDIVIDUALS, OFAC_COMPANIES = load_ofac_names()
 
+# Track used OFAC names to prevent duplicates
+USED_OFAC_INDIVIDUALS = set()
+USED_OFAC_COMPANIES = set()
+
+def reset_ofac_tracking():
+    """Reset the tracking of used OFAC names for a fresh generation run"""
+    global USED_OFAC_INDIVIDUALS, USED_OFAC_COMPANIES
+    USED_OFAC_INDIVIDUALS.clear()
+    USED_OFAC_COMPANIES.clear()
+
+def get_unique_ofac_name(is_company=False):
+    """Get a unique OFAC name that hasn't been used before"""
+    if is_company:
+        available_names = [name for name in OFAC_COMPANIES if name not in USED_OFAC_COMPANIES]
+        if available_names:
+            name = random.choice(available_names)
+            USED_OFAC_COMPANIES.add(name)
+            return name
+    else:
+        available_names = [name for name in OFAC_INDIVIDUALS if name not in USED_OFAC_INDIVIDUALS]
+        if available_names:
+            name = random.choice(available_names)
+            USED_OFAC_INDIVIDUALS.add(name)
+            return name
+    return None  # No unique names available
+
 # Constants
 CURRENT_DATE = datetime.today()
 COUNTRIES = ["USA", "Canada", "UK", "Germany", "South Africa", "Cuba", "Iran", "Russia"]
@@ -210,14 +236,13 @@ def generate_customers(num_customers=50):
         
         if will_be_sanctioned:
             # Use real OFAC names for customers that will appear in sanctions
-            if is_company and OFAC_COMPANIES:
-                name = random.choice(OFAC_COMPANIES)
-                print(f"OFAC Company - {name}")
-            elif not is_company and OFAC_INDIVIDUALS:
-                name = random.choice(OFAC_INDIVIDUALS)
-                print(f"OFAC Individual - {name}")
+            ofac_name = get_unique_ofac_name(is_company)
+            if ofac_name:
+                name = ofac_name
+                print(f"OFAC {'Company' if is_company else 'Individual'} - {name}")
             else:
                 name = fake.company() if is_company else fake.name()  # Fallback to generated name
+                print(f"Warning: No unique OFAC {'company' if is_company else 'individual'} names available, using fake name")
             
             # Add to sanctioned entities list
             sanctioned_entities.append({
@@ -588,12 +613,11 @@ def generate_sanctions(sanctioned_entities, num_additional=50):
         is_company = random.random() < 0.4  # 40% companies in sanctions
         
         # Use real OFAC names when available
-        if is_company and OFAC_COMPANIES:
-            name = random.choice(OFAC_COMPANIES)
-        elif not is_company and OFAC_INDIVIDUALS:
-            name = random.choice(OFAC_INDIVIDUALS)
+        ofac_name = get_unique_ofac_name(is_company)
+        if ofac_name:
+            name = ofac_name
         else:
-            # Fallback to fake names if OFAC list not available
+            # Fallback to fake names if no unique OFAC names available
             name = fake.company() if is_company else fake.name()
         
         # Sanctions more likely from high-risk countries
@@ -637,6 +661,7 @@ def generate_sanctions(sanctioned_entities, num_additional=50):
 
 # Main execution
 print("Starting AML data generation...")
+reset_ofac_tracking()  # Reset OFAC name tracking for fresh generation
 print("Generating 5,000 customers and accounts...")
 customers, accounts, sanctioned_entities = generate_customers(5000)
 print(f"Generated {len(customers)} customers, {len(accounts)} accounts, {len(sanctioned_entities)} potential sanctioned entities")
