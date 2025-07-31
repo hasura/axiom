@@ -6,6 +6,7 @@ Telecommunications operations with customer management, network monitoring, and 
 
 ```bash
 cd demos/telco
+cp ../../.data/.env.template ../../.data/telco/.env
 ddn run dataset-up
 ddn run docker-start
 ```

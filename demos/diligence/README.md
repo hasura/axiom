@@ -6,6 +6,7 @@ Financial due diligence with valuation operations and ERP data integration.
 
 ```bash
 cd demos/diligence
+cp ../../.data/.env.template ../../.data/diligence/.env
 ddn run dataset-up
 ddn run docker-start
 ```

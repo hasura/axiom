@@ -6,6 +6,7 @@ Go-to-market operations with opportunity management and revenue forecasting.
 
 ```bash
 cd demos/gtm
+cp ../../.data/.env.template ../../.data/gtm/.env
 ddn run dataset-up
 ddn run docker-start
 ```

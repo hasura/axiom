@@ -6,6 +6,7 @@ Supply chain operations with manufacturing, logistics, and e-commerce integratio
 
 ```bash
 cd demos/supplychain
+cp ../../.data/.env.template ../../.data/supplychain/.env
 ddn run dataset-up
 ddn run docker-start
 ```
