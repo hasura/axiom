@@ -3,6 +3,14 @@ version: v2
 definition:
   llm:
     provider: hasura
+    fallback:
+      provider: bedrock
+      modelId: arn:aws:bedrock:us-east-1:241533125676:inference-profile/us.anthropic.claude-sonnet-4-20250514-v1:0
+      awsAccessKeyId:
+        valueFromEnv: AWS_ACCESS_KEY_ID
+      awsSecretAccessKey:
+        valueFromEnv: AWS_SECRET_ACCESS_KEY
+      regionName: us-east-1
   featureFlags:
     enable_visualizations_v2: true
     enable_automations: true
