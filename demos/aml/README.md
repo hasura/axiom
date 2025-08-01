@@ -6,6 +6,7 @@ Anti-money laundering compliance with real-time monitoring and automated flaggin
 
 ```bash
 cd demos/aml
+cp ../../.data/.env.template ../../.data/aml/.env
 ddn run dataset-up
 ddn run docker-start
 ```

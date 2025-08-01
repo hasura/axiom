@@ -6,6 +6,7 @@ Consumer packaged goods retail operations with product management and promotiona
 
 ```bash
 cd demos/cpg
+cp ../../.data/.env.template ../../.data/cpg/.env
 ddn run dataset-up
 ddn run docker-start
 ```

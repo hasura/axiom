@@ -6,6 +6,7 @@ Patient operations with scheduling, case management, and medical reference data.
 
 ```bash
 cd demos/healthcare
+cp ../../.data/.env.template ../../.data/healthcare/.env
 ddn run dataset-up
 ddn run docker-start
 ```
