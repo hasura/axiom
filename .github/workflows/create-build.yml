@@ -16,6 +16,13 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v45
+        with:
+          files: |
+            demos/**
+
       - name: Detect all changed demos
         id: demo-setup
         run: |
@@ -23,39 +30,24 @@ jobs:
           echo "Last 3 commits:"
           git log --oneline -3
 
-          # Fetch the base branch
-          git fetch origin ${{ github.base_ref }}
-
-          # For incremental builds, find the previous commit that actually exists
-          # Use GitHub's before SHA if available, otherwise fall back to HEAD~1
-          if [ -n "${{ github.event.before }}" ] && [ "${{ github.event.before }}" != "0000000000000000000000000000000000000000" ]; then
-            echo "Using GitHub's before SHA for comparison"
-            CHANGED_FILES=$(git diff --name-only ${{ github.event.before }}..HEAD)
-          elif git rev-parse --verify HEAD~1 >/dev/null 2>&1; then
-            echo "Using HEAD~1 for comparison"
-            CHANGED_FILES=$(git diff --name-only HEAD~1..HEAD)
-          else
-            echo "Fallback: comparing against base branch"
-            CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}..HEAD)
-          fi
-
-          echo "Changed files:"
-          echo "$CHANGED_FILES"
-
-          CHANGED_DEMOS=$(echo "$CHANGED_FILES" | grep '^demos/' | cut -d'/' -f2 | sort -u)
-
-          echo "Changed demos:"
-          echo "$CHANGED_DEMOS"
-
-          if [ -z "$CHANGED_DEMOS" ]; then
-            echo "No demo changes detected"
-            echo "demos=" >> $GITHUB_OUTPUT
-            echo "no_changes=true" >> $GITHUB_OUTPUT
-          else
+          if [ "${{ steps.changed-files.outputs.any_changed }}" == "true" ]; then
+            echo "Changed files detected:"
+            echo "${{ steps.changed-files.outputs.all_changed_files }}"
+            
+            # Extract unique demo names from changed files
+            CHANGED_DEMOS=$(echo "${{ steps.changed-files.outputs.all_changed_files }}" | tr ' ' '\n' | grep '^demos/' | cut -d'/' -f2 | sort -u)
+            
+            echo "Changed demos:"
+            echo "$CHANGED_DEMOS"
+            
             echo "demos<<EOF" >> $GITHUB_OUTPUT
             echo "$CHANGED_DEMOS" >> $GITHUB_OUTPUT
             echo "EOF" >> $GITHUB_OUTPUT
             echo "no_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "No demo changes detected"
+            echo "demos=" >> $GITHUB_OUTPUT
+            echo "no_changes=true" >> $GITHUB_OUTPUT
           fi
 
       - name: Install DDN CLI
@@ -89,6 +81,8 @@ jobs:
           GTM_OPERATIONS_AUTH_JDBC_URL: "op://Product ACT/axiom_gtm/OPERATIONS_AUTH_JDBC_URL"
           GTM_REVOPS_CLARI_JDBC_URL: "op://Product ACT/axiom_gtm/REVOPS_CLARI_JDBC_URL"
           GTM_REVOPS_SALESFORCE_JDBC_URL: "op://Product ACT/axiom_gtm/REVOPS_SALESFORCE_JDBC_URL"
+          GTM_AWS_ACCESS_KEY_ID: "op://Product ACT/axiom_gtm/AWS_ACCESS_KEY_ID"
+          GTM_AWS_SECRET_ACCESS_KEY: "op://Product ACT/axiom_gtm/AWS_SECRET_ACCESS_KEY"
           # Healthcare secrets
           HEALTHCARE_HASURA_DDN_PAT: "op://Product ACT/axiom_healthcare/ddn-service-account"
           HEALTHCARE_JWT_SECRET: "op://Product ACT/axiom_healthcare/JWT_SECRET"
@@ -155,6 +149,8 @@ jobs:
                 export OPERATIONS_AUTH_JDBC_URL="$GTM_OPERATIONS_AUTH_JDBC_URL"
                 export REVOPS_CLARI_JDBC_URL="$GTM_REVOPS_CLARI_JDBC_URL"
                 export REVOPS_SALESFORCE_JDBC_URL="$GTM_REVOPS_SALESFORCE_JDBC_URL"
+                export AWS_ACCESS_KEY_ID="$GTM_AWS_ACCESS_KEY_ID"
+                export AWS_SECRET_ACCESS_KEY="$GTM_AWS_SECRET_ACCESS_KEY"
                 ;;
               healthcare)
                 export HASURA_DDN_PAT="$HEALTHCARE_HASURA_DDN_PAT"
@@ -222,6 +218,8 @@ jobs:
           OPERATIONS_AUTH_JDBC_URL=$OPERATIONS_AUTH_JDBC_URL
           REVOPS_CLARI_JDBC_URL=$REVOPS_CLARI_JDBC_URL
           REVOPS_SALESFORCE_JDBC_URL=$REVOPS_SALESFORCE_JDBC_URL
+          AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+          AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
           EOF
                 ;;
               healthcare)
