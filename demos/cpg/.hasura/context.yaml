@@ -16,15 +16,15 @@ definition:
       localEnvFile: ../.env
       cloudEnvFile: ../.env.cloud
   scripts:
-    docker-start:
-      bash: HASURA_DDN_PAT=$(ddn auth print-access-token) PROMPTQL_SECRET_KEY=$(ddn auth print-promptql-secret-key) docker compose -f compose.yaml --env-file .env up --build --pull always
-      powershell: $Env:HASURA_DDN_PAT = ddn auth print-access-token; $Env:PROMPTQL_SECRET_KEY = ddn auth print-promptql-secret-key; docker compose -f compose.yaml --env-file .env up --build --pull always
-    dataset-up:
-      bash: ../../scripts/ddn-run/dataset-up.sh cpg
-      powershell: ../../scripts/ddn-run/dataset-up.ps1 cpg
     dataset-down:
       bash: ../../scripts/ddn-run/dataset-down.sh cpg
       powershell: ../../scripts/ddn-run/dataset-down.ps1 cpg
+    dataset-up:
+      bash: ../../scripts/ddn-run/dataset-up.sh cpg
+      powershell: ../../scripts/ddn-run/dataset-up.ps1 cpg
+    docker-start:
+      bash: HASURA_DDN_PAT=$(ddn auth print-access-token) PROMPTQL_SECRET_KEY=$(ddn auth print-promptql-secret-key) docker compose -f compose.yaml --env-file .env up --build --pull always
+      powershell: $Env:HASURA_DDN_PAT = ddn auth print-access-token; $Env:PROMPTQL_SECRET_KEY = ddn auth print-promptql-secret-key; docker compose -f compose.yaml --env-file .env up --build --pull always
     jwt-gen:
       bash: node ../../scripts/jwt/jwt.mjs
       powershell: node ../../scripts/jwt/jwt.mjs
