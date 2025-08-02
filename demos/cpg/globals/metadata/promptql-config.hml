@@ -33,9 +33,22 @@ definition:
 
     <technical_requirements>
       <general_protocols description="These apply to all code that is generated (both SQL and Python)">
+      * table artifacts must be a list of dictionaries ([{key1: value1, key2: value2}, ...])
+      * each dictionary represents one row, and all values must be simple types (strings, numbers, booleans)
+      * nested structures (dictionaries within dictionaries, lists within dictionaries) are not supported
+      * flatten complex data structures before storing as table artifacts
+      * when necessary, create separate rows for nested elements
       </general_protocols>
 
       <sql_generation_protocols description="Instructions to follow for generating SQL">
+        * NEVER use DATE_TRUNC functions in SQL queries as they are not supported by the engine
+        * Use EXTRACT(MONTH FROM date_column) and EXTRACT(YEAR FROM date_column) instead of DATE_TRUNC
+        * When using date parameters in SQL queries, ensure proper string formatting:
+          - Use simple string concatenation without f-strings for date parameters
+          - Or use parameterized queries with proper binding
+        * For date filtering, use the format 'YYYY-MM-DD' in string literals
+        * Always test date-related functions with simpler alternatives first
+        * Avoid complex date manipulations in SQL; perform these in Python instead
       </sql_generation_protocols>
 
       <python_protocols description="Instructions for dealing with Python">
