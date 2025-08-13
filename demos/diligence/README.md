@@ -5,9 +5,12 @@ Financial due diligence with valuation operations and ERP data integration.
 ## 🚀 Quick Start
 
 ```bash
+git clone git@github.com:hasura/axiom.git
+cd axiom
+cp .data/.env.template .data/diligence/.env
 cd demos/diligence
-cp ../../.data/.env.template ../../.data/diligence/.env
 ddn run dataset-up
+ddn supergraph build local
 ddn run docker-start
 ```
 

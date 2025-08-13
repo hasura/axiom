@@ -5,9 +5,12 @@ Consumer packaged goods retail operations with product management and promotiona
 ## 🚀 Quick Start
 
 ```bash
+git clone git@github.com:hasura/axiom.git
+cd axiom
+cp .data/.env.template .data/cpg/.env
 cd demos/cpg
-cp ../../.data/.env.template ../../.data/cpg/.env
 ddn run dataset-up
+ddn supergraph build local
 ddn run docker-start
 ```
 
