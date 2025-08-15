@@ -36,10 +36,46 @@ definition:
       - Churn Risk: Determined by primary_churn_score_c (>7 is High, 5-7 is Medium)
       - Customer Types: Enterprise, SMB, and Mid-Market as defined in customer_type_c
       - Sales Stages: Qualification, Discovery, Technical Validation, Business Validation, Negotiation, Closed Won, Closed Lost
+      - Sales pipeline by stage: Aggregate deals using all seven stages: Qualification, Discovery, Technical Validation, Business Validation, Negotiation, Closed Won, Closed Lost
       - Forecast Accuracy: Calculated as (Actual Closed Amount / Forecasted Amount) where forecast = opportunity amount × probability
       - API Usage: Key health metric for customers tracked in usage_annual_v_2_api fields
       - Renewal Timeline: Critical period is 60 days before customer_subscription_end_date_c
       - Geo Regions: NA, EMEA, APAC, and LATAM as defined in geo_c field
+
+      <expansion_scoring>
+        When calculating expansion opportunity scores for accounts, use this weighted formula:
+        
+        Expansion Score = (Usage Score × 40%) + (NPS Score × 30%) + (Project Score × 20%) + (Stability Score × 10%)
+        
+        Usage Score (0-100):
+        - >50,000 API calls/month (usage_annual_v_2_api_last_month_c): 100
+        - 20,000-50,000: 80
+        - 10,000-20,000: 60
+        - 5,000-10,000: 40
+        - <5,000: 20
+        
+        NPS Score (0-100):
+        - 90+ NPS (nps_score_c): 100
+        - 80-89: 80
+        - 70-79: 60
+        - 60-69: 40
+        - <60: 20
+        
+        Project Score (0-100, total of projects_on_annual_plan_c + projects_on_monthly_plan_c):
+        - 6+ total projects: 100
+        - 4-5 projects: 80
+        - 2-3 projects: 60
+        - 1 project: 40
+        - 0 projects: 20
+        
+        Stability Score (0-100, inverse of primary_churn_score_c):
+        - Churn risk <15: 100
+        - Churn risk 15-25: 80
+        - Churn risk 26-35: 60
+        - Churn risk >35: 40
+        
+        Only consider accounts with NO active opportunities (exclude stages: Discovery, Qualification, Proposal, Negotiation, Meeting, Technical Validation, Business Validation).
+      </expansion_scoring>
 
       Prioritize accounts with high ARR, imminent renewals, and elevated churn scores. When analyzing forecast accuracy, segment by quarter and stage to identify systemic issues.
 
@@ -48,6 +84,7 @@ definition:
       Win rate is determined by opportunities with "Closed Won" stage
       Activities are linked to opportunities via the what_id field
       Calls are linked to opportunities via the salesforce_deal_id field
+      
     </query_interpretation_rules>
 
     <technical_requirements>
