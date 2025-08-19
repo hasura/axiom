@@ -2,162 +2,6 @@
 kind: ScalarType
 version: v1
 definition:
-  name: bigdecimal
-  graphql:
-    typeName: bigdecimal
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: legal_paradedb
-  dataConnectorScalarType: decimal
-  representation: bigdecimal
-  graphql:
-    comparisonExpressionTypeName: bigdecimal_comparison_exp
-
----
-kind: ScalarType
-version: v1
-definition:
-  name: int_64
-  graphql:
-    typeName: int_64
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: legal_paradedb
-  dataConnectorScalarType: bigint
-  representation: int_64
-  graphql:
-    comparisonExpressionTypeName: int_64_comparison_exp
-
----
-kind: ScalarType
-version: v1
-definition:
-  name: string
-  graphql:
-    typeName: string
-
----
-kind: BooleanExpressionType
-version: v1
-definition:
-  name: text_bool_exp
-  operand:
-    scalar:
-      type: string
-      comparisonOperators:
-        - name: _eq
-          argumentType: string!
-        - name: _gt
-          argumentType: string!
-        - name: _gte
-          argumentType: string!
-        - name: _ilike
-          argumentType: string!
-        - name: _in
-          argumentType: "[string!]!"
-        - name: _iregex
-          argumentType: string!
-        - name: _like
-          argumentType: string!
-        - name: _lt
-          argumentType: string!
-        - name: _lte
-          argumentType: string!
-        - name: _neq
-          argumentType: string!
-        - name: _nilike
-          argumentType: string!
-        - name: _niregex
-          argumentType: string!
-        - name: _nlike
-          argumentType: string!
-        - name: _nregex
-          argumentType: string!
-        - name: _regex
-          argumentType: string!
-      dataConnectorOperatorMapping:
-        - dataConnectorName: legal_paradedb
-          dataConnectorScalarType: text
-          operatorMapping: {}
-  logicalOperators:
-    enable: true
-  isNull:
-    enable: true
-  graphql:
-    typeName: text_bool_exp
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: legal_paradedb
-  dataConnectorScalarType: text
-  representation: string
-  graphql:
-    comparisonExpressionTypeName: string_comparison_exp
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: legal_paradedb
-  dataConnectorScalarType: array
-  representation: string
-  graphql:
-    comparisonExpressionTypeName: string_comparison_exp_array
-
----
-kind: AggregateExpression
-version: v1
-definition:
-  name: text_agg_exp
-  operand:
-    scalar:
-      aggregatedType: string
-      aggregationFunctions:
-        - name: max
-          returnType: string
-        - name: min
-          returnType: string
-      dataConnectorAggregationFunctionMapping:
-        - dataConnectorName: legal_paradedb
-          dataConnectorScalarType: text
-          functionMapping:
-            max:
-              name: max
-            min:
-              name: min
-  count:
-    enable: true
-  countDistinct:
-    enable: true
-  graphql:
-    selectTypeName: text_agg_exp
-
----
-kind: OrderByExpression
-version: v1
-definition:
-  name: string_order_by_exp
-  operand:
-    scalar:
-      orderedType: string
-      enableOrderByDirections:
-        enableAll: true
-  graphql:
-    expressionTypeName: string_order_by_exp
-
-
----
-kind: ScalarType
-version: v1
-definition:
   name: int_32
   graphql:
     typeName: int_32
@@ -258,7 +102,6 @@ definition:
   graphql:
     comparisonExpressionTypeName: timestamptz_comparison_exp
 
-
 ---
 kind: BooleanExpressionType
 version: v1
@@ -294,6 +137,74 @@ definition:
   representation: string
   graphql:
     comparisonExpressionTypeName: string_comparison_exp_vector
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: string
+  graphql:
+    typeName: string
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: text_bool_exp
+  operand:
+    scalar:
+      type: string
+      comparisonOperators:
+        - name: _eq
+          argumentType: string!
+        - name: _gt
+          argumentType: string!
+        - name: _gte
+          argumentType: string!
+        - name: _ilike
+          argumentType: string!
+        - name: _in
+          argumentType: "[string!]!"
+        - name: _iregex
+          argumentType: string!
+        - name: _like
+          argumentType: string!
+        - name: _lt
+          argumentType: string!
+        - name: _lte
+          argumentType: string!
+        - name: _neq
+          argumentType: string!
+        - name: _nilike
+          argumentType: string!
+        - name: _niregex
+          argumentType: string!
+        - name: _nlike
+          argumentType: string!
+        - name: _nregex
+          argumentType: string!
+        - name: _regex
+          argumentType: string!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: legal_paradedb
+          dataConnectorScalarType: text
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: text_bool_exp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: legal_paradedb
+  dataConnectorScalarType: text
+  representation: string
+  graphql:
+    comparisonExpressionTypeName: string_comparison_exp
 
 ---
 kind: BooleanExpressionType
@@ -354,6 +265,110 @@ definition:
   representation: string
   graphql:
     comparisonExpressionTypeName: string_comparison_exp_1
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: bigdecimal
+  graphql:
+    typeName: bigdecimal
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: decimal_bool_exp
+  operand:
+    scalar:
+      type: bigdecimal
+      comparisonOperators:
+        - name: _eq
+          argumentType: bigdecimal!
+        - name: _gt
+          argumentType: bigdecimal!
+        - name: _gte
+          argumentType: bigdecimal!
+        - name: _in
+          argumentType: "[bigdecimal!]!"
+        - name: _lt
+          argumentType: bigdecimal!
+        - name: _lte
+          argumentType: bigdecimal!
+        - name: _neq
+          argumentType: bigdecimal!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: legal_paradedb
+          dataConnectorScalarType: decimal
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: decimal_bool_exp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: legal_paradedb
+  dataConnectorScalarType: decimal
+  representation: bigdecimal
+  graphql:
+    comparisonExpressionTypeName: bigdecimal_comparison_exp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: int_64
+  graphql:
+    typeName: int_64
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: bigint_bool_exp
+  operand:
+    scalar:
+      type: int_64
+      comparisonOperators:
+        - name: _eq
+          argumentType: int_64!
+        - name: _gt
+          argumentType: int_64!
+        - name: _gte
+          argumentType: int_64!
+        - name: _in
+          argumentType: "[int_64!]!"
+        - name: _lt
+          argumentType: int_64!
+        - name: _lte
+          argumentType: int_64!
+        - name: _neq
+          argumentType: int_64!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: legal_paradedb
+          dataConnectorScalarType: bigint
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: bigint_bool_exp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: legal_paradedb
+  dataConnectorScalarType: bigint
+  representation: int_64
+  graphql:
+    comparisonExpressionTypeName: int_64_comparison_exp
 
 ---
 kind: AggregateExpression
@@ -435,7 +450,6 @@ definition:
   graphql:
     selectTypeName: timestamp_with_time_zone_agg_exp
 
-
 ---
 kind: AggregateExpression
 version: v1
@@ -455,6 +469,34 @@ definition:
     enable: true
   graphql:
     selectTypeName: vector_1024_agg_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: text_agg_exp
+  operand:
+    scalar:
+      aggregatedType: string
+      aggregationFunctions:
+        - name: max
+          returnType: string
+        - name: min
+          returnType: string
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: legal_paradedb
+          dataConnectorScalarType: text
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: text_agg_exp
 
 ---
 kind: AggregateExpression
@@ -511,4 +553,16 @@ definition:
     expressionTypeName: timestamptz_order_by_exp
 
 
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: string_order_by_exp
+  operand:
+    scalar:
+      orderedType: string
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: string_order_by_exp
 
