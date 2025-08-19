@@ -1,0 +1,14 @@
+services:
+  legal_legal_paradedb:
+    build:
+      context: .
+      dockerfile: .hasura-connector/Dockerfile.legal_paradedb
+    environment:
+      HASURA_SERVICE_TOKEN_SECRET: $LEGAL_LEGAL_PARADEDB_HASURA_SERVICE_TOKEN_SECRET
+      JDBC_URL: $LEGAL_LEGAL_PARADEDB_JDBC_URL
+      OTEL_EXPORTER_OTLP_ENDPOINT: $LEGAL_LEGAL_PARADEDB_OTEL_EXPORTER_OTLP_ENDPOINT
+      OTEL_SERVICE_NAME: $LEGAL_LEGAL_PARADEDB_OTEL_SERVICE_NAME
+    extra_hosts:
+      - local.hasura.dev:host-gateway
+    ports:
+      - 8942:8080

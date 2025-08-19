@@ -29,6 +29,20 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - ./postgres/entrypoint/:/docker-entrypoint-initdb.d/
+  paradedb:
+    image: paradedb/paradedb:latest
+    container_name: axiom_supplychain_paradedb
+    environment:
+      PGPORT: 5433
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: contracts
+    ports:
+      - "5433:5433"
+    volumes:
+      - paradedb-data:/var/lib/paradedb/data
+      - ./paradedb/entrypoint/:/docker-entrypoint-initdb.d
 volumes:
   mongodb-data:
   postgres-data:
+  paradedb-data:

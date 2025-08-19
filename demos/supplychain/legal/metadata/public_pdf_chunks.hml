@@ -1,0 +1,197 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_pdf_chunks
+  fields:
+    - name: chunk_index
+      type: int_32!
+    - name: created_at
+      type: timestamptz
+    - name: embedding
+      type: string
+    - name: id
+      type: string!
+    - name: pdf_id
+      type: string!
+    - name: start_pos
+      type: int_32!
+    - name: text
+      type: string!
+    - name: title
+      type: string
+    - name: tsv
+      type: string
+    - name: url
+      type: string!
+  graphql:
+    typeName: public_pdf_chunks
+    inputTypeName: public_pdf_chunks_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: legal_paradedb
+      dataConnectorObjectType: public.pdf_chunks
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_pdf_chunks
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - chunk_index
+          - created_at
+          - embedding
+          - id
+          - pdf_id
+          - start_pos
+          - text
+          - title
+          - tsv
+          - url
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_pdf_chunks_bool_exp
+  operand:
+    object:
+      type: public_pdf_chunks
+      comparableFields:
+        - fieldName: chunk_index
+          booleanExpressionType: integer_bool_exp
+        - fieldName: created_at
+          booleanExpressionType: timestamp_with_time_zone_bool_exp
+        - fieldName: embedding
+          booleanExpressionType: vector_1024_bool_exp
+        - fieldName: id
+          booleanExpressionType: text_bool_exp
+        - fieldName: pdf_id
+          booleanExpressionType: text_bool_exp
+        - fieldName: start_pos
+          booleanExpressionType: integer_bool_exp
+        - fieldName: text
+          booleanExpressionType: text_bool_exp
+        - fieldName: title
+          booleanExpressionType: text_bool_exp
+        - fieldName: tsv
+          booleanExpressionType: tsvector_bool_exp
+        - fieldName: url
+          booleanExpressionType: text_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_pdf_chunks_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_pdf_chunks_agg_exp
+  operand:
+    object:
+      aggregatedType: public_pdf_chunks
+      aggregatableFields:
+        - fieldName: chunk_index
+          aggregateExpression: integer_agg_exp
+        - fieldName: created_at
+          aggregateExpression: timestamp_with_time_zone_agg_exp
+        - fieldName: embedding
+          aggregateExpression: vector_1024_agg_exp
+        - fieldName: id
+          aggregateExpression: text_agg_exp
+        - fieldName: pdf_id
+          aggregateExpression: text_agg_exp
+        - fieldName: start_pos
+          aggregateExpression: integer_agg_exp
+        - fieldName: text
+          aggregateExpression: text_agg_exp
+        - fieldName: title
+          aggregateExpression: text_agg_exp
+        - fieldName: tsv
+          aggregateExpression: tsvector_agg_exp
+        - fieldName: url
+          aggregateExpression: text_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_pdf_chunks_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_pdf_chunks_order_by_exp
+  operand:
+    object:
+      orderedType: public_pdf_chunks
+      orderableFields:
+        - fieldName: chunk_index
+          orderByExpression: int_32_order_by_exp
+        - fieldName: created_at
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: embedding
+          orderByExpression: string_order_by_exp
+        - fieldName: id
+          orderByExpression: string_order_by_exp
+        - fieldName: pdf_id
+          orderByExpression: string_order_by_exp
+        - fieldName: start_pos
+          orderByExpression: int_32_order_by_exp
+        - fieldName: text
+          orderByExpression: string_order_by_exp
+        - fieldName: title
+          orderByExpression: string_order_by_exp
+        - fieldName: tsv
+          orderByExpression: string_order_by_exp
+        - fieldName: url
+          orderByExpression: string_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_pdf_chunks_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_pdf_chunks
+  objectType: public_pdf_chunks
+  source:
+    dataConnectorName: legal_paradedb
+    collection: public.pdf_chunks
+  filterExpressionType: public_pdf_chunks_bool_exp
+  aggregateExpression: public_pdf_chunks_agg_exp
+  orderByExpression: public_pdf_chunks_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_pdf_chunks
+      subscription:
+        rootField: public_pdf_chunks
+    selectUniques:
+      - queryRootField: public_pdf_chunks_by_id
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: public_pdf_chunks_by_id
+    filterInputTypeName: public_pdf_chunks_filter_input
+    aggregate:
+      queryRootField: public_pdf_chunks_aggregate
+      subscription:
+        rootField: public_pdf_chunks_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_pdf_chunks
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

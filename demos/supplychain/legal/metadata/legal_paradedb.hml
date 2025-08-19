@@ -1,0 +1,1951 @@
+kind: DataConnectorLink
+version: v1
+definition:
+  name: legal_paradedb
+  url:
+    readWriteUrls:
+      read:
+        valueFromEnv: LEGAL_LEGAL_PARADEDB_READ_URL
+      write:
+        valueFromEnv: LEGAL_LEGAL_PARADEDB_WRITE_URL
+  headers:
+    Authorization:
+      valueFromEnv: LEGAL_LEGAL_PARADEDB_AUTHORIZATION_HEADER
+  schema:
+    version: v0.2
+    schema:
+      collections:
+        - arguments: {}
+          name: paradedb.index_layer_info
+          type: paradedb.index_layer_info
+          uniqueness_constraints: {}
+        - arguments: {}
+          name: public.pdf_chunks
+          type: public.pdf_chunks
+          uniqueness_constraints:
+            primary_key:
+              unique_columns:
+                - id
+      functions: []
+      object_types:
+        array_set_input:
+          description: Wrapper for setting scalar array
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar array
+              type:
+                type: nullable
+                underlying_type:
+                  name: array
+                  type: named
+          foreign_keys: {}
+        bigint_set_input:
+          description: Wrapper for setting scalar bigint
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar bigint
+              type:
+                type: nullable
+                underlying_type:
+                  name: bigint
+                  type: named
+          foreign_keys: {}
+        decimal_set_input:
+          description: Wrapper for setting scalar decimal
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar decimal
+              type:
+                type: nullable
+                underlying_type:
+                  name: decimal
+                  type: named
+          foreign_keys: {}
+        delete_paradedb.index_layer_info_result:
+          description: delete from paradedb.index_layer_info result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by delete
+              type:
+                element_type:
+                  name: paradedb.index_layer_info
+                  type: named
+                type: array
+          foreign_keys: {}
+        delete_public.pdf_chunks_result:
+          description: delete from public.pdf_chunks result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by delete
+              type:
+                element_type:
+                  name: public.pdf_chunks
+                  type: named
+                type: array
+          foreign_keys: {}
+        insert_paradedb.index_layer_info_result:
+          description: insert from paradedb.index_layer_info result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by insert
+              type:
+                element_type:
+                  name: paradedb.index_layer_info
+                  type: named
+                type: array
+          foreign_keys: {}
+        insert_public.pdf_chunks_result:
+          description: insert from public.pdf_chunks result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by insert
+              type:
+                element_type:
+                  name: public.pdf_chunks
+                  type: named
+                type: array
+          foreign_keys: {}
+        int_set_input:
+          description: Wrapper for setting scalar int
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar int
+              type:
+                type: nullable
+                underlying_type:
+                  name: int
+                  type: named
+          foreign_keys: {}
+        integer_set_input:
+          description: Wrapper for setting scalar integer
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar integer
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+          foreign_keys: {}
+        paradedb.index_layer_info:
+          fields:
+            byte_size:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: decimal
+                  type: named
+            count:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: bigint
+                  type: named
+            high:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: decimal
+                  type: named
+            layer_size:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            low:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: decimal
+                  type: named
+            relname:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            segments:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: array
+                  type: named
+          foreign_keys: {}
+        paradedb.index_layer_info_insert_input:
+          description: Input type for inserting into paradedb.index_layer_info
+          fields:
+            byte_size:
+              arguments: {}
+              description: New value for paradedb.index_layer_info.byte_size
+              type:
+                type: nullable
+                underlying_type:
+                  name: decimal
+                  type: named
+            count:
+              arguments: {}
+              description: New value for paradedb.index_layer_info.count
+              type:
+                type: nullable
+                underlying_type:
+                  name: bigint
+                  type: named
+            high:
+              arguments: {}
+              description: New value for paradedb.index_layer_info.high
+              type:
+                type: nullable
+                underlying_type:
+                  name: decimal
+                  type: named
+            layer_size:
+              arguments: {}
+              description: New value for paradedb.index_layer_info.layer_size
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            low:
+              arguments: {}
+              description: New value for paradedb.index_layer_info.low
+              type:
+                type: nullable
+                underlying_type:
+                  name: decimal
+                  type: named
+            relname:
+              arguments: {}
+              description: New value for paradedb.index_layer_info.relname
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            segments:
+              arguments: {}
+              description: New value for paradedb.index_layer_info.segments
+              type:
+                type: nullable
+                underlying_type:
+                  name: array
+                  type: named
+          foreign_keys: {}
+        paradedb.index_layer_info_set_input:
+          description: Input type for updating paradedb.index_layer_info
+          fields:
+            byte_size:
+              arguments: {}
+              description: New value wrapper for paradedb.index_layer_info.byte_size
+              type:
+                type: nullable
+                underlying_type:
+                  name: decimal_set_input
+                  type: named
+            count:
+              arguments: {}
+              description: New value wrapper for paradedb.index_layer_info.count
+              type:
+                type: nullable
+                underlying_type:
+                  name: bigint_set_input
+                  type: named
+            high:
+              arguments: {}
+              description: New value wrapper for paradedb.index_layer_info.high
+              type:
+                type: nullable
+                underlying_type:
+                  name: decimal_set_input
+                  type: named
+            layer_size:
+              arguments: {}
+              description: New value wrapper for paradedb.index_layer_info.layer_size
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            low:
+              arguments: {}
+              description: New value wrapper for paradedb.index_layer_info.low
+              type:
+                type: nullable
+                underlying_type:
+                  name: decimal_set_input
+                  type: named
+            relname:
+              arguments: {}
+              description: New value wrapper for paradedb.index_layer_info.relname
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            segments:
+              arguments: {}
+              description: New value wrapper for paradedb.index_layer_info.segments
+              type:
+                type: nullable
+                underlying_type:
+                  name: array_set_input
+                  type: named
+          foreign_keys: {}
+        public.pdf_chunks:
+          fields:
+            chunk_index:
+              arguments: {}
+              type:
+                name: integer
+                type: named
+            created_at:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_with_time_zone
+                  type: named
+            embedding:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: vector(1024)
+                  type: named
+            id:
+              arguments: {}
+              type:
+                name: text
+                type: named
+            pdf_id:
+              arguments: {}
+              type:
+                name: text
+                type: named
+            start_pos:
+              arguments: {}
+              type:
+                name: integer
+                type: named
+            text:
+              arguments: {}
+              type:
+                name: text
+                type: named
+            title:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            tsv:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: tsvector
+                  type: named
+            url:
+              arguments: {}
+              type:
+                name: text
+                type: named
+          foreign_keys: {}
+        public.pdf_chunks_insert_input:
+          description: Input type for inserting into public.pdf_chunks
+          fields:
+            chunk_index:
+              arguments: {}
+              description: New value for public.pdf_chunks.chunk_index
+              type:
+                name: integer
+                type: named
+            created_at:
+              arguments: {}
+              description: New value for public.pdf_chunks.created_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_with_time_zone
+                  type: named
+            embedding:
+              arguments: {}
+              description: New value for public.pdf_chunks.embedding
+              type:
+                type: nullable
+                underlying_type:
+                  name: vector(1024)
+                  type: named
+            id:
+              arguments: {}
+              description: New value for public.pdf_chunks.id
+              type:
+                name: text
+                type: named
+            pdf_id:
+              arguments: {}
+              description: New value for public.pdf_chunks.pdf_id
+              type:
+                name: text
+                type: named
+            start_pos:
+              arguments: {}
+              description: New value for public.pdf_chunks.start_pos
+              type:
+                name: integer
+                type: named
+            text:
+              arguments: {}
+              description: New value for public.pdf_chunks.text
+              type:
+                name: text
+                type: named
+            title:
+              arguments: {}
+              description: New value for public.pdf_chunks.title
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            tsv:
+              arguments: {}
+              description: New value for public.pdf_chunks.tsv
+              type:
+                type: nullable
+                underlying_type:
+                  name: tsvector
+                  type: named
+            url:
+              arguments: {}
+              description: New value for public.pdf_chunks.url
+              type:
+                name: text
+                type: named
+          foreign_keys: {}
+        public.pdf_chunks_set_input:
+          description: Input type for updating public.pdf_chunks
+          fields:
+            chunk_index:
+              arguments: {}
+              description: New value wrapper for public.pdf_chunks.chunk_index
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            created_at:
+              arguments: {}
+              description: New value wrapper for public.pdf_chunks.created_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_with_time_zone_set_input
+                  type: named
+            embedding:
+              arguments: {}
+              description: New value wrapper for public.pdf_chunks.embedding
+              type:
+                type: nullable
+                underlying_type:
+                  name: vector(1024)_set_input
+                  type: named
+            id:
+              arguments: {}
+              description: New value wrapper for public.pdf_chunks.id
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            pdf_id:
+              arguments: {}
+              description: New value wrapper for public.pdf_chunks.pdf_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            start_pos:
+              arguments: {}
+              description: New value wrapper for public.pdf_chunks.start_pos
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            text:
+              arguments: {}
+              description: New value wrapper for public.pdf_chunks.text
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            title:
+              arguments: {}
+              description: New value wrapper for public.pdf_chunks.title
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            tsv:
+              arguments: {}
+              description: New value wrapper for public.pdf_chunks.tsv
+              type:
+                type: nullable
+                underlying_type:
+                  name: tsvector_set_input
+                  type: named
+            url:
+              arguments: {}
+              description: New value wrapper for public.pdf_chunks.url
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+          foreign_keys: {}
+        string_set_input:
+          description: Wrapper for setting scalar string
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar string
+              type:
+                type: nullable
+                underlying_type:
+                  name: string
+                  type: named
+          foreign_keys: {}
+        text_set_input:
+          description: Wrapper for setting scalar text
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar text
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+          foreign_keys: {}
+        timestamp_with_time_zone_set_input:
+          description: Wrapper for setting scalar timestamp_with_time_zone
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar timestamp_with_time_zone
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_with_time_zone
+                  type: named
+          foreign_keys: {}
+        tsvector_set_input:
+          description: Wrapper for setting scalar tsvector
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar tsvector
+              type:
+                type: nullable
+                underlying_type:
+                  name: tsvector
+                  type: named
+          foreign_keys: {}
+        update_paradedb.index_layer_info_result:
+          description: update from paradedb.index_layer_info result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by update
+              type:
+                element_type:
+                  name: paradedb.index_layer_info
+                  type: named
+                type: array
+          foreign_keys: {}
+        update_public.pdf_chunks_result:
+          description: update from public.pdf_chunks result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by update
+              type:
+                element_type:
+                  name: public.pdf_chunks
+                  type: named
+                type: array
+          foreign_keys: {}
+        vector(1024)_set_input:
+          description: Wrapper for setting scalar vector(1024)
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar vector(1024)
+              type:
+                type: nullable
+                underlying_type:
+                  name: vector(1024)
+                  type: named
+          foreign_keys: {}
+      procedures:
+        - arguments:
+            objects:
+              description: Objects to insert
+              type:
+                element_type:
+                  name: paradedb.index_layer_info_insert_input
+                  type: named
+                type: array
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+          description: Insert into paradedb.index_layer_info
+          name: insert_paradedb.index_layer_info
+          result_type:
+            name: insert_paradedb.index_layer_info_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            set:
+              description: Values to set
+              type:
+                name: paradedb.index_layer_info_set_input
+                type: named
+            where:
+              description: Filter for rows to update
+              type:
+                object_type_name: paradedb.index_layer_info
+                type: predicate
+          description: Update paradedb.index_layer_info
+          name: update_paradedb.index_layer_info
+          result_type:
+            name: update_paradedb.index_layer_info_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            where:
+              description: Filter for rows to delete
+              type:
+                object_type_name: paradedb.index_layer_info
+                type: predicate
+          description: Delete from paradedb.index_layer_info
+          name: delete_paradedb.index_layer_info
+          result_type:
+            name: delete_paradedb.index_layer_info_result
+            type: named
+        - arguments:
+            objects:
+              description: Objects to insert
+              type:
+                element_type:
+                  name: public.pdf_chunks_insert_input
+                  type: named
+                type: array
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+          description: Insert into public.pdf_chunks
+          name: insert_public.pdf_chunks
+          result_type:
+            name: insert_public.pdf_chunks_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            set:
+              description: Values to set
+              type:
+                name: public.pdf_chunks_set_input
+                type: named
+            where:
+              description: Filter for rows to update
+              type:
+                object_type_name: public.pdf_chunks
+                type: predicate
+          description: Update public.pdf_chunks
+          name: update_public.pdf_chunks
+          result_type:
+            name: update_public.pdf_chunks_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            where:
+              description: Filter for rows to delete
+              type:
+                object_type_name: public.pdf_chunks
+                type: predicate
+          description: Delete from public.pdf_chunks
+          name: delete_public.pdf_chunks
+          result_type:
+            name: delete_public.pdf_chunks_result
+            type: named
+      scalar_types:
+        array:
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+            _in:
+              type: in
+            _neq:
+              argument_type:
+                name: array
+                type: named
+              type: custom
+          representation:
+            type: json
+        bigint:
+          aggregate_functions:
+            avg:
+              result_type: decimal
+              type: average
+            max:
+              type: max
+            min:
+              type: min
+            stddev_pop:
+              result_type:
+                name: bigint
+                type: named
+              type: custom
+            stddev_samp:
+              result_type:
+                name: bigint
+                type: named
+              type: custom
+            sum:
+              result_type: bigint
+              type: sum
+            var_pop:
+              result_type:
+                name: bigint
+                type: named
+              type: custom
+            var_samp:
+              result_type:
+                name: bigint
+                type: named
+              type: custom
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _in:
+              type: in
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: bigint
+                type: named
+              type: custom
+          representation:
+            type: int64
+        decimal:
+          aggregate_functions:
+            avg:
+              result_type: decimal
+              type: average
+            max:
+              type: max
+            min:
+              type: min
+            stddev_pop:
+              result_type:
+                name: decimal
+                type: named
+              type: custom
+            stddev_samp:
+              result_type:
+                name: decimal
+                type: named
+              type: custom
+            sum:
+              result_type: decimal
+              type: sum
+            var_pop:
+              result_type:
+                name: decimal
+                type: named
+              type: custom
+            var_samp:
+              result_type:
+                name: decimal
+                type: named
+              type: custom
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _in:
+              type: in
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: decimal
+                type: named
+              type: custom
+          representation:
+            type: bigdecimal
+        int:
+          aggregate_functions:
+            avg:
+              result_type: decimal
+              type: average
+            max:
+              type: max
+            min:
+              type: min
+            stddev_pop:
+              result_type:
+                name: int
+                type: named
+              type: custom
+            stddev_samp:
+              result_type:
+                name: int
+                type: named
+              type: custom
+            sum:
+              result_type: bigint
+              type: sum
+            var_pop:
+              result_type:
+                name: int
+                type: named
+              type: custom
+            var_samp:
+              result_type:
+                name: int
+                type: named
+              type: custom
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _in:
+              type: in
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: int
+                type: named
+              type: custom
+          representation:
+            type: int32
+        integer:
+          aggregate_functions:
+            avg:
+              result_type: decimal
+              type: average
+            max:
+              type: max
+            min:
+              type: min
+            stddev_pop:
+              result_type:
+                name: integer
+                type: named
+              type: custom
+            stddev_samp:
+              result_type:
+                name: integer
+                type: named
+              type: custom
+            sum:
+              result_type: bigint
+              type: sum
+            var_pop:
+              result_type:
+                name: integer
+                type: named
+              type: custom
+            var_samp:
+              result_type:
+                name: integer
+                type: named
+              type: custom
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _in:
+              type: in
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: integer
+                type: named
+              type: custom
+          representation:
+            type: int32
+        string:
+          aggregate_functions:
+            max:
+              type: max
+            min:
+              type: min
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _ilike:
+              type: contains_insensitive
+            _in:
+              type: in
+            _iregex:
+              argument_type:
+                name: string
+                type: named
+              type: custom
+            _like:
+              type: contains
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: string
+                type: named
+              type: custom
+            _nilike:
+              argument_type:
+                name: string
+                type: named
+              type: custom
+            _niregex:
+              argument_type:
+                name: string
+                type: named
+              type: custom
+            _nlike:
+              argument_type:
+                name: string
+                type: named
+              type: custom
+            _nregex:
+              argument_type:
+                name: string
+                type: named
+              type: custom
+            _regex:
+              argument_type:
+                name: string
+                type: named
+              type: custom
+          representation:
+            type: string
+        text:
+          aggregate_functions:
+            max:
+              type: max
+            min:
+              type: min
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _ilike:
+              type: contains_insensitive
+            _in:
+              type: in
+            _iregex:
+              argument_type:
+                name: text
+                type: named
+              type: custom
+            _like:
+              type: contains
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: text
+                type: named
+              type: custom
+            _nilike:
+              argument_type:
+                name: text
+                type: named
+              type: custom
+            _niregex:
+              argument_type:
+                name: text
+                type: named
+              type: custom
+            _nlike:
+              argument_type:
+                name: text
+                type: named
+              type: custom
+            _nregex:
+              argument_type:
+                name: text
+                type: named
+              type: custom
+            _regex:
+              argument_type:
+                name: text
+                type: named
+              type: custom
+          representation:
+            type: string
+        timestamp_with_time_zone:
+          aggregate_functions:
+            max:
+              type: max
+            min:
+              type: min
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _in:
+              type: in
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: timestamp_with_time_zone
+                type: named
+              type: custom
+          representation:
+            type: timestamptz
+        tsvector:
+          aggregate_functions:
+            max:
+              type: max
+            min:
+              type: min
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _ilike:
+              type: contains_insensitive
+            _in:
+              type: in
+            _iregex:
+              argument_type:
+                name: tsvector
+                type: named
+              type: custom
+            _like:
+              type: contains
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: tsvector
+                type: named
+              type: custom
+            _nilike:
+              argument_type:
+                name: tsvector
+                type: named
+              type: custom
+            _niregex:
+              argument_type:
+                name: tsvector
+                type: named
+              type: custom
+            _nlike:
+              argument_type:
+                name: tsvector
+                type: named
+              type: custom
+            _nregex:
+              argument_type:
+                name: tsvector
+                type: named
+              type: custom
+            _regex:
+              argument_type:
+                name: tsvector
+                type: named
+              type: custom
+          representation:
+            type: string
+        vector(1024):
+          aggregate_functions: {}
+          comparison_operators:
+            _eq:
+              type: equal
+            _in:
+              type: in
+            _neq:
+              argument_type:
+                name: vector(1024)
+                type: named
+              type: custom
+          representation:
+            type: json
+    capabilities:
+      capabilities:
+        mutation:
+          explain: {}
+          transactional: {}
+        query:
+          aggregates:
+            filter_by: {}
+          exists: {}
+          explain: {}
+          nested_fields: {}
+          variables: {}
+        relational_query:
+          aggregate:
+            expression:
+              aggregate:
+                approx_distinct: {}
+                approx_percentile_cont: {}
+                avg: {}
+                bool_and: {}
+                bool_or: {}
+                count:
+                  distinct: {}
+                first_value: {}
+                last_value: {}
+                max: {}
+                median: {}
+                min: {}
+                stddev: {}
+                stddev_pop: {}
+                string_agg: {}
+                sum: {}
+                var: {}
+              comparison:
+                between: {}
+                contains: {}
+                greater_than: {}
+                greater_than_eq: {}
+                ilike: {}
+                in_list: {}
+                is_false: {}
+                is_nan: {}
+                is_null: {}
+                is_true: {}
+                is_zero: {}
+                less_than: {}
+                less_than_eq: {}
+                like: {}
+              conditional:
+                case: {}
+                nullif: {}
+              scalar:
+                abs: {}
+                and: {}
+                array_element: {}
+                binary_concat: {}
+                btrim: {}
+                ceil: {}
+                character_length: {}
+                coalesce: {}
+                concat: {}
+                cos: {}
+                current_date: {}
+                current_time: {}
+                current_timestamp: {}
+                date_part:
+                  day: {}
+                  day_of_week: {}
+                  day_of_year: {}
+                  epoch: {}
+                  hour: {}
+                  microsecond: {}
+                  millisecond: {}
+                  minute: {}
+                  month: {}
+                  nanosecond: {}
+                  quarter: {}
+                  second: {}
+                  week: {}
+                  year: {}
+                date_trunc: {}
+                divide: {}
+                exp: {}
+                floor: {}
+                get_field: {}
+                greatest: {}
+                least: {}
+                left: {}
+                ln: {}
+                log: {}
+                log2: {}
+                log10: {}
+                lpad: {}
+                ltrim: {}
+                minus: {}
+                modulo: {}
+                multiply: {}
+                negate: {}
+                not: {}
+                nvl: {}
+                or: {}
+                plus: {}
+                power: {}
+                random: {}
+                replace: {}
+                reverse: {}
+                right: {}
+                round: {}
+                rpad: {}
+                rtrim: {}
+                sqrt: {}
+                str_pos: {}
+                substr: {}
+                substr_index: {}
+                tan: {}
+                to_date: {}
+                to_lower: {}
+                to_timestamp: {}
+                to_upper: {}
+                trunc: {}
+              scalar_types:
+                from_type: {}
+                interval: {}
+              window:
+                cume_dist: {}
+                dense_rank: {}
+                ntile: {}
+                percent_rank: {}
+                rank: {}
+                row_number: {}
+            group_by: {}
+          filter:
+            aggregate:
+              approx_distinct: {}
+              approx_percentile_cont: {}
+              avg: {}
+              bool_and: {}
+              bool_or: {}
+              count:
+                distinct: {}
+              first_value: {}
+              last_value: {}
+              max: {}
+              median: {}
+              min: {}
+              stddev: {}
+              stddev_pop: {}
+              string_agg: {}
+              sum: {}
+              var: {}
+            comparison:
+              between: {}
+              contains: {}
+              greater_than: {}
+              greater_than_eq: {}
+              ilike: {}
+              in_list: {}
+              is_false: {}
+              is_nan: {}
+              is_null: {}
+              is_true: {}
+              is_zero: {}
+              less_than: {}
+              less_than_eq: {}
+              like: {}
+            conditional:
+              case: {}
+              nullif: {}
+            scalar:
+              abs: {}
+              and: {}
+              array_element: {}
+              binary_concat: {}
+              btrim: {}
+              ceil: {}
+              character_length: {}
+              coalesce: {}
+              concat: {}
+              cos: {}
+              current_date: {}
+              current_time: {}
+              current_timestamp: {}
+              date_part:
+                day: {}
+                day_of_week: {}
+                day_of_year: {}
+                epoch: {}
+                hour: {}
+                microsecond: {}
+                millisecond: {}
+                minute: {}
+                month: {}
+                nanosecond: {}
+                quarter: {}
+                second: {}
+                week: {}
+                year: {}
+              date_trunc: {}
+              divide: {}
+              exp: {}
+              floor: {}
+              get_field: {}
+              greatest: {}
+              least: {}
+              left: {}
+              ln: {}
+              log: {}
+              log2: {}
+              log10: {}
+              lpad: {}
+              ltrim: {}
+              minus: {}
+              modulo: {}
+              multiply: {}
+              negate: {}
+              not: {}
+              nvl: {}
+              or: {}
+              plus: {}
+              power: {}
+              random: {}
+              replace: {}
+              reverse: {}
+              right: {}
+              round: {}
+              rpad: {}
+              rtrim: {}
+              sqrt: {}
+              str_pos: {}
+              substr: {}
+              substr_index: {}
+              tan: {}
+              to_date: {}
+              to_lower: {}
+              to_timestamp: {}
+              to_upper: {}
+              trunc: {}
+            scalar_types:
+              from_type: {}
+              interval: {}
+            window:
+              cume_dist: {}
+              dense_rank: {}
+              ntile: {}
+              percent_rank: {}
+              rank: {}
+              row_number: {}
+          join:
+            expression:
+              aggregate:
+                approx_distinct: {}
+                approx_percentile_cont: {}
+                avg: {}
+                bool_and: {}
+                bool_or: {}
+                count:
+                  distinct: {}
+                first_value: {}
+                last_value: {}
+                max: {}
+                median: {}
+                min: {}
+                stddev: {}
+                stddev_pop: {}
+                string_agg: {}
+                sum: {}
+                var: {}
+              comparison:
+                between: {}
+                contains: {}
+                greater_than: {}
+                greater_than_eq: {}
+                ilike: {}
+                in_list: {}
+                is_false: {}
+                is_nan: {}
+                is_null: {}
+                is_true: {}
+                is_zero: {}
+                less_than: {}
+                less_than_eq: {}
+                like: {}
+              conditional:
+                case: {}
+                nullif: {}
+              scalar:
+                abs: {}
+                and: {}
+                array_element: {}
+                binary_concat: {}
+                btrim: {}
+                ceil: {}
+                character_length: {}
+                coalesce: {}
+                concat: {}
+                cos: {}
+                current_date: {}
+                current_time: {}
+                current_timestamp: {}
+                date_part:
+                  day: {}
+                  day_of_week: {}
+                  day_of_year: {}
+                  epoch: {}
+                  hour: {}
+                  microsecond: {}
+                  millisecond: {}
+                  minute: {}
+                  month: {}
+                  nanosecond: {}
+                  quarter: {}
+                  second: {}
+                  week: {}
+                  year: {}
+                date_trunc: {}
+                divide: {}
+                exp: {}
+                floor: {}
+                get_field: {}
+                greatest: {}
+                least: {}
+                left: {}
+                ln: {}
+                log: {}
+                log2: {}
+                log10: {}
+                lpad: {}
+                ltrim: {}
+                minus: {}
+                modulo: {}
+                multiply: {}
+                negate: {}
+                not: {}
+                nvl: {}
+                or: {}
+                plus: {}
+                power: {}
+                random: {}
+                replace: {}
+                reverse: {}
+                right: {}
+                round: {}
+                rpad: {}
+                rtrim: {}
+                sqrt: {}
+                str_pos: {}
+                substr: {}
+                substr_index: {}
+                tan: {}
+                to_date: {}
+                to_lower: {}
+                to_timestamp: {}
+                to_upper: {}
+                trunc: {}
+              scalar_types:
+                from_type: {}
+                interval: {}
+              window:
+                cume_dist: {}
+                dense_rank: {}
+                ntile: {}
+                percent_rank: {}
+                rank: {}
+                row_number: {}
+            join_types:
+              full: {}
+              inner: {}
+              left: {}
+              left_anti: {}
+              left_semi: {}
+              right: {}
+              right_anti: {}
+              right_semi: {}
+          project:
+            expression:
+              aggregate:
+                approx_distinct: {}
+                approx_percentile_cont: {}
+                avg: {}
+                bool_and: {}
+                bool_or: {}
+                count:
+                  distinct: {}
+                first_value: {}
+                last_value: {}
+                max: {}
+                median: {}
+                min: {}
+                stddev: {}
+                stddev_pop: {}
+                string_agg: {}
+                sum: {}
+                var: {}
+              comparison:
+                between: {}
+                contains: {}
+                greater_than: {}
+                greater_than_eq: {}
+                ilike: {}
+                in_list: {}
+                is_false: {}
+                is_nan: {}
+                is_null: {}
+                is_true: {}
+                is_zero: {}
+                less_than: {}
+                less_than_eq: {}
+                like: {}
+              conditional:
+                case: {}
+                nullif: {}
+              scalar:
+                abs: {}
+                and: {}
+                array_element: {}
+                binary_concat: {}
+                btrim: {}
+                ceil: {}
+                character_length: {}
+                coalesce: {}
+                concat: {}
+                cos: {}
+                current_date: {}
+                current_time: {}
+                current_timestamp: {}
+                date_part:
+                  day: {}
+                  day_of_week: {}
+                  day_of_year: {}
+                  epoch: {}
+                  hour: {}
+                  microsecond: {}
+                  millisecond: {}
+                  minute: {}
+                  month: {}
+                  nanosecond: {}
+                  quarter: {}
+                  second: {}
+                  week: {}
+                  year: {}
+                date_trunc: {}
+                divide: {}
+                exp: {}
+                floor: {}
+                get_field: {}
+                greatest: {}
+                least: {}
+                left: {}
+                ln: {}
+                log: {}
+                log2: {}
+                log10: {}
+                lpad: {}
+                ltrim: {}
+                minus: {}
+                modulo: {}
+                multiply: {}
+                negate: {}
+                not: {}
+                nvl: {}
+                or: {}
+                plus: {}
+                power: {}
+                random: {}
+                replace: {}
+                reverse: {}
+                right: {}
+                round: {}
+                rpad: {}
+                rtrim: {}
+                sqrt: {}
+                str_pos: {}
+                substr: {}
+                substr_index: {}
+                tan: {}
+                to_date: {}
+                to_lower: {}
+                to_timestamp: {}
+                to_upper: {}
+                trunc: {}
+              scalar_types:
+                from_type: {}
+                interval: {}
+              window:
+                cume_dist: {}
+                dense_rank: {}
+                ntile: {}
+                percent_rank: {}
+                rank: {}
+                row_number: {}
+          sort:
+            expression:
+              aggregate:
+                approx_distinct: {}
+                approx_percentile_cont: {}
+                avg: {}
+                bool_and: {}
+                bool_or: {}
+                count:
+                  distinct: {}
+                first_value: {}
+                last_value: {}
+                max: {}
+                median: {}
+                min: {}
+                stddev: {}
+                stddev_pop: {}
+                string_agg: {}
+                sum: {}
+                var: {}
+              comparison:
+                between: {}
+                contains: {}
+                greater_than: {}
+                greater_than_eq: {}
+                ilike: {}
+                in_list: {}
+                is_false: {}
+                is_nan: {}
+                is_null: {}
+                is_true: {}
+                is_zero: {}
+                less_than: {}
+                less_than_eq: {}
+                like: {}
+              conditional:
+                case: {}
+                nullif: {}
+              scalar:
+                abs: {}
+                and: {}
+                array_element: {}
+                binary_concat: {}
+                btrim: {}
+                ceil: {}
+                character_length: {}
+                coalesce: {}
+                concat: {}
+                cos: {}
+                current_date: {}
+                current_time: {}
+                current_timestamp: {}
+                date_part:
+                  day: {}
+                  day_of_week: {}
+                  day_of_year: {}
+                  epoch: {}
+                  hour: {}
+                  microsecond: {}
+                  millisecond: {}
+                  minute: {}
+                  month: {}
+                  nanosecond: {}
+                  quarter: {}
+                  second: {}
+                  week: {}
+                  year: {}
+                date_trunc: {}
+                divide: {}
+                exp: {}
+                floor: {}
+                get_field: {}
+                greatest: {}
+                least: {}
+                left: {}
+                ln: {}
+                log: {}
+                log2: {}
+                log10: {}
+                lpad: {}
+                ltrim: {}
+                minus: {}
+                modulo: {}
+                multiply: {}
+                negate: {}
+                not: {}
+                nvl: {}
+                or: {}
+                plus: {}
+                power: {}
+                random: {}
+                replace: {}
+                reverse: {}
+                right: {}
+                round: {}
+                rpad: {}
+                rtrim: {}
+                sqrt: {}
+                str_pos: {}
+                substr: {}
+                substr_index: {}
+                tan: {}
+                to_date: {}
+                to_lower: {}
+                to_timestamp: {}
+                to_upper: {}
+                trunc: {}
+              scalar_types:
+                from_type: {}
+                interval: {}
+              window:
+                cume_dist: {}
+                dense_rank: {}
+                ntile: {}
+                percent_rank: {}
+                rank: {}
+                row_number: {}
+          union: {}
+          window:
+            expression:
+              aggregate:
+                approx_distinct: {}
+                approx_percentile_cont: {}
+                avg: {}
+                bool_and: {}
+                bool_or: {}
+                count:
+                  distinct: {}
+                first_value: {}
+                last_value: {}
+                max: {}
+                median: {}
+                min: {}
+                stddev: {}
+                stddev_pop: {}
+                string_agg: {}
+                sum: {}
+                var: {}
+              comparison:
+                between: {}
+                contains: {}
+                greater_than: {}
+                greater_than_eq: {}
+                ilike: {}
+                in_list: {}
+                is_false: {}
+                is_nan: {}
+                is_null: {}
+                is_true: {}
+                is_zero: {}
+                less_than: {}
+                less_than_eq: {}
+                like: {}
+              conditional:
+                case: {}
+                nullif: {}
+              scalar:
+                abs: {}
+                and: {}
+                array_element: {}
+                binary_concat: {}
+                btrim: {}
+                ceil: {}
+                character_length: {}
+                coalesce: {}
+                concat: {}
+                cos: {}
+                current_date: {}
+                current_time: {}
+                current_timestamp: {}
+                date_part:
+                  day: {}
+                  day_of_week: {}
+                  day_of_year: {}
+                  epoch: {}
+                  hour: {}
+                  microsecond: {}
+                  millisecond: {}
+                  minute: {}
+                  month: {}
+                  nanosecond: {}
+                  quarter: {}
+                  second: {}
+                  week: {}
+                  year: {}
+                date_trunc: {}
+                divide: {}
+                exp: {}
+                floor: {}
+                get_field: {}
+                greatest: {}
+                least: {}
+                left: {}
+                ln: {}
+                log: {}
+                log2: {}
+                log10: {}
+                lpad: {}
+                ltrim: {}
+                minus: {}
+                modulo: {}
+                multiply: {}
+                negate: {}
+                not: {}
+                nvl: {}
+                or: {}
+                plus: {}
+                power: {}
+                random: {}
+                replace: {}
+                reverse: {}
+                right: {}
+                round: {}
+                rpad: {}
+                rtrim: {}
+                sqrt: {}
+                str_pos: {}
+                substr: {}
+                substr_index: {}
+                tan: {}
+                to_date: {}
+                to_lower: {}
+                to_timestamp: {}
+                to_upper: {}
+                trunc: {}
+              scalar_types:
+                from_type: {}
+                interval: {}
+              window:
+                cume_dist: {}
+                dense_rank: {}
+                ntile: {}
+                percent_rank: {}
+                rank: {}
+                row_number: {}
+      version: 0.2.9
