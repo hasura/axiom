@@ -1,0 +1,215 @@
+name: Apply PromptQL Build
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+    paths:
+      - "demos/**"
+
+jobs:
+  apply:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install DDN CLI
+        run: |
+          curl -L https://graphql-engine-cdn.hasura.io/ddn/cli/v4/get.sh | bash
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Load secrets from 1Password
+        uses: 1password/load-secrets-action@v1
+        with:
+          export-env: true
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          # All demo PATs for apply operations
+          AML_HASURA_DDN_PAT: "op://Product ACT/axiom_aml/ddn-service-account"
+          CPG_HASURA_DDN_PAT: "op://Product ACT/axiom_cpg/ddn-service-account"
+          GTM_HASURA_DDN_PAT: "op://Product ACT/axiom_gtm/ddn-service-account"
+          HEALTHCARE_HASURA_DDN_PAT: "op://Product ACT/axiom_healthcare/ddn-service-account"
+          DILIGENCE_HASURA_DDN_PAT: "op://Product ACT/axiom_diligence/ddn-service-account"
+          SUPPLYCHAIN_HASURA_DDN_PAT: "op://Product ACT/axiom_supplychain/ddn-service-account"
+          TELCO_HASURA_DDN_PAT: "op://Product ACT/axiom_telco/ddn-service-account"
+
+      - name: Get builds from PR comment
+        id: get_builds
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const comments = await github.rest.issues.listComments({
+              issue_number: context.payload.pull_request.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            });
+
+            const buildComment = comments.data.find(comment => 
+              comment.body.includes('🚀 PromptQL Builds Complete')
+            );
+
+            if (!buildComment) {
+              core.setFailed('No build comment found in PR');
+              return;
+            }
+
+            // Extract all build versions from the comment
+            const buildMatches = [...buildComment.body.matchAll(/### ([A-Z]+) Demo[\s\S]*?\*\*Build Version:\*\* `([^`]+)`/g)];
+
+            if (buildMatches.length === 0) {
+              core.setFailed('Could not extract build versions from comment');
+              return;
+            }
+
+            const builds = buildMatches.map(match => ({
+              demo: match[1].toLowerCase(),
+              version: match[2]
+            }));
+
+            console.log('Found builds:', builds);
+            core.setOutput('builds', JSON.stringify(builds));
+
+      - name: Apply all builds
+        id: apply_builds
+        run: |
+          BUILDS='${{ steps.get_builds.outputs.builds }}'
+          echo "Builds to apply: $BUILDS"
+
+          APPLIED_BUILDS="[]"
+
+          echo "$BUILDS" | jq -r '.[] | @base64' | while IFS= read -r build_data; do
+            build=$(echo "$build_data" | base64 -d)
+            demo=$(echo "$build" | jq -r '.demo')
+            version=$(echo "$build" | jq -r '.version')
+            
+            echo "Applying build for demo: $demo, version: $version"
+            
+            # Set the appropriate PAT for this demo
+            case $demo in
+              aml)
+                export HASURA_DDN_PAT="$AML_HASURA_DDN_PAT"
+                ;;
+              cpg)
+                export HASURA_DDN_PAT="$CPG_HASURA_DDN_PAT"
+                ;;
+              gtm)
+                export HASURA_DDN_PAT="$GTM_HASURA_DDN_PAT"
+                ;;
+              healthcare)
+                export HASURA_DDN_PAT="$HEALTHCARE_HASURA_DDN_PAT"
+                ;;
+              diligence)
+                export HASURA_DDN_PAT="$DILIGENCE_HASURA_DDN_PAT"
+                ;;
+              supplychain)
+                export HASURA_DDN_PAT="$SUPPLYCHAIN_HASURA_DDN_PAT"
+                ;;
+              telco)
+                export HASURA_DDN_PAT="$TELCO_HASURA_DDN_PAT"
+                ;;
+              *)
+                echo "Unknown demo: $demo - skipping"
+                continue
+                ;;
+            esac
+            
+            cd demos/$demo
+            ddn auth login --pat "$HASURA_DDN_PAT"
+            
+            # Apply the build
+            if ddn supergraph build apply "$version"; then
+              echo "✅ Successfully applied $version for $demo"
+              APPLIED_BUILD=$(echo '{}' | jq ". + {\"demo\": \"$demo\", \"version\": \"$version\", \"status\": \"success\"}")
+            else
+              echo "❌ Failed to apply $version for $demo"
+              APPLIED_BUILD=$(echo '{}' | jq ". + {\"demo\": \"$demo\", \"version\": \"$version\", \"status\": \"failed\"}")
+            fi
+            
+            APPLIED_BUILDS=$(echo "$APPLIED_BUILDS" | jq ". += [$APPLIED_BUILD]")
+            cd ../..
+          done
+
+          echo "applied_builds=$(echo "$APPLIED_BUILDS" | base64 -w 0)" >> $GITHUB_OUTPUT
+
+      - name: Comment on merged PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const appliedBuildsJson = Buffer.from('${{ steps.apply_builds.outputs.applied_builds }}', 'base64').toString();
+            const appliedBuilds = JSON.parse(appliedBuildsJson);
+
+            let comment = `## ✅ PromptQL Builds Applied\n\n`;
+            comment += `**Applied at:** ${new Date().toISOString()}\n\n`;
+
+            appliedBuilds.forEach(build => {
+              const status = build.status === 'success' ? '✅' : '❌';
+              comment += `### ${status} ${build.demo.toUpperCase()} Demo\n`;
+              comment += `**Build Version:** \`${build.version}\`\n`;
+              comment += `**Status:** ${build.status === 'success' ? 'Successfully applied to production' : 'Failed to apply'}\n\n`;
+            });
+
+            await github.rest.issues.createComment({
+              issue_number: context.payload.pull_request.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+
+      - name: Notify Slack
+        uses: actions/github-script@v7
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
+        with:
+          script: |
+            if (!process.env.SLACK_BOT_TOKEN || !process.env.SLACK_CHANNEL_ID) {
+              console.log('Slack secrets not found, skipping notification');
+              return;
+            }
+
+            const appliedBuildsJson = Buffer.from('${{ steps.apply_builds.outputs.applied_builds }}', 'base64').toString();
+            const appliedBuilds = JSON.parse(appliedBuildsJson);
+
+            let slackMessage = `🎯 *PromptQL Builds Applied to Production*\n\n`;
+            slackMessage += `*PR:* #${context.payload.pull_request.number} ${context.payload.pull_request.title}\n`;
+            slackMessage += `*Applied at:* ${new Date().toISOString()}\n\n`;
+
+            appliedBuilds.forEach(build => {
+              const status = build.status === 'success' ? '✅' : '❌';
+              slackMessage += `${status} *${build.demo.toUpperCase()}:* \`${build.version}\`\n`;
+            });
+
+            // Find existing thread from build comment
+            const comments = await github.rest.issues.listComments({
+              issue_number: context.payload.pull_request.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            });
+
+            let threadTs = null;
+            const threadComment = comments.data.find(comment => 
+              comment.body.includes('🚀 PromptQL Builds Complete') && 
+              comment.body.includes('<!-- slack-thread-ts:')
+            );
+
+            if (threadComment) {
+              const match = threadComment.body.match(/<!-- slack-thread-ts:([^-\s]+)/);
+              threadTs = match ? match[1] : null;
+            }
+
+            // Post to existing thread or create new message
+            await fetch('https://slack.com/api/chat.postMessage', {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${process.env.SLACK_BOT_TOKEN}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                channel: process.env.SLACK_CHANNEL_ID,
+                thread_ts: threadTs,
+                text: slackMessage,
+              }),
+            });
