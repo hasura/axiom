@@ -452,3 +452,37 @@ definition:
   graphql:
     expressionTypeName: SCMS_date_order_by_exp
 
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: bigint_bool_exp
+  operand:
+    scalar:
+      type: biginteger
+      comparisonOperators:
+        - name: _eq
+          argumentType: biginteger!
+        - name: _gt
+          argumentType: biginteger!
+        - name: _gte
+          argumentType: biginteger!
+        - name: _in
+          argumentType: "[biginteger!]!"
+        - name: _lt
+          argumentType: biginteger!
+        - name: _lte
+          argumentType: biginteger!
+        - name: _neq
+          argumentType: biginteger!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: scms_postgres
+          dataConnectorScalarType: bigint
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: SCMS_bigint_bool_exp
+
