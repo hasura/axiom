@@ -11,7 +11,7 @@
   tasks:
     - name: Set the hostname
       ansible.builtin.hostname:
-        name: "{{ demo_profile }}-{{ region }}-axiom"
+        name: "{{ demo_profile | default('server') }}-{{ region }}-axiom"
 
     - name: Ensure jq is installed
       ansible.builtin.apt:

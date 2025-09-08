@@ -46,7 +46,7 @@ vim .env
 ### Set Up Inventory of Servers
 The Ansible inventory file specifies the servers to manage.
 
-* The official inventory file for presales can be found in the Presales Wiki.
+* The official inventory file for ACT can be found in the ACT Wiki.
 * [Optional] Use the example structure below to create your own inventory file if needed:
 
 ```bash

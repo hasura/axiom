@@ -9,11 +9,11 @@ usage() {
   echo ""
   echo "Arguments:"
   echo "  -r <region>  AWS region (e.g., us-east-1)"
-  echo "  -t <tag>     (Optional) Tag for resources (default: presales-demo)"
+  echo "  -t <tag>     (Optional) Tag for resources (default: act-demo)"
   exit 1
 }
 
-TAG="PRESALES-AXIOM"
+TAG="ACT-AXIOM"
 
 # Parse arguments
 while getopts "r:t:" opt; do
@@ -33,13 +33,13 @@ fi
 # Fixed parameters
 INSTANCE_TYPE="t2.medium"
 VOLUME_SIZE=25
-SG_NAME="presales-sg"
-SG_DESCRIPTION="presales sg with required ports"
+SG_NAME="act-sg"
+SG_DESCRIPTION="act sg with required ports"
 PORTS=(22 80 443 5432 5433 8123 9000 27017)
 
 # Generate the key name based on region and date
 DATETIME=$(date +%Y%m%d-%H%M%S)
-KEY_NAME="presales-demo-${REGION}-${DATETIME}"
+KEY_NAME="act-demo-${REGION}-${DATETIME}"
 
 SSH_DIR="$HOME/.ssh"
 KEY_PATH="$SSH_DIR/${KEY_NAME}.pem"
@@ -79,7 +79,7 @@ SG_ID=$(aws ec2 describe-security-groups \
   --output text 2>/dev/null || echo "")
 
 # Create the security group if it doesn't exist
-if [[ -z "$SG_ID" ]]; then
+if [[ -z "$SG_ID" || "$SG_ID" == "None" ]]; then
   echo "Creating security group: $SG_NAME..."
   SG_ID=$(aws ec2 create-security-group \
     --group-name "$SG_NAME" \
