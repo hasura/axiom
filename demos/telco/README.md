@@ -5,9 +5,12 @@ Telecommunications operations with customer management, network monitoring, and 
 ## 🚀 Quick Start
 
 ```bash
+git clone git@github.com:hasura/axiom.git
+cd axiom
+cp .data/.env.template .data/telco/.env
 cd demos/telco
-cp ../../.data/.env.template ../../.data/telco/.env
 ddn run dataset-up
+ddn supergraph build local
 ddn run docker-start
 ```
 

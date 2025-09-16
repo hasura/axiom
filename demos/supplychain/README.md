@@ -5,9 +5,12 @@ Supply chain operations with manufacturing, logistics, and e-commerce integratio
 ## 🚀 Quick Start
 
 ```bash
+git clone git@github.com:hasura/axiom.git
+cd axiom
+cp .data/.env.template .data/supplychain/.env
 cd demos/supplychain
-cp ../../.data/.env.template ../../.data/supplychain/.env
 ddn run dataset-up
+ddn supergraph build local
 ddn run docker-start
 ```
 

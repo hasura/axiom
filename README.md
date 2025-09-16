@@ -25,16 +25,25 @@ The following dependencies are required for running the demos:
 # Cloning the repository
 git clone git@github.com:hasura/axiom.git
 
-cd axiom/demos/<demo>
+# Make sure your'e inside root
+cd axiom
 
 # Copy env vars to your demo data generator
 cp .data/.env.template .data/<demo>/.env
 
+cd demos/<demo>
+
 # Start the backend data services for the demo
 ddn run dataset-up
 
+# Build supergraph locally
+ddn supergraph build local
+
 # Running a demo (PromptQL + DDN)
 ddn run docker-start
+
+# Run the PromptQL playground in CHROME browser.
+https://console.hasura.io/local/chat
 ```
 
 ## 🔍 Overview
