@@ -42,10 +42,11 @@ ddn supergraph build local
 # Running a demo (PromptQL + DDN)
 ddn run docker-start
 
-# Run the PromptQL playground in CHROME browser.
-https://console.hasura.io/local/chat
-```
+# Open a new terminal window and Run the PromptQL playground in CHROME browser.
+ddn console --local
 
+# PromptQL Playground should open in a new window. If it doesn't work, try with Chrome browser.
+```
 ## 🔍 Overview
 
 Axiom brings PromptQL's capabilities to life through industry-specific demos:
