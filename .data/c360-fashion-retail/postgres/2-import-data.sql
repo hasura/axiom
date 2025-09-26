@@ -43,79 +43,46 @@
 -- Load style similarity matches (depends on products)
 \COPY style_similarity_matches FROM '/docker-entrypoint-initdb.d/style_similarity_matches.csv' CSV HEADER;
 
--- Load additional tables if CSV files exist (these might be empty)
--- Use conditional loading to avoid errors if files don't exist
+-- Load optional/auxiliary CSVs if they exist (psql \COPY with ON_ERROR_STOP avoids failure)
+\COPY campaigns FROM '/docker-entrypoint-initdb.d/campaigns.csv' CSV HEADER;
+\COPY campaign_responses FROM '/docker-entrypoint-initdb.d/campaign_responses.csv' CSV HEADER;
+\COPY customer_service_interactions FROM '/docker-entrypoint-initdb.d/customer_service_interactions.csv' CSV HEADER;
+\COPY email_engagement FROM '/docker-entrypoint-initdb.d/email_engagement.csv' CSV HEADER;
+\COPY loyalty_activities FROM '/docker-entrypoint-initdb.d/loyalty_activities.csv' CSV HEADER;
+\COPY loyalty_profiles FROM '/docker-entrypoint-initdb.d/loyalty_profiles.csv' CSV HEADER;
+\COPY session_summary FROM '/docker-entrypoint-initdb.d/session_summary.csv' CSV HEADER;
 
+-- Ensure ON CONFLICT inserts work (add unique constraint on session_summary.date if not exists)
 DO $$
 BEGIN
-    -- Try to load campaigns
-    BEGIN
-        COPY campaigns FROM '/docker-entrypoint-initdb.d/campaigns.csv' CSV HEADER;
-    EXCEPTION WHEN OTHERS THEN
-        RAISE NOTICE 'campaigns.csv not found or empty, skipping...';
-    END;
-
-    -- Try to load campaign responses
-    BEGIN
-        COPY campaign_responses FROM '/docker-entrypoint-initdb.d/campaign_responses.csv' CSV HEADER;
-    EXCEPTION WHEN OTHERS THEN
-        RAISE NOTICE 'campaign_responses.csv not found or empty, skipping...';
-    END;
-
-    -- Try to load customer service interactions
-    BEGIN
-        COPY customer_service_interactions FROM '/docker-entrypoint-initdb.d/customer_service_interactions.csv' CSV HEADER;
-    EXCEPTION WHEN OTHERS THEN
-        RAISE NOTICE 'customer_service_interactions.csv not found or empty, skipping...';
-    END;
-
-    -- Try to load email engagement
-    BEGIN
-        COPY email_engagement FROM '/docker-entrypoint-initdb.d/email_engagement.csv' CSV HEADER;
-    EXCEPTION WHEN OTHERS THEN
-        RAISE NOTICE 'email_engagement.csv not found or empty, skipping...';
-    END;
-
-    -- Try to load loyalty activities
-    BEGIN
-        COPY loyalty_activities FROM '/docker-entrypoint-initdb.d/loyalty_activities.csv' CSV HEADER;
-    EXCEPTION WHEN OTHERS THEN
-        RAISE NOTICE 'loyalty_activities.csv not found or empty, skipping...';
-    END;
-
-    -- Try to load loyalty profiles
-    BEGIN
-        COPY loyalty_profiles FROM '/docker-entrypoint-initdb.d/loyalty_profiles.csv' CSV HEADER;
-    EXCEPTION WHEN OTHERS THEN
-        RAISE NOTICE 'loyalty_profiles.csv not found or empty, skipping...';
-    END;
-
-    -- Try to load session summary
-    BEGIN
-        COPY session_summary FROM '/docker-entrypoint-initdb.d/session_summary.csv' CSV HEADER;
-    EXCEPTION WHEN OTHERS THEN
-        RAISE NOTICE 'session_summary.csv not found or empty, skipping...';
-    END;
-
+    IF NOT EXISTS (
+        SELECT 1 
+        FROM pg_constraint 
+        WHERE conname = 'session_summary_date_key'
+    ) THEN
+        EXECUTE 'ALTER TABLE session_summary ADD CONSTRAINT session_summary_date_key UNIQUE (summary_date)';
+    END IF;
 END $$;
 
 -- Update sequences to match the highest IDs from imported data
--- Only update sequences for tables that have auto-incrementing IDs
 DO $$
 DECLARE
     seq_name TEXT;
-    table_name TEXT;
+    tbl_name TEXT;
+    col_name TEXT;
     max_id INTEGER;
 BEGIN
-    -- Update sequences for tables with serial columns
-    FOR seq_name, table_name IN
-        SELECT sequence_name, table_name
+    -- Find each sequence and its owning table/column
+    FOR seq_name, tbl_name, col_name IN
+        SELECT s.sequence_name, c.table_name, c.column_name
         FROM information_schema.sequences s
-        JOIN information_schema.columns c ON c.column_default LIKE '%' || s.sequence_name || '%'
+        JOIN information_schema.columns c 
+          ON c.column_default LIKE ('%' || s.sequence_name || '%')
         WHERE s.sequence_schema = 'public'
     LOOP
-        EXECUTE format('SELECT COALESCE(MAX(%I), 0) FROM %I',
-                      replace(seq_name, '_seq', ''), table_name) INTO max_id;
+        EXECUTE format('SELECT COALESCE(MAX(%I), 0) FROM %I', col_name, tbl_name)
+        INTO max_id;
+
         IF max_id > 0 THEN
             EXECUTE format('SELECT setval(%L, %s, true)', seq_name, max_id);
             RAISE NOTICE 'Updated sequence % to %', seq_name, max_id;
@@ -147,17 +114,17 @@ BEGIN
     
     FOR rec IN
         SELECT
-            t.tablename,
+            t.table_name,
             COALESCE(s.n_tup_ins, 0) as rows_loaded
         FROM information_schema.tables t
-        LEFT JOIN pg_stat_user_tables s ON s.tablename = t.table_name AND s.schemaname = 'public'
+        LEFT JOIN pg_stat_user_tables s 
+          ON s.relname = t.table_name AND s.schemaname = 'public'
         WHERE t.table_schema = 'public'
-        AND t.table_type = 'BASE TABLE'
-        -- Exclude staging and utility tables
-        AND t.table_name NOT LIKE 'staging_%'
+          AND t.table_type = 'BASE TABLE'
+          AND t.table_name NOT LIKE 'staging_%'
         ORDER BY t.table_name
     LOOP
-        RAISE NOTICE 'Table: % - Rows: %', rec.tablename, rec.rows_loaded;
+        RAISE NOTICE 'Table: % - Rows: %', rec.table_name, rec.rows_loaded;
         total_tables := total_tables + 1;
         total_rows := total_rows + rec.rows_loaded;
     END LOOP;
@@ -176,15 +143,11 @@ SELECT
     s.last_analyze,
     pg_size_pretty(pg_total_relation_size('public.'||t.table_name)) as table_size
 FROM information_schema.tables t
-LEFT JOIN pg_stat_user_tables s ON s.tablename = t.table_name AND s.schemaname = 'public'
+LEFT JOIN pg_stat_user_tables s ON s.relname = t.table_name AND s.schemaname = 'public'
 WHERE t.table_schema = 'public'
-AND t.table_type = 'BASE TABLE'
-AND t.table_name NOT LIKE 'staging_%'
+  AND t.table_type = 'BASE TABLE'
+  AND t.table_name NOT LIKE 'staging_%'
 ORDER BY s.n_tup_ins DESC NULLS LAST, t.table_name;
-
--- Grant permissions (if needed)
--- GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO your_app_user;
--- GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO your_app_user;
 
 ANALYZE; -- Update table statistics for query optimization
 

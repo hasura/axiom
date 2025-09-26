@@ -57,44 +57,7 @@ definition:
       - Output format confirmed (side-by-side vs long)
     </pre_execution_validation>
 
-    <mandatory_checkpoint_enforcement>
-      **HARD STOP PROTOCOL - NO EXCEPTIONS**
-      
-      Before executing ANY query or analysis, you MUST complete the following checkpoint sequence:
-
-      **CHECKPOINT 1: QUESTION CLASSIFICATION**
-      - Type: "QUESTION CLASSIFICATION:"
-      - Identify entity-level
-      - If unclear, STOP and ask user for clarification.
-      - **BLOCKING RULE**: Cannot proceed without explicit classification.
-
-      **CHECKPOINT 2: COMPOSITE KEY VALIDATION**  
-      - Type: "COMPOSITE KEY REQUIRED:"
-      - Identify composite key fields relevant to classification 
-      - Type: "Composite key identified = YES"
-      - **BLOCKING RULE**: Cannot write SQL without identifying required composite key.
-
-      **CHECKPOINT 3: BASE CTE CONFIRMATION**
-      - Type: "BASE CTE STRUCTURE:"
-      - Write: "WITH [table_name]_base AS (SELECT DISTINCT [composite_key_fields] FROM...)"
-      - Type: "Base CTE planned = YES"
-      - **BLOCKING RULE**: Cannot aggregate without base CTE structure.
-
-      **CHECKPOINT 4: AGGREGATION VALIDATION**
-      - Type: "AGGREGATION APPROACH:"
-      - Confirm: "Aggregating FROM base CTE, NOT from raw table"
-      - Type: "Aggregation method validated = YES"
-      - **BLOCKING RULE**: Cannot execute query that aggregates directly from raw table.
-
-      **CHECKPOINT 5: EXECUTION CLEARANCE**
-      - Type: "EXECUTION CLEARANCE CHECKLIST:"
-      - "✓ Classification completed"
-      - "✓ Composite key identified" 
-      - "✓ Base CTE planned"
-      - "✓ Aggregation validated"
-      - Type: "CLEARED FOR EXECUTION = YES"
-      - **BLOCKING RULE**: Cannot execute without all four checkmarks.
-    </mandatory_checkpoint_enforcement>
+  
 
     <execution_protocol>
       Always follow this mandatory 7-step execution method:

@@ -1,5 +1,3 @@
-CREATE DATABASE retail_fashion;
-
 \c retail_fashion;
 
 -- Dumped from database version 17.6 (Debian 17.6-1.pgdg13+1)
@@ -8,7 +6,6 @@ CREATE DATABASE retail_fashion;
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
-SET transaction_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -512,26 +509,6 @@ CREATE TABLE public.customers (
 
 
 ALTER TABLE public.customers OWNER TO postgres;
-
---
--- Name: data_compatibility_report; Type: VIEW; Schema: public; Owner: postgres
---
-
-CREATE VIEW public.data_compatibility_report AS
- SELECT assessment_type,
-    table_name,
-    column_name,
-    total_rows,
-    non_null_rows,
-    convertible_rows,
-    conversion_success_rate,
-    sample_unconvertible,
-    max_length,
-    recommended_action
-   FROM public.assess_data_compatibility() assess_data_compatibility(assessment_type, table_name, column_name, total_rows, non_null_rows, convertible_rows, conversion_success_rate, sample_unconvertible, max_length, recommended_action);
-
-
-ALTER VIEW public.data_compatibility_report OWNER TO postgres;
 
 --
 -- Name: email_engagement; Type: TABLE; Schema: public; Owner: postgres
@@ -1548,5 +1525,4 @@ ALTER TABLE ONLY public.style_similarity_matches
 -- PostgreSQL database dump complete
 --
 
-\unrestrict g7bUKWIv6sLlBRnt7yPasCEbL1SUmP43hOZ92X8UWUFG248Sh2it96UBTnHVpgk
 
