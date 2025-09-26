@@ -1,0 +1,192 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: data_compatibility_report
+  fields:
+    - name: assessment_type
+      type: string
+    - name: column_name
+      type: string
+    - name: conversion_success_rate
+      type: bigdecimal
+    - name: convertible_rows
+      type: biginteger
+    - name: max_length
+      type: int_32
+    - name: non_null_rows
+      type: biginteger
+    - name: recommended_action
+      type: string
+    - name: sample_unconvertible
+      type: string
+    - name: table_name
+      type: string
+    - name: total_rows
+      type: biginteger
+  graphql:
+    typeName: data_compatibility_report
+    inputTypeName: data_compatibility_report_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: postgres_retail
+      dataConnectorObjectType: data_compatibility_report
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: data_compatibility_report
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - assessment_type
+          - column_name
+          - conversion_success_rate
+          - convertible_rows
+          - max_length
+          - non_null_rows
+          - recommended_action
+          - sample_unconvertible
+          - table_name
+          - total_rows
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: data_compatibility_report_bool_exp
+  operand:
+    object:
+      type: data_compatibility_report
+      comparableFields:
+        - fieldName: assessment_type
+          booleanExpressionType: text_bool_exp
+        - fieldName: column_name
+          booleanExpressionType: text_bool_exp
+        - fieldName: conversion_success_rate
+          booleanExpressionType: decimal_bool_exp
+        - fieldName: convertible_rows
+          booleanExpressionType: bigint_bool_exp
+        - fieldName: max_length
+          booleanExpressionType: integer_bool_exp
+        - fieldName: non_null_rows
+          booleanExpressionType: bigint_bool_exp
+        - fieldName: recommended_action
+          booleanExpressionType: text_bool_exp
+        - fieldName: sample_unconvertible
+          booleanExpressionType: array_bool_exp
+        - fieldName: table_name
+          booleanExpressionType: text_bool_exp
+        - fieldName: total_rows
+          booleanExpressionType: bigint_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: data_compatibility_report_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: data_compatibility_report_agg_exp
+  operand:
+    object:
+      aggregatedType: data_compatibility_report
+      aggregatableFields:
+        - fieldName: assessment_type
+          aggregateExpression: text_agg_exp
+        - fieldName: column_name
+          aggregateExpression: text_agg_exp
+        - fieldName: conversion_success_rate
+          aggregateExpression: decimal_agg_exp
+        - fieldName: convertible_rows
+          aggregateExpression: bigint_agg_exp
+        - fieldName: max_length
+          aggregateExpression: integer_agg_exp
+        - fieldName: non_null_rows
+          aggregateExpression: bigint_agg_exp
+        - fieldName: recommended_action
+          aggregateExpression: text_agg_exp
+        - fieldName: sample_unconvertible
+          aggregateExpression: array_agg_exp
+        - fieldName: table_name
+          aggregateExpression: text_agg_exp
+        - fieldName: total_rows
+          aggregateExpression: bigint_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: data_compatibility_report_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: data_compatibility_report_order_by_exp
+  operand:
+    object:
+      orderedType: data_compatibility_report
+      orderableFields:
+        - fieldName: assessment_type
+          orderByExpression: string_order_by_exp
+        - fieldName: column_name
+          orderByExpression: string_order_by_exp
+        - fieldName: conversion_success_rate
+          orderByExpression: bigdecimal_order_by_exp
+        - fieldName: convertible_rows
+          orderByExpression: biginteger_order_by_exp
+        - fieldName: max_length
+          orderByExpression: int_32_order_by_exp
+        - fieldName: non_null_rows
+          orderByExpression: biginteger_order_by_exp
+        - fieldName: recommended_action
+          orderByExpression: string_order_by_exp
+        - fieldName: sample_unconvertible
+          orderByExpression: string_order_by_exp
+        - fieldName: table_name
+          orderByExpression: string_order_by_exp
+        - fieldName: total_rows
+          orderByExpression: biginteger_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: data_compatibility_report_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: data_compatibility_report
+  objectType: data_compatibility_report
+  source:
+    dataConnectorName: postgres_retail
+    collection: data_compatibility_report
+  filterExpressionType: data_compatibility_report_bool_exp
+  aggregateExpression: data_compatibility_report_agg_exp
+  orderByExpression: data_compatibility_report_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: data_compatibility_report
+      subscription:
+        rootField: data_compatibility_report
+    selectUniques: []
+    filterInputTypeName: data_compatibility_report_filter_input
+    aggregate:
+      queryRootField: data_compatibility_report_aggregate
+      subscription:
+        rootField: data_compatibility_report_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: data_compatibility_report
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

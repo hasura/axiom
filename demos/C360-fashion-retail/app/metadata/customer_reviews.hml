@@ -1,0 +1,272 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: customer_reviews
+  description: "Object type for customer_reviews. Description: Enhanced customer
+    reviews with sentiment analysis and detailed attributes"
+  fields:
+    - name: customer_id
+      type: string
+    - name: extracted_themes
+      type: string
+    - name: fit_feedback
+      type: string
+    - name: helpful_votes
+      type: int_32
+    - name: moderated
+      type: boolean
+    - name: order_id
+      type: string
+    - name: photo_urls
+      type: string
+    - name: product_id
+      type: string
+    - name: rating
+      type: int_32
+    - name: response_from_brand
+      type: string
+    - name: review_date
+      type: timestamp
+    - name: review_id
+      type: string!
+    - name: review_source
+      type: string
+    - name: review_text
+      type: string
+    - name: review_title
+      type: string
+    - name: sentiment_score
+      type: bigdecimal
+    - name: size_mentioned
+      type: string
+    - name: verified_purchase
+      type: boolean
+  graphql:
+    typeName: customer_reviews
+    inputTypeName: customer_reviews_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: postgres_retail
+      dataConnectorObjectType: customer_reviews
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: customer_reviews
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - customer_id
+          - extracted_themes
+          - fit_feedback
+          - helpful_votes
+          - moderated
+          - order_id
+          - photo_urls
+          - product_id
+          - rating
+          - response_from_brand
+          - review_date
+          - review_id
+          - review_source
+          - review_text
+          - review_title
+          - sentiment_score
+          - size_mentioned
+          - verified_purchase
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: customer_reviews_bool_exp
+  operand:
+    object:
+      type: customer_reviews
+      comparableFields:
+        - fieldName: customer_id
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: extracted_themes
+          booleanExpressionType: text_bool_exp
+        - fieldName: fit_feedback
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: helpful_votes
+          booleanExpressionType: integer_bool_exp
+        - fieldName: moderated
+          booleanExpressionType: boolean_bool_exp
+        - fieldName: order_id
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: photo_urls
+          booleanExpressionType: text_bool_exp
+        - fieldName: product_id
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: rating
+          booleanExpressionType: integer_bool_exp
+        - fieldName: response_from_brand
+          booleanExpressionType: text_bool_exp
+        - fieldName: review_date
+          booleanExpressionType: timestamp_without_time_zone_bool_exp
+        - fieldName: review_id
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: review_source
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: review_text
+          booleanExpressionType: text_bool_exp
+        - fieldName: review_title
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: sentiment_score
+          booleanExpressionType: decimal_bool_exp
+        - fieldName: size_mentioned
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: verified_purchase
+          booleanExpressionType: boolean_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customer_reviews_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: customer_reviews_agg_exp
+  operand:
+    object:
+      aggregatedType: customer_reviews
+      aggregatableFields:
+        - fieldName: customer_id
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: extracted_themes
+          aggregateExpression: text_agg_exp
+        - fieldName: fit_feedback
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: helpful_votes
+          aggregateExpression: integer_agg_exp
+        - fieldName: moderated
+          aggregateExpression: boolean_agg_exp
+        - fieldName: order_id
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: photo_urls
+          aggregateExpression: text_agg_exp
+        - fieldName: product_id
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: rating
+          aggregateExpression: integer_agg_exp
+        - fieldName: response_from_brand
+          aggregateExpression: text_agg_exp
+        - fieldName: review_date
+          aggregateExpression: timestamp_without_time_zone_agg_exp
+        - fieldName: review_id
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: review_source
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: review_text
+          aggregateExpression: text_agg_exp
+        - fieldName: review_title
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: sentiment_score
+          aggregateExpression: decimal_agg_exp
+        - fieldName: size_mentioned
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: verified_purchase
+          aggregateExpression: boolean_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: customer_reviews_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: customer_reviews_order_by_exp
+  operand:
+    object:
+      orderedType: customer_reviews
+      orderableFields:
+        - fieldName: customer_id
+          orderByExpression: string_order_by_exp
+        - fieldName: extracted_themes
+          orderByExpression: string_order_by_exp
+        - fieldName: fit_feedback
+          orderByExpression: string_order_by_exp
+        - fieldName: helpful_votes
+          orderByExpression: int_32_order_by_exp
+        - fieldName: moderated
+          orderByExpression: boolean_order_by_exp
+        - fieldName: order_id
+          orderByExpression: string_order_by_exp
+        - fieldName: photo_urls
+          orderByExpression: string_order_by_exp
+        - fieldName: product_id
+          orderByExpression: string_order_by_exp
+        - fieldName: rating
+          orderByExpression: int_32_order_by_exp
+        - fieldName: response_from_brand
+          orderByExpression: string_order_by_exp
+        - fieldName: review_date
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: review_id
+          orderByExpression: string_order_by_exp
+        - fieldName: review_source
+          orderByExpression: string_order_by_exp
+        - fieldName: review_text
+          orderByExpression: string_order_by_exp
+        - fieldName: review_title
+          orderByExpression: string_order_by_exp
+        - fieldName: sentiment_score
+          orderByExpression: bigdecimal_order_by_exp
+        - fieldName: size_mentioned
+          orderByExpression: string_order_by_exp
+        - fieldName: verified_purchase
+          orderByExpression: boolean_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: customer_reviews_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: customer_reviews
+  objectType: customer_reviews
+  source:
+    dataConnectorName: postgres_retail
+    collection: customer_reviews
+  filterExpressionType: customer_reviews_bool_exp
+  aggregateExpression: customer_reviews_agg_exp
+  orderByExpression: customer_reviews_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: customer_reviews
+      subscription:
+        rootField: customer_reviews
+    selectUniques:
+      - queryRootField: customer_reviews_by_review_id
+        uniqueIdentifier:
+          - review_id
+        subscription:
+          rootField: customer_reviews_by_review_id
+    filterInputTypeName: customer_reviews_filter_input
+    aggregate:
+      queryRootField: customer_reviews_aggregate
+      subscription:
+        rootField: customer_reviews_aggregate
+  description: Enhanced customer reviews with sentiment analysis and detailed attributes
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: customer_reviews
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

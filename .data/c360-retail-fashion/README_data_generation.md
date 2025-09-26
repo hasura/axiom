@@ -1,52 +1,53 @@
-# C360 Retail Fashion Database - Complete Solution
+# C360 Retail Fashion Database - Enterprise Scale Complete Solution
 
-This directory contains a comprehensive, production-ready solution for generating realistic data and creating a fully functional C360 Retail Fashion database with proper schema, foreign keys, data quality constraints, and verification.
+This directory contains a comprehensive, production-ready solution for generating a realistic **50,000 customer enterprise dataset** with contextually accurate reviews and creating a fully functional C360 Retail Fashion database.
 
 ## 📁 Files
 
-- **`generate_realistic_data_v2.py`** - Advanced data generator with foreign key compatibility
+- **`generate_complete_dataset.py`** - **UNIFIED** enterprise-scale data generator (50k customers + reviews)
 - **`schema_alignment_and_load_v3.sql`** - Complete database setup, loading, and constraint implementation
 - **`requirements.txt`** - Python dependencies
-- **`postgres/`** - Generated CSV data files (22 files total)
+- **`postgres/`** - Generated CSV data files (23 files total)
 
-## 🚀 Quick Start
+## 🚀 Quick Start - Enterprise Scale (50K Customers)
 
 ### Step 1: Install Dependencies
 ```bash
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
-### Step 2: Generate Data
+### Step 2: Generate Complete Enterprise Dataset
 ```bash
 cd .data/c360-retail-fashion
-python generate_realistic_data_v2.py
+python3 generate_complete_dataset.py
 ```
-This creates all CSV files in the `postgres/` directory with foreign key compatible data types.
+This creates:
+- All CSV files in `postgres/` directory with foreign key compatibility
+- **50,000 customers** with **~700K total records** across all tables
+- **91k+ contextually accurate reviews** as CSV data
 
-### Step 3: Create Database & Load Data
+### Step 3: Load into Database
 ```bash
+# Load all data including reviews
 psql -d your_database -f schema_alignment_and_load_v3.sql
 ```
-This script handles everything:
-- Schema alignment and data type fixes
-- Sequential data loading (respecting dependencies)
-- Primary key and foreign key constraint implementation
-- Data quality constraint enforcement
-- Comprehensive verification and reporting
 
-## 📊 Generated Data Overview
+**Complete Setup**: Schema alignment, data loading, foreign keys, data quality constraints, and reviews with full verification.
 
-### Core Database Tables (10)
+## 📊 Generated Data Overview - Large Scale Dataset
+
+### Core Database Tables (11)
 - **Brands** (30-50): Fashion brands with tiers and metadata
 - **Categories** (10-20): Product categories with hierarchy
 - **Products** (500-1000): Fashion products with realistic attributes
 - **Product Variants** (3-6 per product): Size/color variations with inventory
-- **Customers** (5000): Realistic demographic profiles
-- **Customer Addresses** (1-2 per customer): US geographic distribution
-- **Orders** (12000-15000): E-commerce transactions
-- **Order Items** (25000-35000): Line items with proper pricing
-- **Returns** (10-12% of orders): Return processing workflow
-- **Return Items** (1-2 per return): Individual returned item tracking
+- **Customers** (50,000): Realistic demographic profiles - **10x Scale**
+- **Customer Addresses** (75,000+): US geographic distribution (1-2 per customer)
+- **Orders** (120,000-150,000): E-commerce transactions - **10x Scale**
+- **Order Items** (300,000+): Line items with proper pricing - **10x Scale**
+- **Returns** (13,000+): Return processing workflow (10-12% of orders)
+- **Return Items** (18,000+): Individual returned item tracking (1-2 per return)
+- **Reviews** (91,000+): Contextually accurate customer reviews with sentiment analysis
 
 ### Additional Analytics Files (12)
 - Campaign responses and marketing data
@@ -64,7 +65,9 @@ This script handles everything:
 - **Primary Keys**: Auto-increment and unique identification
 - **Data Type Alignment**: Foreign key compatibility guaranteed
 
-### 📈 Realistic Data Generation
+### 📈 Realistic Data Generation - Enterprise Scale
+- **Large Scale Dataset**: 50,000 customers with 120K-150K orders
+- **Retail-Appropriate Catalog**: Limited brands/products serving many customers
 - **Statistical Distributions**: Match real-world e-commerce patterns
 - **Demographic Accuracy**: Realistic customer age, gender, acquisition channels
 - **Temporal Consistency**: Logical date relationships across all entities
@@ -80,7 +83,7 @@ This script handles everything:
 
 After running the generator, you'll find:
 
-### Core Database Files (10)
+### Core Database Files (11)
 ```
 postgres/
 ├── brands.csv                    # Brand master data
@@ -92,7 +95,8 @@ postgres/
 ├── orders.csv                  # Order transactions
 ├── order_items.csv            # Order line items
 ├── returns.csv                # Return requests
-└── return_items.csv           # Individual returns
+├── return_items.csv           # Individual returns
+└── reviews.csv                # Customer reviews (91k+ records)
 ```
 
 ### Analytics & Extended Data Files (12)
@@ -133,10 +137,10 @@ postgres/
 
 ### Generate Fresh Data
 ```bash
-# Generate new dataset
-python generate_realistic_data_v2.py
+# Generate new dataset including reviews
+python generate_complete_dataset.py
 
-# Load into PostgreSQL with full constraints
+# Load into PostgreSQL with full constraints including reviews
 psql -d ecommerce_db -f schema_alignment_and_load_v3.sql
 ```
 
@@ -150,11 +154,13 @@ The loading script automatically runs verification checks and reports:
 
 - **Python 3.7+** with faker and numpy libraries
 - **PostgreSQL 10+** for database operations
-- **~100MB disk space** for generated CSV files
+- **~500MB disk space** for generated CSV files (50K customer dataset)
 
 ## 🎯 Production Ready Features
 
 This solution is designed for production use with:
+- **Enterprise Scale**: 50,000+ customers with proportional transaction volume
+- **Realistic Retail Model**: Limited catalog serving large customer base
 - Comprehensive error handling and validation
 - Detailed logging and progress reporting
 - Scalable data generation (easily adjust volumes)
@@ -163,4 +169,5 @@ This solution is designed for production use with:
 
 ---
 
-**Total Database Coverage**: 10 core tables with 8 foreign keys, 6 data quality constraints, and 22 CSV datasets for comprehensive retail analytics.
+**Total Database Coverage**: 11 core tables with 8 foreign keys, 6 data quality constraints, and 22 CSV datasets for comprehensive retail analytics.
+**Scale**: 50,000 customers generating ~700,000 total records across all tables with realistic retail catalog proportions including 91k+ contextual reviews.

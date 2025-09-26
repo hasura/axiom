@@ -1,0 +1,129 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: implementation_status_summary
+  fields:
+    - name: description
+      type: string
+    - name: metric
+      type: string
+    - name: value
+      type: string
+  graphql:
+    typeName: implementation_status_summary
+    inputTypeName: implementation_status_summary_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: postgres_retail
+      dataConnectorObjectType: implementation_status_summary
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: implementation_status_summary
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - description
+          - metric
+          - value
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: implementation_status_summary_bool_exp
+  operand:
+    object:
+      type: implementation_status_summary
+      comparableFields:
+        - fieldName: description
+          booleanExpressionType: text_bool_exp
+        - fieldName: metric
+          booleanExpressionType: text_bool_exp
+        - fieldName: value
+          booleanExpressionType: text_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: implementation_status_summary_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: implementation_status_summary_agg_exp
+  operand:
+    object:
+      aggregatedType: implementation_status_summary
+      aggregatableFields:
+        - fieldName: description
+          aggregateExpression: text_agg_exp
+        - fieldName: metric
+          aggregateExpression: text_agg_exp
+        - fieldName: value
+          aggregateExpression: text_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: implementation_status_summary_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: implementation_status_summary_order_by_exp
+  operand:
+    object:
+      orderedType: implementation_status_summary
+      orderableFields:
+        - fieldName: description
+          orderByExpression: string_order_by_exp
+        - fieldName: metric
+          orderByExpression: string_order_by_exp
+        - fieldName: value
+          orderByExpression: string_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: implementation_status_summary_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: implementation_status_summary
+  objectType: implementation_status_summary
+  source:
+    dataConnectorName: postgres_retail
+    collection: implementation_status_summary
+  filterExpressionType: implementation_status_summary_bool_exp
+  aggregateExpression: implementation_status_summary_agg_exp
+  orderByExpression: implementation_status_summary_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: implementation_status_summary
+      subscription:
+        rootField: implementation_status_summary
+    selectUniques: []
+    filterInputTypeName: implementation_status_summary_filter_input
+    aggregate:
+      queryRootField: implementation_status_summary_aggregate
+      subscription:
+        rootField: implementation_status_summary_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: implementation_status_summary
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

@@ -71,49 +71,53 @@ ALTER TABLE product_variants ALTER COLUMN product_id TYPE VARCHAR(20);
 
 -- Load brands data
 \echo '    ✅ Loading brands...'
-\copy brands(brand_id, brand_name, brand_tier, created_at, description, is_active, parent_company, website_url, year_established) FROM '/data/postgres/brands.csv' WITH CSV HEADER;
+\copy brands(brand_id, brand_name, brand_tier, created_at, description, is_active, parent_company, website_url, year_established) FROM '/tmp/postgres/brands.csv' WITH CSV HEADER;
 
 -- Load categories data
 \echo '    ✅ Loading categories...'
-\copy categories(category_id, category_name, created_at, description, is_seasonal, parent_category_id, typical_margin_percentage) FROM '/data/postgres/categories.csv' WITH CSV HEADER;
+\copy categories(category_id, category_name, created_at, description, is_seasonal, parent_category_id, typical_margin_percentage) FROM '/tmp/postgres/categories.csv' WITH CSV HEADER;
 
 -- Load products data
 \echo '    ✅ Loading products...'
-\copy products(product_id, product_name, brand, category_l1, category_l2, category_l3, created_at, gender_target, is_active, launch_date, material, price_range, season, sustainability_score, care_instructions) FROM '/data/postgres/products.csv' WITH CSV HEADER;
+\copy products(product_id, product_name, brand, category_l1, category_l2, category_l3, created_at, gender_target, is_active, launch_date, material, price_range, season, sustainability_score, care_instructions) FROM '/tmp/postgres/products.csv' WITH CSV HEADER;
 
 -- Load product variants data
 \echo '    ✅ Loading product variants...'
-\copy product_variants(variant_id, product_id, sku, size, color, additional_price, stock_quantity, weight_oz, created_at) FROM '/data/postgres/product_variants.csv' WITH CSV HEADER;
+\copy product_variants(variant_id, product_id, sku, size, color, additional_price, stock_quantity, weight_oz, created_at) FROM '/tmp/postgres/product_variants.csv' WITH CSV HEADER;
 
 -- Load customer data
 \echo '  👥 Loading customer data...'
 
 -- Load customers data
 \echo '    ✅ Loading customers...'
-\copy customers(customer_id, first_name, last_name, email, phone, date_of_birth, gender, registration_date, acquisition_channel, marketing_consent, account_status, preferred_language, created_at, updated_at, last_activity_date) FROM '/data/postgres/customers.csv' WITH CSV HEADER;
+\copy customers(customer_id, first_name, last_name, email, phone, date_of_birth, gender, registration_date, acquisition_channel, marketing_consent, account_status, preferred_language, created_at, updated_at, last_activity_date) FROM '/tmp/postgres/customers.csv' WITH CSV HEADER;
 
 -- Load customer addresses data
 \echo '    ✅ Loading customer addresses...'
-\copy customer_addresses(address_id, customer_id, address_type, is_primary, street_address, city, state_province, postal_code, country, created_at) FROM '/data/postgres/customer_addresses.csv' WITH CSV HEADER;
+\copy customer_addresses(address_id, customer_id, address_type, is_primary, street_address, city, state_province, postal_code, country, created_at) FROM '/tmp/postgres/customer_addresses.csv' WITH CSV HEADER;
 
 -- Load transactional data
 \echo '  🛒 Loading transactional data...'
 
 -- Load orders data
 \echo '    ✅ Loading orders...'
-\copy orders(order_id, customer_id, order_date, order_status, total_amount, subtotal_amount, tax_amount, shipping_amount, discount_amount, payment_method, currency, channel, device_type, shipping_method, is_first_order, promo_code, store_location, utm_source, utm_campaign, created_at, updated_at) FROM '/data/postgres/orders.csv' WITH CSV HEADER;
+\copy orders(order_id, customer_id, order_date, order_status, total_amount, subtotal_amount, tax_amount, shipping_amount, discount_amount, payment_method, currency, channel, device_type, shipping_method, is_first_order, promo_code, store_location, utm_source, utm_campaign, created_at, updated_at) FROM '/tmp/postgres/orders.csv' WITH CSV HEADER;
 
 -- Load order items data
 \echo '    ✅ Loading order items...'
-\copy order_items(order_item_id, order_id, product_id, sku, size, color, quantity, unit_price, total_price, final_price, discount_applied, gift_wrap, personalization) FROM '/data/postgres/order_items.csv' WITH CSV HEADER;
+\copy order_items(order_item_id, order_id, product_id, sku, size, color, quantity, unit_price, total_price, final_price, discount_applied, gift_wrap, personalization) FROM '/tmp/postgres/order_items.csv' WITH CSV HEADER;
 
 -- Load returns data
 \echo '    ✅ Loading returns...'
-\copy returns(return_id, order_id, customer_id, return_date, return_reason, return_status, refund_amount, refund_method, restocking_fee, return_method, condition_received, processed_by, created_at) FROM '/data/postgres/returns.csv' WITH CSV HEADER;
+\copy returns(return_id, order_id, customer_id, return_date, return_reason, return_status, refund_amount, refund_method, restocking_fee, return_method, condition_received, processed_by, created_at) FROM '/tmp/postgres/returns.csv' WITH CSV HEADER;
 
 -- Load return items data
 \echo '    ✅ Loading return items...'
-\copy return_items(return_item_id, return_id, order_item_id, quantity_returned, item_condition, refund_eligible, restockable) FROM '/data/postgres/return_items.csv' WITH CSV HEADER;
+\copy return_items(return_item_id, return_id, order_item_id, quantity_returned, item_condition, refund_eligible, restockable) FROM '/tmp/postgres/return_items.csv' WITH CSV HEADER;
+
+-- Load reviews data
+\echo '    ✅ Loading reviews...'
+\copy reviews(review_id, customer_id, product_id, order_id, rating, review_title, review_text, verified_purchase, helpful_count, not_helpful_count, fit_rating, quality_rating, style_rating, value_rating, sentiment_score, created_at) FROM '/tmp/postgres/reviews.csv' WITH CSV HEADER;
 
 -- =================================================================
 -- PHASE 3: FOREIGN KEY IMPLEMENTATION
@@ -265,6 +269,8 @@ UNION ALL
 SELECT 'returns', COUNT(*) FROM returns
 UNION ALL
 SELECT 'return_items', COUNT(*) FROM return_items
+UNION ALL
+SELECT 'reviews', COUNT(*) FROM reviews
 ORDER BY table_name;
 
 -- Verify data integrity (should show all zeros for violations)
@@ -365,6 +371,7 @@ ORDER BY tc.table_name, tc.constraint_name;
 \echo '✅ ACHIEVEMENTS:'
 \echo '• ✅ Schema data types aligned for foreign key compatibility'
 \echo '• ✅ All data loaded successfully with referential integrity'
+\echo '• ✅ 11 core tables loaded including reviews'
 \echo '• ✅ 8 foreign key constraints implemented'
 \echo '• ✅ 6 data quality constraints implemented'
 \echo '• ✅ Zero referential integrity violations'
