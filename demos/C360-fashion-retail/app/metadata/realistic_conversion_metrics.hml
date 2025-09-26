@@ -1,0 +1,147 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: realistic_conversion_metrics
+  fields:
+    - name: conversion_rate_percent
+      type: bigdecimal
+    - name: metric
+      type: string
+    - name: note
+      type: string
+    - name: total_orders
+      type: biginteger
+    - name: total_sessions
+      type: biginteger
+  graphql:
+    typeName: realistic_conversion_metrics
+    inputTypeName: realistic_conversion_metrics_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: postgres_retail
+      dataConnectorObjectType: realistic_conversion_metrics
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: realistic_conversion_metrics
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - conversion_rate_percent
+          - metric
+          - note
+          - total_orders
+          - total_sessions
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: realistic_conversion_metrics_bool_exp
+  operand:
+    object:
+      type: realistic_conversion_metrics
+      comparableFields:
+        - fieldName: conversion_rate_percent
+          booleanExpressionType: decimal_bool_exp
+        - fieldName: metric
+          booleanExpressionType: text_bool_exp
+        - fieldName: note
+          booleanExpressionType: text_bool_exp
+        - fieldName: total_orders
+          booleanExpressionType: bigint_bool_exp
+        - fieldName: total_sessions
+          booleanExpressionType: bigint_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: realistic_conversion_metrics_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: realistic_conversion_metrics_agg_exp
+  operand:
+    object:
+      aggregatedType: realistic_conversion_metrics
+      aggregatableFields:
+        - fieldName: conversion_rate_percent
+          aggregateExpression: decimal_agg_exp
+        - fieldName: metric
+          aggregateExpression: text_agg_exp
+        - fieldName: note
+          aggregateExpression: text_agg_exp
+        - fieldName: total_orders
+          aggregateExpression: bigint_agg_exp
+        - fieldName: total_sessions
+          aggregateExpression: bigint_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: realistic_conversion_metrics_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: realistic_conversion_metrics_order_by_exp
+  operand:
+    object:
+      orderedType: realistic_conversion_metrics
+      orderableFields:
+        - fieldName: conversion_rate_percent
+          orderByExpression: bigdecimal_order_by_exp
+        - fieldName: metric
+          orderByExpression: string_order_by_exp
+        - fieldName: note
+          orderByExpression: string_order_by_exp
+        - fieldName: total_orders
+          orderByExpression: biginteger_order_by_exp
+        - fieldName: total_sessions
+          orderByExpression: biginteger_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: realistic_conversion_metrics_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: realistic_conversion_metrics
+  objectType: realistic_conversion_metrics
+  source:
+    dataConnectorName: postgres_retail
+    collection: realistic_conversion_metrics
+  filterExpressionType: realistic_conversion_metrics_bool_exp
+  aggregateExpression: realistic_conversion_metrics_agg_exp
+  orderByExpression: realistic_conversion_metrics_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: realistic_conversion_metrics
+      subscription:
+        rootField: realistic_conversion_metrics
+    selectUniques: []
+    filterInputTypeName: realistic_conversion_metrics_filter_input
+    aggregate:
+      queryRootField: realistic_conversion_metrics_aggregate
+      subscription:
+        rootField: realistic_conversion_metrics_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: realistic_conversion_metrics
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

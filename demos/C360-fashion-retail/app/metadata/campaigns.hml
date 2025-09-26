@@ -1,0 +1,215 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: campaigns
+  fields:
+    - name: budget_allocated
+      type: bigdecimal
+    - name: budget_spent
+      type: bigdecimal
+    - name: campaign_id
+      type: string!
+    - name: campaign_name
+      type: string!
+    - name: campaign_type
+      type: string
+    - name: created_by
+      type: string
+    - name: discount_offered
+      type: int_32
+    - name: end_date
+      type: timestamp
+    - name: promo_code
+      type: string
+    - name: start_date
+      type: timestamp
+    - name: status
+      type: string
+    - name: target_audience
+      type: string
+  graphql:
+    typeName: campaigns
+    inputTypeName: campaigns_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: postgres_retail
+      dataConnectorObjectType: campaigns
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: campaigns
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - budget_allocated
+          - budget_spent
+          - campaign_id
+          - campaign_name
+          - campaign_type
+          - created_by
+          - discount_offered
+          - end_date
+          - promo_code
+          - start_date
+          - status
+          - target_audience
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: campaigns_bool_exp
+  operand:
+    object:
+      type: campaigns
+      comparableFields:
+        - fieldName: budget_allocated
+          booleanExpressionType: decimal_bool_exp
+        - fieldName: budget_spent
+          booleanExpressionType: decimal_bool_exp
+        - fieldName: campaign_id
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: campaign_name
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: campaign_type
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: created_by
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: discount_offered
+          booleanExpressionType: integer_bool_exp
+        - fieldName: end_date
+          booleanExpressionType: timestamp_without_time_zone_bool_exp
+        - fieldName: promo_code
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: start_date
+          booleanExpressionType: timestamp_without_time_zone_bool_exp
+        - fieldName: status
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: target_audience
+          booleanExpressionType: character_varying_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: campaigns_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: campaigns_agg_exp
+  operand:
+    object:
+      aggregatedType: campaigns
+      aggregatableFields:
+        - fieldName: budget_allocated
+          aggregateExpression: decimal_agg_exp
+        - fieldName: budget_spent
+          aggregateExpression: decimal_agg_exp
+        - fieldName: campaign_id
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: campaign_name
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: campaign_type
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: created_by
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: discount_offered
+          aggregateExpression: integer_agg_exp
+        - fieldName: end_date
+          aggregateExpression: timestamp_without_time_zone_agg_exp
+        - fieldName: promo_code
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: start_date
+          aggregateExpression: timestamp_without_time_zone_agg_exp
+        - fieldName: status
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: target_audience
+          aggregateExpression: character_varying_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: campaigns_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: campaigns_order_by_exp
+  operand:
+    object:
+      orderedType: campaigns
+      orderableFields:
+        - fieldName: budget_allocated
+          orderByExpression: bigdecimal_order_by_exp
+        - fieldName: budget_spent
+          orderByExpression: bigdecimal_order_by_exp
+        - fieldName: campaign_id
+          orderByExpression: string_order_by_exp
+        - fieldName: campaign_name
+          orderByExpression: string_order_by_exp
+        - fieldName: campaign_type
+          orderByExpression: string_order_by_exp
+        - fieldName: created_by
+          orderByExpression: string_order_by_exp
+        - fieldName: discount_offered
+          orderByExpression: int_32_order_by_exp
+        - fieldName: end_date
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: promo_code
+          orderByExpression: string_order_by_exp
+        - fieldName: start_date
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: status
+          orderByExpression: string_order_by_exp
+        - fieldName: target_audience
+          orderByExpression: string_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: campaigns_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: campaigns
+  objectType: campaigns
+  source:
+    dataConnectorName: postgres_retail
+    collection: campaigns
+  filterExpressionType: campaigns_bool_exp
+  aggregateExpression: campaigns_agg_exp
+  orderByExpression: campaigns_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: campaigns
+      subscription:
+        rootField: campaigns
+    selectUniques:
+      - queryRootField: campaigns_by_campaign_id
+        uniqueIdentifier:
+          - campaign_id
+        subscription:
+          rootField: campaigns_by_campaign_id
+    filterInputTypeName: campaigns_filter_input
+    aggregate:
+      queryRootField: campaigns_aggregate
+      subscription:
+        rootField: campaigns_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: campaigns
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
