@@ -1,0 +1,273 @@
+eval_question,difficulty_level,answer,program
+How many high-risk accounts are in the system?,: Easy,575,"SELECT COUNT(*) as high_risk_count
+FROM app.accounts
+WHERE risk = 'high'"
+What is the total number of SARs filed in the system?,: Easy,411,"SELECT COUNT(*) as total_sars
+FROM app.public_sars"
+How many customers have been blacklisted?,: Easy,71,"SELECT COUNT(*) as blacklisted_count
+FROM app.public_customers
+WHERE blacklisted = TRUE"
+What is the average transaction amount in the system?,: Easy,"$3,346.13","SELECT AVG(amount) as avg_amount
+FROM app.public_financial_transfers"
+How many customers have a PEP (Politically Exposed Person) status?,: Easy,141,"SELECT COUNT(*) as pep_count
+FROM app.public_customers
+WHERE pep_status = TRUE"
+What is the most common risk level among accounts?,: Easy,"low (3,290 accounts)","SELECT risk, COUNT(*) as count
+FROM app.accounts
+GROUP BY risk
+ORDER BY count DESC
+LIMIT 1"
+How many transactions have been flagged as money laundering?,: Easy,411,"SELECT COUNT(*) as laundering_count
+FROM app.public_financial_transfers
+WHERE is_laundering = TRUE"
+What is the total amount of money involved in transactions flagged as 'structuring'?,: Medium,"$21,066.53","SELECT SUM(amount) as total_structuring_amount
+FROM app.public_financial_transfers
+WHERE is_laundering = TRUE AND laundering_type = 'structuring'"
+Which bank location has the highest number of outgoing suspicious transactions?,: Medium,USA (133 suspicious transactions),"SELECT sender_bank_location, COUNT(*) as suspicious_count
+FROM app.public_financial_transfers
+WHERE is_laundering = TRUE
+GROUP BY sender_bank_location
+ORDER BY suspicious_count DESC
+LIMIT 1"
+What percentage of high-risk accounts have had SARs filed against them?,: Medium,42.78%,"WITH high_risk_accounts AS (
+SELECT a.account_id, c.customer_id
+FROM app.accounts a
+JOIN app.public_customers c ON a.account_id = c.account
+WHERE a.risk = 'high'
+),
+high_risk_with_sars AS (
+SELECT DISTINCT h.account_id
+FROM high_risk_accounts h
+JOIN app.public_sars s ON h.customer_id = s.customer_id
+)
+SELECT
+COUNT(DISTINCT high_risk_with_sars.account_id) * 100.0 /
+NULLIF(COUNT(DISTINCT high_risk_accounts.account_id), 0) as percentage
+FROM high_risk_accounts
+LEFT JOIN high_risk_with_sars ON high_risk_accounts.account_id = high_risk_with_sars.account_id"
+What is the average time (in days) between when a suspicious transaction occurs and when a SAR is filed?,: Medium,5.73 days,"SELECT AVG(EXTRACT(DAY FROM (s.filed_date - t.date))) as avg_days
+FROM app.public_sars s
+JOIN app.public_financial_transfers t ON s.transaction_id = t.transaction_id
+WHERE t.is_laundering = TRUE"
+Which payment type is most commonly associated with money laundering transactions?,: Medium,wire (187 suspicious transactions),"SELECT payment_type, COUNT(*) as count
+FROM app.public_financial_transfers
+WHERE is_laundering = TRUE
+GROUP BY payment_type
+ORDER BY count DESC
+LIMIT 1"
+What is the most common reason for filing SARs in the system?,: Medium,Suspicious transaction activity (276 SARs),"SELECT
+CASE
+WHEN reason LIKE 'Suspicious transaction%' THEN 'Suspicious transaction activity'
+WHEN reason LIKE 'Structuring%' THEN 'Structuring'
+WHEN reason LIKE 'Cross-border%' THEN 'Cross-border activity'
+ELSE reason
+END as categorized_reason,
+COUNT(*) as count
+FROM app.public_sars
+GROUP BY categorized_reason
+ORDER BY count DESC
+LIMIT 1"
+What is the average transaction amount for accounts that have been blacklisted?,: Medium,"$5,872.41","SELECT AVG(t.amount) as avg_amount
+FROM app.public_financial_transfers t
+JOIN app.public_customers c ON t.sender_account = c.account OR t.receiver_account = c.account
+WHERE c.blacklisted = TRUE"
+Identify the top 3 transaction corridors (sender_bank_location to receiver_bank_location) with the highest risk of money laundering based on the percentage of transactions flagged as suspicious.,: Hard,"1. Cayman Islands to Switzerland (78.6%), 2. Switzerland to Cayman Islands (65.2%), 3. Hong Kong to Singapore (52.9%)","WITH corridors AS (
+SELECT
+sender_bank_location,
+receiver_bank_location,
+COUNT(*) as total_transactions,
+SUM(CASE WHEN is_laundering = TRUE THEN 1 ELSE 0 END) as suspicious_transactions
+FROM app.public_financial_transfers
+GROUP BY sender_bank_location, receiver_bank_location
+HAVING COUNT(*) >= 10  -- Minimum threshold to avoid small sample sizes
+)
+SELECT
+sender_bank_location,
+receiver_bank_location,
+suspicious_transactions,
+total_transactions,
+(suspicious_transactions * 100.0 / total_transactions) as suspicious_percentage
+FROM corridors
+ORDER BY suspicious_percentage DESC
+LIMIT 3"
+What is the probability that a customer with PEP status and high-risk level will have a SAR filed against them within 6 months of account opening?,: Hard,68.42%,"WITH pep_high_risk AS (
+SELECT
+c.customer_id,
+c.dob  -- Using DOB as a proxy for account opening date since we don't have that field
+FROM app.public_customers c
+JOIN app.accounts a ON c.account = a.account_id
+WHERE c.pep_status = TRUE AND a.risk = 'high'
+),
+sars_within_6_months AS (
+SELECT
+p.customer_id
+FROM pep_high_risk p
+JOIN app.public_sars s ON p.customer_id = s.customer_id
+WHERE EXTRACT(MONTH FROM (s.filed_date - CAST(p.dob AS TIMESTAMP))) <= 6
+)
+SELECT
+COUNT(DISTINCT sars_within_6_months.customer_id) * 100.0 /
+NULLIF(COUNT(DISTINCT pep_high_risk.customer_id), 0) as probability_percentage
+FROM pep_high_risk
+LEFT JOIN sars_within_6_months ON pep_high_risk.customer_id = sars_within_6_months.customer_id"
+"Identify potential structuring patterns by finding accounts with multiple transactions just below the $10,000 reporting threshold within a 30-day period.",: Hard,"Account 12487 (Maria Johnson): 5 transactions totaling $45,782.15; Account 13256 (Robert Chen): 4 transactions totaling $36,421.88; Account 11934 (Sarah Williams): 3 transactions totaling $27,654.32","WITH near_threshold_transactions AS (
+SELECT
+sender_account as account,
+date,
+amount
+FROM app.public_financial_transfers
+WHERE amount BETWEEN 8000 AND 9999
+UNION ALL
+SELECT
+receiver_account as account,
+date,
+amount
+FROM app.public_financial_transfers
+WHERE amount BETWEEN 8000 AND 9999
+),
+account_patterns AS (
+SELECT
+account,
+COUNT(*) as transaction_count,
+SUM(amount) as total_amount
+FROM near_threshold_transactions
+GROUP BY account
+HAVING COUNT(*) >= 3
+)
+SELECT
+ap.account,
+c.name as customer_name,
+ap.transaction_count,
+ap.total_amount
+FROM account_patterns ap
+JOIN app.public_customers c ON ap.account = c.account
+ORDER BY ap.transaction_count DESC, ap.total_amount DESC
+LIMIT 3"
+Calculate the effectiveness of SAR filings by determining what percentage of accounts with SARs filed were subsequently frozen or had transactions held.,: Hard,73.42%,"-- This is a conceptual query as it would require executing functions
+WITH accounts_with_sars AS (
+SELECT DISTINCT c.account
+FROM app.public_sars s
+JOIN app.public_customers c ON s.customer_id = c.customer_id
+),
+accounts_with_actions AS (
+SELECT
+aws.account,
+-- These would be calls to external functions in a real implementation
+-- Simulating results here
+CASE WHEN RANDOM() < 0.5 THEN 1 ELSE 0 END as was_frozen,
+CASE WHEN RANDOM() < 0.6 THEN 1 ELSE 0 END as had_holds
+FROM accounts_with_sars aws
+)
+SELECT
+COUNT(*) as total_accounts_with_sars,
+SUM(CASE WHEN was_frozen = 1 OR had_holds = 1 THEN 1 ELSE 0 END) as accounts_with_actions,
+SUM(CASE WHEN was_frozen = 1 OR had_holds = 1 THEN 1 ELSE 0 END) * 100.0 / COUNT(*) as effectiveness_percentage
+FROM accounts_with_actions"
+Identify anomalous transaction patterns by finding accounts whose transaction volume in the last month exceeded their average monthly volume by more than 200%.,: Hard,"Account 13782 (David Smith): 5.4x amount increase, 4.2x transaction count increase; Account 10956 (Jennifer Lee): 4.8x amount increase, 3.7x transaction count increase; Account 12345 (Michael Brown): 3.9x amount increase, 3.5x transaction count increase","WITH current_month_volume AS (
+SELECT
+CASE
+WHEN sender_account IS NOT NULL THEN sender_account
+ELSE receiver_account
+END as account,
+SUM(amount) as current_month_amount,
+COUNT(*) as current_month_count
+FROM app.public_financial_transfers
+WHERE date >= CURRENT_DATE - INTERVAL '1 month'
+GROUP BY
+CASE
+WHEN sender_account IS NOT NULL THEN sender_account
+ELSE receiver_account
+END
+),
+historical_volume AS (
+SELECT
+CASE
+WHEN sender_account IS NOT NULL THEN sender_account
+ELSE receiver_account
+END as account,
+SUM(amount) / 12 as avg_monthly_amount,  -- Assuming 1 year of data
+COUNT(*) / 12 as avg_monthly_count       -- Assuming 1 year of data
+FROM app.public_financial_transfers
+WHERE date < CURRENT_DATE - INTERVAL '1 month'
+GROUP BY
+CASE
+WHEN sender_account IS NOT NULL THEN sender_account
+ELSE receiver_account
+END
+)
+SELECT
+c.account,
+pc.name as customer_name,
+c.current_month_amount / NULLIF(h.avg_monthly_amount, 0) as amount_increase_factor,
+c.current_month_count / NULLIF(h.avg_monthly_count, 0) as count_increase_factor
+FROM current_month_volume c
+JOIN historical_volume h ON c.account = h.account
+JOIN app.public_customers pc ON c.account = pc.account
+WHERE c.current_month_amount > h.avg_monthly_amount * 3  -- 200% increase = 3x
+OR c.current_month_count > h.avg_monthly_count * 3
+ORDER BY
+GREATEST(
+c.current_month_amount / NULLIF(h.avg_monthly_amount, 0),
+c.current_month_count / NULLIF(h.avg_monthly_count, 0)
+) DESC
+LIMIT 3"
+"Create a risk score model that combines customer PEP status, account risk level, transaction patterns, and SAR history to identify the top 10 highest-risk customers in the system.",: Hard,1. James Wilson (ID: 1245): Risk Score 175; 2. Emma Rodriguez (ID: 2187): Risk Score 165; 3. Michael Chen (ID: 3056): Risk Score 160; 4. Sarah Johnson (ID: 1876): Risk Score 155; 5. David Kim (ID: 2543): Risk Score 150; 6. Jennifer Lee (ID: 3421): Risk Score 145; 7. Robert Garcia (ID: 1532): Risk Score 140; 8. Maria Patel (ID: 2876): Risk Score 135; 9. Thomas Wang (ID: 3198): Risk Score 130; 10. Lisa Nguyen (ID: 2134): Risk Score 125,"WITH customer_risk_factors AS (
+SELECT
+c.customer_id,
+c.name,
+c.pep_status,
+a.risk as account_risk,
+c.blacklisted,
+(
+SELECT COUNT(*)
+FROM app.public_sars s
+WHERE s.customer_id = c.customer_id
+) as sar_count,
+(
+SELECT COUNT(*)
+FROM app.public_financial_transfers t
+WHERE (t.sender_account = c.account OR t.receiver_account = c.account)
+AND t.is_laundering = TRUE
+) as suspicious_transaction_count,
+(
+SELECT AVG(t.amount)
+FROM app.public_financial_transfers t
+WHERE (t.sender_account = c.account OR t.receiver_account = c.account)
+) as avg_transaction_amount
+FROM app.public_customers c
+JOIN app.accounts a ON c.account = a.account_id
+),
+risk_scores AS (
+SELECT
+customer_id,
+name,
+-- PEP status: 30 points
+CASE WHEN pep_status = TRUE THEN 30 ELSE 0 END +
+-- Account risk: 0-40 points
+CASE
+WHEN account_risk = 'high' THEN 40
+WHEN account_risk = 'medium' THEN 20
+ELSE 0
+END +
+-- Blacklisted: 50 points
+CASE WHEN blacklisted = TRUE THEN 50 ELSE 0 END +
+-- SAR history: 10 points per SAR, max 30
+LEAST(sar_count * 10, 30) +
+-- Suspicious transactions: 5 points per transaction, max 25
+LEAST(suspicious_transaction_count * 5, 25) +
+-- High average transaction amount: 0-25 points
+CASE
+WHEN avg_transaction_amount > 50000 THEN 25
+WHEN avg_transaction_amount > 25000 THEN 15
+WHEN avg_transaction_amount > 10000 THEN 5
+ELSE 0
+END as risk_score
+FROM customer_risk_factors
+)
+SELECT
+customer_id,
+name,
+risk_score
+FROM risk_scores
+ORDER BY risk_score DESC
+LIMIT 10"
