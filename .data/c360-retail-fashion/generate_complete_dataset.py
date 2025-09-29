@@ -119,8 +119,38 @@ class ReviewProvider(BaseProvider):
         "Terrible quality. This {product} is not worth a penny."
     ]
 
+class SocialMediaProvider(BaseProvider):
+    platforms = ['Instagram', 'TikTok', 'Twitter', 'Facebook', 'Pinterest']
+    
+    post_types = ['Post', 'Story', 'Reel', 'Video', 'Comment']
+    
+    fashion_hashtags = [
+        '#fashion', '#style', '#outfit', '#ootd', '#fashionista', '#streetstyle',
+        '#trendy', '#stylish', '#fashionblogger', '#outfitinspo', '#fashionpost',
+        '#styleinspo', '#fashionlover', '#instafashion', '#lookbook', '#styling'
+    ]
+    
+    influencer_usernames = [
+        'fashionista_maya', 'style_queen_jen', 'trendy_alex', 'chic_sarah',
+        'glamour_girl_23', 'street_style_sam', 'fashion_forward_lily',
+        'style_maven_kate', 'trendsetter_mia', 'outfit_obsessed', 'fashion_guru_anna',
+        'style_inspiration', 'chic_and_sleek', 'fashion_diary_emma', 'glamour_vibes'
+    ]
+    
+    post_templates = [
+        "Just got my hands on the latest {product} from {brand}! Absolutely obsessed 😍 {hashtags}",
+        "Can't get enough of this {product}! Perfect for {season} vibes ✨ {hashtags}",
+        "New {product} haul from {brand} - which one should I style first? {hashtags}",
+        "This {product} is giving me life! Such amazing quality 💫 {hashtags}",
+        "Styling my new {product} three different ways! Swipe to see ➡️ {hashtags}",
+        "{brand} never disappoints! This {product} is pure perfection 🔥 {hashtags}",
+        "Found the perfect {product} for date night! Link in bio 💕 {hashtags}",
+        "Casual Friday calls for this comfy {product} - so versatile! {hashtags}"
+    ]
+
 fake.add_provider(FashionProvider)
 fake.add_provider(ReviewProvider)
+fake.add_provider(SocialMediaProvider)
 
 class CompleteDatasetGenerator:
     def __init__(self, output_dir='postgres'):
@@ -751,6 +781,295 @@ class CompleteDatasetGenerator:
         self.save_to_csv('reviews', reviews, headers)
         return reviews
 
+    def generate_social_mentions(self, num_mentions=5000):
+        """Generate social media mentions/posts"""
+        print(f"📱 Generating {num_mentions} social media mentions...")
+        
+        mentions = []
+        platforms = SocialMediaProvider.platforms
+        platform_weights = [0.35, 0.25, 0.15, 0.15, 0.10]  # Instagram heavy
+        
+        # Create influencer tiers
+        influencer_tiers = {
+            'mega': {'followers': (1000000, 10000000), 'engagement': (50000, 500000), 'influence': (80, 100)},
+            'macro': {'followers': (100000, 1000000), 'engagement': (5000, 50000), 'influence': (60, 85)},
+            'micro': {'followers': (10000, 100000), 'engagement': (500, 5000), 'influence': (40, 70)},
+            'nano': {'followers': (1000, 10000), 'engagement': (50, 500), 'influence': (20, 50)}
+        }
+        
+        tier_distribution = [0.05, 0.15, 0.40, 0.40]  # Most are nano/micro influencers
+        
+        for i in range(num_mentions):
+            # Select customer and platform
+            customer = random.choice(self.data['customers']) if 'customers' in self.data else None
+            platform = self.weighted_choice(platforms, platform_weights)
+            
+            # Determine influencer tier
+            tier_name = self.weighted_choice(list(influencer_tiers.keys()), tier_distribution)
+            tier = influencer_tiers[tier_name]
+            
+            # Generate follower and engagement counts
+            follower_count = random.randint(tier['followers'][0], tier['followers'][1])
+            engagement_count = random.randint(tier['engagement'][0], tier['engagement'][1])
+            influence_score = random.randint(tier['influence'][0], tier['influence'][1])
+            
+            # Select product and brand
+            product = random.choice(self.data['products']) if 'products' in self.data else None
+            brand = random.choice(self.data['brands']) if 'brands' in self.data else None
+            
+            # Generate post content
+            if product and brand:
+                product_name = product[1].split()[-1].lower()  # product_name is at index 1
+                brand_name = brand[1]  # brand_name is at index 1
+                hashtags = ' '.join(random.sample(SocialMediaProvider.fashion_hashtags,
+                                                random.randint(3, 6)))
+                
+                post_text = random.choice(SocialMediaProvider.post_templates).format(
+                    product=product_name,
+                    brand=brand_name,
+                    season=random.choice(['spring', 'summer', 'fall', 'winter']),
+                    hashtags=hashtags
+                )
+            else:
+                post_text = "Loving this new fashion find! Perfect for any occasion ✨ #fashion #style #ootd"
+                brand_name = random.choice(['Bella Vista', 'Urban Thread', 'Coastal Chic'])
+                hashtags = '#fashion #style #ootd'
+                
+            # Generate post URL
+            username = random.choice(SocialMediaProvider.influencer_usernames)
+            post_id = random.randint(1000000, 9999999)
+            if platform == 'Instagram':
+                post_url = f"https://instagram.com/p/{self.generate_id('', 11)}"
+            elif platform == 'TikTok':
+                post_url = f"https://tiktok.com/@{username}/video/{post_id}"
+            elif platform == 'Twitter':
+                post_url = f"https://twitter.com/{username}/status/{post_id}"
+            elif platform == 'Facebook':
+                post_url = f"https://facebook.com/{username}/posts/{post_id}"
+            else:  # Pinterest
+                post_url = f"https://pinterest.com/{username}/pin/{post_id}"
+            
+            mention = {
+                'mention_id': self.generate_id('SM'),
+                'customer_id': customer[0] if customer else random.randint(1, 50000),
+                'platform': platform,
+                'post_url': post_url,
+                'username': username,
+                'post_date': fake.date_time_between('-2y', 'now'),
+                'post_type': random.choice(SocialMediaProvider.post_types),
+                'post_text': post_text.replace("'", "''"),  # Escape quotes
+                'hashtags': hashtags,
+                'mentions': f"@{brand_name.lower().replace(' ', '')}" if brand else "",
+                'engagement_count': engagement_count,
+                'follower_count': follower_count,
+                'sentiment_score': round(random.uniform(-1, 1), 2),
+                'brand_mentioned': brand_name if brand else "",
+                'products_tagged': product[0] if product else "",  # product_id is at index 0
+                'influence_score': influence_score,
+                'ugc_usage_rights': random.choice([True, False]),
+                'campaign_tagged': f"campaign_{random.choice(['spring', 'summer', 'fall', 'holiday'])}" if random.random() < 0.3 else ""
+            }
+            
+            mentions.append(list(mention.values()))
+            
+        headers = [
+            'mention_id', 'customer_id', 'platform', 'post_url', 'username', 'post_date',
+            'post_type', 'post_text', 'hashtags', 'mentions', 'engagement_count',
+            'follower_count', 'sentiment_score', 'brand_mentioned', 'products_tagged',
+            'influence_score', 'ugc_usage_rights', 'campaign_tagged'
+        ]
+        self.save_to_csv('social_mentions', mentions, headers)
+        return mentions
+
+    def generate_website_sessions(self, num_sessions=25000):
+        """Generate website session data"""
+        print(f"🌐 Generating {num_sessions} website sessions...")
+        
+        sessions = []
+        devices = ['desktop', 'mobile', 'tablet']
+        device_weights = [0.40, 0.50, 0.10]
+        
+        browsers = ['Chrome', 'Safari', 'Firefox', 'Edge', 'Opera']
+        browser_weights = [0.65, 0.20, 0.08, 0.05, 0.02]
+        
+        os_list = ['Windows', 'macOS', 'iOS', 'Android', 'Linux']
+        os_weights = [0.35, 0.25, 0.15, 0.20, 0.05]
+        
+        traffic_sources = ['organic', 'social', 'direct', 'email', 'paid', 'referral']
+        traffic_weights = [0.35, 0.25, 0.15, 0.10, 0.10, 0.05]
+        
+        pages = [
+            '/home', '/products', '/categories/womens', '/categories/mens',
+            '/brands', '/sale', '/new-arrivals', '/trending', '/cart', '/checkout',
+            '/account', '/wishlist', '/reviews', '/size-guide', '/returns'
+        ]
+        
+        for i in range(num_sessions):
+            customer = random.choice(self.data['customers']) if 'customers' in self.data else None
+            device = self.weighted_choice(devices, device_weights)
+            
+            # Session duration varies by device
+            if device == 'mobile':
+                duration = max(1, int(np.random.normal(8, 4)))  # Shorter mobile sessions
+            else:
+                duration = max(1, int(np.random.normal(15, 8)))  # Longer desktop sessions
+                
+            page_views = max(1, int(np.random.normal(6, 3)))
+            pages_visited = ', '.join(random.sample(pages, min(page_views, len(pages))))
+            
+            # Generate session times
+            session_start = fake.date_time_between('-6m', 'now')
+            session_end = session_start + timedelta(minutes=duration)
+            
+            # Products viewed (if customer browsed products)
+            viewed_products = []
+            if '/products' in pages_visited or '/categories' in pages_visited:
+                num_viewed = random.randint(1, 5)
+                if 'products' in self.data:
+                    viewed_products = random.sample([p[0] for p in self.data['products']],
+                                                  min(num_viewed, len(self.data['products'])))
+            
+            # Search terms
+            search_terms = []
+            if random.random() < 0.3:  # 30% of sessions have searches
+                terms = ['dress', 'shoes', 'jacket', 'jeans', 'top', 'accessories', 'sale']
+                search_terms = [random.choice(terms)]
+            
+            session = {
+                'session_id': self.generate_id('SESS'),
+                'customer_id': customer[0] if customer else None,
+                'anonymous_id': self.generate_id('ANON') if not customer else None,
+                'session_start': session_start,
+                'session_end': session_end,
+                'duration_minutes': duration,
+                'page_views': page_views,
+                'pages_visited': pages_visited,
+                'products_viewed': ', '.join(viewed_products),
+                'search_terms': ', '.join(search_terms),
+                'device_type': device,
+                'browser': self.weighted_choice(browsers, browser_weights),
+                'operating_system': self.weighted_choice(os_list, os_weights),
+                'traffic_source': self.weighted_choice(traffic_sources, traffic_weights),
+                'utm_parameters': f"utm_source={random.choice(['google', 'facebook', 'instagram'])}" if random.random() < 0.4 else "",
+                'geo_location': fake.city() + ', ' + fake.state_abbr(),
+                'cart_value': round(random.uniform(0, 300), 2) if random.random() < 0.3 else 0,
+                'abandoned_cart': random.choice([True, False]) if random.random() < 0.2 else False,
+                'conversion_event': 'purchase' if random.random() < 0.05 else "",  # 5% conversion rate
+                'exit_page': random.choice(pages)
+            }
+            
+            sessions.append(list(session.values()))
+            
+        headers = [
+            'session_id', 'customer_id', 'anonymous_id', 'session_start', 'session_end',
+            'duration_minutes', 'page_views', 'pages_visited', 'products_viewed',
+            'search_terms', 'device_type', 'browser', 'operating_system',
+            'traffic_source', 'utm_parameters', 'geo_location', 'cart_value',
+            'abandoned_cart', 'conversion_event', 'exit_page'
+        ]
+        self.save_to_csv('website_sessions', sessions, headers)
+        return sessions
+
+    def generate_style_similarity_matches(self, num_matches=6000):
+        """Generate style similarity matches using existing customers and products"""
+        print(f"🎯 Generating {num_matches} style similarity matches...")
+        
+        if 'customers' not in self.data or 'products' not in self.data:
+            print("  ⚠️ Warning: customers and products data required for style similarity matches")
+            return []
+        
+        customers = self.data['customers']
+        products = self.data['products']
+        
+        matches = []
+        recommendation_types = ['style_based', 'color_match', 'trend_similar', 'brand_affinity']
+        contexts = ['homepage_recommendations', 'product_page_similar', 'cart_recommendations',
+                   'email_campaign', 'browse_history_based']
+        
+        # Generate main matches with varied engagement patterns
+        for i in range(int(num_matches * 0.83)):  # 83% regular matches
+            customer = random.choice(customers)
+            product = random.choice(products)
+            
+            similarity_score = round(random.uniform(0.6, 1.0), 3)
+            match_date = self.timestamp_between('-90d', 'now')
+            
+            # 15% click rate, 3% purchase rate for regular matches
+            clicked = random.random() < 0.15
+            purchased = random.random() < 0.03 if clicked else False
+            
+            match = {
+                'match_id': f'MATCH_{(i+1):06d}',
+                'customer_id': str(customer[0]),  # customer_id
+                'product_id': product[0],  # product_id
+                'similarity_score': similarity_score,
+                'recommendation_type': random.choice(recommendation_types),
+                'match_date': match_date,
+                'clicked': clicked,
+                'purchased': purchased,
+                'recommendation_context': random.choice(contexts)
+            }
+            matches.append(list(match.values()))
+        
+        # Generate high-performing matches (clicked and purchased)
+        start_idx = int(num_matches * 0.83)
+        for i in range(start_idx, start_idx + int(num_matches * 0.03)):  # 3% high-performing
+            customer = random.choice(customers)
+            product = random.choice(products)
+            
+            similarity_score = round(random.uniform(0.8, 1.0), 3)  # Higher scores
+            match_date = self.timestamp_between('-30d', 'now')
+            
+            match = {
+                'match_id': f'MATCH_{(i+1):06d}',
+                'customer_id': str(customer[0]),
+                'product_id': product[0],
+                'similarity_score': similarity_score,
+                'recommendation_type': self.weighted_choice(
+                    ['style_based', 'trend_similar', 'brand_affinity'], [0.4, 0.35, 0.25]
+                ),
+                'match_date': match_date,
+                'clicked': True,
+                'purchased': True,
+                'recommendation_context': self.weighted_choice(
+                    ['product_page_similar', 'cart_recommendations', 'email_campaign'],
+                    [0.4, 0.35, 0.25]
+                )
+            }
+            matches.append(list(match.values()))
+        
+        # Generate recent matches with no engagement
+        start_idx = int(num_matches * 0.86)
+        for i in range(start_idx, num_matches):  # 14% recent no-engagement
+            customer = random.choice(customers)
+            product = random.choice(products)
+            
+            similarity_score = round(random.uniform(0.5, 1.0), 3)
+            match_date = self.timestamp_between('-7d', 'now')
+            
+            match = {
+                'match_id': f'MATCH_{(i+1):06d}',
+                'customer_id': str(customer[0]),
+                'product_id': product[0],
+                'similarity_score': similarity_score,
+                'recommendation_type': self.weighted_choice(
+                    ['style_based', 'color_match', 'browse_history_based'], [0.35, 0.35, 0.30]
+                ),
+                'match_date': match_date,
+                'clicked': False,
+                'purchased': False,
+                'recommendation_context': self.weighted_choice(
+                    ['homepage_recommendations', 'email_campaign'], [0.5, 0.5]
+                )
+            }
+            matches.append(list(match.values()))
+        
+        headers = ['match_id', 'customer_id', 'product_id', 'similarity_score',
+                  'recommendation_type', 'match_date', 'clicked', 'purchased',
+                  'recommendation_context']
+        self.save_to_csv('style_similarity_matches', matches, headers)
+        return matches
+
     def generate_all_data(self):
         """Generate complete dataset including reviews"""
         print("\n🚀 Starting Complete C360 Data Generation...")
@@ -778,6 +1097,15 @@ class CompleteDatasetGenerator:
         # Reviews
         print("\n=== 🎭 Generating Reviews ===")
         self.generate_reviews()
+        
+        # Social Media and Digital Analytics
+        print("\n=== 📱 Generating Social Media & Digital Analytics ===")
+        self.generate_social_mentions()
+        self.generate_website_sessions()
+        
+        # Style Similarity Matches (ML/Recommendation Engine Data)
+        print("\n=== 🎯 Generating ML & Recommendation Data ===")
+        self.generate_style_similarity_matches()
         
         print(f"\n🎉 Complete dataset generation finished!")
         print(f"\n📊 Generated tables:")
