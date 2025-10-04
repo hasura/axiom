@@ -1,0 +1,272 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: social_mentions
+  description: "Object type for social_mentions. Description: Social media
+    mentions and engagement data"
+  fields:
+    - name: brand_mentioned
+      type: string
+    - name: campaign_tagged
+      type: string
+    - name: customer_id
+      type: int_32
+    - name: engagement_count
+      type: int_32
+    - name: follower_count
+      type: int_32
+    - name: hashtags
+      type: string
+    - name: influence_score
+      type: int_32
+    - name: mention_id
+      type: string!
+    - name: mentions
+      type: string
+    - name: platform
+      type: string
+    - name: post_date
+      type: timestamp
+    - name: post_text
+      type: string
+    - name: post_type
+      type: string
+    - name: post_url
+      type: string
+    - name: products_tagged
+      type: string
+    - name: sentiment_score
+      type: bigdecimal
+    - name: ugc_usage_rights
+      type: boolean
+    - name: username
+      type: string
+  graphql:
+    typeName: social_mentions
+    inputTypeName: social_mentions_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: postgres_retail
+      dataConnectorObjectType: social_mentions
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: social_mentions
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - brand_mentioned
+          - campaign_tagged
+          - customer_id
+          - engagement_count
+          - follower_count
+          - hashtags
+          - influence_score
+          - mention_id
+          - mentions
+          - platform
+          - post_date
+          - post_text
+          - post_type
+          - post_url
+          - products_tagged
+          - sentiment_score
+          - ugc_usage_rights
+          - username
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: social_mentions_bool_exp
+  operand:
+    object:
+      type: social_mentions
+      comparableFields:
+        - fieldName: brand_mentioned
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: campaign_tagged
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: customer_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: engagement_count
+          booleanExpressionType: integer_bool_exp
+        - fieldName: follower_count
+          booleanExpressionType: integer_bool_exp
+        - fieldName: hashtags
+          booleanExpressionType: text_bool_exp
+        - fieldName: influence_score
+          booleanExpressionType: integer_bool_exp
+        - fieldName: mention_id
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: mentions
+          booleanExpressionType: text_bool_exp
+        - fieldName: platform
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: post_date
+          booleanExpressionType: timestamp_without_time_zone_bool_exp
+        - fieldName: post_text
+          booleanExpressionType: text_bool_exp
+        - fieldName: post_type
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: post_url
+          booleanExpressionType: text_bool_exp
+        - fieldName: products_tagged
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: sentiment_score
+          booleanExpressionType: decimal_bool_exp
+        - fieldName: ugc_usage_rights
+          booleanExpressionType: boolean_bool_exp
+        - fieldName: username
+          booleanExpressionType: character_varying_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: social_mentions_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: social_mentions_agg_exp
+  operand:
+    object:
+      aggregatedType: social_mentions
+      aggregatableFields:
+        - fieldName: brand_mentioned
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: campaign_tagged
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: customer_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: engagement_count
+          aggregateExpression: integer_agg_exp
+        - fieldName: follower_count
+          aggregateExpression: integer_agg_exp
+        - fieldName: hashtags
+          aggregateExpression: text_agg_exp
+        - fieldName: influence_score
+          aggregateExpression: integer_agg_exp
+        - fieldName: mention_id
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: mentions
+          aggregateExpression: text_agg_exp
+        - fieldName: platform
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: post_date
+          aggregateExpression: timestamp_without_time_zone_agg_exp
+        - fieldName: post_text
+          aggregateExpression: text_agg_exp
+        - fieldName: post_type
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: post_url
+          aggregateExpression: text_agg_exp
+        - fieldName: products_tagged
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: sentiment_score
+          aggregateExpression: decimal_agg_exp
+        - fieldName: ugc_usage_rights
+          aggregateExpression: boolean_agg_exp
+        - fieldName: username
+          aggregateExpression: character_varying_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: social_mentions_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: social_mentions_order_by_exp
+  operand:
+    object:
+      orderedType: social_mentions
+      orderableFields:
+        - fieldName: brand_mentioned
+          orderByExpression: string_order_by_exp
+        - fieldName: campaign_tagged
+          orderByExpression: string_order_by_exp
+        - fieldName: customer_id
+          orderByExpression: int_32_order_by_exp
+        - fieldName: engagement_count
+          orderByExpression: int_32_order_by_exp
+        - fieldName: follower_count
+          orderByExpression: int_32_order_by_exp
+        - fieldName: hashtags
+          orderByExpression: string_order_by_exp
+        - fieldName: influence_score
+          orderByExpression: int_32_order_by_exp
+        - fieldName: mention_id
+          orderByExpression: string_order_by_exp
+        - fieldName: mentions
+          orderByExpression: string_order_by_exp
+        - fieldName: platform
+          orderByExpression: string_order_by_exp
+        - fieldName: post_date
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: post_text
+          orderByExpression: string_order_by_exp
+        - fieldName: post_type
+          orderByExpression: string_order_by_exp
+        - fieldName: post_url
+          orderByExpression: string_order_by_exp
+        - fieldName: products_tagged
+          orderByExpression: string_order_by_exp
+        - fieldName: sentiment_score
+          orderByExpression: bigdecimal_order_by_exp
+        - fieldName: ugc_usage_rights
+          orderByExpression: boolean_order_by_exp
+        - fieldName: username
+          orderByExpression: string_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: social_mentions_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: social_mentions
+  objectType: social_mentions
+  source:
+    dataConnectorName: postgres_retail
+    collection: social_mentions
+  filterExpressionType: social_mentions_bool_exp
+  aggregateExpression: social_mentions_agg_exp
+  orderByExpression: social_mentions_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: social_mentions
+      subscription:
+        rootField: social_mentions
+    selectUniques:
+      - queryRootField: social_mentions_by_mention_id
+        uniqueIdentifier:
+          - mention_id
+        subscription:
+          rootField: social_mentions_by_mention_id
+    filterInputTypeName: social_mentions_filter_input
+    aggregate:
+      queryRootField: social_mentions_aggregate
+      subscription:
+        rootField: social_mentions_aggregate
+  description: Social media mentions and engagement data
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: social_mentions
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

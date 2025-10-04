@@ -1,0 +1,197 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: customer_addresses
+  fields:
+    - name: address_id
+      type: string!
+    - name: address_type
+      type: string!
+    - name: city
+      type: string
+    - name: country
+      type: string
+    - name: created_at
+      type: timestamp
+    - name: customer_id
+      type: int_32
+    - name: is_primary
+      type: boolean
+    - name: postal_code
+      type: string
+    - name: state_province
+      type: string
+    - name: street_address
+      type: string
+  graphql:
+    typeName: customer_addresses
+    inputTypeName: customer_addresses_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: postgres_retail
+      dataConnectorObjectType: customer_addresses
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: customer_addresses
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - address_id
+          - address_type
+          - city
+          - country
+          - created_at
+          - customer_id
+          - is_primary
+          - postal_code
+          - state_province
+          - street_address
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: customer_addresses_bool_exp
+  operand:
+    object:
+      type: customer_addresses
+      comparableFields:
+        - fieldName: address_id
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: address_type
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: city
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: country
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: created_at
+          booleanExpressionType: timestamp_without_time_zone_bool_exp
+        - fieldName: customer_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: is_primary
+          booleanExpressionType: boolean_bool_exp
+        - fieldName: postal_code
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: state_province
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: street_address
+          booleanExpressionType: text_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customer_addresses_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: customer_addresses_agg_exp
+  operand:
+    object:
+      aggregatedType: customer_addresses
+      aggregatableFields:
+        - fieldName: address_id
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: address_type
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: city
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: country
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: created_at
+          aggregateExpression: timestamp_without_time_zone_agg_exp
+        - fieldName: customer_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: is_primary
+          aggregateExpression: boolean_agg_exp
+        - fieldName: postal_code
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: state_province
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: street_address
+          aggregateExpression: text_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: customer_addresses_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: customer_addresses_order_by_exp
+  operand:
+    object:
+      orderedType: customer_addresses
+      orderableFields:
+        - fieldName: address_id
+          orderByExpression: string_order_by_exp
+        - fieldName: address_type
+          orderByExpression: string_order_by_exp
+        - fieldName: city
+          orderByExpression: string_order_by_exp
+        - fieldName: country
+          orderByExpression: string_order_by_exp
+        - fieldName: created_at
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: customer_id
+          orderByExpression: int_32_order_by_exp
+        - fieldName: is_primary
+          orderByExpression: boolean_order_by_exp
+        - fieldName: postal_code
+          orderByExpression: string_order_by_exp
+        - fieldName: state_province
+          orderByExpression: string_order_by_exp
+        - fieldName: street_address
+          orderByExpression: string_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: customer_addresses_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: customer_addresses
+  objectType: customer_addresses
+  source:
+    dataConnectorName: postgres_retail
+    collection: customer_addresses
+  filterExpressionType: customer_addresses_bool_exp
+  aggregateExpression: customer_addresses_agg_exp
+  orderByExpression: customer_addresses_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: customer_addresses
+      subscription:
+        rootField: customer_addresses
+    selectUniques:
+      - queryRootField: customer_addresses_by_address_id
+        uniqueIdentifier:
+          - address_id
+        subscription:
+          rootField: customer_addresses_by_address_id
+    filterInputTypeName: customer_addresses_filter_input
+    aggregate:
+      queryRootField: customer_addresses_aggregate
+      subscription:
+        rootField: customer_addresses_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: customer_addresses
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

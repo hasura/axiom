@@ -1,0 +1,215 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: loyalty_profiles
+  fields:
+    - name: anniversary_date
+      type: date
+    - name: birthday_month
+      type: int_32
+    - name: communication_preferences
+      type: string
+    - name: customer_id
+      type: int_32!
+    - name: last_tier_review
+      type: date
+    - name: next_tier_threshold
+      type: int_32
+    - name: points_balance
+      type: int_32
+    - name: points_lifetime
+      type: int_32
+    - name: preferred_categories
+      type: string
+    - name: tier_level
+      type: string
+    - name: tier_start_date
+      type: date
+    - name: vip_status
+      type: boolean
+  graphql:
+    typeName: loyalty_profiles
+    inputTypeName: loyalty_profiles_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: postgres_retail
+      dataConnectorObjectType: loyalty_profiles
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: loyalty_profiles
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - anniversary_date
+          - birthday_month
+          - communication_preferences
+          - customer_id
+          - last_tier_review
+          - next_tier_threshold
+          - points_balance
+          - points_lifetime
+          - preferred_categories
+          - tier_level
+          - tier_start_date
+          - vip_status
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: loyalty_profiles_bool_exp
+  operand:
+    object:
+      type: loyalty_profiles
+      comparableFields:
+        - fieldName: anniversary_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: birthday_month
+          booleanExpressionType: integer_bool_exp
+        - fieldName: communication_preferences
+          booleanExpressionType: text_bool_exp
+        - fieldName: customer_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: last_tier_review
+          booleanExpressionType: date_bool_exp
+        - fieldName: next_tier_threshold
+          booleanExpressionType: integer_bool_exp
+        - fieldName: points_balance
+          booleanExpressionType: integer_bool_exp
+        - fieldName: points_lifetime
+          booleanExpressionType: integer_bool_exp
+        - fieldName: preferred_categories
+          booleanExpressionType: text_bool_exp
+        - fieldName: tier_level
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: tier_start_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: vip_status
+          booleanExpressionType: boolean_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: loyalty_profiles_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: loyalty_profiles_agg_exp
+  operand:
+    object:
+      aggregatedType: loyalty_profiles
+      aggregatableFields:
+        - fieldName: anniversary_date
+          aggregateExpression: date_agg_exp
+        - fieldName: birthday_month
+          aggregateExpression: integer_agg_exp
+        - fieldName: communication_preferences
+          aggregateExpression: text_agg_exp
+        - fieldName: customer_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: last_tier_review
+          aggregateExpression: date_agg_exp
+        - fieldName: next_tier_threshold
+          aggregateExpression: integer_agg_exp
+        - fieldName: points_balance
+          aggregateExpression: integer_agg_exp
+        - fieldName: points_lifetime
+          aggregateExpression: integer_agg_exp
+        - fieldName: preferred_categories
+          aggregateExpression: text_agg_exp
+        - fieldName: tier_level
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: tier_start_date
+          aggregateExpression: date_agg_exp
+        - fieldName: vip_status
+          aggregateExpression: boolean_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: loyalty_profiles_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: loyalty_profiles_order_by_exp
+  operand:
+    object:
+      orderedType: loyalty_profiles
+      orderableFields:
+        - fieldName: anniversary_date
+          orderByExpression: date_order_by_exp
+        - fieldName: birthday_month
+          orderByExpression: int_32_order_by_exp
+        - fieldName: communication_preferences
+          orderByExpression: string_order_by_exp
+        - fieldName: customer_id
+          orderByExpression: int_32_order_by_exp
+        - fieldName: last_tier_review
+          orderByExpression: date_order_by_exp
+        - fieldName: next_tier_threshold
+          orderByExpression: int_32_order_by_exp
+        - fieldName: points_balance
+          orderByExpression: int_32_order_by_exp
+        - fieldName: points_lifetime
+          orderByExpression: int_32_order_by_exp
+        - fieldName: preferred_categories
+          orderByExpression: string_order_by_exp
+        - fieldName: tier_level
+          orderByExpression: string_order_by_exp
+        - fieldName: tier_start_date
+          orderByExpression: date_order_by_exp
+        - fieldName: vip_status
+          orderByExpression: boolean_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: loyalty_profiles_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: loyalty_profiles
+  objectType: loyalty_profiles
+  source:
+    dataConnectorName: postgres_retail
+    collection: loyalty_profiles
+  filterExpressionType: loyalty_profiles_bool_exp
+  aggregateExpression: loyalty_profiles_agg_exp
+  orderByExpression: loyalty_profiles_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: loyalty_profiles
+      subscription:
+        rootField: loyalty_profiles
+    selectUniques:
+      - queryRootField: loyalty_profiles_by_customer_id
+        uniqueIdentifier:
+          - customer_id
+        subscription:
+          rootField: loyalty_profiles_by_customer_id
+    filterInputTypeName: loyalty_profiles_filter_input
+    aggregate:
+      queryRootField: loyalty_profiles_aggregate
+      subscription:
+        rootField: loyalty_profiles_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: loyalty_profiles
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

@@ -1,0 +1,288 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: products
+  fields:
+    - name: brand
+      type: string
+    - name: care_instructions
+      type: string
+    - name: category_l_1
+      type: string
+    - name: category_l_2
+      type: string
+    - name: category_l_3
+      type: string
+    - name: created_at
+      type: timestamp
+    - name: gender_target
+      type: string
+    - name: is_active
+      type: boolean
+    - name: launch_date
+      type: date
+    - name: material
+      type: string
+    - name: price_range
+      type: string
+    - name: product_id
+      type: string!
+    - name: product_name
+      type: string!
+    - name: season
+      type: string
+    - name: sustainability_score
+      type: int_32
+  graphql:
+    typeName: products
+    inputTypeName: products_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: postgres_retail
+      dataConnectorObjectType: products
+      fieldMapping:
+        brand:
+          column:
+            name: brand
+        care_instructions:
+          column:
+            name: care_instructions
+        category_l_1:
+          column:
+            name: category_l1
+        category_l_2:
+          column:
+            name: category_l2
+        category_l_3:
+          column:
+            name: category_l3
+        created_at:
+          column:
+            name: created_at
+        gender_target:
+          column:
+            name: gender_target
+        is_active:
+          column:
+            name: is_active
+        launch_date:
+          column:
+            name: launch_date
+        material:
+          column:
+            name: material
+        price_range:
+          column:
+            name: price_range
+        product_id:
+          column:
+            name: product_id
+        product_name:
+          column:
+            name: product_name
+        season:
+          column:
+            name: season
+        sustainability_score:
+          column:
+            name: sustainability_score
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: products
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - brand
+          - care_instructions
+          - category_l_1
+          - category_l_2
+          - category_l_3
+          - created_at
+          - gender_target
+          - is_active
+          - launch_date
+          - material
+          - price_range
+          - product_id
+          - product_name
+          - season
+          - sustainability_score
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: products_bool_exp
+  operand:
+    object:
+      type: products
+      comparableFields:
+        - fieldName: brand
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: care_instructions
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: category_l_1
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: category_l_2
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: category_l_3
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: created_at
+          booleanExpressionType: timestamp_without_time_zone_bool_exp
+        - fieldName: gender_target
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: is_active
+          booleanExpressionType: boolean_bool_exp
+        - fieldName: launch_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: material
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: price_range
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: product_id
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: product_name
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: season
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: sustainability_score
+          booleanExpressionType: integer_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: products_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: products_agg_exp
+  operand:
+    object:
+      aggregatedType: products
+      aggregatableFields:
+        - fieldName: brand
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: care_instructions
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: category_l_1
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: category_l_2
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: category_l_3
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: created_at
+          aggregateExpression: timestamp_without_time_zone_agg_exp
+        - fieldName: gender_target
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: is_active
+          aggregateExpression: boolean_agg_exp
+        - fieldName: launch_date
+          aggregateExpression: date_agg_exp
+        - fieldName: material
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: price_range
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: product_id
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: product_name
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: season
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: sustainability_score
+          aggregateExpression: integer_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: products_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: products_order_by_exp
+  operand:
+    object:
+      orderedType: products
+      orderableFields:
+        - fieldName: brand
+          orderByExpression: string_order_by_exp
+        - fieldName: care_instructions
+          orderByExpression: string_order_by_exp
+        - fieldName: category_l_1
+          orderByExpression: string_order_by_exp
+        - fieldName: category_l_2
+          orderByExpression: string_order_by_exp
+        - fieldName: category_l_3
+          orderByExpression: string_order_by_exp
+        - fieldName: created_at
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: gender_target
+          orderByExpression: string_order_by_exp
+        - fieldName: is_active
+          orderByExpression: boolean_order_by_exp
+        - fieldName: launch_date
+          orderByExpression: date_order_by_exp
+        - fieldName: material
+          orderByExpression: string_order_by_exp
+        - fieldName: price_range
+          orderByExpression: string_order_by_exp
+        - fieldName: product_id
+          orderByExpression: string_order_by_exp
+        - fieldName: product_name
+          orderByExpression: string_order_by_exp
+        - fieldName: season
+          orderByExpression: string_order_by_exp
+        - fieldName: sustainability_score
+          orderByExpression: int_32_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: products_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: products
+  objectType: products
+  source:
+    dataConnectorName: postgres_retail
+    collection: products
+  filterExpressionType: products_bool_exp
+  aggregateExpression: products_agg_exp
+  orderByExpression: products_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: products
+      subscription:
+        rootField: products
+    selectUniques:
+      - queryRootField: products_by_product_id
+        uniqueIdentifier:
+          - product_id
+        subscription:
+          rootField: products_by_product_id
+    filterInputTypeName: products_filter_input
+    aggregate:
+      queryRootField: products_aggregate
+      subscription:
+        rootField: products_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: products
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

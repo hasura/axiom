@@ -1,0 +1,281 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: customer_service_interactions
+  description: "Object type for customer_service_interactions. Description:
+    Customer service interaction tracking with sentiment analysis"
+  fields:
+    - name: agent_id
+      type: string
+    - name: category
+      type: string
+    - name: channel
+      type: string
+    - name: conversation_text
+      type: string
+    - name: customer_id
+      type: int_32
+    - name: escalated
+      type: boolean
+    - name: follow_up_needed
+      type: boolean
+    - name: interaction_cost
+      type: bigdecimal
+    - name: interaction_date
+      type: timestamp
+    - name: interaction_id
+      type: string!
+    - name: interaction_type
+      type: string
+    - name: keywords_extracted
+      type: string
+    - name: priority
+      type: string
+    - name: related_order_id
+      type: string
+    - name: resolution_time_hours
+      type: bigdecimal
+    - name: resolution_type
+      type: string
+    - name: satisfaction_score
+      type: int_32
+    - name: sentiment_score
+      type: bigdecimal
+    - name: subject_line
+      type: string
+  graphql:
+    typeName: customer_service_interactions
+    inputTypeName: customer_service_interactions_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: postgres_retail
+      dataConnectorObjectType: customer_service_interactions
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: customer_service_interactions
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - agent_id
+          - category
+          - channel
+          - conversation_text
+          - customer_id
+          - escalated
+          - follow_up_needed
+          - interaction_cost
+          - interaction_date
+          - interaction_id
+          - interaction_type
+          - keywords_extracted
+          - priority
+          - related_order_id
+          - resolution_time_hours
+          - resolution_type
+          - satisfaction_score
+          - sentiment_score
+          - subject_line
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: customer_service_interactions_bool_exp
+  operand:
+    object:
+      type: customer_service_interactions
+      comparableFields:
+        - fieldName: agent_id
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: category
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: channel
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: conversation_text
+          booleanExpressionType: text_bool_exp
+        - fieldName: customer_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: escalated
+          booleanExpressionType: boolean_bool_exp
+        - fieldName: follow_up_needed
+          booleanExpressionType: boolean_bool_exp
+        - fieldName: interaction_cost
+          booleanExpressionType: decimal_bool_exp
+        - fieldName: interaction_date
+          booleanExpressionType: timestamp_without_time_zone_bool_exp
+        - fieldName: interaction_id
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: interaction_type
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: keywords_extracted
+          booleanExpressionType: text_bool_exp
+        - fieldName: priority
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: related_order_id
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: resolution_time_hours
+          booleanExpressionType: decimal_bool_exp
+        - fieldName: resolution_type
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: satisfaction_score
+          booleanExpressionType: integer_bool_exp
+        - fieldName: sentiment_score
+          booleanExpressionType: decimal_bool_exp
+        - fieldName: subject_line
+          booleanExpressionType: character_varying_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customer_service_interactions_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: customer_service_interactions_agg_exp
+  operand:
+    object:
+      aggregatedType: customer_service_interactions
+      aggregatableFields:
+        - fieldName: agent_id
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: category
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: channel
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: conversation_text
+          aggregateExpression: text_agg_exp
+        - fieldName: customer_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: escalated
+          aggregateExpression: boolean_agg_exp
+        - fieldName: follow_up_needed
+          aggregateExpression: boolean_agg_exp
+        - fieldName: interaction_cost
+          aggregateExpression: decimal_agg_exp
+        - fieldName: interaction_date
+          aggregateExpression: timestamp_without_time_zone_agg_exp
+        - fieldName: interaction_id
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: interaction_type
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: keywords_extracted
+          aggregateExpression: text_agg_exp
+        - fieldName: priority
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: related_order_id
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: resolution_time_hours
+          aggregateExpression: decimal_agg_exp
+        - fieldName: resolution_type
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: satisfaction_score
+          aggregateExpression: integer_agg_exp
+        - fieldName: sentiment_score
+          aggregateExpression: decimal_agg_exp
+        - fieldName: subject_line
+          aggregateExpression: character_varying_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: customer_service_interactions_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: customer_service_interactions_order_by_exp
+  operand:
+    object:
+      orderedType: customer_service_interactions
+      orderableFields:
+        - fieldName: agent_id
+          orderByExpression: string_order_by_exp
+        - fieldName: category
+          orderByExpression: string_order_by_exp
+        - fieldName: channel
+          orderByExpression: string_order_by_exp
+        - fieldName: conversation_text
+          orderByExpression: string_order_by_exp
+        - fieldName: customer_id
+          orderByExpression: int_32_order_by_exp
+        - fieldName: escalated
+          orderByExpression: boolean_order_by_exp
+        - fieldName: follow_up_needed
+          orderByExpression: boolean_order_by_exp
+        - fieldName: interaction_cost
+          orderByExpression: bigdecimal_order_by_exp
+        - fieldName: interaction_date
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: interaction_id
+          orderByExpression: string_order_by_exp
+        - fieldName: interaction_type
+          orderByExpression: string_order_by_exp
+        - fieldName: keywords_extracted
+          orderByExpression: string_order_by_exp
+        - fieldName: priority
+          orderByExpression: string_order_by_exp
+        - fieldName: related_order_id
+          orderByExpression: string_order_by_exp
+        - fieldName: resolution_time_hours
+          orderByExpression: bigdecimal_order_by_exp
+        - fieldName: resolution_type
+          orderByExpression: string_order_by_exp
+        - fieldName: satisfaction_score
+          orderByExpression: int_32_order_by_exp
+        - fieldName: sentiment_score
+          orderByExpression: bigdecimal_order_by_exp
+        - fieldName: subject_line
+          orderByExpression: string_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: customer_service_interactions_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: customer_service_interactions
+  objectType: customer_service_interactions
+  source:
+    dataConnectorName: postgres_retail
+    collection: customer_service_interactions
+  filterExpressionType: customer_service_interactions_bool_exp
+  aggregateExpression: customer_service_interactions_agg_exp
+  orderByExpression: customer_service_interactions_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: customer_service_interactions
+      subscription:
+        rootField: customer_service_interactions
+    selectUniques:
+      - queryRootField: customer_service_interactions_by_interaction_id
+        uniqueIdentifier:
+          - interaction_id
+        subscription:
+          rootField: customer_service_interactions_by_interaction_id
+    filterInputTypeName: customer_service_interactions_filter_input
+    aggregate:
+      queryRootField: customer_service_interactions_aggregate
+      subscription:
+        rootField: customer_service_interactions_aggregate
+  description: Customer service interaction tracking with sentiment analysis
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: customer_service_interactions
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

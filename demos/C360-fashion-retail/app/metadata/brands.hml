@@ -1,0 +1,188 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: brands
+  fields:
+    - name: brand_id
+      type: int_32!
+    - name: brand_name
+      type: string!
+    - name: brand_tier
+      type: string
+    - name: created_at
+      type: timestamp
+    - name: description
+      type: string
+    - name: is_active
+      type: boolean
+    - name: parent_company
+      type: string
+    - name: website_url
+      type: string
+    - name: year_established
+      type: int_32
+  graphql:
+    typeName: brands
+    inputTypeName: brands_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: postgres_retail
+      dataConnectorObjectType: brands
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: brands
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - brand_id
+          - brand_name
+          - brand_tier
+          - created_at
+          - description
+          - is_active
+          - parent_company
+          - website_url
+          - year_established
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: brands_bool_exp
+  operand:
+    object:
+      type: brands
+      comparableFields:
+        - fieldName: brand_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: brand_name
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: brand_tier
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: created_at
+          booleanExpressionType: timestamp_without_time_zone_bool_exp
+        - fieldName: description
+          booleanExpressionType: text_bool_exp
+        - fieldName: is_active
+          booleanExpressionType: boolean_bool_exp
+        - fieldName: parent_company
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: website_url
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: year_established
+          booleanExpressionType: integer_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: brands_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: brands_agg_exp
+  operand:
+    object:
+      aggregatedType: brands
+      aggregatableFields:
+        - fieldName: brand_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: brand_name
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: brand_tier
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: created_at
+          aggregateExpression: timestamp_without_time_zone_agg_exp
+        - fieldName: description
+          aggregateExpression: text_agg_exp
+        - fieldName: is_active
+          aggregateExpression: boolean_agg_exp
+        - fieldName: parent_company
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: website_url
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: year_established
+          aggregateExpression: integer_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: brands_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: brands_order_by_exp
+  operand:
+    object:
+      orderedType: brands
+      orderableFields:
+        - fieldName: brand_id
+          orderByExpression: int_32_order_by_exp
+        - fieldName: brand_name
+          orderByExpression: string_order_by_exp
+        - fieldName: brand_tier
+          orderByExpression: string_order_by_exp
+        - fieldName: created_at
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: description
+          orderByExpression: string_order_by_exp
+        - fieldName: is_active
+          orderByExpression: boolean_order_by_exp
+        - fieldName: parent_company
+          orderByExpression: string_order_by_exp
+        - fieldName: website_url
+          orderByExpression: string_order_by_exp
+        - fieldName: year_established
+          orderByExpression: int_32_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: brands_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: brands
+  objectType: brands
+  source:
+    dataConnectorName: postgres_retail
+    collection: brands
+  filterExpressionType: brands_bool_exp
+  aggregateExpression: brands_agg_exp
+  orderByExpression: brands_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: brands
+      subscription:
+        rootField: brands
+    selectUniques:
+      - queryRootField: brands_by_brand_id
+        uniqueIdentifier:
+          - brand_id
+        subscription:
+          rootField: brands_by_brand_id
+    filterInputTypeName: brands_filter_input
+    aggregate:
+      queryRootField: brands_aggregate
+      subscription:
+        rootField: brands_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: brands
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

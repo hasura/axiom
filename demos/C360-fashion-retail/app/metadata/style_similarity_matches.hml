@@ -1,0 +1,191 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: style_similarity_matches
+  description: "Object type for style_similarity_matches. Description: Customer to
+    product recommendation matches based on style similarity"
+  fields:
+    - name: clicked
+      type: boolean
+    - name: customer_id
+      type: string
+    - name: match_date
+      type: timestamp
+    - name: match_id
+      type: string!
+    - name: product_id
+      type: string
+    - name: purchased
+      type: boolean
+    - name: recommendation_context
+      type: string
+    - name: recommendation_type
+      type: string
+    - name: similarity_score
+      type: bigdecimal
+  graphql:
+    typeName: style_similarity_matches
+    inputTypeName: style_similarity_matches_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: postgres_retail
+      dataConnectorObjectType: style_similarity_matches
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: style_similarity_matches
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - clicked
+          - customer_id
+          - match_date
+          - match_id
+          - product_id
+          - purchased
+          - recommendation_context
+          - recommendation_type
+          - similarity_score
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: style_similarity_matches_bool_exp
+  operand:
+    object:
+      type: style_similarity_matches
+      comparableFields:
+        - fieldName: clicked
+          booleanExpressionType: boolean_bool_exp
+        - fieldName: customer_id
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: match_date
+          booleanExpressionType: timestamp_without_time_zone_bool_exp
+        - fieldName: match_id
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: product_id
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: purchased
+          booleanExpressionType: boolean_bool_exp
+        - fieldName: recommendation_context
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: recommendation_type
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: similarity_score
+          booleanExpressionType: decimal_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: style_similarity_matches_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: style_similarity_matches_agg_exp
+  operand:
+    object:
+      aggregatedType: style_similarity_matches
+      aggregatableFields:
+        - fieldName: clicked
+          aggregateExpression: boolean_agg_exp
+        - fieldName: customer_id
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: match_date
+          aggregateExpression: timestamp_without_time_zone_agg_exp
+        - fieldName: match_id
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: product_id
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: purchased
+          aggregateExpression: boolean_agg_exp
+        - fieldName: recommendation_context
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: recommendation_type
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: similarity_score
+          aggregateExpression: decimal_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: style_similarity_matches_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: style_similarity_matches_order_by_exp
+  operand:
+    object:
+      orderedType: style_similarity_matches
+      orderableFields:
+        - fieldName: clicked
+          orderByExpression: boolean_order_by_exp
+        - fieldName: customer_id
+          orderByExpression: string_order_by_exp
+        - fieldName: match_date
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: match_id
+          orderByExpression: string_order_by_exp
+        - fieldName: product_id
+          orderByExpression: string_order_by_exp
+        - fieldName: purchased
+          orderByExpression: boolean_order_by_exp
+        - fieldName: recommendation_context
+          orderByExpression: string_order_by_exp
+        - fieldName: recommendation_type
+          orderByExpression: string_order_by_exp
+        - fieldName: similarity_score
+          orderByExpression: bigdecimal_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: style_similarity_matches_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: style_similarity_matches
+  objectType: style_similarity_matches
+  source:
+    dataConnectorName: postgres_retail
+    collection: style_similarity_matches
+  filterExpressionType: style_similarity_matches_bool_exp
+  aggregateExpression: style_similarity_matches_agg_exp
+  orderByExpression: style_similarity_matches_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: style_similarity_matches
+      subscription:
+        rootField: style_similarity_matches
+    selectUniques:
+      - queryRootField: style_similarity_matches_by_match_id
+        uniqueIdentifier:
+          - match_id
+        subscription:
+          rootField: style_similarity_matches_by_match_id
+    filterInputTypeName: style_similarity_matches_filter_input
+    aggregate:
+      queryRootField: style_similarity_matches_aggregate
+      subscription:
+        rootField: style_similarity_matches_aggregate
+  description: Customer to product recommendation matches based on style similarity
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: style_similarity_matches
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

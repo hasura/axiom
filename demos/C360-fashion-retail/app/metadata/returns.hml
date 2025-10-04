@@ -1,0 +1,224 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: returns
+  fields:
+    - name: condition_received
+      type: string
+    - name: created_at
+      type: timestamp
+    - name: customer_id
+      type: int_32
+    - name: order_id
+      type: int_32
+    - name: processed_by
+      type: string
+    - name: refund_amount
+      type: bigdecimal
+    - name: refund_method
+      type: string
+    - name: restocking_fee
+      type: bigdecimal
+    - name: return_date
+      type: timestamp!
+    - name: return_id
+      type: string!
+    - name: return_method
+      type: string
+    - name: return_reason
+      type: string
+    - name: return_status
+      type: string
+  graphql:
+    typeName: returns
+    inputTypeName: returns_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: postgres_retail
+      dataConnectorObjectType: returns
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: returns
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - condition_received
+          - created_at
+          - customer_id
+          - order_id
+          - processed_by
+          - refund_amount
+          - refund_method
+          - restocking_fee
+          - return_date
+          - return_id
+          - return_method
+          - return_reason
+          - return_status
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: returns_bool_exp
+  operand:
+    object:
+      type: returns
+      comparableFields:
+        - fieldName: condition_received
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: created_at
+          booleanExpressionType: timestamp_without_time_zone_bool_exp
+        - fieldName: customer_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: order_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: processed_by
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: refund_amount
+          booleanExpressionType: decimal_bool_exp
+        - fieldName: refund_method
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: restocking_fee
+          booleanExpressionType: decimal_bool_exp
+        - fieldName: return_date
+          booleanExpressionType: timestamp_without_time_zone_bool_exp
+        - fieldName: return_id
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: return_method
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: return_reason
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: return_status
+          booleanExpressionType: character_varying_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: returns_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: returns_agg_exp
+  operand:
+    object:
+      aggregatedType: returns
+      aggregatableFields:
+        - fieldName: condition_received
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: created_at
+          aggregateExpression: timestamp_without_time_zone_agg_exp
+        - fieldName: customer_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: order_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: processed_by
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: refund_amount
+          aggregateExpression: decimal_agg_exp
+        - fieldName: refund_method
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: restocking_fee
+          aggregateExpression: decimal_agg_exp
+        - fieldName: return_date
+          aggregateExpression: timestamp_without_time_zone_agg_exp
+        - fieldName: return_id
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: return_method
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: return_reason
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: return_status
+          aggregateExpression: character_varying_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: returns_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: returns_order_by_exp
+  operand:
+    object:
+      orderedType: returns
+      orderableFields:
+        - fieldName: condition_received
+          orderByExpression: string_order_by_exp
+        - fieldName: created_at
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: customer_id
+          orderByExpression: int_32_order_by_exp
+        - fieldName: order_id
+          orderByExpression: int_32_order_by_exp
+        - fieldName: processed_by
+          orderByExpression: string_order_by_exp
+        - fieldName: refund_amount
+          orderByExpression: bigdecimal_order_by_exp
+        - fieldName: refund_method
+          orderByExpression: string_order_by_exp
+        - fieldName: restocking_fee
+          orderByExpression: bigdecimal_order_by_exp
+        - fieldName: return_date
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: return_id
+          orderByExpression: string_order_by_exp
+        - fieldName: return_method
+          orderByExpression: string_order_by_exp
+        - fieldName: return_reason
+          orderByExpression: string_order_by_exp
+        - fieldName: return_status
+          orderByExpression: string_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: returns_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: returns
+  objectType: returns
+  source:
+    dataConnectorName: postgres_retail
+    collection: returns
+  filterExpressionType: returns_bool_exp
+  aggregateExpression: returns_agg_exp
+  orderByExpression: returns_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: returns
+      subscription:
+        rootField: returns
+    selectUniques:
+      - queryRootField: returns_by_return_id
+        uniqueIdentifier:
+          - return_id
+        subscription:
+          rootField: returns_by_return_id
+    filterInputTypeName: returns_filter_input
+    aggregate:
+      queryRootField: returns_aggregate
+      subscription:
+        rootField: returns_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: returns
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

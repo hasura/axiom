@@ -1,0 +1,242 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: customers
+  fields:
+    - name: account_status
+      type: string
+    - name: acquisition_channel
+      type: string
+    - name: created_at
+      type: timestamp
+    - name: customer_id
+      type: int_32!
+    - name: date_of_birth
+      type: date
+    - name: email
+      type: string
+    - name: first_name
+      type: string
+    - name: gender
+      type: string
+    - name: last_activity_date
+      type: timestamp
+    - name: last_name
+      type: string
+    - name: marketing_consent
+      type: boolean
+    - name: phone
+      type: string
+    - name: preferred_language
+      type: string
+    - name: registration_date
+      type: timestamp
+    - name: updated_at
+      type: timestamp
+  graphql:
+    typeName: customers
+    inputTypeName: customers_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: postgres_retail
+      dataConnectorObjectType: customers
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: customers
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - account_status
+          - acquisition_channel
+          - created_at
+          - customer_id
+          - date_of_birth
+          - email
+          - first_name
+          - gender
+          - last_activity_date
+          - last_name
+          - marketing_consent
+          - phone
+          - preferred_language
+          - registration_date
+          - updated_at
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: customers_bool_exp
+  operand:
+    object:
+      type: customers
+      comparableFields:
+        - fieldName: account_status
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: acquisition_channel
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: created_at
+          booleanExpressionType: timestamp_without_time_zone_bool_exp
+        - fieldName: customer_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: date_of_birth
+          booleanExpressionType: date_bool_exp
+        - fieldName: email
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: first_name
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: gender
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: last_activity_date
+          booleanExpressionType: timestamp_without_time_zone_bool_exp
+        - fieldName: last_name
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: marketing_consent
+          booleanExpressionType: boolean_bool_exp
+        - fieldName: phone
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: preferred_language
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: registration_date
+          booleanExpressionType: timestamp_without_time_zone_bool_exp
+        - fieldName: updated_at
+          booleanExpressionType: timestamp_without_time_zone_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customers_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: customers_agg_exp
+  operand:
+    object:
+      aggregatedType: customers
+      aggregatableFields:
+        - fieldName: account_status
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: acquisition_channel
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: created_at
+          aggregateExpression: timestamp_without_time_zone_agg_exp
+        - fieldName: customer_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: date_of_birth
+          aggregateExpression: date_agg_exp
+        - fieldName: email
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: first_name
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: gender
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: last_activity_date
+          aggregateExpression: timestamp_without_time_zone_agg_exp
+        - fieldName: last_name
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: marketing_consent
+          aggregateExpression: boolean_agg_exp
+        - fieldName: phone
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: preferred_language
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: registration_date
+          aggregateExpression: timestamp_without_time_zone_agg_exp
+        - fieldName: updated_at
+          aggregateExpression: timestamp_without_time_zone_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: customers_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: customers_order_by_exp
+  operand:
+    object:
+      orderedType: customers
+      orderableFields:
+        - fieldName: account_status
+          orderByExpression: string_order_by_exp
+        - fieldName: acquisition_channel
+          orderByExpression: string_order_by_exp
+        - fieldName: created_at
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: customer_id
+          orderByExpression: int_32_order_by_exp
+        - fieldName: date_of_birth
+          orderByExpression: date_order_by_exp
+        - fieldName: email
+          orderByExpression: string_order_by_exp
+        - fieldName: first_name
+          orderByExpression: string_order_by_exp
+        - fieldName: gender
+          orderByExpression: string_order_by_exp
+        - fieldName: last_activity_date
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: last_name
+          orderByExpression: string_order_by_exp
+        - fieldName: marketing_consent
+          orderByExpression: boolean_order_by_exp
+        - fieldName: phone
+          orderByExpression: string_order_by_exp
+        - fieldName: preferred_language
+          orderByExpression: string_order_by_exp
+        - fieldName: registration_date
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: updated_at
+          orderByExpression: timestamp_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: customers_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: customers
+  objectType: customers
+  source:
+    dataConnectorName: postgres_retail
+    collection: customers
+  filterExpressionType: customers_bool_exp
+  aggregateExpression: customers_agg_exp
+  orderByExpression: customers_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: customers
+      subscription:
+        rootField: customers
+    selectUniques:
+      - queryRootField: customers_by_customer_id
+        uniqueIdentifier:
+          - customer_id
+        subscription:
+          rootField: customers_by_customer_id
+    filterInputTypeName: customers_filter_input
+    aggregate:
+      queryRootField: customers_aggregate
+      subscription:
+        rootField: customers_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: customers
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
