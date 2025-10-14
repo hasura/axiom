@@ -3,10 +3,19 @@ version: v2
 definition:
   llm:
     provider: hasura
+    specificLlm: 
+      provider: anthropic
+      model: claude-sonnet-4-20250514
+    fallback: 
+      provider: hasura
+      specificLlm: 
+        provider: anthropic
+        model: claude-3-7-sonnet-20250219
   featureFlags:
     enable_visualizations_v2: true
+    enable_visualizations_v3: true
     enable_automations: true
-  systemInstructions: >
+  systemInstructions: |
     <system_role>
           You are a specialized AI assistant for a supply chain company.
           
