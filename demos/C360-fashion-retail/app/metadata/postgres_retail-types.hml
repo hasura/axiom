@@ -1345,3 +1345,96 @@ definition:
   graphql:
     expressionTypeName: biginteger_order_by_exp
 
+---
+kind: ScalarType
+version: v1
+definition:
+  name: timestamptz
+  graphql:
+    typeName: timestamptz
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: timestamp_with_time_zone_bool_exp
+  operand:
+    scalar:
+      type: timestamptz
+      comparisonOperators:
+        - name: _eq
+          argumentType: timestamptz!
+        - name: _gt
+          argumentType: timestamptz!
+        - name: _gte
+          argumentType: timestamptz!
+        - name: _in
+          argumentType: "[timestamptz!]!"
+        - name: _lt
+          argumentType: timestamptz!
+        - name: _lte
+          argumentType: timestamptz!
+        - name: _neq
+          argumentType: timestamptz!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: postgres_retail
+          dataConnectorScalarType: timestamp_with_time_zone
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: timestamp_with_time_zone_bool_exp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: postgres_retail
+  dataConnectorScalarType: timestamp_with_time_zone
+  representation: timestamptz
+  graphql:
+    comparisonExpressionTypeName: timestamptz_comparison_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: timestamp_with_time_zone_agg_exp
+  operand:
+    scalar:
+      aggregatedType: timestamptz
+      aggregationFunctions:
+        - name: max
+          returnType: timestamptz
+        - name: min
+          returnType: timestamptz
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: postgres_retail
+          dataConnectorScalarType: timestamp_with_time_zone
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: timestamp_with_time_zone_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: timestamptz_order_by_exp
+  operand:
+    scalar:
+      orderedType: timestamptz
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: timestamptz_order_by_exp
+
