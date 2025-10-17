@@ -5,9 +5,12 @@ Patient operations with scheduling, case management, and medical reference data.
 ## 🚀 Quick Start
 
 ```bash
+git clone git@github.com:hasura/axiom.git
+cd axiom
+cp .data/.env.template .data/healthcare/.env
 cd demos/healthcare
-cp ../../.data/.env.template ../../.data/healthcare/.env
 ddn run dataset-up
+ddn supergraph build local
 ddn run docker-start
 ```
 
