@@ -1,0 +1,224 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: order_items
+  fields:
+    - name: color
+      type: string
+    - name: discount_applied
+      type: bigdecimal
+    - name: final_price
+      type: bigdecimal
+    - name: gift_wrap
+      type: boolean
+    - name: order_id
+      type: int_32
+    - name: order_item_id
+      type: int_32!
+    - name: personalization
+      type: string
+    - name: product_id
+      type: string
+    - name: quantity
+      type: int_32
+    - name: size
+      type: string
+    - name: sku
+      type: string
+    - name: total_price
+      type: bigdecimal
+    - name: unit_price
+      type: bigdecimal
+  graphql:
+    typeName: order_items
+    inputTypeName: order_items_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: postgres_retail
+      dataConnectorObjectType: order_items
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: order_items
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - color
+          - discount_applied
+          - final_price
+          - gift_wrap
+          - order_id
+          - order_item_id
+          - personalization
+          - product_id
+          - quantity
+          - size
+          - sku
+          - total_price
+          - unit_price
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: order_items_bool_exp
+  operand:
+    object:
+      type: order_items
+      comparableFields:
+        - fieldName: color
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: discount_applied
+          booleanExpressionType: decimal_bool_exp
+        - fieldName: final_price
+          booleanExpressionType: decimal_bool_exp
+        - fieldName: gift_wrap
+          booleanExpressionType: boolean_bool_exp
+        - fieldName: order_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: order_item_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: personalization
+          booleanExpressionType: text_bool_exp
+        - fieldName: product_id
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: quantity
+          booleanExpressionType: integer_bool_exp
+        - fieldName: size
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: sku
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: total_price
+          booleanExpressionType: decimal_bool_exp
+        - fieldName: unit_price
+          booleanExpressionType: decimal_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: order_items_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: order_items_agg_exp
+  operand:
+    object:
+      aggregatedType: order_items
+      aggregatableFields:
+        - fieldName: color
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: discount_applied
+          aggregateExpression: decimal_agg_exp
+        - fieldName: final_price
+          aggregateExpression: decimal_agg_exp
+        - fieldName: gift_wrap
+          aggregateExpression: boolean_agg_exp
+        - fieldName: order_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: order_item_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: personalization
+          aggregateExpression: text_agg_exp
+        - fieldName: product_id
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: quantity
+          aggregateExpression: integer_agg_exp
+        - fieldName: size
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: sku
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: total_price
+          aggregateExpression: decimal_agg_exp
+        - fieldName: unit_price
+          aggregateExpression: decimal_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: order_items_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: order_items_order_by_exp
+  operand:
+    object:
+      orderedType: order_items
+      orderableFields:
+        - fieldName: color
+          orderByExpression: string_order_by_exp
+        - fieldName: discount_applied
+          orderByExpression: bigdecimal_order_by_exp
+        - fieldName: final_price
+          orderByExpression: bigdecimal_order_by_exp
+        - fieldName: gift_wrap
+          orderByExpression: boolean_order_by_exp
+        - fieldName: order_id
+          orderByExpression: int_32_order_by_exp
+        - fieldName: order_item_id
+          orderByExpression: int_32_order_by_exp
+        - fieldName: personalization
+          orderByExpression: string_order_by_exp
+        - fieldName: product_id
+          orderByExpression: string_order_by_exp
+        - fieldName: quantity
+          orderByExpression: int_32_order_by_exp
+        - fieldName: size
+          orderByExpression: string_order_by_exp
+        - fieldName: sku
+          orderByExpression: string_order_by_exp
+        - fieldName: total_price
+          orderByExpression: bigdecimal_order_by_exp
+        - fieldName: unit_price
+          orderByExpression: bigdecimal_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: order_items_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: order_items
+  objectType: order_items
+  source:
+    dataConnectorName: postgres_retail
+    collection: order_items
+  filterExpressionType: order_items_bool_exp
+  aggregateExpression: order_items_agg_exp
+  orderByExpression: order_items_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: order_items
+      subscription:
+        rootField: order_items
+    selectUniques:
+      - queryRootField: order_items_by_order_item_id
+        uniqueIdentifier:
+          - order_item_id
+        subscription:
+          rootField: order_items_by_order_item_id
+    filterInputTypeName: order_items_filter_input
+    aggregate:
+      queryRootField: order_items_aggregate
+      subscription:
+        rootField: order_items_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: order_items
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

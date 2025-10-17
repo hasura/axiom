@@ -1,0 +1,183 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: staging_order_items_simple
+  fields:
+    - name: discount_amount
+      type: bigdecimal
+    - name: order_id
+      type: int_32
+    - name: order_item_id
+      type: int_32
+    - name: personalization_data
+      type: string
+    - name: quantity
+      type: int_32
+    - name: return_quantity
+      type: int_32
+    - name: total_price
+      type: bigdecimal
+    - name: unit_price
+      type: bigdecimal
+    - name: variant_id
+      type: int_32
+  graphql:
+    typeName: staging_order_items_simple
+    inputTypeName: staging_order_items_simple_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: postgres_retail
+      dataConnectorObjectType: staging_order_items_simple
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: staging_order_items_simple
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - discount_amount
+          - order_id
+          - order_item_id
+          - personalization_data
+          - quantity
+          - return_quantity
+          - total_price
+          - unit_price
+          - variant_id
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: staging_order_items_simple_bool_exp
+  operand:
+    object:
+      type: staging_order_items_simple
+      comparableFields:
+        - fieldName: discount_amount
+          booleanExpressionType: decimal_bool_exp
+        - fieldName: order_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: order_item_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: personalization_data
+          booleanExpressionType: jsonb_bool_exp
+        - fieldName: quantity
+          booleanExpressionType: integer_bool_exp
+        - fieldName: return_quantity
+          booleanExpressionType: integer_bool_exp
+        - fieldName: total_price
+          booleanExpressionType: decimal_bool_exp
+        - fieldName: unit_price
+          booleanExpressionType: decimal_bool_exp
+        - fieldName: variant_id
+          booleanExpressionType: integer_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: staging_order_items_simple_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: staging_order_items_simple_agg_exp
+  operand:
+    object:
+      aggregatedType: staging_order_items_simple
+      aggregatableFields:
+        - fieldName: discount_amount
+          aggregateExpression: decimal_agg_exp
+        - fieldName: order_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: order_item_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: personalization_data
+          aggregateExpression: jsonb_agg_exp
+        - fieldName: quantity
+          aggregateExpression: integer_agg_exp
+        - fieldName: return_quantity
+          aggregateExpression: integer_agg_exp
+        - fieldName: total_price
+          aggregateExpression: decimal_agg_exp
+        - fieldName: unit_price
+          aggregateExpression: decimal_agg_exp
+        - fieldName: variant_id
+          aggregateExpression: integer_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: staging_order_items_simple_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: staging_order_items_simple_order_by_exp
+  operand:
+    object:
+      orderedType: staging_order_items_simple
+      orderableFields:
+        - fieldName: discount_amount
+          orderByExpression: bigdecimal_order_by_exp
+        - fieldName: order_id
+          orderByExpression: int_32_order_by_exp
+        - fieldName: order_item_id
+          orderByExpression: int_32_order_by_exp
+        - fieldName: personalization_data
+          orderByExpression: string_order_by_exp
+        - fieldName: quantity
+          orderByExpression: int_32_order_by_exp
+        - fieldName: return_quantity
+          orderByExpression: int_32_order_by_exp
+        - fieldName: total_price
+          orderByExpression: bigdecimal_order_by_exp
+        - fieldName: unit_price
+          orderByExpression: bigdecimal_order_by_exp
+        - fieldName: variant_id
+          orderByExpression: int_32_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: staging_order_items_simple_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: staging_order_items_simple
+  objectType: staging_order_items_simple
+  source:
+    dataConnectorName: postgres_retail
+    collection: staging_order_items_simple
+  filterExpressionType: staging_order_items_simple_bool_exp
+  aggregateExpression: staging_order_items_simple_agg_exp
+  orderByExpression: staging_order_items_simple_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: staging_order_items_simple
+      subscription:
+        rootField: staging_order_items_simple
+    selectUniques: []
+    filterInputTypeName: staging_order_items_simple_filter_input
+    aggregate:
+      queryRootField: staging_order_items_simple_aggregate
+      subscription:
+        rootField: staging_order_items_simple_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: staging_order_items_simple
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

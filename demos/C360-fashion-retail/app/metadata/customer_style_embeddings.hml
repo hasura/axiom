@@ -1,0 +1,170 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: customer_style_embeddings
+  fields:
+    - name: confidence_score
+      type: bigdecimal
+    - name: customer_embedding_id
+      type: string!
+    - name: customer_id
+      type: string
+    - name: last_updated
+      type: timestamp
+    - name: purchase_count_basis
+      type: int_32
+    - name: style_vector
+      type: string
+    - name: text_source
+      type: string
+  graphql:
+    typeName: customer_style_embeddings
+    inputTypeName: customer_style_embeddings_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: postgres_retail
+      dataConnectorObjectType: customer_style_embeddings
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: customer_style_embeddings
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - confidence_score
+          - customer_embedding_id
+          - customer_id
+          - last_updated
+          - purchase_count_basis
+          - style_vector
+          - text_source
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: customer_style_embeddings_bool_exp
+  operand:
+    object:
+      type: customer_style_embeddings
+      comparableFields:
+        - fieldName: confidence_score
+          booleanExpressionType: decimal_bool_exp
+        - fieldName: customer_embedding_id
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: customer_id
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: last_updated
+          booleanExpressionType: timestamp_without_time_zone_bool_exp
+        - fieldName: purchase_count_basis
+          booleanExpressionType: integer_bool_exp
+        - fieldName: style_vector
+          booleanExpressionType: text_bool_exp
+        - fieldName: text_source
+          booleanExpressionType: text_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customer_style_embeddings_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: customer_style_embeddings_agg_exp
+  operand:
+    object:
+      aggregatedType: customer_style_embeddings
+      aggregatableFields:
+        - fieldName: confidence_score
+          aggregateExpression: decimal_agg_exp
+        - fieldName: customer_embedding_id
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: customer_id
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: last_updated
+          aggregateExpression: timestamp_without_time_zone_agg_exp
+        - fieldName: purchase_count_basis
+          aggregateExpression: integer_agg_exp
+        - fieldName: style_vector
+          aggregateExpression: text_agg_exp
+        - fieldName: text_source
+          aggregateExpression: text_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: customer_style_embeddings_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: customer_style_embeddings_order_by_exp
+  operand:
+    object:
+      orderedType: customer_style_embeddings
+      orderableFields:
+        - fieldName: confidence_score
+          orderByExpression: bigdecimal_order_by_exp
+        - fieldName: customer_embedding_id
+          orderByExpression: string_order_by_exp
+        - fieldName: customer_id
+          orderByExpression: string_order_by_exp
+        - fieldName: last_updated
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: purchase_count_basis
+          orderByExpression: int_32_order_by_exp
+        - fieldName: style_vector
+          orderByExpression: string_order_by_exp
+        - fieldName: text_source
+          orderByExpression: string_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: customer_style_embeddings_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: customer_style_embeddings
+  objectType: customer_style_embeddings
+  source:
+    dataConnectorName: postgres_retail
+    collection: customer_style_embeddings
+  filterExpressionType: customer_style_embeddings_bool_exp
+  aggregateExpression: customer_style_embeddings_agg_exp
+  orderByExpression: customer_style_embeddings_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: customer_style_embeddings
+      subscription:
+        rootField: customer_style_embeddings
+    selectUniques:
+      - queryRootField: customer_style_embeddings_by_customer_embedding_id
+        uniqueIdentifier:
+          - customer_embedding_id
+        subscription:
+          rootField: customer_style_embeddings_by_customer_embedding_id
+    filterInputTypeName: customer_style_embeddings_filter_input
+    aggregate:
+      queryRootField: customer_style_embeddings_aggregate
+      subscription:
+        rootField: customer_style_embeddings_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: customer_style_embeddings
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

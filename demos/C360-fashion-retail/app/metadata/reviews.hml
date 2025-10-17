@@ -1,0 +1,251 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: reviews
+  fields:
+    - name: created_at
+      type: timestamp
+    - name: customer_id
+      type: int_32
+    - name: fit_rating
+      type: string
+    - name: helpful_count
+      type: int_32
+    - name: not_helpful_count
+      type: int_32
+    - name: order_id
+      type: int_32
+    - name: product_id
+      type: int_32
+    - name: quality_rating
+      type: int_32
+    - name: rating
+      type: int_32
+    - name: review_id
+      type: int_32!
+    - name: review_text
+      type: string
+    - name: review_title
+      type: string
+    - name: sentiment_score
+      type: bigdecimal
+    - name: style_rating
+      type: int_32
+    - name: value_rating
+      type: int_32
+    - name: verified_purchase
+      type: boolean
+  graphql:
+    typeName: reviews
+    inputTypeName: reviews_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: postgres_retail
+      dataConnectorObjectType: reviews
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: reviews
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - created_at
+          - customer_id
+          - fit_rating
+          - helpful_count
+          - not_helpful_count
+          - order_id
+          - product_id
+          - quality_rating
+          - rating
+          - review_id
+          - review_text
+          - review_title
+          - sentiment_score
+          - style_rating
+          - value_rating
+          - verified_purchase
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: reviews_bool_exp
+  operand:
+    object:
+      type: reviews
+      comparableFields:
+        - fieldName: created_at
+          booleanExpressionType: timestamp_without_time_zone_bool_exp
+        - fieldName: customer_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: fit_rating
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: helpful_count
+          booleanExpressionType: integer_bool_exp
+        - fieldName: not_helpful_count
+          booleanExpressionType: integer_bool_exp
+        - fieldName: order_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: product_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: quality_rating
+          booleanExpressionType: integer_bool_exp
+        - fieldName: rating
+          booleanExpressionType: integer_bool_exp
+        - fieldName: review_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: review_text
+          booleanExpressionType: text_bool_exp
+        - fieldName: review_title
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: sentiment_score
+          booleanExpressionType: decimal_bool_exp
+        - fieldName: style_rating
+          booleanExpressionType: integer_bool_exp
+        - fieldName: value_rating
+          booleanExpressionType: integer_bool_exp
+        - fieldName: verified_purchase
+          booleanExpressionType: boolean_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: reviews_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: reviews_agg_exp
+  operand:
+    object:
+      aggregatedType: reviews
+      aggregatableFields:
+        - fieldName: created_at
+          aggregateExpression: timestamp_without_time_zone_agg_exp
+        - fieldName: customer_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: fit_rating
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: helpful_count
+          aggregateExpression: integer_agg_exp
+        - fieldName: not_helpful_count
+          aggregateExpression: integer_agg_exp
+        - fieldName: order_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: product_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: quality_rating
+          aggregateExpression: integer_agg_exp
+        - fieldName: rating
+          aggregateExpression: integer_agg_exp
+        - fieldName: review_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: review_text
+          aggregateExpression: text_agg_exp
+        - fieldName: review_title
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: sentiment_score
+          aggregateExpression: decimal_agg_exp
+        - fieldName: style_rating
+          aggregateExpression: integer_agg_exp
+        - fieldName: value_rating
+          aggregateExpression: integer_agg_exp
+        - fieldName: verified_purchase
+          aggregateExpression: boolean_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: reviews_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: reviews_order_by_exp
+  operand:
+    object:
+      orderedType: reviews
+      orderableFields:
+        - fieldName: created_at
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: customer_id
+          orderByExpression: int_32_order_by_exp
+        - fieldName: fit_rating
+          orderByExpression: string_order_by_exp
+        - fieldName: helpful_count
+          orderByExpression: int_32_order_by_exp
+        - fieldName: not_helpful_count
+          orderByExpression: int_32_order_by_exp
+        - fieldName: order_id
+          orderByExpression: int_32_order_by_exp
+        - fieldName: product_id
+          orderByExpression: int_32_order_by_exp
+        - fieldName: quality_rating
+          orderByExpression: int_32_order_by_exp
+        - fieldName: rating
+          orderByExpression: int_32_order_by_exp
+        - fieldName: review_id
+          orderByExpression: int_32_order_by_exp
+        - fieldName: review_text
+          orderByExpression: string_order_by_exp
+        - fieldName: review_title
+          orderByExpression: string_order_by_exp
+        - fieldName: sentiment_score
+          orderByExpression: bigdecimal_order_by_exp
+        - fieldName: style_rating
+          orderByExpression: int_32_order_by_exp
+        - fieldName: value_rating
+          orderByExpression: int_32_order_by_exp
+        - fieldName: verified_purchase
+          orderByExpression: boolean_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: reviews_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: reviews
+  objectType: reviews
+  source:
+    dataConnectorName: postgres_retail
+    collection: reviews
+  filterExpressionType: reviews_bool_exp
+  aggregateExpression: reviews_agg_exp
+  orderByExpression: reviews_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: reviews
+      subscription:
+        rootField: reviews
+    selectUniques:
+      - queryRootField: reviews_by_review_id
+        uniqueIdentifier:
+          - review_id
+        subscription:
+          rootField: reviews_by_review_id
+    filterInputTypeName: reviews_filter_input
+    aggregate:
+      queryRootField: reviews_aggregate
+      subscription:
+        rootField: reviews_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: reviews
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

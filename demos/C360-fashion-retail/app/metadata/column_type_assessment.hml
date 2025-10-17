@@ -1,0 +1,156 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: column_type_assessment
+  fields:
+    - name: character_maximum_length
+      type: string
+    - name: column_group
+      type: string
+    - name: column_name
+      type: string
+    - name: data_type
+      type: string
+    - name: is_nullable
+      type: string
+    - name: table_name
+      type: string
+  graphql:
+    typeName: column_type_assessment
+    inputTypeName: column_type_assessment_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: postgres_retail
+      dataConnectorObjectType: column_type_assessment
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: column_type_assessment
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - character_maximum_length
+          - column_group
+          - column_name
+          - data_type
+          - is_nullable
+          - table_name
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: column_type_assessment_bool_exp
+  operand:
+    object:
+      type: column_type_assessment
+      comparableFields:
+        - fieldName: character_maximum_length
+          booleanExpressionType: information_schema_cardinal_number_bool_exp
+        - fieldName: column_group
+          booleanExpressionType: text_bool_exp
+        - fieldName: column_name
+          booleanExpressionType: information_schema_sql_identifier_bool_exp
+        - fieldName: data_type
+          booleanExpressionType: information_schema_character_data_bool_exp
+        - fieldName: is_nullable
+          booleanExpressionType: information_schema_yes_or_no_bool_exp
+        - fieldName: table_name
+          booleanExpressionType: information_schema_sql_identifier_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: column_type_assessment_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: column_type_assessment_agg_exp
+  operand:
+    object:
+      aggregatedType: column_type_assessment
+      aggregatableFields:
+        - fieldName: character_maximum_length
+          aggregateExpression: information_schema_cardinal_number_agg_exp
+        - fieldName: column_group
+          aggregateExpression: text_agg_exp
+        - fieldName: column_name
+          aggregateExpression: information_schema_sql_identifier_agg_exp
+        - fieldName: data_type
+          aggregateExpression: information_schema_character_data_agg_exp
+        - fieldName: is_nullable
+          aggregateExpression: information_schema_yes_or_no_agg_exp
+        - fieldName: table_name
+          aggregateExpression: information_schema_sql_identifier_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: column_type_assessment_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: column_type_assessment_order_by_exp
+  operand:
+    object:
+      orderedType: column_type_assessment
+      orderableFields:
+        - fieldName: character_maximum_length
+          orderByExpression: string_order_by_exp
+        - fieldName: column_group
+          orderByExpression: string_order_by_exp
+        - fieldName: column_name
+          orderByExpression: string_order_by_exp
+        - fieldName: data_type
+          orderByExpression: string_order_by_exp
+        - fieldName: is_nullable
+          orderByExpression: string_order_by_exp
+        - fieldName: table_name
+          orderByExpression: string_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: column_type_assessment_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: column_type_assessment
+  objectType: column_type_assessment
+  source:
+    dataConnectorName: postgres_retail
+    collection: column_type_assessment
+  filterExpressionType: column_type_assessment_bool_exp
+  aggregateExpression: column_type_assessment_agg_exp
+  orderByExpression: column_type_assessment_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: column_type_assessment
+      subscription:
+        rootField: column_type_assessment
+    selectUniques: []
+    filterInputTypeName: column_type_assessment_filter_input
+    aggregate:
+      queryRootField: column_type_assessment_aggregate
+      subscription:
+        rootField: column_type_assessment_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: column_type_assessment
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
