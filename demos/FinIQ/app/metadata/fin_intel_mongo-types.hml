@@ -1,0 +1,384 @@
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: fin_intel_mongo
+  dataConnectorScalarType: String
+  representation: String
+  graphql:
+    comparisonExpressionTypeName: string_comparison_exp_2
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: fin_intel_mongo
+  dataConnectorScalarType: Int
+  representation: Int
+  graphql:
+    comparisonExpressionTypeName: int_comparison_exp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: boolean
+  graphql:
+    typeName: boolean
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: bool_bool_exp
+  operand:
+    scalar:
+      type: boolean
+      comparisonOperators:
+        - name: _eq
+          argumentType: boolean!
+        - name: _in
+          argumentType: "[boolean!]!"
+        - name: _neq
+          argumentType: boolean!
+        - name: _nin
+          argumentType: "[boolean!]!"
+      dataConnectorOperatorMapping:
+        - dataConnectorName: fin_intel_mongo
+          dataConnectorScalarType: Bool
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: bool_bool_exp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: fin_intel_mongo
+  dataConnectorScalarType: Bool
+  representation: boolean
+  graphql:
+    comparisonExpressionTypeName: boolean_comparison_exp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: string_bool_exp
+  operand:
+    scalar:
+      type: String
+      comparisonOperators:
+        - name: _eq
+          argumentType: String!
+        - name: _gt
+          argumentType: String!
+        - name: _gte
+          argumentType: String!
+        - name: _in
+          argumentType: "[String!]!"
+        - name: _iregex
+          argumentType: String!
+        - name: _lt
+          argumentType: String!
+        - name: _lte
+          argumentType: String!
+        - name: _neq
+          argumentType: String!
+        - name: _nin
+          argumentType: "[String!]!"
+        - name: _regex
+          argumentType: String!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: fin_intel_mongo
+          dataConnectorScalarType: String
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: string_bool_exp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: int_bool_exp
+  operand:
+    scalar:
+      type: Int
+      comparisonOperators:
+        - name: _eq
+          argumentType: Int!
+        - name: _gt
+          argumentType: Int!
+        - name: _gte
+          argumentType: Int!
+        - name: _in
+          argumentType: "[Int!]!"
+        - name: _lt
+          argumentType: Int!
+        - name: _lte
+          argumentType: Int!
+        - name: _neq
+          argumentType: Int!
+        - name: _nin
+          argumentType: "[Int!]!"
+      dataConnectorOperatorMapping:
+        - dataConnectorName: fin_intel_mongo
+          dataConnectorScalarType: Int
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: int_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: string_agg_exp
+  operand:
+    scalar:
+      aggregatedType: String
+      aggregationFunctions:
+        - name: count
+          returnType: Int!
+        - name: max
+          returnType: String
+        - name: min
+          returnType: String
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: fin_intel_mongo
+          dataConnectorScalarType: String
+          functionMapping:
+            count:
+              name: count
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: string_agg_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: int_agg_exp
+  operand:
+    scalar:
+      aggregatedType: Int
+      aggregationFunctions:
+        - name: avg
+          returnType: Int
+        - name: count
+          returnType: Int!
+        - name: max
+          returnType: Int
+        - name: min
+          returnType: Int
+        - name: sum
+          returnType: Int
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: fin_intel_mongo
+          dataConnectorScalarType: Int
+          functionMapping:
+            avg:
+              name: avg
+            count:
+              name: count
+            max:
+              name: max
+            min:
+              name: min
+            sum:
+              name: sum
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: int_agg_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: bool_agg_exp
+  operand:
+    scalar:
+      aggregatedType: boolean
+      aggregationFunctions:
+        - name: count
+          returnType: Int!
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: fin_intel_mongo
+          dataConnectorScalarType: Bool
+          functionMapping:
+            count:
+              name: count
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: bool_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: string_order_by_exp_1
+  operand:
+    scalar:
+      orderedType: String
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: string_order_by_exp_1
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: int_order_by_exp
+  operand:
+    scalar:
+      orderedType: Int
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: int_order_by_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: boolean_order_by_exp
+  operand:
+    scalar:
+      orderedType: boolean
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: boolean_order_by_exp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: float_64
+  graphql:
+    typeName: float_64
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: double_bool_exp
+  operand:
+    scalar:
+      type: float_64
+      comparisonOperators:
+        - name: _eq
+          argumentType: float_64!
+        - name: _gt
+          argumentType: float_64!
+        - name: _gte
+          argumentType: float_64!
+        - name: _in
+          argumentType: "[float_64!]!"
+        - name: _lt
+          argumentType: float_64!
+        - name: _lte
+          argumentType: float_64!
+        - name: _neq
+          argumentType: float_64!
+        - name: _nin
+          argumentType: "[float_64!]!"
+      dataConnectorOperatorMapping:
+        - dataConnectorName: fin_intel_mongo
+          dataConnectorScalarType: Double
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: double_bool_exp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: fin_intel_mongo
+  dataConnectorScalarType: Double
+  representation: float_64
+  graphql:
+    comparisonExpressionTypeName: float_64_comparison_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: float_64_order_by_exp
+  operand:
+    scalar:
+      orderedType: float_64
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: float_64_order_by_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: double_agg_exp
+  operand:
+    scalar:
+      aggregatedType: float_64
+      aggregationFunctions:
+        - name: avg
+          returnType: float_64
+        - name: count
+          returnType: Int!
+        - name: max
+          returnType: float_64
+        - name: min
+          returnType: float_64
+        - name: sum
+          returnType: float_64
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: fin_intel_mongo
+          dataConnectorScalarType: Double
+          functionMapping:
+            avg:
+              name: avg
+            count:
+              name: count
+            max:
+              name: max
+            min:
+              name: min
+            sum:
+              name: sum
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: double_agg_exp
+

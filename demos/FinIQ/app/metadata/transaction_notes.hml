@@ -1,0 +1,222 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: transaction_notes
+  fields:
+    - name: id
+      type: String!
+    - name: author
+      type: String
+    - name: content
+      type: String
+    - name: created_at
+      type: String
+    - name: note_type
+      type: String
+    - name: priority
+      type: String
+    - name: status
+      type: String
+    - name: tags
+      type: "[String!]"
+    - name: transaction_id
+      type: String
+    - name: updated_at
+      type: String
+  graphql:
+    typeName: transaction_notes
+    inputTypeName: transaction_notes_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: fin_intel_mongo
+      dataConnectorObjectType: transaction_notes
+      fieldMapping:
+        id:
+          column:
+            name: _id
+        author:
+          column:
+            name: author
+        content:
+          column:
+            name: content
+        created_at:
+          column:
+            name: created_at
+        note_type:
+          column:
+            name: note_type
+        priority:
+          column:
+            name: priority
+        status:
+          column:
+            name: status
+        tags:
+          column:
+            name: tags
+        transaction_id:
+          column:
+            name: transaction_id
+        updated_at:
+          column:
+            name: updated_at
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: transaction_notes
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - id
+          - author
+          - content
+          - created_at
+          - note_type
+          - priority
+          - status
+          - tags
+          - transaction_id
+          - updated_at
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: transaction_notes_bool_exp
+  operand:
+    object:
+      type: transaction_notes
+      comparableFields:
+        - fieldName: id
+          booleanExpressionType: string_bool_exp
+        - fieldName: author
+          booleanExpressionType: string_bool_exp
+        - fieldName: content
+          booleanExpressionType: string_bool_exp
+        - fieldName: created_at
+          booleanExpressionType: string_bool_exp
+        - fieldName: note_type
+          booleanExpressionType: string_bool_exp
+        - fieldName: priority
+          booleanExpressionType: string_bool_exp
+        - fieldName: status
+          booleanExpressionType: string_bool_exp
+        - fieldName: transaction_id
+          booleanExpressionType: string_bool_exp
+        - fieldName: updated_at
+          booleanExpressionType: string_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: transaction_notes_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: transaction_notes_agg_exp
+  operand:
+    object:
+      aggregatedType: transaction_notes
+      aggregatableFields:
+        - fieldName: id
+          aggregateExpression: string_agg_exp
+        - fieldName: author
+          aggregateExpression: string_agg_exp
+        - fieldName: content
+          aggregateExpression: string_agg_exp
+        - fieldName: created_at
+          aggregateExpression: string_agg_exp
+        - fieldName: note_type
+          aggregateExpression: string_agg_exp
+        - fieldName: priority
+          aggregateExpression: string_agg_exp
+        - fieldName: status
+          aggregateExpression: string_agg_exp
+        - fieldName: transaction_id
+          aggregateExpression: string_agg_exp
+        - fieldName: updated_at
+          aggregateExpression: string_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: transaction_notes_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: transaction_notes_order_by_exp
+  operand:
+    object:
+      orderedType: transaction_notes
+      orderableFields:
+        - fieldName: id
+          orderByExpression: string_order_by_exp_1
+        - fieldName: author
+          orderByExpression: string_order_by_exp_1
+        - fieldName: content
+          orderByExpression: string_order_by_exp_1
+        - fieldName: created_at
+          orderByExpression: string_order_by_exp_1
+        - fieldName: note_type
+          orderByExpression: string_order_by_exp_1
+        - fieldName: priority
+          orderByExpression: string_order_by_exp_1
+        - fieldName: status
+          orderByExpression: string_order_by_exp_1
+        - fieldName: transaction_id
+          orderByExpression: string_order_by_exp_1
+        - fieldName: updated_at
+          orderByExpression: string_order_by_exp_1
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: transaction_notes_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: transaction_notes
+  objectType: transaction_notes
+  source:
+    dataConnectorName: fin_intel_mongo
+    collection: transaction_notes
+  filterExpressionType: transaction_notes_bool_exp
+  aggregateExpression: transaction_notes_agg_exp
+  orderByExpression: transaction_notes_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: transaction_notes
+      subscription:
+        rootField: transaction_notes
+    selectUniques:
+      - queryRootField: transaction_notes_by_id
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: transaction_notes_by_id
+    filterInputTypeName: transaction_notes_filter_input
+    aggregate:
+      queryRootField: transaction_notes_aggregate
+      subscription:
+        rootField: transaction_notes_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: transaction_notes
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

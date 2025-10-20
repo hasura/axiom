@@ -1,0 +1,459 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: merchant_risk_profiles_assessment_history
+  fields:
+    - name: analyst
+      type: String
+    - name: date
+      type: String
+    - name: risk_score
+      type: Int
+  graphql:
+    typeName: merchant_risk_profiles_assessment_history
+    inputTypeName: merchant_risk_profiles_assessment_history_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: fin_intel_mongo
+      dataConnectorObjectType: merchant_risk_profiles_assessment_history
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: merchant_risk_profiles_assessment_history
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - analyst
+          - date
+          - risk_score
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: merchant_risk_profiles
+  fields:
+    - name: id
+      type: String!
+    - name: assessment_history
+      type: "[merchant_risk_profiles_assessment_history!]"
+    - name: avg_transaction_amount
+      type: float_64
+    - name: chargeback_count_30_d
+      type: Int
+    - name: chargeback_rate
+      type: float_64
+    - name: compliance_violations
+      type: "[String!]"
+    - name: created_at
+      type: String
+    - name: decline_rate
+      type: float_64
+    - name: fraud_incident_count
+      type: Int
+    - name: fraud_loss_amount
+      type: float_64
+    - name: last_pci_audit
+      type: String
+    - name: last_risk_assessment
+      type: String
+    - name: merchant_id
+      type: String
+    - name: monitoring_status
+      type: String
+    - name: monthly_volume
+      type: float_64
+    - name: next_review_date
+      type: String
+    - name: notes
+      type: String
+    - name: pci_compliance_status
+      type: String
+    - name: red_flags
+      type: "[String!]"
+    - name: refund_rate
+      type: float_64
+    - name: risk_level
+      type: String
+    - name: risk_score
+      type: Int
+    - name: settlement_delay_days
+      type: float_64
+    - name: settlement_reliability_score
+      type: Int
+    - name: transaction_count_30_d
+      type: Int
+    - name: updated_at
+      type: String
+  graphql:
+    typeName: merchant_risk_profiles
+    inputTypeName: merchant_risk_profiles_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: fin_intel_mongo
+      dataConnectorObjectType: merchant_risk_profiles
+      fieldMapping:
+        id:
+          column:
+            name: _id
+        assessment_history:
+          column:
+            name: assessment_history
+        avg_transaction_amount:
+          column:
+            name: avg_transaction_amount
+        chargeback_count_30_d:
+          column:
+            name: chargeback_count_30d
+        chargeback_rate:
+          column:
+            name: chargeback_rate
+        compliance_violations:
+          column:
+            name: compliance_violations
+        created_at:
+          column:
+            name: created_at
+        decline_rate:
+          column:
+            name: decline_rate
+        fraud_incident_count:
+          column:
+            name: fraud_incident_count
+        fraud_loss_amount:
+          column:
+            name: fraud_loss_amount
+        last_pci_audit:
+          column:
+            name: last_pci_audit
+        last_risk_assessment:
+          column:
+            name: last_risk_assessment
+        merchant_id:
+          column:
+            name: merchant_id
+        monitoring_status:
+          column:
+            name: monitoring_status
+        monthly_volume:
+          column:
+            name: monthly_volume
+        next_review_date:
+          column:
+            name: next_review_date
+        notes:
+          column:
+            name: notes
+        pci_compliance_status:
+          column:
+            name: pci_compliance_status
+        red_flags:
+          column:
+            name: red_flags
+        refund_rate:
+          column:
+            name: refund_rate
+        risk_level:
+          column:
+            name: risk_level
+        risk_score:
+          column:
+            name: risk_score
+        settlement_delay_days:
+          column:
+            name: settlement_delay_days
+        settlement_reliability_score:
+          column:
+            name: settlement_reliability_score
+        transaction_count_30_d:
+          column:
+            name: transaction_count_30d
+        updated_at:
+          column:
+            name: updated_at
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: merchant_risk_profiles
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - id
+          - assessment_history
+          - avg_transaction_amount
+          - chargeback_count_30_d
+          - chargeback_rate
+          - compliance_violations
+          - created_at
+          - decline_rate
+          - fraud_incident_count
+          - fraud_loss_amount
+          - last_pci_audit
+          - last_risk_assessment
+          - merchant_id
+          - monitoring_status
+          - monthly_volume
+          - next_review_date
+          - notes
+          - pci_compliance_status
+          - red_flags
+          - refund_rate
+          - risk_level
+          - risk_score
+          - settlement_delay_days
+          - settlement_reliability_score
+          - transaction_count_30_d
+          - updated_at
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: merchant_risk_profiles_assessment_history_bool_exp
+  operand:
+    object:
+      type: merchant_risk_profiles_assessment_history
+      comparableFields:
+        - fieldName: analyst
+          booleanExpressionType: string_bool_exp
+        - fieldName: date
+          booleanExpressionType: string_bool_exp
+        - fieldName: risk_score
+          booleanExpressionType: int_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: merchant_risk_profiles_assessment_history_bool_exp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: merchant_risk_profiles_bool_exp
+  operand:
+    object:
+      type: merchant_risk_profiles
+      comparableFields:
+        - fieldName: id
+          booleanExpressionType: string_bool_exp
+        - fieldName: assessment_history
+          booleanExpressionType: merchant_risk_profiles_assessment_history_bool_exp
+        - fieldName: avg_transaction_amount
+          booleanExpressionType: double_bool_exp
+        - fieldName: chargeback_count_30_d
+          booleanExpressionType: int_bool_exp
+        - fieldName: chargeback_rate
+          booleanExpressionType: double_bool_exp
+        - fieldName: created_at
+          booleanExpressionType: string_bool_exp
+        - fieldName: decline_rate
+          booleanExpressionType: double_bool_exp
+        - fieldName: fraud_incident_count
+          booleanExpressionType: int_bool_exp
+        - fieldName: fraud_loss_amount
+          booleanExpressionType: double_bool_exp
+        - fieldName: last_pci_audit
+          booleanExpressionType: string_bool_exp
+        - fieldName: last_risk_assessment
+          booleanExpressionType: string_bool_exp
+        - fieldName: merchant_id
+          booleanExpressionType: string_bool_exp
+        - fieldName: monitoring_status
+          booleanExpressionType: string_bool_exp
+        - fieldName: monthly_volume
+          booleanExpressionType: double_bool_exp
+        - fieldName: next_review_date
+          booleanExpressionType: string_bool_exp
+        - fieldName: notes
+          booleanExpressionType: string_bool_exp
+        - fieldName: pci_compliance_status
+          booleanExpressionType: string_bool_exp
+        - fieldName: refund_rate
+          booleanExpressionType: double_bool_exp
+        - fieldName: risk_level
+          booleanExpressionType: string_bool_exp
+        - fieldName: risk_score
+          booleanExpressionType: int_bool_exp
+        - fieldName: settlement_delay_days
+          booleanExpressionType: double_bool_exp
+        - fieldName: settlement_reliability_score
+          booleanExpressionType: int_bool_exp
+        - fieldName: transaction_count_30_d
+          booleanExpressionType: int_bool_exp
+        - fieldName: updated_at
+          booleanExpressionType: string_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: merchant_risk_profiles_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: merchant_risk_profiles_agg_exp
+  operand:
+    object:
+      aggregatedType: merchant_risk_profiles
+      aggregatableFields:
+        - fieldName: id
+          aggregateExpression: string_agg_exp
+        - fieldName: avg_transaction_amount
+          aggregateExpression: double_agg_exp
+        - fieldName: chargeback_count_30_d
+          aggregateExpression: int_agg_exp
+        - fieldName: chargeback_rate
+          aggregateExpression: double_agg_exp
+        - fieldName: created_at
+          aggregateExpression: string_agg_exp
+        - fieldName: decline_rate
+          aggregateExpression: double_agg_exp
+        - fieldName: fraud_incident_count
+          aggregateExpression: int_agg_exp
+        - fieldName: fraud_loss_amount
+          aggregateExpression: double_agg_exp
+        - fieldName: last_pci_audit
+          aggregateExpression: string_agg_exp
+        - fieldName: last_risk_assessment
+          aggregateExpression: string_agg_exp
+        - fieldName: merchant_id
+          aggregateExpression: string_agg_exp
+        - fieldName: monitoring_status
+          aggregateExpression: string_agg_exp
+        - fieldName: monthly_volume
+          aggregateExpression: double_agg_exp
+        - fieldName: next_review_date
+          aggregateExpression: string_agg_exp
+        - fieldName: notes
+          aggregateExpression: string_agg_exp
+        - fieldName: pci_compliance_status
+          aggregateExpression: string_agg_exp
+        - fieldName: refund_rate
+          aggregateExpression: double_agg_exp
+        - fieldName: risk_level
+          aggregateExpression: string_agg_exp
+        - fieldName: risk_score
+          aggregateExpression: int_agg_exp
+        - fieldName: settlement_delay_days
+          aggregateExpression: double_agg_exp
+        - fieldName: settlement_reliability_score
+          aggregateExpression: int_agg_exp
+        - fieldName: transaction_count_30_d
+          aggregateExpression: int_agg_exp
+        - fieldName: updated_at
+          aggregateExpression: string_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: merchant_risk_profiles_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: merchant_risk_profiles_order_by_exp
+  operand:
+    object:
+      orderedType: merchant_risk_profiles
+      orderableFields:
+        - fieldName: id
+          orderByExpression: string_order_by_exp_1
+        - fieldName: avg_transaction_amount
+          orderByExpression: float_64_order_by_exp
+        - fieldName: chargeback_count_30_d
+          orderByExpression: int_order_by_exp
+        - fieldName: chargeback_rate
+          orderByExpression: float_64_order_by_exp
+        - fieldName: created_at
+          orderByExpression: string_order_by_exp_1
+        - fieldName: decline_rate
+          orderByExpression: float_64_order_by_exp
+        - fieldName: fraud_incident_count
+          orderByExpression: int_order_by_exp
+        - fieldName: fraud_loss_amount
+          orderByExpression: float_64_order_by_exp
+        - fieldName: last_pci_audit
+          orderByExpression: string_order_by_exp_1
+        - fieldName: last_risk_assessment
+          orderByExpression: string_order_by_exp_1
+        - fieldName: merchant_id
+          orderByExpression: string_order_by_exp_1
+        - fieldName: monitoring_status
+          orderByExpression: string_order_by_exp_1
+        - fieldName: monthly_volume
+          orderByExpression: float_64_order_by_exp
+        - fieldName: next_review_date
+          orderByExpression: string_order_by_exp_1
+        - fieldName: notes
+          orderByExpression: string_order_by_exp_1
+        - fieldName: pci_compliance_status
+          orderByExpression: string_order_by_exp_1
+        - fieldName: refund_rate
+          orderByExpression: float_64_order_by_exp
+        - fieldName: risk_level
+          orderByExpression: string_order_by_exp_1
+        - fieldName: risk_score
+          orderByExpression: int_order_by_exp
+        - fieldName: settlement_delay_days
+          orderByExpression: float_64_order_by_exp
+        - fieldName: settlement_reliability_score
+          orderByExpression: int_order_by_exp
+        - fieldName: transaction_count_30_d
+          orderByExpression: int_order_by_exp
+        - fieldName: updated_at
+          orderByExpression: string_order_by_exp_1
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: merchant_risk_profiles_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: merchant_risk_profiles
+  objectType: merchant_risk_profiles
+  source:
+    dataConnectorName: fin_intel_mongo
+    collection: merchant_risk_profiles
+  filterExpressionType: merchant_risk_profiles_bool_exp
+  aggregateExpression: merchant_risk_profiles_agg_exp
+  orderByExpression: merchant_risk_profiles_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: merchant_risk_profiles
+      subscription:
+        rootField: merchant_risk_profiles
+    selectUniques:
+      - queryRootField: merchant_risk_profiles_by_id
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: merchant_risk_profiles_by_id
+    filterInputTypeName: merchant_risk_profiles_filter_input
+    aggregate:
+      queryRootField: merchant_risk_profiles_aggregate
+      subscription:
+        rootField: merchant_risk_profiles_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: merchant_risk_profiles
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

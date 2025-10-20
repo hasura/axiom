@@ -1,0 +1,43 @@
+packagingDefinition:
+  type: PrebuiltDockerImage
+  dockerImage: ghcr.io/hasura/ndc-mongodb:v1.8.4
+supportedEnvironmentVariables:
+  - name: MONGODB_DATABASE_URI
+    description: The URI for the MongoDB database
+commands:
+  update: hasura-ndc-mongodb update
+cliPlugin:
+  type: null
+  name: ndc-mongodb
+  version: v1.8.4
+dockerComposeWatch:
+  - path: ./
+    action: sync+restart
+    target: /etc/connector
+nativeToolchainDefinition:
+  commands:
+    start:
+      type: ShellScript
+      bash: "#!/usr/bin/env bash\nset -eu -o pipefail        \nHASURA_CONFIGURATION_DIRECTORY=\"$HASURA_PLUGIN_CONNECTOR_CONTEXT_PATH\" \"$HASURA_DDN_NATIVE_CONNECTOR_DIR/mongodb-connector\" serve\n"
+      powershell: |
+        $ErrorActionPreference = "Stop"
+        $env:HASURA_CONFIGURATION_DIRECTORY="$env:HASURA_PLUGIN_CONNECTOR_CONTEXT_PATH"; & "$env:HASURA_DDN_NATIVE_CONNECTOR_DIR\mongodb-connector.exe" serve
+    watch:
+      type: ShellScript
+      bash: |
+        #!/usr/bin/env bash
+        echo "Watch is not supported for this connector"
+        exit 1
+      powershell: |
+        Write-Output "Watch is not supported for this connector"
+        exit 1
+    update:
+      type: ShellScript
+      bash: |
+        #!/usr/bin/env bash
+        set -eu -o pipefail
+        "$HASURA_DDN_NATIVE_CONNECTOR_PLUGIN_DIR/hasura-ndc-mongodb" update
+      powershell: |
+        $ErrorActionPreference = "Stop"
+        & "$env:HASURA_DDN_NATIVE_CONNECTOR_PLUGIN_DIR\hasura-ndc-mongodb.exe" update
+documentationPage: https://hasura.info/mongodb-getting-started

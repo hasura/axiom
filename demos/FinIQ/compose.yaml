@@ -1,5 +1,15 @@
 include:
   - path: app/connector/fin_recon_pg/compose.yaml
+  - path: app/connector/fin_intel_mongo/compose.yaml
+  - path: app/connector/fin_intel_mongo/compose.yaml
+  - path: app/connector/fin_intel_mongo/compose.yaml
+  - path: app/connector/fin_intel_mongo/compose.yaml
+  - path: app/connector/fin_intel_mongo/compose.yaml
+  - path: app/connector/fin_intel_mongo/compose.yaml
+  - path: app/connector/fin_intel_mongo/compose.yaml
+networks:
+  finiq-network:
+    driver: bridge
 services:
   engine:
     build:
@@ -17,14 +27,33 @@ services:
       - local.hasura.dev:host-gateway
     labels:
       io.hasura.ddn.service-name: engine
+    networks:
+      - finiq-network
     ports:
       - 3281:3000
+  mongodb:
+    container_name: finiq-mongodb
+    environment:
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE:-finiq}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-finiq123}
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-admin}
+    image: mongo:7.0
+    networks:
+      - finiq-network
+    ports:
+      - 27017:27017
+    restart: unless-stopped
+    volumes:
+      - mongodb_data:/data/db
+      - ../../.data/finiq/mongodb/init:/docker-entrypoint-initdb.d/
   otel-collector:
     command:
       - --config=/etc/otel-collector-config.yaml
     environment:
       HASURA_DDN_PAT: ${HASURA_DDN_PAT}
     image: otel/opentelemetry-collector:0.104.0
+    networks:
+      - finiq-network
     ports:
       - 4319:4317
       - 4320:4318
@@ -42,8 +71,12 @@ services:
     image: us-east4-docker.pkg.dev/promptql-execution-service/promptql-public/promptql-playground-local
     labels:
       io.hasura.ddn.service-name: promptql-playground
+    networks:
+      - finiq-network
     ports:
       - 3283:5000
     volumes:
       - ./engine/build/promptql_config.json:/app/promptql_config.json
       - ./.promptql_playground.db:/app/promptql_playground/promptql_playground.db
+volumes:
+  mongodb_data: null

@@ -1,0 +1,378 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: fraud_alerts_metadata
+  fields:
+    - name: device_id
+      type: String
+    - name: ip_address
+      type: String
+    - name: location
+      type: String
+  graphql:
+    typeName: fraud_alerts_metadata
+    inputTypeName: fraud_alerts_metadata_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: fin_intel_mongo
+      dataConnectorObjectType: fraud_alerts_metadata
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: fraud_alerts_metadata
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - device_id
+          - ip_address
+          - location
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: fraud_alerts
+  fields:
+    - name: id
+      type: String!
+    - name: actions_taken
+      type: "[String!]"
+    - name: alert_type
+      type: String
+    - name: assigned_to
+      type: String
+    - name: created_at
+      type: String
+    - name: customer_id
+      type: String
+    - name: detected_at
+      type: String
+    - name: false_positive
+      type: boolean
+    - name: metadata
+      type: fraud_alerts_metadata
+    - name: notes
+      type: String
+    - name: reason
+      type: String
+    - name: resolved_at
+      type: String
+    - name: risk_score
+      type: Int
+    - name: severity
+      type: String
+    - name: status
+      type: String
+    - name: transaction_id
+      type: String
+    - name: updated_at
+      type: String
+  graphql:
+    typeName: fraud_alerts
+    inputTypeName: fraud_alerts_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: fin_intel_mongo
+      dataConnectorObjectType: fraud_alerts
+      fieldMapping:
+        id:
+          column:
+            name: _id
+        actions_taken:
+          column:
+            name: actions_taken
+        alert_type:
+          column:
+            name: alert_type
+        assigned_to:
+          column:
+            name: assigned_to
+        created_at:
+          column:
+            name: created_at
+        customer_id:
+          column:
+            name: customer_id
+        detected_at:
+          column:
+            name: detected_at
+        false_positive:
+          column:
+            name: false_positive
+        metadata:
+          column:
+            name: metadata
+        notes:
+          column:
+            name: notes
+        reason:
+          column:
+            name: reason
+        resolved_at:
+          column:
+            name: resolved_at
+        risk_score:
+          column:
+            name: risk_score
+        severity:
+          column:
+            name: severity
+        status:
+          column:
+            name: status
+        transaction_id:
+          column:
+            name: transaction_id
+        updated_at:
+          column:
+            name: updated_at
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: fraud_alerts
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - id
+          - actions_taken
+          - alert_type
+          - assigned_to
+          - created_at
+          - customer_id
+          - detected_at
+          - false_positive
+          - metadata
+          - notes
+          - reason
+          - resolved_at
+          - risk_score
+          - severity
+          - status
+          - transaction_id
+          - updated_at
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: fraud_alerts_metadata_bool_exp
+  operand:
+    object:
+      type: fraud_alerts_metadata
+      comparableFields:
+        - fieldName: device_id
+          booleanExpressionType: string_bool_exp
+        - fieldName: ip_address
+          booleanExpressionType: string_bool_exp
+        - fieldName: location
+          booleanExpressionType: string_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: fraud_alerts_metadata_bool_exp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: fraud_alerts_bool_exp
+  operand:
+    object:
+      type: fraud_alerts
+      comparableFields:
+        - fieldName: id
+          booleanExpressionType: string_bool_exp
+        - fieldName: alert_type
+          booleanExpressionType: string_bool_exp
+        - fieldName: assigned_to
+          booleanExpressionType: string_bool_exp
+        - fieldName: created_at
+          booleanExpressionType: string_bool_exp
+        - fieldName: customer_id
+          booleanExpressionType: string_bool_exp
+        - fieldName: detected_at
+          booleanExpressionType: string_bool_exp
+        - fieldName: false_positive
+          booleanExpressionType: bool_bool_exp
+        - fieldName: metadata
+          booleanExpressionType: fraud_alerts_metadata_bool_exp
+        - fieldName: notes
+          booleanExpressionType: string_bool_exp
+        - fieldName: reason
+          booleanExpressionType: string_bool_exp
+        - fieldName: resolved_at
+          booleanExpressionType: string_bool_exp
+        - fieldName: risk_score
+          booleanExpressionType: int_bool_exp
+        - fieldName: severity
+          booleanExpressionType: string_bool_exp
+        - fieldName: status
+          booleanExpressionType: string_bool_exp
+        - fieldName: transaction_id
+          booleanExpressionType: string_bool_exp
+        - fieldName: updated_at
+          booleanExpressionType: string_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: fraud_alerts_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: fraud_alerts_agg_exp
+  operand:
+    object:
+      aggregatedType: fraud_alerts
+      aggregatableFields:
+        - fieldName: id
+          aggregateExpression: string_agg_exp
+        - fieldName: alert_type
+          aggregateExpression: string_agg_exp
+        - fieldName: assigned_to
+          aggregateExpression: string_agg_exp
+        - fieldName: created_at
+          aggregateExpression: string_agg_exp
+        - fieldName: customer_id
+          aggregateExpression: string_agg_exp
+        - fieldName: detected_at
+          aggregateExpression: string_agg_exp
+        - fieldName: false_positive
+          aggregateExpression: bool_agg_exp
+        - fieldName: notes
+          aggregateExpression: string_agg_exp
+        - fieldName: reason
+          aggregateExpression: string_agg_exp
+        - fieldName: resolved_at
+          aggregateExpression: string_agg_exp
+        - fieldName: risk_score
+          aggregateExpression: int_agg_exp
+        - fieldName: severity
+          aggregateExpression: string_agg_exp
+        - fieldName: status
+          aggregateExpression: string_agg_exp
+        - fieldName: transaction_id
+          aggregateExpression: string_agg_exp
+        - fieldName: updated_at
+          aggregateExpression: string_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: fraud_alerts_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: fraud_alerts_metadata_order_by_exp
+  operand:
+    object:
+      orderedType: fraud_alerts_metadata
+      orderableFields:
+        - fieldName: device_id
+          orderByExpression: string_order_by_exp_1
+        - fieldName: ip_address
+          orderByExpression: string_order_by_exp_1
+        - fieldName: location
+          orderByExpression: string_order_by_exp_1
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: fraud_alerts_metadata_order_by_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: fraud_alerts_order_by_exp
+  operand:
+    object:
+      orderedType: fraud_alerts
+      orderableFields:
+        - fieldName: id
+          orderByExpression: string_order_by_exp_1
+        - fieldName: alert_type
+          orderByExpression: string_order_by_exp_1
+        - fieldName: assigned_to
+          orderByExpression: string_order_by_exp_1
+        - fieldName: created_at
+          orderByExpression: string_order_by_exp_1
+        - fieldName: customer_id
+          orderByExpression: string_order_by_exp_1
+        - fieldName: detected_at
+          orderByExpression: string_order_by_exp_1
+        - fieldName: false_positive
+          orderByExpression: boolean_order_by_exp
+        - fieldName: metadata
+          orderByExpression: fraud_alerts_metadata_order_by_exp
+        - fieldName: notes
+          orderByExpression: string_order_by_exp_1
+        - fieldName: reason
+          orderByExpression: string_order_by_exp_1
+        - fieldName: resolved_at
+          orderByExpression: string_order_by_exp_1
+        - fieldName: risk_score
+          orderByExpression: int_order_by_exp
+        - fieldName: severity
+          orderByExpression: string_order_by_exp_1
+        - fieldName: status
+          orderByExpression: string_order_by_exp_1
+        - fieldName: transaction_id
+          orderByExpression: string_order_by_exp_1
+        - fieldName: updated_at
+          orderByExpression: string_order_by_exp_1
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: fraud_alerts_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: fraud_alerts
+  objectType: fraud_alerts
+  source:
+    dataConnectorName: fin_intel_mongo
+    collection: fraud_alerts
+  filterExpressionType: fraud_alerts_bool_exp
+  aggregateExpression: fraud_alerts_agg_exp
+  orderByExpression: fraud_alerts_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: fraud_alerts
+      subscription:
+        rootField: fraud_alerts
+    selectUniques:
+      - queryRootField: fraud_alerts_by_id
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: fraud_alerts_by_id
+    filterInputTypeName: fraud_alerts_filter_input
+    aggregate:
+      queryRootField: fraud_alerts_aggregate
+      subscription:
+        rootField: fraud_alerts_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: fraud_alerts
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

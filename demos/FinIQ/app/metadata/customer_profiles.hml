@@ -1,0 +1,562 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: customer_profiles_address
+  fields:
+    - name: city
+      type: String
+    - name: state
+      type: String
+    - name: street
+      type: String
+    - name: zip
+      type: String
+  graphql:
+    typeName: customer_profiles_address
+    inputTypeName: customer_profiles_address_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: fin_intel_mongo
+      dataConnectorObjectType: customer_profiles_address
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: customer_profiles_address
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - city
+          - state
+          - street
+          - zip
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: customer_profiles_preferences
+  fields:
+    - name: email_alerts
+      type: boolean
+    - name: preferred_contact
+      type: String
+    - name: sms_alerts
+      type: boolean
+  graphql:
+    typeName: customer_profiles_preferences
+    inputTypeName: customer_profiles_preferences_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: fin_intel_mongo
+      dataConnectorObjectType: customer_profiles_preferences
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: customer_profiles_preferences
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - email_alerts
+          - preferred_contact
+          - sms_alerts
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: customer_profiles_spending_patterns_typical_transaction_range
+  fields:
+    - name: max
+      type: float_64
+    - name: min
+      type: float_64
+  graphql:
+    typeName: customer_profiles_spending_patterns_typical_transaction_range
+    inputTypeName: customer_profiles_spending_patterns_typical_transaction_range_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: fin_intel_mongo
+      dataConnectorObjectType: customer_profiles_spending_patterns_typical_transaction_range
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: customer_profiles_spending_patterns_typical_transaction_range
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - max
+          - min
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: customer_profiles_spending_patterns
+  fields:
+    - name: avg_monthly_spend
+      type: float_64
+    - name: frequent_categories
+      type: "[String!]"
+    - name: typical_transaction_range
+      type: customer_profiles_spending_patterns_typical_transaction_range
+  graphql:
+    typeName: customer_profiles_spending_patterns
+    inputTypeName: customer_profiles_spending_patterns_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: fin_intel_mongo
+      dataConnectorObjectType: customer_profiles_spending_patterns
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: customer_profiles_spending_patterns
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - avg_monthly_spend
+          - frequent_categories
+          - typical_transaction_range
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: customer_profiles
+  fields:
+    - name: id
+      type: String!
+    - name: account_opened
+      type: String
+    - name: address
+      type: customer_profiles_address
+    - name: card_last_four
+      type: String
+    - name: created_at
+      type: String
+    - name: credit_limit
+      type: Int
+    - name: customer_name
+      type: String
+    - name: email
+      type: String
+    - name: issuer_id
+      type: String
+    - name: phone
+      type: String
+    - name: preferences
+      type: customer_profiles_preferences
+    - name: risk_score
+      type: Int
+    - name: spending_patterns
+      type: customer_profiles_spending_patterns
+    - name: updated_at
+      type: String
+  graphql:
+    typeName: customer_profiles
+    inputTypeName: customer_profiles_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: fin_intel_mongo
+      dataConnectorObjectType: customer_profiles
+      fieldMapping:
+        id:
+          column:
+            name: _id
+        account_opened:
+          column:
+            name: account_opened
+        address:
+          column:
+            name: address
+        card_last_four:
+          column:
+            name: card_last_four
+        created_at:
+          column:
+            name: created_at
+        credit_limit:
+          column:
+            name: credit_limit
+        customer_name:
+          column:
+            name: customer_name
+        email:
+          column:
+            name: email
+        issuer_id:
+          column:
+            name: issuer_id
+        phone:
+          column:
+            name: phone
+        preferences:
+          column:
+            name: preferences
+        risk_score:
+          column:
+            name: risk_score
+        spending_patterns:
+          column:
+            name: spending_patterns
+        updated_at:
+          column:
+            name: updated_at
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: customer_profiles
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - id
+          - account_opened
+          - address
+          - card_last_four
+          - created_at
+          - credit_limit
+          - customer_name
+          - email
+          - issuer_id
+          - phone
+          - preferences
+          - risk_score
+          - spending_patterns
+          - updated_at
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: customer_profiles_address_bool_exp
+  operand:
+    object:
+      type: customer_profiles_address
+      comparableFields:
+        - fieldName: city
+          booleanExpressionType: string_bool_exp
+        - fieldName: state
+          booleanExpressionType: string_bool_exp
+        - fieldName: street
+          booleanExpressionType: string_bool_exp
+        - fieldName: zip
+          booleanExpressionType: string_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customer_profiles_address_bool_exp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: customer_profiles_preferences_bool_exp
+  operand:
+    object:
+      type: customer_profiles_preferences
+      comparableFields:
+        - fieldName: email_alerts
+          booleanExpressionType: bool_bool_exp
+        - fieldName: preferred_contact
+          booleanExpressionType: string_bool_exp
+        - fieldName: sms_alerts
+          booleanExpressionType: bool_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customer_profiles_preferences_bool_exp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: customer_profiles_spending_patterns_typical_transaction_range_bool_exp
+  operand:
+    object:
+      type: customer_profiles_spending_patterns_typical_transaction_range
+      comparableFields:
+        - fieldName: max
+          booleanExpressionType: double_bool_exp
+        - fieldName: min
+          booleanExpressionType: double_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customer_profiles_spending_patterns_typical_transaction_range_bool_exp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: customer_profiles_spending_patterns_bool_exp
+  operand:
+    object:
+      type: customer_profiles_spending_patterns
+      comparableFields:
+        - fieldName: avg_monthly_spend
+          booleanExpressionType: double_bool_exp
+        - fieldName: typical_transaction_range
+          booleanExpressionType: customer_profiles_spending_patterns_typical_transaction_range_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customer_profiles_spending_patterns_bool_exp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: customer_profiles_bool_exp
+  operand:
+    object:
+      type: customer_profiles
+      comparableFields:
+        - fieldName: id
+          booleanExpressionType: string_bool_exp
+        - fieldName: account_opened
+          booleanExpressionType: string_bool_exp
+        - fieldName: address
+          booleanExpressionType: customer_profiles_address_bool_exp
+        - fieldName: card_last_four
+          booleanExpressionType: string_bool_exp
+        - fieldName: created_at
+          booleanExpressionType: string_bool_exp
+        - fieldName: credit_limit
+          booleanExpressionType: int_bool_exp
+        - fieldName: customer_name
+          booleanExpressionType: string_bool_exp
+        - fieldName: email
+          booleanExpressionType: string_bool_exp
+        - fieldName: issuer_id
+          booleanExpressionType: string_bool_exp
+        - fieldName: phone
+          booleanExpressionType: string_bool_exp
+        - fieldName: preferences
+          booleanExpressionType: customer_profiles_preferences_bool_exp
+        - fieldName: risk_score
+          booleanExpressionType: int_bool_exp
+        - fieldName: spending_patterns
+          booleanExpressionType: customer_profiles_spending_patterns_bool_exp
+        - fieldName: updated_at
+          booleanExpressionType: string_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: customer_profiles_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: customer_profiles_agg_exp
+  operand:
+    object:
+      aggregatedType: customer_profiles
+      aggregatableFields:
+        - fieldName: id
+          aggregateExpression: string_agg_exp
+        - fieldName: account_opened
+          aggregateExpression: string_agg_exp
+        - fieldName: card_last_four
+          aggregateExpression: string_agg_exp
+        - fieldName: created_at
+          aggregateExpression: string_agg_exp
+        - fieldName: credit_limit
+          aggregateExpression: int_agg_exp
+        - fieldName: customer_name
+          aggregateExpression: string_agg_exp
+        - fieldName: email
+          aggregateExpression: string_agg_exp
+        - fieldName: issuer_id
+          aggregateExpression: string_agg_exp
+        - fieldName: phone
+          aggregateExpression: string_agg_exp
+        - fieldName: risk_score
+          aggregateExpression: int_agg_exp
+        - fieldName: updated_at
+          aggregateExpression: string_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: customer_profiles_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: customer_profiles_address_order_by_exp
+  operand:
+    object:
+      orderedType: customer_profiles_address
+      orderableFields:
+        - fieldName: city
+          orderByExpression: string_order_by_exp_1
+        - fieldName: state
+          orderByExpression: string_order_by_exp_1
+        - fieldName: street
+          orderByExpression: string_order_by_exp_1
+        - fieldName: zip
+          orderByExpression: string_order_by_exp_1
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: customer_profiles_address_order_by_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: customer_profiles_preferences_order_by_exp
+  operand:
+    object:
+      orderedType: customer_profiles_preferences
+      orderableFields:
+        - fieldName: email_alerts
+          orderByExpression: boolean_order_by_exp
+        - fieldName: preferred_contact
+          orderByExpression: string_order_by_exp_1
+        - fieldName: sms_alerts
+          orderByExpression: boolean_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: customer_profiles_preferences_order_by_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: customer_profiles_spending_patterns_typical_transaction_range_order_by_exp
+  operand:
+    object:
+      orderedType: customer_profiles_spending_patterns_typical_transaction_range
+      orderableFields:
+        - fieldName: max
+          orderByExpression: float_64_order_by_exp
+        - fieldName: min
+          orderByExpression: float_64_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: customer_profiles_spending_patterns_typical_transaction_range_order_by_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: customer_profiles_spending_patterns_order_by_exp
+  operand:
+    object:
+      orderedType: customer_profiles_spending_patterns
+      orderableFields:
+        - fieldName: avg_monthly_spend
+          orderByExpression: float_64_order_by_exp
+        - fieldName: typical_transaction_range
+          orderByExpression: customer_profiles_spending_patterns_typical_transaction_range_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: customer_profiles_spending_patterns_order_by_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: customer_profiles_order_by_exp
+  operand:
+    object:
+      orderedType: customer_profiles
+      orderableFields:
+        - fieldName: id
+          orderByExpression: string_order_by_exp_1
+        - fieldName: account_opened
+          orderByExpression: string_order_by_exp_1
+        - fieldName: address
+          orderByExpression: customer_profiles_address_order_by_exp
+        - fieldName: card_last_four
+          orderByExpression: string_order_by_exp_1
+        - fieldName: created_at
+          orderByExpression: string_order_by_exp_1
+        - fieldName: credit_limit
+          orderByExpression: int_order_by_exp
+        - fieldName: customer_name
+          orderByExpression: string_order_by_exp_1
+        - fieldName: email
+          orderByExpression: string_order_by_exp_1
+        - fieldName: issuer_id
+          orderByExpression: string_order_by_exp_1
+        - fieldName: phone
+          orderByExpression: string_order_by_exp_1
+        - fieldName: preferences
+          orderByExpression: customer_profiles_preferences_order_by_exp
+        - fieldName: risk_score
+          orderByExpression: int_order_by_exp
+        - fieldName: spending_patterns
+          orderByExpression: customer_profiles_spending_patterns_order_by_exp
+        - fieldName: updated_at
+          orderByExpression: string_order_by_exp_1
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: customer_profiles_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: customer_profiles
+  objectType: customer_profiles
+  source:
+    dataConnectorName: fin_intel_mongo
+    collection: customer_profiles
+  filterExpressionType: customer_profiles_bool_exp
+  aggregateExpression: customer_profiles_agg_exp
+  orderByExpression: customer_profiles_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: customer_profiles
+      subscription:
+        rootField: customer_profiles
+    selectUniques:
+      - queryRootField: customer_profiles_by_id
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: customer_profiles_by_id
+    filterInputTypeName: customer_profiles_filter_input
+    aggregate:
+      queryRootField: customer_profiles_aggregate
+      subscription:
+        rootField: customer_profiles_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: customer_profiles
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

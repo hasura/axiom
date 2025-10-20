@@ -1,0 +1,305 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: audit_logs_metadata
+  fields:
+    - name: request_id
+      type: String
+    - name: session_id
+      type: String
+  graphql:
+    typeName: audit_logs_metadata
+    inputTypeName: audit_logs_metadata_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: fin_intel_mongo
+      dataConnectorObjectType: audit_logs_metadata
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: audit_logs_metadata
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - request_id
+          - session_id
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: audit_logs
+  fields:
+    - name: id
+      type: String!
+    - name: action
+      type: String
+    - name: duration_ms
+      type: Int
+    - name: ip_address
+      type: String
+    - name: metadata
+      type: audit_logs_metadata
+    - name: resource_id
+      type: String
+    - name: resource_type
+      type: String
+    - name: success
+      type: boolean
+    - name: timestamp
+      type: String
+    - name: user
+      type: String
+    - name: user_agent
+      type: String
+  graphql:
+    typeName: audit_logs
+    inputTypeName: audit_logs_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: fin_intel_mongo
+      dataConnectorObjectType: audit_logs
+      fieldMapping:
+        id:
+          column:
+            name: _id
+        action:
+          column:
+            name: action
+        duration_ms:
+          column:
+            name: duration_ms
+        ip_address:
+          column:
+            name: ip_address
+        metadata:
+          column:
+            name: metadata
+        resource_id:
+          column:
+            name: resource_id
+        resource_type:
+          column:
+            name: resource_type
+        success:
+          column:
+            name: success
+        timestamp:
+          column:
+            name: timestamp
+        user:
+          column:
+            name: user
+        user_agent:
+          column:
+            name: user_agent
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: audit_logs
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - id
+          - action
+          - duration_ms
+          - ip_address
+          - metadata
+          - resource_id
+          - resource_type
+          - success
+          - timestamp
+          - user
+          - user_agent
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: audit_logs_metadata_bool_exp
+  operand:
+    object:
+      type: audit_logs_metadata
+      comparableFields:
+        - fieldName: request_id
+          booleanExpressionType: string_bool_exp
+        - fieldName: session_id
+          booleanExpressionType: string_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: audit_logs_metadata_bool_exp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: audit_logs_bool_exp
+  operand:
+    object:
+      type: audit_logs
+      comparableFields:
+        - fieldName: id
+          booleanExpressionType: string_bool_exp
+        - fieldName: action
+          booleanExpressionType: string_bool_exp
+        - fieldName: duration_ms
+          booleanExpressionType: int_bool_exp
+        - fieldName: ip_address
+          booleanExpressionType: string_bool_exp
+        - fieldName: metadata
+          booleanExpressionType: audit_logs_metadata_bool_exp
+        - fieldName: resource_id
+          booleanExpressionType: string_bool_exp
+        - fieldName: resource_type
+          booleanExpressionType: string_bool_exp
+        - fieldName: success
+          booleanExpressionType: bool_bool_exp
+        - fieldName: timestamp
+          booleanExpressionType: string_bool_exp
+        - fieldName: user
+          booleanExpressionType: string_bool_exp
+        - fieldName: user_agent
+          booleanExpressionType: string_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: audit_logs_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: audit_logs_agg_exp
+  operand:
+    object:
+      aggregatedType: audit_logs
+      aggregatableFields:
+        - fieldName: id
+          aggregateExpression: string_agg_exp
+        - fieldName: action
+          aggregateExpression: string_agg_exp
+        - fieldName: duration_ms
+          aggregateExpression: int_agg_exp
+        - fieldName: ip_address
+          aggregateExpression: string_agg_exp
+        - fieldName: resource_id
+          aggregateExpression: string_agg_exp
+        - fieldName: resource_type
+          aggregateExpression: string_agg_exp
+        - fieldName: success
+          aggregateExpression: bool_agg_exp
+        - fieldName: timestamp
+          aggregateExpression: string_agg_exp
+        - fieldName: user
+          aggregateExpression: string_agg_exp
+        - fieldName: user_agent
+          aggregateExpression: string_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: audit_logs_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: audit_logs_metadata_order_by_exp
+  operand:
+    object:
+      orderedType: audit_logs_metadata
+      orderableFields:
+        - fieldName: request_id
+          orderByExpression: string_order_by_exp_1
+        - fieldName: session_id
+          orderByExpression: string_order_by_exp_1
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: audit_logs_metadata_order_by_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: audit_logs_order_by_exp
+  operand:
+    object:
+      orderedType: audit_logs
+      orderableFields:
+        - fieldName: id
+          orderByExpression: string_order_by_exp_1
+        - fieldName: action
+          orderByExpression: string_order_by_exp_1
+        - fieldName: duration_ms
+          orderByExpression: int_order_by_exp
+        - fieldName: ip_address
+          orderByExpression: string_order_by_exp_1
+        - fieldName: metadata
+          orderByExpression: audit_logs_metadata_order_by_exp
+        - fieldName: resource_id
+          orderByExpression: string_order_by_exp_1
+        - fieldName: resource_type
+          orderByExpression: string_order_by_exp_1
+        - fieldName: success
+          orderByExpression: boolean_order_by_exp
+        - fieldName: timestamp
+          orderByExpression: string_order_by_exp_1
+        - fieldName: user
+          orderByExpression: string_order_by_exp_1
+        - fieldName: user_agent
+          orderByExpression: string_order_by_exp_1
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: audit_logs_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: audit_logs
+  objectType: audit_logs
+  source:
+    dataConnectorName: fin_intel_mongo
+    collection: audit_logs
+  filterExpressionType: audit_logs_bool_exp
+  aggregateExpression: audit_logs_agg_exp
+  orderByExpression: audit_logs_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: audit_logs
+      subscription:
+        rootField: audit_logs
+    selectUniques:
+      - queryRootField: audit_logs_by_id
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: audit_logs_by_id
+    filterInputTypeName: audit_logs_filter_input
+    aggregate:
+      queryRootField: audit_logs_aggregate
+      subscription:
+        rootField: audit_logs_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: audit_logs
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
