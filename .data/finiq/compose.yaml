@@ -27,6 +27,33 @@ services:
       - finiq_network
     restart: unless-stopped
 
+  # MongoDB for unstructured financial intelligence data
+  mongodb:
+    image: mongo:7.0
+    container_name: finiq_mongodb
+    environment:
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE:-finiq}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-finiq123}
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-admin}
+    ports:
+      - "27017:27017"
+    volumes:
+      # MongoDB persistent data
+      - mongodb_data:/data/db
+      # MongoDB initialization scripts
+      - ./mongodb/init:/docker-entrypoint-initdb.d:ro
+      # MongoDB sample data files for automatic loading
+      - ./mongodb/data:/tmp/finiq-data:ro
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+    networks:
+      - finiq_network
+    restart: unless-stopped
+
   # Optional: pgAdmin for database management
   pgadmin:
     image: dpage/pgadmin4:latest
@@ -52,6 +79,8 @@ volumes:
   postgres_data:
     driver: local
   pgadmin_data:
+    driver: local
+  mongodb_data:
     driver: local
 
 networks:

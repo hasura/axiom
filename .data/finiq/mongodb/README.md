@@ -20,47 +20,42 @@ The MongoDB database contains the following collections:
 
 ## Setup Instructions
 
-### 1. Start MongoDB Service
+### Automatic Data Loading (Recommended)
 
-The MongoDB service is included in the main Docker Compose file:
+The MongoDB service now automatically loads sample data during container initialization, similar to PostgreSQL:
 
-```bash
-cd /path/to/demos/FinIQ
-docker compose up mongodb -d
-```
+1. **Ensure JSON data files exist** (pre-generated and included):
+   ```
+   mongodb/data/
+   ├── customer_profiles.json
+   ├── merchant_risk_profiles.json
+   ├── fraud_alerts.json
+   ├── transaction_notes.json
+   └── audit_logs.json
+   ```
 
-### 2. Generate Sample Data
+2. **Start MongoDB service** - data loads automatically:
+   ```bash
+   cd /path/to/demos/FinIQ
+   docker compose up mongodb -d
+   ```
 
-First, make sure you have PostgreSQL data available (needed for foreign key references):
+### Manual Data Generation (Optional)
+
+If you need to regenerate sample data:
 
 ```bash
 cd .data/finiq/mongodb
 python3 generate_mongo_data.py
 ```
 
-This will create JSON files in the `data/` directory with sample data.
+### Legacy Manual Loading (Not Required)
 
-### 3. Load Data into MongoDB
-
-Install required Python packages:
+The old manual process is no longer needed but still available:
 
 ```bash
 pip install pymongo
-```
-
-Load the generated data:
-
-```bash
 python3 load_mongo_data.py
-```
-
-### 4. Start All Services
-
-Start the complete FinIQ stack including MongoDB connector:
-
-```bash
-cd ../..  # Back to demos/FinIQ
-docker compose up -d
 ```
 
 ## Data Schema
