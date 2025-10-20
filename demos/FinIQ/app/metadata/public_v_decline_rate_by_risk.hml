@@ -1,0 +1,156 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_v_decline_rate_by_risk
+  fields:
+    - name: approval_rate_pct
+      type: bigdecimal
+    - name: approved_transactions
+      type: int_64
+    - name: decline_rate_pct
+      type: bigdecimal
+    - name: declined_transactions
+      type: int_64
+    - name: risk_level
+      type: string
+    - name: total_transactions
+      type: int_64
+  graphql:
+    typeName: public_v_decline_rate_by_risk
+    inputTypeName: public_v_decline_rate_by_risk_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: fin_recon_pg
+      dataConnectorObjectType: public.v_decline_rate_by_risk
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_v_decline_rate_by_risk
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - approval_rate_pct
+          - approved_transactions
+          - decline_rate_pct
+          - declined_transactions
+          - risk_level
+          - total_transactions
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_v_decline_rate_by_risk_bool_exp
+  operand:
+    object:
+      type: public_v_decline_rate_by_risk
+      comparableFields:
+        - fieldName: approval_rate_pct
+          booleanExpressionType: decimal_bool_exp
+        - fieldName: approved_transactions
+          booleanExpressionType: bigint_bool_exp
+        - fieldName: decline_rate_pct
+          booleanExpressionType: decimal_bool_exp
+        - fieldName: declined_transactions
+          booleanExpressionType: bigint_bool_exp
+        - fieldName: risk_level
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: total_transactions
+          booleanExpressionType: bigint_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_v_decline_rate_by_risk_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_v_decline_rate_by_risk_agg_exp
+  operand:
+    object:
+      aggregatedType: public_v_decline_rate_by_risk
+      aggregatableFields:
+        - fieldName: approval_rate_pct
+          aggregateExpression: decimal_agg_exp
+        - fieldName: approved_transactions
+          aggregateExpression: bigint_agg_exp
+        - fieldName: decline_rate_pct
+          aggregateExpression: decimal_agg_exp
+        - fieldName: declined_transactions
+          aggregateExpression: bigint_agg_exp
+        - fieldName: risk_level
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: total_transactions
+          aggregateExpression: bigint_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_v_decline_rate_by_risk_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_v_decline_rate_by_risk_order_by_exp
+  operand:
+    object:
+      orderedType: public_v_decline_rate_by_risk
+      orderableFields:
+        - fieldName: approval_rate_pct
+          orderByExpression: bigdecimal_order_by_exp
+        - fieldName: approved_transactions
+          orderByExpression: int_64_order_by_exp
+        - fieldName: decline_rate_pct
+          orderByExpression: bigdecimal_order_by_exp
+        - fieldName: declined_transactions
+          orderByExpression: int_64_order_by_exp
+        - fieldName: risk_level
+          orderByExpression: string_order_by_exp
+        - fieldName: total_transactions
+          orderByExpression: int_64_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_v_decline_rate_by_risk_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_v_decline_rate_by_risk
+  objectType: public_v_decline_rate_by_risk
+  source:
+    dataConnectorName: fin_recon_pg
+    collection: public.v_decline_rate_by_risk
+  filterExpressionType: public_v_decline_rate_by_risk_bool_exp
+  aggregateExpression: public_v_decline_rate_by_risk_agg_exp
+  orderByExpression: public_v_decline_rate_by_risk_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_v_decline_rate_by_risk
+      subscription:
+        rootField: public_v_decline_rate_by_risk
+    selectUniques: []
+    filterInputTypeName: public_v_decline_rate_by_risk_filter_input
+    aggregate:
+      queryRootField: public_v_decline_rate_by_risk_aggregate
+      subscription:
+        rootField: public_v_decline_rate_by_risk_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_v_decline_rate_by_risk
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

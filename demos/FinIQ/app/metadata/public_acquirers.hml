@@ -1,0 +1,152 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_acquirers
+  fields:
+    - name: acquirer_country
+      type: string
+    - name: acquirer_id
+      type: string!
+    - name: acquirer_name
+      type: string!
+    - name: created_at
+      type: timestamp
+    - name: primary_currency
+      type: string
+  graphql:
+    typeName: public_acquirers
+    inputTypeName: public_acquirers_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: fin_recon_pg
+      dataConnectorObjectType: public.acquirers
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_acquirers
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - acquirer_country
+          - acquirer_id
+          - acquirer_name
+          - created_at
+          - primary_currency
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_acquirers_bool_exp
+  operand:
+    object:
+      type: public_acquirers
+      comparableFields:
+        - fieldName: acquirer_country
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: acquirer_id
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: acquirer_name
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: created_at
+          booleanExpressionType: timestamp_without_time_zone_bool_exp
+        - fieldName: primary_currency
+          booleanExpressionType: character_varying_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_acquirers_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_acquirers_agg_exp
+  operand:
+    object:
+      aggregatedType: public_acquirers
+      aggregatableFields:
+        - fieldName: acquirer_country
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: acquirer_id
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: acquirer_name
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: created_at
+          aggregateExpression: timestamp_without_time_zone_agg_exp
+        - fieldName: primary_currency
+          aggregateExpression: character_varying_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_acquirers_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_acquirers_order_by_exp
+  operand:
+    object:
+      orderedType: public_acquirers
+      orderableFields:
+        - fieldName: acquirer_country
+          orderByExpression: string_order_by_exp
+        - fieldName: acquirer_id
+          orderByExpression: string_order_by_exp
+        - fieldName: acquirer_name
+          orderByExpression: string_order_by_exp
+        - fieldName: created_at
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: primary_currency
+          orderByExpression: string_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_acquirers_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_acquirers
+  objectType: public_acquirers
+  source:
+    dataConnectorName: fin_recon_pg
+    collection: public.acquirers
+  filterExpressionType: public_acquirers_bool_exp
+  aggregateExpression: public_acquirers_agg_exp
+  orderByExpression: public_acquirers_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_acquirers
+      subscription:
+        rootField: public_acquirers
+    selectUniques:
+      - queryRootField: public_acquirers_by_acquirer_id
+        uniqueIdentifier:
+          - acquirer_id
+        subscription:
+          rootField: public_acquirers_by_acquirer_id
+    filterInputTypeName: public_acquirers_filter_input
+    aggregate:
+      queryRootField: public_acquirers_aggregate
+      subscription:
+        rootField: public_acquirers_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_acquirers
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

@@ -1,0 +1,165 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_v_top_merchants_by_volume
+  fields:
+    - name: avg_variance_pct
+      type: bigdecimal
+    - name: merchant_category_name
+      type: string
+    - name: merchant_id
+      type: string
+    - name: merchant_name
+      type: string
+    - name: settlement_count
+      type: int_64
+    - name: total_settlement_volume
+      type: bigdecimal
+    - name: volume_rank
+      type: int_64
+  graphql:
+    typeName: public_v_top_merchants_by_volume
+    inputTypeName: public_v_top_merchants_by_volume_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: fin_recon_pg
+      dataConnectorObjectType: public.v_top_merchants_by_volume
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_v_top_merchants_by_volume
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - avg_variance_pct
+          - merchant_category_name
+          - merchant_id
+          - merchant_name
+          - settlement_count
+          - total_settlement_volume
+          - volume_rank
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_v_top_merchants_by_volume_bool_exp
+  operand:
+    object:
+      type: public_v_top_merchants_by_volume
+      comparableFields:
+        - fieldName: avg_variance_pct
+          booleanExpressionType: decimal_bool_exp
+        - fieldName: merchant_category_name
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: merchant_id
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: merchant_name
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: settlement_count
+          booleanExpressionType: bigint_bool_exp
+        - fieldName: total_settlement_volume
+          booleanExpressionType: decimal_bool_exp
+        - fieldName: volume_rank
+          booleanExpressionType: bigint_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_v_top_merchants_by_volume_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_v_top_merchants_by_volume_agg_exp
+  operand:
+    object:
+      aggregatedType: public_v_top_merchants_by_volume
+      aggregatableFields:
+        - fieldName: avg_variance_pct
+          aggregateExpression: decimal_agg_exp
+        - fieldName: merchant_category_name
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: merchant_id
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: merchant_name
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: settlement_count
+          aggregateExpression: bigint_agg_exp
+        - fieldName: total_settlement_volume
+          aggregateExpression: decimal_agg_exp
+        - fieldName: volume_rank
+          aggregateExpression: bigint_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_v_top_merchants_by_volume_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_v_top_merchants_by_volume_order_by_exp
+  operand:
+    object:
+      orderedType: public_v_top_merchants_by_volume
+      orderableFields:
+        - fieldName: avg_variance_pct
+          orderByExpression: bigdecimal_order_by_exp
+        - fieldName: merchant_category_name
+          orderByExpression: string_order_by_exp
+        - fieldName: merchant_id
+          orderByExpression: string_order_by_exp
+        - fieldName: merchant_name
+          orderByExpression: string_order_by_exp
+        - fieldName: settlement_count
+          orderByExpression: int_64_order_by_exp
+        - fieldName: total_settlement_volume
+          orderByExpression: bigdecimal_order_by_exp
+        - fieldName: volume_rank
+          orderByExpression: int_64_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_v_top_merchants_by_volume_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_v_top_merchants_by_volume
+  objectType: public_v_top_merchants_by_volume
+  source:
+    dataConnectorName: fin_recon_pg
+    collection: public.v_top_merchants_by_volume
+  filterExpressionType: public_v_top_merchants_by_volume_bool_exp
+  aggregateExpression: public_v_top_merchants_by_volume_agg_exp
+  orderByExpression: public_v_top_merchants_by_volume_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_v_top_merchants_by_volume
+      subscription:
+        rootField: public_v_top_merchants_by_volume
+    selectUniques: []
+    filterInputTypeName: public_v_top_merchants_by_volume_filter_input
+    aggregate:
+      queryRootField: public_v_top_merchants_by_volume_aggregate
+      subscription:
+        rootField: public_v_top_merchants_by_volume_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_v_top_merchants_by_volume
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

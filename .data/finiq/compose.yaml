@@ -1,0 +1,59 @@
+version: '3.8'
+
+# FinIQ - Financial Intelligence & Quality
+# PromptQL-powered transaction reconciliation and analytics platform
+services:
+  postgres:
+    image: postgres:15
+    container_name: finiq_postgres
+    environment:
+      POSTGRES_DB: fin_recon
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-finiq_secure_pass}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5434:5432"
+    volumes:
+      # Mount entire postgres directory (contains SQL scripts and CSV files)
+      - ./postgres:/docker-entrypoint-initdb.d:ro
+      # Persistent data
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d fin_recon"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - finiq_network
+    restart: unless-stopped
+
+  # Optional: pgAdmin for database management
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: finiq_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@finiq.com
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - finiq_network
+    restart: unless-stopped
+    profiles:
+      - tools  # Optional service, start with: docker-compose --profile tools up
+
+volumes:
+  postgres_data:
+    driver: local
+  pgadmin_data:
+    driver: local
+
+networks:
+  finiq_network:
+    driver: bridge

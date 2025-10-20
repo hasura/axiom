@@ -1,0 +1,201 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_v_settlement_mismatches
+  fields:
+    - name: acquirer_settlement_amount
+      type: bigdecimal
+    - name: amount_variance
+      type: bigdecimal
+    - name: auth_amount
+      type: bigdecimal
+    - name: auth_transaction_id
+      type: string
+    - name: issuer_settlement_amount
+      type: bigdecimal
+    - name: merchant_category_name
+      type: string
+    - name: merchant_id
+      type: string
+    - name: merchant_name
+      type: string
+    - name: settlement_delta_pct
+      type: bigdecimal
+    - name: transaction_id
+      type: string
+    - name: variance_category
+      type: string
+  graphql:
+    typeName: public_v_settlement_mismatches
+    inputTypeName: public_v_settlement_mismatches_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: fin_recon_pg
+      dataConnectorObjectType: public.v_settlement_mismatches
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_v_settlement_mismatches
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - acquirer_settlement_amount
+          - amount_variance
+          - auth_amount
+          - auth_transaction_id
+          - issuer_settlement_amount
+          - merchant_category_name
+          - merchant_id
+          - merchant_name
+          - settlement_delta_pct
+          - transaction_id
+          - variance_category
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_v_settlement_mismatches_bool_exp
+  operand:
+    object:
+      type: public_v_settlement_mismatches
+      comparableFields:
+        - fieldName: acquirer_settlement_amount
+          booleanExpressionType: decimal_bool_exp
+        - fieldName: amount_variance
+          booleanExpressionType: decimal_bool_exp
+        - fieldName: auth_amount
+          booleanExpressionType: decimal_bool_exp
+        - fieldName: auth_transaction_id
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: issuer_settlement_amount
+          booleanExpressionType: decimal_bool_exp
+        - fieldName: merchant_category_name
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: merchant_id
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: merchant_name
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: settlement_delta_pct
+          booleanExpressionType: decimal_bool_exp
+        - fieldName: transaction_id
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: variance_category
+          booleanExpressionType: text_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_v_settlement_mismatches_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_v_settlement_mismatches_agg_exp
+  operand:
+    object:
+      aggregatedType: public_v_settlement_mismatches
+      aggregatableFields:
+        - fieldName: acquirer_settlement_amount
+          aggregateExpression: decimal_agg_exp
+        - fieldName: amount_variance
+          aggregateExpression: decimal_agg_exp
+        - fieldName: auth_amount
+          aggregateExpression: decimal_agg_exp
+        - fieldName: auth_transaction_id
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: issuer_settlement_amount
+          aggregateExpression: decimal_agg_exp
+        - fieldName: merchant_category_name
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: merchant_id
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: merchant_name
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: settlement_delta_pct
+          aggregateExpression: decimal_agg_exp
+        - fieldName: transaction_id
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: variance_category
+          aggregateExpression: text_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_v_settlement_mismatches_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_v_settlement_mismatches_order_by_exp
+  operand:
+    object:
+      orderedType: public_v_settlement_mismatches
+      orderableFields:
+        - fieldName: acquirer_settlement_amount
+          orderByExpression: bigdecimal_order_by_exp
+        - fieldName: amount_variance
+          orderByExpression: bigdecimal_order_by_exp
+        - fieldName: auth_amount
+          orderByExpression: bigdecimal_order_by_exp
+        - fieldName: auth_transaction_id
+          orderByExpression: string_order_by_exp
+        - fieldName: issuer_settlement_amount
+          orderByExpression: bigdecimal_order_by_exp
+        - fieldName: merchant_category_name
+          orderByExpression: string_order_by_exp
+        - fieldName: merchant_id
+          orderByExpression: string_order_by_exp
+        - fieldName: merchant_name
+          orderByExpression: string_order_by_exp
+        - fieldName: settlement_delta_pct
+          orderByExpression: bigdecimal_order_by_exp
+        - fieldName: transaction_id
+          orderByExpression: string_order_by_exp
+        - fieldName: variance_category
+          orderByExpression: string_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_v_settlement_mismatches_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_v_settlement_mismatches
+  objectType: public_v_settlement_mismatches
+  source:
+    dataConnectorName: fin_recon_pg
+    collection: public.v_settlement_mismatches
+  filterExpressionType: public_v_settlement_mismatches_bool_exp
+  aggregateExpression: public_v_settlement_mismatches_agg_exp
+  orderByExpression: public_v_settlement_mismatches_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_v_settlement_mismatches
+      subscription:
+        rootField: public_v_settlement_mismatches
+    selectUniques: []
+    filterInputTypeName: public_v_settlement_mismatches_filter_input
+    aggregate:
+      queryRootField: public_v_settlement_mismatches_aggregate
+      subscription:
+        rootField: public_v_settlement_mismatches_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_v_settlement_mismatches
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

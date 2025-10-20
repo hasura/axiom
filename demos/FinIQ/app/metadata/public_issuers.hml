@@ -1,0 +1,152 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_issuers
+  fields:
+    - name: created_at
+      type: timestamp
+    - name: issuer_country
+      type: string
+    - name: issuer_id
+      type: string!
+    - name: issuer_name
+      type: string!
+    - name: primary_currency
+      type: string
+  graphql:
+    typeName: public_issuers
+    inputTypeName: public_issuers_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: fin_recon_pg
+      dataConnectorObjectType: public.issuers
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_issuers
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - created_at
+          - issuer_country
+          - issuer_id
+          - issuer_name
+          - primary_currency
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_issuers_bool_exp
+  operand:
+    object:
+      type: public_issuers
+      comparableFields:
+        - fieldName: created_at
+          booleanExpressionType: timestamp_without_time_zone_bool_exp
+        - fieldName: issuer_country
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: issuer_id
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: issuer_name
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: primary_currency
+          booleanExpressionType: character_varying_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_issuers_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_issuers_agg_exp
+  operand:
+    object:
+      aggregatedType: public_issuers
+      aggregatableFields:
+        - fieldName: created_at
+          aggregateExpression: timestamp_without_time_zone_agg_exp
+        - fieldName: issuer_country
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: issuer_id
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: issuer_name
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: primary_currency
+          aggregateExpression: character_varying_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_issuers_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_issuers_order_by_exp
+  operand:
+    object:
+      orderedType: public_issuers
+      orderableFields:
+        - fieldName: created_at
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: issuer_country
+          orderByExpression: string_order_by_exp
+        - fieldName: issuer_id
+          orderByExpression: string_order_by_exp
+        - fieldName: issuer_name
+          orderByExpression: string_order_by_exp
+        - fieldName: primary_currency
+          orderByExpression: string_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_issuers_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_issuers
+  objectType: public_issuers
+  source:
+    dataConnectorName: fin_recon_pg
+    collection: public.issuers
+  filterExpressionType: public_issuers_bool_exp
+  aggregateExpression: public_issuers_agg_exp
+  orderByExpression: public_issuers_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_issuers
+      subscription:
+        rootField: public_issuers
+    selectUniques:
+      - queryRootField: public_issuers_by_issuer_id
+        uniqueIdentifier:
+          - issuer_id
+        subscription:
+          rootField: public_issuers_by_issuer_id
+    filterInputTypeName: public_issuers_filter_input
+    aggregate:
+      queryRootField: public_issuers_aggregate
+      subscription:
+        rootField: public_issuers_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_issuers
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

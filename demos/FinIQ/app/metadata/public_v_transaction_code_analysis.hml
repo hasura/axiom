@@ -1,0 +1,138 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: public_v_transaction_code_analysis
+  fields:
+    - name: code_description
+      type: string
+    - name: percentage
+      type: bigdecimal
+    - name: transaction_code
+      type: string
+    - name: transaction_count
+      type: int_64
+  graphql:
+    typeName: public_v_transaction_code_analysis
+    inputTypeName: public_v_transaction_code_analysis_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: fin_recon_pg
+      dataConnectorObjectType: public.v_transaction_code_analysis
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: public_v_transaction_code_analysis
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - code_description
+          - percentage
+          - transaction_code
+          - transaction_count
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: public_v_transaction_code_analysis_bool_exp
+  operand:
+    object:
+      type: public_v_transaction_code_analysis
+      comparableFields:
+        - fieldName: code_description
+          booleanExpressionType: text_bool_exp
+        - fieldName: percentage
+          booleanExpressionType: decimal_bool_exp
+        - fieldName: transaction_code
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: transaction_count
+          booleanExpressionType: bigint_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: public_v_transaction_code_analysis_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: public_v_transaction_code_analysis_agg_exp
+  operand:
+    object:
+      aggregatedType: public_v_transaction_code_analysis
+      aggregatableFields:
+        - fieldName: code_description
+          aggregateExpression: text_agg_exp
+        - fieldName: percentage
+          aggregateExpression: decimal_agg_exp
+        - fieldName: transaction_code
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: transaction_count
+          aggregateExpression: bigint_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: public_v_transaction_code_analysis_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: public_v_transaction_code_analysis_order_by_exp
+  operand:
+    object:
+      orderedType: public_v_transaction_code_analysis
+      orderableFields:
+        - fieldName: code_description
+          orderByExpression: string_order_by_exp
+        - fieldName: percentage
+          orderByExpression: bigdecimal_order_by_exp
+        - fieldName: transaction_code
+          orderByExpression: string_order_by_exp
+        - fieldName: transaction_count
+          orderByExpression: int_64_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: public_v_transaction_code_analysis_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: public_v_transaction_code_analysis
+  objectType: public_v_transaction_code_analysis
+  source:
+    dataConnectorName: fin_recon_pg
+    collection: public.v_transaction_code_analysis
+  filterExpressionType: public_v_transaction_code_analysis_bool_exp
+  aggregateExpression: public_v_transaction_code_analysis_agg_exp
+  orderByExpression: public_v_transaction_code_analysis_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: public_v_transaction_code_analysis
+      subscription:
+        rootField: public_v_transaction_code_analysis
+    selectUniques: []
+    filterInputTypeName: public_v_transaction_code_analysis_filter_input
+    aggregate:
+      queryRootField: public_v_transaction_code_analysis_aggregate
+      subscription:
+        rootField: public_v_transaction_code_analysis_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: public_v_transaction_code_analysis
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

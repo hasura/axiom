@@ -1,0 +1,19 @@
+kind: Subgraph
+version: v2
+definition:
+  name: app
+  generator:
+    rootPath: .
+    namingConvention: snake_case
+  includePaths:
+    - metadata
+  envMapping:
+    APP_FIN_RECON_PG_AUTHORIZATION_HEADER:
+      fromEnv: APP_FIN_RECON_PG_AUTHORIZATION_HEADER
+    APP_FIN_RECON_PG_READ_URL:
+      fromEnv: APP_FIN_RECON_PG_READ_URL
+    APP_FIN_RECON_PG_WRITE_URL:
+      fromEnv: APP_FIN_RECON_PG_WRITE_URL
+  connectors:
+    - path: connector/fin_recon_pg/connector.yaml
+      connectorLinkName: fin_recon_pg

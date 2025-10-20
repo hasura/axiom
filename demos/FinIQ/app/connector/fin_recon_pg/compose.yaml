@@ -1,0 +1,14 @@
+services:
+  app_fin_recon_pg:
+    build:
+      context: .
+      dockerfile: .hasura-connector/Dockerfile.fin_recon_pg
+    environment:
+      HASURA_SERVICE_TOKEN_SECRET: $APP_FIN_RECON_PG_HASURA_SERVICE_TOKEN_SECRET
+      JDBC_URL: $APP_FIN_RECON_PG_JDBC_URL
+      OTEL_EXPORTER_OTLP_ENDPOINT: $APP_FIN_RECON_PG_OTEL_EXPORTER_OTLP_ENDPOINT
+      OTEL_SERVICE_NAME: $APP_FIN_RECON_PG_OTEL_SERVICE_NAME
+    extra_hosts:
+      - local.hasura.dev:host-gateway
+    ports:
+      - 4648:8080
