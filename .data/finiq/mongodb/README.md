@@ -14,9 +14,11 @@ The MongoDB database contains the following collections:
 
 ## Files
 
-- `generate_mongo_data.py` - Python script to generate sample MongoDB data
-- `load_mongo_data.py` - Python script to load JSON data into MongoDB
-- `init/01-init-db.js` - MongoDB initialization script
+- `init/01_create_schema.js` - MongoDB schema creation (collections, indexes, users)
+- `init/02_import_data.js` - MongoDB data import (loads JSON files automatically)
+- `data/` - Directory containing JSON data files
+- `generate_mongo_data.py` - Python script to generate sample MongoDB data (optional)
+- `load_mongo_data.py` - Python script to manually load JSON data (legacy)
 
 ## Setup Instructions
 
