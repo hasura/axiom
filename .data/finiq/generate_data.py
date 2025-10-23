@@ -26,12 +26,12 @@ DECLINE_RATE_LOW_RISK = 12.5    # 10-15% for low-risk merchants
 DECLINE_RATE_MEDIUM_RISK = 20.0 # 15-25% for medium-risk merchants
 DECLINE_RATE_HIGH_RISK = 30.0   # 25-35% for high-risk merchants
 
-# Settlement variance distribution (industry-aligned)
-EXACT_MATCH_PERCENTAGE = 55.0   # Reduced from 80% to 55%
-LOW_VARIANCE_PERCENTAGE = 27.0  # 0-1% variance (25-30% target)
-MEDIUM_VARIANCE_PERCENTAGE = 12.0 # 1-2% variance (8-10% target)
-HIGH_VARIANCE_PERCENTAGE = 4.0   # 2-5% variance (3-5% target)
-EXTREME_VARIANCE_PERCENTAGE = 2.0 # >5% variance (1-2% target)
+# Settlement variance distribution (5% total mismatches as requested)
+EXACT_MATCH_PERCENTAGE = 95.0   # 95% exact matches (no variance)
+LOW_VARIANCE_PERCENTAGE = 3.0   # 0-1% variance (most common mismatch type)
+MEDIUM_VARIANCE_PERCENTAGE = 1.5 # 1-2% variance
+HIGH_VARIANCE_PERCENTAGE = 0.4  # 2-5% variance
+EXTREME_VARIANCE_PERCENTAGE = 0.1 # >5% variance (rare edge cases)
 
 # Unsettled transaction percentage (industry standard)
 UNSETTLED_PERCENTAGE = 1.5      # 0.5-2% of approved transactions remain unsettled
@@ -508,6 +508,14 @@ class DataGenerator:
             auth_amount = auth_txn['transaction_amount']
             acquirer_settlement_amt = calculate_settlement_amount(auth_amount, variance_type, merchant_category)
             
+            # Calculate settlement delta percentage
+            # Formula: ((settlement_amount - auth_amount) / auth_amount) * 100
+            if auth_amount != 0:
+                settlement_delta_pct = ((acquirer_settlement_amt - auth_amount) / auth_amount * 100).quantize(
+                    Decimal('0.01'), rounding=ROUND_HALF_UP)
+            else:
+                settlement_delta_pct = Decimal('0.00')
+            
             # Issuer amount includes interchange fee adjustment
             interchange_fee, network_fee = calculate_fees(auth_amount)
             issuer_settlement_amt = auth_amount - interchange_fee
@@ -529,6 +537,7 @@ class DataGenerator:
                 'issuer_settlement_date': issuer_settlement_date.strftime('%Y-%m-%d'),
                 'transaction_settlement_date': settlement_date.strftime('%Y-%m-%d'),
                 'settlement_status': 'SETTLED',
+                'settlement_delta_pct': settlement_delta_pct,
                 'interchange_fee': interchange_fee,
                 'network_fee': network_fee,
                 'created_at': datetime.now().isoformat()
@@ -595,7 +604,7 @@ class DataGenerator:
             'issuer_currency', 'acquirer_currency', 'acquirer_settlement_amount',
             'issuer_settlement_amount', 'acquirer_settlement_date',
             'issuer_settlement_date', 'transaction_settlement_date',
-            'settlement_status', 'interchange_fee', 'network_fee', 'created_at'
+            'settlement_status', 'settlement_delta_pct', 'interchange_fee', 'network_fee', 'created_at'
         ])
         
         print("\n" + "="*60)

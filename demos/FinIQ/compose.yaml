@@ -40,6 +40,29 @@ services:
     volumes:
       - mongodb_data:/data/db
       - ../../.data/finiq/mongodb/init:/docker-entrypoint-initdb.d/
+  postgres:
+    image: postgres:15
+    container_name: finiq_postgres
+    environment:
+      POSTGRES_DB: fin_recon
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-hbGciOiJIUzI1NiIsInR5cCI6IkpX}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5434:5432"
+    volumes:
+      # Mount corrected postgres directory with settlement_delta_pct data
+      - ./postgres:/docker-entrypoint-initdb.d:ro
+      # Persistent data
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d fin_recon"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - finiq-network
+    restart: unless-stopped
   otel-collector:
     command:
       - --config=/etc/otel-collector-config.yaml
@@ -74,3 +97,4 @@ services:
       - ./.promptql_playground.db:/app/promptql_playground/promptql_playground.db
 volumes:
   mongodb_data: null
+  postgres_data: null
