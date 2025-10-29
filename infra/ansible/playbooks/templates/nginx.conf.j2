@@ -1,0 +1,29 @@
+server {
+    listen 80;
+    server_name {{ server_name }};
+
+    # Allow localhost
+    allow 127.0.0.1;
+    allow ::1;
+
+    # Allow Cloudflare IPv4 ranges
+{% for ip_range in cloudflare_ipv4_ranges %}
+    allow {{ ip_range }};
+{% endfor %}
+
+    # Allow Cloudflare IPv6 ranges
+{% for ip_range in cloudflare_ipv6_ranges %}
+    allow {{ ip_range }};
+{% endfor %}
+
+    # Deny all other IPs
+    deny all;
+
+    location / {
+        proxy_pass http://127.0.0.1:{{ nginx_backend_port }};
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
