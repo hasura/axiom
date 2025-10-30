@@ -1,6 +1,33 @@
 include:
   - path: app/connector/postgres_retail/compose.yaml
 services:
+  # PostgreSQL Database with automatic data generation and import
+  postgres_retail:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: retail_fashion
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-hasura123}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=en_US.UTF-8 --lc-ctype=en_US.UTF-8"
+    ports:
+      - "5433:5433"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ../../.data/c360-fashion-retail/postgres:/docker-entrypoint-initdb.d
+    command: >
+      postgres
+      -c port=5433
+      -c shared_preload_libraries=pg_stat_statements
+      -c pg_stat_statements.track=all
+      -c max_connections=200
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d retail_fashion -p 5433"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - c360-network
+
   engine:
     build:
       context: engine
@@ -19,6 +46,11 @@ services:
       io.hasura.ddn.service-name: engine
     ports:
       - 3280:3000
+    depends_on:
+      postgres_retail:
+        condition: service_healthy
+    networks:
+      - c360-network
   otel-collector:
     command:
       - --config=/etc/otel-collector-config.yaml
@@ -26,10 +58,13 @@ services:
       HASURA_DDN_PAT: ${HASURA_DDN_PAT}
     image: otel/opentelemetry-collector:0.104.0
     ports:
-      - 4317:4317
+      - 14317:4317
       - 4318:4318
     volumes:
       - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
+    networks:
+      - c360-network
+      
   promptql-playground:
     environment:
       CONFIG_PATH: /app/promptql_config.json
@@ -47,3 +82,18 @@ services:
     volumes:
       - ./engine/build/promptql_config.json:/app/promptql_config.json
       - ./.promptql_playground.db:/app/promptql_playground/promptql_playground.db
+    depends_on:
+      postgres_retail:
+        condition: service_healthy
+      engine:
+        condition: service_started
+    networks:
+      - c360-network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  c360-network:
+    driver: bridge
