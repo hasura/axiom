@@ -8,8 +8,16 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
-      - name: Run ansible-lint
-        uses: ansible/ansible-lint@main
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          working_directory: ${{ github.workspace }}/infra/ansible
-          requirements_file: ${{ github.workspace }}/infra/ansible/requirements.yml
+          python-version: '3.12'
+      - name: Install ansible-lint
+        run: |
+          python -m pip install --upgrade pip
+          pip install ansible-core>=2.20.0 ansible-lint
+      - name: Run ansible-lint
+        run: |
+          cd ${{ github.workspace }}/infra/ansible
+          ansible-galaxy install -r requirements.yml
+          ansible-lint
