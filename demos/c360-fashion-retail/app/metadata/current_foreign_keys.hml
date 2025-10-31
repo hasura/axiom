@@ -1,0 +1,147 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: current_foreign_keys
+  fields:
+    - name: column_name
+      type: string
+    - name: constraint_name
+      type: string
+    - name: foreign_column_name
+      type: string
+    - name: foreign_table_name
+      type: string
+    - name: table_name
+      type: string
+  graphql:
+    typeName: current_foreign_keys
+    inputTypeName: current_foreign_keys_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: postgres_retail
+      dataConnectorObjectType: current_foreign_keys
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: current_foreign_keys
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - column_name
+          - constraint_name
+          - foreign_column_name
+          - foreign_table_name
+          - table_name
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: current_foreign_keys_bool_exp
+  operand:
+    object:
+      type: current_foreign_keys
+      comparableFields:
+        - fieldName: column_name
+          booleanExpressionType: information_schema_sql_identifier_bool_exp
+        - fieldName: constraint_name
+          booleanExpressionType: information_schema_sql_identifier_bool_exp
+        - fieldName: foreign_column_name
+          booleanExpressionType: information_schema_sql_identifier_bool_exp
+        - fieldName: foreign_table_name
+          booleanExpressionType: information_schema_sql_identifier_bool_exp
+        - fieldName: table_name
+          booleanExpressionType: information_schema_sql_identifier_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: current_foreign_keys_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: current_foreign_keys_agg_exp
+  operand:
+    object:
+      aggregatedType: current_foreign_keys
+      aggregatableFields:
+        - fieldName: column_name
+          aggregateExpression: information_schema_sql_identifier_agg_exp
+        - fieldName: constraint_name
+          aggregateExpression: information_schema_sql_identifier_agg_exp
+        - fieldName: foreign_column_name
+          aggregateExpression: information_schema_sql_identifier_agg_exp
+        - fieldName: foreign_table_name
+          aggregateExpression: information_schema_sql_identifier_agg_exp
+        - fieldName: table_name
+          aggregateExpression: information_schema_sql_identifier_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: current_foreign_keys_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: current_foreign_keys_order_by_exp
+  operand:
+    object:
+      orderedType: current_foreign_keys
+      orderableFields:
+        - fieldName: column_name
+          orderByExpression: string_order_by_exp
+        - fieldName: constraint_name
+          orderByExpression: string_order_by_exp
+        - fieldName: foreign_column_name
+          orderByExpression: string_order_by_exp
+        - fieldName: foreign_table_name
+          orderByExpression: string_order_by_exp
+        - fieldName: table_name
+          orderByExpression: string_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: current_foreign_keys_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: current_foreign_keys
+  objectType: current_foreign_keys
+  source:
+    dataConnectorName: postgres_retail
+    collection: current_foreign_keys
+  filterExpressionType: current_foreign_keys_bool_exp
+  aggregateExpression: current_foreign_keys_agg_exp
+  orderByExpression: current_foreign_keys_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: current_foreign_keys
+      subscription:
+        rootField: current_foreign_keys
+    selectUniques: []
+    filterInputTypeName: current_foreign_keys_filter_input
+    aggregate:
+      queryRootField: current_foreign_keys_aggregate
+      subscription:
+        rootField: current_foreign_keys_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: current_foreign_keys
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

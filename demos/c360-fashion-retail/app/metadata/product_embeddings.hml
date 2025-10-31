@@ -1,0 +1,173 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: product_embeddings
+  description: "Object type for product_embeddings. Description: Product
+    embeddings for similarity matching"
+  fields:
+    - name: created_date
+      type: timestamp
+    - name: embedding_id
+      type: string!
+    - name: embedding_model
+      type: string
+    - name: embedding_vector
+      type: string
+    - name: product_id
+      type: string
+    - name: text_source
+      type: string
+    - name: vector_version
+      type: int_32
+  graphql:
+    typeName: product_embeddings
+    inputTypeName: product_embeddings_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: postgres_retail
+      dataConnectorObjectType: product_embeddings
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: product_embeddings
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - created_date
+          - embedding_id
+          - embedding_model
+          - embedding_vector
+          - product_id
+          - text_source
+          - vector_version
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: product_embeddings_bool_exp
+  operand:
+    object:
+      type: product_embeddings
+      comparableFields:
+        - fieldName: created_date
+          booleanExpressionType: timestamp_without_time_zone_bool_exp
+        - fieldName: embedding_id
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: embedding_model
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: embedding_vector
+          booleanExpressionType: text_bool_exp
+        - fieldName: product_id
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: text_source
+          booleanExpressionType: text_bool_exp
+        - fieldName: vector_version
+          booleanExpressionType: integer_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: product_embeddings_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: product_embeddings_agg_exp
+  operand:
+    object:
+      aggregatedType: product_embeddings
+      aggregatableFields:
+        - fieldName: created_date
+          aggregateExpression: timestamp_without_time_zone_agg_exp
+        - fieldName: embedding_id
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: embedding_model
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: embedding_vector
+          aggregateExpression: text_agg_exp
+        - fieldName: product_id
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: text_source
+          aggregateExpression: text_agg_exp
+        - fieldName: vector_version
+          aggregateExpression: integer_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: product_embeddings_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: product_embeddings_order_by_exp
+  operand:
+    object:
+      orderedType: product_embeddings
+      orderableFields:
+        - fieldName: created_date
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: embedding_id
+          orderByExpression: string_order_by_exp
+        - fieldName: embedding_model
+          orderByExpression: string_order_by_exp
+        - fieldName: embedding_vector
+          orderByExpression: string_order_by_exp
+        - fieldName: product_id
+          orderByExpression: string_order_by_exp
+        - fieldName: text_source
+          orderByExpression: string_order_by_exp
+        - fieldName: vector_version
+          orderByExpression: int_32_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: product_embeddings_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: product_embeddings
+  objectType: product_embeddings
+  source:
+    dataConnectorName: postgres_retail
+    collection: product_embeddings
+  filterExpressionType: product_embeddings_bool_exp
+  aggregateExpression: product_embeddings_agg_exp
+  orderByExpression: product_embeddings_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: product_embeddings
+      subscription:
+        rootField: product_embeddings
+    selectUniques:
+      - queryRootField: product_embeddings_by_embedding_id
+        uniqueIdentifier:
+          - embedding_id
+        subscription:
+          rootField: product_embeddings_by_embedding_id
+    filterInputTypeName: product_embeddings_filter_input
+    aggregate:
+      queryRootField: product_embeddings_aggregate
+      subscription:
+        rootField: product_embeddings_aggregate
+  description: Product embeddings for similarity matching
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: product_embeddings
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
