@@ -179,11 +179,16 @@ class CompleteDatasetGenerator:
         return fake.date_time_between(start_date, end_date)
 
     def save_to_csv(self, table_name, data, headers):
+<<<<<<< HEAD
         """Save data to CSV file with PostgreSQL-compatible formatting"""
+=======
+        """Save data to CSV file"""
+>>>>>>> origin/main
         filepath = os.path.join(self.output_dir, f'{table_name}.csv')
         with open(filepath, 'w', newline='', encoding='utf-8') as csvfile:
             writer = csv.writer(csvfile)
             writer.writerow(headers)
+<<<<<<< HEAD
             
             # Convert Python booleans to PostgreSQL-compatible format
             for row in data:
@@ -195,6 +200,9 @@ class CompleteDatasetGenerator:
                         formatted_row.append(value)
                 writer.writerow(formatted_row)
                 
+=======
+            writer.writerows(data)
+>>>>>>> origin/main
         print(f"✅ Generated {len(data)} rows for {table_name}")
         self.data[table_name] = data
 
@@ -215,6 +223,7 @@ class CompleteDatasetGenerator:
                 suffix = random.choice(['Co', 'Brand', 'Label', 'House', 'Studio', 'Collection', 'Design', 'Atelier', 'Boutique', 'Group'])
                 brand_name = f"{base_name} {suffix} {i+1-len(FashionProvider.fashion_brands)}" if i >= len(FashionProvider.fashion_brands) else FashionProvider.fashion_brands[i]
             
+<<<<<<< HEAD
             # Create brand data in database schema column order
             brand_data = [
                 i + 1,  # brand_id
@@ -230,6 +239,22 @@ class CompleteDatasetGenerator:
             brands.append(brand_data)
         
         headers = ['brand_id', 'brand_name', 'parent_company', 'brand_tier', 'description', 'website_url', 'year_established', 'is_active', 'created_at']
+=======
+            brand = {
+                'brand_id': i + 1,
+                'brand_name': brand_name,
+                'brand_tier': self.weighted_choice(tiers, weights),
+                'created_at': self.timestamp_between('-5y', '-1y'),
+                'description': fake.text(max_nb_chars=200),
+                'is_active': random.choice([True, False]) if random.random() < 0.1 else True,
+                'parent_company': fake.company() if random.random() < 0.3 else None,
+                'website_url': fake.url(),
+                'year_established': random.randint(1950, 2022)
+            }
+            brands.append(list(brand.values()))
+        
+        headers = ['brand_id', 'brand_name', 'brand_tier', 'created_at', 'description', 'is_active', 'parent_company', 'website_url', 'year_established']
+>>>>>>> origin/main
         self.save_to_csv('brands', brands, headers)
         return brands
 
@@ -241,6 +266,7 @@ class CompleteDatasetGenerator:
         # Use all main categories and create more subcategories
         for main_cat, subcats in FashionProvider.fashion_categories.items():
             # Add main category
+<<<<<<< HEAD
             # Create main category data in database schema column order
             main_category_data = [
                 cat_id,  # category_id
@@ -252,12 +278,25 @@ class CompleteDatasetGenerator:
                 self.timestamp_between('-3y', '-1y')  # created_at
             ]
             categories.append(main_category_data)
+=======
+            main_category = {
+                'category_id': cat_id,
+                'category_name': main_cat,
+                'created_at': self.timestamp_between('-3y', '-1y'),
+                'description': fake.text(max_nb_chars=150),
+                'is_seasonal': random.choice([True, False]),
+                'parent_category_id': None,
+                'typical_margin_percentage': round(random.uniform(0.15, 0.45), 2)
+            }
+            categories.append(list(main_category.values()))
+>>>>>>> origin/main
             main_cat_id = cat_id
             cat_id += 1
             
             # Add more subcategories for larger dataset
             num_subcats = min(len(subcats), random.randint(2, 4))
             for subcat in random.sample(subcats, num_subcats):
+<<<<<<< HEAD
                 # Create subcategory data in database schema column order
                 sub_category_data = [
                     cat_id,  # category_id
@@ -272,6 +311,21 @@ class CompleteDatasetGenerator:
                 cat_id += 1
         
         headers = ['category_id', 'category_name', 'parent_category_id', 'description', 'is_seasonal', 'typical_margin_percentage', 'created_at']
+=======
+                sub_category = {
+                    'category_id': cat_id,
+                    'category_name': subcat,
+                    'created_at': self.timestamp_between('-3y', '-1y'),
+                    'description': fake.text(max_nb_chars=100),
+                    'is_seasonal': random.choice([True, False]),
+                    'parent_category_id': main_cat_id,
+                    'typical_margin_percentage': round(random.uniform(0.15, 0.45), 2)
+                }
+                categories.append(list(sub_category.values()))
+                cat_id += 1
+        
+        headers = ['category_id', 'category_name', 'created_at', 'description', 'is_seasonal', 'parent_category_id', 'typical_margin_percentage']
+>>>>>>> origin/main
         self.save_to_csv('categories', categories, headers)
         return categories
 
@@ -286,6 +340,7 @@ class CompleteDatasetGenerator:
             brand = random.choice(brands)
             category = random.choice(categories)
             
+<<<<<<< HEAD
             # Create product data in database schema column order
             product_data = [
                 f'P{i+1:07d}',  # product_id
@@ -309,6 +364,30 @@ class CompleteDatasetGenerator:
         headers = ['product_id', 'product_name', 'brand', 'category_l1', 'category_l2', 'category_l3',
                   'gender_target', 'season', 'material', 'care_instructions', 'sustainability_score', 'price_range',
                   'launch_date', 'is_active', 'created_at']
+=======
+            product = {
+                'product_id': f'P{i+1:07d}',
+                'product_name': f"{fake.catch_phrase()} {category}",
+                'brand': brand,
+                'category_l1': category,
+                'category_l2': random.choice(categories) if random.random() < 0.7 else None,
+                'category_l3': random.choice(categories) if random.random() < 0.3 else None,
+                'created_at': self.timestamp_between('-2y', 'now'),
+                'gender_target': self.weighted_choice(['Women', 'Men', 'Unisex'], [0.45, 0.35, 0.20]),
+                'is_active': True if random.random() < 0.9 else False,
+                'launch_date': self.date_between('-2y', 'now'),
+                'material': random.choice(FashionProvider.fashion_materials),
+                'price_range': self.weighted_choice(['$30-50', '$50-100', '$100-150', '$150-200'], [0.3, 0.4, 0.2, 0.1]),
+                'season': random.choice(['Spring', 'Summer', 'Fall', 'Winter', 'All Season']),
+                'sustainability_score': random.randint(0, 100),
+                'care_instructions': random.choice(['Machine wash cold', 'Dry clean only', 'Hand wash', 'Machine wash warm'])
+            }
+            products.append(list(product.values()))
+        
+        headers = ['product_id', 'product_name', 'brand', 'category_l1', 'category_l2', 'category_l3',
+                  'created_at', 'gender_target', 'is_active', 'launch_date', 'material', 'price_range', 
+                  'season', 'sustainability_score', 'care_instructions']
+>>>>>>> origin/main
         self.save_to_csv('products', products, headers)
         return products
 
@@ -323,6 +402,7 @@ class CompleteDatasetGenerator:
             num_variants = random.randint(3, 6)
             
             for _ in range(num_variants):
+<<<<<<< HEAD
                 # Create variant data in database schema column order to match:
                 # variant_id, product_id, sku, size, color, additional_price, weight_oz, stock_quantity, created_at
                 variant_data = [
@@ -341,6 +421,24 @@ class CompleteDatasetGenerator:
         
         headers = ['variant_id', 'product_id', 'sku', 'size', 'color', 'additional_price',
                   'weight_oz', 'stock_quantity', 'created_at']
+=======
+                variant = {
+                    'variant_id': variant_id,
+                    'product_id': product_id,
+                    'sku': f"SKU{product_id[1:]}V{variant_id:04d}",
+                    'size': random.choice(FashionProvider.sizes),
+                    'color': random.choice(FashionProvider.colors),
+                    'additional_price': round(random.uniform(0, 20), 2),
+                    'stock_quantity': random.randint(10, 500),
+                    'weight_oz': round(random.uniform(2, 15), 2),
+                    'created_at': self.timestamp_between('-2y', 'now')
+                }
+                variants.append(list(variant.values()))
+                variant_id += 1
+        
+        headers = ['variant_id', 'product_id', 'sku', 'size', 'color', 'additional_price', 
+                  'stock_quantity', 'weight_oz', 'created_at']
+>>>>>>> origin/main
         self.save_to_csv('product_variants', variants, headers)
         return variants
 
@@ -373,6 +471,7 @@ class CompleteDatasetGenerator:
             dob = fake.date_between(date(birth_year, 1, 1), date(birth_year, 12, 31))
             reg_date = self.timestamp_between('-3y', 'now')
             
+<<<<<<< HEAD
             # Create customer data in database schema column order to match:
             # customer_id, email, phone, first_name, last_name, date_of_birth, gender,
             # acquisition_channel, registration_date, account_status, preferred_language,
@@ -399,6 +498,30 @@ class CompleteDatasetGenerator:
         headers = ['customer_id', 'email', 'phone', 'first_name', 'last_name', 'date_of_birth',
                   'gender', 'acquisition_channel', 'registration_date', 'account_status',
                   'preferred_language', 'marketing_consent', 'last_activity_date', 'created_at', 'updated_at']
+=======
+            customer = {
+                'customer_id': i + 1,
+                'first_name': fake.first_name_male() if gender == 'male' else fake.first_name_female(),
+                'last_name': fake.last_name(),
+                'email': fake.email(),
+                'phone': fake.phone_number()[:20],
+                'date_of_birth': dob,
+                'gender': gender,
+                'registration_date': reg_date,
+                'acquisition_channel': self.weighted_choice(list(channels.keys()), list(channels.values())),
+                'marketing_consent': random.random() < 0.70,
+                'account_status': 'active' if random.random() < 0.90 else 'inactive',
+                'preferred_language': 'English',
+                'created_at': reg_date,
+                'updated_at': self.timestamp_between(reg_date, 'now'),
+                'last_activity_date': self.timestamp_between(reg_date, 'now')
+            }
+            customers.append(list(customer.values()))
+        
+        headers = ['customer_id', 'first_name', 'last_name', 'email', 'phone', 'date_of_birth', 
+                  'gender', 'registration_date', 'acquisition_channel', 'marketing_consent', 
+                  'account_status', 'preferred_language', 'created_at', 'updated_at', 'last_activity_date']
+>>>>>>> origin/main
         self.save_to_csv('customers', customers, headers)
         return customers
 
@@ -414,6 +537,7 @@ class CompleteDatasetGenerator:
             num_addresses = 1 if random.random() < 0.5 else 2
             
             for j in range(num_addresses):
+<<<<<<< HEAD
                 # Create address data in database schema column order to match:
                 # address_id, customer_id, address_type, street_address, city, state_province,
                 # postal_code, country, is_primary, created_at
@@ -433,6 +557,24 @@ class CompleteDatasetGenerator:
         
         headers = ['address_id', 'customer_id', 'address_type', 'street_address', 'city',
                   'state_province', 'postal_code', 'country', 'is_primary', 'created_at']
+=======
+                address = {
+                    'address_id': self.generate_id('ADDR'),
+                    'customer_id': customer_id,
+                    'address_type': 'primary' if j == 0 else random.choice(['billing', 'shipping', 'work']),
+                    'is_primary': j == 0,
+                    'street_address': fake.street_address(),
+                    'city': fake.city(),
+                    'state_province': random.choice(states),
+                    'postal_code': fake.postcode(),
+                    'country': 'US',
+                    'created_at': self.timestamp_between('-3y', 'now')
+                }
+                addresses.append(list(address.values()))
+        
+        headers = ['address_id', 'customer_id', 'address_type', 'is_primary', 'street_address', 
+                  'city', 'state_province', 'postal_code', 'country', 'created_at']
+>>>>>>> origin/main
         self.save_to_csv('customer_addresses', addresses, headers)
         return addresses
 
@@ -452,6 +594,7 @@ class CompleteDatasetGenerator:
             order_value = max(20, min(200, np.random.normal(60, 15)))
             order_date = self.timestamp_between('-2y', 'now')
             
+<<<<<<< HEAD
             # Create order data in database schema column order to match:
             # order_id, customer_id, order_date, order_status, channel, store_location,
             # subtotal_amount, tax_amount, shipping_amount, discount_amount, total_amount,
@@ -486,6 +629,38 @@ class CompleteDatasetGenerator:
                   'subtotal_amount', 'tax_amount', 'shipping_amount', 'discount_amount', 'total_amount',
                   'currency', 'payment_method', 'shipping_method', 'promo_code', 'is_first_order',
                   'device_type', 'utm_source', 'utm_campaign', 'created_at', 'updated_at']
+=======
+            order = {
+                'order_id': i + 1,
+                'customer_id': customer_id,
+                'order_date': order_date,
+                'order_status': self.weighted_choice(list(status_dist.keys()), list(status_dist.values())),
+                'total_amount': round(order_value, 2),
+                'subtotal_amount': round(order_value * 0.9, 2),
+                'tax_amount': round(order_value * 0.08, 2),
+                'shipping_amount': round(random.uniform(0, 15), 2),
+                'discount_amount': round(random.uniform(0, order_value * 0.2), 2) if random.random() < 0.3 else 0,
+                'payment_method': self.weighted_choice(list(payment_methods.keys()), list(payment_methods.values())),
+                'currency': 'USD',
+                'channel': random.choice(['web', 'mobile', 'store', 'phone']),
+                'device_type': random.choice(['desktop', 'mobile', 'tablet']),
+                'shipping_method': random.choice(['standard', 'express', 'overnight', 'pickup']),
+                'is_first_order': random.random() < 0.2,
+                'promo_code': fake.lexify('PROMO????') if random.random() < 0.2 else None,
+                'store_location': fake.city() if random.random() < 0.1 else None,
+                'utm_source': random.choice(['google', 'facebook', 'instagram', 'email', 'direct']) if random.random() < 0.6 else None,
+                'utm_campaign': fake.lexify('campaign_???') if random.random() < 0.4 else None,
+                'created_at': order_date,
+                'updated_at': self.timestamp_between(order_date, 'now')
+            }
+            orders.append(list(order.values()))
+        
+        headers = ['order_id', 'customer_id', 'order_date', 'order_status', 'total_amount', 
+                  'subtotal_amount', 'tax_amount', 'shipping_amount', 'discount_amount', 
+                  'payment_method', 'currency', 'channel', 'device_type', 'shipping_method', 
+                  'is_first_order', 'promo_code', 'store_location', 'utm_source', 'utm_campaign', 
+                  'created_at', 'updated_at']
+>>>>>>> origin/main
         self.save_to_csv('orders', orders, headers)
         return orders
 
@@ -500,7 +675,11 @@ class CompleteDatasetGenerator:
         
         for order in orders:
             order_id = order[0]
+<<<<<<< HEAD
             order_total = order[10]  # total_amount is now at position 10 after column reordering
+=======
+            order_total = order[4]
+>>>>>>> origin/main
             
             num_items = random.randint(1, 4)
             
@@ -515,6 +694,7 @@ class CompleteDatasetGenerator:
                 unit_price = round(order_total / num_items / quantity, 2)
                 total_price = round(unit_price * quantity, 2)
                 
+<<<<<<< HEAD
                 # Create order item data in database schema column order to match:
                 # order_item_id, order_id, product_id, sku, quantity, unit_price, total_price,
                 # discount_applied, final_price, size, color, personalization, gift_wrap
@@ -538,6 +718,28 @@ class CompleteDatasetGenerator:
         
         headers = ['order_item_id', 'order_id', 'product_id', 'sku', 'quantity', 'unit_price', 'total_price',
                   'discount_applied', 'final_price', 'size', 'color', 'personalization', 'gift_wrap']
+=======
+                item = {
+                    'order_item_id': item_id,
+                    'order_id': order_id,
+                    'product_id': product_id,
+                    'sku': variant[2],
+                    'size': variant[3],
+                    'color': variant[4],
+                    'quantity': quantity,
+                    'unit_price': unit_price,
+                    'total_price': total_price,
+                    'final_price': total_price,
+                    'discount_applied': round(random.uniform(0, total_price * 0.1), 2) if random.random() < 0.2 else 0,
+                    'gift_wrap': random.random() < 0.05,
+                    'personalization': fake.sentence(nb_words=3) if random.random() < 0.02 else None
+                }
+                order_items.append(list(item.values()))
+                item_id += 1
+        
+        headers = ['order_item_id', 'order_id', 'product_id', 'sku', 'size', 'color', 'quantity', 
+                  'unit_price', 'total_price', 'final_price', 'discount_applied', 'gift_wrap', 'personalization']
+>>>>>>> origin/main
         self.save_to_csv('order_items', order_items, headers)
         return order_items
 
@@ -556,6 +758,7 @@ class CompleteDatasetGenerator:
             order_id = order[0]
             customer_id = order[1]
             order_date = order[2]
+<<<<<<< HEAD
             order_total = order[10]  # total_amount is now at position 10 after column reordering
             
             return_date = self.timestamp_between(order_date, 'now')
@@ -583,6 +786,32 @@ class CompleteDatasetGenerator:
         headers = ['return_id', 'order_id', 'customer_id', 'return_date', 'return_reason', 'return_method',
                   'refund_amount', 'refund_method', 'return_status', 'restocking_fee',
                   'condition_received', 'processed_by', 'created_at']
+=======
+            order_total = order[4]
+            
+            return_date = self.timestamp_between(order_date, 'now')
+            
+            return_record = {
+                'return_id': self.generate_id('RET'),
+                'order_id': order_id,
+                'customer_id': customer_id,
+                'return_date': return_date,
+                'return_reason': self.weighted_choice(list(return_reasons.keys()), list(return_reasons.values())),
+                'return_status': random.choice(['pending', 'approved', 'processed', 'completed']),
+                'refund_amount': round(order_total * random.uniform(0.5, 1.0), 2),
+                'refund_method': self.weighted_choice(list(refund_methods.keys()), list(refund_methods.values())),
+                'restocking_fee': round(random.uniform(0, 15), 2),
+                'return_method': random.choice(['mail', 'store', 'pickup']),
+                'condition_received': random.choice(['new', 'like_new', 'good', 'fair', 'poor']),
+                'processed_by': fake.name(),
+                'created_at': return_date
+            }
+            returns.append(list(return_record.values()))
+        
+        headers = ['return_id', 'order_id', 'customer_id', 'return_date', 'return_reason', 
+                  'return_status', 'refund_amount', 'refund_method', 'restocking_fee', 
+                  'return_method', 'condition_received', 'processed_by', 'created_at']
+>>>>>>> origin/main
         self.save_to_csv('returns', returns, headers)
         return returns
 
@@ -608,6 +837,7 @@ class CompleteDatasetGenerator:
             
             for item in selected_items:
                 order_item_id = item[0]
+<<<<<<< HEAD
                 quantity = int(item[4])  # quantity is now at position 4 after column reordering, convert to int
                 
                 # Create return item data in database schema column order to match:
@@ -622,6 +852,20 @@ class CompleteDatasetGenerator:
                     random.random() < 0.8  # restockable
                 ]
                 return_items.append(return_item_data)
+=======
+                quantity = item[6]
+                
+                return_item = {
+                    'return_item_id': self.generate_id('RI'),
+                    'return_id': return_id,
+                    'order_item_id': order_item_id,
+                    'quantity_returned': min(quantity, random.randint(1, quantity)),
+                    'item_condition': self.weighted_choice(list(conditions.keys()), list(conditions.values())),
+                    'refund_eligible': random.random() < 0.9,
+                    'restockable': random.random() < 0.8
+                }
+                return_items.append(list(return_item.values()))
+>>>>>>> origin/main
         
         headers = ['return_item_id', 'return_id', 'order_item_id', 'quantity_returned', 
                   'item_condition', 'refund_eligible', 'restockable']
@@ -1104,6 +1348,7 @@ class CompleteDatasetGenerator:
                   'recommendation_context']
         self.save_to_csv('style_similarity_matches', matches, headers)
         return matches
+<<<<<<< HEAD
     def generate_campaigns(self, num_campaigns=25):
         """Generate marketing campaigns"""
         print(f"📢 Generating {num_campaigns} marketing campaigns...")
@@ -1639,6 +1884,13 @@ class CompleteDatasetGenerator:
         """Generate complete dataset including all 26 tables for enterprise C360 system"""
         print("\n🚀 Starting Complete C360 Data Generation...")
         print("🔗 Generating 50k customer dataset with enterprise-scale data + all auxiliary tables")
+=======
+
+    def generate_all_data(self):
+        """Generate complete dataset including reviews"""
+        print("\n🚀 Starting Complete C360 Data Generation...")
+        print("🔗 Generating 50k customer dataset with enterprise-scale data + reviews")
+>>>>>>> origin/main
         
         # Master data first
         print("\n=== 📦 Generating Master Data ===")
@@ -1667,6 +1919,7 @@ class CompleteDatasetGenerator:
         print("\n=== 📱 Generating Social Media & Digital Analytics ===")
         self.generate_social_mentions()
         self.generate_website_sessions()
+<<<<<<< HEAD
         self.generate_session_summary()
         
         # Marketing and Campaigns
@@ -1695,10 +1948,19 @@ class CompleteDatasetGenerator:
         self.generate_fashion_research_documents()
         
         print(f"\n🎉 Complete enterprise dataset generation finished!")
+=======
+        
+        # Style Similarity Matches (ML/Recommendation Engine Data)
+        print("\n=== 🎯 Generating ML & Recommendation Data ===")
+        self.generate_style_similarity_matches()
+        
+        print(f"\n🎉 Complete dataset generation finished!")
+>>>>>>> origin/main
         print(f"\n📊 Generated tables:")
         for table, data in self.data.items():
             print(f"  ✅ {table}: {len(data):,} rows")
         
+<<<<<<< HEAD
         total_rows = sum(len(data) for data in self.data.values())
         print(f"\n🔗 Enterprise Scale Achieved:")
         print(f"  ✅ 50,000 customers with proportional transactions")
@@ -1710,6 +1972,14 @@ class CompleteDatasetGenerator:
         print(f"  ✅ ML/AI ready embeddings and recommendations")
         print(f"  ✅ Enterprise customer service and loyalty tracking")
         print(f"  ✅ Comprehensive marketing campaign analytics")
+=======
+        print(f"\n🔗 Enterprise Scale Achieved:")
+        print(f"  ✅ 50,000 customers with proportional transactions")
+        print(f"  ✅ ~700k total records across all tables")
+        print(f"  ✅ Contextually accurate reviews with quality correlation")
+        print(f"  ✅ Foreign key compatible data types")
+        print(f"  ✅ Complete referential integrity maintained")
+>>>>>>> origin/main
         print(f"\n🚀 Ready for database loading!")
 
 if __name__ == "__main__":
