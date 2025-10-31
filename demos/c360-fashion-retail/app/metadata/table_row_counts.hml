@@ -1,0 +1,165 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: table_row_counts
+  fields:
+    - name: deleted_rows
+      type: biginteger
+    - name: last_analyze
+      type: timestamptz
+    - name: last_vacuum
+      type: timestamptz
+    - name: table_name
+      type: string
+    - name: table_size
+      type: string
+    - name: total_rows
+      type: biginteger
+    - name: updated_rows
+      type: biginteger
+  graphql:
+    typeName: table_row_counts
+    inputTypeName: table_row_counts_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: postgres_retail
+      dataConnectorObjectType: table_row_counts
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: table_row_counts
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - deleted_rows
+          - last_analyze
+          - last_vacuum
+          - table_name
+          - table_size
+          - total_rows
+          - updated_rows
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: table_row_counts_bool_exp
+  operand:
+    object:
+      type: table_row_counts
+      comparableFields:
+        - fieldName: deleted_rows
+          booleanExpressionType: bigint_bool_exp
+        - fieldName: last_analyze
+          booleanExpressionType: timestamp_with_time_zone_bool_exp
+        - fieldName: last_vacuum
+          booleanExpressionType: timestamp_with_time_zone_bool_exp
+        - fieldName: table_name
+          booleanExpressionType: information_schema_sql_identifier_bool_exp
+        - fieldName: table_size
+          booleanExpressionType: text_bool_exp
+        - fieldName: total_rows
+          booleanExpressionType: bigint_bool_exp
+        - fieldName: updated_rows
+          booleanExpressionType: bigint_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: table_row_counts_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: table_row_counts_agg_exp
+  operand:
+    object:
+      aggregatedType: table_row_counts
+      aggregatableFields:
+        - fieldName: deleted_rows
+          aggregateExpression: bigint_agg_exp
+        - fieldName: last_analyze
+          aggregateExpression: timestamp_with_time_zone_agg_exp
+        - fieldName: last_vacuum
+          aggregateExpression: timestamp_with_time_zone_agg_exp
+        - fieldName: table_name
+          aggregateExpression: information_schema_sql_identifier_agg_exp
+        - fieldName: table_size
+          aggregateExpression: text_agg_exp
+        - fieldName: total_rows
+          aggregateExpression: bigint_agg_exp
+        - fieldName: updated_rows
+          aggregateExpression: bigint_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: table_row_counts_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: table_row_counts_order_by_exp
+  operand:
+    object:
+      orderedType: table_row_counts
+      orderableFields:
+        - fieldName: deleted_rows
+          orderByExpression: biginteger_order_by_exp
+        - fieldName: last_analyze
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: last_vacuum
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: table_name
+          orderByExpression: string_order_by_exp
+        - fieldName: table_size
+          orderByExpression: string_order_by_exp
+        - fieldName: total_rows
+          orderByExpression: biginteger_order_by_exp
+        - fieldName: updated_rows
+          orderByExpression: biginteger_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: table_row_counts_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: table_row_counts
+  objectType: table_row_counts
+  source:
+    dataConnectorName: postgres_retail
+    collection: table_row_counts
+  filterExpressionType: table_row_counts_bool_exp
+  aggregateExpression: table_row_counts_agg_exp
+  orderByExpression: table_row_counts_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: table_row_counts
+      subscription:
+        rootField: table_row_counts
+    selectUniques: []
+    filterInputTypeName: table_row_counts_filter_input
+    aggregate:
+      queryRootField: table_row_counts_aggregate
+      subscription:
+        rootField: table_row_counts_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: table_row_counts
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

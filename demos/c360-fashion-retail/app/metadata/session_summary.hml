@@ -1,0 +1,156 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: session_summary
+  fields:
+    - name: avg_session_duration
+      type: int_32
+    - name: bounce_sessions
+      type: int_32
+    - name: created_at
+      type: timestamp
+    - name: summary_date
+      type: date
+    - name: total_sessions
+      type: int_32
+    - name: unique_visitors
+      type: int_32
+  graphql:
+    typeName: session_summary
+    inputTypeName: session_summary_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: postgres_retail
+      dataConnectorObjectType: session_summary
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: session_summary
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - avg_session_duration
+          - bounce_sessions
+          - created_at
+          - summary_date
+          - total_sessions
+          - unique_visitors
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: session_summary_bool_exp
+  operand:
+    object:
+      type: session_summary
+      comparableFields:
+        - fieldName: avg_session_duration
+          booleanExpressionType: integer_bool_exp
+        - fieldName: bounce_sessions
+          booleanExpressionType: integer_bool_exp
+        - fieldName: created_at
+          booleanExpressionType: timestamp_without_time_zone_bool_exp
+        - fieldName: summary_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: total_sessions
+          booleanExpressionType: integer_bool_exp
+        - fieldName: unique_visitors
+          booleanExpressionType: integer_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: session_summary_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: session_summary_agg_exp
+  operand:
+    object:
+      aggregatedType: session_summary
+      aggregatableFields:
+        - fieldName: avg_session_duration
+          aggregateExpression: integer_agg_exp
+        - fieldName: bounce_sessions
+          aggregateExpression: integer_agg_exp
+        - fieldName: created_at
+          aggregateExpression: timestamp_without_time_zone_agg_exp
+        - fieldName: summary_date
+          aggregateExpression: date_agg_exp
+        - fieldName: total_sessions
+          aggregateExpression: integer_agg_exp
+        - fieldName: unique_visitors
+          aggregateExpression: integer_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: session_summary_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: session_summary_order_by_exp
+  operand:
+    object:
+      orderedType: session_summary
+      orderableFields:
+        - fieldName: avg_session_duration
+          orderByExpression: int_32_order_by_exp
+        - fieldName: bounce_sessions
+          orderByExpression: int_32_order_by_exp
+        - fieldName: created_at
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: summary_date
+          orderByExpression: date_order_by_exp
+        - fieldName: total_sessions
+          orderByExpression: int_32_order_by_exp
+        - fieldName: unique_visitors
+          orderByExpression: int_32_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: session_summary_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: session_summary
+  objectType: session_summary
+  source:
+    dataConnectorName: postgres_retail
+    collection: session_summary
+  filterExpressionType: session_summary_bool_exp
+  aggregateExpression: session_summary_agg_exp
+  orderByExpression: session_summary_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: session_summary
+      subscription:
+        rootField: session_summary
+    selectUniques: []
+    filterInputTypeName: session_summary_filter_input
+    aggregate:
+      queryRootField: session_summary_aggregate
+      subscription:
+        rootField: session_summary_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: session_summary
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
