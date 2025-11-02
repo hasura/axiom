@@ -126,7 +126,7 @@
     - name: Display Docker status
       ansible.builtin.debug:
         msg: >-
-          🐳 Docker Status: Service running: {{ docker_running }},
+          Docker Status: Service running: {{ docker_running }},
           Compose services running: {{ compose_services_running }},
           Containers running: {{ containers_running }}
 
@@ -160,8 +160,8 @@
     - name: Display message when containers are already running
       ansible.builtin.debug:
         msg: >-
-          ℹ️ Docker containers for this demo are already running.
-          🔄 To force a complete reinstall, run with: -e "force_clean=true"
+          Docker containers for this demo are already running.
+          To force a complete reinstall, run with: -e "force_clean=true"
       when: >-
         containers_running | bool and
         not force_clean | bool
@@ -169,10 +169,10 @@
     - name: Display success message
       ansible.builtin.debug:
         msg: >-
-          ✅ Demo setup completed successfully!
-          {% if force_clean | bool %}⚠️ All containers were stopped and restarted cleanly.
-          {% elif start_result is defined and start_result.changed %}🚀 New containers started.
-          {% else %}ℹ️ No changes to running containers.{% endif %}
+          Demo setup completed successfully!
+          {% if force_clean | bool %}All containers were stopped and restarted cleanly.
+          {% elif start_result is defined and start_result.changed %}New containers started.
+          {% else %}No changes to running containers.{% endif %}
       when: >-
         not (containers_running | bool and
         not force_clean | bool)
@@ -186,5 +186,5 @@
 
     - name: Display running containers
       ansible.builtin.debug:
-        msg: "🐳 Running container names: {{ running_containers_list.stdout | default('No containers running') | replace('\n', ', ') }}"
+        msg: "Running container names: {{ running_containers_list.stdout | default('No containers running') | replace('\n', ', ') }}"
       when: containers_running | bool or (start_result is defined and start_result.changed)

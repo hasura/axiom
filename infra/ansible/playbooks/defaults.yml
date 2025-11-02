@@ -22,3 +22,68 @@
       ansible.builtin.apt:
         name: rsync
         state: present
+
+    - name: Disable default Ubuntu MOTD scripts
+      ansible.builtin.file:
+        path: "/etc/update-motd.d/{{ item }}"
+        mode: '0644'
+        state: file
+      with_items:
+        - 00-header
+        - 10-help-text
+        - 50-motd-news
+        - 50-landscape-sysinfo
+        - 80-esm
+        - 80-livepatch
+        - 88-esm
+        - 90-updates-available
+        - 92-unattended-upgrades
+        - 97-overlayroot
+        - 98-fsck-at-reboot
+      failed_when: false
+      register: motd_disable_result
+      changed_when: motd_disable_result.changed
+
+    - name: Ensure important MOTD health scripts are enabled
+      ansible.builtin.file:
+        path: "/etc/update-motd.d/{{ item }}"
+        mode: '0755'
+        state: file
+      with_items:
+        - 91-release-upgrade
+        - 95-hwe-eol
+        - 98-reboot-required
+      failed_when: false
+
+    - name: Remove landscape-sysinfo package
+      ansible.builtin.apt:
+        name: landscape-common
+        state: absent
+      failed_when: false
+
+    - name: Remove Ubuntu Pro advertisement
+      ansible.builtin.file:
+        path: /etc/update-motd.d/88-esm
+        state: absent
+      failed_when: false
+      register: esm_remove_result
+      changed_when: esm_remove_result.changed
+
+    - name: Create custom MOTD script
+      ansible.builtin.template:
+        src: motd.j2
+        dest: /etc/update-motd.d/01-custom
+        mode: '0755'
+        owner: root
+        group: root
+
+    - name: Ensure MOTD news is disabled
+      ansible.builtin.lineinfile:
+        path: /etc/default/motd-news
+        regexp: '^ENABLED='
+        line: 'ENABLED=0'
+        create: true
+        state: present
+        mode: '0644'
+        owner: root
+        group: root
