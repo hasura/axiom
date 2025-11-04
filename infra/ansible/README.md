@@ -7,9 +7,9 @@ This repository contains Ansible playbooks for deploying and managing Axiom demo
 The Ansible setup consists of several playbooks that handle different aspects of the deployment:
 
 - **master.yml**: The main entry point that orchestrates the entire deployment process
-- **defaults.yml**: Sets up basic host configuration (hostname, basic tools)
+- **defaults.yml**: Sets up basic host configuration (hostname, tools, custom MOTD)
 - **manage_ssh_keys.yml**: Manages SSH keys for authorized users
-- **configure_docker.yml**: Installs and configures Docker
+- **configure_docker.yml**: Installs and configures Docker with logging limits
 - **ddn.yml**: Installs the Hasura DDN CLI
 - **axiom.yml**: Deploys the Axiom demo environment
 - **cron.yml**: Sets up cron jobs for maintenance tasks
