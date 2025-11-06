@@ -1,0 +1,19 @@
+kind: Subgraph
+version: v2
+definition:
+  name: app
+  generator:
+    rootPath: .
+    namingConvention: snake_case
+  includePaths:
+    - metadata
+  envMapping:
+    APP_POSTGRES_RETAIL_AUTHORIZATION_HEADER:
+      fromEnv: APP_POSTGRES_RETAIL_AUTHORIZATION_HEADER
+    APP_POSTGRES_RETAIL_READ_URL:
+      fromEnv: APP_POSTGRES_RETAIL_READ_URL
+    APP_POSTGRES_RETAIL_WRITE_URL:
+      fromEnv: APP_POSTGRES_RETAIL_WRITE_URL
+  connectors:
+    - path: connector/postgres_retail/connector.yaml
+      connectorLinkName: postgres_retail

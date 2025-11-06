@@ -112,9 +112,8 @@ The script handles both JWT and No-Auth deployments automatically, making deploy
 
 The [connector cleanup tool](./scripts/connector-delete.sh) helps maintain a tidy cloud environment
 
-> [!CAUTION] >
-
-**Caution advised:** This operation removes connectors from the cloud supergraph.
+> [!CAUTION]
+> **Caution advised:** This operation removes connectors from the cloud supergraph.
 
 ```bash
 # Removing the 20 oldest connector builds
