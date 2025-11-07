@@ -157,9 +157,31 @@ class CompleteDatasetGenerator:
         self.output_dir = output_dir
         self.data = {}
         self.product_quality_scores = {}
+        self.used_emails = set()  # Track used emails to ensure uniqueness
+        
+        # Real cities by state for consistent usage throughout the application
+        self.state_cities = {
+            'CA': ['Los Angeles', 'San Francisco', 'San Diego', 'Sacramento', 'San Jose', 'Oakland', 'Fresno', 'Long Beach', 'Santa Ana', 'Anaheim', 'Riverside', 'Bakersfield', 'Stockton', 'Irvine', 'Chula Vista'],
+            'TX': ['Houston', 'Dallas', 'San Antonio', 'Austin', 'Fort Worth', 'El Paso', 'Arlington', 'Corpus Christi', 'Plano', 'Lubbock', 'Irving', 'Laredo', 'Garland', 'Frisco', 'McKinney'],
+            'FL': ['Jacksonville', 'Miami', 'Tampa', 'Orlando', 'St. Petersburg', 'Hialeah', 'Tallahassee', 'Fort Lauderdale', 'Port St. Lucie', 'Cape Coral', 'Pembroke Pines', 'Hollywood', 'Gainesville', 'Miramar', 'Coral Springs'],
+            'NY': ['New York', 'Buffalo', 'Rochester', 'Yonkers', 'Syracuse', 'Albany', 'New Rochelle', 'Mount Vernon', 'Schenectady', 'Utica', 'White Plains', 'Troy', 'Niagara Falls', 'Binghamton', 'Freeport'],
+            'PA': ['Philadelphia', 'Pittsburgh', 'Allentown', 'Erie', 'Reading', 'Scranton', 'Bethlehem', 'Lancaster', 'Harrisburg', 'Altoona', 'York', 'State College', 'Wilkes-Barre', 'Chester', 'Norristown'],
+            'IL': ['Chicago', 'Aurora', 'Naperville', 'Joliet', 'Rockford', 'Elgin', 'Peoria', 'Springfield', 'Waukegan', 'Cicero', 'Champaign', 'Bloomington', 'Arlington Heights', 'Evanston', 'Schaumburg'],
+            'OH': ['Columbus', 'Cleveland', 'Cincinnati', 'Toledo', 'Akron', 'Dayton', 'Parma', 'Canton', 'Youngstown', 'Lorain', 'Hamilton', 'Springfield', 'Kettering', 'Elyria', 'Lakewood'],
+            'GA': ['Atlanta', 'Augusta', 'Columbus', 'Savannah', 'Athens', 'Sandy Springs', 'Roswell', 'Macon', 'Johns Creek', 'Albany', 'Warner Robins', 'Alpharetta', 'Marietta', 'Valdosta', 'Smyrna'],
+            'NC': ['Charlotte', 'Raleigh', 'Greensboro', 'Durham', 'Winston-Salem', 'Fayetteville', 'Cary', 'Wilmington', 'High Point', 'Greenville', 'Asheville', 'Concord', 'Gastonia', 'Jacksonville', 'Chapel Hill'],
+            'MI': ['Detroit', 'Grand Rapids', 'Warren', 'Sterling Heights', 'Ann Arbor', 'Lansing', 'Flint', 'Dearborn', 'Livonia', 'Westland', 'Troy', 'Farmington Hills', 'Kalamazoo', 'Wyoming', 'Southfield']
+        }
+        
         os.makedirs(output_dir, exist_ok=True)
-        print("🚀 C360 Complete Dataset Generator v3.0 - Enterprise Scale")
+        print("🚀 C360 Complete Dataset Generator v3.1 - Enterprise Scale with Data Quality")
         print("📊 Generating 50k customers + contextually accurate reviews")
+        print("✅ Enhanced with data quality rules to prevent:")
+        print("  • Email duplicates")
+        print("  • Order item duplicates")
+        print("  • Date inconsistencies")
+        print("  • Gender value inconsistencies")
+        print("  • Fake city names (uses real US cities)")
         
     def weighted_choice(self, choices, weights):
         """Make a weighted random choice"""
@@ -177,6 +199,68 @@ class CompleteDatasetGenerator:
     def timestamp_between(self, start_date, end_date):
         """Generate random timestamp between two dates"""
         return fake.date_time_between(start_date, end_date)
+    
+    def generate_realistic_email(self, first_name, last_name):
+        """Generate unique realistic email based on first and last names"""
+        # Clean names to remove any special characters and make lowercase
+        first_clean = ''.join(c.lower() for c in first_name if c.isalnum())
+        last_clean = ''.join(c.lower() for c in last_name if c.isalnum())
+        
+        # Common email domains
+        domains = [
+            'gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'icloud.com',
+            'aol.com', 'protonmail.com', 'mail.com', 'zoho.com', 'fastmail.com'
+        ]
+        
+        # Common email patterns using actual names
+        base_patterns = [
+            f"{first_clean}.{last_clean}",           # john.smith
+            f"{first_clean}_{last_clean}",           # john_smith
+            f"{first_clean[0]}{last_clean}",         # jsmith
+            f"{first_clean}{last_clean[0]}",         # johnS
+            f"{first_clean}{last_clean}",            # johnsmith
+            f"{last_clean}.{first_clean}",           # smith.john
+            f"{first_clean}.{last_clean[0]}",        # john.s
+            f"{first_clean[0]}.{last_clean}",        # j.smith
+        ]
+        
+        # Try to generate a unique email
+        max_attempts = 50
+        for attempt in range(max_attempts):
+            # Choose a base pattern
+            pattern = random.choice(base_patterns)
+            
+            # Add numbers for uniqueness if not first attempt or randomly
+            if attempt > 0 or random.random() < 0.3:
+                if random.random() < 0.5:
+                    # Add 2-digit numbers
+                    pattern += str(random.randint(10, 99))
+                else:
+                    # Add 4-digit year-like numbers
+                    pattern += str(random.randint(1970, 2005))
+            
+            # If still not unique after several attempts, add attempt number
+            if attempt > 20:
+                pattern += str(attempt)
+            
+            domain = random.choice(domains)
+            email = f"{pattern}@{domain}"
+            
+            # Check if this email is unique
+            if email not in self.used_emails:
+                self.used_emails.add(email)
+                return email
+        
+        # Fallback - should rarely happen but ensures uniqueness
+        fallback_email = f"{first_clean}.{last_clean}.{len(self.used_emails)}@{random.choice(domains)}"
+        self.used_emails.add(fallback_email)
+        return fallback_email
+    
+    def get_random_city_state(self):
+        """Get a random real city and its corresponding state"""
+        state = random.choice(list(self.state_cities.keys()))
+        city = random.choice(self.state_cities[state])
+        return city, state
 
     def save_to_csv(self, table_name, data, headers):
         """Save data to CSV file"""
@@ -205,20 +289,20 @@ class CompleteDatasetGenerator:
                 suffix = random.choice(['Co', 'Brand', 'Label', 'House', 'Studio', 'Collection', 'Design', 'Atelier', 'Boutique', 'Group'])
                 brand_name = f"{base_name} {suffix} {i+1-len(FashionProvider.fashion_brands)}" if i >= len(FashionProvider.fashion_brands) else FashionProvider.fashion_brands[i]
             
-            brand = {
-                'brand_id': i + 1,
-                'brand_name': brand_name,
-                'brand_tier': self.weighted_choice(tiers, weights),
-                'created_at': self.timestamp_between('-5y', '-1y'),
-                'description': fake.text(max_nb_chars=200),
-                'is_active': random.choice([True, False]) if random.random() < 0.1 else True,
-                'parent_company': fake.company() if random.random() < 0.3 else None,
-                'website_url': fake.url(),
-                'year_established': random.randint(1950, 2022)
-            }
-            brands.append(list(brand.values()))
+            brand_data = [
+                i + 1,  # brand_id
+                brand_name,  # brand_name
+                fake.company() if random.random() < 0.3 else None,  # parent_company
+                self.weighted_choice(tiers, weights),  # brand_tier
+                fake.text(max_nb_chars=200),  # description
+                fake.url(),  # website_url
+                random.randint(1950, 2022),  # year_established
+                random.choice([True, False]) if random.random() < 0.1 else True,  # is_active
+                self.timestamp_between('-5y', '-1y')  # created_at
+            ]
+            brands.append(brand_data)
         
-        headers = ['brand_id', 'brand_name', 'brand_tier', 'created_at', 'description', 'is_active', 'parent_company', 'website_url', 'year_established']
+        headers = ['brand_id', 'brand_name', 'parent_company', 'brand_tier', 'description', 'website_url', 'year_established', 'is_active', 'created_at']
         self.save_to_csv('brands', brands, headers)
         return brands
 
@@ -230,35 +314,35 @@ class CompleteDatasetGenerator:
         # Use all main categories and create more subcategories
         for main_cat, subcats in FashionProvider.fashion_categories.items():
             # Add main category
-            main_category = {
-                'category_id': cat_id,
-                'category_name': main_cat,
-                'created_at': self.timestamp_between('-3y', '-1y'),
-                'description': fake.text(max_nb_chars=150),
-                'is_seasonal': random.choice([True, False]),
-                'parent_category_id': None,
-                'typical_margin_percentage': round(random.uniform(0.15, 0.45), 2)
-            }
-            categories.append(list(main_category.values()))
+            main_category_data = [
+                cat_id,  # category_id
+                main_cat,  # category_name
+                None,  # parent_category_id
+                fake.text(max_nb_chars=150),  # description
+                random.choice([True, False]),  # is_seasonal
+                round(random.uniform(0.15, 0.45), 2),  # typical_margin_percentage
+                self.timestamp_between('-3y', '-1y')  # created_at
+            ]
+            categories.append(main_category_data)
             main_cat_id = cat_id
             cat_id += 1
             
             # Add more subcategories for larger dataset
             num_subcats = min(len(subcats), random.randint(2, 4))
             for subcat in random.sample(subcats, num_subcats):
-                sub_category = {
-                    'category_id': cat_id,
-                    'category_name': subcat,
-                    'created_at': self.timestamp_between('-3y', '-1y'),
-                    'description': fake.text(max_nb_chars=100),
-                    'is_seasonal': random.choice([True, False]),
-                    'parent_category_id': main_cat_id,
-                    'typical_margin_percentage': round(random.uniform(0.15, 0.45), 2)
-                }
-                categories.append(list(sub_category.values()))
+                sub_category_data = [
+                    cat_id,  # category_id
+                    subcat,  # category_name
+                    main_cat_id,  # parent_category_id
+                    fake.text(max_nb_chars=100),  # description
+                    random.choice([True, False]),  # is_seasonal
+                    round(random.uniform(0.15, 0.45), 2),  # typical_margin_percentage
+                    self.timestamp_between('-3y', '-1y')  # created_at
+                ]
+                categories.append(sub_category_data)
                 cat_id += 1
         
-        headers = ['category_id', 'category_name', 'created_at', 'description', 'is_seasonal', 'parent_category_id', 'typical_margin_percentage']
+        headers = ['category_id', 'category_name', 'parent_category_id', 'description', 'is_seasonal', 'typical_margin_percentage', 'created_at']
         self.save_to_csv('categories', categories, headers)
         return categories
 
@@ -273,28 +357,28 @@ class CompleteDatasetGenerator:
             brand = random.choice(brands)
             category = random.choice(categories)
             
-            product = {
-                'product_id': f'P{i+1:07d}',
-                'product_name': f"{fake.catch_phrase()} {category}",
-                'brand': brand,
-                'category_l1': category,
-                'category_l2': random.choice(categories) if random.random() < 0.7 else None,
-                'category_l3': random.choice(categories) if random.random() < 0.3 else None,
-                'created_at': self.timestamp_between('-2y', 'now'),
-                'gender_target': self.weighted_choice(['Women', 'Men', 'Unisex'], [0.45, 0.35, 0.20]),
-                'is_active': True if random.random() < 0.9 else False,
-                'launch_date': self.date_between('-2y', 'now'),
-                'material': random.choice(FashionProvider.fashion_materials),
-                'price_range': self.weighted_choice(['$30-50', '$50-100', '$100-150', '$150-200'], [0.3, 0.4, 0.2, 0.1]),
-                'season': random.choice(['Spring', 'Summer', 'Fall', 'Winter', 'All Season']),
-                'sustainability_score': random.randint(0, 100),
-                'care_instructions': random.choice(['Machine wash cold', 'Dry clean only', 'Hand wash', 'Machine wash warm'])
-            }
-            products.append(list(product.values()))
+            product_data = [
+                f'P{i+1:07d}',  # product_id
+                f"{fake.catch_phrase()} {category}",  # product_name
+                brand,  # brand
+                category,  # category_l1
+                random.choice(categories) if random.random() < 0.7 else None,  # category_l2
+                random.choice(categories) if random.random() < 0.3 else None,  # category_l3
+                self.weighted_choice(['Women', 'Men', 'Unisex'], [0.45, 0.35, 0.20]),  # gender_target
+                random.choice(['Spring', 'Summer', 'Fall', 'Winter', 'All Season']),  # season
+                random.choice(FashionProvider.fashion_materials),  # material
+                random.choice(['Machine wash cold', 'Dry clean only', 'Hand wash', 'Machine wash warm']),  # care_instructions
+                random.randint(0, 100),  # sustainability_score
+                self.weighted_choice(['$30-50', '$50-100', '$100-150', '$150-200'], [0.3, 0.4, 0.2, 0.1]),  # price_range
+                self.date_between('-2y', 'now'),  # launch_date
+                True if random.random() < 0.9 else False,  # is_active
+                self.timestamp_between('-2y', 'now')  # created_at
+            ]
+            products.append(product_data)
         
         headers = ['product_id', 'product_name', 'brand', 'category_l1', 'category_l2', 'category_l3',
-                  'created_at', 'gender_target', 'is_active', 'launch_date', 'material', 'price_range', 
-                  'season', 'sustainability_score', 'care_instructions']
+                  'gender_target', 'season', 'material', 'care_instructions', 'sustainability_score', 'price_range',
+                  'launch_date', 'is_active', 'created_at']
         self.save_to_csv('products', products, headers)
         return products
 
@@ -309,22 +393,22 @@ class CompleteDatasetGenerator:
             num_variants = random.randint(3, 6)
             
             for _ in range(num_variants):
-                variant = {
-                    'variant_id': variant_id,
-                    'product_id': product_id,
-                    'sku': f"SKU{product_id[1:]}V{variant_id:04d}",
-                    'size': random.choice(FashionProvider.sizes),
-                    'color': random.choice(FashionProvider.colors),
-                    'additional_price': round(random.uniform(0, 20), 2),
-                    'stock_quantity': random.randint(10, 500),
-                    'weight_oz': round(random.uniform(2, 15), 2),
-                    'created_at': self.timestamp_between('-2y', 'now')
-                }
-                variants.append(list(variant.values()))
+                variant_data = [
+                    variant_id,  # variant_id
+                    product_id,  # product_id
+                    f"SKU{product_id[1:]}V{variant_id:04d}",  # sku
+                    random.choice(FashionProvider.sizes),  # size
+                    random.choice(FashionProvider.colors),  # color
+                    round(random.uniform(0, 20), 2),  # additional_price
+                    round(random.uniform(2, 15), 2),  # weight_oz
+                    random.randint(10, 500),  # stock_quantity
+                    self.timestamp_between('-2y', 'now')  # created_at
+                ]
+                variants.append(variant_data)
                 variant_id += 1
         
-        headers = ['variant_id', 'product_id', 'sku', 'size', 'color', 'additional_price', 
-                  'stock_quantity', 'weight_oz', 'created_at']
+        headers = ['variant_id', 'product_id', 'sku', 'size', 'color', 'additional_price',
+                  'weight_oz', 'stock_quantity', 'created_at']
         self.save_to_csv('product_variants', variants, headers)
         return variants
 
@@ -332,11 +416,14 @@ class CompleteDatasetGenerator:
         """Generate customers table (50000 customers)"""
         customers = []
         
-        gender_dist = {'male': 0.49, 'female': 0.51}
+        # Standardized gender values to prevent inconsistencies
+        valid_genders = ['male', 'female', 'non-binary', 'prefer_not_to_say']
+        gender_dist = {'male': 0.48, 'female': 0.49, 'non-binary': 0.02, 'prefer_not_to_say': 0.01}
         age_ranges = {'18-24': 0.12, '25-34': 0.20, '35-44': 0.17, '45-54': 0.16, '55-64': 0.15, '65+': 0.20}
         channels = {'organic': 0.40, 'paid_ads': 0.25, 'referral': 0.15, 'social': 0.10, 'email': 0.10}
         
         for i in range(50000):
+            # Use standardized gender values only
             gender = self.weighted_choice(list(gender_dist.keys()), list(gender_dist.values()))
             age_range = self.weighted_choice(list(age_ranges.keys()), list(age_ranges.values()))
             
@@ -357,64 +444,74 @@ class CompleteDatasetGenerator:
             dob = fake.date_between(date(birth_year, 1, 1), date(birth_year, 12, 31))
             reg_date = self.timestamp_between('-3y', 'now')
             
-            customer = {
-                'customer_id': i + 1,
-                'first_name': fake.first_name_male() if gender == 'male' else fake.first_name_female(),
-                'last_name': fake.last_name(),
-                'email': fake.email(),
-                'phone': fake.phone_number()[:20],
-                'date_of_birth': dob,
-                'gender': gender,
-                'registration_date': reg_date,
-                'acquisition_channel': self.weighted_choice(list(channels.keys()), list(channels.values())),
-                'marketing_consent': random.random() < 0.70,
-                'account_status': 'active' if random.random() < 0.90 else 'inactive',
-                'preferred_language': 'English',
-                'created_at': reg_date,
-                'updated_at': self.timestamp_between(reg_date, 'now'),
-                'last_activity_date': self.timestamp_between(reg_date, 'now')
-            }
-            customers.append(list(customer.values()))
+            # Generate name-based email using actual first and last names
+            first_name = fake.first_name_male() if gender == 'male' else fake.first_name_female()
+            last_name = fake.last_name()
+            email = self.generate_realistic_email(first_name, last_name)
+            
+            # Create customer data in database schema column order to match:
+            # customer_id, email, phone, first_name, last_name, date_of_birth, gender,
+            # acquisition_channel, registration_date, account_status, preferred_language,
+            # marketing_consent, last_activity_date, created_at, updated_at
+            customer_data = [
+                i + 1,  # customer_id
+                email,  # email - now uses name-based email
+                fake.phone_number()[:20],  # phone
+                first_name,  # first_name
+                last_name,  # last_name
+                dob,  # date_of_birth
+                gender,  # gender
+                self.weighted_choice(list(channels.keys()), list(channels.values())),  # acquisition_channel
+                reg_date,  # registration_date
+                'active' if random.random() < 0.90 else 'inactive',  # account_status
+                'en',  # preferred_language (use 'en' instead of 'English' for consistency)
+                random.random() < 0.70,  # marketing_consent
+                self.timestamp_between(reg_date, 'now'),  # last_activity_date
+                reg_date,  # created_at
+                self.timestamp_between(reg_date, 'now')  # updated_at
+            ]
+            customers.append(customer_data)
         
-        headers = ['customer_id', 'first_name', 'last_name', 'email', 'phone', 'date_of_birth', 
-                  'gender', 'registration_date', 'acquisition_channel', 'marketing_consent', 
-                  'account_status', 'preferred_language', 'created_at', 'updated_at', 'last_activity_date']
+        headers = ['customer_id', 'email', 'phone', 'first_name', 'last_name', 'date_of_birth',
+                  'gender', 'acquisition_channel', 'registration_date', 'account_status',
+                  'preferred_language', 'marketing_consent', 'last_activity_date', 'created_at', 'updated_at']
         self.save_to_csv('customers', customers, headers)
         return customers
 
     def generate_customer_addresses(self):
-        """Generate customer addresses"""
+        """Generate customer addresses using real cities"""
         customers = self.data['customers']
         addresses = []
-        
-        states = ['CA', 'TX', 'FL', 'NY', 'PA', 'IL', 'OH', 'GA', 'NC', 'MI']
         
         for customer in customers:
             customer_id = customer[0]
             num_addresses = 1 if random.random() < 0.5 else 2
             
             for j in range(num_addresses):
-                address = {
-                    'address_id': self.generate_id('ADDR'),
-                    'customer_id': customer_id,
-                    'address_type': 'primary' if j == 0 else random.choice(['billing', 'shipping', 'work']),
-                    'is_primary': j == 0,
-                    'street_address': fake.street_address(),
-                    'city': fake.city(),
-                    'state_province': random.choice(states),
-                    'postal_code': fake.postcode(),
-                    'country': 'US',
-                    'created_at': self.timestamp_between('-3y', 'now')
-                }
-                addresses.append(list(address.values()))
+                # Use the centralized city/state selection method
+                chosen_city, chosen_state = self.get_random_city_state()
+                
+                address_data = [
+                    self.generate_id('ADDR'),  # address_id
+                    customer_id,  # customer_id
+                    'primary' if j == 0 else random.choice(['billing', 'shipping', 'work']),  # address_type
+                    fake.street_address(),  # street_address
+                    chosen_city,  # city - now using real cities
+                    chosen_state,  # state_province - matches the chosen city
+                    fake.postcode(),  # postal_code
+                    'US',  # country
+                    j == 0,  # is_primary
+                    self.timestamp_between('-3y', 'now')  # created_at
+                ]
+                addresses.append(address_data)
         
-        headers = ['address_id', 'customer_id', 'address_type', 'is_primary', 'street_address', 
-                  'city', 'state_province', 'postal_code', 'country', 'created_at']
+        headers = ['address_id', 'customer_id', 'address_type', 'street_address', 'city',
+                  'state_province', 'postal_code', 'country', 'is_primary', 'created_at']
         self.save_to_csv('customer_addresses', addresses, headers)
         return addresses
 
     def generate_orders(self):
-        """Generate orders (120k-150k orders)"""
+        """Generate orders (120k-150k orders) with date consistency"""
         customers = self.data['customers']
         num_orders = random.randint(120000, 150000)
         orders = []
@@ -425,45 +522,50 @@ class CompleteDatasetGenerator:
         for i in range(num_orders):
             customer = random.choice(customers)
             customer_id = customer[0]
+            customer_reg_date = customer[8]  # registration_date is at index 8
             
             order_value = max(20, min(200, np.random.normal(60, 15)))
-            order_date = self.timestamp_between('-2y', 'now')
+            # Ensure order_date is after customer registration_date
+            order_date = self.timestamp_between(customer_reg_date, 'now')
             
-            order = {
-                'order_id': i + 1,
-                'customer_id': customer_id,
-                'order_date': order_date,
-                'order_status': self.weighted_choice(list(status_dist.keys()), list(status_dist.values())),
-                'total_amount': round(order_value, 2),
-                'subtotal_amount': round(order_value * 0.9, 2),
-                'tax_amount': round(order_value * 0.08, 2),
-                'shipping_amount': round(random.uniform(0, 15), 2),
-                'discount_amount': round(random.uniform(0, order_value * 0.2), 2) if random.random() < 0.3 else 0,
-                'payment_method': self.weighted_choice(list(payment_methods.keys()), list(payment_methods.values())),
-                'currency': 'USD',
-                'channel': random.choice(['web', 'mobile', 'store', 'phone']),
-                'device_type': random.choice(['desktop', 'mobile', 'tablet']),
-                'shipping_method': random.choice(['standard', 'express', 'overnight', 'pickup']),
-                'is_first_order': random.random() < 0.2,
-                'promo_code': fake.lexify('PROMO????') if random.random() < 0.2 else None,
-                'store_location': fake.city() if random.random() < 0.1 else None,
-                'utm_source': random.choice(['google', 'facebook', 'instagram', 'email', 'direct']) if random.random() < 0.6 else None,
-                'utm_campaign': fake.lexify('campaign_???') if random.random() < 0.4 else None,
-                'created_at': order_date,
-                'updated_at': self.timestamp_between(order_date, 'now')
-            }
-            orders.append(list(order.values()))
+            # Use real city for store location
+            store_city, store_state = self.get_random_city_state()
+            store_location = f"{store_city}, {store_state}" if random.random() < 0.1 else None
+            
+            order_data = [
+                i + 1,  # order_id
+                customer_id,  # customer_id
+                order_date,  # order_date
+                self.weighted_choice(list(status_dist.keys()), list(status_dist.values())),  # order_status
+                random.choice(['web', 'mobile', 'store', 'phone']),  # channel
+                store_location,  # store_location - now uses real cities
+                round(order_value * 0.9, 2),  # subtotal_amount
+                round(order_value * 0.08, 2),  # tax_amount
+                round(random.uniform(0, 15), 2),  # shipping_amount
+                round(random.uniform(0, order_value * 0.2), 2) if random.random() < 0.3 else 0,  # discount_amount
+                round(order_value, 2),  # total_amount
+                'USD',  # currency
+                self.weighted_choice(list(payment_methods.keys()), list(payment_methods.values())),  # payment_method
+                random.choice(['standard', 'express', 'overnight', 'pickup']),  # shipping_method
+                fake.lexify('PROMO????') if random.random() < 0.2 else None,  # promo_code
+                random.random() < 0.2,  # is_first_order
+                random.choice(['desktop', 'mobile', 'tablet']),  # device_type
+                random.choice(['google', 'facebook', 'instagram', 'email', 'direct']) if random.random() < 0.6 else None,  # utm_source
+                fake.lexify('campaign_???') if random.random() < 0.4 else None,  # utm_campaign
+                order_date,  # created_at
+                self.timestamp_between(order_date, 'now')  # updated_at
+            ]
+            orders.append(order_data)
         
-        headers = ['order_id', 'customer_id', 'order_date', 'order_status', 'total_amount', 
-                  'subtotal_amount', 'tax_amount', 'shipping_amount', 'discount_amount', 
-                  'payment_method', 'currency', 'channel', 'device_type', 'shipping_method', 
-                  'is_first_order', 'promo_code', 'store_location', 'utm_source', 'utm_campaign', 
-                  'created_at', 'updated_at']
+        headers = ['order_id', 'customer_id', 'order_date', 'order_status', 'channel', 'store_location',
+                  'subtotal_amount', 'tax_amount', 'shipping_amount', 'discount_amount', 'total_amount',
+                  'currency', 'payment_method', 'shipping_method', 'promo_code', 'is_first_order',
+                  'device_type', 'utm_source', 'utm_campaign', 'created_at', 'updated_at']
         self.save_to_csv('orders', orders, headers)
         return orders
 
     def generate_order_items(self):
-        """Generate order items"""
+        """Generate order items with duplicate prevention"""
         orders = self.data['orders']
         products = self.data['products']
         variants = self.data['product_variants']
@@ -473,41 +575,67 @@ class CompleteDatasetGenerator:
         
         for order in orders:
             order_id = order[0]
-            order_total = order[4]
+            order_total = order[10]  # total_amount is now at position 10
             
             num_items = random.randint(1, 4)
             
-            for _ in range(num_items):
-                variant = random.choice(variants)
-                product_id = variant[1]
+            # Track used combinations for this order to prevent duplicates
+            used_combinations = set()
+            
+            items_added = 0
+            max_attempts = 10
+            
+            while items_added < num_items:
+                attempt = 0
+                while attempt < max_attempts:
+                    variant = random.choice(variants)
+                    product_id = variant[1]
+                    size = variant[3]
+                    color = variant[4]
+                    
+                    # Create combination key to check for duplicates
+                    combination_key = (product_id, size, color)
+                    
+                    # If this combination is not used in this order, use it
+                    if combination_key not in used_combinations:
+                        used_combinations.add(combination_key)
+                        
+                        quantity = max(1, int(np.random.normal(1.2, 0.5)))
+                        if quantity > 3:
+                            quantity = 3
+                        
+                        unit_price = round(order_total / num_items / quantity, 2)
+                        total_price = round(unit_price * quantity, 2)
+                        
+                        item_data = [
+                            item_id,  # order_item_id
+                            order_id,  # order_id
+                            product_id,  # product_id
+                            variant[2],  # sku
+                            quantity,  # quantity
+                            unit_price,  # unit_price
+                            total_price,  # total_price
+                            round(random.uniform(0, total_price * 0.1), 2) if random.random() < 0.2 else 0,  # discount_applied
+                            total_price,  # final_price
+                            size,  # size
+                            color,  # color
+                            fake.sentence(nb_words=3) if random.random() < 0.02 else None,  # personalization
+                            random.random() < 0.05  # gift_wrap
+                        ]
+                        order_items.append(item_data)
+                        item_id += 1
+                        items_added += 1
+                        break
+                    
+                    attempt += 1
                 
-                quantity = max(1, int(np.random.normal(1.2, 0.5)))
-                if quantity > 3:
-                    quantity = 3
-                
-                unit_price = round(order_total / num_items / quantity, 2)
-                total_price = round(unit_price * quantity, 2)
-                
-                item = {
-                    'order_item_id': item_id,
-                    'order_id': order_id,
-                    'product_id': product_id,
-                    'sku': variant[2],
-                    'size': variant[3],
-                    'color': variant[4],
-                    'quantity': quantity,
-                    'unit_price': unit_price,
-                    'total_price': total_price,
-                    'final_price': total_price,
-                    'discount_applied': round(random.uniform(0, total_price * 0.1), 2) if random.random() < 0.2 else 0,
-                    'gift_wrap': random.random() < 0.05,
-                    'personalization': fake.sentence(nb_words=3) if random.random() < 0.02 else None
-                }
-                order_items.append(list(item.values()))
-                item_id += 1
+                # If we couldn't find a unique combination after max_attempts,
+                # break to avoid infinite loop
+                if attempt >= max_attempts:
+                    break
         
-        headers = ['order_item_id', 'order_id', 'product_id', 'sku', 'size', 'color', 'quantity', 
-                  'unit_price', 'total_price', 'final_price', 'discount_applied', 'gift_wrap', 'personalization']
+        headers = ['order_item_id', 'order_id', 'product_id', 'sku', 'quantity', 'unit_price', 'total_price',
+                  'discount_applied', 'final_price', 'size', 'color', 'personalization', 'gift_wrap']
         self.save_to_csv('order_items', order_items, headers)
         return order_items
 
@@ -526,30 +654,30 @@ class CompleteDatasetGenerator:
             order_id = order[0]
             customer_id = order[1]
             order_date = order[2]
-            order_total = order[4]
+            order_total = order[10]  # total_amount is now at position 10
             
             return_date = self.timestamp_between(order_date, 'now')
             
-            return_record = {
-                'return_id': self.generate_id('RET'),
-                'order_id': order_id,
-                'customer_id': customer_id,
-                'return_date': return_date,
-                'return_reason': self.weighted_choice(list(return_reasons.keys()), list(return_reasons.values())),
-                'return_status': random.choice(['pending', 'approved', 'processed', 'completed']),
-                'refund_amount': round(order_total * random.uniform(0.5, 1.0), 2),
-                'refund_method': self.weighted_choice(list(refund_methods.keys()), list(refund_methods.values())),
-                'restocking_fee': round(random.uniform(0, 15), 2),
-                'return_method': random.choice(['mail', 'store', 'pickup']),
-                'condition_received': random.choice(['new', 'like_new', 'good', 'fair', 'poor']),
-                'processed_by': fake.name(),
-                'created_at': return_date
-            }
-            returns.append(list(return_record.values()))
+            return_data = [
+                self.generate_id('RET'),  # return_id
+                order_id,  # order_id
+                customer_id,  # customer_id
+                return_date,  # return_date
+                self.weighted_choice(list(return_reasons.keys()), list(return_reasons.values())),  # return_reason
+                random.choice(['mail', 'store', 'pickup']),  # return_method
+                round(order_total * random.uniform(0.5, 1.0), 2),  # refund_amount
+                self.weighted_choice(list(refund_methods.keys()), list(refund_methods.values())),  # refund_method
+                random.choice(['pending', 'approved', 'processed', 'completed']),  # return_status
+                round(random.uniform(0, 15), 2),  # restocking_fee
+                random.choice(['new', 'like_new', 'good', 'fair', 'poor']),  # condition_received
+                fake.name(),  # processed_by
+                return_date  # created_at
+            ]
+            returns.append(return_data)
         
-        headers = ['return_id', 'order_id', 'customer_id', 'return_date', 'return_reason', 
-                  'return_status', 'refund_amount', 'refund_method', 'restocking_fee', 
-                  'return_method', 'condition_received', 'processed_by', 'created_at']
+        headers = ['return_id', 'order_id', 'customer_id', 'return_date', 'return_reason', 'return_method',
+                  'refund_amount', 'refund_method', 'return_status', 'restocking_fee',
+                  'condition_received', 'processed_by', 'created_at']
         self.save_to_csv('returns', returns, headers)
         return returns
 
@@ -575,18 +703,18 @@ class CompleteDatasetGenerator:
             
             for item in selected_items:
                 order_item_id = item[0]
-                quantity = item[6]
+                quantity = int(item[4])  # quantity is at position 4
                 
-                return_item = {
-                    'return_item_id': self.generate_id('RI'),
-                    'return_id': return_id,
-                    'order_item_id': order_item_id,
-                    'quantity_returned': min(quantity, random.randint(1, quantity)),
-                    'item_condition': self.weighted_choice(list(conditions.keys()), list(conditions.values())),
-                    'refund_eligible': random.random() < 0.9,
-                    'restockable': random.random() < 0.8
-                }
-                return_items.append(list(return_item.values()))
+                return_item_data = [
+                    self.generate_id('RI'),  # return_item_id
+                    return_id,  # return_id
+                    order_item_id,  # order_item_id
+                    min(quantity, random.randint(1, quantity)),  # quantity_returned
+                    self.weighted_choice(list(conditions.keys()), list(conditions.values())),  # item_condition
+                    random.random() < 0.9,  # refund_eligible
+                    random.random() < 0.8  # restockable
+                ]
+                return_items.append(return_item_data)
         
         headers = ['return_item_id', 'return_id', 'order_item_id', 'quantity_returned', 
                   'item_condition', 'refund_eligible', 'restockable']
@@ -706,7 +834,7 @@ class CompleteDatasetGenerator:
         self.assign_product_quality_scores()
         
         # Create product lookup
-        products = {row[0]: (row[1], row[10]) for row in self.data['products']}  # id: (name, material)
+        products = {row[0]: (row[1], row[8]) for row in self.data['products']}  # id: (name, material)
         
         # Get delivered order items
         delivered_orders = set(row[0] for row in self.data['orders'] if row[3] == 'delivered')
@@ -753,25 +881,25 @@ class CompleteDatasetGenerator:
             # Convert product_id to integer for reviews table
             product_id_int = abs(hash(product_id)) % 1000000
             
-            review = {
-                'review_id': review_id,
-                'customer_id': customer_id,
-                'product_id': product_id_int,
-                'order_id': order_id,
-                'rating': rating,
-                'review_title': review_title,
-                'review_text': review_text,
-                'verified_purchase': True,
-                'helpful_count': helpful_count,
-                'not_helpful_count': not_helpful_count,
-                'fit_rating': fit_rating,
-                'quality_rating': quality_rating,
-                'style_rating': style_rating,
-                'value_rating': value_rating,
-                'sentiment_score': sentiment_score,
-                'created_at': created_at
-            }
-            reviews.append(list(review.values()))
+            review = [
+                review_id,
+                customer_id,
+                product_id_int,
+                order_id,
+                rating,
+                review_title,
+                review_text,
+                True,  # verified_purchase
+                helpful_count,
+                not_helpful_count,
+                fit_rating,
+                quality_rating,
+                style_rating,
+                value_rating,
+                sentiment_score,
+                created_at
+            ]
+            reviews.append(review)
             review_id += 1
         
         headers = ['review_id', 'customer_id', 'product_id', 'order_id', 'rating', 'review_title',
@@ -849,28 +977,28 @@ class CompleteDatasetGenerator:
             else:  # Pinterest
                 post_url = f"https://pinterest.com/{username}/pin/{post_id}"
             
-            mention = {
-                'mention_id': self.generate_id('SM'),
-                'customer_id': customer[0] if customer else random.randint(1, 50000),
-                'platform': platform,
-                'post_url': post_url,
-                'username': username,
-                'post_date': fake.date_time_between('-2y', 'now'),
-                'post_type': random.choice(SocialMediaProvider.post_types),
-                'post_text': post_text.replace("'", "''"),  # Escape quotes
-                'hashtags': hashtags,
-                'mentions': f"@{brand_name.lower().replace(' ', '')}" if brand else "",
-                'engagement_count': engagement_count,
-                'follower_count': follower_count,
-                'sentiment_score': round(random.uniform(-1, 1), 2),
-                'brand_mentioned': brand_name if brand else "",
-                'products_tagged': product[0] if product else "",  # product_id is at index 0
-                'influence_score': influence_score,
-                'ugc_usage_rights': random.choice([True, False]),
-                'campaign_tagged': f"campaign_{random.choice(['spring', 'summer', 'fall', 'holiday'])}" if random.random() < 0.3 else ""
-            }
+            mention = [
+                self.generate_id('SM'),
+                customer[0] if customer else random.randint(1, 50000),
+                platform,
+                post_url,
+                username,
+                fake.date_time_between('-2y', 'now'),
+                random.choice(SocialMediaProvider.post_types),
+                post_text.replace("'", "''"),  # Escape quotes
+                hashtags,
+                f"@{brand_name.lower().replace(' ', '')}" if brand else "",
+                engagement_count,
+                follower_count,
+                round(random.uniform(-1, 1), 2),
+                brand_name if brand else "",
+                product[0] if product else "",  # product_id is at index 0
+                influence_score,
+                random.choice([True, False]),
+                f"campaign_{random.choice(['spring', 'summer', 'fall', 'holiday'])}" if random.random() < 0.3 else ""
+            ]
             
-            mentions.append(list(mention.values()))
+            mentions.append(mention)
             
         headers = [
             'mention_id', 'customer_id', 'platform', 'post_url', 'username', 'post_date',
@@ -935,30 +1063,30 @@ class CompleteDatasetGenerator:
                 terms = ['dress', 'shoes', 'jacket', 'jeans', 'top', 'accessories', 'sale']
                 search_terms = [random.choice(terms)]
             
-            session = {
-                'session_id': self.generate_id('SESS'),
-                'customer_id': customer[0] if customer else None,
-                'anonymous_id': self.generate_id('ANON') if not customer else None,
-                'session_start': session_start,
-                'session_end': session_end,
-                'duration_minutes': duration,
-                'page_views': page_views,
-                'pages_visited': pages_visited,
-                'products_viewed': ', '.join(viewed_products),
-                'search_terms': ', '.join(search_terms),
-                'device_type': device,
-                'browser': self.weighted_choice(browsers, browser_weights),
-                'operating_system': self.weighted_choice(os_list, os_weights),
-                'traffic_source': self.weighted_choice(traffic_sources, traffic_weights),
-                'utm_parameters': f"utm_source={random.choice(['google', 'facebook', 'instagram'])}" if random.random() < 0.4 else "",
-                'geo_location': fake.city() + ', ' + fake.state_abbr(),
-                'cart_value': round(random.uniform(0, 300), 2) if random.random() < 0.3 else 0,
-                'abandoned_cart': random.choice([True, False]) if random.random() < 0.2 else False,
-                'conversion_event': 'purchase' if random.random() < 0.05 else "",  # 5% conversion rate
-                'exit_page': random.choice(pages)
-            }
+            session = [
+                self.generate_id('SESS'),
+                customer[0] if customer else None,
+                self.generate_id('ANON') if not customer else None,
+                session_start,
+                session_end,
+                duration,
+                page_views,
+                pages_visited,
+                ', '.join(viewed_products),
+                ', '.join(search_terms),
+                device,
+                self.weighted_choice(browsers, browser_weights),
+                self.weighted_choice(os_list, os_weights),
+                self.weighted_choice(traffic_sources, traffic_weights),
+                f"utm_source={random.choice(['google', 'facebook', 'instagram'])}" if random.random() < 0.4 else "",
+                f"{self.get_random_city_state()[0]}, {self.get_random_city_state()[1]}",
+                round(random.uniform(0, 300), 2) if random.random() < 0.3 else 0,
+                random.choice([True, False]) if random.random() < 0.2 else False,
+                'purchase' if random.random() < 0.05 else "",  # 5% conversion rate
+                random.choice(pages)
+            ]
             
-            sessions.append(list(session.values()))
+            sessions.append(session)
             
         headers = [
             'session_id', 'customer_id', 'anonymous_id', 'session_start', 'session_end',
@@ -998,18 +1126,18 @@ class CompleteDatasetGenerator:
             clicked = random.random() < 0.15
             purchased = random.random() < 0.03 if clicked else False
             
-            match = {
-                'match_id': f'MATCH_{(i+1):06d}',
-                'customer_id': str(customer[0]),  # customer_id
-                'product_id': product[0],  # product_id
-                'similarity_score': similarity_score,
-                'recommendation_type': random.choice(recommendation_types),
-                'match_date': match_date,
-                'clicked': clicked,
-                'purchased': purchased,
-                'recommendation_context': random.choice(contexts)
-            }
-            matches.append(list(match.values()))
+            match = [
+                f'MATCH_{(i+1):06d}',
+                str(customer[0]),  # customer_id
+                product[0],  # product_id
+                similarity_score,
+                random.choice(recommendation_types),
+                match_date,
+                clicked,
+                purchased,
+                random.choice(contexts)
+            ]
+            matches.append(match)
         
         # Generate high-performing matches (clicked and purchased)
         start_idx = int(num_matches * 0.83)
@@ -1020,23 +1148,23 @@ class CompleteDatasetGenerator:
             similarity_score = round(random.uniform(0.8, 1.0), 3)  # Higher scores
             match_date = self.timestamp_between('-30d', 'now')
             
-            match = {
-                'match_id': f'MATCH_{(i+1):06d}',
-                'customer_id': str(customer[0]),
-                'product_id': product[0],
-                'similarity_score': similarity_score,
-                'recommendation_type': self.weighted_choice(
+            match = [
+                f'MATCH_{(i+1):06d}',
+                str(customer[0]),
+                product[0],
+                similarity_score,
+                self.weighted_choice(
                     ['style_based', 'trend_similar', 'brand_affinity'], [0.4, 0.35, 0.25]
                 ),
-                'match_date': match_date,
-                'clicked': True,
-                'purchased': True,
-                'recommendation_context': self.weighted_choice(
+                match_date,
+                True,
+                True,
+                self.weighted_choice(
                     ['product_page_similar', 'cart_recommendations', 'email_campaign'],
                     [0.4, 0.35, 0.25]
                 )
-            }
-            matches.append(list(match.values()))
+            ]
+            matches.append(match)
         
         # Generate recent matches with no engagement
         start_idx = int(num_matches * 0.86)
@@ -1047,22 +1175,22 @@ class CompleteDatasetGenerator:
             similarity_score = round(random.uniform(0.5, 1.0), 3)
             match_date = self.timestamp_between('-7d', 'now')
             
-            match = {
-                'match_id': f'MATCH_{(i+1):06d}',
-                'customer_id': str(customer[0]),
-                'product_id': product[0],
-                'similarity_score': similarity_score,
-                'recommendation_type': self.weighted_choice(
+            match = [
+                f'MATCH_{(i+1):06d}',
+                str(customer[0]),
+                product[0],
+                similarity_score,
+                self.weighted_choice(
                     ['style_based', 'color_match', 'browse_history_based'], [0.35, 0.35, 0.30]
                 ),
-                'match_date': match_date,
-                'clicked': False,
-                'purchased': False,
-                'recommendation_context': self.weighted_choice(
+                match_date,
+                False,
+                False,
+                self.weighted_choice(
                     ['homepage_recommendations', 'email_campaign'], [0.5, 0.5]
                 )
-            }
-            matches.append(list(match.values()))
+            ]
+            matches.append(match)
         
         headers = ['match_id', 'customer_id', 'product_id', 'similarity_score',
                   'recommendation_type', 'match_date', 'clicked', 'purchased',
@@ -1118,7 +1246,9 @@ class CompleteDatasetGenerator:
         print(f"  ✅ Contextually accurate reviews with quality correlation")
         print(f"  ✅ Foreign key compatible data types")
         print(f"  ✅ Complete referential integrity maintained")
-        print(f"\n🚀 Ready for database loading!")
+        print(f"  ✅ Complete referential integrity maintained")
+        
+        return self.data
 
 if __name__ == "__main__":
     generator = CompleteDatasetGenerator()
