@@ -25,18 +25,28 @@ The following dependencies are required for running the demos:
 # Cloning the repository
 git clone git@github.com:hasura/axiom.git
 
-cd axiom/demos/<demo>
+# Make sure your'e inside root
+cd axiom
 
 # Copy env vars to your demo data generator
 cp .data/.env.template .data/<demo>/.env
 
+cd demos/<demo>
+
 # Start the backend data services for the demo
 ddn run dataset-up
 
+# Build supergraph locally
+ddn supergraph build local
+
 # Running a demo (PromptQL + DDN)
 ddn run docker-start
-```
 
+# Open a new terminal window and Run the PromptQL playground in CHROME browser.
+ddn console --local
+
+# PromptQL Playground should open in a new window. If it doesn't work, try with Chrome browser.
+```
 ## 🔍 Overview
 
 Axiom brings PromptQL's capabilities to life through industry-specific demos:

@@ -5,9 +5,12 @@ Anti-money laundering compliance with real-time monitoring and automated flaggin
 ## 🚀 Quick Start
 
 ```bash
+git clone git@github.com:hasura/axiom.git
+cd axiom
+cp .data/.env.template .data/aml/.env
 cd demos/aml
-cp ../../.data/.env.template ../../.data/aml/.env
 ddn run dataset-up
+ddn supergraph build local
 ddn run docker-start
 ```
 
