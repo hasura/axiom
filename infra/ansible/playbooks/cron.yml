@@ -14,7 +14,7 @@
         state: directory
         recurse: true
 
-    - name: Upload connector-keepalive"
+    - name: Deploy demo monitoring script
       ansible.posix.synchronize:
         src: "{{ playbook_dir }}/../../../scripts/connector-keepalive.sh"
         dest: "/home/ubuntu/axiom-scripts/connector-keepalive.sh"
@@ -25,12 +25,12 @@
       delegate_to: localhost
       become: false
 
-    - name: Check if keepalive script is available
+    - name: Verify monitoring script exists
       ansible.builtin.stat:
         path: /home/ubuntu/axiom-scripts/connector-keepalive.sh
       register: keepalive
 
-    - name: Set up cron for metrics filler
+    - name: Configure health check cron job
       ansible.builtin.cron:
         name: "Axiom connector-keepalive"
         job: >
