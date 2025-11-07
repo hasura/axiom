@@ -63,6 +63,26 @@
         groups: docker
         append: true
 
+    - name: Create Docker daemon configuration directory
+      ansible.builtin.file:
+        path: /etc/docker
+        state: directory
+        mode: "0755"
+
+    - name: Configure Docker daemon with logging options
+      ansible.builtin.copy:
+        content: |
+          {
+            "log-driver": "json-file",
+            "log-opts": {
+              "max-size": "100m",
+              "max-file": "3"
+            }
+          }
+        dest: /etc/docker/daemon.json
+        mode: "0644"
+      notify: Restart Docker
+
     - name: Enable and start Docker service
       ansible.builtin.systemd:
         name: docker
@@ -73,3 +93,9 @@
     - name: Refresh APT cache
       ansible.builtin.apt:
         update_cache: true
+
+    - name: Restart Docker
+      ansible.builtin.systemd:
+        name: docker
+        state: restarted
+        daemon_reload: true
