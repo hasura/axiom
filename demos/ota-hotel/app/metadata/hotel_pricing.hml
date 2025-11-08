@@ -1,0 +1,182 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: hotel_pricing
+  description: "Object type for hotel.pricing. Description: Historical and current
+    pricing data for hotel rooms"
+  fields:
+    - name: availability_status
+      type: string
+    - name: created_at
+      type: timestamp
+    - name: date
+      type: date!
+    - name: hotel_id
+      type: int_32!
+    - name: price_per_night
+      type: bigdecimal!
+    - name: pricing_id
+      type: int_32!
+    - name: room_id
+      type: int_32
+    - name: updated_at
+      type: timestamp
+  graphql:
+    typeName: hotel_pricing
+    inputTypeName: hotel_pricing_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: pg
+      dataConnectorObjectType: hotel.pricing
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: hotel_pricing
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - availability_status
+          - created_at
+          - date
+          - hotel_id
+          - price_per_night
+          - pricing_id
+          - room_id
+          - updated_at
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: hotel_pricing_bool_exp
+  operand:
+    object:
+      type: hotel_pricing
+      comparableFields:
+        - fieldName: availability_status
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: created_at
+          booleanExpressionType: timestamp_without_time_zone_bool_exp
+        - fieldName: date
+          booleanExpressionType: date_bool_exp
+        - fieldName: hotel_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: price_per_night
+          booleanExpressionType: decimal_bool_exp
+        - fieldName: pricing_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: room_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: updated_at
+          booleanExpressionType: timestamp_without_time_zone_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: hotel_pricing_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: hotel_pricing_agg_exp
+  operand:
+    object:
+      aggregatedType: hotel_pricing
+      aggregatableFields:
+        - fieldName: availability_status
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: created_at
+          aggregateExpression: timestamp_without_time_zone_agg_exp
+        - fieldName: date
+          aggregateExpression: date_agg_exp
+        - fieldName: hotel_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: price_per_night
+          aggregateExpression: decimal_agg_exp
+        - fieldName: pricing_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: room_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: updated_at
+          aggregateExpression: timestamp_without_time_zone_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: hotel_pricing_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: hotel_pricing_order_by_exp
+  operand:
+    object:
+      orderedType: hotel_pricing
+      orderableFields:
+        - fieldName: availability_status
+          orderByExpression: string_order_by_exp
+        - fieldName: created_at
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: date
+          orderByExpression: date_order_by_exp
+        - fieldName: hotel_id
+          orderByExpression: int_32_order_by_exp
+        - fieldName: price_per_night
+          orderByExpression: bigdecimal_order_by_exp
+        - fieldName: pricing_id
+          orderByExpression: int_32_order_by_exp
+        - fieldName: room_id
+          orderByExpression: int_32_order_by_exp
+        - fieldName: updated_at
+          orderByExpression: timestamp_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: hotel_pricing_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: hotel_pricing
+  objectType: hotel_pricing
+  source:
+    dataConnectorName: pg
+    collection: hotel.pricing
+  filterExpressionType: hotel_pricing_bool_exp
+  aggregateExpression: hotel_pricing_agg_exp
+  orderByExpression: hotel_pricing_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: hotel_pricing
+      subscription:
+        rootField: hotel_pricing
+    selectUniques:
+      - queryRootField: hotel_pricing_by_pricing_id
+        uniqueIdentifier:
+          - pricing_id
+        subscription:
+          rootField: hotel_pricing_by_pricing_id
+    filterInputTypeName: hotel_pricing_filter_input
+    aggregate:
+      queryRootField: hotel_pricing_aggregate
+      subscription:
+        rootField: hotel_pricing_aggregate
+  description: Historical and current pricing data for hotel rooms
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: hotel_pricing
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

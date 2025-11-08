@@ -1,0 +1,191 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: external_external_factors
+  description: "Object type for external.external_factors. Description: External
+    factors affecting travel demand"
+  fields:
+    - name: city_id
+      type: int_32!
+    - name: created_at
+      type: timestamp
+    - name: date
+      type: date!
+    - name: factor_id
+      type: int_32!
+    - name: flight_availability_score
+      type: int_32
+    - name: temperature
+      type: bigdecimal
+    - name: travel_advisory_level
+      type: string
+    - name: updated_at
+      type: timestamp
+    - name: weather_condition
+      type: string
+  graphql:
+    typeName: external_external_factors
+    inputTypeName: external_external_factors_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: pg
+      dataConnectorObjectType: external.external_factors
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: external_external_factors
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - city_id
+          - created_at
+          - date
+          - factor_id
+          - flight_availability_score
+          - temperature
+          - travel_advisory_level
+          - updated_at
+          - weather_condition
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: external_external_factors_bool_exp
+  operand:
+    object:
+      type: external_external_factors
+      comparableFields:
+        - fieldName: city_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: created_at
+          booleanExpressionType: timestamp_without_time_zone_bool_exp
+        - fieldName: date
+          booleanExpressionType: date_bool_exp
+        - fieldName: factor_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: flight_availability_score
+          booleanExpressionType: integer_bool_exp
+        - fieldName: temperature
+          booleanExpressionType: decimal_bool_exp
+        - fieldName: travel_advisory_level
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: updated_at
+          booleanExpressionType: timestamp_without_time_zone_bool_exp
+        - fieldName: weather_condition
+          booleanExpressionType: character_varying_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: external_external_factors_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: external_external_factors_agg_exp
+  operand:
+    object:
+      aggregatedType: external_external_factors
+      aggregatableFields:
+        - fieldName: city_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: created_at
+          aggregateExpression: timestamp_without_time_zone_agg_exp
+        - fieldName: date
+          aggregateExpression: date_agg_exp
+        - fieldName: factor_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: flight_availability_score
+          aggregateExpression: integer_agg_exp
+        - fieldName: temperature
+          aggregateExpression: decimal_agg_exp
+        - fieldName: travel_advisory_level
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: updated_at
+          aggregateExpression: timestamp_without_time_zone_agg_exp
+        - fieldName: weather_condition
+          aggregateExpression: character_varying_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: external_external_factors_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: external_external_factors_order_by_exp
+  operand:
+    object:
+      orderedType: external_external_factors
+      orderableFields:
+        - fieldName: city_id
+          orderByExpression: int_32_order_by_exp
+        - fieldName: created_at
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: date
+          orderByExpression: date_order_by_exp
+        - fieldName: factor_id
+          orderByExpression: int_32_order_by_exp
+        - fieldName: flight_availability_score
+          orderByExpression: int_32_order_by_exp
+        - fieldName: temperature
+          orderByExpression: bigdecimal_order_by_exp
+        - fieldName: travel_advisory_level
+          orderByExpression: string_order_by_exp
+        - fieldName: updated_at
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: weather_condition
+          orderByExpression: string_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: external_external_factors_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: external_external_factors
+  objectType: external_external_factors
+  source:
+    dataConnectorName: pg
+    collection: external.external_factors
+  filterExpressionType: external_external_factors_bool_exp
+  aggregateExpression: external_external_factors_agg_exp
+  orderByExpression: external_external_factors_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: external_external_factors
+      subscription:
+        rootField: external_external_factors
+    selectUniques:
+      - queryRootField: external_external_factors_by_factor_id
+        uniqueIdentifier:
+          - factor_id
+        subscription:
+          rootField: external_external_factors_by_factor_id
+    filterInputTypeName: external_external_factors_filter_input
+    aggregate:
+      queryRootField: external_external_factors_aggregate
+      subscription:
+        rootField: external_external_factors_aggregate
+  description: External factors affecting travel demand
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: external_external_factors
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

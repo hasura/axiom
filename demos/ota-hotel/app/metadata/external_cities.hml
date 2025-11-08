@@ -1,0 +1,172 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: external_cities
+  description: "Object type for external.cities. Description: Master list of cities"
+  fields:
+    - name: city_id
+      type: int_32!
+    - name: city_name
+      type: string!
+    - name: country
+      type: string!
+    - name: created_at
+      type: timestamp
+    - name: state
+      type: string!
+    - name: timezone
+      type: string
+    - name: updated_at
+      type: timestamp
+  graphql:
+    typeName: external_cities
+    inputTypeName: external_cities_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: pg
+      dataConnectorObjectType: external.cities
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: external_cities
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - city_id
+          - city_name
+          - country
+          - created_at
+          - state
+          - timezone
+          - updated_at
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: external_cities_bool_exp
+  operand:
+    object:
+      type: external_cities
+      comparableFields:
+        - fieldName: city_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: city_name
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: country
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: created_at
+          booleanExpressionType: timestamp_without_time_zone_bool_exp
+        - fieldName: state
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: timezone
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: updated_at
+          booleanExpressionType: timestamp_without_time_zone_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: external_cities_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: external_cities_agg_exp
+  operand:
+    object:
+      aggregatedType: external_cities
+      aggregatableFields:
+        - fieldName: city_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: city_name
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: country
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: created_at
+          aggregateExpression: timestamp_without_time_zone_agg_exp
+        - fieldName: state
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: timezone
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: updated_at
+          aggregateExpression: timestamp_without_time_zone_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: external_cities_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: external_cities_order_by_exp
+  operand:
+    object:
+      orderedType: external_cities
+      orderableFields:
+        - fieldName: city_id
+          orderByExpression: int_32_order_by_exp
+        - fieldName: city_name
+          orderByExpression: string_order_by_exp
+        - fieldName: country
+          orderByExpression: string_order_by_exp
+        - fieldName: created_at
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: state
+          orderByExpression: string_order_by_exp
+        - fieldName: timezone
+          orderByExpression: string_order_by_exp
+        - fieldName: updated_at
+          orderByExpression: timestamp_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: external_cities_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: external_cities
+  objectType: external_cities
+  source:
+    dataConnectorName: pg
+    collection: external.cities
+  filterExpressionType: external_cities_bool_exp
+  aggregateExpression: external_cities_agg_exp
+  orderByExpression: external_cities_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: external_cities
+      subscription:
+        rootField: external_cities
+    selectUniques:
+      - queryRootField: external_cities_by_city_id
+        uniqueIdentifier:
+          - city_id
+        subscription:
+          rootField: external_cities_by_city_id
+    filterInputTypeName: external_cities_filter_input
+    aggregate:
+      queryRootField: external_cities_aggregate
+      subscription:
+        rootField: external_cities_aggregate
+  description: Master list of cities
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: external_cities
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

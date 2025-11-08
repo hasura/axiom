@@ -1,0 +1,3270 @@
+{
+  "version": "5",
+  "$schema": "schema.json",
+  "connectionSettings": {
+    "connectionUri": {
+      "variable": "CONNECTION_URI"
+    },
+    "poolSettings": {
+      "maxConnections": 50,
+      "poolTimeout": 30,
+      "idleTimeout": 180,
+      "checkConnectionAfterIdle": 60,
+      "connectionLifetime": 600
+    },
+    "isolationLevel": "ReadCommitted"
+  },
+  "metadata": {
+    "tables": {
+      "external_cities": {
+        "schemaName": "external",
+        "tableName": "cities",
+        "columns": {
+          "city_id": {
+            "name": "city_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "city_name": {
+            "name": "city_name",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "country": {
+            "name": "country",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "created_at": {
+            "name": "created_at",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "state": {
+            "name": "state",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "timezone": {
+            "name": "timezone",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "updated_at": {
+            "name": "updated_at",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "cities_pkey": [
+            "city_id"
+          ]
+        },
+        "foreignRelations": {},
+        "description": "Master list of cities"
+      },
+      "external_events": {
+        "schemaName": "external",
+        "tableName": "events",
+        "columns": {
+          "city_id": {
+            "name": "city_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "created_at": {
+            "name": "created_at",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "event_date": {
+            "name": "event_date",
+            "type": {
+              "scalarType": "date"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "event_id": {
+            "name": "event_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "event_name": {
+            "name": "event_name",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "event_type": {
+            "name": "event_type",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "expected_attendance": {
+            "name": "expected_attendance",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "updated_at": {
+            "name": "updated_at",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "events_pkey": [
+            "event_id"
+          ]
+        },
+        "foreignRelations": {
+          "events_city_id_fkey": {
+            "foreignSchema": "external",
+            "foreignTable": "cities",
+            "columnMapping": {
+              "city_id": "city_id"
+            }
+          }
+        },
+        "description": "Local events that may impact hotel demand"
+      },
+      "external_external_factors": {
+        "schemaName": "external",
+        "tableName": "external_factors",
+        "columns": {
+          "city_id": {
+            "name": "city_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "created_at": {
+            "name": "created_at",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "date": {
+            "name": "date",
+            "type": {
+              "scalarType": "date"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "factor_id": {
+            "name": "factor_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "flight_availability_score": {
+            "name": "flight_availability_score",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "temperature": {
+            "name": "temperature",
+            "type": {
+              "scalarType": "numeric"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "travel_advisory_level": {
+            "name": "travel_advisory_level",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "updated_at": {
+            "name": "updated_at",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "weather_condition": {
+            "name": "weather_condition",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "external_factors_city_id_date_key": [
+            "city_id",
+            "date"
+          ],
+          "external_factors_pkey": [
+            "factor_id"
+          ]
+        },
+        "foreignRelations": {
+          "external_factors_city_id_fkey": {
+            "foreignSchema": "external",
+            "foreignTable": "cities",
+            "columnMapping": {
+              "city_id": "city_id"
+            }
+          }
+        },
+        "description": "External factors affecting travel demand"
+      },
+      "external_festivals": {
+        "schemaName": "external",
+        "tableName": "festivals",
+        "columns": {
+          "city_id": {
+            "name": "city_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "created_at": {
+            "name": "created_at",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "end_date": {
+            "name": "end_date",
+            "type": {
+              "scalarType": "date"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "expected_tourist_influx": {
+            "name": "expected_tourist_influx",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "festival_id": {
+            "name": "festival_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "festival_name": {
+            "name": "festival_name",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "festival_type": {
+            "name": "festival_type",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "significance_level": {
+            "name": "significance_level",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "start_date": {
+            "name": "start_date",
+            "type": {
+              "scalarType": "date"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "updated_at": {
+            "name": "updated_at",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "festivals_pkey": [
+            "festival_id"
+          ]
+        },
+        "foreignRelations": {
+          "festivals_city_id_fkey": {
+            "foreignSchema": "external",
+            "foreignTable": "cities",
+            "columnMapping": {
+              "city_id": "city_id"
+            }
+          }
+        },
+        "description": "Festivals and celebrations affecting travel patterns"
+      },
+      "hdb_catalog_event_invocation_logs": {
+        "schemaName": "hdb_catalog",
+        "tableName": "event_invocation_logs",
+        "columns": {
+          "created_at": {
+            "name": "created_at",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "event_id": {
+            "name": "event_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "request": {
+            "name": "request",
+            "type": {
+              "scalarType": "json"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "response": {
+            "name": "response",
+            "type": {
+              "scalarType": "json"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "status": {
+            "name": "status",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "trigger_name": {
+            "name": "trigger_name",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "event_invocation_logs_pkey": [
+            "id"
+          ]
+        },
+        "foreignRelations": {},
+        "description": null
+      },
+      "hdb_catalog_event_log": {
+        "schemaName": "hdb_catalog",
+        "tableName": "event_log",
+        "columns": {
+          "archived": {
+            "name": "archived",
+            "type": {
+              "scalarType": "bool"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "created_at": {
+            "name": "created_at",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "delivered": {
+            "name": "delivered",
+            "type": {
+              "scalarType": "bool"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "error": {
+            "name": "error",
+            "type": {
+              "scalarType": "bool"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "locked": {
+            "name": "locked",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "next_retry_at": {
+            "name": "next_retry_at",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "payload": {
+            "name": "payload",
+            "type": {
+              "scalarType": "jsonb"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "schema_name": {
+            "name": "schema_name",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "table_name": {
+            "name": "table_name",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "tries": {
+            "name": "tries",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "trigger_name": {
+            "name": "trigger_name",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "event_log_pkey": [
+            "id"
+          ]
+        },
+        "foreignRelations": {},
+        "description": null
+      },
+      "hdb_catalog_hdb_action_log": {
+        "schemaName": "hdb_catalog",
+        "tableName": "hdb_action_log",
+        "columns": {
+          "action_name": {
+            "name": "action_name",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "created_at": {
+            "name": "created_at",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "errors": {
+            "name": "errors",
+            "type": {
+              "scalarType": "jsonb"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "input_payload": {
+            "name": "input_payload",
+            "type": {
+              "scalarType": "jsonb"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "request_headers": {
+            "name": "request_headers",
+            "type": {
+              "scalarType": "jsonb"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "response_payload": {
+            "name": "response_payload",
+            "type": {
+              "scalarType": "jsonb"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "response_received_at": {
+            "name": "response_received_at",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "session_variables": {
+            "name": "session_variables",
+            "type": {
+              "scalarType": "jsonb"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "status": {
+            "name": "status",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "hdb_action_log_pkey": [
+            "id"
+          ]
+        },
+        "foreignRelations": {},
+        "description": null
+      },
+      "hdb_catalog_hdb_cron_event_invocation_logs": {
+        "schemaName": "hdb_catalog",
+        "tableName": "hdb_cron_event_invocation_logs",
+        "columns": {
+          "created_at": {
+            "name": "created_at",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "event_id": {
+            "name": "event_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "request": {
+            "name": "request",
+            "type": {
+              "scalarType": "json"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "response": {
+            "name": "response",
+            "type": {
+              "scalarType": "json"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "status": {
+            "name": "status",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "hdb_cron_event_invocation_logs_pkey": [
+            "id"
+          ]
+        },
+        "foreignRelations": {
+          "hdb_cron_event_invocation_logs_event_id_fkey": {
+            "foreignSchema": "hdb_catalog",
+            "foreignTable": "hdb_cron_events",
+            "columnMapping": {
+              "event_id": "id"
+            }
+          }
+        },
+        "description": null
+      },
+      "hdb_catalog_hdb_cron_events": {
+        "schemaName": "hdb_catalog",
+        "tableName": "hdb_cron_events",
+        "columns": {
+          "created_at": {
+            "name": "created_at",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "next_retry_at": {
+            "name": "next_retry_at",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "scheduled_time": {
+            "name": "scheduled_time",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "status": {
+            "name": "status",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "tries": {
+            "name": "tries",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "trigger_name": {
+            "name": "trigger_name",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "hdb_cron_events_pkey": [
+            "id"
+          ]
+        },
+        "foreignRelations": {},
+        "description": null
+      },
+      "hdb_catalog_hdb_event_log_cleanups": {
+        "schemaName": "hdb_catalog",
+        "tableName": "hdb_event_log_cleanups",
+        "columns": {
+          "deleted_event_invocation_logs": {
+            "name": "deleted_event_invocation_logs",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "deleted_event_logs": {
+            "name": "deleted_event_logs",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "scheduled_at": {
+            "name": "scheduled_at",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "status": {
+            "name": "status",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "trigger_name": {
+            "name": "trigger_name",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "hdb_event_log_cleanups_pkey": [
+            "id"
+          ],
+          "hdb_event_log_cleanups_trigger_name_scheduled_at_key": [
+            "scheduled_at",
+            "trigger_name"
+          ]
+        },
+        "foreignRelations": {},
+        "description": null
+      },
+      "hdb_catalog_hdb_metadata": {
+        "schemaName": "hdb_catalog",
+        "tableName": "hdb_metadata",
+        "columns": {
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "metadata": {
+            "name": "metadata",
+            "type": {
+              "scalarType": "json"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "resource_version": {
+            "name": "resource_version",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "hdb_metadata_pkey": [
+            "id"
+          ],
+          "hdb_metadata_resource_version_key": [
+            "resource_version"
+          ]
+        },
+        "foreignRelations": {},
+        "description": null
+      },
+      "hdb_catalog_hdb_scheduled_event_invocation_logs": {
+        "schemaName": "hdb_catalog",
+        "tableName": "hdb_scheduled_event_invocation_logs",
+        "columns": {
+          "created_at": {
+            "name": "created_at",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "event_id": {
+            "name": "event_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "request": {
+            "name": "request",
+            "type": {
+              "scalarType": "json"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "response": {
+            "name": "response",
+            "type": {
+              "scalarType": "json"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "status": {
+            "name": "status",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "hdb_scheduled_event_invocation_logs_pkey": [
+            "id"
+          ]
+        },
+        "foreignRelations": {
+          "hdb_scheduled_event_invocation_logs_event_id_fkey": {
+            "foreignSchema": "hdb_catalog",
+            "foreignTable": "hdb_scheduled_events",
+            "columnMapping": {
+              "event_id": "id"
+            }
+          }
+        },
+        "description": null
+      },
+      "hdb_catalog_hdb_scheduled_events": {
+        "schemaName": "hdb_catalog",
+        "tableName": "hdb_scheduled_events",
+        "columns": {
+          "comment": {
+            "name": "comment",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "created_at": {
+            "name": "created_at",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "header_conf": {
+            "name": "header_conf",
+            "type": {
+              "scalarType": "json"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "next_retry_at": {
+            "name": "next_retry_at",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "payload": {
+            "name": "payload",
+            "type": {
+              "scalarType": "json"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "retry_conf": {
+            "name": "retry_conf",
+            "type": {
+              "scalarType": "json"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "scheduled_time": {
+            "name": "scheduled_time",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "status": {
+            "name": "status",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "tries": {
+            "name": "tries",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "webhook_conf": {
+            "name": "webhook_conf",
+            "type": {
+              "scalarType": "json"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "hdb_scheduled_events_pkey": [
+            "id"
+          ]
+        },
+        "foreignRelations": {},
+        "description": null
+      },
+      "hdb_catalog_hdb_schema_notifications": {
+        "schemaName": "hdb_catalog",
+        "tableName": "hdb_schema_notifications",
+        "columns": {
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "instance_id": {
+            "name": "instance_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "notification": {
+            "name": "notification",
+            "type": {
+              "scalarType": "json"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "resource_version": {
+            "name": "resource_version",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "updated_at": {
+            "name": "updated_at",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "hdb_schema_notifications_pkey": [
+            "id"
+          ]
+        },
+        "foreignRelations": {},
+        "description": null
+      },
+      "hdb_catalog_hdb_source_catalog_version": {
+        "schemaName": "hdb_catalog",
+        "tableName": "hdb_source_catalog_version",
+        "columns": {
+          "upgraded_on": {
+            "name": "upgraded_on",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "version": {
+            "name": "version",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {},
+        "foreignRelations": {},
+        "description": null
+      },
+      "hdb_catalog_hdb_version": {
+        "schemaName": "hdb_catalog",
+        "tableName": "hdb_version",
+        "columns": {
+          "cli_state": {
+            "name": "cli_state",
+            "type": {
+              "scalarType": "jsonb"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "console_state": {
+            "name": "console_state",
+            "type": {
+              "scalarType": "jsonb"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "ee_client_id": {
+            "name": "ee_client_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "ee_client_secret": {
+            "name": "ee_client_secret",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "hasura_uuid": {
+            "name": "hasura_uuid",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "upgraded_on": {
+            "name": "upgraded_on",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "version": {
+            "name": "version",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "hdb_version_pkey": [
+            "hasura_uuid"
+          ]
+        },
+        "foreignRelations": {},
+        "description": null
+      },
+      "hotel_hotel_rooms": {
+        "schemaName": "hotel",
+        "tableName": "hotel_rooms",
+        "columns": {
+          "base_price": {
+            "name": "base_price",
+            "type": {
+              "scalarType": "numeric"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "capacity": {
+            "name": "capacity",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "created_at": {
+            "name": "created_at",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "hotel_id": {
+            "name": "hotel_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "room_id": {
+            "name": "room_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "room_type": {
+            "name": "room_type",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "updated_at": {
+            "name": "updated_at",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "hotel_rooms_pkey": [
+            "room_id"
+          ]
+        },
+        "foreignRelations": {
+          "hotel_rooms_hotel_id_fkey": {
+            "foreignSchema": "hotel",
+            "foreignTable": "hotels",
+            "columnMapping": {
+              "hotel_id": "hotel_id"
+            }
+          }
+        },
+        "description": "Room inventory for each hotel"
+      },
+      "hotel_hotels": {
+        "schemaName": "hotel",
+        "tableName": "hotels",
+        "columns": {
+          "address": {
+            "name": "address",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "amenities": {
+            "name": "amenities",
+            "type": {
+              "arrayType": {
+                "scalarType": "text"
+              }
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "city": {
+            "name": "city",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "created_at": {
+            "name": "created_at",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "hotel_id": {
+            "name": "hotel_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "name": {
+            "name": "name",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "star_rating": {
+            "name": "star_rating",
+            "type": {
+              "scalarType": "numeric"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "state": {
+            "name": "state",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "updated_at": {
+            "name": "updated_at",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "hotels_pkey": [
+            "hotel_id"
+          ]
+        },
+        "foreignRelations": {},
+        "description": "Master table for hotel information"
+      },
+      "hotel_pricing": {
+        "schemaName": "hotel",
+        "tableName": "pricing",
+        "columns": {
+          "availability_status": {
+            "name": "availability_status",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "created_at": {
+            "name": "created_at",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "date": {
+            "name": "date",
+            "type": {
+              "scalarType": "date"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "hotel_id": {
+            "name": "hotel_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "price_per_night": {
+            "name": "price_per_night",
+            "type": {
+              "scalarType": "numeric"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "pricing_id": {
+            "name": "pricing_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "room_id": {
+            "name": "room_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "updated_at": {
+            "name": "updated_at",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "pricing_hotel_id_room_id_date_key": [
+            "date",
+            "hotel_id",
+            "room_id"
+          ],
+          "pricing_pkey": [
+            "pricing_id"
+          ]
+        },
+        "foreignRelations": {
+          "pricing_hotel_id_fkey": {
+            "foreignSchema": "hotel",
+            "foreignTable": "hotels",
+            "columnMapping": {
+              "hotel_id": "hotel_id"
+            }
+          },
+          "pricing_room_id_fkey": {
+            "foreignSchema": "hotel",
+            "foreignTable": "hotel_rooms",
+            "columnMapping": {
+              "room_id": "room_id"
+            }
+          }
+        },
+        "description": "Historical and current pricing data for hotel rooms"
+      },
+      "marketing_campaigns": {
+        "schemaName": "marketing",
+        "tableName": "campaigns",
+        "columns": {
+          "campaign_id": {
+            "name": "campaign_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "campaign_name": {
+            "name": "campaign_name",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "campaign_type": {
+            "name": "campaign_type",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "created_at": {
+            "name": "created_at",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "end_date": {
+            "name": "end_date",
+            "type": {
+              "scalarType": "date"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "start_date": {
+            "name": "start_date",
+            "type": {
+              "scalarType": "date"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "target_audience": {
+            "name": "target_audience",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "updated_at": {
+            "name": "updated_at",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "campaigns_pkey": [
+            "campaign_id"
+          ]
+        },
+        "foreignRelations": {},
+        "description": "Marketing campaign metadata"
+      },
+      "marketing_marketing_spends": {
+        "schemaName": "marketing",
+        "tableName": "marketing_spends",
+        "columns": {
+          "campaign_id": {
+            "name": "campaign_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "clicks": {
+            "name": "clicks",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "conversions": {
+            "name": "conversions",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "created_at": {
+            "name": "created_at",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "date": {
+            "name": "date",
+            "type": {
+              "scalarType": "date"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "impressions": {
+            "name": "impressions",
+            "type": {
+              "scalarType": "int8"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "spend": {
+            "name": "spend",
+            "type": {
+              "scalarType": "numeric"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "spend_id": {
+            "name": "spend_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "updated_at": {
+            "name": "updated_at",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "marketing_spends_campaign_id_date_key": [
+            "campaign_id",
+            "date"
+          ],
+          "marketing_spends_pkey": [
+            "spend_id"
+          ]
+        },
+        "foreignRelations": {
+          "marketing_spends_campaign_id_fkey": {
+            "foreignSchema": "marketing",
+            "foreignTable": "campaigns",
+            "columnMapping": {
+              "campaign_id": "campaign_id"
+            }
+          }
+        },
+        "description": "Daily marketing spend and performance metrics"
+      },
+      "marketing_traffic_sources": {
+        "schemaName": "marketing",
+        "tableName": "traffic_sources",
+        "columns": {
+          "campaign_id": {
+            "name": "campaign_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "created_at": {
+            "name": "created_at",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "referrer_url": {
+            "name": "referrer_url",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "session_id": {
+            "name": "session_id",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "source": {
+            "name": "source",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "traffic_id": {
+            "name": "traffic_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "user_id": {
+            "name": "user_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "visit_date": {
+            "name": "visit_date",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "traffic_sources_pkey": [
+            "traffic_id"
+          ]
+        },
+        "foreignRelations": {
+          "traffic_sources_campaign_id_fkey": {
+            "foreignSchema": "marketing",
+            "foreignTable": "campaigns",
+            "columnMapping": {
+              "campaign_id": "campaign_id"
+            }
+          },
+          "traffic_sources_user_id_fkey": {
+            "foreignSchema": "user_data",
+            "foreignTable": "users",
+            "columnMapping": {
+              "user_id": "user_id"
+            }
+          }
+        },
+        "description": "Web and app traffic attribution"
+      },
+      "user_data_hotel_bookings": {
+        "schemaName": "user_data",
+        "tableName": "hotel_bookings",
+        "columns": {
+          "amount_paid": {
+            "name": "amount_paid",
+            "type": {
+              "scalarType": "numeric"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "booking_date": {
+            "name": "booking_date",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "booking_id": {
+            "name": "booking_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "booking_status": {
+            "name": "booking_status",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "check_in_date": {
+            "name": "check_in_date",
+            "type": {
+              "scalarType": "date"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "check_out_date": {
+            "name": "check_out_date",
+            "type": {
+              "scalarType": "date"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "created_at": {
+            "name": "created_at",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "destination": {
+            "name": "destination",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "hotel_id": {
+            "name": "hotel_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "number_of_guests": {
+            "name": "number_of_guests",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "room_id": {
+            "name": "room_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "updated_at": {
+            "name": "updated_at",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "user_id": {
+            "name": "user_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "hotel_bookings_pkey": [
+            "booking_id"
+          ]
+        },
+        "foreignRelations": {
+          "hotel_bookings_hotel_id_fkey": {
+            "foreignSchema": "hotel",
+            "foreignTable": "hotels",
+            "columnMapping": {
+              "hotel_id": "hotel_id"
+            }
+          },
+          "hotel_bookings_room_id_fkey": {
+            "foreignSchema": "hotel",
+            "foreignTable": "hotel_rooms",
+            "columnMapping": {
+              "room_id": "room_id"
+            }
+          },
+          "hotel_bookings_user_id_fkey": {
+            "foreignSchema": "user_data",
+            "foreignTable": "users",
+            "columnMapping": {
+              "user_id": "user_id"
+            }
+          }
+        },
+        "description": "All hotel bookings made through the platform"
+      },
+      "user_data_search_queries": {
+        "schemaName": "user_data",
+        "tableName": "search_queries",
+        "columns": {
+          "check_in_date": {
+            "name": "check_in_date",
+            "type": {
+              "scalarType": "date"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "check_out_date": {
+            "name": "check_out_date",
+            "type": {
+              "scalarType": "date"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "created_at": {
+            "name": "created_at",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "destination": {
+            "name": "destination",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "number_of_guests": {
+            "name": "number_of_guests",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "query_id": {
+            "name": "query_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "search_date": {
+            "name": "search_date",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "session_id": {
+            "name": "session_id",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "user_id": {
+            "name": "user_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "search_queries_pkey": [
+            "query_id"
+          ]
+        },
+        "foreignRelations": {
+          "search_queries_user_id_fkey": {
+            "foreignSchema": "user_data",
+            "foreignTable": "users",
+            "columnMapping": {
+              "user_id": "user_id"
+            }
+          }
+        },
+        "description": "User search behavior tracking"
+      },
+      "user_data_users": {
+        "schemaName": "user_data",
+        "tableName": "users",
+        "columns": {
+          "created_at": {
+            "name": "created_at",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "email": {
+            "name": "email",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "phone": {
+            "name": "phone",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "registration_date": {
+            "name": "registration_date",
+            "type": {
+              "scalarType": "date"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "updated_at": {
+            "name": "updated_at",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "user_id": {
+            "name": "user_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "user_type": {
+            "name": "user_type",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "users_email_key": [
+            "email"
+          ],
+          "users_pkey": [
+            "user_id"
+          ]
+        },
+        "foreignRelations": {},
+        "description": "User profile information"
+      }
+    },
+    "types": {
+      "scalar": {
+        "bool": {
+          "typeName": "bool",
+          "schemaName": "pg_catalog",
+          "description": null,
+          "aggregateFunctions": {
+            "bool_and": {
+              "returnType": "bool"
+            },
+            "bool_or": {
+              "returnType": "bool"
+            },
+            "every": {
+              "returnType": "bool"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "bool",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "greaterThan",
+              "argumentType": "bool",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "greaterThanOrEqual",
+              "argumentType": "bool",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "bool",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "lessThan",
+              "argumentType": "bool",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "lessThanOrEqual",
+              "argumentType": "bool",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "<>",
+              "operatorKind": "custom",
+              "argumentType": "bool",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": "boolean"
+        },
+        "date": {
+          "typeName": "date",
+          "schemaName": "pg_catalog",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "date"
+            },
+            "min": {
+              "returnType": "date"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "date",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "greaterThan",
+              "argumentType": "date",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "greaterThanOrEqual",
+              "argumentType": "date",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "date",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "lessThan",
+              "argumentType": "date",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "lessThanOrEqual",
+              "argumentType": "date",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "<>",
+              "operatorKind": "custom",
+              "argumentType": "date",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": "date"
+        },
+        "int4": {
+          "typeName": "int4",
+          "schemaName": "pg_catalog",
+          "description": null,
+          "aggregateFunctions": {
+            "avg": {
+              "returnType": "numeric"
+            },
+            "bit_and": {
+              "returnType": "int4"
+            },
+            "bit_or": {
+              "returnType": "int4"
+            },
+            "bit_xor": {
+              "returnType": "int4"
+            },
+            "max": {
+              "returnType": "int4"
+            },
+            "min": {
+              "returnType": "int4"
+            },
+            "stddev": {
+              "returnType": "numeric"
+            },
+            "stddev_pop": {
+              "returnType": "numeric"
+            },
+            "stddev_samp": {
+              "returnType": "numeric"
+            },
+            "sum": {
+              "returnType": "int8"
+            },
+            "var_pop": {
+              "returnType": "numeric"
+            },
+            "var_samp": {
+              "returnType": "numeric"
+            },
+            "variance": {
+              "returnType": "numeric"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "int4",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "greaterThan",
+              "argumentType": "int4",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "greaterThanOrEqual",
+              "argumentType": "int4",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "int4",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "lessThan",
+              "argumentType": "int4",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "lessThanOrEqual",
+              "argumentType": "int4",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "<>",
+              "operatorKind": "custom",
+              "argumentType": "int4",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": "int32"
+        },
+        "int8": {
+          "typeName": "int8",
+          "schemaName": "pg_catalog",
+          "description": null,
+          "aggregateFunctions": {
+            "avg": {
+              "returnType": "numeric"
+            },
+            "bit_and": {
+              "returnType": "int8"
+            },
+            "bit_or": {
+              "returnType": "int8"
+            },
+            "bit_xor": {
+              "returnType": "int8"
+            },
+            "max": {
+              "returnType": "int8"
+            },
+            "min": {
+              "returnType": "int8"
+            },
+            "stddev": {
+              "returnType": "numeric"
+            },
+            "stddev_pop": {
+              "returnType": "numeric"
+            },
+            "stddev_samp": {
+              "returnType": "numeric"
+            },
+            "sum": {
+              "returnType": "numeric"
+            },
+            "var_pop": {
+              "returnType": "numeric"
+            },
+            "var_samp": {
+              "returnType": "numeric"
+            },
+            "variance": {
+              "returnType": "numeric"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "int8",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "greaterThan",
+              "argumentType": "int8",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "greaterThanOrEqual",
+              "argumentType": "int8",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "int8",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "lessThan",
+              "argumentType": "int8",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "lessThanOrEqual",
+              "argumentType": "int8",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "<>",
+              "operatorKind": "custom",
+              "argumentType": "int8",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": "int64AsString"
+        },
+        "json": {
+          "typeName": "json",
+          "schemaName": "pg_catalog",
+          "description": null,
+          "aggregateFunctions": {},
+          "comparisonOperators": {
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "json",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": null
+        },
+        "jsonb": {
+          "typeName": "jsonb",
+          "schemaName": "pg_catalog",
+          "description": null,
+          "aggregateFunctions": {},
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "jsonb",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "greaterThan",
+              "argumentType": "jsonb",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "greaterThanOrEqual",
+              "argumentType": "jsonb",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "jsonb",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "lessThan",
+              "argumentType": "jsonb",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "lessThanOrEqual",
+              "argumentType": "jsonb",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "<>",
+              "operatorKind": "custom",
+              "argumentType": "jsonb",
+              "isInfix": true
+            },
+            "jsonb_contained": {
+              "operatorName": "jsonb_contained",
+              "operatorKind": "custom",
+              "argumentType": "jsonb",
+              "isInfix": false
+            },
+            "jsonb_contains": {
+              "operatorName": "jsonb_contains",
+              "operatorKind": "custom",
+              "argumentType": "jsonb",
+              "isInfix": false
+            },
+            "jsonb_exists": {
+              "operatorName": "jsonb_exists",
+              "operatorKind": "custom",
+              "argumentType": "text",
+              "isInfix": false
+            }
+          },
+          "typeRepresentation": null
+        },
+        "numeric": {
+          "typeName": "numeric",
+          "schemaName": "pg_catalog",
+          "description": null,
+          "aggregateFunctions": {
+            "avg": {
+              "returnType": "numeric"
+            },
+            "max": {
+              "returnType": "numeric"
+            },
+            "min": {
+              "returnType": "numeric"
+            },
+            "stddev": {
+              "returnType": "numeric"
+            },
+            "stddev_pop": {
+              "returnType": "numeric"
+            },
+            "stddev_samp": {
+              "returnType": "numeric"
+            },
+            "sum": {
+              "returnType": "numeric"
+            },
+            "var_pop": {
+              "returnType": "numeric"
+            },
+            "var_samp": {
+              "returnType": "numeric"
+            },
+            "variance": {
+              "returnType": "numeric"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "numeric",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "greaterThan",
+              "argumentType": "numeric",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "greaterThanOrEqual",
+              "argumentType": "numeric",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "numeric",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "lessThan",
+              "argumentType": "numeric",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "lessThanOrEqual",
+              "argumentType": "numeric",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "<>",
+              "operatorKind": "custom",
+              "argumentType": "numeric",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": "bigDecimalAsString"
+        },
+        "text": {
+          "typeName": "text",
+          "schemaName": "pg_catalog",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "text"
+            },
+            "min": {
+              "returnType": "text"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "text",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "greaterThan",
+              "argumentType": "text",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "greaterThanOrEqual",
+              "argumentType": "text",
+              "isInfix": true
+            },
+            "_ilike": {
+              "operatorName": "~~*",
+              "operatorKind": "custom",
+              "argumentType": "text",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "text",
+              "isInfix": true
+            },
+            "_iregex": {
+              "operatorName": "~*",
+              "operatorKind": "custom",
+              "argumentType": "text",
+              "isInfix": true
+            },
+            "_like": {
+              "operatorName": "~~",
+              "operatorKind": "custom",
+              "argumentType": "text",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "lessThan",
+              "argumentType": "text",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "lessThanOrEqual",
+              "argumentType": "text",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "<>",
+              "operatorKind": "custom",
+              "argumentType": "text",
+              "isInfix": true
+            },
+            "_nilike": {
+              "operatorName": "!~~*",
+              "operatorKind": "custom",
+              "argumentType": "text",
+              "isInfix": true
+            },
+            "_niregex": {
+              "operatorName": "!~*",
+              "operatorKind": "custom",
+              "argumentType": "text",
+              "isInfix": true
+            },
+            "_nlike": {
+              "operatorName": "!~~",
+              "operatorKind": "custom",
+              "argumentType": "text",
+              "isInfix": true
+            },
+            "_nregex": {
+              "operatorName": "!~",
+              "operatorKind": "custom",
+              "argumentType": "text",
+              "isInfix": true
+            },
+            "_regex": {
+              "operatorName": "~",
+              "operatorKind": "custom",
+              "argumentType": "text",
+              "isInfix": true
+            },
+            "starts_with": {
+              "operatorName": "starts_with",
+              "operatorKind": "custom",
+              "argumentType": "text",
+              "isInfix": false
+            },
+            "ts_match_tt": {
+              "operatorName": "ts_match_tt",
+              "operatorKind": "custom",
+              "argumentType": "text",
+              "isInfix": false
+            }
+          },
+          "typeRepresentation": "string"
+        },
+        "timestamp": {
+          "typeName": "timestamp",
+          "schemaName": "pg_catalog",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "timestamp"
+            },
+            "min": {
+              "returnType": "timestamp"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "timestamp",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "greaterThan",
+              "argumentType": "timestamp",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "greaterThanOrEqual",
+              "argumentType": "timestamp",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "timestamp",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "lessThan",
+              "argumentType": "timestamp",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "lessThanOrEqual",
+              "argumentType": "timestamp",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "<>",
+              "operatorKind": "custom",
+              "argumentType": "timestamp",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": "timestamp"
+        },
+        "timestamptz": {
+          "typeName": "timestamptz",
+          "schemaName": "pg_catalog",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "timestamptz"
+            },
+            "min": {
+              "returnType": "timestamptz"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "timestamptz",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "greaterThan",
+              "argumentType": "timestamptz",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "greaterThanOrEqual",
+              "argumentType": "timestamptz",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "timestamptz",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "lessThan",
+              "argumentType": "timestamptz",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "lessThanOrEqual",
+              "argumentType": "timestamptz",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "<>",
+              "operatorKind": "custom",
+              "argumentType": "timestamptz",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": "timestamptz"
+        },
+        "uuid": {
+          "typeName": "uuid",
+          "schemaName": "pg_catalog",
+          "description": null,
+          "aggregateFunctions": {},
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "uuid",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "greaterThan",
+              "argumentType": "uuid",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "greaterThanOrEqual",
+              "argumentType": "uuid",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "uuid",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "lessThan",
+              "argumentType": "uuid",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "lessThanOrEqual",
+              "argumentType": "uuid",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "<>",
+              "operatorKind": "custom",
+              "argumentType": "uuid",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": "uUID"
+        },
+        "varchar": {
+          "typeName": "varchar",
+          "schemaName": "pg_catalog",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "text"
+            },
+            "min": {
+              "returnType": "text"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "varchar",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "greaterThan",
+              "argumentType": "varchar",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "greaterThanOrEqual",
+              "argumentType": "varchar",
+              "isInfix": true
+            },
+            "_ilike": {
+              "operatorName": "~~*",
+              "operatorKind": "custom",
+              "argumentType": "varchar",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "varchar",
+              "isInfix": true
+            },
+            "_iregex": {
+              "operatorName": "~*",
+              "operatorKind": "custom",
+              "argumentType": "varchar",
+              "isInfix": true
+            },
+            "_like": {
+              "operatorName": "~~",
+              "operatorKind": "custom",
+              "argumentType": "varchar",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "lessThan",
+              "argumentType": "varchar",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "lessThanOrEqual",
+              "argumentType": "varchar",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "<>",
+              "operatorKind": "custom",
+              "argumentType": "varchar",
+              "isInfix": true
+            },
+            "_nilike": {
+              "operatorName": "!~~*",
+              "operatorKind": "custom",
+              "argumentType": "varchar",
+              "isInfix": true
+            },
+            "_niregex": {
+              "operatorName": "!~*",
+              "operatorKind": "custom",
+              "argumentType": "varchar",
+              "isInfix": true
+            },
+            "_nlike": {
+              "operatorName": "!~~",
+              "operatorKind": "custom",
+              "argumentType": "varchar",
+              "isInfix": true
+            },
+            "_nregex": {
+              "operatorName": "!~",
+              "operatorKind": "custom",
+              "argumentType": "varchar",
+              "isInfix": true
+            },
+            "_regex": {
+              "operatorName": "~",
+              "operatorKind": "custom",
+              "argumentType": "varchar",
+              "isInfix": true
+            },
+            "starts_with": {
+              "operatorName": "starts_with",
+              "operatorKind": "custom",
+              "argumentType": "varchar",
+              "isInfix": false
+            },
+            "ts_match_tt": {
+              "operatorName": "ts_match_tt",
+              "operatorKind": "custom",
+              "argumentType": "varchar",
+              "isInfix": false
+            }
+          },
+          "typeRepresentation": "string"
+        }
+      },
+      "composite": {}
+    },
+    "nativeOperations": {
+      "queries": {},
+      "mutations": {}
+    }
+  },
+  "introspectionOptions": {
+    "excludedSchemas": [
+      "information_schema",
+      "pg_catalog",
+      "tiger",
+      "crdb_internal",
+      "columnar",
+      "columnar_internal",
+      "_timescaledb_catalog",
+      "_timescaledb_functions",
+      "_timescaledb_internal",
+      "_timescaledb_cache",
+      "_timescaledb_config",
+      "timescaledb_experimental",
+      "timescaledb_information",
+      "_timescaledb_debug"
+    ],
+    "unqualifiedSchemasForTables": [
+      "public"
+    ],
+    "unqualifiedSchemasForTypesAndProcedures": [
+      "public",
+      "pg_catalog",
+      "tiger"
+    ],
+    "comparisonOperatorMapping": [
+      {
+        "operatorName": "=",
+        "exposedName": "_eq",
+        "operatorKind": "equal"
+      },
+      {
+        "operatorName": "<=",
+        "exposedName": "_lte",
+        "operatorKind": "lessThanOrEqual"
+      },
+      {
+        "operatorName": ">",
+        "exposedName": "_gt",
+        "operatorKind": "greaterThan"
+      },
+      {
+        "operatorName": ">=",
+        "exposedName": "_gte",
+        "operatorKind": "greaterThanOrEqual"
+      },
+      {
+        "operatorName": "<",
+        "exposedName": "_lt",
+        "operatorKind": "lessThan"
+      },
+      {
+        "operatorName": "<>",
+        "exposedName": "_neq",
+        "operatorKind": "custom"
+      },
+      {
+        "operatorName": "!=",
+        "exposedName": "_neq",
+        "operatorKind": "custom"
+      },
+      {
+        "operatorName": "LIKE",
+        "exposedName": "_like",
+        "operatorKind": "custom"
+      },
+      {
+        "operatorName": "NOT LIKE",
+        "exposedName": "_nlike",
+        "operatorKind": "custom"
+      },
+      {
+        "operatorName": "ILIKE",
+        "exposedName": "_ilike",
+        "operatorKind": "custom"
+      },
+      {
+        "operatorName": "NOT ILIKE",
+        "exposedName": "_nilike",
+        "operatorKind": "custom"
+      },
+      {
+        "operatorName": "SIMILAR TO",
+        "exposedName": "_similar",
+        "operatorKind": "custom"
+      },
+      {
+        "operatorName": "NOT SIMILAR TO",
+        "exposedName": "_nsimilar",
+        "operatorKind": "custom"
+      },
+      {
+        "operatorName": "~~",
+        "exposedName": "_like",
+        "operatorKind": "custom"
+      },
+      {
+        "operatorName": "!~~",
+        "exposedName": "_nlike",
+        "operatorKind": "custom"
+      },
+      {
+        "operatorName": "~~*",
+        "exposedName": "_ilike",
+        "operatorKind": "custom"
+      },
+      {
+        "operatorName": "!~~*",
+        "exposedName": "_nilike",
+        "operatorKind": "custom"
+      },
+      {
+        "operatorName": "~",
+        "exposedName": "_regex",
+        "operatorKind": "custom"
+      },
+      {
+        "operatorName": "!~",
+        "exposedName": "_nregex",
+        "operatorKind": "custom"
+      },
+      {
+        "operatorName": "~*",
+        "exposedName": "_iregex",
+        "operatorKind": "custom"
+      },
+      {
+        "operatorName": "!~*",
+        "exposedName": "_niregex",
+        "operatorKind": "custom"
+      }
+    ],
+    "introspectPrefixFunctionComparisonOperators": [
+      "box_above",
+      "box_below",
+      "box_contain",
+      "box_contain_pt",
+      "box_contained",
+      "box_left",
+      "box_overabove",
+      "box_overbelow",
+      "box_overlap",
+      "box_overleft",
+      "box_overright",
+      "box_right",
+      "box_same",
+      "circle_above",
+      "circle_below",
+      "circle_contain",
+      "circle_contain_pt",
+      "circle_contained",
+      "circle_left",
+      "circle_overabove",
+      "circle_overbelow",
+      "circle_overlap",
+      "circle_overleft",
+      "circle_overright",
+      "circle_right",
+      "circle_same",
+      "contains_2d",
+      "equals",
+      "geography_overlaps",
+      "geometry_above",
+      "geometry_below",
+      "geometry_contained_3d",
+      "geometry_contains",
+      "geometry_contains_3d",
+      "geometry_contains_nd",
+      "geometry_left",
+      "geometry_overabove",
+      "geometry_overbelow",
+      "geometry_overlaps",
+      "geometry_overlaps_3d",
+      "geometry_overlaps_nd",
+      "geometry_overleft",
+      "geometry_overright",
+      "geometry_right",
+      "geometry_same",
+      "geometry_same_3d",
+      "geometry_same_nd",
+      "geometry_within",
+      "geometry_within_nd",
+      "inet_same_family",
+      "inter_lb",
+      "inter_sb",
+      "inter_sl",
+      "is_contained_2d",
+      "ishorizontal",
+      "isparallel",
+      "isperp",
+      "isvertical",
+      "jsonb_contained",
+      "jsonb_contains",
+      "jsonb_exists",
+      "jsonb_path_exists_opr",
+      "jsonb_path_match_opr",
+      "line_intersect",
+      "line_parallel",
+      "line_perp",
+      "lseg_intersect",
+      "lseg_parallel",
+      "lseg_perp",
+      "network_overlap",
+      "network_sub",
+      "network_subeq",
+      "network_sup",
+      "network_supeq",
+      "on_pb",
+      "on_pl",
+      "on_ppath",
+      "on_ps",
+      "on_sb",
+      "on_sl",
+      "overlaps_2d",
+      "path_contain_pt",
+      "path_inter",
+      "point_above",
+      "point_below",
+      "point_horiz",
+      "point_left",
+      "point_right",
+      "point_vert",
+      "poly_above",
+      "poly_below",
+      "poly_contain",
+      "poly_contain_pt",
+      "poly_contained",
+      "poly_left",
+      "poly_overabove",
+      "poly_overbelow",
+      "poly_overlap",
+      "poly_overleft",
+      "poly_overright",
+      "poly_right",
+      "poly_same",
+      "pt_contained_poly",
+      "st_3dintersects",
+      "st_contains",
+      "st_containsproperly",
+      "st_coveredby",
+      "st_covers",
+      "st_crosses",
+      "st_disjoint",
+      "st_equals",
+      "st_intersects",
+      "st_isvalid",
+      "st_orderingequals",
+      "st_overlaps",
+      "st_relatematch",
+      "st_touches",
+      "st_within",
+      "starts_with",
+      "ts_match_qv",
+      "ts_match_tq",
+      "ts_match_tt",
+      "ts_match_vq",
+      "tsq_mcontained",
+      "tsq_mcontains",
+      "xmlexists",
+      "xmlvalidate",
+      "xpath_exists"
+    ],
+    "typeRepresentations": {
+      "bit": "string",
+      "bool": "boolean",
+      "bpchar": "string",
+      "char": "string",
+      "date": "date",
+      "float4": "float32",
+      "float8": "float64",
+      "int2": "int16",
+      "int4": "int32",
+      "int8": "int64AsString",
+      "numeric": "bigDecimalAsString",
+      "text": "string",
+      "time": "time",
+      "timestamp": "timestamp",
+      "timestamptz": "timestamptz",
+      "timetz": "timetz",
+      "uuid": "uUID",
+      "varchar": "string"
+    }
+  },
+  "mutationsVersion": "v2",
+  "mutationsPrefix": ""
+}

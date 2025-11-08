@@ -1,0 +1,182 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: marketing_traffic_sources
+  description: "Object type for marketing.traffic_sources. Description: Web and
+    app traffic attribution"
+  fields:
+    - name: campaign_id
+      type: int_32
+    - name: created_at
+      type: timestamp
+    - name: referrer_url
+      type: string
+    - name: session_id
+      type: string!
+    - name: source
+      type: string!
+    - name: traffic_id
+      type: int_32!
+    - name: user_id
+      type: int_32
+    - name: visit_date
+      type: timestamp!
+  graphql:
+    typeName: marketing_traffic_sources
+    inputTypeName: marketing_traffic_sources_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: pg
+      dataConnectorObjectType: marketing.traffic_sources
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: marketing_traffic_sources
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - campaign_id
+          - created_at
+          - referrer_url
+          - session_id
+          - source
+          - traffic_id
+          - user_id
+          - visit_date
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: marketing_traffic_sources_bool_exp
+  operand:
+    object:
+      type: marketing_traffic_sources
+      comparableFields:
+        - fieldName: campaign_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: created_at
+          booleanExpressionType: timestamp_without_time_zone_bool_exp
+        - fieldName: referrer_url
+          booleanExpressionType: text_bool_exp
+        - fieldName: session_id
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: source
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: traffic_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: user_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: visit_date
+          booleanExpressionType: timestamp_without_time_zone_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: marketing_traffic_sources_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: marketing_traffic_sources_agg_exp
+  operand:
+    object:
+      aggregatedType: marketing_traffic_sources
+      aggregatableFields:
+        - fieldName: campaign_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: created_at
+          aggregateExpression: timestamp_without_time_zone_agg_exp
+        - fieldName: referrer_url
+          aggregateExpression: text_agg_exp
+        - fieldName: session_id
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: source
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: traffic_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: user_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: visit_date
+          aggregateExpression: timestamp_without_time_zone_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: marketing_traffic_sources_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: marketing_traffic_sources_order_by_exp
+  operand:
+    object:
+      orderedType: marketing_traffic_sources
+      orderableFields:
+        - fieldName: campaign_id
+          orderByExpression: int_32_order_by_exp
+        - fieldName: created_at
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: referrer_url
+          orderByExpression: string_order_by_exp
+        - fieldName: session_id
+          orderByExpression: string_order_by_exp
+        - fieldName: source
+          orderByExpression: string_order_by_exp
+        - fieldName: traffic_id
+          orderByExpression: int_32_order_by_exp
+        - fieldName: user_id
+          orderByExpression: int_32_order_by_exp
+        - fieldName: visit_date
+          orderByExpression: timestamp_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: marketing_traffic_sources_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: marketing_traffic_sources
+  objectType: marketing_traffic_sources
+  source:
+    dataConnectorName: pg
+    collection: marketing.traffic_sources
+  filterExpressionType: marketing_traffic_sources_bool_exp
+  aggregateExpression: marketing_traffic_sources_agg_exp
+  orderByExpression: marketing_traffic_sources_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: marketing_traffic_sources
+      subscription:
+        rootField: marketing_traffic_sources
+    selectUniques:
+      - queryRootField: marketing_traffic_sources_by_traffic_id
+        uniqueIdentifier:
+          - traffic_id
+        subscription:
+          rootField: marketing_traffic_sources_by_traffic_id
+    filterInputTypeName: marketing_traffic_sources_filter_input
+    aggregate:
+      queryRootField: marketing_traffic_sources_aggregate
+      subscription:
+        rootField: marketing_traffic_sources_aggregate
+  description: Web and app traffic attribution
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: marketing_traffic_sources
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

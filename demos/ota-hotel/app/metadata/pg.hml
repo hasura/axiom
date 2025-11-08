@@ -1,0 +1,5651 @@
+kind: DataConnectorLink
+version: v1
+definition:
+  name: pg
+  url:
+    readWriteUrls:
+      read:
+        valueFromEnv: APP_PG_READ_URL
+      write:
+        valueFromEnv: APP_PG_WRITE_URL
+  headers:
+    Authorization:
+      valueFromEnv: APP_PG_AUTHORIZATION_HEADER
+  schema:
+    version: v0.2
+    schema:
+      collections:
+        - arguments: {}
+          description: Master list of cities
+          name: external.cities
+          type: external.cities
+          uniqueness_constraints:
+            primary_key:
+              unique_columns:
+                - city_id
+        - arguments: {}
+          description: Local events that may impact hotel demand
+          name: external.events
+          type: external.events
+          uniqueness_constraints:
+            primary_key:
+              unique_columns:
+                - event_id
+        - arguments: {}
+          description: External factors affecting travel demand
+          name: external.external_factors
+          type: external.external_factors
+          uniqueness_constraints:
+            primary_key:
+              unique_columns:
+                - factor_id
+        - arguments: {}
+          description: Festivals and celebrations affecting travel patterns
+          name: external.festivals
+          type: external.festivals
+          uniqueness_constraints:
+            primary_key:
+              unique_columns:
+                - festival_id
+        - arguments: {}
+          description: Room inventory for each hotel
+          name: hotel.hotel_rooms
+          type: hotel.hotel_rooms
+          uniqueness_constraints:
+            primary_key:
+              unique_columns:
+                - room_id
+        - arguments: {}
+          description: Master table for hotel information
+          name: hotel.hotels
+          type: hotel.hotels
+          uniqueness_constraints:
+            primary_key:
+              unique_columns:
+                - hotel_id
+        - arguments: {}
+          description: Historical and current pricing data for hotel rooms
+          name: hotel.pricing
+          type: hotel.pricing
+          uniqueness_constraints:
+            primary_key:
+              unique_columns:
+                - pricing_id
+        - arguments: {}
+          description: Marketing campaign metadata
+          name: marketing.campaigns
+          type: marketing.campaigns
+          uniqueness_constraints:
+            primary_key:
+              unique_columns:
+                - campaign_id
+        - arguments: {}
+          description: Daily marketing spend and performance metrics
+          name: marketing.marketing_spends
+          type: marketing.marketing_spends
+          uniqueness_constraints:
+            primary_key:
+              unique_columns:
+                - spend_id
+        - arguments: {}
+          description: Web and app traffic attribution
+          name: marketing.traffic_sources
+          type: marketing.traffic_sources
+          uniqueness_constraints:
+            primary_key:
+              unique_columns:
+                - traffic_id
+        - arguments: {}
+          description: All hotel bookings made through the platform
+          name: user_data.hotel_bookings
+          type: user_data.hotel_bookings
+          uniqueness_constraints:
+            primary_key:
+              unique_columns:
+                - booking_id
+        - arguments: {}
+          description: User search behavior tracking
+          name: user_data.search_queries
+          type: user_data.search_queries
+          uniqueness_constraints:
+            primary_key:
+              unique_columns:
+                - query_id
+        - arguments: {}
+          description: User profile information
+          name: user_data.users
+          type: user_data.users
+          uniqueness_constraints:
+            primary_key:
+              unique_columns:
+                - user_id
+      functions: []
+      object_types:
+        array_set_input:
+          description: Wrapper for setting scalar array
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar array
+              type:
+                type: nullable
+                underlying_type:
+                  name: array
+                  type: named
+          foreign_keys: {}
+        bigint_set_input:
+          description: Wrapper for setting scalar bigint
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar bigint
+              type:
+                type: nullable
+                underlying_type:
+                  name: bigint
+                  type: named
+          foreign_keys: {}
+        character_varying_set_input:
+          description: Wrapper for setting scalar character_varying
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar character_varying
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+          foreign_keys: {}
+        date_set_input:
+          description: Wrapper for setting scalar date
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar date
+              type:
+                type: nullable
+                underlying_type:
+                  name: date
+                  type: named
+          foreign_keys: {}
+        decimal_set_input:
+          description: Wrapper for setting scalar decimal
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar decimal
+              type:
+                type: nullable
+                underlying_type:
+                  name: decimal
+                  type: named
+          foreign_keys: {}
+        delete_external.cities_result:
+          description: delete from external.cities result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by delete
+              type:
+                element_type:
+                  name: external.cities
+                  type: named
+                type: array
+          foreign_keys: {}
+        delete_external.events_result:
+          description: delete from external.events result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by delete
+              type:
+                element_type:
+                  name: external.events
+                  type: named
+                type: array
+          foreign_keys: {}
+        delete_external.external_factors_result:
+          description: delete from external.external_factors result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by delete
+              type:
+                element_type:
+                  name: external.external_factors
+                  type: named
+                type: array
+          foreign_keys: {}
+        delete_external.festivals_result:
+          description: delete from external.festivals result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by delete
+              type:
+                element_type:
+                  name: external.festivals
+                  type: named
+                type: array
+          foreign_keys: {}
+        delete_hotel.hotel_rooms_result:
+          description: delete from hotel.hotel_rooms result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by delete
+              type:
+                element_type:
+                  name: hotel.hotel_rooms
+                  type: named
+                type: array
+          foreign_keys: {}
+        delete_hotel.hotels_result:
+          description: delete from hotel.hotels result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by delete
+              type:
+                element_type:
+                  name: hotel.hotels
+                  type: named
+                type: array
+          foreign_keys: {}
+        delete_hotel.pricing_result:
+          description: delete from hotel.pricing result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by delete
+              type:
+                element_type:
+                  name: hotel.pricing
+                  type: named
+                type: array
+          foreign_keys: {}
+        delete_marketing.campaigns_result:
+          description: delete from marketing.campaigns result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by delete
+              type:
+                element_type:
+                  name: marketing.campaigns
+                  type: named
+                type: array
+          foreign_keys: {}
+        delete_marketing.marketing_spends_result:
+          description: delete from marketing.marketing_spends result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by delete
+              type:
+                element_type:
+                  name: marketing.marketing_spends
+                  type: named
+                type: array
+          foreign_keys: {}
+        delete_marketing.traffic_sources_result:
+          description: delete from marketing.traffic_sources result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by delete
+              type:
+                element_type:
+                  name: marketing.traffic_sources
+                  type: named
+                type: array
+          foreign_keys: {}
+        delete_user_data.hotel_bookings_result:
+          description: delete from user_data.hotel_bookings result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by delete
+              type:
+                element_type:
+                  name: user_data.hotel_bookings
+                  type: named
+                type: array
+          foreign_keys: {}
+        delete_user_data.search_queries_result:
+          description: delete from user_data.search_queries result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by delete
+              type:
+                element_type:
+                  name: user_data.search_queries
+                  type: named
+                type: array
+          foreign_keys: {}
+        delete_user_data.users_result:
+          description: delete from user_data.users result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by delete
+              type:
+                element_type:
+                  name: user_data.users
+                  type: named
+                type: array
+          foreign_keys: {}
+        external.cities:
+          description: 'Object type for external.cities. Description: Master list of cities'
+          fields:
+            city_id:
+              arguments: {}
+              type:
+                name: integer
+                type: named
+            city_name:
+              arguments: {}
+              type:
+                name: character_varying
+                type: named
+            country:
+              arguments: {}
+              type:
+                name: character_varying
+                type: named
+            created_at:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+            state:
+              arguments: {}
+              type:
+                name: character_varying
+                type: named
+            timezone:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+            updated_at:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+          foreign_keys: {}
+        external.cities_insert_input:
+          description: Input type for inserting into external.cities
+          fields:
+            city_id:
+              arguments: {}
+              description: New value for external.cities.city_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            city_name:
+              arguments: {}
+              description: New value for external.cities.city_name
+              type:
+                name: character_varying
+                type: named
+            country:
+              arguments: {}
+              description: New value for external.cities.country
+              type:
+                name: character_varying
+                type: named
+            created_at:
+              arguments: {}
+              description: New value for external.cities.created_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+            state:
+              arguments: {}
+              description: New value for external.cities.state
+              type:
+                name: character_varying
+                type: named
+            timezone:
+              arguments: {}
+              description: New value for external.cities.timezone
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+            updated_at:
+              arguments: {}
+              description: New value for external.cities.updated_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+          foreign_keys: {}
+        external.cities_set_input:
+          description: Input type for updating external.cities
+          fields:
+            city_id:
+              arguments: {}
+              description: New value wrapper for external.cities.city_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            city_name:
+              arguments: {}
+              description: New value wrapper for external.cities.city_name
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying_set_input
+                  type: named
+            country:
+              arguments: {}
+              description: New value wrapper for external.cities.country
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying_set_input
+                  type: named
+            created_at:
+              arguments: {}
+              description: New value wrapper for external.cities.created_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone_set_input
+                  type: named
+            state:
+              arguments: {}
+              description: New value wrapper for external.cities.state
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying_set_input
+                  type: named
+            timezone:
+              arguments: {}
+              description: New value wrapper for external.cities.timezone
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying_set_input
+                  type: named
+            updated_at:
+              arguments: {}
+              description: New value wrapper for external.cities.updated_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone_set_input
+                  type: named
+          foreign_keys: {}
+        external.events:
+          description: 'Object type for external.events. Description: Local events that may impact hotel demand'
+          fields:
+            city_id:
+              arguments: {}
+              type:
+                name: integer
+                type: named
+            created_at:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+            event_date:
+              arguments: {}
+              type:
+                name: date
+                type: named
+            event_id:
+              arguments: {}
+              type:
+                name: integer
+                type: named
+            event_name:
+              arguments: {}
+              type:
+                name: character_varying
+                type: named
+            event_type:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+            expected_attendance:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            updated_at:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+          foreign_keys:
+            events_city_id_fkey:
+              column_mapping:
+                city_id:
+                  - city_id
+              foreign_collection: external.cities
+        external.events_insert_input:
+          description: Input type for inserting into external.events
+          fields:
+            city_id:
+              arguments: {}
+              description: New value for external.events.city_id
+              type:
+                name: integer
+                type: named
+            created_at:
+              arguments: {}
+              description: New value for external.events.created_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+            event_date:
+              arguments: {}
+              description: New value for external.events.event_date
+              type:
+                name: date
+                type: named
+            event_id:
+              arguments: {}
+              description: New value for external.events.event_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            event_name:
+              arguments: {}
+              description: New value for external.events.event_name
+              type:
+                name: character_varying
+                type: named
+            event_type:
+              arguments: {}
+              description: New value for external.events.event_type
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+            expected_attendance:
+              arguments: {}
+              description: New value for external.events.expected_attendance
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            updated_at:
+              arguments: {}
+              description: New value for external.events.updated_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+          foreign_keys: {}
+        external.events_set_input:
+          description: Input type for updating external.events
+          fields:
+            city_id:
+              arguments: {}
+              description: New value wrapper for external.events.city_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            created_at:
+              arguments: {}
+              description: New value wrapper for external.events.created_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone_set_input
+                  type: named
+            event_date:
+              arguments: {}
+              description: New value wrapper for external.events.event_date
+              type:
+                type: nullable
+                underlying_type:
+                  name: date_set_input
+                  type: named
+            event_id:
+              arguments: {}
+              description: New value wrapper for external.events.event_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            event_name:
+              arguments: {}
+              description: New value wrapper for external.events.event_name
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying_set_input
+                  type: named
+            event_type:
+              arguments: {}
+              description: New value wrapper for external.events.event_type
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying_set_input
+                  type: named
+            expected_attendance:
+              arguments: {}
+              description: New value wrapper for external.events.expected_attendance
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            updated_at:
+              arguments: {}
+              description: New value wrapper for external.events.updated_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone_set_input
+                  type: named
+          foreign_keys: {}
+        external.external_factors:
+          description: 'Object type for external.external_factors. Description: External factors affecting travel demand'
+          fields:
+            city_id:
+              arguments: {}
+              type:
+                name: integer
+                type: named
+            created_at:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+            date:
+              arguments: {}
+              type:
+                name: date
+                type: named
+            factor_id:
+              arguments: {}
+              type:
+                name: integer
+                type: named
+            flight_availability_score:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            temperature:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: decimal
+                  type: named
+            travel_advisory_level:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+            updated_at:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+            weather_condition:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+          foreign_keys:
+            external_factors_city_id_fkey:
+              column_mapping:
+                city_id:
+                  - city_id
+              foreign_collection: external.cities
+        external.external_factors_insert_input:
+          description: Input type for inserting into external.external_factors
+          fields:
+            city_id:
+              arguments: {}
+              description: New value for external.external_factors.city_id
+              type:
+                name: integer
+                type: named
+            created_at:
+              arguments: {}
+              description: New value for external.external_factors.created_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+            date:
+              arguments: {}
+              description: New value for external.external_factors.date
+              type:
+                name: date
+                type: named
+            factor_id:
+              arguments: {}
+              description: New value for external.external_factors.factor_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            flight_availability_score:
+              arguments: {}
+              description: New value for external.external_factors.flight_availability_score
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            temperature:
+              arguments: {}
+              description: New value for external.external_factors.temperature
+              type:
+                type: nullable
+                underlying_type:
+                  name: decimal
+                  type: named
+            travel_advisory_level:
+              arguments: {}
+              description: New value for external.external_factors.travel_advisory_level
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+            updated_at:
+              arguments: {}
+              description: New value for external.external_factors.updated_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+            weather_condition:
+              arguments: {}
+              description: New value for external.external_factors.weather_condition
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+          foreign_keys: {}
+        external.external_factors_set_input:
+          description: Input type for updating external.external_factors
+          fields:
+            city_id:
+              arguments: {}
+              description: New value wrapper for external.external_factors.city_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            created_at:
+              arguments: {}
+              description: New value wrapper for external.external_factors.created_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone_set_input
+                  type: named
+            date:
+              arguments: {}
+              description: New value wrapper for external.external_factors.date
+              type:
+                type: nullable
+                underlying_type:
+                  name: date_set_input
+                  type: named
+            factor_id:
+              arguments: {}
+              description: New value wrapper for external.external_factors.factor_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            flight_availability_score:
+              arguments: {}
+              description: New value wrapper for external.external_factors.flight_availability_score
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            temperature:
+              arguments: {}
+              description: New value wrapper for external.external_factors.temperature
+              type:
+                type: nullable
+                underlying_type:
+                  name: decimal_set_input
+                  type: named
+            travel_advisory_level:
+              arguments: {}
+              description: New value wrapper for external.external_factors.travel_advisory_level
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying_set_input
+                  type: named
+            updated_at:
+              arguments: {}
+              description: New value wrapper for external.external_factors.updated_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone_set_input
+                  type: named
+            weather_condition:
+              arguments: {}
+              description: New value wrapper for external.external_factors.weather_condition
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying_set_input
+                  type: named
+          foreign_keys: {}
+        external.festivals:
+          description: 'Object type for external.festivals. Description: Festivals and celebrations affecting travel patterns'
+          fields:
+            city_id:
+              arguments: {}
+              type:
+                name: integer
+                type: named
+            created_at:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+            end_date:
+              arguments: {}
+              type:
+                name: date
+                type: named
+            expected_tourist_influx:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            festival_id:
+              arguments: {}
+              type:
+                name: integer
+                type: named
+            festival_name:
+              arguments: {}
+              type:
+                name: character_varying
+                type: named
+            festival_type:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+            significance_level:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+            start_date:
+              arguments: {}
+              type:
+                name: date
+                type: named
+            updated_at:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+          foreign_keys:
+            festivals_city_id_fkey:
+              column_mapping:
+                city_id:
+                  - city_id
+              foreign_collection: external.cities
+        external.festivals_insert_input:
+          description: Input type for inserting into external.festivals
+          fields:
+            city_id:
+              arguments: {}
+              description: New value for external.festivals.city_id
+              type:
+                name: integer
+                type: named
+            created_at:
+              arguments: {}
+              description: New value for external.festivals.created_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+            end_date:
+              arguments: {}
+              description: New value for external.festivals.end_date
+              type:
+                name: date
+                type: named
+            expected_tourist_influx:
+              arguments: {}
+              description: New value for external.festivals.expected_tourist_influx
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            festival_id:
+              arguments: {}
+              description: New value for external.festivals.festival_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            festival_name:
+              arguments: {}
+              description: New value for external.festivals.festival_name
+              type:
+                name: character_varying
+                type: named
+            festival_type:
+              arguments: {}
+              description: New value for external.festivals.festival_type
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+            significance_level:
+              arguments: {}
+              description: New value for external.festivals.significance_level
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+            start_date:
+              arguments: {}
+              description: New value for external.festivals.start_date
+              type:
+                name: date
+                type: named
+            updated_at:
+              arguments: {}
+              description: New value for external.festivals.updated_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+          foreign_keys: {}
+        external.festivals_set_input:
+          description: Input type for updating external.festivals
+          fields:
+            city_id:
+              arguments: {}
+              description: New value wrapper for external.festivals.city_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            created_at:
+              arguments: {}
+              description: New value wrapper for external.festivals.created_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone_set_input
+                  type: named
+            end_date:
+              arguments: {}
+              description: New value wrapper for external.festivals.end_date
+              type:
+                type: nullable
+                underlying_type:
+                  name: date_set_input
+                  type: named
+            expected_tourist_influx:
+              arguments: {}
+              description: New value wrapper for external.festivals.expected_tourist_influx
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            festival_id:
+              arguments: {}
+              description: New value wrapper for external.festivals.festival_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            festival_name:
+              arguments: {}
+              description: New value wrapper for external.festivals.festival_name
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying_set_input
+                  type: named
+            festival_type:
+              arguments: {}
+              description: New value wrapper for external.festivals.festival_type
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying_set_input
+                  type: named
+            significance_level:
+              arguments: {}
+              description: New value wrapper for external.festivals.significance_level
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying_set_input
+                  type: named
+            start_date:
+              arguments: {}
+              description: New value wrapper for external.festivals.start_date
+              type:
+                type: nullable
+                underlying_type:
+                  name: date_set_input
+                  type: named
+            updated_at:
+              arguments: {}
+              description: New value wrapper for external.festivals.updated_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone_set_input
+                  type: named
+          foreign_keys: {}
+        hotel.hotel_rooms:
+          description: 'Object type for hotel.hotel_rooms. Description: Room inventory for each hotel'
+          fields:
+            base_price:
+              arguments: {}
+              type:
+                name: decimal
+                type: named
+            capacity:
+              arguments: {}
+              type:
+                name: integer
+                type: named
+            created_at:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+            hotel_id:
+              arguments: {}
+              type:
+                name: integer
+                type: named
+            room_id:
+              arguments: {}
+              type:
+                name: integer
+                type: named
+            room_type:
+              arguments: {}
+              type:
+                name: character_varying
+                type: named
+            updated_at:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+          foreign_keys:
+            hotel_rooms_hotel_id_fkey:
+              column_mapping:
+                hotel_id:
+                  - hotel_id
+              foreign_collection: hotel.hotels
+        hotel.hotel_rooms_insert_input:
+          description: Input type for inserting into hotel.hotel_rooms
+          fields:
+            base_price:
+              arguments: {}
+              description: New value for hotel.hotel_rooms.base_price
+              type:
+                name: decimal
+                type: named
+            capacity:
+              arguments: {}
+              description: New value for hotel.hotel_rooms.capacity
+              type:
+                name: integer
+                type: named
+            created_at:
+              arguments: {}
+              description: New value for hotel.hotel_rooms.created_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+            hotel_id:
+              arguments: {}
+              description: New value for hotel.hotel_rooms.hotel_id
+              type:
+                name: integer
+                type: named
+            room_id:
+              arguments: {}
+              description: New value for hotel.hotel_rooms.room_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            room_type:
+              arguments: {}
+              description: New value for hotel.hotel_rooms.room_type
+              type:
+                name: character_varying
+                type: named
+            updated_at:
+              arguments: {}
+              description: New value for hotel.hotel_rooms.updated_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+          foreign_keys: {}
+        hotel.hotel_rooms_set_input:
+          description: Input type for updating hotel.hotel_rooms
+          fields:
+            base_price:
+              arguments: {}
+              description: New value wrapper for hotel.hotel_rooms.base_price
+              type:
+                type: nullable
+                underlying_type:
+                  name: decimal_set_input
+                  type: named
+            capacity:
+              arguments: {}
+              description: New value wrapper for hotel.hotel_rooms.capacity
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            created_at:
+              arguments: {}
+              description: New value wrapper for hotel.hotel_rooms.created_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone_set_input
+                  type: named
+            hotel_id:
+              arguments: {}
+              description: New value wrapper for hotel.hotel_rooms.hotel_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            room_id:
+              arguments: {}
+              description: New value wrapper for hotel.hotel_rooms.room_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            room_type:
+              arguments: {}
+              description: New value wrapper for hotel.hotel_rooms.room_type
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying_set_input
+                  type: named
+            updated_at:
+              arguments: {}
+              description: New value wrapper for hotel.hotel_rooms.updated_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone_set_input
+                  type: named
+          foreign_keys: {}
+        hotel.hotels:
+          description: 'Object type for hotel.hotels. Description: Master table for hotel information'
+          fields:
+            address:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            amenities:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: array
+                  type: named
+            city:
+              arguments: {}
+              type:
+                name: character_varying
+                type: named
+            created_at:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+            hotel_id:
+              arguments: {}
+              type:
+                name: integer
+                type: named
+            name:
+              arguments: {}
+              type:
+                name: character_varying
+                type: named
+            star_rating:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: decimal
+                  type: named
+            state:
+              arguments: {}
+              type:
+                name: character_varying
+                type: named
+            updated_at:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+          foreign_keys: {}
+        hotel.hotels_insert_input:
+          description: Input type for inserting into hotel.hotels
+          fields:
+            address:
+              arguments: {}
+              description: New value for hotel.hotels.address
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            amenities:
+              arguments: {}
+              description: New value for hotel.hotels.amenities
+              type:
+                type: nullable
+                underlying_type:
+                  name: array
+                  type: named
+            city:
+              arguments: {}
+              description: New value for hotel.hotels.city
+              type:
+                name: character_varying
+                type: named
+            created_at:
+              arguments: {}
+              description: New value for hotel.hotels.created_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+            hotel_id:
+              arguments: {}
+              description: New value for hotel.hotels.hotel_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            name:
+              arguments: {}
+              description: New value for hotel.hotels.name
+              type:
+                name: character_varying
+                type: named
+            star_rating:
+              arguments: {}
+              description: New value for hotel.hotels.star_rating
+              type:
+                type: nullable
+                underlying_type:
+                  name: decimal
+                  type: named
+            state:
+              arguments: {}
+              description: New value for hotel.hotels.state
+              type:
+                name: character_varying
+                type: named
+            updated_at:
+              arguments: {}
+              description: New value for hotel.hotels.updated_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+          foreign_keys: {}
+        hotel.hotels_set_input:
+          description: Input type for updating hotel.hotels
+          fields:
+            address:
+              arguments: {}
+              description: New value wrapper for hotel.hotels.address
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            amenities:
+              arguments: {}
+              description: New value wrapper for hotel.hotels.amenities
+              type:
+                type: nullable
+                underlying_type:
+                  name: array_set_input
+                  type: named
+            city:
+              arguments: {}
+              description: New value wrapper for hotel.hotels.city
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying_set_input
+                  type: named
+            created_at:
+              arguments: {}
+              description: New value wrapper for hotel.hotels.created_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone_set_input
+                  type: named
+            hotel_id:
+              arguments: {}
+              description: New value wrapper for hotel.hotels.hotel_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            name:
+              arguments: {}
+              description: New value wrapper for hotel.hotels.name
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying_set_input
+                  type: named
+            star_rating:
+              arguments: {}
+              description: New value wrapper for hotel.hotels.star_rating
+              type:
+                type: nullable
+                underlying_type:
+                  name: decimal_set_input
+                  type: named
+            state:
+              arguments: {}
+              description: New value wrapper for hotel.hotels.state
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying_set_input
+                  type: named
+            updated_at:
+              arguments: {}
+              description: New value wrapper for hotel.hotels.updated_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone_set_input
+                  type: named
+          foreign_keys: {}
+        hotel.pricing:
+          description: 'Object type for hotel.pricing. Description: Historical and current pricing data for hotel rooms'
+          fields:
+            availability_status:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+            created_at:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+            date:
+              arguments: {}
+              type:
+                name: date
+                type: named
+            hotel_id:
+              arguments: {}
+              type:
+                name: integer
+                type: named
+            price_per_night:
+              arguments: {}
+              type:
+                name: decimal
+                type: named
+            pricing_id:
+              arguments: {}
+              type:
+                name: integer
+                type: named
+            room_id:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            updated_at:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+          foreign_keys:
+            pricing_hotel_id_fkey:
+              column_mapping:
+                hotel_id:
+                  - hotel_id
+              foreign_collection: hotel.hotels
+            pricing_room_id_fkey:
+              column_mapping:
+                room_id:
+                  - room_id
+              foreign_collection: hotel.hotel_rooms
+        hotel.pricing_insert_input:
+          description: Input type for inserting into hotel.pricing
+          fields:
+            availability_status:
+              arguments: {}
+              description: New value for hotel.pricing.availability_status
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+            created_at:
+              arguments: {}
+              description: New value for hotel.pricing.created_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+            date:
+              arguments: {}
+              description: New value for hotel.pricing.date
+              type:
+                name: date
+                type: named
+            hotel_id:
+              arguments: {}
+              description: New value for hotel.pricing.hotel_id
+              type:
+                name: integer
+                type: named
+            price_per_night:
+              arguments: {}
+              description: New value for hotel.pricing.price_per_night
+              type:
+                name: decimal
+                type: named
+            pricing_id:
+              arguments: {}
+              description: New value for hotel.pricing.pricing_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            room_id:
+              arguments: {}
+              description: New value for hotel.pricing.room_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            updated_at:
+              arguments: {}
+              description: New value for hotel.pricing.updated_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+          foreign_keys: {}
+        hotel.pricing_set_input:
+          description: Input type for updating hotel.pricing
+          fields:
+            availability_status:
+              arguments: {}
+              description: New value wrapper for hotel.pricing.availability_status
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying_set_input
+                  type: named
+            created_at:
+              arguments: {}
+              description: New value wrapper for hotel.pricing.created_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone_set_input
+                  type: named
+            date:
+              arguments: {}
+              description: New value wrapper for hotel.pricing.date
+              type:
+                type: nullable
+                underlying_type:
+                  name: date_set_input
+                  type: named
+            hotel_id:
+              arguments: {}
+              description: New value wrapper for hotel.pricing.hotel_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            price_per_night:
+              arguments: {}
+              description: New value wrapper for hotel.pricing.price_per_night
+              type:
+                type: nullable
+                underlying_type:
+                  name: decimal_set_input
+                  type: named
+            pricing_id:
+              arguments: {}
+              description: New value wrapper for hotel.pricing.pricing_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            room_id:
+              arguments: {}
+              description: New value wrapper for hotel.pricing.room_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            updated_at:
+              arguments: {}
+              description: New value wrapper for hotel.pricing.updated_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone_set_input
+                  type: named
+          foreign_keys: {}
+        insert_external.cities_result:
+          description: insert from external.cities result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by insert
+              type:
+                element_type:
+                  name: external.cities
+                  type: named
+                type: array
+          foreign_keys: {}
+        insert_external.events_result:
+          description: insert from external.events result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by insert
+              type:
+                element_type:
+                  name: external.events
+                  type: named
+                type: array
+          foreign_keys: {}
+        insert_external.external_factors_result:
+          description: insert from external.external_factors result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by insert
+              type:
+                element_type:
+                  name: external.external_factors
+                  type: named
+                type: array
+          foreign_keys: {}
+        insert_external.festivals_result:
+          description: insert from external.festivals result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by insert
+              type:
+                element_type:
+                  name: external.festivals
+                  type: named
+                type: array
+          foreign_keys: {}
+        insert_hotel.hotel_rooms_result:
+          description: insert from hotel.hotel_rooms result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by insert
+              type:
+                element_type:
+                  name: hotel.hotel_rooms
+                  type: named
+                type: array
+          foreign_keys: {}
+        insert_hotel.hotels_result:
+          description: insert from hotel.hotels result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by insert
+              type:
+                element_type:
+                  name: hotel.hotels
+                  type: named
+                type: array
+          foreign_keys: {}
+        insert_hotel.pricing_result:
+          description: insert from hotel.pricing result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by insert
+              type:
+                element_type:
+                  name: hotel.pricing
+                  type: named
+                type: array
+          foreign_keys: {}
+        insert_marketing.campaigns_result:
+          description: insert from marketing.campaigns result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by insert
+              type:
+                element_type:
+                  name: marketing.campaigns
+                  type: named
+                type: array
+          foreign_keys: {}
+        insert_marketing.marketing_spends_result:
+          description: insert from marketing.marketing_spends result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by insert
+              type:
+                element_type:
+                  name: marketing.marketing_spends
+                  type: named
+                type: array
+          foreign_keys: {}
+        insert_marketing.traffic_sources_result:
+          description: insert from marketing.traffic_sources result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by insert
+              type:
+                element_type:
+                  name: marketing.traffic_sources
+                  type: named
+                type: array
+          foreign_keys: {}
+        insert_user_data.hotel_bookings_result:
+          description: insert from user_data.hotel_bookings result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by insert
+              type:
+                element_type:
+                  name: user_data.hotel_bookings
+                  type: named
+                type: array
+          foreign_keys: {}
+        insert_user_data.search_queries_result:
+          description: insert from user_data.search_queries result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by insert
+              type:
+                element_type:
+                  name: user_data.search_queries
+                  type: named
+                type: array
+          foreign_keys: {}
+        insert_user_data.users_result:
+          description: insert from user_data.users result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by insert
+              type:
+                element_type:
+                  name: user_data.users
+                  type: named
+                type: array
+          foreign_keys: {}
+        int_set_input:
+          description: Wrapper for setting scalar int
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar int
+              type:
+                type: nullable
+                underlying_type:
+                  name: int
+                  type: named
+          foreign_keys: {}
+        integer_set_input:
+          description: Wrapper for setting scalar integer
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar integer
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+          foreign_keys: {}
+        marketing.campaigns:
+          description: 'Object type for marketing.campaigns. Description: Marketing campaign metadata'
+          fields:
+            campaign_id:
+              arguments: {}
+              type:
+                name: integer
+                type: named
+            campaign_name:
+              arguments: {}
+              type:
+                name: character_varying
+                type: named
+            campaign_type:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+            created_at:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+            end_date:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: date
+                  type: named
+            start_date:
+              arguments: {}
+              type:
+                name: date
+                type: named
+            target_audience:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            updated_at:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+          foreign_keys: {}
+        marketing.campaigns_insert_input:
+          description: Input type for inserting into marketing.campaigns
+          fields:
+            campaign_id:
+              arguments: {}
+              description: New value for marketing.campaigns.campaign_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            campaign_name:
+              arguments: {}
+              description: New value for marketing.campaigns.campaign_name
+              type:
+                name: character_varying
+                type: named
+            campaign_type:
+              arguments: {}
+              description: New value for marketing.campaigns.campaign_type
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+            created_at:
+              arguments: {}
+              description: New value for marketing.campaigns.created_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+            end_date:
+              arguments: {}
+              description: New value for marketing.campaigns.end_date
+              type:
+                type: nullable
+                underlying_type:
+                  name: date
+                  type: named
+            start_date:
+              arguments: {}
+              description: New value for marketing.campaigns.start_date
+              type:
+                name: date
+                type: named
+            target_audience:
+              arguments: {}
+              description: New value for marketing.campaigns.target_audience
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            updated_at:
+              arguments: {}
+              description: New value for marketing.campaigns.updated_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+          foreign_keys: {}
+        marketing.campaigns_set_input:
+          description: Input type for updating marketing.campaigns
+          fields:
+            campaign_id:
+              arguments: {}
+              description: New value wrapper for marketing.campaigns.campaign_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            campaign_name:
+              arguments: {}
+              description: New value wrapper for marketing.campaigns.campaign_name
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying_set_input
+                  type: named
+            campaign_type:
+              arguments: {}
+              description: New value wrapper for marketing.campaigns.campaign_type
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying_set_input
+                  type: named
+            created_at:
+              arguments: {}
+              description: New value wrapper for marketing.campaigns.created_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone_set_input
+                  type: named
+            end_date:
+              arguments: {}
+              description: New value wrapper for marketing.campaigns.end_date
+              type:
+                type: nullable
+                underlying_type:
+                  name: date_set_input
+                  type: named
+            start_date:
+              arguments: {}
+              description: New value wrapper for marketing.campaigns.start_date
+              type:
+                type: nullable
+                underlying_type:
+                  name: date_set_input
+                  type: named
+            target_audience:
+              arguments: {}
+              description: New value wrapper for marketing.campaigns.target_audience
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            updated_at:
+              arguments: {}
+              description: New value wrapper for marketing.campaigns.updated_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone_set_input
+                  type: named
+          foreign_keys: {}
+        marketing.marketing_spends:
+          description: 'Object type for marketing.marketing_spends. Description: Daily marketing spend and performance metrics'
+          fields:
+            campaign_id:
+              arguments: {}
+              type:
+                name: integer
+                type: named
+            clicks:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            conversions:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            created_at:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+            date:
+              arguments: {}
+              type:
+                name: date
+                type: named
+            impressions:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: bigint
+                  type: named
+            spend:
+              arguments: {}
+              type:
+                name: decimal
+                type: named
+            spend_id:
+              arguments: {}
+              type:
+                name: integer
+                type: named
+            updated_at:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+          foreign_keys:
+            marketing_spends_campaign_id_fkey:
+              column_mapping:
+                campaign_id:
+                  - campaign_id
+              foreign_collection: marketing.campaigns
+        marketing.marketing_spends_insert_input:
+          description: Input type for inserting into marketing.marketing_spends
+          fields:
+            campaign_id:
+              arguments: {}
+              description: New value for marketing.marketing_spends.campaign_id
+              type:
+                name: integer
+                type: named
+            clicks:
+              arguments: {}
+              description: New value for marketing.marketing_spends.clicks
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            conversions:
+              arguments: {}
+              description: New value for marketing.marketing_spends.conversions
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            created_at:
+              arguments: {}
+              description: New value for marketing.marketing_spends.created_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+            date:
+              arguments: {}
+              description: New value for marketing.marketing_spends.date
+              type:
+                name: date
+                type: named
+            impressions:
+              arguments: {}
+              description: New value for marketing.marketing_spends.impressions
+              type:
+                type: nullable
+                underlying_type:
+                  name: bigint
+                  type: named
+            spend:
+              arguments: {}
+              description: New value for marketing.marketing_spends.spend
+              type:
+                name: decimal
+                type: named
+            spend_id:
+              arguments: {}
+              description: New value for marketing.marketing_spends.spend_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            updated_at:
+              arguments: {}
+              description: New value for marketing.marketing_spends.updated_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+          foreign_keys: {}
+        marketing.marketing_spends_set_input:
+          description: Input type for updating marketing.marketing_spends
+          fields:
+            campaign_id:
+              arguments: {}
+              description: New value wrapper for marketing.marketing_spends.campaign_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            clicks:
+              arguments: {}
+              description: New value wrapper for marketing.marketing_spends.clicks
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            conversions:
+              arguments: {}
+              description: New value wrapper for marketing.marketing_spends.conversions
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            created_at:
+              arguments: {}
+              description: New value wrapper for marketing.marketing_spends.created_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone_set_input
+                  type: named
+            date:
+              arguments: {}
+              description: New value wrapper for marketing.marketing_spends.date
+              type:
+                type: nullable
+                underlying_type:
+                  name: date_set_input
+                  type: named
+            impressions:
+              arguments: {}
+              description: New value wrapper for marketing.marketing_spends.impressions
+              type:
+                type: nullable
+                underlying_type:
+                  name: bigint_set_input
+                  type: named
+            spend:
+              arguments: {}
+              description: New value wrapper for marketing.marketing_spends.spend
+              type:
+                type: nullable
+                underlying_type:
+                  name: decimal_set_input
+                  type: named
+            spend_id:
+              arguments: {}
+              description: New value wrapper for marketing.marketing_spends.spend_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            updated_at:
+              arguments: {}
+              description: New value wrapper for marketing.marketing_spends.updated_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone_set_input
+                  type: named
+          foreign_keys: {}
+        marketing.traffic_sources:
+          description: 'Object type for marketing.traffic_sources. Description: Web and app traffic attribution'
+          fields:
+            campaign_id:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            created_at:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+            referrer_url:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            session_id:
+              arguments: {}
+              type:
+                name: character_varying
+                type: named
+            source:
+              arguments: {}
+              type:
+                name: character_varying
+                type: named
+            traffic_id:
+              arguments: {}
+              type:
+                name: integer
+                type: named
+            user_id:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            visit_date:
+              arguments: {}
+              type:
+                name: timestamp_without_time_zone
+                type: named
+          foreign_keys:
+            traffic_sources_campaign_id_fkey:
+              column_mapping:
+                campaign_id:
+                  - campaign_id
+              foreign_collection: marketing.campaigns
+            traffic_sources_user_id_fkey:
+              column_mapping:
+                user_id:
+                  - user_id
+              foreign_collection: user_data.users
+        marketing.traffic_sources_insert_input:
+          description: Input type for inserting into marketing.traffic_sources
+          fields:
+            campaign_id:
+              arguments: {}
+              description: New value for marketing.traffic_sources.campaign_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            created_at:
+              arguments: {}
+              description: New value for marketing.traffic_sources.created_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+            referrer_url:
+              arguments: {}
+              description: New value for marketing.traffic_sources.referrer_url
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            session_id:
+              arguments: {}
+              description: New value for marketing.traffic_sources.session_id
+              type:
+                name: character_varying
+                type: named
+            source:
+              arguments: {}
+              description: New value for marketing.traffic_sources.source
+              type:
+                name: character_varying
+                type: named
+            traffic_id:
+              arguments: {}
+              description: New value for marketing.traffic_sources.traffic_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            user_id:
+              arguments: {}
+              description: New value for marketing.traffic_sources.user_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            visit_date:
+              arguments: {}
+              description: New value for marketing.traffic_sources.visit_date
+              type:
+                name: timestamp_without_time_zone
+                type: named
+          foreign_keys: {}
+        marketing.traffic_sources_set_input:
+          description: Input type for updating marketing.traffic_sources
+          fields:
+            campaign_id:
+              arguments: {}
+              description: New value wrapper for marketing.traffic_sources.campaign_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            created_at:
+              arguments: {}
+              description: New value wrapper for marketing.traffic_sources.created_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone_set_input
+                  type: named
+            referrer_url:
+              arguments: {}
+              description: New value wrapper for marketing.traffic_sources.referrer_url
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            session_id:
+              arguments: {}
+              description: New value wrapper for marketing.traffic_sources.session_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying_set_input
+                  type: named
+            source:
+              arguments: {}
+              description: New value wrapper for marketing.traffic_sources.source
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying_set_input
+                  type: named
+            traffic_id:
+              arguments: {}
+              description: New value wrapper for marketing.traffic_sources.traffic_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            user_id:
+              arguments: {}
+              description: New value wrapper for marketing.traffic_sources.user_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            visit_date:
+              arguments: {}
+              description: New value wrapper for marketing.traffic_sources.visit_date
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone_set_input
+                  type: named
+          foreign_keys: {}
+        string_set_input:
+          description: Wrapper for setting scalar string
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar string
+              type:
+                type: nullable
+                underlying_type:
+                  name: string
+                  type: named
+          foreign_keys: {}
+        text_set_input:
+          description: Wrapper for setting scalar text
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar text
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+          foreign_keys: {}
+        timestamp_without_time_zone_set_input:
+          description: Wrapper for setting scalar timestamp_without_time_zone
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar timestamp_without_time_zone
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+          foreign_keys: {}
+        update_external.cities_result:
+          description: update from external.cities result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by update
+              type:
+                element_type:
+                  name: external.cities
+                  type: named
+                type: array
+          foreign_keys: {}
+        update_external.events_result:
+          description: update from external.events result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by update
+              type:
+                element_type:
+                  name: external.events
+                  type: named
+                type: array
+          foreign_keys: {}
+        update_external.external_factors_result:
+          description: update from external.external_factors result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by update
+              type:
+                element_type:
+                  name: external.external_factors
+                  type: named
+                type: array
+          foreign_keys: {}
+        update_external.festivals_result:
+          description: update from external.festivals result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by update
+              type:
+                element_type:
+                  name: external.festivals
+                  type: named
+                type: array
+          foreign_keys: {}
+        update_hotel.hotel_rooms_result:
+          description: update from hotel.hotel_rooms result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by update
+              type:
+                element_type:
+                  name: hotel.hotel_rooms
+                  type: named
+                type: array
+          foreign_keys: {}
+        update_hotel.hotels_result:
+          description: update from hotel.hotels result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by update
+              type:
+                element_type:
+                  name: hotel.hotels
+                  type: named
+                type: array
+          foreign_keys: {}
+        update_hotel.pricing_result:
+          description: update from hotel.pricing result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by update
+              type:
+                element_type:
+                  name: hotel.pricing
+                  type: named
+                type: array
+          foreign_keys: {}
+        update_marketing.campaigns_result:
+          description: update from marketing.campaigns result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by update
+              type:
+                element_type:
+                  name: marketing.campaigns
+                  type: named
+                type: array
+          foreign_keys: {}
+        update_marketing.marketing_spends_result:
+          description: update from marketing.marketing_spends result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by update
+              type:
+                element_type:
+                  name: marketing.marketing_spends
+                  type: named
+                type: array
+          foreign_keys: {}
+        update_marketing.traffic_sources_result:
+          description: update from marketing.traffic_sources result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by update
+              type:
+                element_type:
+                  name: marketing.traffic_sources
+                  type: named
+                type: array
+          foreign_keys: {}
+        update_user_data.hotel_bookings_result:
+          description: update from user_data.hotel_bookings result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by update
+              type:
+                element_type:
+                  name: user_data.hotel_bookings
+                  type: named
+                type: array
+          foreign_keys: {}
+        update_user_data.search_queries_result:
+          description: update from user_data.search_queries result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by update
+              type:
+                element_type:
+                  name: user_data.search_queries
+                  type: named
+                type: array
+          foreign_keys: {}
+        update_user_data.users_result:
+          description: update from user_data.users result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by update
+              type:
+                element_type:
+                  name: user_data.users
+                  type: named
+                type: array
+          foreign_keys: {}
+        user_data.hotel_bookings:
+          description: 'Object type for user_data.hotel_bookings. Description: All hotel bookings made through the platform'
+          fields:
+            amount_paid:
+              arguments: {}
+              type:
+                name: decimal
+                type: named
+            booking_date:
+              arguments: {}
+              type:
+                name: timestamp_without_time_zone
+                type: named
+            booking_id:
+              arguments: {}
+              type:
+                name: integer
+                type: named
+            booking_status:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+            check_in_date:
+              arguments: {}
+              type:
+                name: date
+                type: named
+            check_out_date:
+              arguments: {}
+              type:
+                name: date
+                type: named
+            created_at:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+            destination:
+              arguments: {}
+              type:
+                name: character_varying
+                type: named
+            hotel_id:
+              arguments: {}
+              type:
+                name: integer
+                type: named
+            number_of_guests:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            room_id:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            updated_at:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+            user_id:
+              arguments: {}
+              type:
+                name: integer
+                type: named
+          foreign_keys:
+            hotel_bookings_hotel_id_fkey:
+              column_mapping:
+                hotel_id:
+                  - hotel_id
+              foreign_collection: hotel.hotels
+            hotel_bookings_room_id_fkey:
+              column_mapping:
+                room_id:
+                  - room_id
+              foreign_collection: hotel.hotel_rooms
+            hotel_bookings_user_id_fkey:
+              column_mapping:
+                user_id:
+                  - user_id
+              foreign_collection: user_data.users
+        user_data.hotel_bookings_insert_input:
+          description: Input type for inserting into user_data.hotel_bookings
+          fields:
+            amount_paid:
+              arguments: {}
+              description: New value for user_data.hotel_bookings.amount_paid
+              type:
+                name: decimal
+                type: named
+            booking_date:
+              arguments: {}
+              description: New value for user_data.hotel_bookings.booking_date
+              type:
+                name: timestamp_without_time_zone
+                type: named
+            booking_id:
+              arguments: {}
+              description: New value for user_data.hotel_bookings.booking_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            booking_status:
+              arguments: {}
+              description: New value for user_data.hotel_bookings.booking_status
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+            check_in_date:
+              arguments: {}
+              description: New value for user_data.hotel_bookings.check_in_date
+              type:
+                name: date
+                type: named
+            check_out_date:
+              arguments: {}
+              description: New value for user_data.hotel_bookings.check_out_date
+              type:
+                name: date
+                type: named
+            created_at:
+              arguments: {}
+              description: New value for user_data.hotel_bookings.created_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+            destination:
+              arguments: {}
+              description: New value for user_data.hotel_bookings.destination
+              type:
+                name: character_varying
+                type: named
+            hotel_id:
+              arguments: {}
+              description: New value for user_data.hotel_bookings.hotel_id
+              type:
+                name: integer
+                type: named
+            number_of_guests:
+              arguments: {}
+              description: New value for user_data.hotel_bookings.number_of_guests
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            room_id:
+              arguments: {}
+              description: New value for user_data.hotel_bookings.room_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            updated_at:
+              arguments: {}
+              description: New value for user_data.hotel_bookings.updated_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+            user_id:
+              arguments: {}
+              description: New value for user_data.hotel_bookings.user_id
+              type:
+                name: integer
+                type: named
+          foreign_keys: {}
+        user_data.hotel_bookings_set_input:
+          description: Input type for updating user_data.hotel_bookings
+          fields:
+            amount_paid:
+              arguments: {}
+              description: New value wrapper for user_data.hotel_bookings.amount_paid
+              type:
+                type: nullable
+                underlying_type:
+                  name: decimal_set_input
+                  type: named
+            booking_date:
+              arguments: {}
+              description: New value wrapper for user_data.hotel_bookings.booking_date
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone_set_input
+                  type: named
+            booking_id:
+              arguments: {}
+              description: New value wrapper for user_data.hotel_bookings.booking_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            booking_status:
+              arguments: {}
+              description: New value wrapper for user_data.hotel_bookings.booking_status
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying_set_input
+                  type: named
+            check_in_date:
+              arguments: {}
+              description: New value wrapper for user_data.hotel_bookings.check_in_date
+              type:
+                type: nullable
+                underlying_type:
+                  name: date_set_input
+                  type: named
+            check_out_date:
+              arguments: {}
+              description: New value wrapper for user_data.hotel_bookings.check_out_date
+              type:
+                type: nullable
+                underlying_type:
+                  name: date_set_input
+                  type: named
+            created_at:
+              arguments: {}
+              description: New value wrapper for user_data.hotel_bookings.created_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone_set_input
+                  type: named
+            destination:
+              arguments: {}
+              description: New value wrapper for user_data.hotel_bookings.destination
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying_set_input
+                  type: named
+            hotel_id:
+              arguments: {}
+              description: New value wrapper for user_data.hotel_bookings.hotel_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            number_of_guests:
+              arguments: {}
+              description: New value wrapper for user_data.hotel_bookings.number_of_guests
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            room_id:
+              arguments: {}
+              description: New value wrapper for user_data.hotel_bookings.room_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            updated_at:
+              arguments: {}
+              description: New value wrapper for user_data.hotel_bookings.updated_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone_set_input
+                  type: named
+            user_id:
+              arguments: {}
+              description: New value wrapper for user_data.hotel_bookings.user_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+          foreign_keys: {}
+        user_data.search_queries:
+          description: 'Object type for user_data.search_queries. Description: User search behavior tracking'
+          fields:
+            check_in_date:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: date
+                  type: named
+            check_out_date:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: date
+                  type: named
+            created_at:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+            destination:
+              arguments: {}
+              type:
+                name: character_varying
+                type: named
+            number_of_guests:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            query_id:
+              arguments: {}
+              type:
+                name: integer
+                type: named
+            search_date:
+              arguments: {}
+              type:
+                name: timestamp_without_time_zone
+                type: named
+            session_id:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+            user_id:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+          foreign_keys:
+            search_queries_user_id_fkey:
+              column_mapping:
+                user_id:
+                  - user_id
+              foreign_collection: user_data.users
+        user_data.search_queries_insert_input:
+          description: Input type for inserting into user_data.search_queries
+          fields:
+            check_in_date:
+              arguments: {}
+              description: New value for user_data.search_queries.check_in_date
+              type:
+                type: nullable
+                underlying_type:
+                  name: date
+                  type: named
+            check_out_date:
+              arguments: {}
+              description: New value for user_data.search_queries.check_out_date
+              type:
+                type: nullable
+                underlying_type:
+                  name: date
+                  type: named
+            created_at:
+              arguments: {}
+              description: New value for user_data.search_queries.created_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+            destination:
+              arguments: {}
+              description: New value for user_data.search_queries.destination
+              type:
+                name: character_varying
+                type: named
+            number_of_guests:
+              arguments: {}
+              description: New value for user_data.search_queries.number_of_guests
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            query_id:
+              arguments: {}
+              description: New value for user_data.search_queries.query_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            search_date:
+              arguments: {}
+              description: New value for user_data.search_queries.search_date
+              type:
+                name: timestamp_without_time_zone
+                type: named
+            session_id:
+              arguments: {}
+              description: New value for user_data.search_queries.session_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+            user_id:
+              arguments: {}
+              description: New value for user_data.search_queries.user_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+          foreign_keys: {}
+        user_data.search_queries_set_input:
+          description: Input type for updating user_data.search_queries
+          fields:
+            check_in_date:
+              arguments: {}
+              description: New value wrapper for user_data.search_queries.check_in_date
+              type:
+                type: nullable
+                underlying_type:
+                  name: date_set_input
+                  type: named
+            check_out_date:
+              arguments: {}
+              description: New value wrapper for user_data.search_queries.check_out_date
+              type:
+                type: nullable
+                underlying_type:
+                  name: date_set_input
+                  type: named
+            created_at:
+              arguments: {}
+              description: New value wrapper for user_data.search_queries.created_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone_set_input
+                  type: named
+            destination:
+              arguments: {}
+              description: New value wrapper for user_data.search_queries.destination
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying_set_input
+                  type: named
+            number_of_guests:
+              arguments: {}
+              description: New value wrapper for user_data.search_queries.number_of_guests
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            query_id:
+              arguments: {}
+              description: New value wrapper for user_data.search_queries.query_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            search_date:
+              arguments: {}
+              description: New value wrapper for user_data.search_queries.search_date
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone_set_input
+                  type: named
+            session_id:
+              arguments: {}
+              description: New value wrapper for user_data.search_queries.session_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying_set_input
+                  type: named
+            user_id:
+              arguments: {}
+              description: New value wrapper for user_data.search_queries.user_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+          foreign_keys: {}
+        user_data.users:
+          description: 'Object type for user_data.users. Description: User profile information'
+          fields:
+            created_at:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+            email:
+              arguments: {}
+              type:
+                name: character_varying
+                type: named
+            phone:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+            registration_date:
+              arguments: {}
+              type:
+                name: date
+                type: named
+            updated_at:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+            user_id:
+              arguments: {}
+              type:
+                name: integer
+                type: named
+            user_type:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+          foreign_keys: {}
+        user_data.users_insert_input:
+          description: Input type for inserting into user_data.users
+          fields:
+            created_at:
+              arguments: {}
+              description: New value for user_data.users.created_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+            email:
+              arguments: {}
+              description: New value for user_data.users.email
+              type:
+                name: character_varying
+                type: named
+            phone:
+              arguments: {}
+              description: New value for user_data.users.phone
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+            registration_date:
+              arguments: {}
+              description: New value for user_data.users.registration_date
+              type:
+                name: date
+                type: named
+            updated_at:
+              arguments: {}
+              description: New value for user_data.users.updated_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone
+                  type: named
+            user_id:
+              arguments: {}
+              description: New value for user_data.users.user_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            user_type:
+              arguments: {}
+              description: New value for user_data.users.user_type
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying
+                  type: named
+          foreign_keys: {}
+        user_data.users_set_input:
+          description: Input type for updating user_data.users
+          fields:
+            created_at:
+              arguments: {}
+              description: New value wrapper for user_data.users.created_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone_set_input
+                  type: named
+            email:
+              arguments: {}
+              description: New value wrapper for user_data.users.email
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying_set_input
+                  type: named
+            phone:
+              arguments: {}
+              description: New value wrapper for user_data.users.phone
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying_set_input
+                  type: named
+            registration_date:
+              arguments: {}
+              description: New value wrapper for user_data.users.registration_date
+              type:
+                type: nullable
+                underlying_type:
+                  name: date_set_input
+                  type: named
+            updated_at:
+              arguments: {}
+              description: New value wrapper for user_data.users.updated_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_without_time_zone_set_input
+                  type: named
+            user_id:
+              arguments: {}
+              description: New value wrapper for user_data.users.user_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            user_type:
+              arguments: {}
+              description: New value wrapper for user_data.users.user_type
+              type:
+                type: nullable
+                underlying_type:
+                  name: character_varying_set_input
+                  type: named
+          foreign_keys: {}
+      procedures:
+        - arguments:
+            objects:
+              description: Objects to insert
+              type:
+                element_type:
+                  name: external.cities_insert_input
+                  type: named
+                type: array
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+          description: Insert into external.cities
+          name: insert_external.cities
+          result_type:
+            name: insert_external.cities_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            set:
+              description: Values to set
+              type:
+                name: external.cities_set_input
+                type: named
+            where:
+              description: Filter for rows to update
+              type:
+                object_type_name: external.cities
+                type: predicate
+          description: Update external.cities
+          name: update_external.cities
+          result_type:
+            name: update_external.cities_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            where:
+              description: Filter for rows to delete
+              type:
+                object_type_name: external.cities
+                type: predicate
+          description: Delete from external.cities
+          name: delete_external.cities
+          result_type:
+            name: delete_external.cities_result
+            type: named
+        - arguments:
+            objects:
+              description: Objects to insert
+              type:
+                element_type:
+                  name: external.events_insert_input
+                  type: named
+                type: array
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+          description: Insert into external.events
+          name: insert_external.events
+          result_type:
+            name: insert_external.events_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            set:
+              description: Values to set
+              type:
+                name: external.events_set_input
+                type: named
+            where:
+              description: Filter for rows to update
+              type:
+                object_type_name: external.events
+                type: predicate
+          description: Update external.events
+          name: update_external.events
+          result_type:
+            name: update_external.events_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            where:
+              description: Filter for rows to delete
+              type:
+                object_type_name: external.events
+                type: predicate
+          description: Delete from external.events
+          name: delete_external.events
+          result_type:
+            name: delete_external.events_result
+            type: named
+        - arguments:
+            objects:
+              description: Objects to insert
+              type:
+                element_type:
+                  name: external.external_factors_insert_input
+                  type: named
+                type: array
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+          description: Insert into external.external_factors
+          name: insert_external.external_factors
+          result_type:
+            name: insert_external.external_factors_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            set:
+              description: Values to set
+              type:
+                name: external.external_factors_set_input
+                type: named
+            where:
+              description: Filter for rows to update
+              type:
+                object_type_name: external.external_factors
+                type: predicate
+          description: Update external.external_factors
+          name: update_external.external_factors
+          result_type:
+            name: update_external.external_factors_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            where:
+              description: Filter for rows to delete
+              type:
+                object_type_name: external.external_factors
+                type: predicate
+          description: Delete from external.external_factors
+          name: delete_external.external_factors
+          result_type:
+            name: delete_external.external_factors_result
+            type: named
+        - arguments:
+            objects:
+              description: Objects to insert
+              type:
+                element_type:
+                  name: external.festivals_insert_input
+                  type: named
+                type: array
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+          description: Insert into external.festivals
+          name: insert_external.festivals
+          result_type:
+            name: insert_external.festivals_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            set:
+              description: Values to set
+              type:
+                name: external.festivals_set_input
+                type: named
+            where:
+              description: Filter for rows to update
+              type:
+                object_type_name: external.festivals
+                type: predicate
+          description: Update external.festivals
+          name: update_external.festivals
+          result_type:
+            name: update_external.festivals_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            where:
+              description: Filter for rows to delete
+              type:
+                object_type_name: external.festivals
+                type: predicate
+          description: Delete from external.festivals
+          name: delete_external.festivals
+          result_type:
+            name: delete_external.festivals_result
+            type: named
+        - arguments:
+            objects:
+              description: Objects to insert
+              type:
+                element_type:
+                  name: hotel.hotel_rooms_insert_input
+                  type: named
+                type: array
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+          description: Insert into hotel.hotel_rooms
+          name: insert_hotel.hotel_rooms
+          result_type:
+            name: insert_hotel.hotel_rooms_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            set:
+              description: Values to set
+              type:
+                name: hotel.hotel_rooms_set_input
+                type: named
+            where:
+              description: Filter for rows to update
+              type:
+                object_type_name: hotel.hotel_rooms
+                type: predicate
+          description: Update hotel.hotel_rooms
+          name: update_hotel.hotel_rooms
+          result_type:
+            name: update_hotel.hotel_rooms_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            where:
+              description: Filter for rows to delete
+              type:
+                object_type_name: hotel.hotel_rooms
+                type: predicate
+          description: Delete from hotel.hotel_rooms
+          name: delete_hotel.hotel_rooms
+          result_type:
+            name: delete_hotel.hotel_rooms_result
+            type: named
+        - arguments:
+            objects:
+              description: Objects to insert
+              type:
+                element_type:
+                  name: hotel.hotels_insert_input
+                  type: named
+                type: array
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+          description: Insert into hotel.hotels
+          name: insert_hotel.hotels
+          result_type:
+            name: insert_hotel.hotels_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            set:
+              description: Values to set
+              type:
+                name: hotel.hotels_set_input
+                type: named
+            where:
+              description: Filter for rows to update
+              type:
+                object_type_name: hotel.hotels
+                type: predicate
+          description: Update hotel.hotels
+          name: update_hotel.hotels
+          result_type:
+            name: update_hotel.hotels_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            where:
+              description: Filter for rows to delete
+              type:
+                object_type_name: hotel.hotels
+                type: predicate
+          description: Delete from hotel.hotels
+          name: delete_hotel.hotels
+          result_type:
+            name: delete_hotel.hotels_result
+            type: named
+        - arguments:
+            objects:
+              description: Objects to insert
+              type:
+                element_type:
+                  name: hotel.pricing_insert_input
+                  type: named
+                type: array
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+          description: Insert into hotel.pricing
+          name: insert_hotel.pricing
+          result_type:
+            name: insert_hotel.pricing_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            set:
+              description: Values to set
+              type:
+                name: hotel.pricing_set_input
+                type: named
+            where:
+              description: Filter for rows to update
+              type:
+                object_type_name: hotel.pricing
+                type: predicate
+          description: Update hotel.pricing
+          name: update_hotel.pricing
+          result_type:
+            name: update_hotel.pricing_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            where:
+              description: Filter for rows to delete
+              type:
+                object_type_name: hotel.pricing
+                type: predicate
+          description: Delete from hotel.pricing
+          name: delete_hotel.pricing
+          result_type:
+            name: delete_hotel.pricing_result
+            type: named
+        - arguments:
+            objects:
+              description: Objects to insert
+              type:
+                element_type:
+                  name: marketing.campaigns_insert_input
+                  type: named
+                type: array
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+          description: Insert into marketing.campaigns
+          name: insert_marketing.campaigns
+          result_type:
+            name: insert_marketing.campaigns_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            set:
+              description: Values to set
+              type:
+                name: marketing.campaigns_set_input
+                type: named
+            where:
+              description: Filter for rows to update
+              type:
+                object_type_name: marketing.campaigns
+                type: predicate
+          description: Update marketing.campaigns
+          name: update_marketing.campaigns
+          result_type:
+            name: update_marketing.campaigns_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            where:
+              description: Filter for rows to delete
+              type:
+                object_type_name: marketing.campaigns
+                type: predicate
+          description: Delete from marketing.campaigns
+          name: delete_marketing.campaigns
+          result_type:
+            name: delete_marketing.campaigns_result
+            type: named
+        - arguments:
+            objects:
+              description: Objects to insert
+              type:
+                element_type:
+                  name: marketing.marketing_spends_insert_input
+                  type: named
+                type: array
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+          description: Insert into marketing.marketing_spends
+          name: insert_marketing.marketing_spends
+          result_type:
+            name: insert_marketing.marketing_spends_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            set:
+              description: Values to set
+              type:
+                name: marketing.marketing_spends_set_input
+                type: named
+            where:
+              description: Filter for rows to update
+              type:
+                object_type_name: marketing.marketing_spends
+                type: predicate
+          description: Update marketing.marketing_spends
+          name: update_marketing.marketing_spends
+          result_type:
+            name: update_marketing.marketing_spends_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            where:
+              description: Filter for rows to delete
+              type:
+                object_type_name: marketing.marketing_spends
+                type: predicate
+          description: Delete from marketing.marketing_spends
+          name: delete_marketing.marketing_spends
+          result_type:
+            name: delete_marketing.marketing_spends_result
+            type: named
+        - arguments:
+            objects:
+              description: Objects to insert
+              type:
+                element_type:
+                  name: marketing.traffic_sources_insert_input
+                  type: named
+                type: array
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+          description: Insert into marketing.traffic_sources
+          name: insert_marketing.traffic_sources
+          result_type:
+            name: insert_marketing.traffic_sources_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            set:
+              description: Values to set
+              type:
+                name: marketing.traffic_sources_set_input
+                type: named
+            where:
+              description: Filter for rows to update
+              type:
+                object_type_name: marketing.traffic_sources
+                type: predicate
+          description: Update marketing.traffic_sources
+          name: update_marketing.traffic_sources
+          result_type:
+            name: update_marketing.traffic_sources_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            where:
+              description: Filter for rows to delete
+              type:
+                object_type_name: marketing.traffic_sources
+                type: predicate
+          description: Delete from marketing.traffic_sources
+          name: delete_marketing.traffic_sources
+          result_type:
+            name: delete_marketing.traffic_sources_result
+            type: named
+        - arguments:
+            objects:
+              description: Objects to insert
+              type:
+                element_type:
+                  name: user_data.hotel_bookings_insert_input
+                  type: named
+                type: array
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+          description: Insert into user_data.hotel_bookings
+          name: insert_user_data.hotel_bookings
+          result_type:
+            name: insert_user_data.hotel_bookings_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            set:
+              description: Values to set
+              type:
+                name: user_data.hotel_bookings_set_input
+                type: named
+            where:
+              description: Filter for rows to update
+              type:
+                object_type_name: user_data.hotel_bookings
+                type: predicate
+          description: Update user_data.hotel_bookings
+          name: update_user_data.hotel_bookings
+          result_type:
+            name: update_user_data.hotel_bookings_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            where:
+              description: Filter for rows to delete
+              type:
+                object_type_name: user_data.hotel_bookings
+                type: predicate
+          description: Delete from user_data.hotel_bookings
+          name: delete_user_data.hotel_bookings
+          result_type:
+            name: delete_user_data.hotel_bookings_result
+            type: named
+        - arguments:
+            objects:
+              description: Objects to insert
+              type:
+                element_type:
+                  name: user_data.search_queries_insert_input
+                  type: named
+                type: array
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+          description: Insert into user_data.search_queries
+          name: insert_user_data.search_queries
+          result_type:
+            name: insert_user_data.search_queries_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            set:
+              description: Values to set
+              type:
+                name: user_data.search_queries_set_input
+                type: named
+            where:
+              description: Filter for rows to update
+              type:
+                object_type_name: user_data.search_queries
+                type: predicate
+          description: Update user_data.search_queries
+          name: update_user_data.search_queries
+          result_type:
+            name: update_user_data.search_queries_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            where:
+              description: Filter for rows to delete
+              type:
+                object_type_name: user_data.search_queries
+                type: predicate
+          description: Delete from user_data.search_queries
+          name: delete_user_data.search_queries
+          result_type:
+            name: delete_user_data.search_queries_result
+            type: named
+        - arguments:
+            objects:
+              description: Objects to insert
+              type:
+                element_type:
+                  name: user_data.users_insert_input
+                  type: named
+                type: array
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+          description: Insert into user_data.users
+          name: insert_user_data.users
+          result_type:
+            name: insert_user_data.users_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            set:
+              description: Values to set
+              type:
+                name: user_data.users_set_input
+                type: named
+            where:
+              description: Filter for rows to update
+              type:
+                object_type_name: user_data.users
+                type: predicate
+          description: Update user_data.users
+          name: update_user_data.users
+          result_type:
+            name: update_user_data.users_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            where:
+              description: Filter for rows to delete
+              type:
+                object_type_name: user_data.users
+                type: predicate
+          description: Delete from user_data.users
+          name: delete_user_data.users
+          result_type:
+            name: delete_user_data.users_result
+            type: named
+      scalar_types:
+        array:
+          aggregate_functions:
+            max:
+              type: max
+            min:
+              type: min
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _ilike:
+              type: contains_insensitive
+            _in:
+              type: in
+            _iregex:
+              argument_type:
+                name: array
+                type: named
+              type: custom
+            _like:
+              type: contains
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: array
+                type: named
+              type: custom
+            _nilike:
+              argument_type:
+                name: array
+                type: named
+              type: custom
+            _niregex:
+              argument_type:
+                name: array
+                type: named
+              type: custom
+            _nlike:
+              argument_type:
+                name: array
+                type: named
+              type: custom
+            _nregex:
+              argument_type:
+                name: array
+                type: named
+              type: custom
+            _regex:
+              argument_type:
+                name: array
+                type: named
+              type: custom
+          representation:
+            type: string
+        bigint:
+          aggregate_functions:
+            avg:
+              result_type: decimal
+              type: average
+            max:
+              type: max
+            min:
+              type: min
+            stddev_pop:
+              result_type:
+                name: bigint
+                type: named
+              type: custom
+            stddev_samp:
+              result_type:
+                name: bigint
+                type: named
+              type: custom
+            sum:
+              result_type: bigint
+              type: sum
+            var_pop:
+              result_type:
+                name: bigint
+                type: named
+              type: custom
+            var_samp:
+              result_type:
+                name: bigint
+                type: named
+              type: custom
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _in:
+              type: in
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: bigint
+                type: named
+              type: custom
+          representation:
+            type: int64
+        character_varying:
+          aggregate_functions:
+            max:
+              type: max
+            min:
+              type: min
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _ilike:
+              type: contains_insensitive
+            _in:
+              type: in
+            _iregex:
+              argument_type:
+                name: character_varying
+                type: named
+              type: custom
+            _like:
+              type: contains
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: character_varying
+                type: named
+              type: custom
+            _nilike:
+              argument_type:
+                name: character_varying
+                type: named
+              type: custom
+            _niregex:
+              argument_type:
+                name: character_varying
+                type: named
+              type: custom
+            _nlike:
+              argument_type:
+                name: character_varying
+                type: named
+              type: custom
+            _nregex:
+              argument_type:
+                name: character_varying
+                type: named
+              type: custom
+            _regex:
+              argument_type:
+                name: character_varying
+                type: named
+              type: custom
+          representation:
+            type: string
+        date:
+          aggregate_functions:
+            max:
+              type: max
+            min:
+              type: min
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _in:
+              type: in
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: date
+                type: named
+              type: custom
+          representation:
+            type: date
+        decimal:
+          aggregate_functions:
+            avg:
+              result_type: decimal
+              type: average
+            max:
+              type: max
+            min:
+              type: min
+            stddev_pop:
+              result_type:
+                name: decimal
+                type: named
+              type: custom
+            stddev_samp:
+              result_type:
+                name: decimal
+                type: named
+              type: custom
+            sum:
+              result_type: decimal
+              type: sum
+            var_pop:
+              result_type:
+                name: decimal
+                type: named
+              type: custom
+            var_samp:
+              result_type:
+                name: decimal
+                type: named
+              type: custom
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _in:
+              type: in
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: decimal
+                type: named
+              type: custom
+          representation:
+            type: bigdecimal
+        int:
+          aggregate_functions:
+            avg:
+              result_type: decimal
+              type: average
+            max:
+              type: max
+            min:
+              type: min
+            stddev_pop:
+              result_type:
+                name: int
+                type: named
+              type: custom
+            stddev_samp:
+              result_type:
+                name: int
+                type: named
+              type: custom
+            sum:
+              result_type: bigint
+              type: sum
+            var_pop:
+              result_type:
+                name: int
+                type: named
+              type: custom
+            var_samp:
+              result_type:
+                name: int
+                type: named
+              type: custom
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _in:
+              type: in
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: int
+                type: named
+              type: custom
+          representation:
+            type: int32
+        integer:
+          aggregate_functions:
+            avg:
+              result_type: decimal
+              type: average
+            max:
+              type: max
+            min:
+              type: min
+            stddev_pop:
+              result_type:
+                name: integer
+                type: named
+              type: custom
+            stddev_samp:
+              result_type:
+                name: integer
+                type: named
+              type: custom
+            sum:
+              result_type: bigint
+              type: sum
+            var_pop:
+              result_type:
+                name: integer
+                type: named
+              type: custom
+            var_samp:
+              result_type:
+                name: integer
+                type: named
+              type: custom
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _in:
+              type: in
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: integer
+                type: named
+              type: custom
+          representation:
+            type: int32
+        string:
+          aggregate_functions:
+            max:
+              type: max
+            min:
+              type: min
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _ilike:
+              type: contains_insensitive
+            _in:
+              type: in
+            _iregex:
+              argument_type:
+                name: string
+                type: named
+              type: custom
+            _like:
+              type: contains
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: string
+                type: named
+              type: custom
+            _nilike:
+              argument_type:
+                name: string
+                type: named
+              type: custom
+            _niregex:
+              argument_type:
+                name: string
+                type: named
+              type: custom
+            _nlike:
+              argument_type:
+                name: string
+                type: named
+              type: custom
+            _nregex:
+              argument_type:
+                name: string
+                type: named
+              type: custom
+            _regex:
+              argument_type:
+                name: string
+                type: named
+              type: custom
+          representation:
+            type: string
+        text:
+          aggregate_functions:
+            max:
+              type: max
+            min:
+              type: min
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _ilike:
+              type: contains_insensitive
+            _in:
+              type: in
+            _iregex:
+              argument_type:
+                name: text
+                type: named
+              type: custom
+            _like:
+              type: contains
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: text
+                type: named
+              type: custom
+            _nilike:
+              argument_type:
+                name: text
+                type: named
+              type: custom
+            _niregex:
+              argument_type:
+                name: text
+                type: named
+              type: custom
+            _nlike:
+              argument_type:
+                name: text
+                type: named
+              type: custom
+            _nregex:
+              argument_type:
+                name: text
+                type: named
+              type: custom
+            _regex:
+              argument_type:
+                name: text
+                type: named
+              type: custom
+          representation:
+            type: string
+        timestamp_without_time_zone:
+          aggregate_functions:
+            max:
+              type: max
+            min:
+              type: min
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _in:
+              type: in
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: timestamp_without_time_zone
+                type: named
+              type: custom
+          representation:
+            type: timestamp
+    capabilities:
+      capabilities:
+        mutation:
+          explain: {}
+          transactional: {}
+        query:
+          aggregates:
+            filter_by: {}
+          exists: {}
+          explain: {}
+          nested_fields: {}
+          variables: {}
+        relational_query:
+          aggregate:
+            expression:
+              aggregate:
+                approx_distinct: {}
+                approx_percentile_cont: {}
+                avg: {}
+                bool_and: {}
+                bool_or: {}
+                count:
+                  distinct: {}
+                first_value: {}
+                last_value: {}
+                max: {}
+                median: {}
+                min: {}
+                stddev: {}
+                stddev_pop: {}
+                string_agg: {}
+                sum: {}
+                var: {}
+              comparison:
+                between: {}
+                contains: {}
+                greater_than: {}
+                greater_than_eq: {}
+                ilike: {}
+                in_list: {}
+                is_false: {}
+                is_nan: {}
+                is_null: {}
+                is_true: {}
+                is_zero: {}
+                less_than: {}
+                less_than_eq: {}
+                like: {}
+              conditional:
+                case: {}
+                nullif: {}
+              scalar:
+                abs: {}
+                and: {}
+                array_element: {}
+                binary_concat: {}
+                btrim: {}
+                ceil: {}
+                character_length: {}
+                coalesce: {}
+                concat: {}
+                cos: {}
+                current_date: {}
+                current_time: {}
+                current_timestamp: {}
+                date_part:
+                  day: {}
+                  day_of_week: {}
+                  day_of_year: {}
+                  epoch: {}
+                  hour: {}
+                  microsecond: {}
+                  millisecond: {}
+                  minute: {}
+                  month: {}
+                  nanosecond: {}
+                  quarter: {}
+                  second: {}
+                  week: {}
+                  year: {}
+                date_trunc: {}
+                divide: {}
+                exp: {}
+                floor: {}
+                get_field: {}
+                greatest: {}
+                least: {}
+                left: {}
+                ln: {}
+                log: {}
+                log2: {}
+                log10: {}
+                lpad: {}
+                ltrim: {}
+                minus: {}
+                modulo: {}
+                multiply: {}
+                negate: {}
+                not: {}
+                nvl: {}
+                or: {}
+                plus: {}
+                power: {}
+                random: {}
+                replace: {}
+                reverse: {}
+                right: {}
+                round: {}
+                rpad: {}
+                rtrim: {}
+                sqrt: {}
+                str_pos: {}
+                substr: {}
+                substr_index: {}
+                tan: {}
+                to_date: {}
+                to_lower: {}
+                to_timestamp: {}
+                to_upper: {}
+                trunc: {}
+              scalar_types:
+                from_type: {}
+                interval: {}
+              window:
+                cume_dist: {}
+                dense_rank: {}
+                ntile: {}
+                percent_rank: {}
+                rank: {}
+                row_number: {}
+            group_by: {}
+          filter:
+            aggregate:
+              approx_distinct: {}
+              approx_percentile_cont: {}
+              avg: {}
+              bool_and: {}
+              bool_or: {}
+              count:
+                distinct: {}
+              first_value: {}
+              last_value: {}
+              max: {}
+              median: {}
+              min: {}
+              stddev: {}
+              stddev_pop: {}
+              string_agg: {}
+              sum: {}
+              var: {}
+            comparison:
+              between: {}
+              contains: {}
+              greater_than: {}
+              greater_than_eq: {}
+              ilike: {}
+              in_list: {}
+              is_false: {}
+              is_nan: {}
+              is_null: {}
+              is_true: {}
+              is_zero: {}
+              less_than: {}
+              less_than_eq: {}
+              like: {}
+            conditional:
+              case: {}
+              nullif: {}
+            scalar:
+              abs: {}
+              and: {}
+              array_element: {}
+              binary_concat: {}
+              btrim: {}
+              ceil: {}
+              character_length: {}
+              coalesce: {}
+              concat: {}
+              cos: {}
+              current_date: {}
+              current_time: {}
+              current_timestamp: {}
+              date_part:
+                day: {}
+                day_of_week: {}
+                day_of_year: {}
+                epoch: {}
+                hour: {}
+                microsecond: {}
+                millisecond: {}
+                minute: {}
+                month: {}
+                nanosecond: {}
+                quarter: {}
+                second: {}
+                week: {}
+                year: {}
+              date_trunc: {}
+              divide: {}
+              exp: {}
+              floor: {}
+              get_field: {}
+              greatest: {}
+              least: {}
+              left: {}
+              ln: {}
+              log: {}
+              log2: {}
+              log10: {}
+              lpad: {}
+              ltrim: {}
+              minus: {}
+              modulo: {}
+              multiply: {}
+              negate: {}
+              not: {}
+              nvl: {}
+              or: {}
+              plus: {}
+              power: {}
+              random: {}
+              replace: {}
+              reverse: {}
+              right: {}
+              round: {}
+              rpad: {}
+              rtrim: {}
+              sqrt: {}
+              str_pos: {}
+              substr: {}
+              substr_index: {}
+              tan: {}
+              to_date: {}
+              to_lower: {}
+              to_timestamp: {}
+              to_upper: {}
+              trunc: {}
+            scalar_types:
+              from_type: {}
+              interval: {}
+            window:
+              cume_dist: {}
+              dense_rank: {}
+              ntile: {}
+              percent_rank: {}
+              rank: {}
+              row_number: {}
+          join:
+            expression:
+              aggregate:
+                approx_distinct: {}
+                approx_percentile_cont: {}
+                avg: {}
+                bool_and: {}
+                bool_or: {}
+                count:
+                  distinct: {}
+                first_value: {}
+                last_value: {}
+                max: {}
+                median: {}
+                min: {}
+                stddev: {}
+                stddev_pop: {}
+                string_agg: {}
+                sum: {}
+                var: {}
+              comparison:
+                between: {}
+                contains: {}
+                greater_than: {}
+                greater_than_eq: {}
+                ilike: {}
+                in_list: {}
+                is_false: {}
+                is_nan: {}
+                is_null: {}
+                is_true: {}
+                is_zero: {}
+                less_than: {}
+                less_than_eq: {}
+                like: {}
+              conditional:
+                case: {}
+                nullif: {}
+              scalar:
+                abs: {}
+                and: {}
+                array_element: {}
+                binary_concat: {}
+                btrim: {}
+                ceil: {}
+                character_length: {}
+                coalesce: {}
+                concat: {}
+                cos: {}
+                current_date: {}
+                current_time: {}
+                current_timestamp: {}
+                date_part:
+                  day: {}
+                  day_of_week: {}
+                  day_of_year: {}
+                  epoch: {}
+                  hour: {}
+                  microsecond: {}
+                  millisecond: {}
+                  minute: {}
+                  month: {}
+                  nanosecond: {}
+                  quarter: {}
+                  second: {}
+                  week: {}
+                  year: {}
+                date_trunc: {}
+                divide: {}
+                exp: {}
+                floor: {}
+                get_field: {}
+                greatest: {}
+                least: {}
+                left: {}
+                ln: {}
+                log: {}
+                log2: {}
+                log10: {}
+                lpad: {}
+                ltrim: {}
+                minus: {}
+                modulo: {}
+                multiply: {}
+                negate: {}
+                not: {}
+                nvl: {}
+                or: {}
+                plus: {}
+                power: {}
+                random: {}
+                replace: {}
+                reverse: {}
+                right: {}
+                round: {}
+                rpad: {}
+                rtrim: {}
+                sqrt: {}
+                str_pos: {}
+                substr: {}
+                substr_index: {}
+                tan: {}
+                to_date: {}
+                to_lower: {}
+                to_timestamp: {}
+                to_upper: {}
+                trunc: {}
+              scalar_types:
+                from_type: {}
+                interval: {}
+              window:
+                cume_dist: {}
+                dense_rank: {}
+                ntile: {}
+                percent_rank: {}
+                rank: {}
+                row_number: {}
+            join_types:
+              full: {}
+              inner: {}
+              left: {}
+              left_anti: {}
+              left_semi: {}
+              right: {}
+              right_anti: {}
+              right_semi: {}
+          project:
+            expression:
+              aggregate:
+                approx_distinct: {}
+                approx_percentile_cont: {}
+                avg: {}
+                bool_and: {}
+                bool_or: {}
+                count:
+                  distinct: {}
+                first_value: {}
+                last_value: {}
+                max: {}
+                median: {}
+                min: {}
+                stddev: {}
+                stddev_pop: {}
+                string_agg: {}
+                sum: {}
+                var: {}
+              comparison:
+                between: {}
+                contains: {}
+                greater_than: {}
+                greater_than_eq: {}
+                ilike: {}
+                in_list: {}
+                is_false: {}
+                is_nan: {}
+                is_null: {}
+                is_true: {}
+                is_zero: {}
+                less_than: {}
+                less_than_eq: {}
+                like: {}
+              conditional:
+                case: {}
+                nullif: {}
+              scalar:
+                abs: {}
+                and: {}
+                array_element: {}
+                binary_concat: {}
+                btrim: {}
+                ceil: {}
+                character_length: {}
+                coalesce: {}
+                concat: {}
+                cos: {}
+                current_date: {}
+                current_time: {}
+                current_timestamp: {}
+                date_part:
+                  day: {}
+                  day_of_week: {}
+                  day_of_year: {}
+                  epoch: {}
+                  hour: {}
+                  microsecond: {}
+                  millisecond: {}
+                  minute: {}
+                  month: {}
+                  nanosecond: {}
+                  quarter: {}
+                  second: {}
+                  week: {}
+                  year: {}
+                date_trunc: {}
+                divide: {}
+                exp: {}
+                floor: {}
+                get_field: {}
+                greatest: {}
+                least: {}
+                left: {}
+                ln: {}
+                log: {}
+                log2: {}
+                log10: {}
+                lpad: {}
+                ltrim: {}
+                minus: {}
+                modulo: {}
+                multiply: {}
+                negate: {}
+                not: {}
+                nvl: {}
+                or: {}
+                plus: {}
+                power: {}
+                random: {}
+                replace: {}
+                reverse: {}
+                right: {}
+                round: {}
+                rpad: {}
+                rtrim: {}
+                sqrt: {}
+                str_pos: {}
+                substr: {}
+                substr_index: {}
+                tan: {}
+                to_date: {}
+                to_lower: {}
+                to_timestamp: {}
+                to_upper: {}
+                trunc: {}
+              scalar_types:
+                from_type: {}
+                interval: {}
+              window:
+                cume_dist: {}
+                dense_rank: {}
+                ntile: {}
+                percent_rank: {}
+                rank: {}
+                row_number: {}
+          sort:
+            expression:
+              aggregate:
+                approx_distinct: {}
+                approx_percentile_cont: {}
+                avg: {}
+                bool_and: {}
+                bool_or: {}
+                count:
+                  distinct: {}
+                first_value: {}
+                last_value: {}
+                max: {}
+                median: {}
+                min: {}
+                stddev: {}
+                stddev_pop: {}
+                string_agg: {}
+                sum: {}
+                var: {}
+              comparison:
+                between: {}
+                contains: {}
+                greater_than: {}
+                greater_than_eq: {}
+                ilike: {}
+                in_list: {}
+                is_false: {}
+                is_nan: {}
+                is_null: {}
+                is_true: {}
+                is_zero: {}
+                less_than: {}
+                less_than_eq: {}
+                like: {}
+              conditional:
+                case: {}
+                nullif: {}
+              scalar:
+                abs: {}
+                and: {}
+                array_element: {}
+                binary_concat: {}
+                btrim: {}
+                ceil: {}
+                character_length: {}
+                coalesce: {}
+                concat: {}
+                cos: {}
+                current_date: {}
+                current_time: {}
+                current_timestamp: {}
+                date_part:
+                  day: {}
+                  day_of_week: {}
+                  day_of_year: {}
+                  epoch: {}
+                  hour: {}
+                  microsecond: {}
+                  millisecond: {}
+                  minute: {}
+                  month: {}
+                  nanosecond: {}
+                  quarter: {}
+                  second: {}
+                  week: {}
+                  year: {}
+                date_trunc: {}
+                divide: {}
+                exp: {}
+                floor: {}
+                get_field: {}
+                greatest: {}
+                least: {}
+                left: {}
+                ln: {}
+                log: {}
+                log2: {}
+                log10: {}
+                lpad: {}
+                ltrim: {}
+                minus: {}
+                modulo: {}
+                multiply: {}
+                negate: {}
+                not: {}
+                nvl: {}
+                or: {}
+                plus: {}
+                power: {}
+                random: {}
+                replace: {}
+                reverse: {}
+                right: {}
+                round: {}
+                rpad: {}
+                rtrim: {}
+                sqrt: {}
+                str_pos: {}
+                substr: {}
+                substr_index: {}
+                tan: {}
+                to_date: {}
+                to_lower: {}
+                to_timestamp: {}
+                to_upper: {}
+                trunc: {}
+              scalar_types:
+                from_type: {}
+                interval: {}
+              window:
+                cume_dist: {}
+                dense_rank: {}
+                ntile: {}
+                percent_rank: {}
+                rank: {}
+                row_number: {}
+          union: {}
+          window:
+            expression:
+              aggregate:
+                approx_distinct: {}
+                approx_percentile_cont: {}
+                avg: {}
+                bool_and: {}
+                bool_or: {}
+                count:
+                  distinct: {}
+                first_value: {}
+                last_value: {}
+                max: {}
+                median: {}
+                min: {}
+                stddev: {}
+                stddev_pop: {}
+                string_agg: {}
+                sum: {}
+                var: {}
+              comparison:
+                between: {}
+                contains: {}
+                greater_than: {}
+                greater_than_eq: {}
+                ilike: {}
+                in_list: {}
+                is_false: {}
+                is_nan: {}
+                is_null: {}
+                is_true: {}
+                is_zero: {}
+                less_than: {}
+                less_than_eq: {}
+                like: {}
+              conditional:
+                case: {}
+                nullif: {}
+              scalar:
+                abs: {}
+                and: {}
+                array_element: {}
+                binary_concat: {}
+                btrim: {}
+                ceil: {}
+                character_length: {}
+                coalesce: {}
+                concat: {}
+                cos: {}
+                current_date: {}
+                current_time: {}
+                current_timestamp: {}
+                date_part:
+                  day: {}
+                  day_of_week: {}
+                  day_of_year: {}
+                  epoch: {}
+                  hour: {}
+                  microsecond: {}
+                  millisecond: {}
+                  minute: {}
+                  month: {}
+                  nanosecond: {}
+                  quarter: {}
+                  second: {}
+                  week: {}
+                  year: {}
+                date_trunc: {}
+                divide: {}
+                exp: {}
+                floor: {}
+                get_field: {}
+                greatest: {}
+                least: {}
+                left: {}
+                ln: {}
+                log: {}
+                log2: {}
+                log10: {}
+                lpad: {}
+                ltrim: {}
+                minus: {}
+                modulo: {}
+                multiply: {}
+                negate: {}
+                not: {}
+                nvl: {}
+                or: {}
+                plus: {}
+                power: {}
+                random: {}
+                replace: {}
+                reverse: {}
+                right: {}
+                round: {}
+                rpad: {}
+                rtrim: {}
+                sqrt: {}
+                str_pos: {}
+                substr: {}
+                substr_index: {}
+                tan: {}
+                to_date: {}
+                to_lower: {}
+                to_timestamp: {}
+                to_upper: {}
+                trunc: {}
+              scalar_types:
+                from_type: {}
+                interval: {}
+              window:
+                cume_dist: {}
+                dense_rank: {}
+                ntile: {}
+                percent_rank: {}
+                rank: {}
+                row_number: {}
+      version: 0.2.9

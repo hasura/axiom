@@ -1,0 +1,27 @@
+kind: Subgraph
+version: v2
+definition:
+  name: app
+  generator:
+    rootPath: .
+    namingConvention: snake_case
+  includePaths:
+    - metadata
+  envMapping:
+    APP_PG_AUTHORIZATION_HEADER:
+      fromEnv: APP_PG_AUTHORIZATION_HEADER
+    APP_PG_READ_URL:
+      fromEnv: APP_PG_READ_URL
+    APP_PG_WRITE_URL:
+      fromEnv: APP_PG_WRITE_URL
+    APP_PG_WRITES_AUTHORIZATION_HEADER:
+      fromEnv: APP_PG_WRITES_AUTHORIZATION_HEADER
+    APP_PG_WRITES_READ_URL:
+      fromEnv: APP_PG_WRITES_READ_URL
+    APP_PG_WRITES_WRITE_URL:
+      fromEnv: APP_PG_WRITES_WRITE_URL
+  connectors:
+    - path: connector/pg/connector.yaml
+      connectorLinkName: pg
+    - path: connector/pg_writes/connector.yaml
+      connectorLinkName: pg_writes

@@ -1,0 +1,191 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: marketing_marketing_spends
+  description: "Object type for marketing.marketing_spends. Description: Daily
+    marketing spend and performance metrics"
+  fields:
+    - name: campaign_id
+      type: int_32!
+    - name: clicks
+      type: int_32
+    - name: conversions
+      type: int_32
+    - name: created_at
+      type: timestamp
+    - name: date
+      type: date!
+    - name: impressions
+      type: int_64
+    - name: spend
+      type: bigdecimal!
+    - name: spend_id
+      type: int_32!
+    - name: updated_at
+      type: timestamp
+  graphql:
+    typeName: marketing_marketing_spends
+    inputTypeName: marketing_marketing_spends_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: pg
+      dataConnectorObjectType: marketing.marketing_spends
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: marketing_marketing_spends
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - campaign_id
+          - clicks
+          - conversions
+          - created_at
+          - date
+          - impressions
+          - spend
+          - spend_id
+          - updated_at
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: marketing_marketing_spends_bool_exp
+  operand:
+    object:
+      type: marketing_marketing_spends
+      comparableFields:
+        - fieldName: campaign_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: clicks
+          booleanExpressionType: integer_bool_exp
+        - fieldName: conversions
+          booleanExpressionType: integer_bool_exp
+        - fieldName: created_at
+          booleanExpressionType: timestamp_without_time_zone_bool_exp
+        - fieldName: date
+          booleanExpressionType: date_bool_exp
+        - fieldName: impressions
+          booleanExpressionType: bigint_bool_exp
+        - fieldName: spend
+          booleanExpressionType: decimal_bool_exp
+        - fieldName: spend_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: updated_at
+          booleanExpressionType: timestamp_without_time_zone_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: marketing_marketing_spends_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: marketing_marketing_spends_agg_exp
+  operand:
+    object:
+      aggregatedType: marketing_marketing_spends
+      aggregatableFields:
+        - fieldName: campaign_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: clicks
+          aggregateExpression: integer_agg_exp
+        - fieldName: conversions
+          aggregateExpression: integer_agg_exp
+        - fieldName: created_at
+          aggregateExpression: timestamp_without_time_zone_agg_exp
+        - fieldName: date
+          aggregateExpression: date_agg_exp
+        - fieldName: impressions
+          aggregateExpression: bigint_agg_exp
+        - fieldName: spend
+          aggregateExpression: decimal_agg_exp
+        - fieldName: spend_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: updated_at
+          aggregateExpression: timestamp_without_time_zone_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: marketing_marketing_spends_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: marketing_marketing_spends_order_by_exp
+  operand:
+    object:
+      orderedType: marketing_marketing_spends
+      orderableFields:
+        - fieldName: campaign_id
+          orderByExpression: int_32_order_by_exp
+        - fieldName: clicks
+          orderByExpression: int_32_order_by_exp
+        - fieldName: conversions
+          orderByExpression: int_32_order_by_exp
+        - fieldName: created_at
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: date
+          orderByExpression: date_order_by_exp
+        - fieldName: impressions
+          orderByExpression: int_64_order_by_exp
+        - fieldName: spend
+          orderByExpression: bigdecimal_order_by_exp
+        - fieldName: spend_id
+          orderByExpression: int_32_order_by_exp
+        - fieldName: updated_at
+          orderByExpression: timestamp_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: marketing_marketing_spends_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: marketing_marketing_spends
+  objectType: marketing_marketing_spends
+  source:
+    dataConnectorName: pg
+    collection: marketing.marketing_spends
+  filterExpressionType: marketing_marketing_spends_bool_exp
+  aggregateExpression: marketing_marketing_spends_agg_exp
+  orderByExpression: marketing_marketing_spends_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: marketing_marketing_spends
+      subscription:
+        rootField: marketing_marketing_spends
+    selectUniques:
+      - queryRootField: marketing_marketing_spends_by_spend_id
+        uniqueIdentifier:
+          - spend_id
+        subscription:
+          rootField: marketing_marketing_spends_by_spend_id
+    filterInputTypeName: marketing_marketing_spends_filter_input
+    aggregate:
+      queryRootField: marketing_marketing_spends_aggregate
+      subscription:
+        rootField: marketing_marketing_spends_aggregate
+  description: Daily marketing spend and performance metrics
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: marketing_marketing_spends
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

@@ -1,0 +1,150 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: user_data_search_queries_1
+  description: User search behavior tracking
+  fields:
+    - name: check_in_date
+      type: date
+    - name: check_out_date
+      type: date
+    - name: created_at
+      type: timestamp
+    - name: destination
+      type: string!
+    - name: number_of_guests
+      type: int_32
+    - name: query_id
+      type: int_32!
+    - name: search_date
+      type: timestamp!
+    - name: session_id
+      type: string
+    - name: user_id
+      type: int_32
+  graphql:
+    typeName: user_data_search_queries_1
+    inputTypeName: user_data_search_queries_1_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: pg_writes
+      dataConnectorObjectType: user_data_search_queries
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: user_data_search_queries_1
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - check_in_date
+          - check_out_date
+          - created_at
+          - destination
+          - number_of_guests
+          - query_id
+          - search_date
+          - session_id
+          - user_id
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: user_data_search_queries_bool_exp_1
+  operand:
+    object:
+      type: user_data_search_queries_1
+      comparableFields:
+        - fieldName: check_in_date
+          booleanExpressionType: date_bool_exp_1
+        - fieldName: check_out_date
+          booleanExpressionType: date_bool_exp_1
+        - fieldName: created_at
+          booleanExpressionType: timestamp_bool_exp
+        - fieldName: destination
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: number_of_guests
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: query_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: search_date
+          booleanExpressionType: timestamp_bool_exp
+        - fieldName: session_id
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: user_id
+          booleanExpressionType: int_4_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: user_data_search_queries_bool_exp_1
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: delete_user_data_search_queries_by_query_id_response
+  description: Responses from the 'delete_user_data_search_queries_by_query_id' procedure
+  fields:
+    - name: affected_rows
+      type: int_32!
+      description: The number of rows affected by the mutation
+    - name: returning
+      type: "[user_data_search_queries_1!]!"
+      description: Data from rows affected by the mutation
+  graphql:
+    typeName: delete_user_data_search_queries_by_query_id_response
+    inputTypeName: delete_user_data_search_queries_by_query_id_response_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: pg_writes
+      dataConnectorObjectType: delete_user_data_search_queries_by_query_id_response
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: delete_user_data_search_queries_by_query_id_response
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affected_rows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: delete_user_data_search_queries_by_query_id
+  outputType: delete_user_data_search_queries_by_query_id_response!
+  arguments:
+    - name: key_query_id
+      type: int_32!
+    - name: pre_check
+      type: user_data_search_queries_bool_exp_1
+      description: Delete permission predicate over the 'user_data_search_queries'
+        collection
+  source:
+    dataConnectorName: pg_writes
+    dataConnectorCommand:
+      procedure: delete_user_data_search_queries_by_query_id
+  graphql:
+    rootFieldName: delete_user_data_search_queries_by_query_id
+    rootFieldKind: Mutation
+  description: Delete any row on the 'user_data_search_queries' collection using
+    the 'query_id' key
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: delete_user_data_search_queries_by_query_id
+  permissions:
+    - role: admin
+      allowExecution: true
+
