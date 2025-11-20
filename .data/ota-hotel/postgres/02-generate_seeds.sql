@@ -1,3 +1,4 @@
+\c ota_hotel;
 -- ============================================
 -- SEED DATA GENERATION
 -- ============================================
@@ -5,6 +6,7 @@
 -- ============================================
 -- 1. EXTERNAL SCHEMA - CITIES
 -- ============================================
+
 
 INSERT INTO external.cities (city_name, state, country, timezone) VALUES
 ('Mumbai', 'Maharashtra', 'India', 'Asia/Kolkata'),
@@ -539,3 +541,258 @@ LIMIT 8000;
 -- SELECT 'Marketing Spends', COUNT(*) FROM marketing.marketing_spends
 -- UNION ALL
 -- SELECT 'Traffic Sources', COUNT(*) FROM marketing.traffic_sources;
+
+
+-- ============================================
+-- SCENARIO: Users who visited but didn't search or book
+-- ============================================
+
+-- This represents bounce traffic - users who land on the site but don't engage
+
+-- ============================================
+-- APPROACH 1: Generate standalone traffic records
+-- ============================================
+
+-- Insert traffic sources for users who visited but never searched
+-- These represent ~30-40% of all web traffic (typical bounce rate)
+
+INSERT INTO marketing.traffic_sources (user_id, session_id, source, campaign_id, visit_date, referrer_url)
+SELECT 
+    CASE 
+        -- 70% of bounce traffic is from non-logged-in users (NULL user_id)
+        WHEN random() < 0.7 THEN NULL
+        -- 30% are from existing users who just browsed
+        ELSE (SELECT user_id FROM user_data.users ORDER BY random() LIMIT 1)
+    END as user_id,
+    'session_' || md5(random()::text || current_timestamp::text) as session_id,
+    (ARRAY['organic', 'paid_ads', 'social_media', 'direct', 'referral'])[floor(random() * 5 + 1)::int] as source,
+    CASE 
+        WHEN random() < 0.3 THEN (SELECT campaign_id FROM marketing.campaigns ORDER BY random() LIMIT 1)
+        ELSE NULL
+    END as campaign_id,
+    timestamp '2024-06-01 00:00:00' + random() * (timestamp '2024-11-30 23:59:59' - timestamp '2024-06-01 00:00:00') as visit_date,
+    CASE 
+        WHEN random() < 0.5 THEN 'https://google.com/search?q=hotels+in+india'
+        WHEN random() < 0.7 THEN 'https://facebook.com/makemytrip'
+        WHEN random() < 0.85 THEN 'https://instagram.com/explore'
+        ELSE NULL
+    END as referrer_url
+FROM generate_series(1, 5000);  -- Generate 5000 bounce visits
+
+-- ============================================
+-- APPROACH 2: Generate users who registered but never engaged
+-- ============================================
+
+-- Insert users who signed up but never searched or booked
+INSERT INTO user_data.users (email, phone, registration_date, user_type)
+SELECT 
+    'inactive_user' || generate_series || '@example.com',
+    '+91' || (7000000000 + floor(random() * 999999999)::bigint)::text,
+    '2020-01-01'::date + (random() * 1700)::int,
+    'regular'  -- Inactive users are typically regular tier
+FROM generate_series(1001, 1200);  -- Generate 200 inactive users
+
+-- Now create traffic records for these inactive users showing they visited
+INSERT INTO marketing.traffic_sources (user_id, session_id, source, campaign_id, visit_date, referrer_url)
+SELECT 
+    u.user_id,
+    'session_' || md5(random()::text || u.user_id::text) as session_id,
+    (ARRAY['organic', 'email', 'social_media', 'direct'])[floor(random() * 4 + 1)::int] as source,
+    NULL as campaign_id,  -- Usually no campaign for these inactive users
+    u.registration_date::timestamp + interval '1 hour' * random() * 24,  -- Visit shortly after registration
+    CASE 
+        WHEN random() < 0.6 THEN 'https://google.com/search?q=hotel+booking'
+        ELSE NULL
+    END as referrer_url
+FROM user_data.users u
+WHERE u.user_id BETWEEN 1001 AND 1200;  -- Only for the inactive users we just created
+
+-- ============================================
+-- APPROACH 3: Generate anonymous bounce traffic
+-- ============================================
+
+-- High-volume anonymous visitors (no user_id)
+-- These represent people who land on homepage but leave immediately
+
+INSERT INTO marketing.traffic_sources (user_id, session_id, source, campaign_id, visit_date, referrer_url)
+SELECT 
+    NULL as user_id,  -- Anonymous visitor
+    'anon_session_' || md5(random()::text || generate_series::text) as session_id,
+    -- Higher proportion of paid ads and social media for anonymous traffic
+    (ARRAY['paid_ads', 'social_media', 'organic', 'display_ads', 'direct'])[
+        CASE 
+            WHEN random() < 0.35 THEN 1  -- 35% paid_ads
+            WHEN random() < 0.60 THEN 2  -- 25% social_media
+            WHEN random() < 0.80 THEN 3  -- 20% organic
+            WHEN random() < 0.90 THEN 4  -- 10% display_ads
+            ELSE 5                        -- 10% direct
+        END
+    ] as source,
+    CASE 
+        WHEN random() < 0.5 THEN (SELECT campaign_id FROM marketing.campaigns WHERE campaign_type IN ('paid_ads', 'social_media') ORDER BY random() LIMIT 1)
+        ELSE NULL
+    END as campaign_id,
+    timestamp '2024-06-01 00:00:00' + random() * (timestamp '2024-11-30 23:59:59' - timestamp '2024-06-01 00:00:00') as visit_date,
+    CASE 
+        WHEN random() < 0.4 THEN 'https://google.com/search?q=cheap+hotels'
+        WHEN random() < 0.6 THEN 'https://facebook.com/ads/hotel_deals'
+        WHEN random() < 0.75 THEN 'https://instagram.com/explore/travel'
+        ELSE NULL
+    END as referrer_url
+FROM generate_series(1, 10000);  -- Generate 10,000 anonymous bounce visits
+
+-- ============================================
+-- APPROACH 4: Window shoppers - Multiple visits but no conversion
+-- ============================================
+
+-- Users who visit multiple times but never search or book
+WITH window_shoppers AS (
+    SELECT user_id
+    FROM user_data.users 
+    WHERE user_id BETWEEN 1 AND 1000
+    ORDER BY random()
+    LIMIT 100  -- 100 window shoppers
+)
+INSERT INTO marketing.traffic_sources (user_id, session_id, source, campaign_id, visit_date, referrer_url)
+SELECT 
+    ws.user_id,
+    'session_' || md5(random()::text || ws.user_id::text || visit_num::text) as session_id,
+    (ARRAY['direct', 'organic', 'email'])[floor(random() * 3 + 1)::int] as source,
+    NULL as campaign_id,
+    timestamp '2024-06-01' + (random() * interval '180 days') + (visit_num * interval '3 days') as visit_date,
+    CASE 
+        WHEN random() < 0.7 THEN 'https://makemytrip.com'
+        ELSE 'https://google.com/search?q=hotel+booking+sites'
+    END as referrer_url
+FROM window_shoppers ws
+CROSS JOIN generate_series(1, 5) as visit_num;  -- Each window shopper visits 5 times
+
+-- ============================================
+-- VERIFICATION QUERIES
+-- ============================================
+
+-- Check users who visited but never searched
+SELECT 
+    COUNT(DISTINCT ts.user_id) as users_visited_no_search
+FROM marketing.traffic_sources ts
+LEFT JOIN user_data.search_queries sq ON ts.user_id = sq.user_id
+WHERE sq.user_id IS NULL
+AND ts.user_id IS NOT NULL;
+
+-- Check anonymous traffic (visited but no user_id)
+SELECT 
+    COUNT(*) as anonymous_visits,
+    source,
+    COUNT(*) * 100.0 / SUM(COUNT(*)) OVER () as percentage
+FROM marketing.traffic_sources
+WHERE user_id IS NULL
+GROUP BY source
+ORDER BY anonymous_visits DESC;
+
+-- Overall conversion funnel analysis
+SELECT 
+    'Total Visits' as stage,
+    COUNT(*) as count
+FROM marketing.traffic_sources
+UNION ALL
+SELECT 
+    'Users Who Searched',
+    COUNT(DISTINCT user_id)
+FROM user_data.search_queries
+UNION ALL
+SELECT 
+    'Users Who Booked',
+    COUNT(DISTINCT user_id)
+FROM user_data.hotel_bookings;
+
+-- Bounce rate by traffic source
+SELECT 
+    ts.source,
+    COUNT(DISTINCT ts.session_id) as total_sessions,
+    COUNT(DISTINCT sq.session_id) as sessions_with_search,
+    ROUND(
+        (COUNT(DISTINCT ts.session_id) - COUNT(DISTINCT sq.session_id)) * 100.0 / 
+        COUNT(DISTINCT ts.session_id), 
+        2
+    ) as bounce_rate_percentage
+FROM marketing.traffic_sources ts
+LEFT JOIN user_data.search_queries sq ON ts.session_id = sq.session_id
+GROUP BY ts.source
+ORDER BY bounce_rate_percentage DESC;
+
+-- Users by engagement level
+WITH user_engagement AS (
+    SELECT 
+        u.user_id,
+        u.email,
+        u.registration_date,
+        COUNT(DISTINCT ts.session_id) as visit_count,
+        COUNT(DISTINCT sq.query_id) as search_count,
+        COUNT(DISTINCT hb.booking_id) as booking_count
+    FROM user_data.users u
+    LEFT JOIN marketing.traffic_sources ts ON u.user_id = ts.user_id
+    LEFT JOIN user_data.search_queries sq ON u.user_id = sq.user_id
+    LEFT JOIN user_data.hotel_bookings hb ON u.user_id = hb.user_id
+    GROUP BY u.user_id, u.email, u.registration_date
+)
+SELECT 
+    CASE 
+        WHEN booking_count > 0 THEN 'Converters'
+        WHEN search_count > 0 THEN 'Searchers (No Booking)'
+        WHEN visit_count > 0 THEN 'Visitors Only (No Search)'
+        ELSE 'Registered (Never Visited)'
+    END as user_segment,
+    COUNT(*) as user_count,
+    ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER (), 2) as percentage
+FROM user_engagement
+GROUP BY 
+    CASE 
+        WHEN booking_count > 0 THEN 'Converters'
+        WHEN search_count > 0 THEN 'Searchers (No Booking)'
+        WHEN visit_count > 0 THEN 'Visitors Only (No Search)'
+        ELSE 'Registered (Never Visited)'
+    END
+ORDER BY user_count DESC;
+
+-- ============================================
+-- ANALYTICAL QUERIES FOR "VISITED BUT DIDN'T ENGAGE"
+-- ============================================
+
+-- Find all traffic that didn't result in a search
+SELECT 
+    ts.source,
+    ts.campaign_id,
+    DATE(ts.visit_date) as visit_date,
+    COUNT(*) as bounced_visits,
+    COUNT(DISTINCT ts.user_id) FILTER (WHERE ts.user_id IS NOT NULL) as registered_users_bounced,
+    COUNT(*) FILTER (WHERE ts.user_id IS NULL) as anonymous_bounced
+FROM marketing.traffic_sources ts
+LEFT JOIN user_data.search_queries sq ON ts.session_id = sq.session_id
+WHERE sq.session_id IS NULL  -- No search query for this session
+GROUP BY ts.source, ts.campaign_id, DATE(ts.visit_date)
+ORDER BY visit_date DESC, bounced_visits DESC
+LIMIT 50;
+
+-- Campaign performance including bounce data
+SELECT 
+    c.campaign_name,
+    c.campaign_type,
+    COUNT(DISTINCT ts.session_id) as total_sessions,
+    COUNT(DISTINCT sq.session_id) as sessions_with_search,
+    COUNT(DISTINCT hb.booking_id) as sessions_with_booking,
+    ROUND(
+        COUNT(DISTINCT sq.session_id) * 100.0 / NULLIF(COUNT(DISTINCT ts.session_id), 0),
+        2
+    ) as search_rate,
+    ROUND(
+        COUNT(DISTINCT hb.booking_id) * 100.0 / NULLIF(COUNT(DISTINCT ts.session_id), 0),
+        2
+    ) as conversion_rate
+FROM marketing.campaigns c
+LEFT JOIN marketing.traffic_sources ts ON c.campaign_id = ts.campaign_id
+LEFT JOIN user_data.search_queries sq ON ts.session_id = sq.session_id
+LEFT JOIN user_data.hotel_bookings hb ON sq.user_id = hb.user_id 
+    AND hb.booking_date::date BETWEEN sq.search_date::date AND sq.search_date::date + 7
+WHERE ts.visit_date BETWEEN '2024-06-01' AND '2024-11-30'
+GROUP BY c.campaign_id, c.campaign_name, c.campaign_type
+ORDER BY total_sessions DESC;
