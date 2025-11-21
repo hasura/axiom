@@ -1,0 +1,191 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: hotel_hotels
+  description: "Object type for hotel.hotels. Description: Master table for hotel
+    information"
+  fields:
+    - name: address
+      type: string
+    - name: amenities
+      type: string
+    - name: city
+      type: string!
+    - name: created_at
+      type: timestamp
+    - name: hotel_id
+      type: int_32!
+    - name: name
+      type: string!
+    - name: star_rating
+      type: bigdecimal
+    - name: state
+      type: string!
+    - name: updated_at
+      type: timestamp
+  graphql:
+    typeName: hotel_hotels
+    inputTypeName: hotel_hotels_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: pg
+      dataConnectorObjectType: hotel.hotels
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: hotel_hotels
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - address
+          - amenities
+          - city
+          - created_at
+          - hotel_id
+          - name
+          - star_rating
+          - state
+          - updated_at
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: hotel_hotels_bool_exp
+  operand:
+    object:
+      type: hotel_hotels
+      comparableFields:
+        - fieldName: address
+          booleanExpressionType: text_bool_exp
+        - fieldName: amenities
+          booleanExpressionType: array_bool_exp
+        - fieldName: city
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: created_at
+          booleanExpressionType: timestamp_without_time_zone_bool_exp
+        - fieldName: hotel_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: name
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: star_rating
+          booleanExpressionType: decimal_bool_exp
+        - fieldName: state
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: updated_at
+          booleanExpressionType: timestamp_without_time_zone_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: hotel_hotels_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: hotel_hotels_agg_exp
+  operand:
+    object:
+      aggregatedType: hotel_hotels
+      aggregatableFields:
+        - fieldName: address
+          aggregateExpression: text_agg_exp
+        - fieldName: amenities
+          aggregateExpression: array_agg_exp
+        - fieldName: city
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: created_at
+          aggregateExpression: timestamp_without_time_zone_agg_exp
+        - fieldName: hotel_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: name
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: star_rating
+          aggregateExpression: decimal_agg_exp
+        - fieldName: state
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: updated_at
+          aggregateExpression: timestamp_without_time_zone_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: hotel_hotels_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: hotel_hotels_order_by_exp
+  operand:
+    object:
+      orderedType: hotel_hotels
+      orderableFields:
+        - fieldName: address
+          orderByExpression: string_order_by_exp
+        - fieldName: amenities
+          orderByExpression: string_order_by_exp
+        - fieldName: city
+          orderByExpression: string_order_by_exp
+        - fieldName: created_at
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: hotel_id
+          orderByExpression: int_32_order_by_exp
+        - fieldName: name
+          orderByExpression: string_order_by_exp
+        - fieldName: star_rating
+          orderByExpression: bigdecimal_order_by_exp
+        - fieldName: state
+          orderByExpression: string_order_by_exp
+        - fieldName: updated_at
+          orderByExpression: timestamp_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: hotel_hotels_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: hotel_hotels
+  objectType: hotel_hotels
+  source:
+    dataConnectorName: pg
+    collection: hotel.hotels
+  filterExpressionType: hotel_hotels_bool_exp
+  aggregateExpression: hotel_hotels_agg_exp
+  orderByExpression: hotel_hotels_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: hotel_hotels
+      subscription:
+        rootField: hotel_hotels
+    selectUniques:
+      - queryRootField: hotel_hotels_by_hotel_id
+        uniqueIdentifier:
+          - hotel_id
+        subscription:
+          rootField: hotel_hotels_by_hotel_id
+    filterInputTypeName: hotel_hotels_filter_input
+    aggregate:
+      queryRootField: hotel_hotels_aggregate
+      subscription:
+        rootField: hotel_hotels_aggregate
+  description: Master table for hotel information
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: hotel_hotels
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

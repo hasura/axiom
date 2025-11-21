@@ -1,0 +1,22 @@
+kind: Connector
+version: v2
+definition:
+  name: pg
+  subgraph: app
+  source: hasura/postgres-promptql:v1.2.16
+  context: .
+  envMapping:
+    HASURA_CONNECTOR_PORT:
+      fromEnv: APP_PG_HASURA_CONNECTOR_PORT
+    HASURA_SERVICE_TOKEN_SECRET:
+      fromEnv: APP_PG_HASURA_SERVICE_TOKEN_SECRET
+    HASURA_CONNECTOR_FETCH_ROW_COUNT_MAX:
+      fromEnv: APP_PG_HASURA_CONNECTOR_FETCH_ROW_COUNT_MAX
+    JDBC_SCHEMAS:
+      fromEnv: APP_PG_JDBC_SCHEMAS
+    JDBC_URL:
+      fromEnv: APP_PG_JDBC_URL
+    OTEL_EXPORTER_OTLP_ENDPOINT:
+      fromEnv: APP_PG_OTEL_EXPORTER_OTLP_ENDPOINT
+    OTEL_SERVICE_NAME:
+      fromEnv: APP_PG_OTEL_SERVICE_NAME

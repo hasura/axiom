@@ -1,0 +1,76 @@
+version: v2
+ndcSpecGeneration: v0.2
+packagingDefinition:
+  type: PrebuiltDockerImage
+  dockerImage: ghcr.io/hasura/ndc-postgres:v3.1.0
+supportedEnvironmentVariables:
+  - name: CONNECTION_URI
+    description: The PostgreSQL connection URI
+    defaultValue: postgresql://read_only_user:readonlyuser@35.236.11.122:5432/v3-docs-sample-app
+  - name: CLIENT_CERT
+    description: The SSL client certificate (Optional)
+    defaultValue: ""
+  - name: CLIENT_KEY
+    description: The SSL client key (Optional)
+    defaultValue: ""
+  - name: ROOT_CERT
+    description: The SSL root certificate (Optional)
+    defaultValue: ""
+commands:
+  update: hasura-ndc-postgres update
+cliPlugin:
+  type: BinaryInline
+  platforms:
+    - selector: darwin-arm64
+      uri: https://storage.googleapis.com/prod-connector-platform-registry/assets/connectors/hasura/postgres/v3.1.0/cli-plugins/darwin-arm64/ndc-postgres-cli-aarch64-apple-darwin
+      sha256: f94851898ecb02f5656b80e8cd39ccbc08dc840d3ddfb5153cd78da92d5906a3
+      bin: hasura-ndc-postgres
+    - selector: linux-arm64
+      uri: https://storage.googleapis.com/prod-connector-platform-registry/assets/connectors/hasura/postgres/v3.1.0/cli-plugins/linux-arm64/ndc-postgres-cli-aarch64-unknown-linux-gnu
+      sha256: a250612b64344510e43461f8faef51cc82f51f9e967776681343d88f1be861a2
+      bin: hasura-ndc-postgres
+    - selector: darwin-amd64
+      uri: https://storage.googleapis.com/prod-connector-platform-registry/assets/connectors/hasura/postgres/v3.1.0/cli-plugins/darwin-amd64/ndc-postgres-cli-x86_64-apple-darwin
+      sha256: 56338d8b852f9f979c0d614e52e6ab0f5cde2d97f64b1a07d62f766afa7b4179
+      bin: hasura-ndc-postgres
+    - selector: windows-amd64
+      uri: https://storage.googleapis.com/prod-connector-platform-registry/assets/connectors/hasura/postgres/v3.1.0/cli-plugins/windows-amd64/ndc-postgres-cli-x86_64-pc-windows-msvc.exe
+      sha256: 4491fadffa82b542c082715c6fdd23897bd4854f9ea1b1d01026fff18a2e497f
+      bin: hasura-ndc-postgres.exe
+    - selector: linux-amd64
+      uri: https://storage.googleapis.com/prod-connector-platform-registry/assets/connectors/hasura/postgres/v3.1.0/cli-plugins/linux-amd64/ndc-postgres-cli-x86_64-unknown-linux-gnu
+      sha256: 7c7efc0ae6579410f0135e2f8f69981727aed45264b758611832751e99640966
+      bin: hasura-ndc-postgres
+dockerComposeWatch:
+  - path: ./
+    action: sync+restart
+    target: /etc/connector
+nativeToolchainDefinition:
+  commands:
+    start:
+      type: ShellScript
+      bash: |-
+        #!/usr/bin/env bash
+        set -eu -o pipefail
+        HASURA_CONFIGURATION_DIRECTORY="$HASURA_PLUGIN_CONNECTOR_CONTEXT_PATH" "$HASURA_DDN_NATIVE_CONNECTOR_DIR/ndc-postgres" serve
+      powershell: |-
+        $ErrorActionPreference = "Stop"
+        $env:HASURA_CONFIGURATION_DIRECTORY="$env:HASURA_PLUGIN_CONNECTOR_CONTEXT_PATH"; & "$env:HASURA_DDN_NATIVE_CONNECTOR_DIR\ndc-postgres.exe" serve
+    watch:
+      type: ShellScript
+      bash: |-
+        #!/usr/bin/env bash
+        echo "Watch is not supported for this connector"
+        exit 1
+      powershell: |-
+        Write-Output "Watch is not supported for this connector"
+        exit 1
+    update:
+      type: ShellScript
+      bash: |-
+        #!/usr/bin/env bash
+        set -eu -o pipefail
+        "$HASURA_DDN_NATIVE_CONNECTOR_PLUGIN_DIR/hasura-ndc-postgres" update
+      powershell: |-
+        $ErrorActionPreference = "Stop"
+        & "$env:HASURA_DDN_NATIVE_CONNECTOR_PLUGIN_DIR\hasura-ndc-postgres.exe" update

@@ -1,0 +1,1390 @@
+{
+    "version": "v2",
+    "connection_uri": {
+        "variable": "JDBC_URL"
+    },
+    "tables": [
+        {
+            "name": "external.cities",
+            "description": "Master list of cities",
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "city_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "city_name",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 100
+                        }
+                    }
+                },
+                {
+                    "name": "state",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 100
+                        }
+                    }
+                },
+                {
+                    "name": "country",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 100
+                        }
+                    }
+                },
+                {
+                    "name": "timezone",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 50
+                        }
+                    }
+                },
+                {
+                    "name": "created_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                },
+                {
+                    "name": "updated_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                }
+            ],
+            "primary_keys": [
+                "city_id"
+            ],
+            "foreign_keys": {}
+        },
+        {
+            "name": "external.events",
+            "description": "Local events that may impact hotel demand",
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "event_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "city_id",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "event_name",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 200
+                        }
+                    }
+                },
+                {
+                    "name": "event_date",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "date"
+                    }
+                },
+                {
+                    "name": "event_type",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 50
+                        }
+                    }
+                },
+                {
+                    "name": "expected_attendance",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "created_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                },
+                {
+                    "name": "updated_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                }
+            ],
+            "primary_keys": [
+                "event_id"
+            ],
+            "foreign_keys": {
+                "events_city_id_fkey": {
+                    "column_mapping": {
+                        "city_id": "city_id"
+                    },
+                    "foreign_collection": "external.cities"
+                }
+            }
+        },
+        {
+            "name": "external.external_factors",
+            "description": "External factors affecting travel demand",
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "factor_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "city_id",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "date",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "date"
+                    }
+                },
+                {
+                    "name": "weather_condition",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 50
+                        }
+                    }
+                },
+                {
+                    "name": "temperature",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 5,
+                            "scale": 2
+                        }
+                    }
+                },
+                {
+                    "name": "flight_availability_score",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "travel_advisory_level",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 20
+                        }
+                    }
+                },
+                {
+                    "name": "created_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                },
+                {
+                    "name": "updated_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                }
+            ],
+            "primary_keys": [
+                "factor_id"
+            ],
+            "foreign_keys": {
+                "external_factors_city_id_fkey": {
+                    "column_mapping": {
+                        "city_id": "city_id"
+                    },
+                    "foreign_collection": "external.cities"
+                }
+            }
+        },
+        {
+            "name": "external.festivals",
+            "description": "Festivals and celebrations affecting travel patterns",
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "festival_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "city_id",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "festival_name",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 200
+                        }
+                    }
+                },
+                {
+                    "name": "start_date",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "date"
+                    }
+                },
+                {
+                    "name": "end_date",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "date"
+                    }
+                },
+                {
+                    "name": "festival_type",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 50
+                        }
+                    }
+                },
+                {
+                    "name": "significance_level",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 20
+                        }
+                    }
+                },
+                {
+                    "name": "expected_tourist_influx",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "created_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                },
+                {
+                    "name": "updated_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                }
+            ],
+            "primary_keys": [
+                "festival_id"
+            ],
+            "foreign_keys": {
+                "festivals_city_id_fkey": {
+                    "column_mapping": {
+                        "city_id": "city_id"
+                    },
+                    "foreign_collection": "external.cities"
+                }
+            }
+        },
+        {
+            "name": "hotel.hotel_rooms",
+            "description": "Room inventory for each hotel",
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "room_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "hotel_id",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "room_type",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 50
+                        }
+                    }
+                },
+                {
+                    "name": "capacity",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "base_price",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 10,
+                            "scale": 2
+                        }
+                    }
+                },
+                {
+                    "name": "created_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                },
+                {
+                    "name": "updated_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                }
+            ],
+            "primary_keys": [
+                "room_id"
+            ],
+            "foreign_keys": {
+                "hotel_rooms_hotel_id_fkey": {
+                    "column_mapping": {
+                        "hotel_id": "hotel_id"
+                    },
+                    "foreign_collection": "hotel.hotels"
+                }
+            }
+        },
+        {
+            "name": "hotel.hotels",
+            "description": "Master table for hotel information",
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "hotel_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "name",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 200
+                        }
+                    }
+                },
+                {
+                    "name": "city",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 100
+                        }
+                    }
+                },
+                {
+                    "name": "state",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 100
+                        }
+                    }
+                },
+                {
+                    "name": "star_rating",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 2,
+                            "scale": 1
+                        }
+                    }
+                },
+                {
+                    "name": "address",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "text"
+                    }
+                },
+                {
+                    "name": "amenities",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "array",
+                        "metadata": {
+                            "type": "array",
+                            "array_types": {
+                                "database_type": "text"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "created_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                },
+                {
+                    "name": "updated_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                }
+            ],
+            "primary_keys": [
+                "hotel_id"
+            ],
+            "foreign_keys": {}
+        },
+        {
+            "name": "hotel.pricing",
+            "description": "Historical and current pricing data for hotel rooms",
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "pricing_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "hotel_id",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "room_id",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "date",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "date"
+                    }
+                },
+                {
+                    "name": "price_per_night",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 10,
+                            "scale": 2
+                        }
+                    }
+                },
+                {
+                    "name": "availability_status",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 20
+                        }
+                    }
+                },
+                {
+                    "name": "created_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                },
+                {
+                    "name": "updated_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                }
+            ],
+            "primary_keys": [
+                "pricing_id"
+            ],
+            "foreign_keys": {
+                "pricing_hotel_id_fkey": {
+                    "column_mapping": {
+                        "hotel_id": "hotel_id"
+                    },
+                    "foreign_collection": "hotel.hotels"
+                },
+                "pricing_room_id_fkey": {
+                    "column_mapping": {
+                        "room_id": "room_id"
+                    },
+                    "foreign_collection": "hotel.hotel_rooms"
+                }
+            }
+        },
+        {
+            "name": "marketing.campaigns",
+            "description": "Marketing campaign metadata",
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "campaign_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "campaign_name",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 200
+                        }
+                    }
+                },
+                {
+                    "name": "start_date",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "date"
+                    }
+                },
+                {
+                    "name": "end_date",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "date"
+                    }
+                },
+                {
+                    "name": "campaign_type",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 50
+                        }
+                    }
+                },
+                {
+                    "name": "target_audience",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "text"
+                    }
+                },
+                {
+                    "name": "created_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                },
+                {
+                    "name": "updated_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                }
+            ],
+            "primary_keys": [
+                "campaign_id"
+            ],
+            "foreign_keys": {}
+        },
+        {
+            "name": "marketing.marketing_spends",
+            "description": "Daily marketing spend and performance metrics",
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "spend_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "campaign_id",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "date",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "date"
+                    }
+                },
+                {
+                    "name": "spend",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 12,
+                            "scale": 2
+                        }
+                    }
+                },
+                {
+                    "name": "impressions",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "bigint"
+                    }
+                },
+                {
+                    "name": "clicks",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "conversions",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "created_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                },
+                {
+                    "name": "updated_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                }
+            ],
+            "primary_keys": [
+                "spend_id"
+            ],
+            "foreign_keys": {
+                "marketing_spends_campaign_id_fkey": {
+                    "column_mapping": {
+                        "campaign_id": "campaign_id"
+                    },
+                    "foreign_collection": "marketing.campaigns"
+                }
+            }
+        },
+        {
+            "name": "marketing.traffic_sources",
+            "description": "Web and app traffic attribution",
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "traffic_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "user_id",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "session_id",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 100
+                        }
+                    }
+                },
+                {
+                    "name": "source",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 50
+                        }
+                    }
+                },
+                {
+                    "name": "campaign_id",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "visit_date",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                },
+                {
+                    "name": "referrer_url",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "text"
+                    }
+                },
+                {
+                    "name": "created_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                }
+            ],
+            "primary_keys": [
+                "traffic_id"
+            ],
+            "foreign_keys": {
+                "traffic_sources_campaign_id_fkey": {
+                    "column_mapping": {
+                        "campaign_id": "campaign_id"
+                    },
+                    "foreign_collection": "marketing.campaigns"
+                },
+                "traffic_sources_user_id_fkey": {
+                    "column_mapping": {
+                        "user_id": "user_id"
+                    },
+                    "foreign_collection": "user_data.users"
+                }
+            }
+        },
+        {
+            "name": "user_data.hotel_bookings",
+            "description": "All hotel bookings made through the platform",
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "booking_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "user_id",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "hotel_id",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "room_id",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "booking_date",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                },
+                {
+                    "name": "check_in_date",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "date"
+                    }
+                },
+                {
+                    "name": "check_out_date",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "date"
+                    }
+                },
+                {
+                    "name": "destination",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 100
+                        }
+                    }
+                },
+                {
+                    "name": "amount_paid",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 10,
+                            "scale": 2
+                        }
+                    }
+                },
+                {
+                    "name": "booking_status",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 20
+                        }
+                    }
+                },
+                {
+                    "name": "number_of_guests",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "created_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                },
+                {
+                    "name": "updated_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                }
+            ],
+            "primary_keys": [
+                "booking_id"
+            ],
+            "foreign_keys": {
+                "hotel_bookings_hotel_id_fkey": {
+                    "column_mapping": {
+                        "hotel_id": "hotel_id"
+                    },
+                    "foreign_collection": "hotel.hotels"
+                },
+                "hotel_bookings_room_id_fkey": {
+                    "column_mapping": {
+                        "room_id": "room_id"
+                    },
+                    "foreign_collection": "hotel.hotel_rooms"
+                },
+                "hotel_bookings_user_id_fkey": {
+                    "column_mapping": {
+                        "user_id": "user_id"
+                    },
+                    "foreign_collection": "user_data.users"
+                }
+            }
+        },
+        {
+            "name": "user_data.search_queries",
+            "description": "User search behavior tracking",
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "query_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "user_id",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "session_id",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 100
+                        }
+                    }
+                },
+                {
+                    "name": "destination",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 100
+                        }
+                    }
+                },
+                {
+                    "name": "search_date",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                },
+                {
+                    "name": "check_in_date",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "date"
+                    }
+                },
+                {
+                    "name": "check_out_date",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "date"
+                    }
+                },
+                {
+                    "name": "number_of_guests",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "created_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                }
+            ],
+            "primary_keys": [
+                "query_id"
+            ],
+            "foreign_keys": {
+                "search_queries_user_id_fkey": {
+                    "column_mapping": {
+                        "user_id": "user_id"
+                    },
+                    "foreign_collection": "user_data.users"
+                }
+            }
+        },
+        {
+            "name": "user_data.users",
+            "description": "User profile information",
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "user_id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "email",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 255
+                        }
+                    }
+                },
+                {
+                    "name": "phone",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 20
+                        }
+                    }
+                },
+                {
+                    "name": "registration_date",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "date"
+                    }
+                },
+                {
+                    "name": "user_type",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "character_varying",
+                        "metadata": {
+                            "type": "length",
+                            "length": 20
+                        }
+                    }
+                },
+                {
+                    "name": "created_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                },
+                {
+                    "name": "updated_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_without_time_zone"
+                    }
+                }
+            ],
+            "primary_keys": [
+                "user_id"
+            ],
+            "foreign_keys": {}
+        }
+    ]
+}

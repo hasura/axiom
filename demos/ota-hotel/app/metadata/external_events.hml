@@ -1,0 +1,182 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: external_events
+  description: "Object type for external.events. Description: Local events that
+    may impact hotel demand"
+  fields:
+    - name: city_id
+      type: int_32!
+    - name: created_at
+      type: timestamp
+    - name: event_date
+      type: date!
+    - name: event_id
+      type: int_32!
+    - name: event_name
+      type: string!
+    - name: event_type
+      type: string
+    - name: expected_attendance
+      type: int_32
+    - name: updated_at
+      type: timestamp
+  graphql:
+    typeName: external_events
+    inputTypeName: external_events_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: pg
+      dataConnectorObjectType: external.events
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: external_events
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - city_id
+          - created_at
+          - event_date
+          - event_id
+          - event_name
+          - event_type
+          - expected_attendance
+          - updated_at
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: external_events_bool_exp
+  operand:
+    object:
+      type: external_events
+      comparableFields:
+        - fieldName: city_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: created_at
+          booleanExpressionType: timestamp_without_time_zone_bool_exp
+        - fieldName: event_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: event_id
+          booleanExpressionType: integer_bool_exp
+        - fieldName: event_name
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: event_type
+          booleanExpressionType: character_varying_bool_exp
+        - fieldName: expected_attendance
+          booleanExpressionType: integer_bool_exp
+        - fieldName: updated_at
+          booleanExpressionType: timestamp_without_time_zone_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: external_events_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: external_events_agg_exp
+  operand:
+    object:
+      aggregatedType: external_events
+      aggregatableFields:
+        - fieldName: city_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: created_at
+          aggregateExpression: timestamp_without_time_zone_agg_exp
+        - fieldName: event_date
+          aggregateExpression: date_agg_exp
+        - fieldName: event_id
+          aggregateExpression: integer_agg_exp
+        - fieldName: event_name
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: event_type
+          aggregateExpression: character_varying_agg_exp
+        - fieldName: expected_attendance
+          aggregateExpression: integer_agg_exp
+        - fieldName: updated_at
+          aggregateExpression: timestamp_without_time_zone_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: external_events_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: external_events_order_by_exp
+  operand:
+    object:
+      orderedType: external_events
+      orderableFields:
+        - fieldName: city_id
+          orderByExpression: int_32_order_by_exp
+        - fieldName: created_at
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: event_date
+          orderByExpression: date_order_by_exp
+        - fieldName: event_id
+          orderByExpression: int_32_order_by_exp
+        - fieldName: event_name
+          orderByExpression: string_order_by_exp
+        - fieldName: event_type
+          orderByExpression: string_order_by_exp
+        - fieldName: expected_attendance
+          orderByExpression: int_32_order_by_exp
+        - fieldName: updated_at
+          orderByExpression: timestamp_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: external_events_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: external_events
+  objectType: external_events
+  source:
+    dataConnectorName: pg
+    collection: external.events
+  filterExpressionType: external_events_bool_exp
+  aggregateExpression: external_events_agg_exp
+  orderByExpression: external_events_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: external_events
+      subscription:
+        rootField: external_events
+    selectUniques:
+      - queryRootField: external_events_by_event_id
+        uniqueIdentifier:
+          - event_id
+        subscription:
+          rootField: external_events_by_event_id
+    filterInputTypeName: external_events_filter_input
+    aggregate:
+      queryRootField: external_events_aggregate
+      subscription:
+        rootField: external_events_aggregate
+  description: Local events that may impact hotel demand
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: external_events
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
