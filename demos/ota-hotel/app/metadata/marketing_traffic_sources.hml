@@ -135,7 +135,9 @@ definition:
           orderByExpression: int_32_order_by_exp
         - fieldName: visit_date
           orderByExpression: timestamp_order_by_exp
-      orderableRelationships: []
+      orderableRelationships:
+        - relationshipName: marketing_campaign
+        - relationshipName: user_data_user
   graphql:
     expressionTypeName: marketing_traffic_sources_order_by_exp
 
@@ -179,4 +181,40 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: marketing_campaign
+  sourceType: marketing_traffic_sources
+  target:
+    model:
+      name: marketing_campaigns
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: campaign_id
+      target:
+        modelField:
+          - fieldName: campaign_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: user_data_user
+  sourceType: marketing_traffic_sources
+  target:
+    model:
+      name: user_data_users
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: user_id
+      target:
+        modelField:
+          - fieldName: user_id
 

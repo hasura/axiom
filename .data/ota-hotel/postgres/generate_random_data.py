@@ -1,5 +1,5 @@
 # This script is useful for generating random data for tables 
-# like marketing.traffic_sources, user_data.search_queries, marketing.marketing_spends, 
+# like marketing.traffic_sources, user_data.search_queries_hotel_bookings, marketing.marketing_spends, 
 # user_data.users and user_data.hotel_bookings
 
 import csv
@@ -74,7 +74,7 @@ def generate_users(count=1000):
     write_csv('users.csv', headers, users)
     return users
 
-def generate_search_queries(count=15000, user_count=1000):
+def generate_search_queries_hotel_bookings(count=15000, user_count=1000):
     """
     Generate random search queries
     
@@ -113,27 +113,27 @@ def generate_search_queries(count=15000, user_count=1000):
         })
     
     headers = ['user_id', 'session_id', 'destination', 'search_date', 'check_in_date', 'check_out_date', 'number_of_guests']
-    write_csv('search_queries.csv', headers, queries)
+    write_csv('search_queries_hotel_bookings.csv', headers, queries)
     return queries
 
-def generate_traffic_sources(search_queries, campaign_count=12):
+def generate_traffic_sources(search_queries_hotel_bookings, campaign_count=12):
     """
     Generate random traffic sources based on search queries
     
     Args:
-        search_queries: List of search query dictionaries
+        search_queries_hotel_bookings: List of search query dictionaries
         campaign_count: Number of campaigns in the system (default: 12)
     
     Returns:
         List of traffic source dictionaries
     """
-    print(f"🎲 Generating {len(search_queries)} traffic source records...")
+    print(f"🎲 Generating {len(search_queries_hotel_bookings)} traffic source records...")
     traffic = []
     
     sources = ['organic', 'paid_ads', 'email', 'social_media', 'direct', 'referral', 'affiliate']
     source_weights = [30, 25, 15, 15, 10, 3, 2]  # Percentage distribution
     
-    for query in search_queries:
+    for query in search_queries_hotel_bookings:
         source = random.choices(sources, weights=source_weights)[0]
         
         # 40% chance of having a campaign_id (only for paid sources)
@@ -264,12 +264,12 @@ def generate_marketing_spends(campaign_count=12, start_date_str='2024-06-01', en
     write_csv('marketing_spends.csv', headers, spends)
     return spends
 
-def generate_hotel_bookings(search_queries, count=8000):
+def generate_hotel_bookings(search_queries_hotel_bookings, count=8000):
     """
     Generate random hotel bookings based on search queries
     
     Args:
-        search_queries: List of search query dictionaries
+        search_queries_hotel_bookings: List of search query dictionaries
         count: Number of bookings to generate (default: 8000)
     
     Returns:
@@ -316,7 +316,7 @@ def generate_hotel_bookings(search_queries, count=8000):
     status_weights = [85, 8, 5, 2]  # Percentage distribution
     
     # Sample queries for conversion (approximately 5% conversion rate)
-    sampled_queries = random.sample(search_queries, min(count, len(search_queries)))
+    sampled_queries = random.sample(search_queries_hotel_bookings, min(count, len(search_queries_hotel_bookings)))
     
     for query in sampled_queries[:count]:
         destination = query['destination']
@@ -412,12 +412,12 @@ def generate_all_random_data(
     
     # Step 2: Generate search queries
     print("🔍 Step 2/5: Generating Search Queries")
-    search_queries = generate_search_queries(count=search_count, user_count=user_count)
+    search_queries_hotel_bookings = generate_search_queries_hotel_bookings(count=search_count, user_count=user_count)
     print()
     
     # Step 3: Generate traffic sources
     print("🌐 Step 3/5: Generating Traffic Sources")
-    traffic_sources = generate_traffic_sources(search_queries, campaign_count=campaign_count)
+    traffic_sources = generate_traffic_sources(search_queries_hotel_bookings, campaign_count=campaign_count)
     print()
     
     # Step 4: Generate marketing spends
@@ -427,7 +427,7 @@ def generate_all_random_data(
     
     # Step 5: Generate hotel bookings
     print("🏨 Step 5/5: Generating Hotel Bookings")
-    hotel_bookings = generate_hotel_bookings(search_queries, count=booking_count)
+    hotel_bookings = generate_hotel_bookings(search_queries_hotel_bookings, count=booking_count)
     print()
     
     # Summary
@@ -438,7 +438,7 @@ def generate_all_random_data(
     print()
     print("📊 Summary:")
     print(f"   - Users: {len(users)} records")
-    print(f"   - Search Queries: {len(search_queries)} records")
+    print(f"   - Search Queries: {len(search_queries_hotel_bookings)} records")
     print(f"   - Traffic Sources: {len(traffic_sources)} records")
     print(f"   - Marketing Spends: {len(marketing_spends)} records")
     print(f"   - Hotel Bookings: {len(hotel_bookings)} records")
@@ -447,7 +447,7 @@ def generate_all_random_data(
     print()
     print("💡 Import to PostgreSQL using:")
     print("   \\COPY user_data.users FROM 'random_seed_data/users.csv' CSV HEADER")
-    print("   \\COPY user_data.search_queries FROM 'random_seed_data/search_queries.csv' CSV HEADER")
+    print("   \\COPY user_data.search_queries_hotel_bookings FROM 'random_seed_data/search_queries_hotel_bookings.csv' CSV HEADER")
     print("   \\COPY marketing.traffic_sources FROM 'random_seed_data/traffic_sources.csv' CSV HEADER")
     print("   \\COPY marketing.marketing_spends FROM 'random_seed_data/marketing_spends.csv' CSV HEADER")
     print("   \\COPY user_data.hotel_bookings FROM 'random_seed_data/hotel_bookings.csv' CSV HEADER")

@@ -165,49 +165,51 @@ definition:
         - app.user_data_hotel_bookings (booking behavior)
 
       <metrics>
-        <name>Drop Off Points in Funnel Per Visit </name>
-        <alias>Identify Drop off points</alias>
-        <description>Identify drop off points. This metric is useful for understanding drop off point for each visit/session till date</description>
-        <query>
-          WITH funnel_stages AS (
-              SELECT 
-                  ts.session_id,
-                  ts.source,
-                  CASE WHEN sq.session_id IS NOT NULL THEN 1 ELSE 0 END AS reached_search,
-                  CASE WHEN hb.booking_id IS NOT NULL THEN 1 ELSE 0 END AS reached_booking
-              FROM marketing.traffic_sources ts
-              LEFT JOIN user_data.search_queries sq ON ts.session_id = sq.session_id
-              LEFT JOIN user_data.hotel_bookings hb 
-                  ON ts.user_id = hb.user_id
-                  AND hb.booking_date BETWEEN ts.visit_date AND ts.visit_date + INTERVAL '7 days'
-                  AND hb.booking_status IN ('confirmed', 'completed')
-              WHERE ts.visit_date >= '2024-01-01'
-          )
-          SELECT 
-              'Visited but did not search' AS drop_off_stage,
-              COUNT(*) AS users_dropped,
-              ROUND(100.0 * COUNT(*) / (SELECT COUNT(*) FROM funnel_stages), 2) AS pct_of_total
-          FROM funnel_stages
-          WHERE reached_search = 0
+        <metric>
+          <name>Drop Off Points in Funnel Per Visit </name>
+          <alias>Identify Drop off points</alias>
+          <description>Identify drop off points. This metric is useful for understanding drop off point for each visit/session till date</description>
+          <query>
+            WITH funnel_stages AS (
+                SELECT 
+                    ts.session_id,
+                    ts.source,
+                    CASE WHEN sq.session_id IS NOT NULL THEN 1 ELSE 0 END AS reached_search,
+                    CASE WHEN hb.booking_id IS NOT NULL THEN 1 ELSE 0 END AS reached_booking
+                FROM marketing.traffic_sources ts
+                LEFT JOIN user_data.search_queries sq ON ts.session_id = sq.session_id
+                LEFT JOIN user_data.hotel_bookings hb 
+                    ON ts.user_id = hb.user_id
+                    AND hb.booking_date BETWEEN ts.visit_date AND ts.visit_date + INTERVAL '7 days'
+                    AND hb.booking_status IN ('confirmed', 'completed')
+                WHERE ts.visit_date >= '2024-01-01'
+            )
+            SELECT 
+                'Visited but did not search' AS drop_off_stage,
+                COUNT(*) AS users_dropped,
+                ROUND(100.0 * COUNT(*) / (SELECT COUNT(*) FROM funnel_stages), 2) AS pct_of_total
+            FROM funnel_stages
+            WHERE reached_search = 0
 
-          UNION ALL
+            UNION ALL
 
-          SELECT 
-              'Searched but did not book' AS drop_off_stage,
-              COUNT(*) AS users_dropped,
-              ROUND(100.0 * COUNT(*) / (SELECT COUNT(*) FROM funnel_stages), 2) AS pct_of_total
-          FROM funnel_stages
-          WHERE reached_search = 1 AND reached_booking = 0
+            SELECT 
+                'Searched but did not book' AS drop_off_stage,
+                COUNT(*) AS users_dropped,
+                ROUND(100.0 * COUNT(*) / (SELECT COUNT(*) FROM funnel_stages), 2) AS pct_of_total
+            FROM funnel_stages
+            WHERE reached_search = 1 AND reached_booking = 0
 
-          UNION ALL
+            UNION ALL
 
-          SELECT 
-              'Completed booking' AS drop_off_stage,
-              COUNT(*) AS users_dropped,
-              ROUND(100.0 * COUNT(*) / (SELECT COUNT(*) FROM funnel_stages), 2) AS pct_of_total
-          FROM funnel_stages
-          WHERE reached_booking = 1;
-        </query>
+            SELECT 
+                'Completed booking' AS drop_off_stage,
+                COUNT(*) AS users_dropped,
+                ROUND(100.0 * COUNT(*) / (SELECT COUNT(*) FROM funnel_stages), 2) AS pct_of_total
+            FROM funnel_stages
+            WHERE reached_booking = 1;
+          </query>
+        </metric>
       </metrics>
     </marketing>
 

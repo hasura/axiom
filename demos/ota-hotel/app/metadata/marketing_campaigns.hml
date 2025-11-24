@@ -180,3 +180,47 @@ definition:
         filter: null
         allowSubscriptions: true
 
+---
+kind: Relationship
+version: v1
+definition:
+  name: marketing_marketing_spends
+  sourceType: marketing_campaigns
+  target:
+    model:
+      name: marketing_marketing_spends
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: marketing_marketing_spends_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: campaign_id
+      target:
+        modelField:
+          - fieldName: campaign_id
+  graphql:
+    aggregateFieldName: marketing_marketing_spends_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: marketing_traffic_sources
+  sourceType: marketing_campaigns
+  target:
+    model:
+      name: marketing_traffic_sources
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: marketing_traffic_sources_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: campaign_id
+      target:
+        modelField:
+          - fieldName: campaign_id
+  graphql:
+    aggregateFieldName: marketing_traffic_sources_aggregate
+

@@ -153,7 +153,8 @@ definition:
           orderByExpression: date_order_by_exp
         - fieldName: updated_at
           orderByExpression: timestamp_order_by_exp
-      orderableRelationships: []
+      orderableRelationships:
+        - relationshipName: external_city
   graphql:
     expressionTypeName: external_festivals_order_by_exp
 
@@ -197,4 +198,22 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: external_city
+  sourceType: external_festivals
+  target:
+    model:
+      name: external_cities
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: city_id
+      target:
+        modelField:
+          - fieldName: city_id
 

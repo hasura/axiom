@@ -170,3 +170,69 @@ definition:
         filter: null
         allowSubscriptions: true
 
+---
+kind: Relationship
+version: v1
+definition:
+  name: external_events
+  sourceType: external_cities
+  target:
+    model:
+      name: external_events
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: external_events_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: city_id
+      target:
+        modelField:
+          - fieldName: city_id
+  graphql:
+    aggregateFieldName: external_events_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: external_external_factors
+  sourceType: external_cities
+  target:
+    model:
+      name: external_external_factors
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: external_external_factors_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: city_id
+      target:
+        modelField:
+          - fieldName: city_id
+  graphql:
+    aggregateFieldName: external_external_factors_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: external_festivals
+  sourceType: external_cities
+  target:
+    model:
+      name: external_festivals
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: external_festivals_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: city_id
+      target:
+        modelField:
+          - fieldName: city_id
+  graphql:
+    aggregateFieldName: external_festivals_aggregate
+

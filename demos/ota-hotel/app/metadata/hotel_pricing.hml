@@ -135,7 +135,9 @@ definition:
           orderByExpression: int_32_order_by_exp
         - fieldName: updated_at
           orderByExpression: timestamp_order_by_exp
-      orderableRelationships: []
+      orderableRelationships:
+        - relationshipName: hotel_hotel
+        - relationshipName: hotel_hotel_room
   graphql:
     expressionTypeName: hotel_pricing_order_by_exp
 
@@ -179,4 +181,40 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: hotel_hotel
+  sourceType: hotel_pricing
+  target:
+    model:
+      name: hotel_hotels
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: hotel_id
+      target:
+        modelField:
+          - fieldName: hotel_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: hotel_hotel_room
+  sourceType: hotel_pricing
+  target:
+    model:
+      name: hotel_hotel_rooms
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: room_id
+      target:
+        modelField:
+          - fieldName: room_id
 

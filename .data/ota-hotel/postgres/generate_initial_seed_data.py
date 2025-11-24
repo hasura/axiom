@@ -483,7 +483,7 @@ def generate_users(count=1000):
     write_csv('users.csv', headers, users)
     return users
 
-def generate_search_queries(count=15000):
+def generate_search_queries_hotel_bookings(count=15000):
     """Generate random search queries"""
     queries = []
     
@@ -512,16 +512,16 @@ def generate_search_queries(count=15000):
         })
     
     headers = ['user_id', 'session_id', 'destination', 'search_date', 'check_in_date', 'check_out_date', 'number_of_guests']
-    write_csv('search_queries.csv', headers, queries)
+    write_csv('search_queries_hotel_bookings.csv', headers, queries)
     return queries
 
-def generate_traffic_sources(search_queries, campaigns):
+def generate_traffic_sources(search_queries_hotel_bookings, campaigns):
     """Generate random traffic sources based on search queries"""
     traffic = []
     
     sources = ['organic', 'paid_ads', 'email', 'social_media', 'direct', 'referral', 'affiliate']
     
-    for query in search_queries:
+    for query in search_queries_hotel_bookings:
         source = random.choice(sources)
         
         # 40% chance of having a campaign_id
@@ -611,7 +611,7 @@ def generate_marketing_spends(campaigns):
     write_csv('marketing_spends.csv', headers, spends)
     return spends
 
-def generate_hotel_bookings(search_queries, hotel_rooms, count=8000):
+def generate_hotel_bookings(search_queries_hotel_bookings, hotel_rooms, count=8000):
     """Generate random hotel bookings based on search queries"""
     bookings = []
     
@@ -650,7 +650,7 @@ def generate_hotel_bookings(search_queries, hotel_rooms, count=8000):
     booking_statuses = ['confirmed', 'completed', 'cancelled', 'no_show']
     
     # Sample queries for conversion (5% conversion rate)
-    sampled_queries = random.sample(search_queries, min(count, len(search_queries)))
+    sampled_queries = random.sample(search_queries_hotel_bookings, min(count, len(search_queries_hotel_bookings)))
     
     for query in sampled_queries[:count]:
         destination = query['destination']
@@ -723,10 +723,10 @@ def main():
     # Step 2: Generate random data
     print("🎲 Generating random data...")
     users = generate_users(count=1000)
-    search_queries = generate_search_queries(count=15000)
-    traffic_sources = generate_traffic_sources(search_queries, campaigns)
+    search_queries_hotel_bookings = generate_search_queries_hotel_bookings(count=15000)
+    traffic_sources = generate_traffic_sources(search_queries_hotel_bookings, campaigns)
     marketing_spends = generate_marketing_spends(campaigns)
-    hotel_bookings = generate_hotel_bookings(search_queries, hotel_rooms, count=8000)
+    hotel_bookings = generate_hotel_bookings(search_queries_hotel_bookings, hotel_rooms, count=8000)
     print()
     
     # Summary
@@ -745,7 +745,7 @@ def main():
     print(f"   - Pricing: {len(pricing)} records")
     print(f"   - Campaigns: {len(campaigns)} records")
     print(f"   - Users: {len(users)} records")
-    print(f"   - Search Queries: {len(search_queries)} records")
+    print(f"   - Search Queries: {len(search_queries_hotel_bookings)} records")
     print(f"   - Traffic Sources: {len(traffic_sources)} records")
     print(f"   - Marketing Spends: {len(marketing_spends)} records")
     print(f"   - Hotel Bookings: {len(hotel_bookings)} records")

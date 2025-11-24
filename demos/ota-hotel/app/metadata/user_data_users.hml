@@ -170,3 +170,69 @@ definition:
         filter: null
         allowSubscriptions: true
 
+---
+kind: Relationship
+version: v1
+definition:
+  name: marketing_traffic_sources
+  sourceType: user_data_users
+  target:
+    model:
+      name: marketing_traffic_sources
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: marketing_traffic_sources_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: user_id
+      target:
+        modelField:
+          - fieldName: user_id
+  graphql:
+    aggregateFieldName: marketing_traffic_sources_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: user_data_hotel_bookings
+  sourceType: user_data_users
+  target:
+    model:
+      name: user_data_hotel_bookings
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: user_data_hotel_bookings_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: user_id
+      target:
+        modelField:
+          - fieldName: user_id
+  graphql:
+    aggregateFieldName: user_data_hotel_bookings_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: user_data_search_queries_hotel_bookings
+  sourceType: user_data_users
+  target:
+    model:
+      name: user_data_search_queries_hotel_bookings
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: user_data_search_queries_hotel_bookings_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: user_id
+      target:
+        modelField:
+          - fieldName: user_id
+  graphql:
+    aggregateFieldName: user_data_search_queries_hotel_bookings_aggregate
+

@@ -2,7 +2,7 @@
 kind: ObjectType
 version: v1
 definition:
-  name: user_data_search_queries_1
+  name: user_data_search_queries_hotel_bookings_1
   description: User search behavior tracking
   fields:
     - name: check_in_date
@@ -24,17 +24,17 @@ definition:
     - name: user_id
       type: int_32
   graphql:
-    typeName: user_data_search_queries_1
-    inputTypeName: user_data_search_queries_1_input
+    typeName: user_data_search_queries_hotel_bookings_1
+    inputTypeName: user_data_search_queries_hotel_bookings_1_input
   dataConnectorTypeMapping:
     - dataConnectorName: pg_writes
-      dataConnectorObjectType: user_data_search_queries
+      dataConnectorObjectType: user_data_search_queries_hotel_bookings
 
 ---
 kind: TypePermissions
 version: v1
 definition:
-  typeName: user_data_search_queries_1
+  typeName: user_data_search_queries_hotel_bookings_1
   permissions:
     - role: admin
       output:
@@ -53,10 +53,10 @@ definition:
 kind: BooleanExpressionType
 version: v1
 definition:
-  name: user_data_search_queries_bool_exp_1
+  name: user_data_search_queries_hotel_bookings_bool_exp_1
   operand:
     object:
-      type: user_data_search_queries_1
+      type: user_data_search_queries_hotel_bookings_1
       comparableFields:
         - fieldName: check_in_date
           booleanExpressionType: date_bool_exp_1
@@ -82,33 +82,34 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: user_data_search_queries_bool_exp_1
+    typeName: user_data_search_queries_hotel_bookings_bool_exp_1
 
 ---
 kind: ObjectType
 version: v1
 definition:
-  name: delete_user_data_search_queries_by_query_id_response
-  description: Responses from the 'delete_user_data_search_queries_by_query_id' procedure
+  name: delete_user_data_search_queries_hotel_bookings_by_query_id_response
+  description: Responses from the
+    'delete_user_data_search_queries_hotel_bookings_by_query_id' procedure
   fields:
     - name: affected_rows
       type: int_32!
       description: The number of rows affected by the mutation
     - name: returning
-      type: "[user_data_search_queries_1!]!"
+      type: "[user_data_search_queries_hotel_bookings_1!]!"
       description: Data from rows affected by the mutation
   graphql:
-    typeName: delete_user_data_search_queries_by_query_id_response
-    inputTypeName: delete_user_data_search_queries_by_query_id_response_input
+    typeName: delete_user_data_search_queries_hotel_bookings_by_query_id_response
+    inputTypeName: delete_user_data_search_queries_hotel_bookings_by_query_id_response_input
   dataConnectorTypeMapping:
     - dataConnectorName: pg_writes
-      dataConnectorObjectType: delete_user_data_search_queries_by_query_id_response
+      dataConnectorObjectType: delete_user_data_search_queries_hotel_bookings_by_query_id_response
 
 ---
 kind: TypePermissions
 version: v1
 definition:
-  typeName: delete_user_data_search_queries_by_query_id_response
+  typeName: delete_user_data_search_queries_hotel_bookings_by_query_id_response
   permissions:
     - role: admin
       output:
@@ -120,30 +121,30 @@ definition:
 kind: Command
 version: v1
 definition:
-  name: delete_user_data_search_queries_by_query_id
-  outputType: delete_user_data_search_queries_by_query_id_response!
+  name: delete_user_data_search_queries_hotel_bookings_by_query_id
+  outputType: delete_user_data_search_queries_hotel_bookings_by_query_id_response!
   arguments:
     - name: key_query_id
       type: int_32!
     - name: pre_check
-      type: user_data_search_queries_bool_exp_1
-      description: Delete permission predicate over the 'user_data_search_queries'
-        collection
+      type: user_data_search_queries_hotel_bookings_bool_exp_1
+      description: Delete permission predicate over the
+        'user_data_search_queries_hotel_bookings' collection
   source:
     dataConnectorName: pg_writes
     dataConnectorCommand:
-      procedure: delete_user_data_search_queries_by_query_id
+      procedure: delete_user_data_search_queries_hotel_bookings_by_query_id
   graphql:
-    rootFieldName: delete_user_data_search_queries_by_query_id
+    rootFieldName: delete_user_data_search_queries_hotel_bookings_by_query_id
     rootFieldKind: Mutation
-  description: Delete any row on the 'user_data_search_queries' collection using
-    the 'query_id' key
+  description: Delete any row on the 'user_data_search_queries_hotel_bookings'
+    collection using the 'query_id' key
 
 ---
 kind: CommandPermissions
 version: v1
 definition:
-  commandName: delete_user_data_search_queries_by_query_id
+  commandName: delete_user_data_search_queries_hotel_bookings_by_query_id
   permissions:
     - role: admin
       allowExecution: true

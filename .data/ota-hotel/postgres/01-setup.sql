@@ -174,7 +174,7 @@ CREATE INDEX idx_bookings_dates ON user_data.hotel_bookings(check_in_date, check
 CREATE INDEX idx_bookings_booking_date ON user_data.hotel_bookings(booking_date);
 CREATE INDEX idx_bookings_status ON user_data.hotel_bookings(booking_status);
 
-CREATE TABLE user_data.search_queries (
+CREATE TABLE user_data.search_queries_hotel_bookings (
     query_id SERIAL PRIMARY KEY,
     user_id INTEGER,
     session_id VARCHAR(100),
@@ -188,10 +188,10 @@ CREATE TABLE user_data.search_queries (
     CHECK (check_out_date IS NULL OR check_in_date IS NULL OR check_out_date > check_in_date)
 );
 
-CREATE INDEX idx_search_queries_user_id ON user_data.search_queries(user_id);
-CREATE INDEX idx_search_queries_destination ON user_data.search_queries(destination);
-CREATE INDEX idx_search_queries_search_date ON user_data.search_queries(search_date);
-CREATE INDEX idx_search_queries_session_id ON user_data.search_queries(session_id);
+CREATE INDEX idx_search_queries_hotel_bookings_user_id ON user_data.search_queries_hotel_bookings(user_id);
+CREATE INDEX idx_search_queries_hotel_bookings_destination ON user_data.search_queries_hotel_bookings(destination);
+CREATE INDEX idx_search_queries_hotel_bookings_search_date ON user_data.search_queries_hotel_bookings(search_date);
+CREATE INDEX idx_search_queries_hotel_bookings_session_id ON user_data.search_queries_hotel_bookings(session_id);
 
 -- ============================================
 -- MARKETING SCHEMA TABLES
@@ -308,7 +308,7 @@ COMMENT ON TABLE hotel.hotel_rooms IS 'Room inventory for each hotel';
 COMMENT ON TABLE hotel.pricing IS 'Historical and current pricing data for hotel rooms';
 COMMENT ON TABLE user_data.users IS 'User profile information';
 COMMENT ON TABLE user_data.hotel_bookings IS 'All hotel bookings made through the platform';
-COMMENT ON TABLE user_data.search_queries IS 'User search behavior tracking';
+COMMENT ON TABLE user_data.search_queries_hotel_bookings IS 'User search behavior tracking';
 COMMENT ON TABLE marketing.campaigns IS 'Marketing campaign metadata';
 COMMENT ON TABLE marketing.marketing_spends IS 'Daily marketing spend and performance metrics';
 COMMENT ON TABLE marketing.traffic_sources IS 'Web and app traffic attribution';

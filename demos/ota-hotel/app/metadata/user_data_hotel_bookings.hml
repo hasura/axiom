@@ -180,7 +180,10 @@ definition:
           orderByExpression: timestamp_order_by_exp
         - fieldName: user_id
           orderByExpression: int_32_order_by_exp
-      orderableRelationships: []
+      orderableRelationships:
+        - relationshipName: hotel_hotel
+        - relationshipName: hotel_hotel_room
+        - relationshipName: user_data_user
   graphql:
     expressionTypeName: user_data_hotel_bookings_order_by_exp
 
@@ -224,4 +227,58 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: hotel_hotel
+  sourceType: user_data_hotel_bookings
+  target:
+    model:
+      name: hotel_hotels
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: hotel_id
+      target:
+        modelField:
+          - fieldName: hotel_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: hotel_hotel_room
+  sourceType: user_data_hotel_bookings
+  target:
+    model:
+      name: hotel_hotel_rooms
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: room_id
+      target:
+        modelField:
+          - fieldName: room_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: user_data_user
+  sourceType: user_data_hotel_bookings
+  target:
+    model:
+      name: user_data_users
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: user_id
+      target:
+        modelField:
+          - fieldName: user_id
 

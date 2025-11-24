@@ -189,3 +189,69 @@ definition:
         filter: null
         allowSubscriptions: true
 
+---
+kind: Relationship
+version: v1
+definition:
+  name: hotel_hotel_rooms
+  sourceType: hotel_hotels
+  target:
+    model:
+      name: hotel_hotel_rooms
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: hotel_hotel_rooms_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: hotel_id
+      target:
+        modelField:
+          - fieldName: hotel_id
+  graphql:
+    aggregateFieldName: hotel_hotel_rooms_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: hotel_pricings
+  sourceType: hotel_hotels
+  target:
+    model:
+      name: hotel_pricing
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: hotel_pricing_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: hotel_id
+      target:
+        modelField:
+          - fieldName: hotel_id
+  graphql:
+    aggregateFieldName: hotel_pricings_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: user_data_hotel_bookings
+  sourceType: hotel_hotels
+  target:
+    model:
+      name: user_data_hotel_bookings
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: user_data_hotel_bookings_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: hotel_id
+      target:
+        modelField:
+          - fieldName: hotel_id
+  graphql:
+    aggregateFieldName: user_data_hotel_bookings_aggregate
+

@@ -419,7 +419,7 @@ CROSS JOIN
 -- ============================================
 
 -- Generate 15,000 search queries over the last 6 months
-INSERT INTO user_data.search_queries (user_id, session_id, destination, search_date, check_in_date, check_out_date, number_of_guests)
+INSERT INTO user_data.search_queries_hotel_bookings (user_id, session_id, destination, search_date, check_in_date, check_out_date, number_of_guests)
 SELECT 
     (random() * 999 + 1)::int as user_id,
     'session_' || md5(random()::text),
@@ -461,7 +461,7 @@ SELECT
         WHEN random() < 0.8 THEN 'https://facebook.com/mmt'
         ELSE NULL
     END as referrer_url
-FROM user_data.search_queries sq;
+FROM user_data.search_queries_hotel_bookings sq;
 
 -- ============================================
 -- 13. USER SCHEMA - HOTEL BOOKINGS
@@ -497,7 +497,7 @@ SELECT
     END as booking_status,
     sq.number_of_guests
 FROM 
-    user_data.search_queries sq
+    user_data.search_queries_hotel_bookings sq
 INNER JOIN 
     hotel.hotels h ON h.city = sq.destination
 INNER JOIN 
@@ -534,7 +534,7 @@ LIMIT 8000;
 -- UNION ALL
 -- SELECT 'Hotel Bookings', COUNT(*) FROM user_data.hotel_bookings
 -- UNION ALL
--- SELECT 'Search Queries', COUNT(*) FROM user_data.search_queries
+-- SELECT 'Search Queries', COUNT(*) FROM user_data.search_queries_hotel_bookings
 -- UNION ALL
 -- SELECT 'Campaigns', COUNT(*) FROM marketing.campaigns
 -- UNION ALL
@@ -675,7 +675,7 @@ CROSS JOIN generate_series(1, 5) as visit_num;  -- Each window shopper visits 5 
 SELECT 
     COUNT(DISTINCT ts.user_id) as users_visited_no_search
 FROM marketing.traffic_sources ts
-LEFT JOIN user_data.search_queries sq ON ts.user_id = sq.user_id
+LEFT JOIN user_data.search_queries_hotel_bookings sq ON ts.user_id = sq.user_id
 WHERE sq.user_id IS NULL
 AND ts.user_id IS NOT NULL;
 
@@ -698,7 +698,7 @@ UNION ALL
 SELECT 
     'Users Who Searched',
     COUNT(DISTINCT user_id)
-FROM user_data.search_queries
+FROM user_data.search_queries_hotel_bookings
 UNION ALL
 SELECT 
     'Users Who Booked',
@@ -716,7 +716,7 @@ SELECT
         2
     ) as bounce_rate_percentage
 FROM marketing.traffic_sources ts
-LEFT JOIN user_data.search_queries sq ON ts.session_id = sq.session_id
+LEFT JOIN user_data.search_queries_hotel_bookings sq ON ts.session_id = sq.session_id
 GROUP BY ts.source
 ORDER BY bounce_rate_percentage DESC;
 
@@ -731,7 +731,7 @@ WITH user_engagement AS (
         COUNT(DISTINCT hb.booking_id) as booking_count
     FROM user_data.users u
     LEFT JOIN marketing.traffic_sources ts ON u.user_id = ts.user_id
-    LEFT JOIN user_data.search_queries sq ON u.user_id = sq.user_id
+    LEFT JOIN user_data.search_queries_hotel_bookings sq ON u.user_id = sq.user_id
     LEFT JOIN user_data.hotel_bookings hb ON u.user_id = hb.user_id
     GROUP BY u.user_id, u.email, u.registration_date
 )
@@ -767,7 +767,7 @@ SELECT
     COUNT(DISTINCT ts.user_id) FILTER (WHERE ts.user_id IS NOT NULL) as registered_users_bounced,
     COUNT(*) FILTER (WHERE ts.user_id IS NULL) as anonymous_bounced
 FROM marketing.traffic_sources ts
-LEFT JOIN user_data.search_queries sq ON ts.session_id = sq.session_id
+LEFT JOIN user_data.search_queries_hotel_bookings sq ON ts.session_id = sq.session_id
 WHERE sq.session_id IS NULL  -- No search query for this session
 GROUP BY ts.source, ts.campaign_id, DATE(ts.visit_date)
 ORDER BY visit_date DESC, bounced_visits DESC
@@ -790,7 +790,7 @@ SELECT
     ) as conversion_rate
 FROM marketing.campaigns c
 LEFT JOIN marketing.traffic_sources ts ON c.campaign_id = ts.campaign_id
-LEFT JOIN user_data.search_queries sq ON ts.session_id = sq.session_id
+LEFT JOIN user_data.search_queries_hotel_bookings sq ON ts.session_id = sq.session_id
 LEFT JOIN user_data.hotel_bookings hb ON sq.user_id = hb.user_id 
     AND hb.booking_date::date BETWEEN sq.search_date::date AND sq.search_date::date + 7
 WHERE ts.visit_date BETWEEN '2024-06-01' AND '2024-11-30'
