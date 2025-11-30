@@ -8,16 +8,15 @@
 -- Enable required extensions
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
--- Drop existing tables if they exist
+-- Drop existing tables if they exist (in reverse dependency order)
+DROP TABLE IF EXISTS transactions CASCADE;
 DROP TABLE IF EXISTS waste_spoilage CASCADE;
 DROP TABLE IF EXISTS supplier_shipments CASCADE;
 DROP TABLE IF EXISTS price_changes CASCADE;
-DROP TABLE IF EXISTS customer_feedback CASCADE;
 DROP TABLE IF EXISTS tickets CASCADE;
 DROP TABLE IF EXISTS returns_daily CASCADE;
 DROP TABLE IF EXISTS sales_daily CASCADE;
 DROP TABLE IF EXISTS inventory_daily CASCADE;
-DROP TABLE IF EXISTS orders_daily CASCADE;
 DROP TABLE IF EXISTS assortment CASCADE;
 DROP TABLE IF EXISTS promotions CASCADE;
 DROP TABLE IF EXISTS stores CASCADE;
@@ -35,7 +34,10 @@ CREATE TABLE products (
     list_price DECIMAL(10,2) NOT NULL,
     cost DECIMAL(10,2) NOT NULL,
     launch_date DATE NOT NULL,
-    discontinue_date DATE
+    discontinue_date DATE,
+    brand_popularity DECIMAL(10,2),
+    tier VARCHAR(20),
+    pareto_weight DECIMAL(20,18)
 );
 
 -- Stores table
@@ -129,15 +131,6 @@ CREATE TABLE returns_daily (
     PRIMARY KEY (date, store_id, sku)
 );
 
--- Orders daily table
-CREATE TABLE orders_daily (
-    date DATE NOT NULL,
-    store_id INTEGER NOT NULL,
-    orders_count INTEGER NOT NULL DEFAULT 0,
-    fulfilled_orders INTEGER NOT NULL DEFAULT 0,
-    PRIMARY KEY (date, store_id)
-);
-
 -- Tickets table
 CREATE TABLE tickets (
     ticket_id INTEGER PRIMARY KEY,
@@ -165,17 +158,6 @@ CREATE TABLE supplier_shipments (
     shipment_status VARCHAR(20)
 );
 
--- Customer feedback table
-CREATE TABLE customer_feedback (
-    feedback_id INTEGER PRIMARY KEY,
-    date DATE NOT NULL,
-    store_id INTEGER NOT NULL,
-    sku VARCHAR(50),
-    channel VARCHAR(20) NOT NULL,
-    text TEXT,
-    sentiment_score DECIMAL(3,2)
-);
-
 -- Price changes table
 CREATE TABLE price_changes (
     change_id INTEGER PRIMARY KEY,
@@ -198,6 +180,19 @@ CREATE TABLE waste_spoilage (
     recorded_by VARCHAR(50)
 );
 
+-- Transactions table (customer basket summary)
+-- Column order matches Rust CSV output
+CREATE TABLE transactions (
+    transaction_id BIGINT PRIMARY KEY,
+    date DATE NOT NULL,
+    store_id INTEGER NOT NULL REFERENCES stores(store_id),
+    timestamp TIMESTAMP NOT NULL,
+    total_items INTEGER NOT NULL,
+    payment_method VARCHAR(20) NOT NULL,
+    customer_type VARCHAR(20) NOT NULL,
+    total_amount DECIMAL(10,2) NOT NULL
+);
+
 -- Copy data from CSV files
 -- All CSV files are in the same directory as this SQL file
 \COPY products FROM '/docker-entrypoint-initdb.d/products.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
@@ -206,14 +201,14 @@ CREATE TABLE waste_spoilage (
 \COPY assortment FROM '/docker-entrypoint-initdb.d/assortment.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
 \COPY inventory_daily FROM '/docker-entrypoint-initdb.d/inventory_daily.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
 \COPY sales_daily FROM '/docker-entrypoint-initdb.d/sales_daily.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
-\COPY orders_daily FROM '/docker-entrypoint-initdb.d/orders_daily.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
 \COPY supplier_shipments FROM '/docker-entrypoint-initdb.d/supplier_shipments.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
 \COPY waste_spoilage FROM '/docker-entrypoint-initdb.d/waste_spoilage.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
 -- Import additional tables with generated data
-\COPY customer_feedback FROM '/docker-entrypoint-initdb.d/customer_feedback.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
 \COPY price_changes FROM '/docker-entrypoint-initdb.d/price_changes.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
 \COPY tickets FROM '/docker-entrypoint-initdb.d/tickets.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
 \COPY returns_daily FROM '/docker-entrypoint-initdb.d/returns_daily.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
+-- Import transaction data AFTER table is created
+\COPY transactions FROM '/docker-entrypoint-initdb.d/transactions.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
 
 -- Add foreign key constraints after data is loaded
 ALTER TABLE promotions ADD CONSTRAINT fk_promotions_sku 
@@ -240,9 +235,6 @@ ALTER TABLE returns_daily ADD CONSTRAINT fk_returns_store
 ALTER TABLE returns_daily ADD CONSTRAINT fk_returns_sku
     FOREIGN KEY (sku) REFERENCES products(sku);
 
-ALTER TABLE orders_daily ADD CONSTRAINT fk_orders_store
-    FOREIGN KEY (store_id) REFERENCES stores(store_id);
-
 -- Re-enable FK constraints for tickets (table now has data)
 ALTER TABLE tickets ADD CONSTRAINT fk_tickets_store
     FOREIGN KEY (store_id) REFERENCES stores(store_id);
@@ -257,12 +249,6 @@ ALTER TABLE supplier_shipments ADD CONSTRAINT fk_shipments_sku
 ALTER TABLE waste_spoilage ADD CONSTRAINT fk_waste_store
     FOREIGN KEY (store_id) REFERENCES stores(store_id);
 ALTER TABLE waste_spoilage ADD CONSTRAINT fk_waste_sku
-    FOREIGN KEY (sku) REFERENCES products(sku);
-
--- Re-enable FK constraints for customer_feedback (table now has data)
-ALTER TABLE customer_feedback ADD CONSTRAINT fk_feedback_store
-    FOREIGN KEY (store_id) REFERENCES stores(store_id);
-ALTER TABLE customer_feedback ADD CONSTRAINT fk_feedback_sku
     FOREIGN KEY (sku) REFERENCES products(sku);
 
 -- Re-enable FK constraints for price_changes (table now has data)
@@ -309,21 +295,12 @@ CREATE INDEX idx_shipments_store ON supplier_shipments(store_id);
 CREATE INDEX idx_shipments_sku ON supplier_shipments(sku);
 CREATE INDEX idx_shipments_status ON supplier_shipments(shipment_status);
 
--- Index for customer feedback analysis
-CREATE INDEX idx_feedback_date ON customer_feedback(date);
-CREATE INDEX idx_feedback_store ON customer_feedback(store_id);
-CREATE INDEX idx_feedback_channel ON customer_feedback(channel);
-
 -- Index for price changes by SKU
 CREATE INDEX idx_price_changes_sku ON price_changes(sku);
 
 -- Index for tickets resolution tracking
 CREATE INDEX idx_tickets_resolved ON tickets(resolved);
 CREATE INDEX idx_tickets_issue_type ON tickets(issue_type);
-
--- Index for orders tracking
-CREATE INDEX idx_orders_date ON orders_daily(date);
-CREATE INDEX idx_orders_store ON orders_daily(store_id);
 
 -- Index for assortment lookups
 CREATE INDEX idx_assortment_store ON assortment(store_id);
@@ -340,4 +317,10 @@ CREATE INDEX idx_stores_type ON stores(store_type);
 
 -- Partial indexes for common filters (more efficient for specific queries)
 CREATE INDEX idx_tickets_unresolved ON tickets(store_id, created_at) WHERE resolved = FALSE;
+
+-- Create transaction indexes
+CREATE INDEX idx_transactions_date ON transactions(date);
+CREATE INDEX idx_transactions_store ON transactions(store_id);
+CREATE INDEX idx_transactions_timestamp ON transactions(timestamp);
+
 CREATE INDEX idx_promotions_active ON promotions(sku, start_date, end_date) WHERE ad_feature = TRUE;
