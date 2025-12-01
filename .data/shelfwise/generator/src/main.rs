@@ -36,6 +36,10 @@ struct Args {
     /// Continue mode: append to existing data without regenerating reference tables
     #[arg(short, long)]
     continue_mode: bool,
+
+    /// Path to configuration file
+    #[arg(long, default_value = "config.toml")]
+    config: String,
 }
 
 fn main() -> Result<()> {
@@ -50,9 +54,9 @@ fn main() -> Result<()> {
         println!();
     }
 
-    // Load configuration from config.toml
-    let config = Config::load("config.toml")?;
-    println!("📋 Loaded configuration from config.toml");
+    // Load configuration from specified file
+    let config = Config::load(&args.config)?;
+    println!("📋 Loaded configuration from {}", args.config);
     println!("   Date range: {} to {}", config.date_range.start_date, config.date_range.end_date);
     println!("   Products: {}", config.scale.max_products);
     println!("   Stores: {} domestic + {} international",
