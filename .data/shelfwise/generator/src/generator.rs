@@ -1,3 +1,4 @@
+use crate::config::Config;
 use crate::demand::DemandCalculator;
 use crate::holidays::generate_all_holidays;
 use crate::models::*;
@@ -9,13 +10,9 @@ use rand_distr::{Distribution, Exp};
 use std::collections::HashMap;
 use std::path::Path;
 
-// Full historical data: February 1, 2019 to November 30, 2025
-// This captures ~7 years including pre-COVID, COVID, and recovery periods
-const START_DATE: (i32, u32, u32) = (2019, 2, 1);
-const END_DATE: (i32, u32, u32) = (2025, 11, 30);
-
 pub struct ShelfWiseDataGenerator {
     rng: StdRng,
+    config: Config,
     start_date: NaiveDate,
     #[allow(dead_code)]
     end_date: NaiveDate,
@@ -33,10 +30,47 @@ pub struct ShelfWiseDataGenerator {
 }
 
 impl ShelfWiseDataGenerator {
-    pub fn new(seed: u64) -> Self {
+    // Helper to get valid return reason codes from reference data
+    fn get_return_reason_codes() -> Vec<String> {
+        crate::reference_data::init_return_reasons()
+            .into_iter()
+            .map(|r| r.return_reason_code)
+            .collect()
+    }
+    
+    // Helper to get valid waste reason codes from reference data
+    fn get_waste_reason_codes() -> Vec<String> {
+        crate::reference_data::init_waste_reasons()
+            .into_iter()
+            .map(|r| r.waste_reason_code)
+            .collect()
+    }
+    
+    // Helper to get valid payment method codes from reference data
+    fn get_payment_method_codes() -> Vec<String> {
+        crate::reference_data::init_payment_methods()
+            .into_iter()
+            .filter(|pm| pm.is_active)  // Only active payment methods
+            .map(|pm| pm.payment_method_code)
+            .collect()
+    }
+    
+    // Helper to get valid promotion type codes from reference data
+    fn get_promotion_type_codes() -> Vec<String> {
+        crate::reference_data::init_promotion_types()
+            .into_iter()
+            .map(|pt| pt.promo_type_code)
+            .collect()
+    }
+    
+    pub fn new(seed: u64, config: Config) -> Self {
         let rng = StdRng::seed_from_u64(seed);
-        let start_date = NaiveDate::from_ymd_opt(START_DATE.0, START_DATE.1, START_DATE.2).unwrap();
-        let end_date = NaiveDate::from_ymd_opt(END_DATE.0, END_DATE.1, END_DATE.2).unwrap();
+        
+        // Parse dates from config
+        let start_date = NaiveDate::parse_from_str(&config.date_range.start_date, "%Y-%m-%d")
+            .expect("Invalid start_date format in config.toml");
+        let end_date = NaiveDate::parse_from_str(&config.date_range.end_date, "%Y-%m-%d")
+            .expect("Invalid end_date format in config.toml");
         
         let mut dates = Vec::new();
         let mut current = start_date;
@@ -51,6 +85,7 @@ impl ShelfWiseDataGenerator {
 
         Self {
             rng,
+            config,
             start_date,
             end_date,
             dates,
@@ -69,90 +104,53 @@ impl ShelfWiseDataGenerator {
 
     fn init_categories() -> HashMap<String, CategoryConfig> {
         let mut categories = HashMap::new();
-        categories.insert("cereal".to_string(), CategoryConfig { elasticity: -0.6, seasonality: "steady".to_string(), dow_effect: 0.05 });
-        categories.insert("dairy".to_string(), CategoryConfig { elasticity: -0.8, seasonality: "steady".to_string(), dow_effect: 0.10 });
-        categories.insert("snacks".to_string(), CategoryConfig { elasticity: -1.0, seasonality: "event_driven".to_string(), dow_effect: 0.15 });
-        categories.insert("beverages".to_string(), CategoryConfig { elasticity: -1.2, seasonality: "summer".to_string(), dow_effect: 0.12 });
-        categories.insert("produce".to_string(), CategoryConfig { elasticity: -0.9, seasonality: "steady".to_string(), dow_effect: 0.08 });
-        categories.insert("household".to_string(), CategoryConfig { elasticity: -0.4, seasonality: "steady".to_string(), dow_effect: -0.05 });
-        categories.insert("frozen".to_string(), CategoryConfig { elasticity: -0.7, seasonality: "winter".to_string(), dow_effect: 0.06 });
-        categories.insert("bakery".to_string(), CategoryConfig { elasticity: -0.8, seasonality: "steady".to_string(), dow_effect: 0.12 });
-        categories.insert("meat".to_string(), CategoryConfig { elasticity: -0.9, seasonality: "event_driven".to_string(), dow_effect: 0.18 });
-        categories.insert("canned".to_string(), CategoryConfig { elasticity: -0.5, seasonality: "winter".to_string(), dow_effect: 0.03 });
-        categories.insert("personal_care".to_string(), CategoryConfig { elasticity: -0.6, seasonality: "steady".to_string(), dow_effect: 0.02 });
-        categories.insert("candy".to_string(), CategoryConfig { elasticity: -1.1, seasonality: "event_driven".to_string(), dow_effect: 0.10 });
+        
+        // Load from reference data and add generation-specific parameters
+        for cat in crate::reference_data::init_categories() {
+            let seasonality = match cat.category_name.as_str() {
+                "snacks" | "meat" | "candy" => "event_driven",
+                "beverages" => "summer",
+                "frozen" | "canned" => "winter",
+                _ => "steady",
+            };
+            
+            let dow_effect = match cat.category_name.as_str() {
+                "meat" => 0.18,
+                "snacks" => 0.15,
+                "bakery" | "beverages" => 0.12,
+                "dairy" => 0.10,
+                "candy" => 0.10,
+                "produce" => 0.08,
+                "frozen" => 0.06,
+                "cereal" => 0.05,
+                "canned" => 0.03,
+                "personal_care" => 0.02,
+                "household" => -0.05,
+                _ => 0.05,
+            };
+            
+            categories.insert(
+                cat.category_name.clone(),
+                CategoryConfig {
+                    elasticity: cat.elasticity,
+                    seasonality: seasonality.to_string(),
+                    dow_effect,
+                }
+            );
+        }
         categories
     }
 
     fn init_brands() -> Vec<BrandInfo> {
-        vec![
-            // ShelfWise Private Label Brands
-            BrandInfo { name: "ShelfWise Select".to_string(), tier: "premium".to_string(), popularity: 1.1 },
-            BrandInfo { name: "ShelfWise Basics".to_string(), tier: "value".to_string(), popularity: 1.25 },
-            BrandInfo { name: "ShelfWise Organic".to_string(), tier: "premium".to_string(), popularity: 0.9 },
-            BrandInfo { name: "ShelfWise Fresh".to_string(), tier: "mid".to_string(), popularity: 1.15 },
-            
-            // Major CPG Manufacturers
-            BrandInfo { name: "Kelloggs".to_string(), tier: "premium".to_string(), popularity: 1.2 },
-            BrandInfo { name: "General Mills".to_string(), tier: "premium".to_string(), popularity: 1.15 },
-            BrandInfo { name: "Nestle".to_string(), tier: "mid".to_string(), popularity: 1.1 },
-            BrandInfo { name: "Kraft Heinz".to_string(), tier: "mid".to_string(), popularity: 1.3 },
-            BrandInfo { name: "PepsiCo".to_string(), tier: "mid".to_string(), popularity: 1.2 },
-            BrandInfo { name: "Coca-Cola".to_string(), tier: "mid".to_string(), popularity: 1.25 },
-            BrandInfo { name: "Unilever".to_string(), tier: "premium".to_string(), popularity: 1.0 },
-            BrandInfo { name: "Procter & Gamble".to_string(), tier: "premium".to_string(), popularity: 1.05 },
-            BrandInfo { name: "Campbell Soup".to_string(), tier: "mid".to_string(), popularity: 0.95 },
-            BrandInfo { name: "ConAgra".to_string(), tier: "mid".to_string(), popularity: 0.9 },
-            BrandInfo { name: "Mondelez".to_string(), tier: "mid".to_string(), popularity: 1.1 },
-            BrandInfo { name: "Mars".to_string(), tier: "premium".to_string(), popularity: 1.05 },
-            BrandInfo { name: "Hershey".to_string(), tier: "mid".to_string(), popularity: 1.0 },
-            BrandInfo { name: "Frito-Lay".to_string(), tier: "mid".to_string(), popularity: 1.35 },
-            BrandInfo { name: "Quaker".to_string(), tier: "mid".to_string(), popularity: 1.0 },
-            BrandInfo { name: "Dole".to_string(), tier: "mid".to_string(), popularity: 0.95 },
-            BrandInfo { name: "Del Monte".to_string(), tier: "mid".to_string(), popularity: 0.9 },
-            BrandInfo { name: "Tyson Foods".to_string(), tier: "mid".to_string(), popularity: 1.1 },
-            BrandInfo { name: "Hormel".to_string(), tier: "mid".to_string(), popularity: 0.95 },
-            BrandInfo { name: "Smithfield".to_string(), tier: "value".to_string(), popularity: 0.9 },
-            BrandInfo { name: "Perdue".to_string(), tier: "mid".to_string(), popularity: 0.95 },
-            BrandInfo { name: "Danone".to_string(), tier: "premium".to_string(), popularity: 0.85 },
-            BrandInfo { name: "Chobani".to_string(), tier: "premium".to_string(), popularity: 0.9 },
-            BrandInfo { name: "Blue Diamond".to_string(), tier: "premium".to_string(), popularity: 0.8 },
-            BrandInfo { name: "Wonderful".to_string(), tier: "premium".to_string(), popularity: 0.85 },
-            BrandInfo { name: "Annies Homegrown".to_string(), tier: "premium".to_string(), popularity: 0.85 },
-            BrandInfo { name: "Organic Valley".to_string(), tier: "premium".to_string(), popularity: 0.8 },
-            BrandInfo { name: "Horizon Organic".to_string(), tier: "premium".to_string(), popularity: 0.75 },
-            BrandInfo { name: "Bobs Red Mill".to_string(), tier: "premium".to_string(), popularity: 0.7 },
-            BrandInfo { name: "Kind".to_string(), tier: "premium".to_string(), popularity: 0.85 },
-            BrandInfo { name: "Clif Bar".to_string(), tier: "premium".to_string(), popularity: 0.8 },
-            BrandInfo { name: "Nature Valley".to_string(), tier: "mid".to_string(), popularity: 1.05 },
-            BrandInfo { name: "Nabisco".to_string(), tier: "mid".to_string(), popularity: 1.15 },
-            BrandInfo { name: "Ritz".to_string(), tier: "mid".to_string(), popularity: 1.1 },
-            BrandInfo { name: "Pepperidge Farm".to_string(), tier: "premium".to_string(), popularity: 0.95 },
-            BrandInfo { name: "Barilla".to_string(), tier: "mid".to_string(), popularity: 1.0 },
-            BrandInfo { name: "Hunts".to_string(), tier: "value".to_string(), popularity: 0.95 },
-            BrandInfo { name: "Progresso".to_string(), tier: "mid".to_string(), popularity: 0.9 },
-            BrandInfo { name: "Swanson".to_string(), tier: "value".to_string(), popularity: 0.85 },
-            BrandInfo { name: "Green Giant".to_string(), tier: "mid".to_string(), popularity: 0.95 },
-            BrandInfo { name: "Birds Eye".to_string(), tier: "mid".to_string(), popularity: 0.9 },
-            BrandInfo { name: "Lean Cuisine".to_string(), tier: "mid".to_string(), popularity: 0.85 },
-            BrandInfo { name: "Stouffers".to_string(), tier: "mid".to_string(), popularity: 0.95 },
-            BrandInfo { name: "DiGiorno".to_string(), tier: "premium".to_string(), popularity: 1.0 },
-            BrandInfo { name: "Haagen-Dazs".to_string(), tier: "premium".to_string(), popularity: 0.9 },
-            BrandInfo { name: "Ben & Jerrys".to_string(), tier: "premium".to_string(), popularity: 0.95 },
-            BrandInfo { name: "Breyers".to_string(), tier: "mid".to_string(), popularity: 1.0 },
-            BrandInfo { name: "Dreyers".to_string(), tier: "mid".to_string(), popularity: 0.95 },
-            BrandInfo { name: "PolarSprings".to_string(), tier: "mid".to_string(), popularity: 1.0 },
-            BrandInfo { name: "Dasani".to_string(), tier: "mid".to_string(), popularity: 0.95 },
-            BrandInfo { name: "Smartwater".to_string(), tier: "premium".to_string(), popularity: 0.85 },
-            BrandInfo { name: "Fiji".to_string(), tier: "premium".to_string(), popularity: 0.8 },
-            BrandInfo { name: "Poland Spring".to_string(), tier: "value".to_string(), popularity: 1.1 },
-            BrandInfo { name: "Gatorade".to_string(), tier: "mid".to_string(), popularity: 1.15 },
-            BrandInfo { name: "Powerade".to_string(), tier: "mid".to_string(), popularity: 0.95 },
-            BrandInfo { name: "Tropicana".to_string(), tier: "premium".to_string(), popularity: 1.05 },
-            BrandInfo { name: "Simply".to_string(), tier: "premium".to_string(), popularity: 0.95 },
-            BrandInfo { name: "Minute Maid".to_string(), tier: "mid".to_string(), popularity: 1.0 },
-            BrandInfo { name: "Ocean Spray".to_string(), tier: "mid".to_string(), popularity: 0.9 },
-        ]
+        // Load from reference data - now includes popularity
+        crate::reference_data::init_brands_reference()
+            .into_iter()
+            .map(|brand| BrandInfo {
+                name: brand.brand_name,
+                tier: brand.brand_tier,
+                popularity: brand.brand_popularity,
+            })
+            .collect()
     }
 
     pub fn generate_products(&mut self) {
@@ -237,11 +235,10 @@ impl ShelfWiseDataGenerator {
                 });
                 
                 product_id += 1;
-                // Reduced product count: 400 products for manageable data size
-                // Still realistic for a focused grocery category
-                if product_id > 400 { break; }
+                // Use configured max_products from config.toml
+                if product_id > self.config.scale.max_products as u32 { break; }
             }
-            if product_id > 400 { break; }
+            if product_id > self.config.scale.max_products as u32 { break; }
         }
 
         let num_products = products.len();
@@ -362,9 +359,8 @@ impl ShelfWiseDataGenerator {
             stores_per_type.insert(store_type, 0);
         }
 
-        // Generate 100 domestic stores - represents a strong regional/national chain
-        // Distribution: ~40 urban, ~63 suburban, ~20 convenience, ~14 big_box
-        for _ in 0..100 {
+        // Generate domestic stores from config
+        for _ in 0..self.config.scale.num_domestic_stores {
             // Pick store type based on remaining quota
             let available_types: Vec<(&str, usize)> = store_distribution.iter()
                 .filter(|(t, max)| stores_per_type.get(t).unwrap_or(&0) < max)
@@ -441,8 +437,8 @@ impl ShelfWiseDataGenerator {
             ("London, UK", 51.5074, -0.1278, "urban", 1825),          // Q1 2024 - European market test
         ];
 
-        // Add 5 international stores - all opened during data range (2020-2024)
-        for (city, lat, lon, store_type, days_after_start) in international_stores.iter() {
+        // Add international stores from config
+        for (city, lat, lon, store_type, days_after_start) in international_stores.iter().take(self.config.scale.num_international_stores) {
             let lat_offset = self.rng.gen_range(-0.005..0.005);
             let lon_offset = self.rng.gen_range(-0.005..0.005);
             
@@ -849,7 +845,7 @@ impl ShelfWiseDataGenerator {
                 sku: product.sku.clone(),
                 start_date: self.dates[start_day],
                 end_date: self.dates[start_day] + Duration::days(14),
-                promo_type: "price_cut".to_string(),
+                promo_type: Self::get_promotion_type_codes().choose(&mut self.rng).unwrap().clone(),
                 discount_pct: 20,
                 ad_feature: false,
                 display_type: "none".to_string(),
@@ -863,11 +859,16 @@ impl ShelfWiseDataGenerator {
     pub fn generate_assortment(&mut self) {
         let mut assortment = Vec::new();
         for store in &self.stores {
-            let num_skus = match store.store_type.as_str() {
-                "online" => self.products.len(),
-                "big_box" => (self.products.len() as f64 * 0.9) as usize,
-                _ => (self.products.len() as f64 * 0.7) as usize,
+            // Use configured coverage from config.toml
+            let coverage = match store.store_type.as_str() {
+                "online" => self.config.assortment.online_coverage,
+                "big_box" => self.config.assortment.big_box_coverage,
+                "suburban" => self.config.assortment.suburban_coverage,
+                "urban" => self.config.assortment.urban_coverage,
+                "convenience" => self.config.assortment.convenience_coverage,
+                _ => 0.7, // Default fallback
             };
+            let num_skus = (self.products.len() as f64 * coverage) as usize;
 
             for product in self.products.iter().take(num_skus) {
                 assortment.push(Assortment {
@@ -911,6 +912,9 @@ impl ShelfWiseDataGenerator {
     }
 
     fn save_reference_data(&self, output_dir: &str) -> Result<()> {
+        // Write seed reference data (regions, categories, etc.)
+        crate::reference_data::write_reference_data_csvs(output_dir)?;
+        
         let mut wtr = csv::Writer::from_path(Path::new(output_dir).join("products.csv"))?;
         for p in &self.products { wtr.serialize(p)?; }
         wtr.flush()?;
@@ -955,7 +959,8 @@ impl ShelfWiseDataGenerator {
                  (total_days * self.stores.len() * self.products.len() * 7 / 10) / 1_000_000);
         
         for (idx, date) in self.dates.iter().enumerate() {
-            if idx % 50 == 0 {
+            // Use configured progress interval from config.toml
+            if idx % self.config.performance.progress_interval_days == 0 {
                 println!("  Day {}/{} ({:.1}%) - {}",
                          idx + 1,
                          total_days,
@@ -1116,24 +1121,34 @@ impl ShelfWiseDataGenerator {
                         })?;
                         
                         if units_sold > 0 && self.rng.gen::<f64>() < 0.01 {
+                            let return_reasons = Self::get_return_reason_codes();
+                            let common_reasons: Vec<&String> = return_reasons.iter()
+                                .filter(|r| r.as_str() == "defective" || r.as_str() == "wrong_item")
+                                .collect();
+                            
                             writers.write_return(&ReturnDaily {
                                 date: *date,
                                 store_id: store.store_id,
                                 sku: product.sku.clone(),
                                 units_returned: self.rng.gen_range(1..=units_sold.min(3)),
-                                reason_code: ["defective", "wrong_item"].choose(&mut self.rng).unwrap().to_string(),
+                                reason_code: common_reasons.choose(&mut self.rng).unwrap().to_string(),
                                 refund_value: net_price,
                             })?;
                         }
                         
                         if matches!(product.category.as_str(), "dairy" | "produce" | "meat") && self.rng.gen::<f64>() < 0.02 {
+                            let waste_reasons = Self::get_waste_reason_codes();
+                            let perishable_reasons: Vec<&String> = waste_reasons.iter()
+                                .filter(|r| r.as_str() == "expired" || r.as_str() == "temperature_abuse")
+                                .collect();
+                            
                             writers.write_waste(&WasteSpoilage {
                                 waste_id,
                                 date: *date,
                                 store_id: store.store_id,
                                 sku: product.sku.clone(),
                                 quantity_wasted: self.rng.gen_range(1..5),
-                                waste_reason: "expired".to_string(),
+                                waste_reason: perishable_reasons.choose(&mut self.rng).unwrap().to_string(),
                                 waste_value: product.cost,
                                 recorded_by: format!("emp_{}", self.rng.gen_range(100..999)),
                             })?;
@@ -1219,7 +1234,7 @@ impl ShelfWiseDataGenerator {
                             store_id: store.store_id,
                             timestamp,
                             total_items: basket_items,
-                            payment_method: "credit".to_string(),
+                            payment_method: Self::get_payment_method_codes().choose(&mut self.rng).unwrap().clone(),
                             customer_type: "regular".to_string(),
                             total_amount: basket_value,
                         })?;

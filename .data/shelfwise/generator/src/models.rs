@@ -252,3 +252,90 @@ pub struct CategoryConfig {
     pub seasonality: String,
     pub dow_effect: f64,
 }
+
+// Reference data structures for seed data
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Region {
+    pub region_id: u32,
+    pub region_code: String,
+    pub region_name: String,
+    pub country: String,
+    pub timezone: String,
+    pub description: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Category {
+    pub category_id: u32,
+    pub category_name: String,
+    pub category_group: String,
+    pub margin_target_pct: f64,
+    pub is_perishable: bool,
+    pub elasticity: f64,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct StoreType {
+    pub store_type_id: u32,
+    pub store_type_code: String,
+    pub store_type_name: String,
+    pub typical_sq_ft_min: u32,
+    pub typical_sq_ft_max: u32,
+    pub typical_sku_count: u32,
+    pub operating_hours: u32,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Brand {
+    pub brand_id: u32,
+    pub brand_name: String,
+    pub brand_tier: String,
+    pub manufacturer: String,
+    pub is_private_label: bool,
+    pub brand_popularity: f64,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Supplier {
+    pub supplier_id: u32,
+    pub supplier_name: String,
+    pub supplier_type: String,
+    pub lead_time_days: u32,
+    pub reliability_score: f64,
+    pub payment_terms: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PaymentMethod {
+    pub payment_method_id: u32,
+    pub payment_method_code: String,
+    pub payment_method_name: String,
+    pub processing_fee_pct: f64,
+    pub is_active: bool,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PromotionType {
+    pub promo_type_id: u32,
+    pub promo_type_code: String,
+    pub promo_type_name: String,
+    pub typical_discount_pct: u32,
+    pub typical_duration_days: u32,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ReturnReason {
+    pub return_reason_id: u32,
+    pub return_reason_code: String,
+    pub return_reason_name: String,
+    pub is_quality_issue: bool,
+    pub is_preventable: bool,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct WasteReason {
+    pub waste_reason_id: u32,
+    pub waste_reason_code: String,
+    pub waste_reason_name: String,
+    pub is_preventable: bool,
+}

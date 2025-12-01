@@ -2,46 +2,33 @@
 # Adjust these settings to control data volume and realism
 
 [date_range]
-# Recommended: 1-2 years for demos, 3-6 months for testing
-start_date = "2024-01-01"  # Format: YYYY-MM-DD
+# Full historical data: February 1, 2019 to November 30, 2025
+# This captures ~7 years including pre-COVID, COVID, and recovery periods
+start_date = "2019-02-01"  # Format: YYYY-MM-DD
 end_date = "2025-11-30"    # Format: YYYY-MM-DD
 
 [scale]
-# Number of products to generate (original: ~1500)
+# Number of products to generate
+# Hardcoded in generator: 400 products (line 238)
 # Realistic retail: 500-2000 products per category
-max_products = 500
+max_products = 400
 
-# Number of stores (original: 271 total)
-# Adjust for demo purposes
-num_domestic_stores = 50  # Original: 263
-num_international_stores = 3  # Original: 7
+# Number of stores
+# Hardcoded in generator: 100 domestic (line 363), 5 international (line 441)
+# Total: 106 stores (1 online + 100 domestic + 5 international)
+num_domestic_stores = 100
+num_international_stores = 5
 
 [assortment]
 # Percentage of products available at each store type
 # This dramatically affects data volume
+# Values aligned with generator source of truth (generator.rs line 862-867)
 online_coverage = 1.0      # 100% - online has everything
-big_box_coverage = 0.7     # 70% of products
-suburban_coverage = 0.5    # 50% of products
-urban_coverage = 0.4       # 40% of products
-convenience_coverage = 0.2 # 20% of products
-
-[sampling]
-# Generate data for only a sample of store-product combinations per day
-# This is the BIGGEST lever for reducing file size
-# 1.0 = all combinations, 0.1 = 10% sample
-daily_sampling_rate = 0.3  # Generate 30% of possible store-product-day combinations
-
-# Only generate operational data (shipments, waste, etc.) for products with sales
-operational_data_only_if_sales = true
-
-[realism]
-# Make data more realistic by not generating records for zero-activity days
-skip_zero_sales_records = true  # Don't write sales records when units_sold = 0
-skip_zero_inventory_records = false  # Still track inventory even at 0
+big_box_coverage = 0.9     # 90% of products (was hardcoded as 0.9)
+suburban_coverage = 0.7    # 70% of products (was hardcoded as 0.7)
+urban_coverage = 0.7       # 70% of products (was hardcoded as 0.7)
+convenience_coverage = 0.7 # 70% of products (was hardcoded as 0.7)
 
 [performance]
-# Flush CSV writers every N days to prevent memory buildup
-flush_interval_days = 10
-
-# Print progress every N days
+# Print progress every N days during data generation
 progress_interval_days = 50

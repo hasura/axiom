@@ -1,11 +1,14 @@
+mod config;
 mod generator;
 mod models;
 mod holidays;
 mod demand;
 mod streaming;
+mod reference_data;
 
 use anyhow::Result;
 use clap::Parser;
+use config::Config;
 use generator::ShelfWiseDataGenerator;
 
 #[derive(Parser, Debug)]
@@ -47,7 +50,16 @@ fn main() -> Result<()> {
         println!();
     }
 
-    let mut generator = ShelfWiseDataGenerator::new(args.seed);
+    // Load configuration from config.toml
+    let config = Config::load("config.toml")?;
+    println!("📋 Loaded configuration from config.toml");
+    println!("   Date range: {} to {}", config.date_range.start_date, config.date_range.end_date);
+    println!("   Products: {}", config.scale.max_products);
+    println!("   Stores: {} domestic + {} international",
+             config.scale.num_domestic_stores,
+             config.scale.num_international_stores);
+
+    let mut generator = ShelfWiseDataGenerator::new(args.seed, config);
     generator.save_data(&args.output, args.continue_mode)?;
 
     Ok(())
