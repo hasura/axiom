@@ -44,14 +44,6 @@ jobs:
           echo "Checking for generated CSV files..."
           ls -lh *.csv
 
-      - name: Set up Docker layer caching
-        uses: actions/cache@v4
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
-
       - name: Set up environment
         run: |
           cp .data/.env.template .data/shelfwise/.env
@@ -66,8 +58,8 @@ jobs:
           cd .data/shelfwise
           echo "Waiting for database to initialize..."
           for i in {1..60}; do
-            if docker compose exec -T postgres psql -U postgres -d shelfwise -c "SELECT COUNT(*) FROM products;" > /dev/null 2>&1; then
-              echo "Database initialized and ready"
+            if docker compose exec -T postgres psql -U postgres -d shelfwise -c "SELECT COUNT(*) FROM transactions;" > /dev/null 2>&1; then
+              echo "Database fully initialized (transactions loaded)"
               break
             fi
             echo "Waiting... ($i/60)"
@@ -80,23 +72,6 @@ jobs:
           cd .data/shelfwise
           echo "=== PostgreSQL initialization logs ==="
           docker compose logs postgres | tail -100
-
-      - name: Debug transactions CSV
-        run: |
-          cd .data/shelfwise/postgres
-          echo "=== Transactions CSV Info ==="
-          echo "File size:"
-          ls -lh transactions.csv
-          echo ""
-          echo "First 5 lines:"
-          head -5 transactions.csv
-          echo ""
-          echo "Line count:"
-          wc -l transactions.csv
-          echo ""
-          echo "=== Attempting manual import ==="
-          cd ..
-          docker compose exec -T postgres psql -U postgres -d shelfwise -c "\COPY transactions FROM '/docker-entrypoint-initdb.d/transactions.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');"
 
       - name: Run test queries
         run: |
