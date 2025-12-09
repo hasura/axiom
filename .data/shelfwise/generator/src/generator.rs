@@ -1195,10 +1195,9 @@ impl ShelfWiseDataGenerator {
                         _ => (50.0, 80.0, 475, 525, 12, 25),
                     };
                     
-                    let day_seed = (store.store_id as u64 * 1000) + idx as u64;
-                    let mut day_rng = StdRng::seed_from_u64(day_seed);
-                    let target_txn_value = day_rng.gen_range(txn_value_min..txn_value_max);
-                    let max_txns = day_rng.gen_range(max_txns_min..=max_txns_max);
+                    // Use main RNG for more variability instead of deterministic day seed
+                    let target_txn_value = self.rng.gen_range(txn_value_min..txn_value_max);
+                    let max_txns = self.rng.gen_range(max_txns_min..=max_txns_max);
                     
                     let num_transactions = (store_daily_revenue / target_txn_value).ceil() as u32;
                     let num_transactions = num_transactions.min(max_txns);
@@ -1209,7 +1208,7 @@ impl ShelfWiseDataGenerator {
                     let mut total_allocated = 0.0;
                     
                     for i in 0..num_transactions {
-                        let basket_items = day_rng.gen_range(basket_min..=basket_max);
+                        let basket_items = self.rng.gen_range(basket_min..=basket_max);
                         
                         if i == num_transactions - 1 {
                             // Last transaction gets the remainder to ensure exact match
@@ -1217,7 +1216,7 @@ impl ShelfWiseDataGenerator {
                         } else {
                             // Vary basket value with randomness, but track total
                             let base_basket_value = store_daily_revenue / num_transactions as f64;
-                            let basket_value = base_basket_value * day_rng.gen_range(0.7..1.3);
+                            let basket_value = base_basket_value * self.rng.gen_range(0.7..1.3);
                             total_allocated += basket_value;
                             basket_values.push((basket_items, basket_value));
                         }
