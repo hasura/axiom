@@ -25,19 +25,8 @@ jobs:
         uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           toolchain: stable
-
-      - name: Cache Rust dependencies
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            .data/shelfwise/generator/target/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('.data/shelfwise/generator/Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cargo-
+          cache: true
+          cache-workspaces: .data/shelfwise/generator
 
       - name: Build Rust generator
         working-directory: .data/shelfwise/generator
@@ -54,6 +43,14 @@ jobs:
         run: |
           echo "Checking for generated CSV files..."
           ls -lh *.csv
+
+      - name: Set up Docker layer caching
+        uses: actions/cache@v4
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
 
       - name: Set up environment
         run: |
@@ -76,6 +73,13 @@ jobs:
             echo "Waiting... ($i/60)"
             sleep 2
           done
+
+      - name: Check database logs
+        if: always()
+        run: |
+          cd .data/shelfwise
+          echo "=== PostgreSQL initialization logs ==="
+          docker compose logs postgres | tail -100
 
       - name: Run test queries
         run: |
