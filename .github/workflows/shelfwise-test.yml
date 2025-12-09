@@ -60,18 +60,22 @@ jobs:
           echo "This includes loading all CSV files, creating foreign keys, and building indexes..."
           for i in {1..120}; do
             # Check if the init script has completed by verifying:
-            # 1. The transactions table exists and has data
+            # 1. The transactions table exists and has data (count > 0)
             # 2. The read-only user exists (created at the very end of init.sql)
-            if docker compose exec -T postgres psql -U postgres -d shelfwise -c "SELECT COUNT(*) FROM transactions;" > /dev/null 2>&1 && \
-               docker compose exec -T postgres psql -U postgres -d shelfwise -c "SELECT 1 FROM pg_roles WHERE rolname='shelfwise_readonly';" | grep -q "1"; then
-              echo "✓ Database fully initialized (all tables, constraints, indexes, and users created)"
+            TRANSACTION_COUNT=$(docker compose exec -T postgres psql -U postgres -d shelfwise -t -c "SELECT COUNT(*) FROM transactions;" 2>/dev/null | tr -d ' ')
+            READONLY_USER=$(docker compose exec -T postgres psql -U postgres -d shelfwise -t -c "SELECT 1 FROM pg_roles WHERE rolname='shelfwise_readonly';" 2>/dev/null | tr -d ' ')
+
+            if [ "$TRANSACTION_COUNT" -gt 0 ] 2>/dev/null && [ "$READONLY_USER" = "1" ]; then
+              echo "✓ Database fully initialized with $TRANSACTION_COUNT transactions loaded"
               break
             fi
             if [ $i -eq 120 ]; then
               echo "✗ Database initialization timed out after 240 seconds"
+              echo "Transaction count: ${TRANSACTION_COUNT:-0}"
+              echo "Readonly user exists: ${READONLY_USER:-not found}"
               exit 1
             fi
-            echo "Waiting for init.sql to complete... ($i/120)"
+            echo "Waiting for init.sql to complete... ($i/120) [transactions: ${TRANSACTION_COUNT:-0}]"
             sleep 2
           done
 
@@ -87,20 +91,37 @@ jobs:
           cd .data/shelfwise
           echo "=== Running test queries ==="
           
-          echo ""
-          echo "1. Count products:"
-          docker compose exec -T postgres psql -U postgres -d shelfwise -c "SELECT COUNT(*) as product_count FROM products;"
-          
-          echo ""
-          echo "2. Count stores:"
-          docker compose exec -T postgres psql -U postgres -d shelfwise -c "SELECT COUNT(*) as store_count FROM stores;"
-          
-          echo ""
-          echo "3. Count transactions:"
-          docker compose exec -T postgres psql -U postgres -d shelfwise -c "SELECT COUNT(*) as transaction_count FROM transactions;"
-          
+          # Function to run query and validate result
+          run_query_with_validation() {
+            local query_name="$1"
+            local query="$2"
+            local min_expected="$3"
+
+            echo ""
+            echo "$query_name"
+            result=$(docker compose exec -T postgres psql -U postgres -d shelfwise -t -c "$query" | tr -d ' ')
+            echo "Result: $result"
+
+            if [ -z "$result" ] || [ "$result" -lt "$min_expected" ] 2>/dev/null; then
+              echo "✗ FAILED: Expected at least $min_expected rows, got: ${result:-0}"
+              exit 1
+            else
+              echo "✓ PASSED: Found $result rows (expected >= $min_expected)"
+            fi
+          }
+
+          # Validate core tables have data
+          run_query_with_validation "1. Count products:" "SELECT COUNT(*) FROM products;" 1
+          run_query_with_validation "2. Count stores:" "SELECT COUNT(*) FROM stores;" 1
+          run_query_with_validation "3. Count transactions:" "SELECT COUNT(*) FROM transactions;" 1
+
           echo ""
           echo "4. Sales summary by date (first 5 days):"
+          sales_result=$(docker compose exec -T postgres psql -U postgres -d shelfwise -t -c "SELECT COUNT(*) FROM sales_daily;" | tr -d ' ')
+          if [ "$sales_result" -lt 1 ] 2>/dev/null; then
+            echo "✗ FAILED: No sales data found"
+            exit 1
+          fi
           docker compose exec -T postgres psql -U postgres -d shelfwise -c "
             SELECT
               date,
@@ -113,9 +134,23 @@ jobs:
             ORDER BY date
             LIMIT 5;
           "
-          
+          echo "✓ Sales data validated"
+
           echo ""
           echo "5. Top 5 products by revenue:"
+          top_products=$(docker compose exec -T postgres psql -U postgres -d shelfwise -t -c "
+            SELECT COUNT(*) FROM (
+              SELECT p.sku
+              FROM sales_daily s
+              JOIN products p ON s.sku = p.sku
+              GROUP BY p.sku
+              LIMIT 5
+            ) subq;
+          " | tr -d ' ')
+          if [ "$top_products" -lt 1 ] 2>/dev/null; then
+            echo "✗ FAILED: No product revenue data found"
+            exit 1
+          fi
           docker compose exec -T postgres psql -U postgres -d shelfwise -c "
             SELECT
               p.sku,
@@ -129,9 +164,15 @@ jobs:
             ORDER BY total_revenue DESC
             LIMIT 5;
           "
-          
+          echo "✓ Product revenue data validated"
+
           echo ""
           echo "6. Inventory levels by store type:"
+          inventory_result=$(docker compose exec -T postgres psql -U postgres -d shelfwise -t -c "SELECT COUNT(*) FROM inventory_daily;" | tr -d ' ')
+          if [ "$inventory_result" -lt 1 ] 2>/dev/null; then
+            echo "✗ FAILED: No inventory data found"
+            exit 1
+          fi
           docker compose exec -T postgres psql -U postgres -d shelfwise -c "
             SELECT
               s.store_type,
@@ -144,6 +185,10 @@ jobs:
             GROUP BY s.store_type
             ORDER BY total_on_hand DESC;
           "
+          echo "✓ Inventory data validated"
+
+          echo ""
+          echo "=== All test queries completed successfully ==="
 
       - name: Cleanup
         if: always()
