@@ -31,7 +31,7 @@ if [[ -z "$REGION" ]]; then
 fi
 
 # Fixed parameters
-INSTANCE_TYPE="t2.medium"
+INSTANCE_TYPE="t4g.medium"
 VOLUME_SIZE=25
 SG_NAME="presales-sg"
 SG_DESCRIPTION="presales sg with required ports"
@@ -49,7 +49,7 @@ echo "Fetching the latest Ubuntu 22.04 LTS AMI ID for region: $REGION..."
 AMI_ID=$(aws ec2 describe-images \
   --region "$REGION" \
   --owners 099720109477 \
-  --filters "Name=name,Values=ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*" \
+  --filters "Name=name,Values=ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-arm64-server-*" \
             "Name=state,Values=available" \
   --query "Images | sort_by(@, &CreationDate) | [-1].ImageId" \
   --output text)
