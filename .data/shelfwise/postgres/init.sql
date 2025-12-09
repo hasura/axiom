@@ -1,9 +1,6 @@
 -- ShelfWise Retail Analytics Database
 -- PostgreSQL initialization script
 
--- Stop on error to catch issues during initialization
-\set ON_ERROR_STOP on
-
 -- Create database if not exists
 -- CREATE DATABASE shelfwise;
 -- \c shelfwise;

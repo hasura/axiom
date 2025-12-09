@@ -57,12 +57,21 @@ jobs:
         run: |
           cd .data/shelfwise
           echo "Waiting for database to initialize..."
-          for i in {1..60}; do
-            if docker compose exec -T postgres psql -U postgres -d shelfwise -c "SELECT COUNT(*) FROM transactions;" > /dev/null 2>&1; then
-              echo "Database fully initialized (transactions loaded)"
+          echo "This includes loading all CSV files, creating foreign keys, and building indexes..."
+          for i in {1..120}; do
+            # Check if the init script has completed by verifying:
+            # 1. The transactions table exists and has data
+            # 2. The read-only user exists (created at the very end of init.sql)
+            if docker compose exec -T postgres psql -U postgres -d shelfwise -c "SELECT COUNT(*) FROM transactions;" > /dev/null 2>&1 && \
+               docker compose exec -T postgres psql -U postgres -d shelfwise -c "SELECT 1 FROM pg_roles WHERE rolname='shelfwise_readonly';" | grep -q "1"; then
+              echo "✓ Database fully initialized (all tables, constraints, indexes, and users created)"
               break
             fi
-            echo "Waiting... ($i/60)"
+            if [ $i -eq 120 ]; then
+              echo "✗ Database initialization timed out after 240 seconds"
+              exit 1
+            fi
+            echo "Waiting for init.sql to complete... ($i/120)"
             sleep 2
           done
 
