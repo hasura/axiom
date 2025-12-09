@@ -1,0 +1,148 @@
+name: Shelfwise Test
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - '.data/shelfwise/**'
+      - '.github/workflows/shelfwise-test.yml'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - '.data/shelfwise/**'
+      - '.github/workflows/shelfwise-test.yml'
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up environment
+        run: |
+          cp .data/.env.template .data/shelfwise/.env
+
+      - name: Start PostgreSQL
+        run: |
+          cd .data/shelfwise
+          docker compose up -d postgres
+
+      - name: Set up Rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: stable
+
+      - name: Cache Rust dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            .data/shelfwise/generator/target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('.data/shelfwise/generator/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
+
+      - name: Build Rust generator
+        working-directory: .data/shelfwise/generator
+        run: cargo build --release
+
+      - name: Run generator with test config
+        working-directory: .data/shelfwise/generator
+        run: |
+          cargo run --release -- --config config.test.toml
+          echo "Generator completed"
+
+      - name: Verify CSV files were generated
+        working-directory: .data/shelfwise/postgres
+        run: |
+          echo "Checking for generated CSV files..."
+          ls -lh *.csv
+
+      - name: Wait for database initialization
+        run: |
+          cd .data/shelfwise
+          echo "Waiting for database to initialize..."
+          for i in {1..60}; do
+            if docker compose exec -T postgres psql -U postgres -d shelfwise -c "SELECT COUNT(*) FROM products;" > /dev/null 2>&1; then
+              echo "Database initialized and ready"
+              break
+            fi
+            echo "Waiting... ($i/60)"
+            sleep 2
+          done
+
+      - name: Run test queries
+        run: |
+          cd .data/shelfwise
+          echo "=== Running test queries ==="
+          
+          echo ""
+          echo "1. Count products:"
+          docker compose exec -T postgres psql -U postgres -d shelfwise -c "SELECT COUNT(*) as product_count FROM products;"
+          
+          echo ""
+          echo "2. Count stores:"
+          docker compose exec -T postgres psql -U postgres -d shelfwise -c "SELECT COUNT(*) as store_count FROM stores;"
+          
+          echo ""
+          echo "3. Count transactions:"
+          docker compose exec -T postgres psql -U postgres -d shelfwise -c "SELECT COUNT(*) as transaction_count FROM transactions;"
+          
+          echo ""
+          echo "4. Sales summary by date (first 5 days):"
+          docker compose exec -T postgres psql -U postgres -d shelfwise -c "
+            SELECT
+              date,
+              COUNT(DISTINCT store_id) as stores,
+              COUNT(DISTINCT sku) as products,
+              SUM(units_sold) as total_units,
+              ROUND(SUM(revenue)::numeric, 2) as total_revenue
+            FROM sales_daily
+            GROUP BY date
+            ORDER BY date
+            LIMIT 5;
+          "
+          
+          echo ""
+          echo "5. Top 5 products by revenue:"
+          docker compose exec -T postgres psql -U postgres -d shelfwise -c "
+            SELECT
+              p.sku,
+              p.brand,
+              p.category,
+              ROUND(SUM(s.revenue)::numeric, 2) as total_revenue,
+              SUM(s.units_sold) as total_units
+            FROM sales_daily s
+            JOIN products p ON s.sku = p.sku
+            GROUP BY p.sku, p.brand, p.category
+            ORDER BY total_revenue DESC
+            LIMIT 5;
+          "
+          
+          echo ""
+          echo "6. Inventory levels by store type:"
+          docker compose exec -T postgres psql -U postgres -d shelfwise -c "
+            SELECT
+              st.store_type,
+              COUNT(DISTINCT i.store_id) as stores,
+              ROUND(AVG(i.on_hand)::numeric, 2) as avg_on_hand,
+              SUM(i.on_hand) as total_on_hand
+            FROM inventory_daily i
+            JOIN stores s ON i.store_id = s.store_id
+            JOIN store_types st ON s.store_type = st.store_type_code
+            WHERE i.date = (SELECT MAX(date) FROM inventory_daily)
+            GROUP BY st.store_type
+            ORDER BY total_on_hand DESC;
+          "
+
+      - name: Cleanup
+        if: always()
+        run: |
+          cd .data/shelfwise
+          docker compose down -v
