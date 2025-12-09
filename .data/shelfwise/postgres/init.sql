@@ -597,3 +597,14 @@ CREATE INDEX idx_transactions_store ON transactions(store_id);
 CREATE INDEX idx_transactions_timestamp ON transactions(timestamp);
 
 CREATE INDEX idx_promotions_active ON promotions(sku, start_date, end_date) WHERE ad_feature = TRUE;
+
+-- Read-only user setup
+CREATE USER shelfwise_readonly WITH PASSWORD '${READONLY_PASSWORD:-readonly_password}';
+GRANT CONNECT ON DATABASE shelfwise TO shelfwise_readonly;
+GRANT USAGE ON SCHEMA public TO shelfwise_readonly;
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO shelfwise_readonly;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO shelfwise_readonly;
+GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO shelfwise_readonly;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT USAGE ON SEQUENCES TO shelfwise_readonly;
+REVOKE INSERT, UPDATE, DELETE, TRUNCATE ON ALL TABLES IN SCHEMA public FROM shelfwise_readonly;
+COMMENT ON ROLE shelfwise_readonly IS 'Read-only user for analytics, reporting, and Hasura DDN connectors';
