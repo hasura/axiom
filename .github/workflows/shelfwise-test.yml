@@ -129,15 +129,14 @@ jobs:
           echo "6. Inventory levels by store type:"
           docker compose exec -T postgres psql -U postgres -d shelfwise -c "
             SELECT
-              st.store_type,
+              s.store_type,
               COUNT(DISTINCT i.store_id) as stores,
               ROUND(AVG(i.on_hand)::numeric, 2) as avg_on_hand,
               SUM(i.on_hand) as total_on_hand
             FROM inventory_daily i
             JOIN stores s ON i.store_id = s.store_id
-            JOIN store_types st ON s.store_type = st.store_type_code
             WHERE i.date = (SELECT MAX(date) FROM inventory_daily)
-            GROUP BY st.store_type
+            GROUP BY s.store_type
             ORDER BY total_on_hand DESC;
           "
 
