@@ -108,12 +108,12 @@ pub struct ShelfWiseDataGenerator {
     holidays: HashMap<String, HashMap<u32, HashMap<String, NaiveDate>>>,
     categories: HashMap<String, CategoryConfig>,
     brands: Vec<BrandInfo>,
-    
+
     // Customer data
     customers: Vec<Customer>,
     customer_addresses: Vec<CustomerAddress>,
     customer_behaviors: HashMap<u64, CustomerBehavior>,
-    
+
     // Delivery data
     delivery_drivers: Vec<DeliveryDriver>,
     delivery_zones: Vec<DeliveryZone>,
@@ -127,7 +127,7 @@ impl ShelfWiseDataGenerator {
             .map(|r| r.return_reason_code)
             .collect()
     }
-    
+
     // Helper to get valid waste reason codes from reference data
     fn get_waste_reason_codes() -> Vec<String> {
         crate::reference_data::init_waste_reasons()
@@ -135,7 +135,7 @@ impl ShelfWiseDataGenerator {
             .map(|r| r.waste_reason_code)
             .collect()
     }
-    
+
     // Helper to get valid payment method codes from reference data
     fn get_payment_method_codes() -> Vec<String> {
         crate::reference_data::init_payment_methods()
@@ -144,7 +144,7 @@ impl ShelfWiseDataGenerator {
             .map(|pm| pm.payment_method_code)
             .collect()
     }
-    
+
     // Helper to get valid promotion type codes from reference data
     fn get_promotion_type_codes() -> Vec<String> {
         crate::reference_data::init_promotion_types()
@@ -152,16 +152,16 @@ impl ShelfWiseDataGenerator {
             .map(|pt| pt.promo_type_code)
             .collect()
     }
-    
+
     pub fn new(seed: u64, config: Config) -> Self {
         let rng = StdRng::seed_from_u64(seed);
-        
+
         // Parse dates from config
         let start_date = NaiveDate::parse_from_str(&config.date_range.start_date, "%Y-%m-%d")
             .expect("Invalid start_date format in config.toml");
         let end_date = NaiveDate::parse_from_str(&config.date_range.end_date, "%Y-%m-%d")
             .expect("Invalid end_date format in config.toml");
-        
+
         let mut dates = Vec::new();
         let mut current = start_date;
         while current <= end_date {
@@ -199,7 +199,7 @@ impl ShelfWiseDataGenerator {
 
     fn init_categories() -> HashMap<String, CategoryConfig> {
         let mut categories = HashMap::new();
-        
+
         // Load from reference data and add generation-specific parameters
         for cat in crate::reference_data::init_categories() {
             let seasonality = match cat.category_name.as_str() {
@@ -208,7 +208,7 @@ impl ShelfWiseDataGenerator {
                 "frozen" | "canned" => "winter",
                 _ => "steady",
             };
-            
+
             let dow_effect = match cat.category_name.as_str() {
                 "meat" => 0.18,
                 "snacks" => 0.15,
@@ -223,7 +223,7 @@ impl ShelfWiseDataGenerator {
                 "household" => -0.05,
                 _ => 0.05,
             };
-            
+
             categories.insert(
                 cat.category_name.clone(),
                 CategoryConfig {
@@ -276,7 +276,7 @@ impl ShelfWiseDataGenerator {
                     "value" => base_price * 0.8,
                     _ => base_price,
                 };
-                
+
                 // Realistic cost margins vary by category, brand tier, and randomness
                 // Category-based margin profiles (lower cost ratio = higher margin)
                 let category_cost_ratio = match *category {
@@ -286,32 +286,32 @@ impl ShelfWiseDataGenerator {
                     "candy" => self.rng.gen_range(0.45..0.60),          // 40-55% margin
                     "snacks" => self.rng.gen_range(0.50..0.65),         // 35-50% margin
                     "beverages" => self.rng.gen_range(0.50..0.65),      // 35-50% margin
-                    
+
                     // Medium margin categories
                     "cereal" => self.rng.gen_range(0.55..0.70),         // 30-45% margin
                     "canned" => self.rng.gen_range(0.55..0.70),         // 30-45% margin
                     "frozen" => self.rng.gen_range(0.58..0.72),         // 28-42% margin
                     "bakery" => self.rng.gen_range(0.60..0.75),         // 25-40% margin
-                    
+
                     // Low margin categories (competitive/perishable)
                     "dairy" => self.rng.gen_range(0.65..0.80),          // 20-35% margin
                     "produce" => self.rng.gen_range(0.70..0.85),        // 15-30% margin
                     "meat" => self.rng.gen_range(0.72..0.87),           // 13-28% margin
-                    
+
                     _ => self.rng.gen_range(0.55..0.70),                // Default 30-45% margin
                 };
-                
+
                 // Brand tier adjustment (premium brands often have better margins)
                 let tier_adjustment = match brand.tier.as_str() {
                     "premium" => self.rng.gen_range(0.90..0.98),  // Slightly better margins
                     "value" => self.rng.gen_range(1.02..1.10),    // Slightly worse margins
                     _ => 1.0,                                      // No adjustment
                 };
-                
+
                 let cost = list_price * category_cost_ratio * tier_adjustment;
                 let brand_code: String = brand.name.chars().filter(|c| c.is_alphanumeric()).take(3).collect::<String>().to_uppercase();
                 let sku = format!("{}-{}-{:04}", brand_code, category.to_uppercase(), product_id);
-                
+
                 products.push(Product {
                     product_id,
                     sku,
@@ -328,7 +328,7 @@ impl ShelfWiseDataGenerator {
                     tier: brand.tier.clone(),
                     pareto_weight: 0.0,
                 });
-                
+
                 product_id += 1;
                 // Use configured max_products from config.toml
                 if product_id > self.config.scale.max_products as u32 { break; }
@@ -340,7 +340,7 @@ impl ShelfWiseDataGenerator {
         let top_20_pct = (num_products as f64 * 0.2) as usize;
         let exp_top = Exp::new(0.25).unwrap();
         let exp_bottom = Exp::new(2.0).unwrap();
-        
+
         let mut weights: Vec<f64> = Vec::new();
         for _ in 0..top_20_pct {
             weights.push(exp_top.sample(&mut self.rng));
@@ -348,11 +348,11 @@ impl ShelfWiseDataGenerator {
         for _ in top_20_pct..num_products {
             weights.push(exp_bottom.sample(&mut self.rng));
         }
-        
+
         let sum: f64 = weights.iter().sum();
         for w in &mut weights { *w /= sum; }
         weights.shuffle(&mut self.rng);
-        
+
         for (i, product) in products.iter_mut().enumerate() {
             product.pareto_weight = weights[i];
         }
@@ -362,7 +362,7 @@ impl ShelfWiseDataGenerator {
 
     pub fn generate_stores(&mut self) {
         let mut stores = Vec::new();
-        
+
         // Store 1: Online store (fulfillment center in Bay Area - Tracy, CA)
         // Tracy is a major logistics hub in the Bay Area, perfect for a West Coast-focused retailer
         // Close to I-580/I-5 interchange, serves entire Bay Area and beyond
@@ -388,7 +388,7 @@ impl ShelfWiseDataGenerator {
             ("convenience", 83),
             ("big_box", 46),
         ];
-        
+
         // West Coast Regional Chain with National Expansion Strategy
         // Core: Bay Area (35%) | California (25%) | Pacific NW (20%) | Southwest (10%) | Strategic National (10%)
         let cities = vec![
@@ -408,7 +408,7 @@ impl ShelfWiseDataGenerator {
             ("Daly City, CA", 37.6879, -122.4702, "west_coast", "temperate"),
             ("San Rafael, CA", 37.9735, -122.5311, "west_coast", "temperate"),
             ("Walnut Creek, CA", 37.9101, -122.0652, "west_coast", "temperate"),
-            
+
             // Greater California - Secondary Markets (25% of stores)
             ("Sacramento, CA", 38.5816, -121.4944, "west_coast", "temperate"),
             ("Los Angeles, CA", 34.0522, -118.2437, "west_coast", "temperate"),
@@ -420,7 +420,7 @@ impl ShelfWiseDataGenerator {
             ("Napa, CA", 38.2975, -122.2869, "west_coast", "temperate"),
             ("Stockton, CA", 37.9577, -121.2908, "west_coast", "temperate"),
             ("Modesto, CA", 37.6391, -120.9969, "west_coast", "temperate"),
-            
+
             // Pacific Northwest - Strong Expansion (20% of stores)
             ("Seattle, WA", 47.6062, -122.3321, "west_coast", "temperate"),
             ("Portland, OR", 45.5152, -122.6784, "west_coast", "temperate"),
@@ -430,7 +430,7 @@ impl ShelfWiseDataGenerator {
             ("Spokane, WA", 47.6588, -117.4260, "west_coast", "temperate"),
             ("Salem, OR", 44.9429, -123.0351, "west_coast", "temperate"),
             ("Bend, OR", 44.0582, -121.3153, "west_coast", "temperate"),
-            
+
             // Southwest - Regional Expansion (10% of stores)
             ("Phoenix, AZ", 33.4484, -112.0740, "southwest", "hot"),
             ("Las Vegas, NV", 36.1699, -115.1398, "southwest", "hot"),
@@ -438,7 +438,7 @@ impl ShelfWiseDataGenerator {
             ("Tucson, AZ", 32.2226, -110.9747, "southwest", "hot"),
             ("Denver, CO", 39.7392, -104.9903, "southwest", "temperate"),
             ("Boulder, CO", 40.0150, -105.2705, "southwest", "temperate"),
-            
+
             // Strategic National Expansion - Testing new markets (10% of stores)
             ("Austin, TX", 30.2672, -97.7431, "expansion", "hot"),
             ("Chicago, IL", 41.8781, -87.6298, "expansion", "cold"),
@@ -461,21 +461,21 @@ impl ShelfWiseDataGenerator {
                 .filter(|(t, max)| stores_per_type.get(t).unwrap_or(&0) < max)
                 .map(|(t, max)| (*t, *max))
                 .collect();
-            
+
             if available_types.is_empty() {
                 break;
             }
-            
+
             let (store_type, _) = available_types.choose(&mut self.rng).unwrap();
             *stores_per_type.get_mut(store_type).unwrap() += 1;
-            
+
             // Pick a city
             let (city, lat, lon, region, climate) = cities.choose(&mut self.rng).unwrap();
-            
+
             // Add small random offset to coordinates (within ~1 mile)
             let lat_offset = self.rng.gen_range(-0.01..0.01);
             let lon_offset = self.rng.gen_range(-0.01..0.01);
-            
+
             // Determine square footage based on store type
             let sq_ft = match *store_type {
                 "urban" => self.rng.gen_range(10000..20000),
@@ -484,11 +484,11 @@ impl ShelfWiseDataGenerator {
                 "big_box" => self.rng.gen_range(60000..100000),
                 _ => 30000,
             };
-            
+
             // Realistic expansion timeline starting from 2009
             // Company founded in Bay Area, expanded regionally, then nationally
             // Data range is 2019-2025, so we need stores opening from 2009-2025
-            
+
             let opened_date = if *region == "west_coast" {
                 // Bay Area core: Founded 2009-2012 (oldest stores)
                 // California expansion: 2012-2016
@@ -505,7 +505,7 @@ impl ShelfWiseDataGenerator {
                 let days_after_start = self.rng.gen_range(0..2100); // Throughout 2019-2024
                 self.start_date + Duration::days(days_after_start as i64)
             };
-            
+
             stores.push(Store {
                 store_id,
                 region: region.to_string(),
@@ -517,7 +517,7 @@ impl ShelfWiseDataGenerator {
                 latitude: lat + lat_offset,
                 longitude: lon + lon_offset,
             });
-            
+
             store_id += 1;
         }
 
@@ -536,19 +536,19 @@ impl ShelfWiseDataGenerator {
         for (city, lat, lon, store_type, days_after_start) in international_stores.iter().take(self.config.scale.num_international_stores) {
             let lat_offset = self.rng.gen_range(-0.005..0.005);
             let lon_offset = self.rng.gen_range(-0.005..0.005);
-            
+
             let sq_ft = match *store_type {
                 "urban" => self.rng.gen_range(12000..18000),
                 "suburban" => self.rng.gen_range(28000..40000),
                 _ => 25000,
             };
-            
+
             let climate = if city.contains("Canada") || city.contains("ON") || city.contains("QC") || city.contains("BC") {
                 "cold"
             } else {
                 "temperate"
             };
-            
+
             stores.push(Store {
                 store_id,
                 region: "international".to_string(),
@@ -560,7 +560,7 @@ impl ShelfWiseDataGenerator {
                 latitude: lat + lat_offset,
                 longitude: lon + lon_offset,
             });
-            
+
             store_id += 1;
         }
 
@@ -571,10 +571,10 @@ impl ShelfWiseDataGenerator {
     pub fn generate_customers(&mut self) {
         let num_customers = self.config.customers.num_customers;
         println!("Generating {} customers...", num_customers);
-        
+
         let mut customers = Vec::new();
         let mut customer_behaviors = HashMap::new();
-        
+
         // Simple name lists for generation
         let first_names = vec!["James", "Mary", "John", "Patricia", "Robert", "Jennifer", "Michael", "Linda",
             "William", "Barbara", "David", "Elizabeth", "Richard", "Susan", "Joseph", "Jessica", "Thomas", "Sarah",
@@ -582,7 +582,7 @@ impl ShelfWiseDataGenerator {
         let last_names = vec!["Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis",
             "Rodriguez", "Martinez", "Hernandez", "Lopez", "Gonzalez", "Wilson", "Anderson", "Thomas", "Taylor",
             "Moore", "Jackson", "Martin", "Lee", "Thompson", "White", "Harris", "Sanchez", "Clark", "Lewis"];
-        
+
         for customer_id in 1..=num_customers as u64 {
             // Pick demographics using weighted distribution
             let age_bracket = self.pick_weighted(&[
@@ -593,7 +593,7 @@ impl ShelfWiseDataGenerator {
                 ("55-64", AGE_55_64),
                 ("65+", AGE_65_PLUS),
             ]);
-            
+
             let household_size = self.pick_weighted_u32(&[
                 (1, HOUSEHOLD_SIZE_1),
                 (2, HOUSEHOLD_SIZE_2),
@@ -601,14 +601,14 @@ impl ShelfWiseDataGenerator {
                 (4, HOUSEHOLD_SIZE_4),
                 (5, HOUSEHOLD_SIZE_5_PLUS),
             ]);
-            
+
             let income_bracket = self.pick_weighted(&[
                 ("low", INCOME_LOW),
                 ("medium", INCOME_MEDIUM),
                 ("high", INCOME_HIGH),
                 ("very_high", INCOME_VERY_HIGH),
             ]);
-            
+
             // Pick customer segment
             let segment = self.pick_weighted(&[
                 ("frequent_shopper", SEGMENT_FREQUENT_SHOPPER),
@@ -616,14 +616,14 @@ impl ShelfWiseDataGenerator {
                 ("bulk_buyer", SEGMENT_BULK_BUYER),
                 ("occasional", SEGMENT_OCCASIONAL),
             ]);
-            
+
             // Assign to primary store (only physical stores, not online/fulfillment center)
             let physical_stores: Vec<Store> = self.stores.iter()
                 .filter(|s| s.store_type != "online")
                 .cloned()
                 .collect();
             let primary_store = physical_stores.choose(&mut self.rng).unwrap().clone();
-            
+
             // Determine loyalty membership
             let year = self.start_date.year();
             let loyalty_penetration = match year {
@@ -635,9 +635,9 @@ impl ShelfWiseDataGenerator {
                 2024 => LOYALTY_PENETRATION_2024,
                 _ => LOYALTY_PENETRATION_2025,
             };
-            
+
             let is_loyalty_member = self.rng.gen::<f64>() < loyalty_penetration;
-            
+
             let loyalty_tier = if is_loyalty_member {
                 Some(self.pick_weighted(&[
                     ("bronze", LOYALTY_TIER_BRONZE),
@@ -648,28 +648,32 @@ impl ShelfWiseDataGenerator {
             } else {
                 None
             };
-            
+
             // Generate realistic contact info
             let first_name = first_names.choose(&mut self.rng).unwrap().to_string();
             let last_name = last_names.choose(&mut self.rng).unwrap().to_string();
-            
+
             // Realistic email domains
             let email_domains = vec!["gmail.com", "yahoo.com", "outlook.com", "hotmail.com", "icloud.com", "aol.com"];
             let domain = email_domains.choose(&mut self.rng).unwrap();
-            let email = if self.rng.gen::<f64>() < 0.3 {
-                // 30% include numbers
-                format!("{}.{}{}@{}",
-                    first_name.to_lowercase(),
-                    last_name.to_lowercase(),
-                    self.rng.gen_range(1..999),
-                    domain)
-            } else {
+
+            // Ensure unique email by using customer_id
+            // Format: firstname.lastname.ID@domain or firstname.lastname@domain (for low IDs)
+            let email = if customer_id <= 100 {
+                // First 100 customers get clean emails (no numbers)
                 format!("{}.{}@{}",
                     first_name.to_lowercase(),
                     last_name.to_lowercase(),
                     domain)
+            } else {
+                // Rest get customer_id appended to ensure uniqueness
+                format!("{}.{}.{}@{}",
+                    first_name.to_lowercase(),
+                    last_name.to_lowercase(),
+                    customer_id,
+                    domain)
             };
-            
+
             // Realistic US phone numbers (not 555)
             let area_codes = vec![415, 510, 650, 408, 925, 707, 209, 559, 916, 530]; // CA area codes
             let area_code = area_codes.choose(&mut self.rng).unwrap();
@@ -677,13 +681,13 @@ impl ShelfWiseDataGenerator {
                 area_code,
                 self.rng.gen_range(200..999),
                 self.rng.gen_range(1000..9999));
-            
+
             // Set location near primary store (within 5-15 miles)
             let distance_miles = self.rng.gen_range(1.0..15.0);
             let angle = self.rng.gen_range(0.0..std::f64::consts::TAU);
             let lat_offset = (distance_miles / 69.0) * angle.cos();
             let lon_offset = (distance_miles / 54.6) * angle.sin();
-            
+
             // Determine shopping preferences
             let preferred_shopping_time = self.pick_weighted(&[
                 ("morning", 0.25),
@@ -691,7 +695,7 @@ impl ShelfWiseDataGenerator {
                 ("evening", 0.35),
                 ("weekend", 0.10),
             ]);
-            
+
             let avg_basket_size = match segment.as_str() {
                 "frequent_shopper" => BASKET_FREQUENT_SHOPPER as f64,
                 "weekly_shopper" => BASKET_WEEKLY_SHOPPER as f64,
@@ -699,14 +703,14 @@ impl ShelfWiseDataGenerator {
                 "occasional" => BASKET_OCCASIONAL as f64,
                 _ => 20.0,
             };
-            
+
             let price_sensitivity = match income_bracket.as_str() {
                 "low" => "high",
                 "medium" => "medium",
                 "high" | "very_high" => "low",
                 _ => "medium",
             };
-            
+
             let customer = Customer {
                 customer_id,
                 email,
@@ -739,7 +743,7 @@ impl ShelfWiseDataGenerator {
                 has_online_account: self.rng.gen::<f64>() < 0.4,
                 prefers_online: self.rng.gen::<f64>() < 0.15,
             };
-            
+
             // Create behavior profile
             let shopping_frequency_days = match segment.as_str() {
                 "frequent_shopper" => FREQ_FREQUENT_SHOPPER,
@@ -748,14 +752,14 @@ impl ShelfWiseDataGenerator {
                 "occasional" => FREQ_OCCASIONAL,
                 _ => 7,
             };
-            
+
             let brand_loyalty_score = match income_bracket.as_str() {
                 "low" | "medium" => BRAND_LOYALTY_VALUE,
                 "high" => BRAND_LOYALTY_MID,
                 "very_high" => BRAND_LOYALTY_PREMIUM,
                 _ => 0.65,
             };
-            
+
             // Pick 2-4 preferred categories
             let all_categories = vec!["cereal", "dairy", "snacks", "beverages", "produce",
                 "household", "frozen", "bakery", "meat", "canned", "personal_care", "candy"];
@@ -764,14 +768,14 @@ impl ShelfWiseDataGenerator {
                 .choose_multiple(&mut self.rng, num_preferred)
                 .map(|s| s.to_string())
                 .collect();
-            
+
             // Pick 3-6 preferred brands
             let num_preferred_brands = self.rng.gen_range(3..=6);
             let preferred_brands: Vec<String> = self.brands
                 .choose_multiple(&mut self.rng, num_preferred_brands)
                 .map(|b| b.name.clone())
                 .collect();
-            
+
             let behavior = CustomerBehavior {
                 customer_id,
                 segment: segment.clone(),
@@ -783,55 +787,55 @@ impl ShelfWiseDataGenerator {
                 preferred_brands,
                 last_visit_date: None,
             };
-            
+
             customers.push(customer);
             customer_behaviors.insert(customer_id, behavior);
         }
-        
+
         self.customers = customers;
         self.customer_behaviors = customer_behaviors;
-        
+
         println!("  Generated {} customers", self.customers.len());
-        
+
         // Generate customer addresses (1-2 per customer)
         self.generate_customer_addresses();
     }
-    
+
     pub fn generate_customer_addresses(&mut self) {
         if self.customers.is_empty() {
             println!("  Skipping customer address generation (no customers)");
             return;
         }
-        
+
         println!("Generating customer addresses...");
-        
+
         let mut addresses = Vec::new();
         let mut address_id = 1u64;
-        
+
         let street_names = vec!["Main St", "Oak Ave", "Maple Dr", "Pine Rd", "Cedar Ln", "Elm St",
             "Washington Blvd", "Park Ave", "Broadway", "Market St", "1st St", "2nd Ave"];
         let apartment_types = vec!["Apt", "Unit", "Suite", "#"];
-        
+
         let customers_clone = self.customers.clone();
         for customer in &customers_clone {
             // Each customer gets 1-2 addresses (70% have 1, 30% have 2)
             let num_addresses = if self.rng.gen::<f64>() < 0.70 { 1 } else { 2 };
-            
+
             for addr_num in 0..num_addresses {
                 let address_type = if addr_num == 0 { "home" } else { "work" };
                 let is_default = addr_num == 0;
-                
+
                 // Generate address near customer's home location
                 let distance = self.rng.gen_range(0.0..2.0); // Within 2 miles
                 let angle = self.rng.gen_range(0.0..std::f64::consts::TAU);
                 let latitude = customer.home_latitude + (distance / 69.0) * angle.cos();
                 let longitude = customer.home_longitude + (distance / 54.6) * angle.sin();
-                
+
                 // Generate street address
                 let street_num = self.rng.gen_range(100..9999);
                 let street_name = street_names.choose(&mut self.rng).unwrap();
                 let street_address = format!("{} {}", street_num, street_name);
-                
+
                 // 40% have apartment/unit numbers
                 let apartment_unit = if self.rng.gen::<f64>() < 0.40 {
                     let apt_type = apartment_types.choose(&mut self.rng).unwrap();
@@ -840,10 +844,10 @@ impl ShelfWiseDataGenerator {
                 } else {
                     None
                 };
-                
+
                 // Zip code based on city (simplified)
                 let zip_code = format!("{:05}", self.rng.gen_range(10000..99999));
-                
+
                 // Delivery instructions for some addresses
                 let delivery_instructions = if self.rng.gen::<f64>() < 0.30 {
                     Some(self.pick_weighted(&[
@@ -855,15 +859,15 @@ impl ShelfWiseDataGenerator {
                 } else {
                     None
                 };
-                
+
                 // Urban addresses more likely to have doorman
                 let has_doorman = customer.primary_city.contains("New York") && self.rng.gen::<f64>() < 0.25;
-                
+
                 // High-value items or apartments might require signature
                 let requires_signature = self.rng.gen::<f64>() < 0.15;
-                
+
                 let created_at = customer.created_date.and_hms_opt(12, 0, 0).unwrap();
-                
+
                 let address = CustomerAddress {
                     address_id,
                     customer_id: customer.customer_id,
@@ -883,26 +887,26 @@ impl ShelfWiseDataGenerator {
                     last_used_at: None,
                     delivery_count: 0,
                 };
-                
+
                 addresses.push(address);
                 address_id += 1;
             }
         }
-        
+
         self.customer_addresses = addresses;
         println!("  Generated {} customer addresses", self.customer_addresses.len());
     }
-    
+
     // Helper method for weighted selection
     fn pick_weighted(&mut self, options: &[(&str, f64)]) -> String {
         Self::pick_weighted_static(&mut self.rng, options)
     }
-    
+
     // Static version for use in static methods
     fn pick_weighted_static(rng: &mut StdRng, options: &[(&str, f64)]) -> String {
         let rand = rng.gen::<f64>();
         let mut cumulative = 0.0;
-        
+
         for (value, prob) in options {
             cumulative += prob;
             if rand < cumulative {
@@ -911,11 +915,11 @@ impl ShelfWiseDataGenerator {
         }
         options.last().unwrap().0.to_string()
     }
-    
+
     fn pick_weighted_u32(&mut self, options: &[(u32, f64)]) -> u32 {
         let rand = self.rng.gen::<f64>();
         let mut cumulative = 0.0;
-        
+
         for (value, prob) in options {
             cumulative += prob;
             if rand < cumulative {
@@ -927,13 +931,13 @@ impl ShelfWiseDataGenerator {
 
     pub fn generate_store_economics(&mut self) {
         let mut store_economics = HashMap::new();
-        
+
         // Count stores per city for competitive intensity
         let mut city_store_counts: HashMap<String, usize> = HashMap::new();
         for store in &self.stores {
             *city_store_counts.entry(store.city.clone()).or_insert(0) += 1;
         }
-        
+
         // Assign performance tiers (20% high, 60% medium, 20% low)
         let num_stores = self.stores.len();
         let mut performance_assignments: Vec<String> = Vec::new();
@@ -948,7 +952,7 @@ impl ShelfWiseDataGenerator {
             performance_assignments.push(tier.to_string());
         }
         performance_assignments.shuffle(&mut self.rng);
-        
+
         for (idx, store) in self.stores.iter().enumerate() {
             // Regional labor cost index
             let labor_cost_index = if store.city.contains("San Francisco") || store.city.contains("San Jose") ||
@@ -972,7 +976,7 @@ impl ShelfWiseDataGenerator {
             } else {
                 self.rng.gen_range(0.90..1.05)  // Other/lower cost areas
             };
-            
+
             // Rent cost index by store type and location
             let base_rent_multiplier = match store.store_type.as_str() {
                 "urban" => 1.30,
@@ -982,7 +986,7 @@ impl ShelfWiseDataGenerator {
                 "online" => 0.70,
                 _ => 1.00,
             };
-            
+
             let location_rent_multiplier = if store.city.contains("San Francisco") || store.city.contains("New York") {
                 1.15
             } else if store.city.contains("Los Angeles") || store.city.contains("Seattle") || store.city.contains("Boston") {
@@ -992,9 +996,9 @@ impl ShelfWiseDataGenerator {
             } else {
                 1.00
             };
-            
+
             let rent_cost_index = base_rent_multiplier * location_rent_multiplier * self.rng.gen_range(0.95..1.05);
-            
+
             // Utility cost index (climate-based)
             let utility_cost_index = match store.climate_zone.as_str() {
                 "hot" => self.rng.gen_range(1.10..1.20),      // High AC costs
@@ -1003,7 +1007,7 @@ impl ShelfWiseDataGenerator {
                 "controlled" => self.rng.gen_range(1.15..1.25), // Fulfillment center (24/7 climate control)
                 _ => 1.00,
             };
-            
+
             // Store maturity factor
             let years_open = (self.start_date - store.opened_date).num_days() as f64 / 365.0;
             let maturity_factor = if years_open < 0.0 {
@@ -1028,7 +1032,7 @@ impl ShelfWiseDataGenerator {
                     0.92  // Very mature, highly efficient
                 }
             };
-            
+
             // Shrinkage rate (theft, damage, spoilage)
             let base_shrinkage = match store.store_type.as_str() {
                 "urban" => 0.030,      // Higher theft in urban areas
@@ -1039,7 +1043,7 @@ impl ShelfWiseDataGenerator {
                 _ => 0.020,
             };
             let shrinkage_rate = base_shrinkage * self.rng.gen_range(0.90..1.10);
-            
+
             // Labor efficiency
             let labor_efficiency = if years_open < 0.0 {
                 self.rng.gen_range(0.90..0.95)  // New stores less efficient
@@ -1048,7 +1052,7 @@ impl ShelfWiseDataGenerator {
             } else {
                 self.rng.gen_range(0.98..1.02)  // Average
             };
-            
+
             // Competitive intensity (based on store density in city)
             let store_count_in_city = *city_store_counts.get(&store.city).unwrap_or(&1);
             let competitive_intensity = if store_count_in_city > 5 {
@@ -1058,7 +1062,7 @@ impl ShelfWiseDataGenerator {
             } else {
                 self.rng.gen_range(0.95..1.00)  // Low competition (market leader)
             };
-            
+
             // Price premium index
             let price_premium_index = match store.store_type.as_str() {
                 "convenience" => self.rng.gen_range(1.08..1.15),  // Convenience premium
@@ -1068,7 +1072,7 @@ impl ShelfWiseDataGenerator {
                 "suburban" => self.rng.gen_range(0.98..1.03),     // Neutral
                 _ => 1.00,
             };
-            
+
             // Volume discount tier (better COGS for high-volume stores)
             let volume_discount_tier = match store.store_type.as_str() {
                 "online" => self.rng.gen_range(0.92..0.94),    // Best terms
@@ -1078,10 +1082,10 @@ impl ShelfWiseDataGenerator {
                 "convenience" => self.rng.gen_range(1.01..1.03), // Worst terms (low volume)
                 _ => 1.00,
             };
-            
+
             // Performance tier
             let store_performance_tier = performance_assignments[idx].clone();
-            
+
             // Market share estimate
             let market_share_estimate = match store_performance_tier.as_str() {
                 "high" => self.rng.gen_range(0.18..0.25),
@@ -1089,7 +1093,7 @@ impl ShelfWiseDataGenerator {
                 "low" => self.rng.gen_range(0.05..0.10),
                 _ => 0.12,
             };
-            
+
             // Category mix factors by store type
             let mut category_mix_factors = HashMap::new();
             match store.store_type.as_str() {
@@ -1133,7 +1137,7 @@ impl ShelfWiseDataGenerator {
                 }
                 _ => {}
             }
-            
+
             store_economics.insert(store.store_id, StoreEconomics {
                 labor_cost_index,
                 rent_cost_index,
@@ -1149,29 +1153,29 @@ impl ShelfWiseDataGenerator {
                 category_mix_factors,
             });
         }
-        
+
         self.store_economics = store_economics;
         println!("Generated store economics for {} stores", self.stores.len());
     }
 
     pub fn generate_delivery_zones(&mut self) {
         println!("Generating delivery zones...");
-        
+
         let mut zones = Vec::new();
         let mut zone_id = 1u64;
-        
+
         // Create zones for each physical store (not online)
         for store in &self.stores {
             if store.store_type == "online" {
                 continue;
             }
-            
+
             // Each store gets 2-4 delivery zones radiating outward
             let num_zones = self.rng.gen_range(2..=4);
-            
+
             for zone_num in 1..=num_zones {
                 let zone_name = format!("{} Zone {}", store.city, zone_num);
-                
+
                 // Zones get progressively larger and farther from store
                 let (_min_radius, max_radius) = match zone_num {
                     1 => (0.0, 3.0),      // Inner zone: 0-3 miles
@@ -1179,7 +1183,7 @@ impl ShelfWiseDataGenerator {
                     3 => (7.0, 12.0),     // Outer zone: 7-12 miles
                     _ => (12.0, 20.0),    // Extended zone: 12-20 miles
                 };
-                
+
                 // Delivery fee increases with distance
                 let base_delivery_fee = match zone_num {
                     1 => 2.99,
@@ -1187,7 +1191,7 @@ impl ShelfWiseDataGenerator {
                     3 => 7.99,
                     _ => 9.99,
                 };
-                
+
                 // Minimum order increases with distance
                 let min_order_amount = match zone_num {
                     1 => 25.0,
@@ -1195,7 +1199,7 @@ impl ShelfWiseDataGenerator {
                     3 => 50.0,
                     _ => 75.0,
                 };
-                
+
                 // Estimated delivery time increases with distance
                 let avg_delivery_time_minutes = match zone_num {
                     1 => self.rng.gen_range(25..35),
@@ -1203,10 +1207,10 @@ impl ShelfWiseDataGenerator {
                     3 => self.rng.gen_range(50..70),
                     _ => self.rng.gen_range(70..90),
                 };
-                
+
                 // Zone is active if store supports delivery
                 let is_active = true; // All zones active by default
-                
+
                 let zone = DeliveryZone {
                     zone_id: zone_id as u32,
                     zone_name,
@@ -1224,12 +1228,12 @@ impl ShelfWiseDataGenerator {
                     avg_daily_orders: self.rng.gen_range(10..50),
                     peak_hours: "17,18,19".to_string(),
                 };
-                
+
                 zones.push(zone);
                 zone_id += 1;
             }
         }
-        
+
         self.delivery_zones = zones;
         println!("  Generated {} delivery zones", self.delivery_zones.len());
     }
@@ -1246,16 +1250,16 @@ impl ShelfWiseDataGenerator {
                 _ => 2,
             })
             .sum::<usize>();
-        
+
         println!("Generating {} delivery drivers...", num_drivers);
-        
+
         let mut drivers = Vec::new();
-        
+
         let first_names = vec!["Alex", "Jordan", "Taylor", "Morgan", "Casey", "Riley", "Avery", "Quinn",
             "Skylar", "Dakota", "Reese", "Peyton", "Cameron", "Sage", "River", "Phoenix"];
         let last_names = vec!["Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis",
             "Martinez", "Lopez", "Wilson", "Anderson", "Thomas", "Taylor", "Moore", "Jackson"];
-        
+
         for driver_id in 1..=num_drivers as u64 {
             // Assign driver type based on config percentages
             let driver_type = self.pick_weighted(&[
@@ -1263,18 +1267,18 @@ impl ShelfWiseDataGenerator {
                 ("contractor", CONTRACTOR_DRIVER_PCT),
                 ("third_party", THIRD_PARTY_DRIVER_PCT),
             ]);
-            
+
             // Assign to a random physical store as home base
             let home_store = self.stores.iter()
                 .filter(|s| s.store_type != "online")
                 .choose(&mut self.rng)
                 .unwrap()
                 .clone();
-            
+
             // Generate driver details
             let first_name = first_names.choose(&mut self.rng).unwrap().to_string();
             let last_name = last_names.choose(&mut self.rng).unwrap().to_string();
-            
+
             // Realistic US phone numbers (not 555)
             let area_codes = vec![415, 510, 650, 408, 925, 707, 209, 559, 916, 530]; // CA area codes
             let area_code = area_codes.choose(&mut self.rng).unwrap();
@@ -1282,7 +1286,7 @@ impl ShelfWiseDataGenerator {
                 area_code,
                 self.rng.gen_range(200..999),
                 self.rng.gen_range(1000..9999));
-            
+
             // Vehicle type distribution
             let vehicle_type = self.pick_weighted(&[
                 ("car", 0.60),
@@ -1290,7 +1294,7 @@ impl ShelfWiseDataGenerator {
                 ("van", 0.10),
                 ("bike", 0.05),
             ]);
-            
+
             // Vehicle capacity based on type
             let vehicle_capacity_items = match vehicle_type.as_str() {
                 "van" => self.rng.gen_range(80..120),
@@ -1299,10 +1303,10 @@ impl ShelfWiseDataGenerator {
                 "bike" => self.rng.gen_range(10..20),
                 _ => 40,
             };
-            
+
             // Hire date within last 1-3 years
             let hire_date = self.start_date - Duration::days(self.rng.gen_range(30..1095));
-            
+
             // Employment status
             let employment_status = if driver_type == "employee" {
                 "full_time"
@@ -1311,16 +1315,16 @@ impl ShelfWiseDataGenerator {
             } else {
                 "gig"
             };
-            
+
             // Service area
             let service_radius_miles = match driver_type.as_str() {
                 "employee" => self.rng.gen_range(15.0..25.0),
                 "contractor" => self.rng.gen_range(10.0..20.0),
                 _ => self.rng.gen_range(5.0..15.0),
             };
-            
+
             let service_cities = home_store.city.clone();
-            
+
             // Performance metrics
             let is_available = self.rng.gen::<f64>() < 0.75;
             let total_deliveries = if is_available {
@@ -1328,36 +1332,36 @@ impl ShelfWiseDataGenerator {
             } else {
                 self.rng.gen_range(10..100)
             };
-            
+
             let avg_rating = self.rng.gen_range(4.0..5.0);
             let on_time_delivery_pct = self.rng.gen_range(0.85..0.99);
             let acceptance_rate = self.rng.gen_range(0.80..0.98);
             let cancellation_rate = self.rng.gen_range(0.01..0.10);
-            
+
             // Current location (near home store)
             let angle = self.rng.gen_range(0.0..std::f64::consts::TAU);
             let distance = self.rng.gen_range(0.0..5.0);
             let current_latitude = home_store.latitude + (distance / 69.0) * angle.cos();
             let current_longitude = home_store.longitude + (distance / 54.6) * angle.sin();
             let last_location_update = self.start_date.and_hms_opt(12, 0, 0).unwrap();
-            
+
             // Last delivery date
             let last_delivery_date = if total_deliveries > 0 {
                 Some(self.start_date - Duration::days(self.rng.gen_range(0..30)))
             } else {
                 None
             };
-            
+
             // Compensation
             let base_pay_per_delivery = match driver_type.as_str() {
                 "employee" => self.rng.gen_range(8.0..12.0),
                 "contractor" => self.rng.gen_range(6.0..10.0),
                 _ => self.rng.gen_range(4.0..8.0),
             };
-            
+
             let mileage_rate = 0.625; // IRS standard mileage rate
             let avg_tips_per_delivery = self.rng.gen_range(3.0..8.0);
-            
+
             // Generate email based on driver type
             let email = match driver_type.as_str() {
                 "employee" => {
@@ -1393,7 +1397,7 @@ impl ShelfWiseDataGenerator {
                     }
                 }
             };
-            
+
             let driver = DeliveryDriver {
                 driver_id,
                 first_name,
@@ -1423,10 +1427,10 @@ impl ShelfWiseDataGenerator {
                 mileage_rate,
                 avg_tips_per_delivery,
             };
-            
+
             drivers.push(driver);
         }
-        
+
         self.delivery_drivers = drivers;
         println!("  Generated {} delivery drivers", self.delivery_drivers.len());
     }
@@ -1566,7 +1570,7 @@ impl ShelfWiseDataGenerator {
         let mut promotions = Vec::new();
         let mut promo_products: Vec<_> = self.products.iter().collect();
         promo_products.sort_by(|a, b| b.pareto_weight.partial_cmp(&a.pareto_weight).unwrap());
-        
+
         for (promo_id, product) in promo_products.iter().take(50).enumerate() {
             let start_day = self.rng.gen_range(0..self.dates.len().saturating_sub(15));
             promotions.push(Promotion {
@@ -1625,7 +1629,7 @@ impl ShelfWiseDataGenerator {
         if all_customers.is_empty() {
             return (None, false, 0, 0);
         }
-        
+
         // Determine tracking probability based on store type
         let tracking_prob = match store_type {
             "online" => 0.95,  // 95% of online orders tracked
@@ -1635,18 +1639,18 @@ impl ShelfWiseDataGenerator {
             "convenience" => 0.28,
             _ => 0.38,
         };
-        
+
         if rng.gen::<f64>() > tracking_prob {
             return (None, false, 0, 0);
         }
-        
+
         // Use pre-built indexes for fast lookup
         let eligible_customers: Vec<&Customer> = store_to_customers
             .get(&store.store_id)
             .map(|customers| customers.clone())
             .or_else(|| city_to_customers.get(store.city.as_str()).map(|customers| customers.clone()))
             .unwrap_or_default();
-        
+
         if eligible_customers.is_empty() {
             // Fallback to any customer
             if let Some(customer) = all_customers.choose(rng) {
@@ -1655,7 +1659,7 @@ impl ShelfWiseDataGenerator {
                 } else {
                     0
                 };
-                
+
                 return (
                     Some(customer.customer_id),
                     customer.loyalty_member,
@@ -1665,7 +1669,7 @@ impl ShelfWiseDataGenerator {
             }
             return (None, false, 0, 0);
         }
-        
+
         // Pick a customer with store affinity
         if let Some(customer) = eligible_customers.choose(rng) {
             let loyalty_points = if customer.loyalty_member {
@@ -1673,7 +1677,7 @@ impl ShelfWiseDataGenerator {
             } else {
                 0
             };
-            
+
             (
                 Some(customer.customer_id),
                 customer.loyalty_member,
@@ -1684,7 +1688,7 @@ impl ShelfWiseDataGenerator {
             (None, false, 0, 0)
         }
     }
-    
+
     fn create_delivery_assignment_static(
         rng: &mut StdRng,
         writers: &mut StreamingWriters,
@@ -1701,33 +1705,33 @@ impl ShelfWiseDataGenerator {
         if delivery_drivers.is_empty() {
             return Ok(());
         }
-        
+
         // Find active drivers for this store's city
         let store = stores.iter().find(|s| s.store_id == store_id);
         if store.is_none() {
             return Ok(());
         }
         let store = store.unwrap();
-        
+
         let eligible_drivers: Vec<DeliveryDriver> = delivery_drivers.iter()
             .filter(|d| d.is_available && d.service_cities.contains(&store.city))
             .cloned()
             .collect();
-        
+
         if eligible_drivers.is_empty() {
             return Ok(());
         }
-        
+
         let driver = eligible_drivers.choose(rng).unwrap().clone();
-        
+
         // Parse timestamp to calculate pickup/delivery times
         let order_time = NaiveDateTime::parse_from_str(timestamp, "%Y-%m-%d %H:%M:%S")
             .unwrap_or_else(|_| date.and_hms_opt(12, 0, 0).unwrap());
-        
+
         let assigned_at = order_time;
         let accepted_at = Some(order_time + Duration::minutes(rng.gen_range(1..5) as i64));
         let picked_up_at = Some(order_time + Duration::minutes(rng.gen_range(10..20) as i64));
-        
+
         let distance_miles = rng.gen_range(1.0..12.0);
         let estimated_duration_minutes = (distance_miles / 25.0 * 60.0) as u32 + rng.gen_range(5..15);
         let actual_duration_minutes = if rng.gen::<f64>() < 0.92 {
@@ -1737,9 +1741,9 @@ impl ShelfWiseDataGenerator {
             // Late
             Some(estimated_duration_minutes + rng.gen_range(10..30))
         };
-        
+
         let delivered_at = picked_up_at.map(|p| p + Duration::minutes(actual_duration_minutes.unwrap_or(estimated_duration_minutes) as i64));
-        
+
         let assignment_status = if rng.gen::<f64>() < 0.97 {
             "delivered"
         } else if rng.gen::<f64>() < 0.5 {
@@ -1747,13 +1751,13 @@ impl ShelfWiseDataGenerator {
         } else {
             "in_progress"
         };
-        
+
         let cancelled_at = if assignment_status == "cancelled" {
             Some(order_time + Duration::minutes(rng.gen_range(5..30) as i64))
         } else {
             None
         };
-        
+
         let cancellation_reason = if assignment_status == "cancelled" {
             Some(Self::pick_weighted_static(rng, &[
                 ("customer_request", 0.40),
@@ -1764,7 +1768,7 @@ impl ShelfWiseDataGenerator {
         } else {
             None
         };
-        
+
         // Calculate compensation
         let driver_pay = driver.base_pay_per_delivery + (distance_miles * driver.mileage_rate);
         let driver_tip = if assignment_status == "delivered" && rng.gen::<f64>() < 0.75 {
@@ -1775,7 +1779,7 @@ impl ShelfWiseDataGenerator {
             0.0
         };
         let driver_total_earnings = driver_pay + driver_tip;
-        
+
         // Customer rating (1-5 stars, mostly 4-5)
         let customer_rating = if assignment_status == "delivered" {
             Some(if rng.gen::<f64>() < 0.85 {
@@ -1786,12 +1790,12 @@ impl ShelfWiseDataGenerator {
         } else {
             None
         };
-        
+
         let estimated_pickup_time = order_time + Duration::minutes(15);
         let actual_pickup_time = picked_up_at;
         let estimated_delivery_time = estimated_pickup_time + Duration::minutes(estimated_duration_minutes as i64);
         let actual_delivery_time = delivered_at;
-        
+
         let assignment = DeliveryAssignment {
             assignment_id: transaction_id,
             transaction_id,
@@ -1818,9 +1822,9 @@ impl ShelfWiseDataGenerator {
             driver_notes: None,
             customer_feedback: None,
         };
-        
+
         writers.write_delivery_assignment(&assignment)?;
-        
+
         Ok(())
     }
 
@@ -1858,7 +1862,7 @@ impl ShelfWiseDataGenerator {
     fn save_reference_data(&self, output_dir: &str) -> Result<()> {
         // Write seed reference data (regions, categories, etc.)
         crate::reference_data::write_reference_data_csvs(output_dir)?;
-        
+
         let mut wtr = csv::Writer::from_path(Path::new(output_dir).join("products.csv"))?;
         for p in &self.products { wtr.serialize(p)?; }
         wtr.flush()?;
@@ -1919,7 +1923,7 @@ impl ShelfWiseDataGenerator {
         let mut ticket_id = 1;
         let mut change_id = 1;
         let mut global_txn_id = 1;
-        
+
         let total_days = self.dates.len();
         println!("  Generating data for {} days ({} to {})",
                  total_days,
@@ -1927,60 +1931,60 @@ impl ShelfWiseDataGenerator {
                  self.dates.last().unwrap());
         println!("  Estimated records: ~{} million",
                  (total_days * self.stores.len() * self.products.len() * 7 / 10) / 1_000_000);
-        
+
         // Pre-build indexes for faster lookups (one-time cost, huge speedup in loops)
         println!("  Building lookup indexes and caching reference data...");
-        
+
         // Cache reference data (called millions of times otherwise)
         let return_reasons = Self::get_return_reason_codes();
         let common_return_reasons: Vec<String> = return_reasons.iter()
             .filter(|r| r.as_str() == "defective" || r.as_str() == "wrong_item")
             .cloned()
             .collect();
-        
+
         let waste_reasons = Self::get_waste_reason_codes();
         let perishable_waste_reasons: Vec<String> = waste_reasons.iter()
             .filter(|r| r.as_str() == "expired" || r.as_str() == "temperature_abuse")
             .cloned()
             .collect();
-        
+
         let payment_methods = Self::get_payment_method_codes();
-        
+
         // Index: store_id -> Vec<Assortment>
         let mut store_assortment: HashMap<u32, Vec<&Assortment>> = HashMap::new();
         for assort in &self.assortment {
             store_assortment.entry(assort.store_id).or_insert_with(Vec::new).push(assort);
         }
-        
+
         // Index: sku -> Product (avoid linear search)
         let mut sku_to_product: HashMap<&str, &Product> = HashMap::new();
         for product in &self.products {
             sku_to_product.insert(&product.sku, product);
         }
-        
+
         // Index: sku -> Vec<&Promotion> (avoid filtering all promotions every time)
         let mut sku_to_promotions: HashMap<&str, Vec<&Promotion>> = HashMap::new();
         for promo in &self.promotions {
             sku_to_promotions.entry(promo.sku.as_str()).or_insert_with(Vec::new).push(promo);
         }
-        
+
         // Index: store_id -> Vec<&Customer> (for faster customer linking)
         let mut store_to_customers: HashMap<u32, Vec<&Customer>> = HashMap::new();
         for customer in &self.customers {
             store_to_customers.entry(customer.primary_store_id).or_insert_with(Vec::new).push(customer);
         }
-        
+
         // Index: city -> Vec<&Customer> (fallback for customer linking)
         let mut city_to_customers: HashMap<&str, Vec<&Customer>> = HashMap::new();
         for customer in &self.customers {
             city_to_customers.entry(customer.primary_city.as_str()).or_insert_with(Vec::new).push(customer);
         }
-        
+
         println!("  Indexes built. Starting generation...");
-        
+
         let dates_clone = self.dates.clone();
         let stores_clone = self.stores.clone();
-        
+
         // Create demand calculator once per day instead of per store
         let demand_calc = DemandCalculator {
             categories: &self.categories,
@@ -1988,7 +1992,7 @@ impl ShelfWiseDataGenerator {
             calendar: &self.calendar,
             ground_truth_events: &self.ground_truth_events,
         };
-        
+
         for (idx, date) in dates_clone.iter().enumerate() {
             // Use configured progress interval from config.toml
             if idx % self.config.performance.progress_interval_days == 0 {
@@ -1998,7 +2002,7 @@ impl ShelfWiseDataGenerator {
                          (idx as f64 / total_days as f64) * 100.0,
                          date);
             }
-            
+
             // Flush periodically to prevent excessive memory usage
             let should_flush = (idx + 1) % self.config.performance.flush_interval_days == 0;
 
@@ -2007,12 +2011,12 @@ impl ShelfWiseDataGenerator {
                 if *date < store.opened_date {
                     continue;
                 }
-                
+
                 // Get store economics
                 let store_econ = self.store_economics.get(&store.store_id).unwrap();
-                
+
                 let mut store_daily_revenue = 0.0;
-                
+
                 // Use pre-built index instead of filtering
                 if let Some(store_assortments) = store_assortment.get(&store.store_id) {
                     for assort in store_assortments {
@@ -2032,20 +2036,20 @@ impl ShelfWiseDataGenerator {
                             .get(&product.category)
                             .copied()
                             .unwrap_or(1.0);
-                        
+
                         // Convert to owned only when needed for demand calculation
                         let active_promos_owned: Vec<Promotion> = active_promos.iter().map(|&p| p.clone()).collect();
                         let base_demand = demand_calc.calculate_demand(*date, store, product, &active_promos_owned, 85.0, &mut self.rng);
-                        
+
                         // Adjust demand by category mix and store performance
                         let performance_multiplier = match store_econ.store_performance_tier.as_str() {
                             "high" => self.rng.gen_range(1.15..1.25),
                             "low" => self.rng.gen_range(0.70..0.85),
                             _ => self.rng.gen_range(0.95..1.05),
                         };
-                        
+
                         let demand = (base_demand as f64 * category_mix_factor * performance_multiplier) as u32;
-                        
+
                         // Use &str to avoid cloning SKU
                         let inv_key = (store.store_id, product.sku.as_str());
                         if !inventory.contains_key(&inv_key) {
@@ -2056,15 +2060,15 @@ impl ShelfWiseDataGenerator {
                             };
                             inventory.insert(inv_key, (base as f64 * self.rng.gen_range(0.8..1.2)) as u32);
                         }
-                        
+
                         let mut on_hand = *inventory.get(&inv_key).unwrap();
-                        
+
                         let delivery_chance = match store.store_type.as_str() {
                             "online" => 0.6,
                             "big_box" => 0.4,
                             _ => 0.25,
                         };
-                        
+
                         if self.rng.gen::<f64>() < delivery_chance {
                             let delivered = match store.store_type.as_str() {
                                 "online" => self.rng.gen_range(500..2000),
@@ -2073,11 +2077,11 @@ impl ShelfWiseDataGenerator {
                             };
                             on_hand += delivered;
                             inventory.insert(inv_key, on_hand);
-                            
+
                             // Pre-format strings to avoid repeated allocations
                             let supplier_name = format!("{} Supplier", product.brand);
                             let po_number = format!("PO-{:06}", shipment_id);
-                            
+
                             writers.write_shipment(&SupplierShipment {
                                 shipment_id,
                                 shipment_date: *date - Duration::days(self.rng.gen_range(1..3)),
@@ -2092,15 +2096,15 @@ impl ShelfWiseDataGenerator {
                             })?;
                             shipment_id += 1;
                         }
-                        
+
                         let units_sold = demand.min(on_hand);
                         inventory.insert(inv_key, on_hand.saturating_sub(units_sold));
-                        
+
                         // Apply store-specific pricing
                         let store_adjusted_price = product.list_price
                             * store_econ.price_premium_index
                             * (1.0 / store_econ.competitive_intensity);  // Higher competition = lower prices
-                        
+
                         let regular_price = store_adjusted_price;
                         let (discount_pct, net_price, promo_id, promo_funding) = if let Some(promo) = active_promos.first() {
                             let net = regular_price * (1.0 - promo.discount_pct as f64 / 100.0);
@@ -2108,19 +2112,19 @@ impl ShelfWiseDataGenerator {
                         } else {
                             (0, regular_price, None, 0.0)
                         };
-                        
+
                         // Apply store-specific cost structure
                         let store_adjusted_cost = product.cost
                             * store_econ.volume_discount_tier
                             * store_econ.maturity_factor;
-                        
+
                         let revenue = units_sold as f64 * net_price;
                         let cogs_c = units_sold as f64 * store_adjusted_cost;
                         let cogs_s = cogs_c * 1.02;
-                        
+
                         // Apply store-specific shrinkage
                         let shrinkage_cost = cogs_c * store_econ.shrinkage_rate;
-                        
+
                         writers.write_sales(&SalesDaily {
                             date: *date,
                             store_id: store.store_id,
@@ -2149,9 +2153,9 @@ impl ShelfWiseDataGenerator {
                             sales_date: *date,
                             posting_date: *date + Duration::days(7),
                         })?;
-                        
+
                         store_daily_revenue += revenue;
-                        
+
                         writers.write_inventory(&InventoryDaily {
                             date: *date,
                             store_id: store.store_id,
@@ -2168,7 +2172,7 @@ impl ShelfWiseDataGenerator {
                             dc_allocated_qty: 0,
                             quarantine_hold: 0,
                         })?;
-                        
+
                         if units_sold > 0 && self.rng.gen::<f64>() < 0.01 {
                             writers.write_return(&ReturnDaily {
                                 date: *date,
@@ -2179,10 +2183,10 @@ impl ShelfWiseDataGenerator {
                                 refund_value: net_price,
                             })?;
                         }
-                        
+
                         if matches!(product.category.as_str(), "dairy" | "produce" | "meat") && self.rng.gen::<f64>() < 0.02 {
                             let recorded_by = format!("emp_{}", self.rng.gen_range(100..999));
-                            
+
                             writers.write_waste(&WasteSpoilage {
                                 waste_id,
                                 date: *date,
@@ -2195,7 +2199,7 @@ impl ShelfWiseDataGenerator {
                             })?;
                             waste_id += 1;
                         }
-                        
+
                         if on_hand == 0 && demand > 0 && self.rng.gen::<f64>() < 0.1 {
                             let created_at = format!("{} 10:00:00", date);
                             let resolved_at = if self.rng.gen::<f64>() < 0.7 {
@@ -2203,7 +2207,7 @@ impl ShelfWiseDataGenerator {
                             } else {
                                 None
                             };
-                            
+
                             writers.write_ticket(&Ticket {
                                 ticket_id,
                                 created_at,
@@ -2217,7 +2221,7 @@ impl ShelfWiseDataGenerator {
                             })?;
                             ticket_id += 1;
                         }
-                        
+
                         if self.rng.gen::<f64>() < 0.002 {
                             writers.write_price_change(&PriceChange {
                                 change_id,
@@ -2232,7 +2236,7 @@ impl ShelfWiseDataGenerator {
                     }
                 } // end if let Some(store_assortments)
                 } // end for assort
-                
+
                 // Generate transactions for this store-day
                 if store_daily_revenue > 0.0 {
                     let (txn_value_min, txn_value_max, max_txns_min, max_txns_max, basket_min, basket_max) = match store.store_type.as_str() {
@@ -2243,22 +2247,22 @@ impl ShelfWiseDataGenerator {
                         "convenience" => (15.0, 30.0, 190, 210, 1, 5),
                         _ => (50.0, 80.0, 475, 525, 12, 25),
                     };
-                    
+
                     // Use main RNG for more variability instead of deterministic day seed
                     let target_txn_value = self.rng.gen_range(txn_value_min..txn_value_max);
                     let max_txns = self.rng.gen_range(max_txns_min..=max_txns_max);
-                    
+
                     let num_transactions = (store_daily_revenue / target_txn_value).ceil() as u32;
                     let num_transactions = num_transactions.min(max_txns);
                     let num_transactions = num_transactions.max(1);
-                    
+
                     // Generate varied basket values that sum to store_daily_revenue
                     let mut basket_values = Vec::new();
                     let mut total_allocated = 0.0;
-                    
+
                     for i in 0..num_transactions {
                         let basket_items = self.rng.gen_range(basket_min..=basket_max);
-                        
+
                         if i == num_transactions - 1 {
                             // Last transaction gets the remainder to ensure exact match
                             basket_values.push((basket_items, store_daily_revenue - total_allocated));
@@ -2270,7 +2274,7 @@ impl ShelfWiseDataGenerator {
                             basket_values.push((basket_items, basket_value));
                         }
                     }
-                    
+
                     // Pre-generate transaction data to avoid borrow conflicts with demand_calc
                     let mut transaction_data = Vec::new();
                     for (basket_items, basket_value) in basket_values {
@@ -2284,7 +2288,7 @@ impl ShelfWiseDataGenerator {
                         let rand_status = self.rng.gen::<f64>();
                         let rand_time_offset1 = self.rng.gen_range(30..90);
                         let rand_time_offset2 = self.rng.gen_range(35..95);
-                        
+
                         transaction_data.push((
                             basket_items,
                             basket_value,
@@ -2300,20 +2304,20 @@ impl ShelfWiseDataGenerator {
                             rand_time_offset2,
                         ));
                     }
-                    
+
                     // Now generate transactions using pre-generated random values
                     for (basket_items, basket_value, hour, minute, _rand_customer, rand_fulfillment,
                          rand_delivery_fee, rand_tip, rand_tip_amount, rand_status, _time_off1, _time_off2) in transaction_data {
                         let timestamp = format!("{} {:02}:{:02}:00", date.format("%Y-%m-%d"), hour, minute);
-                        
+
                         // Clone store data
                         let store_clone = store.clone();
                         let store_type = store.store_type.clone();
-                        
+
                         // Determine customer linkage using indexed lookup
                         let (customer_id, is_loyalty_transaction, loyalty_points_earned, loyalty_points_redeemed) =
                             Self::maybe_link_customer_static(&mut self.rng, &store_clone, &store_type, &store_to_customers, &city_to_customers, &self.customers);
-                        
+
                         // Determine fulfillment type using pre-generated random
                         let fulfillment_type = if store.store_type == "online" {
                             Some(if rand_fulfillment < 0.65 { "delivery".to_string() } else { "pickup".to_string() })
@@ -2324,7 +2328,7 @@ impl ShelfWiseDataGenerator {
                         } else {
                             Some("in_store".to_string())
                         };
-                        
+
                         // Delivery/pickup fields using pre-generated randoms
                         let (delivery_fee, tip_amount, order_status, delivery_address_id, requested_time, actual_time) =
                             if fulfillment_type.as_ref().map_or(false, |f| f == "delivery" || f == "pickup") {
@@ -2334,28 +2338,28 @@ impl ShelfWiseDataGenerator {
                                         _ => 2.99 + rand_delivery_fee * 5.0,
                                     }
                                 };
-                                
+
                                 let tip = if rand_tip < 0.7 {
                                     basket_value * (0.10 + rand_tip_amount * 0.10)
                                 } else {
                                     basket_value * (rand_tip_amount * 0.10)
                                 };
-                                
+
                                 let status = Some(if rand_status < 0.92 { "delivered".to_string() }
                                                  else if rand_status < 0.97 { "pending".to_string() }
                                                  else { "cancelled".to_string() });
-                                
+
                                 let order_time = NaiveDateTime::parse_from_str(&timestamp, "%Y-%m-%d %H:%M:%S")
                                     .unwrap_or_else(|_| date.and_hms_opt(12, 0, 0).unwrap());
-                                
+
                                 let req_time = Some(order_time + Duration::minutes(self.rng.gen_range(30..90) as i64));
                                 let act_time = Some(order_time + Duration::minutes(self.rng.gen_range(35..95) as i64));
-                                
+
                                 (fee, tip, status, customer_id, req_time, act_time)
                             } else {
                                 (0.0, 0.0, None, None, None, None)
                             };
-                        
+
                         let transaction = Transaction {
                             transaction_id: global_txn_id,
                             date: *date,
@@ -2379,9 +2383,9 @@ impl ShelfWiseDataGenerator {
                             requested_delivery_time: requested_time,
                             actual_delivery_time: actual_time,
                         };
-                        
+
                         writers.write_transaction(&transaction)?;
-                        
+
                         // Create delivery assignment if needed (now works because demand_calc is dropped)
                         if transaction.fulfillment_type.as_ref().map_or(false, |f| f == "delivery" || f == "pickup") &&
                            transaction.order_status.as_ref().map_or(false, |s| s == "delivered") {
@@ -2400,18 +2404,18 @@ impl ShelfWiseDataGenerator {
                                 &self.stores,
                             )?;
                         }
-                        
+
                         global_txn_id += 1;
                     }
                 }
             }
-            
+
             // Flush every N days instead of every day for better performance
             if should_flush {
                 writers.flush_all()?;
             }
         }
-        
+
         // Final flush to ensure all data is written
         writers.flush_all()?;
 

@@ -563,8 +563,6 @@ CREATE TABLE item_substitutions (
 \COPY products FROM '/docker-entrypoint-initdb.d/products.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
 \COPY stores FROM '/docker-entrypoint-initdb.d/stores.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
 \COPY customers FROM '/docker-entrypoint-initdb.d/customers.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
-\COPY customer_store_affinity FROM '/docker-entrypoint-initdb.d/customer_store_affinity.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
-\COPY customer_product_preferences FROM '/docker-entrypoint-initdb.d/customer_product_preferences.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
 \COPY customer_addresses FROM '/docker-entrypoint-initdb.d/customer_addresses.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
 \COPY delivery_drivers FROM '/docker-entrypoint-initdb.d/delivery_drivers.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
 \COPY delivery_zones FROM '/docker-entrypoint-initdb.d/delivery_zones.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
@@ -579,8 +577,6 @@ CREATE TABLE item_substitutions (
 \COPY tickets FROM '/docker-entrypoint-initdb.d/tickets.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
 \COPY transactions FROM '/docker-entrypoint-initdb.d/transactions.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
 \COPY delivery_assignments FROM '/docker-entrypoint-initdb.d/delivery_assignments.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
-\COPY order_fulfillment FROM '/docker-entrypoint-initdb.d/order_fulfillment.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
-\COPY item_substitutions FROM '/docker-entrypoint-initdb.d/item_substitutions.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
 
 -- ============================================================================
 -- FOREIGN KEY CONSTRAINTS

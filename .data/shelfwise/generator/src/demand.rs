@@ -60,7 +60,7 @@ impl<'a> DemandCalculator<'a> {
         let price_elastic = 1.0 - (product.list_price - 10.0) * 0.01;
 
         // Base units
-        let units_base = brand_pop * category_pop * store_type_factor 
+        let units_base = brand_pop * category_pop * store_type_factor
             * region_factor * price_elastic * product.pareto_weight * 1200.0;
 
         let mut multiplier = 1.0;
@@ -103,19 +103,19 @@ impl<'a> DemandCalculator<'a> {
         let dow = date.weekday().num_days_from_monday();
         if let Some(cat_config) = self.categories.get(category) {
             let dow_effect = cat_config.dow_effect;
-            
+
             if store.store_type == "online" {
                 if dow >= 5 {
                     multiplier *= 0.9;
                 } else {
                     multiplier *= 1.1;
                 }
-                
+
                 // Cyber Monday boost
                 if let Some(cal) = self.calendar.get(&date) {
                     if store.region == "international" {
                         // Check Canadian/UK holidays
-                        if store.city.contains("ON") || store.city.contains("BC") || 
+                        if store.city.contains("ON") || store.city.contains("BC") ||
                            store.city.contains("QC") || store.city.contains("Toronto") ||
                            store.city.contains("Vancouver") || store.city.contains("Montreal") {
                             if let Some(event) = &cal.event_name_canada {
@@ -277,129 +277,129 @@ impl<'a> DemandCalculator<'a> {
 
 fn build_us_holiday_lifts() -> HashMap<&'static str, HashMap<&'static str, f64>> {
     let mut lifts = HashMap::new();
-    
+
     let mut thanksgiving = HashMap::new();
     thanksgiving.insert("meat", 1.8);
     thanksgiving.insert("produce", 1.5);
     thanksgiving.insert("bakery", 1.6);
     lifts.insert("Thanksgiving Week", thanksgiving);
-    
+
     let mut christmas = HashMap::new();
     christmas.insert("candy", 1.7);
     christmas.insert("beverages", 1.3);
     christmas.insert("snacks", 1.4);
     lifts.insert("Christmas Week", christmas);
-    
+
     let mut super_bowl = HashMap::new();
     super_bowl.insert("snacks", 2.0);
     super_bowl.insert("beverages", 1.6);
     super_bowl.insert("meat", 1.4);
     lifts.insert("Super Bowl Sunday", super_bowl);
-    
+
     let mut halloween = HashMap::new();
     halloween.insert("candy", 2.5);
     lifts.insert("Halloween", halloween);
-    
+
     let mut easter = HashMap::new();
     easter.insert("candy", 1.8);
     easter.insert("meat", 1.3);
     lifts.insert("Easter", easter);
-    
+
     let mut july4 = HashMap::new();
     july4.insert("meat", 1.6);
     july4.insert("beverages", 1.4);
     july4.insert("snacks", 1.3);
     lifts.insert("Independence Day", july4);
-    
+
     let mut memorial = HashMap::new();
     memorial.insert("meat", 1.5);
     memorial.insert("beverages", 1.3);
     lifts.insert("Memorial Day", memorial);
-    
+
     let mut labor = HashMap::new();
     labor.insert("meat", 1.4);
     labor.insert("beverages", 1.2);
     lifts.insert("Labor Day", labor);
-    
+
     lifts
 }
 
 fn build_canada_holiday_lifts() -> HashMap<&'static str, HashMap<&'static str, f64>> {
     let mut lifts = HashMap::new();
-    
+
     let mut thanksgiving = HashMap::new();
     thanksgiving.insert("meat", 1.6);
     thanksgiving.insert("produce", 1.4);
     thanksgiving.insert("bakery", 1.5);
     lifts.insert("Thanksgiving", thanksgiving);
-    
+
     let mut christmas = HashMap::new();
     christmas.insert("candy", 1.7);
     christmas.insert("beverages", 1.3);
     christmas.insert("snacks", 1.4);
     lifts.insert("Christmas Week", christmas);
-    
+
     let mut boxing = HashMap::new();
     boxing.insert("snacks", 1.3);
     boxing.insert("beverages", 1.2);
     lifts.insert("Boxing Day", boxing);
-    
+
     let mut canada_day = HashMap::new();
     canada_day.insert("meat", 1.5);
     canada_day.insert("beverages", 1.4);
     canada_day.insert("snacks", 1.3);
     lifts.insert("Canada Day", canada_day);
-    
+
     let mut victoria = HashMap::new();
     victoria.insert("meat", 1.4);
     victoria.insert("beverages", 1.3);
     lifts.insert("Victoria Day", victoria);
-    
+
     let mut easter = HashMap::new();
     easter.insert("candy", 1.8);
     easter.insert("meat", 1.3);
     lifts.insert("Easter", easter);
-    
+
     let mut easter_mon = HashMap::new();
     easter_mon.insert("candy", 1.5);
     lifts.insert("Easter Monday", easter_mon);
-    
+
     lifts
 }
 
 fn build_uk_holiday_lifts() -> HashMap<&'static str, HashMap<&'static str, f64>> {
     let mut lifts = HashMap::new();
-    
+
     let mut christmas = HashMap::new();
     christmas.insert("candy", 1.6);
     christmas.insert("beverages", 1.3);
     christmas.insert("snacks", 1.3);
     lifts.insert("Christmas Week", christmas);
-    
+
     let mut boxing = HashMap::new();
     boxing.insert("snacks", 1.4);
     boxing.insert("beverages", 1.2);
     lifts.insert("Boxing Day", boxing);
-    
+
     let mut easter = HashMap::new();
     easter.insert("candy", 1.7);
     easter.insert("meat", 1.2);
     lifts.insert("Easter", easter);
-    
+
     let mut easter_mon = HashMap::new();
     easter_mon.insert("candy", 1.4);
     lifts.insert("Easter Monday", easter_mon);
-    
+
     let mut summer = HashMap::new();
     summer.insert("meat", 1.3);
     summer.insert("beverages", 1.3);
     summer.insert("snacks", 1.2);
     lifts.insert("Summer Bank Holiday", summer);
-    
+
     let mut spring = HashMap::new();
     spring.insert("meat", 1.2);
     spring.insert("beverages", 1.2);
     lifts.insert("Spring Bank Holiday", spring);
-    
+
     lifts
 }

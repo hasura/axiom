@@ -41,23 +41,23 @@ pub struct StoreEconomics {
     pub rent_cost_index: f64,          // 0.80-1.50 (rural=0.80, urban=1.50)
     #[allow(dead_code)]
     pub utility_cost_index: f64,       // 0.90-1.20 (climate-based)
-    
+
     // Operational efficiency
     pub maturity_factor: f64,          // 0.92-1.15 (new=1.15 costs, mature=0.92)
     pub shrinkage_rate: f64,           // 0.01-0.04 (varies by type/location)
     #[allow(dead_code)]
     pub labor_efficiency: f64,         // 0.90-1.10 (affects operating costs)
-    
+
     // Market dynamics
     pub competitive_intensity: f64,    // 0.90-1.10 (affects pricing power)
     pub price_premium_index: f64,      // 0.95-1.15 (urban/convenience higher)
     pub volume_discount_tier: f64,     // 0.92-1.00 (big stores get better COGS)
-    
+
     // Performance
     pub store_performance_tier: String, // "high", "medium", "low"
     #[allow(dead_code)]
     pub market_share_estimate: f64,     // 0.05-0.25 (affects volume)
-    
+
     // Category mix adjustments
     pub category_mix_factors: std::collections::HashMap<String, f64>,
 }
@@ -225,13 +225,13 @@ pub struct Transaction {
     pub payment_method: String,
     pub customer_type: String,
     pub total_amount: f64,
-    
+
     // Customer tracking (optional - only for tracked transactions)
     pub customer_id: Option<u64>,
     pub is_loyalty_transaction: bool,
     pub loyalty_points_earned: u32,
     pub loyalty_points_redeemed: u32,
-    
+
     // Delivery/fulfillment (optional - only for online orders)
     pub fulfillment_type: Option<String>,  // 'in_store', 'pickup', 'delivery', 'marketplace'
     pub order_status: Option<String>,      // 'pending', 'picking', 'ready', 'out_for_delivery', 'delivered', 'cancelled'
@@ -368,38 +368,38 @@ pub struct Customer {
     pub phone: String,
     pub first_name: String,
     pub last_name: String,
-    
+
     // Demographics
     pub age_bracket: String,
     pub household_size: u32,
     pub income_bracket: String,
-    
+
     // Geographic affinity
     pub primary_store_id: u32,
     pub primary_city: String,
     pub home_latitude: f64,
     pub home_longitude: f64,
-    
+
     // Loyalty program
     pub loyalty_member: bool,
     pub loyalty_tier: Option<String>,
     pub loyalty_join_date: Option<NaiveDate>,
     pub loyalty_points: u32,
-    
+
     // Shopping preferences
     pub preferred_shopping_time: String,
     pub avg_basket_size: f64,
     pub price_sensitivity: String,
-    
+
     // Behavioral segments
     pub customer_segment: String,
-    
+
     // Metadata
     pub created_date: NaiveDate,
     pub last_purchase_date: Option<NaiveDate>,
     pub total_lifetime_value: f64,
     pub total_visits: u32,
-    
+
     // Online behavior
     pub has_online_account: bool,
     pub prefers_online: bool,
@@ -437,38 +437,38 @@ pub struct DeliveryDriver {
     pub last_name: String,
     pub phone: String,
     pub email: String,
-    
+
     // Driver type
     pub driver_type: String,
     pub employment_status: String,
-    
+
     // Service area
     pub primary_store_id: u32,
     pub service_radius_miles: f64,
     pub service_cities: String, // Comma-separated list
-    
+
     // Vehicle info
     pub vehicle_type: String,
     pub vehicle_capacity_items: u32,
     pub has_insulated_bags: bool,
-    
+
     // Performance metrics
     pub total_deliveries: u32,
     pub avg_rating: f64,
     pub on_time_delivery_pct: f64,
     pub acceptance_rate: f64,
     pub cancellation_rate: f64,
-    
+
     // Availability
     pub is_available: bool,
     pub current_latitude: f64,
     pub current_longitude: f64,
     pub last_location_update: NaiveDateTime,
-    
+
     // Dates
     pub hire_date: NaiveDate,
     pub last_delivery_date: Option<NaiveDate>,
-    
+
     // Compensation
     pub base_pay_per_delivery: f64,
     pub mileage_rate: f64,
@@ -480,35 +480,35 @@ pub struct DeliveryAssignment {
     pub assignment_id: u64,
     pub transaction_id: u64,
     pub driver_id: u64,
-    
+
     // Assignment lifecycle
     pub assigned_at: NaiveDateTime,
     pub accepted_at: Option<NaiveDateTime>,
     pub picked_up_at: Option<NaiveDateTime>,
     pub delivered_at: Option<NaiveDateTime>,
     pub cancelled_at: Option<NaiveDateTime>,
-    
+
     // Status tracking
     pub assignment_status: String,
     pub cancellation_reason: Option<String>,
-    
+
     // Logistics
     pub pickup_store_id: u32,
     pub estimated_pickup_time: NaiveDateTime,
     pub actual_pickup_time: Option<NaiveDateTime>,
     pub estimated_delivery_time: NaiveDateTime,
     pub actual_delivery_time: Option<NaiveDateTime>,
-    
+
     // Distance and time
     pub distance_miles: f64,
     pub estimated_duration_minutes: u32,
     pub actual_duration_minutes: Option<u32>,
-    
+
     // Compensation
     pub driver_pay: f64,
     pub driver_tip: f64,
     pub driver_total_earnings: f64,
-    
+
     // Quality
     pub customer_rating: Option<u32>,
     pub driver_notes: Option<String>,
@@ -520,23 +520,23 @@ pub struct DeliveryZone {
     pub zone_id: u32,
     pub zone_name: String,
     pub store_id: u32,
-    
+
     // Geographic boundary
     pub center_latitude: f64,
     pub center_longitude: f64,
     pub radius_miles: f64,
-    
+
     // Service parameters
     pub delivery_fee: f64,
     pub min_order_amount: f64,
     pub free_delivery_threshold: f64,
     pub estimated_delivery_time_minutes: u32,
-    
+
     // Availability
     pub is_active: bool,
     pub service_hours_start: String,
     pub service_hours_end: String,
-    
+
     // Demand
     pub avg_daily_orders: u32,
     pub peak_hours: String, // Comma-separated

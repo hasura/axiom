@@ -1220,7 +1220,7 @@ use std::path::Path;
 /// Write all reference data CSVs to the specified output directory
 pub fn write_reference_data_csvs(output_dir: &str) -> Result<()> {
     std::fs::create_dir_all(output_dir)?;
-    
+
     write_regions_csv(output_dir)?;
     write_categories_csv(output_dir)?;
     write_store_types_csv(output_dir)?;
@@ -1230,14 +1230,14 @@ pub fn write_reference_data_csvs(output_dir: &str) -> Result<()> {
     write_promotion_types_csv(output_dir)?;
     write_return_reasons_csv(output_dir)?;
     write_waste_reasons_csv(output_dir)?;
-    
+
     println!("✓ Reference data CSVs written to {}", output_dir);
     Ok(())
 }
 
 fn write_regions_csv(output_dir: &str) -> Result<()> {
     let mut writer = Writer::from_path(Path::new(output_dir).join("regions.csv"))?;
-    
+
     for region in init_regions() {
         writer.serialize(region)?;
     }
@@ -1247,7 +1247,7 @@ fn write_regions_csv(output_dir: &str) -> Result<()> {
 
 fn write_categories_csv(output_dir: &str) -> Result<()> {
     let mut writer = Writer::from_path(Path::new(output_dir).join("categories.csv"))?;
-    
+
     for category in init_categories() {
         writer.serialize(category)?;
     }
@@ -1257,7 +1257,7 @@ fn write_categories_csv(output_dir: &str) -> Result<()> {
 
 fn write_store_types_csv(output_dir: &str) -> Result<()> {
     let mut writer = Writer::from_path(Path::new(output_dir).join("store_types.csv"))?;
-    
+
     for store_type in init_store_types() {
         writer.serialize(store_type)?;
     }
@@ -1267,7 +1267,7 @@ fn write_store_types_csv(output_dir: &str) -> Result<()> {
 
 fn write_brands_csv(output_dir: &str) -> Result<()> {
     let mut writer = Writer::from_path(Path::new(output_dir).join("brands.csv"))?;
-    
+
     for brand in init_brands_reference() {
         writer.serialize(brand)?;
     }
@@ -1277,7 +1277,7 @@ fn write_brands_csv(output_dir: &str) -> Result<()> {
 
 fn write_suppliers_csv(output_dir: &str) -> Result<()> {
     let mut writer = Writer::from_path(Path::new(output_dir).join("suppliers.csv"))?;
-    
+
     for supplier in init_suppliers() {
         writer.serialize(supplier)?;
     }
@@ -1287,7 +1287,7 @@ fn write_suppliers_csv(output_dir: &str) -> Result<()> {
 
 fn write_payment_methods_csv(output_dir: &str) -> Result<()> {
     let mut writer = Writer::from_path(Path::new(output_dir).join("payment_methods.csv"))?;
-    
+
     for payment_method in init_payment_methods() {
         writer.serialize(payment_method)?;
     }
@@ -1297,7 +1297,7 @@ fn write_payment_methods_csv(output_dir: &str) -> Result<()> {
 
 fn write_promotion_types_csv(output_dir: &str) -> Result<()> {
     let mut writer = Writer::from_path(Path::new(output_dir).join("promotion_types.csv"))?;
-    
+
     for promo_type in init_promotion_types() {
         writer.serialize(promo_type)?;
     }
@@ -1307,7 +1307,7 @@ fn write_promotion_types_csv(output_dir: &str) -> Result<()> {
 
 fn write_return_reasons_csv(output_dir: &str) -> Result<()> {
     let mut writer = Writer::from_path(Path::new(output_dir).join("return_reasons.csv"))?;
-    
+
     for return_reason in init_return_reasons() {
         writer.serialize(return_reason)?;
     }
@@ -1317,7 +1317,7 @@ fn write_return_reasons_csv(output_dir: &str) -> Result<()> {
 
 fn write_waste_reasons_csv(output_dir: &str) -> Result<()> {
     let mut writer = Writer::from_path(Path::new(output_dir).join("waste_reasons.csv"))?;
-    
+
     for waste_reason in init_waste_reasons() {
         writer.serialize(waste_reason)?;
     }

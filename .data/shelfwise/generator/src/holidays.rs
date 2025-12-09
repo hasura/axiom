@@ -29,7 +29,7 @@ pub fn generate_all_holidays() -> HashMap<String, HashMap<u32, HashMap<String, N
         us_holidays.insert("Christmas Eve".to_string(), NaiveDate::from_ymd_opt(year as i32, 12, 24).unwrap());
         us_holidays.insert("Christmas".to_string(), NaiveDate::from_ymd_opt(year as i32, 12, 25).unwrap());
         us_holidays.insert("New Years Eve".to_string(), NaiveDate::from_ymd_opt(year as i32, 12, 31).unwrap());
-        
+
         holidays.get_mut("us").unwrap().insert(year as u32, us_holidays);
 
         // Canada Holidays
@@ -51,7 +51,7 @@ pub fn generate_all_holidays() -> HashMap<String, HashMap<u32, HashMap<String, N
         canada_holidays.insert("Christmas".to_string(), NaiveDate::from_ymd_opt(year as i32, 12, 25).unwrap());
         canada_holidays.insert("Boxing Day".to_string(), NaiveDate::from_ymd_opt(year as i32, 12, 26).unwrap());
         canada_holidays.insert("New Years Eve".to_string(), NaiveDate::from_ymd_opt(year as i32, 12, 31).unwrap());
-        
+
         holidays.get_mut("canada").unwrap().insert(year as u32, canada_holidays);
 
         // UK Holidays
@@ -83,7 +83,7 @@ pub fn generate_all_holidays() -> HashMap<String, HashMap<u32, HashMap<String, N
         if year == 2023 {
             uk_holidays.insert("Coronation".to_string(), NaiveDate::from_ymd_opt(2023, 5, 8).unwrap());
         }
-        
+
         holidays.get_mut("uk").unwrap().insert(year as u32, uk_holidays);
     }
 
@@ -106,7 +106,7 @@ pub fn calculate_easter(year: i32) -> NaiveDate {
     let m = (a + 11 * h + 22 * l) / 451;
     let month = (h + l - 7 * m + 114) / 31;
     let day = ((h + l - 7 * m + 114) % 31) + 1;
-    
+
     NaiveDate::from_ymd_opt(year as i32, month as u32, day as u32).unwrap()
 }
 
@@ -114,10 +114,10 @@ pub fn calculate_easter(year: i32) -> NaiveDate {
 pub fn get_nth_weekday(year: i32, month: u32, weekday: Weekday, n: u32) -> NaiveDate {
     let first_day = NaiveDate::from_ymd_opt(year as i32, month, 1).unwrap();
     let first_weekday = first_day.weekday();
-    
-    let days_until_weekday = ((weekday.num_days_from_monday() as i32 
+
+    let days_until_weekday = ((weekday.num_days_from_monday() as i32
         - first_weekday.num_days_from_monday() as i32 + 7) % 7) as i64;
-    
+
     let first_occurrence = first_day + Duration::days(days_until_weekday);
     first_occurrence + Duration::weeks((n - 1) as i64)
 }
@@ -160,7 +160,7 @@ pub fn get_monday_before_may_25(year: i32) -> NaiveDate {
 /// Get the first Sunday in February (approximate Super Bowl date)
 pub fn get_first_sunday_february(year: i32) -> NaiveDate {
     let first_day = NaiveDate::from_ymd_opt(year as i32, 2, 1).unwrap();
-    let days_until_sunday = ((Weekday::Sun.num_days_from_monday() as i32 
+    let days_until_sunday = ((Weekday::Sun.num_days_from_monday() as i32
         - first_day.weekday().num_days_from_monday() as i32 + 7) % 7) as i64;
     let days_until_sunday = if days_until_sunday == 0 { 7 } else { days_until_sunday };
     first_day + Duration::days(days_until_sunday)
