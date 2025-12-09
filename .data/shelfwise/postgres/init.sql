@@ -1,14 +1,17 @@
 -- ShelfWise Retail Analytics Database
--- PostgreSQL initialization script
 
--- Create database if not exists
--- CREATE DATABASE shelfwise;
--- \c shelfwise;
-
--- Enable required extensions
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
--- Drop existing tables if they exist (in reverse dependency order)
+-- Drop tables in reverse dependency order
+DROP TABLE IF EXISTS item_substitutions CASCADE;
+DROP TABLE IF EXISTS order_fulfillment CASCADE;
+DROP TABLE IF EXISTS delivery_assignments CASCADE;
+DROP TABLE IF EXISTS delivery_zones CASCADE;
+DROP TABLE IF EXISTS delivery_drivers CASCADE;
+DROP TABLE IF EXISTS customer_addresses CASCADE;
+DROP TABLE IF EXISTS customer_product_preferences CASCADE;
+DROP TABLE IF EXISTS customer_store_affinity CASCADE;
+DROP TABLE IF EXISTS customers CASCADE;
 DROP TABLE IF EXISTS transactions CASCADE;
 DROP TABLE IF EXISTS waste_spoilage CASCADE;
 DROP TABLE IF EXISTS supplier_shipments CASCADE;
@@ -21,8 +24,6 @@ DROP TABLE IF EXISTS assortment CASCADE;
 DROP TABLE IF EXISTS promotions CASCADE;
 DROP TABLE IF EXISTS stores CASCADE;
 DROP TABLE IF EXISTS products CASCADE;
-
--- Drop reference tables
 DROP TABLE IF EXISTS waste_reasons CASCADE;
 DROP TABLE IF EXISTS return_reasons CASCADE;
 DROP TABLE IF EXISTS promotion_types CASCADE;
@@ -34,10 +35,9 @@ DROP TABLE IF EXISTS categories CASCADE;
 DROP TABLE IF EXISTS regions CASCADE;
 
 -- ============================================================================
--- REFERENCE TABLES (Small lookup tables)
+-- REFERENCE TABLES
 -- ============================================================================
 
--- Regions table
 CREATE TABLE regions (
     region_id SERIAL PRIMARY KEY,
     region_code VARCHAR(20) UNIQUE NOT NULL,
@@ -47,14 +47,6 @@ CREATE TABLE regions (
     description TEXT
 );
 
-INSERT INTO regions (region_code, region_name, country, timezone, description) VALUES
-('west_coast', 'West Coast', 'USA', 'America/Los_Angeles', 'Bay Area core market - company founded here'),
-('southwest', 'Southwest', 'USA', 'America/Phoenix', 'Arizona, Nevada, Colorado expansion'),
-('expansion', 'National Expansion', 'USA', 'America/Chicago', 'Strategic national markets - Austin, Chicago, NYC, Boston, Atlanta, Miami'),
-('international', 'International', 'Multiple', 'UTC', 'Canada and UK test markets'),
-('nationwide', 'Nationwide Online', 'USA', 'America/Los_Angeles', 'Online fulfillment center');
-
--- Categories table
 CREATE TABLE categories (
     category_id SERIAL PRIMARY KEY,
     category_name VARCHAR(50) UNIQUE NOT NULL,
@@ -64,21 +56,6 @@ CREATE TABLE categories (
     elasticity DECIMAL(4,2)
 );
 
-INSERT INTO categories (category_name, category_group, margin_target_pct, is_perishable, elasticity) VALUES
-('cereal', 'dry_goods', 35.00, false, -0.6),
-('dairy', 'refrigerated', 25.00, true, -0.8),
-('snacks', 'dry_goods', 42.00, false, -1.0),
-('beverages', 'dry_goods', 40.00, false, -1.2),
-('produce', 'fresh', 22.00, true, -0.9),
-('household', 'non_food', 52.00, false, -0.4),
-('frozen', 'frozen', 32.00, false, -0.7),
-('bakery', 'fresh', 30.00, true, -0.8),
-('meat', 'fresh', 20.00, true, -0.9),
-('canned', 'dry_goods', 35.00, false, -0.5),
-('personal_care', 'non_food', 55.00, false, -0.6),
-('candy', 'dry_goods', 45.00, false, -1.1);
-
--- Store types table
 CREATE TABLE store_types (
     store_type_id SERIAL PRIMARY KEY,
     store_type_code VARCHAR(20) UNIQUE NOT NULL,
@@ -89,90 +66,15 @@ CREATE TABLE store_types (
     operating_hours INTEGER
 );
 
-INSERT INTO store_types (store_type_code, store_type_name, typical_sq_ft_min, typical_sq_ft_max, typical_sku_count, operating_hours) VALUES
-('online', 'Online Fulfillment Center', 400000, 600000, 400, 24),
-('big_box', 'Big Box Store', 60000, 100000, 360, 14),
-('suburban', 'Suburban Store', 25000, 45000, 280, 12),
-('urban', 'Urban Store', 10000, 20000, 280, 14),
-('convenience', 'Convenience Store', 3000, 8000, 280, 16);
-
--- Brands table
 CREATE TABLE brands (
     brand_id SERIAL PRIMARY KEY,
     brand_name VARCHAR(100) UNIQUE NOT NULL,
     brand_tier VARCHAR(20) NOT NULL,
     manufacturer VARCHAR(100),
-    is_private_label BOOLEAN
+    is_private_label BOOLEAN,
+    brand_popularity DECIMAL(4,2)
 );
 
-INSERT INTO brands (brand_name, brand_tier, manufacturer, is_private_label) VALUES
--- ShelfWise Private Label
-('ShelfWise Select', 'premium', 'ShelfWise', true),
-('ShelfWise Basics', 'value', 'ShelfWise', true),
-('ShelfWise Organic', 'premium', 'ShelfWise', true),
-('ShelfWise Fresh', 'mid', 'ShelfWise', true),
--- Major CPG Manufacturers
-('Kelloggs', 'premium', 'Kellogg Company', false),
-('General Mills', 'premium', 'General Mills Inc', false),
-('Nestle', 'mid', 'Nestle SA', false),
-('Kraft Heinz', 'mid', 'Kraft Heinz Company', false),
-('PepsiCo', 'mid', 'PepsiCo Inc', false),
-('Coca-Cola', 'mid', 'The Coca-Cola Company', false),
-('Unilever', 'premium', 'Unilever PLC', false),
-('Procter & Gamble', 'premium', 'Procter & Gamble Co', false),
-('Campbell Soup', 'mid', 'Campbell Soup Company', false),
-('ConAgra', 'mid', 'Conagra Brands Inc', false),
-('Mondelez', 'mid', 'Mondelez International', false),
-('Mars', 'premium', 'Mars Inc', false),
-('Hershey', 'mid', 'The Hershey Company', false),
-('Frito-Lay', 'mid', 'PepsiCo Inc', false),
-('Quaker', 'mid', 'PepsiCo Inc', false),
-('Dole', 'mid', 'Dole Food Company', false),
-('Del Monte', 'mid', 'Del Monte Foods', false),
-('Tyson Foods', 'mid', 'Tyson Foods Inc', false),
-('Hormel', 'mid', 'Hormel Foods Corp', false),
-('Smithfield', 'value', 'Smithfield Foods', false),
-('Perdue', 'mid', 'Perdue Farms', false),
-('Danone', 'premium', 'Danone SA', false),
-('Chobani', 'premium', 'Chobani LLC', false),
-('Blue Diamond', 'premium', 'Blue Diamond Growers', false),
-('Wonderful', 'premium', 'The Wonderful Company', false),
-('Annies Homegrown', 'premium', 'General Mills Inc', false),
-('Organic Valley', 'premium', 'Organic Valley', false),
-('Horizon Organic', 'premium', 'Danone SA', false),
-('Bobs Red Mill', 'premium', 'Bob''s Red Mill', false),
-('Kind', 'premium', 'Mars Inc', false),
-('Clif Bar', 'premium', 'Mondelez International', false),
-('Nature Valley', 'mid', 'General Mills Inc', false),
-('Nabisco', 'mid', 'Mondelez International', false),
-('Ritz', 'mid', 'Mondelez International', false),
-('Pepperidge Farm', 'premium', 'Campbell Soup Company', false),
-('Barilla', 'mid', 'Barilla Group', false),
-('Hunts', 'value', 'Conagra Brands Inc', false),
-('Progresso', 'mid', 'General Mills Inc', false),
-('Swanson', 'value', 'Campbell Soup Company', false),
-('Green Giant', 'mid', 'B&G Foods', false),
-('Birds Eye', 'mid', 'Conagra Brands Inc', false),
-('Lean Cuisine', 'mid', 'Nestle SA', false),
-('Stouffers', 'mid', 'Nestle SA', false),
-('DiGiorno', 'premium', 'Nestle SA', false),
-('Haagen-Dazs', 'premium', 'General Mills Inc', false),
-('Ben & Jerrys', 'premium', 'Unilever PLC', false),
-('Breyers', 'mid', 'Unilever PLC', false),
-('Dreyers', 'mid', 'Nestle SA', false),
-('PolarSprings', 'mid', 'Nestle SA', false),
-('Dasani', 'mid', 'The Coca-Cola Company', false),
-('Smartwater', 'premium', 'The Coca-Cola Company', false),
-('Fiji', 'premium', 'The Wonderful Company', false),
-('Poland Spring', 'value', 'Nestle SA', false),
-('Gatorade', 'mid', 'PepsiCo Inc', false),
-('Powerade', 'mid', 'The Coca-Cola Company', false),
-('Tropicana', 'premium', 'PepsiCo Inc', false),
-('Simply', 'premium', 'The Coca-Cola Company', false),
-('Minute Maid', 'mid', 'The Coca-Cola Company', false),
-('Ocean Spray', 'mid', 'Ocean Spray Cranberries', false);
-
--- Suppliers table
 CREATE TABLE suppliers (
     supplier_id SERIAL PRIMARY KEY,
     supplier_name VARCHAR(100) UNIQUE NOT NULL,
@@ -182,39 +84,6 @@ CREATE TABLE suppliers (
     payment_terms VARCHAR(50)
 );
 
-INSERT INTO suppliers (supplier_name, supplier_type, lead_time_days, reliability_score, payment_terms) VALUES
-('Kellogg Company Supplier', 'manufacturer', 5, 0.95, 'Net 30'),
-('General Mills Inc Supplier', 'manufacturer', 5, 0.96, 'Net 30'),
-('Nestle SA Supplier', 'manufacturer', 7, 0.94, 'Net 45'),
-('Kraft Heinz Company Supplier', 'manufacturer', 6, 0.93, 'Net 30'),
-('PepsiCo Inc Supplier', 'manufacturer', 4, 0.97, 'Net 30'),
-('The Coca-Cola Company Supplier', 'manufacturer', 4, 0.98, 'Net 30'),
-('Unilever PLC Supplier', 'manufacturer', 8, 0.92, 'Net 45'),
-('Procter & Gamble Co Supplier', 'manufacturer', 7, 0.94, 'Net 45'),
-('Campbell Soup Company Supplier', 'manufacturer', 6, 0.91, 'Net 30'),
-('Conagra Brands Inc Supplier', 'manufacturer', 6, 0.90, 'Net 30'),
-('Mondelez International Supplier', 'manufacturer', 7, 0.93, 'Net 45'),
-('Mars Inc Supplier', 'manufacturer', 8, 0.91, 'Net 45'),
-('The Hershey Company Supplier', 'manufacturer', 5, 0.95, 'Net 30'),
-('Tyson Foods Inc Supplier', 'manufacturer', 3, 0.89, 'Net 15'),
-('Hormel Foods Corp Supplier', 'manufacturer', 4, 0.90, 'Net 15'),
-('Smithfield Foods Supplier', 'manufacturer', 3, 0.88, 'Net 15'),
-('Perdue Farms Supplier', 'manufacturer', 3, 0.89, 'Net 15'),
-('Danone SA Supplier', 'manufacturer', 4, 0.92, 'Net 21'),
-('Chobani LLC Supplier', 'manufacturer', 3, 0.94, 'Net 21'),
-('Blue Diamond Growers Supplier', 'manufacturer', 6, 0.91, 'Net 30'),
-('The Wonderful Company Supplier', 'manufacturer', 5, 0.93, 'Net 30'),
-('Organic Valley Supplier', 'manufacturer', 4, 0.90, 'Net 21'),
-('Bob''s Red Mill Supplier', 'manufacturer', 7, 0.89, 'Net 30'),
-('Barilla Group Supplier', 'manufacturer', 10, 0.87, 'Net 45'),
-('B&G Foods Supplier', 'manufacturer', 8, 0.88, 'Net 30'),
-('Ocean Spray Cranberries Supplier', 'manufacturer', 5, 0.92, 'Net 30'),
-('ShelfWise Private Label Supplier', 'private_label', 6, 0.94, 'Net 30'),
-('Regional Produce Distributor', 'distributor', 2, 0.85, 'Net 7'),
-('Regional Dairy Distributor', 'distributor', 2, 0.87, 'Net 7'),
-('Regional Meat Distributor', 'distributor', 1, 0.86, 'Net 7');
-
--- Payment methods table
 CREATE TABLE payment_methods (
     payment_method_id SERIAL PRIMARY KEY,
     payment_method_code VARCHAR(20) UNIQUE NOT NULL,
@@ -223,17 +92,6 @@ CREATE TABLE payment_methods (
     is_active BOOLEAN
 );
 
-INSERT INTO payment_methods (payment_method_code, payment_method_name, processing_fee_pct, is_active) VALUES
-('credit', 'Credit Card', 2.500, true),
-('debit', 'Debit Card', 1.500, true),
-('cash', 'Cash', 0.000, true),
-('mobile_pay', 'Mobile Payment', 2.200, true),
-('gift_card', 'Gift Card', 0.000, true),
-('ebt', 'EBT/SNAP', 0.500, true),
-('check', 'Check', 0.750, false),
-('crypto', 'Cryptocurrency', 1.000, false);
-
--- Promotion types table
 CREATE TABLE promotion_types (
     promo_type_id SERIAL PRIMARY KEY,
     promo_type_code VARCHAR(50) UNIQUE NOT NULL,
@@ -242,17 +100,6 @@ CREATE TABLE promotion_types (
     typical_duration_days INTEGER
 );
 
-INSERT INTO promotion_types (promo_type_code, promo_type_name, typical_discount_pct, typical_duration_days) VALUES
-('price_cut', 'Price Reduction', 20, 14),
-('bogo', 'Buy One Get One', 50, 7),
-('bundle', 'Bundle Deal', 15, 14),
-('loyalty', 'Loyalty Member Exclusive', 10, 30),
-('clearance', 'Clearance Sale', 40, 30),
-('seasonal', 'Seasonal Promotion', 25, 21),
-('flash_sale', 'Flash Sale', 30, 3),
-('new_product', 'New Product Introduction', 15, 14);
-
--- Return reasons table
 CREATE TABLE return_reasons (
     return_reason_id SERIAL PRIMARY KEY,
     return_reason_code VARCHAR(50) UNIQUE NOT NULL,
@@ -261,19 +108,6 @@ CREATE TABLE return_reasons (
     is_preventable BOOLEAN
 );
 
-INSERT INTO return_reasons (return_reason_code, return_reason_name, is_quality_issue, is_preventable) VALUES
-('defective', 'Defective Product', true, true),
-('wrong_item', 'Wrong Item Received', false, true),
-('expired', 'Expired Product', true, true),
-('damaged', 'Damaged in Transit', true, true),
-('changed_mind', 'Customer Changed Mind', false, false),
-('not_as_described', 'Not As Described', false, true),
-('allergic_reaction', 'Allergic Reaction', false, false),
-('duplicate_purchase', 'Duplicate Purchase', false, false),
-('gift_return', 'Gift Return', false, false),
-('price_match', 'Price Match Request', false, false);
-
--- Waste reasons table
 CREATE TABLE waste_reasons (
     waste_reason_id SERIAL PRIMARY KEY,
     waste_reason_code VARCHAR(50) UNIQUE NOT NULL,
@@ -281,21 +115,10 @@ CREATE TABLE waste_reasons (
     is_preventable BOOLEAN
 );
 
-INSERT INTO waste_reasons (waste_reason_code, waste_reason_name, is_preventable) VALUES
-('expired', 'Expired/Past Sell-By Date', true),
-('damaged', 'Damaged Product', true),
-('recalled', 'Product Recall', false),
-('overstocked', 'Overstocked/Slow Moving', true),
-('display_damage', 'Display/Shelf Damage', true),
-('temperature_abuse', 'Temperature Abuse', true),
-('pest_contamination', 'Pest Contamination', true),
-('customer_damage', 'Customer Damaged', false);
-
 -- ============================================================================
 -- MAIN TABLES
 -- ============================================================================
 
--- Products table
 CREATE TABLE products (
     product_id INTEGER PRIMARY KEY,
     sku VARCHAR(50) UNIQUE NOT NULL,
@@ -313,7 +136,6 @@ CREATE TABLE products (
     pareto_weight DECIMAL(20,18)
 );
 
--- Stores table
 CREATE TABLE stores (
     store_id INTEGER PRIMARY KEY,
     region VARCHAR(20) NOT NULL,
@@ -326,7 +148,167 @@ CREATE TABLE stores (
     longitude DECIMAL(10, 6)
 );
 
--- Promotions table
+-- ============================================================================
+-- CUSTOMER TABLES
+-- ============================================================================
+
+CREATE TABLE customers (
+    customer_id BIGINT PRIMARY KEY,
+    email VARCHAR(255) UNIQUE,
+    phone VARCHAR(20),
+    first_name VARCHAR(100),
+    last_name VARCHAR(100),
+    
+    -- Demographics
+    age_bracket VARCHAR(20),
+    household_size INTEGER,
+    income_bracket VARCHAR(20),
+    
+    -- Geographic affinity
+    primary_store_id INTEGER REFERENCES stores(store_id),
+    primary_city VARCHAR(100),
+    home_latitude DECIMAL(10, 6),
+    home_longitude DECIMAL(10, 6),
+    
+    -- Loyalty program
+    loyalty_member BOOLEAN DEFAULT FALSE,
+    loyalty_tier VARCHAR(20),
+    loyalty_join_date DATE,
+    loyalty_points INTEGER DEFAULT 0,
+    
+    -- Shopping preferences
+    preferred_shopping_time VARCHAR(20),
+    avg_basket_size DECIMAL(6,2),
+    price_sensitivity VARCHAR(20),
+    
+    -- Behavioral segments
+    customer_segment VARCHAR(30),
+    
+    -- Metadata
+    created_date DATE NOT NULL,
+    last_purchase_date DATE,
+    total_lifetime_value DECIMAL(12,2) DEFAULT 0,
+    total_visits INTEGER DEFAULT 0,
+    
+    -- Online behavior
+    has_online_account BOOLEAN DEFAULT FALSE,
+    prefers_online BOOLEAN DEFAULT FALSE
+);
+
+CREATE TABLE customer_store_affinity (
+    customer_id BIGINT REFERENCES customers(customer_id),
+    store_id INTEGER REFERENCES stores(store_id),
+    affinity_score DECIMAL(4,3),
+    first_visit_date DATE,
+    last_visit_date DATE,
+    visit_count INTEGER DEFAULT 0,
+    PRIMARY KEY (customer_id, store_id)
+);
+
+CREATE TABLE customer_product_preferences (
+    customer_id BIGINT REFERENCES customers(customer_id),
+    category VARCHAR(50),
+    brand VARCHAR(100),
+    preference_score DECIMAL(4,3),
+    last_purchased_date DATE,
+    purchase_count INTEGER DEFAULT 0,
+    PRIMARY KEY (customer_id, category, brand)
+);
+
+CREATE TABLE customer_addresses (
+    address_id BIGINT PRIMARY KEY,
+    customer_id BIGINT REFERENCES customers(customer_id),
+    address_type VARCHAR(20),
+    is_default BOOLEAN DEFAULT FALSE,
+    street_address VARCHAR(255),
+    apartment_unit VARCHAR(50),
+    city VARCHAR(100),
+    state VARCHAR(2),
+    zip_code VARCHAR(10),
+    latitude DECIMAL(10, 6),
+    longitude DECIMAL(10, 6),
+    delivery_instructions TEXT,
+    has_doorman BOOLEAN DEFAULT FALSE,
+    requires_signature BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP,
+    last_used_at TIMESTAMP,
+    delivery_count INTEGER DEFAULT 0
+);
+
+-- ============================================================================
+-- DELIVERY & FULFILLMENT TABLES
+-- ============================================================================
+
+CREATE TABLE delivery_drivers (
+    driver_id BIGINT PRIMARY KEY,
+    first_name VARCHAR(100),
+    last_name VARCHAR(100),
+    phone VARCHAR(20),
+    email VARCHAR(255),
+    
+    -- Driver type
+    driver_type VARCHAR(30),
+    employment_status VARCHAR(20),
+    
+    -- Service area
+    primary_store_id INTEGER REFERENCES stores(store_id),
+    service_radius_miles DECIMAL(5,2),
+    service_cities TEXT,
+    
+    -- Vehicle info
+    vehicle_type VARCHAR(30),
+    vehicle_capacity_items INTEGER,
+    has_insulated_bags BOOLEAN,
+    
+    -- Performance metrics
+    total_deliveries INTEGER DEFAULT 0,
+    avg_rating DECIMAL(3,2),
+    on_time_delivery_pct DECIMAL(5,2),
+    acceptance_rate DECIMAL(5,2),
+    cancellation_rate DECIMAL(5,2),
+    
+    -- Availability
+    is_available BOOLEAN DEFAULT TRUE,
+    current_latitude DECIMAL(10, 6),
+    current_longitude DECIMAL(10, 6),
+    last_location_update TIMESTAMP,
+    
+    -- Dates
+    hire_date DATE,
+    last_delivery_date DATE,
+    
+    -- Compensation
+    base_pay_per_delivery DECIMAL(6,2),
+    mileage_rate DECIMAL(4,2),
+    avg_tips_per_delivery DECIMAL(6,2)
+);
+
+CREATE TABLE delivery_zones (
+    zone_id SERIAL PRIMARY KEY,
+    zone_name VARCHAR(100),
+    store_id INTEGER REFERENCES stores(store_id),
+    
+    -- Geographic boundary
+    center_latitude DECIMAL(10, 6),
+    center_longitude DECIMAL(10, 6),
+    radius_miles DECIMAL(5,2),
+    
+    -- Service parameters
+    delivery_fee DECIMAL(6,2),
+    min_order_amount DECIMAL(8,2),
+    free_delivery_threshold DECIMAL(8,2),
+    estimated_delivery_time_minutes INTEGER,
+    
+    -- Availability
+    is_active BOOLEAN DEFAULT TRUE,
+    service_hours_start TIME,
+    service_hours_end TIME,
+    
+    -- Demand
+    avg_daily_orders INTEGER,
+    peak_hours TEXT
+);
+
 CREATE TABLE promotions (
     promo_id INTEGER PRIMARY KEY,
     sku VARCHAR(50) NOT NULL,
@@ -340,7 +322,6 @@ CREATE TABLE promotions (
     supplier_funding_usd DECIMAL(10,2) DEFAULT 0
 );
 
--- Assortment table
 CREATE TABLE assortment (
     store_id INTEGER NOT NULL,
     sku VARCHAR(50) NOT NULL,
@@ -351,7 +332,6 @@ CREATE TABLE assortment (
     PRIMARY KEY (store_id, sku, active_from)
 );
 
--- Inventory daily table
 CREATE TABLE inventory_daily (
     date DATE NOT NULL,
     store_id INTEGER NOT NULL,
@@ -370,7 +350,6 @@ CREATE TABLE inventory_daily (
     PRIMARY KEY (date, store_id, sku)
 );
 
--- Sales daily table
 CREATE TABLE sales_daily (
     date DATE NOT NULL,
     store_id INTEGER NOT NULL,
@@ -386,14 +365,13 @@ CREATE TABLE sales_daily (
     promo_funding_received DECIMAL(10,2) DEFAULT 0,
     gross_margin_pct DECIMAL(5,2),
     discount_pct DECIMAL(5,2) DEFAULT 0,
-    cogs_c DECIMAL(12,2) DEFAULT 0,  -- Ambiguous: COGS calculated (standard average cost method)
-    cogs_s DECIMAL(12,2) DEFAULT 0,  -- Ambiguous: COGS with shrinkage (includes theft/damage/spoilage adjustments)
+    cogs_c DECIMAL(12,2) DEFAULT 0,
+    cogs_s DECIMAL(12,2) DEFAULT 0,
     sales_date DATE NOT NULL,
     posting_date DATE NOT NULL,
     PRIMARY KEY (date, store_id, sku)
 );
 
--- Returns daily table
 CREATE TABLE returns_daily (
     date DATE NOT NULL,
     store_id INTEGER NOT NULL,
@@ -404,7 +382,6 @@ CREATE TABLE returns_daily (
     PRIMARY KEY (date, store_id, sku)
 );
 
--- Tickets table
 CREATE TABLE tickets (
     ticket_id INTEGER PRIMARY KEY,
     created_at TIMESTAMP NOT NULL,
@@ -417,7 +394,6 @@ CREATE TABLE tickets (
     resolved BOOLEAN NOT NULL DEFAULT FALSE
 );
 
--- Supplier shipments table
 CREATE TABLE supplier_shipments (
     shipment_id INTEGER PRIMARY KEY,
     shipment_date DATE NOT NULL,
@@ -431,7 +407,6 @@ CREATE TABLE supplier_shipments (
     shipment_status VARCHAR(20)
 );
 
--- Price changes table
 CREATE TABLE price_changes (
     change_id INTEGER PRIMARY KEY,
     effective_date DATE NOT NULL,
@@ -441,7 +416,6 @@ CREATE TABLE price_changes (
     reason VARCHAR(30) NOT NULL
 );
 
--- Waste and spoilage table
 CREATE TABLE waste_spoilage (
     waste_id INTEGER PRIMARY KEY,
     date DATE NOT NULL,
@@ -453,8 +427,6 @@ CREATE TABLE waste_spoilage (
     recorded_by VARCHAR(50)
 );
 
--- Transactions table (customer basket summary)
--- Column order matches Rust CSV output
 CREATE TABLE transactions (
     transaction_id BIGINT PRIMARY KEY,
     date DATE NOT NULL,
@@ -463,27 +435,157 @@ CREATE TABLE transactions (
     total_items INTEGER NOT NULL,
     payment_method VARCHAR(20) NOT NULL,
     customer_type VARCHAR(20) NOT NULL,
-    total_amount DECIMAL(10,2) NOT NULL
+    total_amount DECIMAL(10,2) NOT NULL,
+    
+    -- Customer tracking (optional - only for tracked transactions)
+    customer_id BIGINT REFERENCES customers(customer_id),
+    is_loyalty_transaction BOOLEAN DEFAULT FALSE,
+    loyalty_points_earned INTEGER DEFAULT 0,
+    loyalty_points_redeemed INTEGER DEFAULT 0,
+    
+    -- Delivery/fulfillment (optional - only for online orders)
+    fulfillment_type VARCHAR(30),
+    order_status VARCHAR(30),
+    fulfillment_store_id INTEGER REFERENCES stores(store_id),
+    delivery_address_id BIGINT REFERENCES customer_addresses(address_id),
+    delivery_fee DECIMAL(6,2) DEFAULT 0,
+    tip_amount DECIMAL(6,2) DEFAULT 0,
+    delivery_instructions TEXT,
+    requested_delivery_time TIMESTAMP,
+    actual_delivery_time TIMESTAMP
 );
 
--- Copy data from CSV files
--- All CSV files are in the same directory as this SQL file
+CREATE TABLE delivery_assignments (
+    assignment_id BIGINT PRIMARY KEY,
+    transaction_id BIGINT REFERENCES transactions(transaction_id),
+    driver_id BIGINT REFERENCES delivery_drivers(driver_id),
+    
+    -- Assignment lifecycle
+    assigned_at TIMESTAMP NOT NULL,
+    accepted_at TIMESTAMP,
+    picked_up_at TIMESTAMP,
+    delivered_at TIMESTAMP,
+    cancelled_at TIMESTAMP,
+    
+    -- Status tracking
+    assignment_status VARCHAR(30),
+    cancellation_reason VARCHAR(100),
+    
+    -- Logistics
+    pickup_store_id INTEGER REFERENCES stores(store_id),
+    estimated_pickup_time TIMESTAMP,
+    actual_pickup_time TIMESTAMP,
+    estimated_delivery_time TIMESTAMP,
+    actual_delivery_time TIMESTAMP,
+    
+    -- Distance and time
+    distance_miles DECIMAL(6,2),
+    estimated_duration_minutes INTEGER,
+    actual_duration_minutes INTEGER,
+    
+    -- Compensation
+    driver_pay DECIMAL(6,2),
+    driver_tip DECIMAL(6,2),
+    driver_total_earnings DECIMAL(6,2),
+    
+    -- Quality
+    customer_rating INTEGER,
+    driver_notes TEXT,
+    customer_feedback TEXT
+);
+
+CREATE TABLE order_fulfillment (
+    fulfillment_id BIGINT PRIMARY KEY,
+    transaction_id BIGINT REFERENCES transactions(transaction_id),
+    store_id INTEGER REFERENCES stores(store_id),
+    
+    -- Picker
+    picker_id BIGINT,
+    picker_name VARCHAR(100),
+    
+    -- Picking process
+    picking_started_at TIMESTAMP,
+    picking_completed_at TIMESTAMP,
+    picking_duration_minutes INTEGER,
+    
+    -- Item tracking
+    total_items_ordered INTEGER,
+    items_found INTEGER,
+    items_substituted INTEGER,
+    items_out_of_stock INTEGER,
+    
+    -- Quality metrics
+    picking_accuracy_pct DECIMAL(5,2),
+    customer_approved_substitutions BOOLEAN,
+    
+    -- Staging
+    staged_at TIMESTAMP,
+    staging_location VARCHAR(50),
+    
+    -- Notes
+    picker_notes TEXT,
+    substitution_notes TEXT
+);
+
+CREATE TABLE item_substitutions (
+    substitution_id BIGINT PRIMARY KEY,
+    transaction_id BIGINT REFERENCES transactions(transaction_id),
+    original_sku VARCHAR(50) REFERENCES products(sku),
+    substitute_sku VARCHAR(50) REFERENCES products(sku),
+    
+    -- Reason and approval
+    substitution_reason VARCHAR(50),
+    customer_approved BOOLEAN,
+    approved_at TIMESTAMP,
+    
+    -- Pricing
+    original_price DECIMAL(10,2),
+    substitute_price DECIMAL(10,2),
+    price_difference DECIMAL(10,2),
+    
+    -- Quality
+    substitution_quality VARCHAR(20)
+);
+
+-- ============================================================================
+-- LOAD DATA FROM CSV FILES
+-- ============================================================================
+
+\COPY regions FROM '/docker-entrypoint-initdb.d/regions.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
+\COPY categories FROM '/docker-entrypoint-initdb.d/categories.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
+\COPY store_types FROM '/docker-entrypoint-initdb.d/store_types.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
+\COPY brands FROM '/docker-entrypoint-initdb.d/brands.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
+\COPY suppliers FROM '/docker-entrypoint-initdb.d/suppliers.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
+\COPY payment_methods FROM '/docker-entrypoint-initdb.d/payment_methods.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
+\COPY promotion_types FROM '/docker-entrypoint-initdb.d/promotion_types.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
+\COPY return_reasons FROM '/docker-entrypoint-initdb.d/return_reasons.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
+\COPY waste_reasons FROM '/docker-entrypoint-initdb.d/waste_reasons.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
 \COPY products FROM '/docker-entrypoint-initdb.d/products.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
 \COPY stores FROM '/docker-entrypoint-initdb.d/stores.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
+\COPY customers FROM '/docker-entrypoint-initdb.d/customers.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
+\COPY customer_store_affinity FROM '/docker-entrypoint-initdb.d/customer_store_affinity.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
+\COPY customer_product_preferences FROM '/docker-entrypoint-initdb.d/customer_product_preferences.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
+\COPY customer_addresses FROM '/docker-entrypoint-initdb.d/customer_addresses.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
+\COPY delivery_drivers FROM '/docker-entrypoint-initdb.d/delivery_drivers.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
+\COPY delivery_zones FROM '/docker-entrypoint-initdb.d/delivery_zones.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
 \COPY promotions FROM '/docker-entrypoint-initdb.d/promotions.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
 \COPY assortment FROM '/docker-entrypoint-initdb.d/assortment.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
 \COPY inventory_daily FROM '/docker-entrypoint-initdb.d/inventory_daily.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
 \COPY sales_daily FROM '/docker-entrypoint-initdb.d/sales_daily.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
+\COPY returns_daily FROM '/docker-entrypoint-initdb.d/returns_daily.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
 \COPY supplier_shipments FROM '/docker-entrypoint-initdb.d/supplier_shipments.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
 \COPY waste_spoilage FROM '/docker-entrypoint-initdb.d/waste_spoilage.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
--- Import additional tables with generated data
 \COPY price_changes FROM '/docker-entrypoint-initdb.d/price_changes.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
 \COPY tickets FROM '/docker-entrypoint-initdb.d/tickets.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
-\COPY returns_daily FROM '/docker-entrypoint-initdb.d/returns_daily.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
--- Import transaction data AFTER table is created
 \COPY transactions FROM '/docker-entrypoint-initdb.d/transactions.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
+\COPY delivery_assignments FROM '/docker-entrypoint-initdb.d/delivery_assignments.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
+\COPY order_fulfillment FROM '/docker-entrypoint-initdb.d/order_fulfillment.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
+\COPY item_substitutions FROM '/docker-entrypoint-initdb.d/item_substitutions.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
 
--- Add foreign key constraints after data is loaded
+-- ============================================================================
+-- FOREIGN KEY CONSTRAINTS
+-- ============================================================================
+
 ALTER TABLE promotions ADD CONSTRAINT fk_promotions_sku 
     FOREIGN KEY (sku) REFERENCES products(sku);
 
@@ -502,13 +604,11 @@ ALTER TABLE sales_daily ADD CONSTRAINT fk_sales_store
 ALTER TABLE sales_daily ADD CONSTRAINT fk_sales_sku
     FOREIGN KEY (sku) REFERENCES products(sku);
 
--- Re-enable FK constraints for returns_daily (table now has data)
 ALTER TABLE returns_daily ADD CONSTRAINT fk_returns_store
     FOREIGN KEY (store_id) REFERENCES stores(store_id);
 ALTER TABLE returns_daily ADD CONSTRAINT fk_returns_sku
     FOREIGN KEY (sku) REFERENCES products(sku);
 
--- Re-enable FK constraints for tickets (table now has data)
 ALTER TABLE tickets ADD CONSTRAINT fk_tickets_store
     FOREIGN KEY (store_id) REFERENCES stores(store_id);
 ALTER TABLE tickets ADD CONSTRAINT fk_tickets_sku
@@ -524,14 +624,15 @@ ALTER TABLE waste_spoilage ADD CONSTRAINT fk_waste_store
 ALTER TABLE waste_spoilage ADD CONSTRAINT fk_waste_sku
     FOREIGN KEY (sku) REFERENCES products(sku);
 
--- Re-enable FK constraints for price_changes (table now has data)
 ALTER TABLE price_changes ADD CONSTRAINT fk_price_store
     FOREIGN KEY (store_id) REFERENCES stores(store_id);
 ALTER TABLE price_changes ADD CONSTRAINT fk_price_sku
     FOREIGN KEY (sku) REFERENCES products(sku);
 
--- Create indexes for performance
--- Primary table indexes
+-- ============================================================================
+-- INDEXES
+-- ============================================================================
+
 CREATE INDEX idx_sales_date ON sales_daily(date);
 CREATE INDEX idx_sales_store ON sales_daily(store_id);
 CREATE INDEX idx_sales_sku ON sales_daily(sku);
@@ -545,60 +646,101 @@ CREATE INDEX idx_tickets_store ON tickets(store_id);
 CREATE INDEX idx_tickets_created ON tickets(created_at);
 CREATE INDEX idx_price_changes_date ON price_changes(effective_date);
 
--- Additional strategic indexes for common query patterns
--- Composite indexes for date range queries with store/sku filters
 CREATE INDEX idx_sales_date_store_sku ON sales_daily(date, store_id, sku);
 CREATE INDEX idx_inventory_date_store_sku ON inventory_daily(date, store_id, sku);
 
--- Index for returns analysis
 CREATE INDEX idx_returns_date ON returns_daily(date);
 CREATE INDEX idx_returns_store ON returns_daily(store_id);
 CREATE INDEX idx_returns_sku ON returns_daily(sku);
 CREATE INDEX idx_returns_reason ON returns_daily(reason_code);
 
--- Index for waste/spoilage tracking
 CREATE INDEX idx_waste_date ON waste_spoilage(date);
 CREATE INDEX idx_waste_store ON waste_spoilage(store_id);
 CREATE INDEX idx_waste_sku ON waste_spoilage(sku);
 CREATE INDEX idx_waste_reason ON waste_spoilage(waste_reason);
 
--- Index for supplier shipments tracking
 CREATE INDEX idx_shipments_delivery_date ON supplier_shipments(delivery_date);
 CREATE INDEX idx_shipments_store ON supplier_shipments(store_id);
 CREATE INDEX idx_shipments_sku ON supplier_shipments(sku);
 CREATE INDEX idx_shipments_status ON supplier_shipments(shipment_status);
 
--- Index for price changes by SKU
 CREATE INDEX idx_price_changes_sku ON price_changes(sku);
 
--- Index for tickets resolution tracking
 CREATE INDEX idx_tickets_resolved ON tickets(resolved);
 CREATE INDEX idx_tickets_issue_type ON tickets(issue_type);
 
--- Index for assortment lookups
 CREATE INDEX idx_assortment_store ON assortment(store_id);
 CREATE INDEX idx_assortment_sku ON assortment(sku);
 CREATE INDEX idx_assortment_dates ON assortment(active_from, active_to);
 
--- Index for product category queries
 CREATE INDEX idx_products_category ON products(category);
 CREATE INDEX idx_products_brand ON products(brand);
 
--- Index for store queries by region and type
 CREATE INDEX idx_stores_region ON stores(region);
 CREATE INDEX idx_stores_type ON stores(store_type);
 
--- Partial indexes for common filters (more efficient for specific queries)
 CREATE INDEX idx_tickets_unresolved ON tickets(store_id, created_at) WHERE resolved = FALSE;
-
--- Create transaction indexes
 CREATE INDEX idx_transactions_date ON transactions(date);
 CREATE INDEX idx_transactions_store ON transactions(store_id);
 CREATE INDEX idx_transactions_timestamp ON transactions(timestamp);
 
 CREATE INDEX idx_promotions_active ON promotions(sku, start_date, end_date) WHERE ad_feature = TRUE;
 
--- Read-only user setup
+-- Customer indexes
+CREATE INDEX idx_customers_email ON customers(email);
+CREATE INDEX idx_customers_primary_store ON customers(primary_store_id);
+CREATE INDEX idx_customers_segment ON customers(customer_segment);
+CREATE INDEX idx_customers_loyalty_member ON customers(loyalty_member);
+CREATE INDEX idx_customers_loyalty_tier ON customers(loyalty_tier);
+CREATE INDEX idx_customers_created_date ON customers(created_date);
+CREATE INDEX idx_customers_city ON customers(primary_city);
+
+CREATE INDEX idx_customer_affinity_customer ON customer_store_affinity(customer_id);
+CREATE INDEX idx_customer_affinity_store ON customer_store_affinity(store_id);
+CREATE INDEX idx_customer_affinity_score ON customer_store_affinity(affinity_score DESC);
+
+CREATE INDEX idx_customer_prefs_customer ON customer_product_preferences(customer_id);
+CREATE INDEX idx_customer_prefs_category ON customer_product_preferences(category);
+CREATE INDEX idx_customer_prefs_brand ON customer_product_preferences(brand);
+
+CREATE INDEX idx_customer_addresses_customer ON customer_addresses(customer_id);
+CREATE INDEX idx_customer_addresses_default ON customer_addresses(customer_id, is_default) WHERE is_default = TRUE;
+CREATE INDEX idx_customer_addresses_city ON customer_addresses(city);
+
+-- Transaction customer indexes
+CREATE INDEX idx_transactions_customer ON transactions(customer_id);
+CREATE INDEX idx_transactions_loyalty ON transactions(customer_id, is_loyalty_transaction) WHERE is_loyalty_transaction = TRUE;
+CREATE INDEX idx_transactions_fulfillment_type ON transactions(fulfillment_type);
+CREATE INDEX idx_transactions_order_status ON transactions(order_status);
+
+-- Delivery indexes
+CREATE INDEX idx_delivery_drivers_store ON delivery_drivers(primary_store_id);
+CREATE INDEX idx_delivery_drivers_type ON delivery_drivers(driver_type);
+CREATE INDEX idx_delivery_drivers_status ON delivery_drivers(employment_status);
+CREATE INDEX idx_delivery_drivers_available ON delivery_drivers(is_available, primary_store_id) WHERE is_available = TRUE;
+CREATE INDEX idx_delivery_drivers_rating ON delivery_drivers(avg_rating DESC);
+
+CREATE INDEX idx_delivery_zones_store ON delivery_zones(store_id);
+CREATE INDEX idx_delivery_zones_active ON delivery_zones(is_active, store_id) WHERE is_active = TRUE;
+
+CREATE INDEX idx_delivery_assignments_transaction ON delivery_assignments(transaction_id);
+CREATE INDEX idx_delivery_assignments_driver ON delivery_assignments(driver_id);
+CREATE INDEX idx_delivery_assignments_status ON delivery_assignments(assignment_status);
+CREATE INDEX idx_delivery_assignments_assigned_at ON delivery_assignments(assigned_at);
+CREATE INDEX idx_delivery_assignments_delivered_at ON delivery_assignments(delivered_at);
+
+CREATE INDEX idx_order_fulfillment_transaction ON order_fulfillment(transaction_id);
+CREATE INDEX idx_order_fulfillment_store ON order_fulfillment(store_id);
+CREATE INDEX idx_order_fulfillment_started ON order_fulfillment(picking_started_at);
+
+CREATE INDEX idx_item_substitutions_transaction ON item_substitutions(transaction_id);
+CREATE INDEX idx_item_substitutions_original_sku ON item_substitutions(original_sku);
+CREATE INDEX idx_item_substitutions_substitute_sku ON item_substitutions(substitute_sku);
+
+-- ============================================================================
+-- READ-ONLY USER FOR PROMPTQL
+-- ============================================================================
+
 CREATE USER shelfwise_readonly WITH PASSWORD '${READONLY_PASSWORD:-readonly_password}';
 GRANT CONNECT ON DATABASE shelfwise TO shelfwise_readonly;
 GRANT USAGE ON SCHEMA public TO shelfwise_readonly;
@@ -607,4 +749,4 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO shelfwise_re
 GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO shelfwise_readonly;
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT USAGE ON SEQUENCES TO shelfwise_readonly;
 REVOKE INSERT, UPDATE, DELETE, TRUNCATE ON ALL TABLES IN SCHEMA public FROM shelfwise_readonly;
-COMMENT ON ROLE shelfwise_readonly IS 'Read-only user for analytics, reporting, and Hasura DDN connectors';
+COMMENT ON ROLE shelfwise_readonly IS 'Read-only user for PromptQL queries and analytics';

@@ -2,6 +2,12 @@ use crate::models::*;
 use chrono::{Datelike, NaiveDate};
 use rand::Rng;
 use std::collections::HashMap;
+use std::sync::OnceLock;
+
+// Cache holiday lifts as static data (built once, used millions of times)
+static US_HOLIDAY_LIFTS: OnceLock<HashMap<&'static str, HashMap<&'static str, f64>>> = OnceLock::new();
+static CANADA_HOLIDAY_LIFTS: OnceLock<HashMap<&'static str, HashMap<&'static str, f64>>> = OnceLock::new();
+static UK_HOLIDAY_LIFTS: OnceLock<HashMap<&'static str, HashMap<&'static str, f64>>> = OnceLock::new();
 
 pub struct DemandCalculator<'a> {
     pub categories: &'a HashMap<String, CategoryConfig>,
@@ -137,23 +143,20 @@ impl<'a> DemandCalculator<'a> {
             }
         }
 
-        // Holiday lift
+        // Holiday lift (using cached static data)
         if let Some(cal) = self.calendar.get(&date) {
             let (event, holiday_lifts) = if store.region == "international" {
-                if store.city.contains("ON") || store.city.contains("BC") || 
+                if store.city.contains("ON") || store.city.contains("BC") ||
                    store.city.contains("QC") || store.city.contains("Toronto") ||
                    store.city.contains("Vancouver") || store.city.contains("Montreal") {
-                    let lifts = get_canada_holiday_lifts();
-                    (cal.event_name_canada.as_ref(), lifts)
+                    (cal.event_name_canada.as_ref(), CANADA_HOLIDAY_LIFTS.get_or_init(build_canada_holiday_lifts))
                 } else if store.city.contains("UK") || store.city.contains("London") {
-                    let lifts = get_uk_holiday_lifts();
-                    (cal.event_name_uk.as_ref(), lifts)
+                    (cal.event_name_uk.as_ref(), UK_HOLIDAY_LIFTS.get_or_init(build_uk_holiday_lifts))
                 } else {
-                    (None, HashMap::new())
+                    (None, &HashMap::new())
                 }
             } else {
-                let lifts = get_us_holiday_lifts();
-                (cal.event_name_us.as_ref(), lifts)
+                (cal.event_name_us.as_ref(), US_HOLIDAY_LIFTS.get_or_init(build_us_holiday_lifts))
             };
 
             if let Some(event_name) = event {
@@ -272,7 +275,7 @@ impl<'a> DemandCalculator<'a> {
     }
 }
 
-fn get_us_holiday_lifts() -> HashMap<&'static str, HashMap<&'static str, f64>> {
+fn build_us_holiday_lifts() -> HashMap<&'static str, HashMap<&'static str, f64>> {
     let mut lifts = HashMap::new();
     
     let mut thanksgiving = HashMap::new();
@@ -321,7 +324,7 @@ fn get_us_holiday_lifts() -> HashMap<&'static str, HashMap<&'static str, f64>> {
     lifts
 }
 
-fn get_canada_holiday_lifts() -> HashMap<&'static str, HashMap<&'static str, f64>> {
+fn build_canada_holiday_lifts() -> HashMap<&'static str, HashMap<&'static str, f64>> {
     let mut lifts = HashMap::new();
     
     let mut thanksgiving = HashMap::new();
@@ -364,7 +367,7 @@ fn get_canada_holiday_lifts() -> HashMap<&'static str, HashMap<&'static str, f64
     lifts
 }
 
-fn get_uk_holiday_lifts() -> HashMap<&'static str, HashMap<&'static str, f64>> {
+fn build_uk_holiday_lifts() -> HashMap<&'static str, HashMap<&'static str, f64>> {
     let mut lifts = HashMap::new();
     
     let mut christmas = HashMap::new();
