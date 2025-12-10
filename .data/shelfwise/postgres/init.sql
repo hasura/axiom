@@ -2,15 +2,24 @@
 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
+-- ============================================================================
+-- PERFORMANCE SETTINGS FOR DATA LOADING
+-- ============================================================================
+-- Disable autovacuum during bulk data load to improve performance
+ALTER SYSTEM SET autovacuum = off;
+
+-- Set synchronous_commit to off for faster writes during data load
+-- This trades durability for speed - acceptable during initial load
+ALTER SYSTEM SET synchronous_commit = off;
+
+-- Reload configuration to apply settings
+SELECT pg_reload_conf();
+
 -- Drop tables in reverse dependency order
-DROP TABLE IF EXISTS item_substitutions CASCADE;
-DROP TABLE IF EXISTS order_fulfillment CASCADE;
 DROP TABLE IF EXISTS delivery_assignments CASCADE;
 DROP TABLE IF EXISTS delivery_zones CASCADE;
 DROP TABLE IF EXISTS delivery_drivers CASCADE;
 DROP TABLE IF EXISTS customer_addresses CASCADE;
-DROP TABLE IF EXISTS customer_product_preferences CASCADE;
-DROP TABLE IF EXISTS customer_store_affinity CASCADE;
 DROP TABLE IF EXISTS customers CASCADE;
 DROP TABLE IF EXISTS transactions CASCADE;
 DROP TABLE IF EXISTS waste_spoilage CASCADE;
@@ -193,26 +202,6 @@ CREATE TABLE customers (
     -- Online behavior
     has_online_account BOOLEAN DEFAULT FALSE,
     prefers_online BOOLEAN DEFAULT FALSE
-);
-
-CREATE TABLE customer_store_affinity (
-    customer_id BIGINT REFERENCES customers(customer_id),
-    store_id INTEGER REFERENCES stores(store_id),
-    affinity_score DECIMAL(4,3),
-    first_visit_date DATE,
-    last_visit_date DATE,
-    visit_count INTEGER DEFAULT 0,
-    PRIMARY KEY (customer_id, store_id)
-);
-
-CREATE TABLE customer_product_preferences (
-    customer_id BIGINT REFERENCES customers(customer_id),
-    category VARCHAR(50),
-    brand VARCHAR(100),
-    preference_score DECIMAL(4,3),
-    last_purchased_date DATE,
-    purchase_count INTEGER DEFAULT 0,
-    PRIMARY KEY (customer_id, category, brand)
 );
 
 CREATE TABLE customer_addresses (
@@ -494,59 +483,6 @@ CREATE TABLE delivery_assignments (
     customer_feedback TEXT
 );
 
-CREATE TABLE order_fulfillment (
-    fulfillment_id BIGINT PRIMARY KEY,
-    transaction_id BIGINT REFERENCES transactions(transaction_id),
-    store_id INTEGER REFERENCES stores(store_id),
-    
-    -- Picker
-    picker_id BIGINT,
-    picker_name VARCHAR(100),
-    
-    -- Picking process
-    picking_started_at TIMESTAMP,
-    picking_completed_at TIMESTAMP,
-    picking_duration_minutes INTEGER,
-    
-    -- Item tracking
-    total_items_ordered INTEGER,
-    items_found INTEGER,
-    items_substituted INTEGER,
-    items_out_of_stock INTEGER,
-    
-    -- Quality metrics
-    picking_accuracy_pct DECIMAL(5,2),
-    customer_approved_substitutions BOOLEAN,
-    
-    -- Staging
-    staged_at TIMESTAMP,
-    staging_location VARCHAR(50),
-    
-    -- Notes
-    picker_notes TEXT,
-    substitution_notes TEXT
-);
-
-CREATE TABLE item_substitutions (
-    substitution_id BIGINT PRIMARY KEY,
-    transaction_id BIGINT REFERENCES transactions(transaction_id),
-    original_sku VARCHAR(50) REFERENCES products(sku),
-    substitute_sku VARCHAR(50) REFERENCES products(sku),
-    
-    -- Reason and approval
-    substitution_reason VARCHAR(50),
-    customer_approved BOOLEAN,
-    approved_at TIMESTAMP,
-    
-    -- Pricing
-    original_price DECIMAL(10,2),
-    substitute_price DECIMAL(10,2),
-    price_difference DECIMAL(10,2),
-    
-    -- Quality
-    substitution_quality VARCHAR(20)
-);
-
 -- ============================================================================
 -- LOAD DATA FROM CSV FILES
 -- ============================================================================
@@ -575,8 +511,8 @@ CREATE TABLE item_substitutions (
 \COPY waste_spoilage FROM '/docker-entrypoint-initdb.d/waste_spoilage.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
 \COPY price_changes FROM '/docker-entrypoint-initdb.d/price_changes.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
 \COPY tickets FROM '/docker-entrypoint-initdb.d/tickets.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
-\COPY transactions FROM '/docker-entrypoint-initdb.d/transactions.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
 \COPY delivery_assignments FROM '/docker-entrypoint-initdb.d/delivery_assignments.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
+\COPY transactions FROM '/docker-entrypoint-initdb.d/transactions.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
 
 -- ============================================================================
 -- FOREIGN KEY CONSTRAINTS
@@ -691,14 +627,6 @@ CREATE INDEX idx_customers_loyalty_tier ON customers(loyalty_tier);
 CREATE INDEX idx_customers_created_date ON customers(created_date);
 CREATE INDEX idx_customers_city ON customers(primary_city);
 
-CREATE INDEX idx_customer_affinity_customer ON customer_store_affinity(customer_id);
-CREATE INDEX idx_customer_affinity_store ON customer_store_affinity(store_id);
-CREATE INDEX idx_customer_affinity_score ON customer_store_affinity(affinity_score DESC);
-
-CREATE INDEX idx_customer_prefs_customer ON customer_product_preferences(customer_id);
-CREATE INDEX idx_customer_prefs_category ON customer_product_preferences(category);
-CREATE INDEX idx_customer_prefs_brand ON customer_product_preferences(brand);
-
 CREATE INDEX idx_customer_addresses_customer ON customer_addresses(customer_id);
 CREATE INDEX idx_customer_addresses_default ON customer_addresses(customer_id, is_default) WHERE is_default = TRUE;
 CREATE INDEX idx_customer_addresses_city ON customer_addresses(city);
@@ -725,14 +653,6 @@ CREATE INDEX idx_delivery_assignments_status ON delivery_assignments(assignment_
 CREATE INDEX idx_delivery_assignments_assigned_at ON delivery_assignments(assigned_at);
 CREATE INDEX idx_delivery_assignments_delivered_at ON delivery_assignments(delivered_at);
 
-CREATE INDEX idx_order_fulfillment_transaction ON order_fulfillment(transaction_id);
-CREATE INDEX idx_order_fulfillment_store ON order_fulfillment(store_id);
-CREATE INDEX idx_order_fulfillment_started ON order_fulfillment(picking_started_at);
-
-CREATE INDEX idx_item_substitutions_transaction ON item_substitutions(transaction_id);
-CREATE INDEX idx_item_substitutions_original_sku ON item_substitutions(original_sku);
-CREATE INDEX idx_item_substitutions_substitute_sku ON item_substitutions(substitute_sku);
-
 -- ============================================================================
 -- READ-ONLY USER FOR PROMPTQL
 -- ============================================================================
@@ -746,3 +666,18 @@ GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO shelfwise_readonly;
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT USAGE ON SEQUENCES TO shelfwise_readonly;
 REVOKE INSERT, UPDATE, DELETE, TRUNCATE ON ALL TABLES IN SCHEMA public FROM shelfwise_readonly;
 COMMENT ON ROLE shelfwise_readonly IS 'Read-only user for PromptQL queries and analytics';
+
+-- ============================================================================
+-- RE-ENABLE PERFORMANCE SETTINGS AFTER DATA LOAD
+-- ============================================================================
+-- Re-enable autovacuum after bulk data load is complete
+ALTER SYSTEM SET autovacuum = on;
+
+-- Restore synchronous_commit to default (on) for normal operations
+ALTER SYSTEM SET synchronous_commit = on;
+
+-- Reload configuration to apply settings
+SELECT pg_reload_conf();
+
+-- Run ANALYZE to update statistics after bulk load
+ANALYZE;
