@@ -167,46 +167,32 @@ CREATE TABLE customers (
     phone VARCHAR(20),
     first_name VARCHAR(100),
     last_name VARCHAR(100),
-    
-    -- Demographics
     age_bracket VARCHAR(20),
     household_size INTEGER,
     income_bracket VARCHAR(20),
-    
-    -- Geographic affinity
-    primary_store_id INTEGER REFERENCES stores(store_id),
+    primary_store_id INTEGER,
     primary_city VARCHAR(100),
     home_latitude DECIMAL(10, 6),
     home_longitude DECIMAL(10, 6),
-    
-    -- Loyalty program
     loyalty_member BOOLEAN DEFAULT FALSE,
     loyalty_tier VARCHAR(20),
     loyalty_join_date DATE,
     loyalty_points INTEGER DEFAULT 0,
-    
-    -- Shopping preferences
     preferred_shopping_time VARCHAR(20),
     avg_basket_size DECIMAL(6,2),
     price_sensitivity VARCHAR(20),
-    
-    -- Behavioral segments
     customer_segment VARCHAR(30),
-    
-    -- Metadata
     created_date DATE NOT NULL,
     last_purchase_date DATE,
     total_lifetime_value DECIMAL(12,2) DEFAULT 0,
     total_visits INTEGER DEFAULT 0,
-    
-    -- Online behavior
     has_online_account BOOLEAN DEFAULT FALSE,
     prefers_online BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE customer_addresses (
     address_id BIGINT PRIMARY KEY,
-    customer_id BIGINT REFERENCES customers(customer_id),
+    customer_id BIGINT,
     address_type VARCHAR(20),
     is_default BOOLEAN DEFAULT FALSE,
     street_address VARCHAR(255),
@@ -234,39 +220,25 @@ CREATE TABLE delivery_drivers (
     last_name VARCHAR(100),
     phone VARCHAR(20),
     email VARCHAR(255),
-    
-    -- Driver type
     driver_type VARCHAR(30),
     employment_status VARCHAR(20),
-    
-    -- Service area
-    primary_store_id INTEGER REFERENCES stores(store_id),
+    primary_store_id INTEGER,
     service_radius_miles DECIMAL(5,2),
     service_cities TEXT,
-    
-    -- Vehicle info
     vehicle_type VARCHAR(30),
     vehicle_capacity_items INTEGER,
     has_insulated_bags BOOLEAN,
-    
-    -- Performance metrics
     total_deliveries INTEGER DEFAULT 0,
     avg_rating DECIMAL(3,2),
     on_time_delivery_pct DECIMAL(5,2),
     acceptance_rate DECIMAL(5,2),
     cancellation_rate DECIMAL(5,2),
-    
-    -- Availability
     is_available BOOLEAN DEFAULT TRUE,
     current_latitude DECIMAL(10, 6),
     current_longitude DECIMAL(10, 6),
     last_location_update TIMESTAMP,
-    
-    -- Dates
     hire_date DATE,
     last_delivery_date DATE,
-    
-    -- Compensation
     base_pay_per_delivery DECIMAL(6,2),
     mileage_rate DECIMAL(4,2),
     avg_tips_per_delivery DECIMAL(6,2)
@@ -275,25 +247,17 @@ CREATE TABLE delivery_drivers (
 CREATE TABLE delivery_zones (
     zone_id SERIAL PRIMARY KEY,
     zone_name VARCHAR(100),
-    store_id INTEGER REFERENCES stores(store_id),
-    
-    -- Geographic boundary
+    store_id INTEGER,
     center_latitude DECIMAL(10, 6),
     center_longitude DECIMAL(10, 6),
     radius_miles DECIMAL(5,2),
-    
-    -- Service parameters
     delivery_fee DECIMAL(6,2),
     min_order_amount DECIMAL(8,2),
     free_delivery_threshold DECIMAL(8,2),
     estimated_delivery_time_minutes INTEGER,
-    
-    -- Availability
     is_active BOOLEAN DEFAULT TRUE,
     service_hours_start TIME,
     service_hours_end TIME,
-    
-    -- Demand
     avg_daily_orders INTEGER,
     peak_hours TEXT
 );
@@ -419,7 +383,7 @@ CREATE TABLE waste_spoilage (
 CREATE TABLE transactions (
     transaction_id BIGINT PRIMARY KEY,
     date DATE NOT NULL,
-    store_id INTEGER NOT NULL REFERENCES stores(store_id),
+    store_id INTEGER NOT NULL,
     timestamp TIMESTAMP NOT NULL,
     total_items INTEGER NOT NULL,
     payment_method VARCHAR(20) NOT NULL,
@@ -427,7 +391,7 @@ CREATE TABLE transactions (
     total_amount DECIMAL(10,2) NOT NULL,
     
     -- Customer tracking (optional - only for tracked transactions)
-    customer_id BIGINT REFERENCES customers(customer_id),
+    customer_id BIGINT,
     is_loyalty_transaction BOOLEAN DEFAULT FALSE,
     loyalty_points_earned INTEGER DEFAULT 0,
     loyalty_points_redeemed INTEGER DEFAULT 0,
@@ -435,8 +399,8 @@ CREATE TABLE transactions (
     -- Delivery/fulfillment (optional - only for online orders)
     fulfillment_type VARCHAR(30),
     order_status VARCHAR(30),
-    fulfillment_store_id INTEGER REFERENCES stores(store_id),
-    delivery_address_id BIGINT REFERENCES customer_addresses(address_id),
+    fulfillment_store_id INTEGER,
+    delivery_address_id BIGINT,
     delivery_fee DECIMAL(6,2) DEFAULT 0,
     tip_amount DECIMAL(6,2) DEFAULT 0,
     delivery_instructions TEXT,
@@ -446,8 +410,8 @@ CREATE TABLE transactions (
 
 CREATE TABLE delivery_assignments (
     assignment_id BIGINT PRIMARY KEY,
-    transaction_id BIGINT REFERENCES transactions(transaction_id),
-    driver_id BIGINT REFERENCES delivery_drivers(driver_id),
+    transaction_id BIGINT,
+    driver_id BIGINT,
     
     -- Assignment lifecycle
     assigned_at TIMESTAMP NOT NULL,
@@ -461,7 +425,7 @@ CREATE TABLE delivery_assignments (
     cancellation_reason VARCHAR(100),
     
     -- Logistics
-    pickup_store_id INTEGER REFERENCES stores(store_id),
+    pickup_store_id INTEGER,
     estimated_pickup_time TIMESTAMP,
     actual_pickup_time TIMESTAMP,
     estimated_delivery_time TIMESTAMP,
@@ -560,6 +524,34 @@ ALTER TABLE price_changes ADD CONSTRAINT fk_price_store
     FOREIGN KEY (store_id) REFERENCES stores(store_id);
 ALTER TABLE price_changes ADD CONSTRAINT fk_price_sku
     FOREIGN KEY (sku) REFERENCES products(sku);
+
+ALTER TABLE customers ADD CONSTRAINT fk_customers_store
+    FOREIGN KEY (primary_store_id) REFERENCES stores(store_id);
+
+ALTER TABLE customer_addresses ADD CONSTRAINT fk_addresses_customer
+    FOREIGN KEY (customer_id) REFERENCES customers(customer_id);
+
+ALTER TABLE delivery_drivers ADD CONSTRAINT fk_drivers_store
+    FOREIGN KEY (primary_store_id) REFERENCES stores(store_id);
+
+ALTER TABLE delivery_zones ADD CONSTRAINT fk_zones_store
+    FOREIGN KEY (store_id) REFERENCES stores(store_id);
+
+ALTER TABLE transactions ADD CONSTRAINT fk_transactions_store
+    FOREIGN KEY (store_id) REFERENCES stores(store_id);
+ALTER TABLE transactions ADD CONSTRAINT fk_transactions_customer
+    FOREIGN KEY (customer_id) REFERENCES customers(customer_id);
+ALTER TABLE transactions ADD CONSTRAINT fk_transactions_fulfillment_store
+    FOREIGN KEY (fulfillment_store_id) REFERENCES stores(store_id);
+ALTER TABLE transactions ADD CONSTRAINT fk_transactions_delivery_address
+    FOREIGN KEY (delivery_address_id) REFERENCES customer_addresses(address_id);
+
+ALTER TABLE delivery_assignments ADD CONSTRAINT fk_assignments_transaction
+    FOREIGN KEY (transaction_id) REFERENCES transactions(transaction_id);
+ALTER TABLE delivery_assignments ADD CONSTRAINT fk_assignments_driver
+    FOREIGN KEY (driver_id) REFERENCES delivery_drivers(driver_id);
+ALTER TABLE delivery_assignments ADD CONSTRAINT fk_assignments_pickup_store
+    FOREIGN KEY (pickup_store_id) REFERENCES stores(store_id);
 
 -- ============================================================================
 -- INDEXES

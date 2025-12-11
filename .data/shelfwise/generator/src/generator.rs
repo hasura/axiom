@@ -4,9 +4,9 @@ use crate::holidays::generate_all_holidays;
 use crate::models::*;
 use crate::streaming::StreamingWriters;
 use anyhow::Result;
-use chrono::{Datelike, Duration, NaiveDate, NaiveDateTime};
+use chrono::{Datelike, Duration, NaiveDate, NaiveDateTime, Timelike};
 use rand::prelude::*;
-use rand_distr::{Distribution, Exp};
+use rand_distr::{Distribution, Exp, LogNormal, Beta, Normal};
 use std::collections::HashMap;
 use std::path::Path;
 
@@ -252,25 +252,149 @@ impl ShelfWiseDataGenerator {
         let mut products = Vec::new();
         let mut product_id = 1;
 
+        // Define which brands can produce which categories
+        let brand_categories: HashMap<&str, Vec<&str>> = [
+            // Private label - can do everything
+            ("ShelfWise Select", vec!["cereal", "dairy", "snacks", "beverages", "produce", "household", "frozen", "bakery", "meat", "canned", "personal_care", "candy"]),
+            ("ShelfWise Basics", vec!["cereal", "dairy", "snacks", "beverages", "produce", "household", "frozen", "bakery", "meat", "canned", "personal_care", "candy"]),
+            ("ShelfWise Organic", vec!["cereal", "dairy", "snacks", "produce", "frozen", "bakery", "meat"]),
+            ("ShelfWise Fresh", vec!["produce", "dairy", "bakery", "meat"]),
+            ("Trader Joes", vec!["cereal", "dairy", "snacks", "beverages", "produce", "household", "frozen", "bakery", "canned", "personal_care", "candy"]),
+            ("365 Whole Foods", vec!["cereal", "dairy", "snacks", "beverages", "produce", "household", "frozen", "bakery", "meat", "canned", "personal_care"]),
+            ("Kirkland", vec!["cereal", "dairy", "snacks", "beverages", "produce", "household", "frozen", "bakery", "meat", "canned", "personal_care"]),
+            ("Great Value", vec!["cereal", "dairy", "snacks", "beverages", "produce", "household", "frozen", "bakery", "meat", "canned", "personal_care", "candy"]),
+            ("Simple Truth", vec!["cereal", "dairy", "snacks", "beverages", "produce", "frozen", "bakery", "meat", "canned"]),
+            ("Signature Select", vec!["cereal", "dairy", "snacks", "beverages", "produce", "frozen", "bakery", "meat", "canned"]),
+            
+            // Cereal brands
+            ("Kelloggs", vec!["cereal", "snacks", "frozen"]),
+            ("General Mills", vec!["cereal", "snacks", "frozen"]),
+            ("Quaker", vec!["cereal", "snacks"]),
+            
+            // Snack/candy brands
+            ("Frito-Lay", vec!["snacks"]),
+            ("Mondelez", vec!["snacks", "candy"]),
+            ("Mars", vec!["candy", "snacks"]),
+            ("Hershey", vec!["candy"]),
+            
+            // Beverage brands
+            ("PepsiCo", vec!["beverages", "snacks"]),
+            ("Coca-Cola", vec!["beverages"]),
+            
+            // Food conglomerates
+            ("Nestle", vec!["cereal", "candy", "beverages", "frozen"]),
+            ("Kraft Heinz", vec!["dairy", "canned", "frozen", "snacks"]),
+            ("Campbell Soup", vec!["canned", "snacks", "frozen"]),
+            ("ConAgra", vec!["frozen", "canned", "snacks"]),
+            
+            // Household/personal care
+            ("Unilever", vec!["personal_care", "household", "frozen"]),
+            ("Procter & Gamble", vec!["personal_care", "household"]),
+            
+            // Produce
+            ("Dole", vec!["produce", "canned", "frozen"]),
+            ("Del Monte", vec!["produce", "canned"]),
+            
+            // Meat
+            ("Tyson Foods", vec!["meat", "frozen"]),
+            ("Hormel", vec!["meat", "canned"]),
+            ("Smithfield", vec!["meat"]),
+            ("Perdue", vec!["meat", "frozen"]),
+            
+            // Dairy
+            ("Danone", vec!["dairy"]),
+            ("Chobani", vec!["dairy"]),
+            
+            // Specialty
+            ("Blue Diamond", vec!["snacks"]),
+            ("Wonderful", vec!["snacks", "produce"]),
+            ("Organic Valley", vec!["dairy", "produce"]),
+            ("Bobs Red Mill", vec!["cereal", "bakery"]),
+            ("Barilla", vec!["canned"]),
+            ("B&G Foods", vec!["canned", "snacks"]),
+            ("Ocean Spray", vec!["beverages", "canned"]),
+            
+            // New brands (64-80)
+            ("Applegate", vec!["meat"]),
+            ("Sabra", vec!["snacks", "canned"]),
+            ("Stonyfield", vec!["dairy"]),
+            ("Silk", vec!["dairy", "beverages"]),
+            ("So Delicious", vec!["dairy", "frozen"]),
+            ("Talenti", vec!["frozen"]),
+            ("Dove", vec!["personal_care", "candy"]),
+            ("Tide", vec!["household"]),
+            ("Crest", vec!["personal_care"]),
+            ("Colgate", vec!["personal_care"]),
+            ("Seventh Generation", vec!["household", "personal_care"]),
+            
+            // Additional existing brands that weren't in the mapping
+            ("Annies Homegrown", vec!["cereal", "snacks", "canned"]),
+            ("Horizon Organic", vec!["dairy"]),
+            ("Kind", vec!["snacks"]),
+            ("Clif Bar", vec!["snacks"]),
+            ("Nature Valley", vec!["snacks"]),
+            ("Nabisco", vec!["snacks", "candy"]),
+            ("Ritz", vec!["snacks"]),
+            ("Pepperidge Farm", vec!["snacks", "bakery", "frozen"]),
+            ("Hunts", vec!["canned"]),
+            ("Progresso", vec!["canned"]),
+            ("Swanson", vec!["canned", "frozen"]),
+            ("Green Giant", vec!["canned", "frozen"]),
+            ("Birds Eye", vec!["frozen"]),
+            ("Lean Cuisine", vec!["frozen"]),
+            ("Stouffers", vec!["frozen"]),
+            ("DiGiorno", vec!["frozen"]),
+            ("Haagen-Dazs", vec!["frozen"]),
+            ("Ben & Jerrys", vec!["frozen"]),
+            ("Breyers", vec!["frozen"]),
+            ("Dreyers", vec!["frozen"]),
+            ("PolarSprings", vec!["beverages"]),
+            ("Dasani", vec!["beverages"]),
+            ("Smartwater", vec!["beverages"]),
+            ("Fiji", vec!["beverages"]),
+            ("Poland Spring", vec!["beverages"]),
+            ("Gatorade", vec!["beverages"]),
+            ("Powerade", vec!["beverages"]),
+            ("Tropicana", vec!["beverages"]),
+            ("Simply", vec!["beverages"]),
+            ("Minute Maid", vec!["beverages"]),
+        ].iter().cloned().collect();
+
         let sub_categories: HashMap<&str, Vec<&str>> = [
-            ("cereal", vec!["oats", "corn_flakes", "granola"]),
-            ("dairy", vec!["milk", "cheese", "yogurt"]),
-            ("snacks", vec!["chips", "crackers", "nuts"]),
-            ("beverages", vec!["cola", "juice", "water"]),
-            ("produce", vec!["apples", "bananas", "lettuce"]),
-            ("household", vec!["paper_towels", "soap"]),
-            ("frozen", vec!["ice_cream", "pizza"]),
-            ("bakery", vec!["bread", "bagels"]),
-            ("meat", vec!["chicken", "beef"]),
-            ("canned", vec!["soup", "vegetables"]),
-            ("personal_care", vec!["shampoo", "toothpaste"]),
-            ("candy", vec!["chocolate", "gummies"]),
+            ("cereal", vec!["oats", "corn_flakes", "granola", "wheat", "rice", "bran"]),
+            ("dairy", vec!["milk", "cheese", "yogurt", "butter", "cream", "sour_cream"]),
+            ("snacks", vec!["chips", "crackers", "nuts", "pretzels", "popcorn", "trail_mix"]),
+            ("beverages", vec!["cola", "juice", "water", "tea", "coffee", "energy_drink"]),
+            ("produce", vec!["apples", "bananas", "lettuce", "tomatoes", "carrots", "onions", "berries"]),
+            ("household", vec!["paper_towels", "soap", "detergent", "cleaner", "trash_bags"]),
+            ("frozen", vec!["ice_cream", "pizza", "vegetables", "meals", "waffles"]),
+            ("bakery", vec!["bread", "bagels", "rolls", "muffins", "tortillas"]),
+            ("meat", vec!["chicken", "beef", "pork", "turkey", "sausage"]),
+            ("canned", vec!["soup", "vegetables", "beans", "pasta", "fruit"]),
+            ("personal_care", vec!["shampoo", "toothpaste", "soap", "deodorant", "lotion"]),
+            ("candy", vec!["chocolate", "gummies", "hard_candy", "mints"]),
         ].iter().cloned().collect();
 
         for brand in &self.brands {
-            for (category, subs) in &sub_categories {
-                let sub_category = subs.choose(&mut self.rng).unwrap();
-                let base_price = self.rng.gen_range(2.0..20.0);
+            // Get categories this brand can produce
+            let allowed_categories = brand_categories.get(brand.name.as_str())
+                .cloned()
+                .unwrap_or_else(|| vec!["cereal", "snacks", "beverages"]); // Default fallback
+
+            for category in allowed_categories {
+                let subs = sub_categories.get(category).unwrap();
+
+                // Generate 8-20 products per brand-category combination for variety
+                let num_products = self.rng.gen_range(8..=20);
+
+                for _ in 0..num_products {
+                    let sub_category = subs.choose(&mut self.rng).unwrap();
+
+                // Use log-normal distribution for prices (most items cheap, few expensive)
+                // Mean of ln(price) = 1.8 gives median ~$6, with long tail to $50+
+                let log_normal = LogNormal::new(1.8, 0.8).unwrap();
+                let base_price = (log_normal.sample(&mut self.rng) as f64).clamp(1.5, 50.0);
+
                 let list_price = match brand.tier.as_str() {
                     "premium" => base_price * 1.5,
                     "value" => base_price * 0.8,
@@ -279,7 +403,7 @@ impl ShelfWiseDataGenerator {
 
                 // Realistic cost margins vary by category, brand tier, and randomness
                 // Category-based margin profiles (lower cost ratio = higher margin)
-                let category_cost_ratio = match *category {
+                let category_cost_ratio = match category {
                     // High margin categories
                     "personal_care" => self.rng.gen_range(0.35..0.50),  // 50-65% margin
                     "household" => self.rng.gen_range(0.40..0.55),      // 45-60% margin
@@ -308,32 +432,43 @@ impl ShelfWiseDataGenerator {
                     _ => 1.0,                                      // No adjustment
                 };
 
-                let cost = list_price * category_cost_ratio * tier_adjustment;
-                let brand_code: String = brand.name.chars().filter(|c| c.is_alphanumeric()).take(3).collect::<String>().to_uppercase();
-                let sku = format!("{}-{}-{:04}", brand_code, category.to_uppercase(), product_id);
+                    let cost = list_price * category_cost_ratio * tier_adjustment;
+                    let brand_code: String = brand.name.chars().filter(|c| c.is_alphanumeric()).take(3).collect::<String>().to_uppercase();
+                    let sku = format!("{}-{}-{:04}", brand_code, category.to_uppercase(), product_id);
 
-                products.push(Product {
-                    product_id,
-                    sku,
-                    brand: brand.name.clone(),
-                    category: category.to_string(),
-                    sub_category: sub_category.to_string(),
-                    size: "medium".to_string(),
-                    unit_of_measure: "each".to_string(),
-                    list_price: ((list_price * 100.0) as f64).round() / 100.0,
-                    cost: ((cost * 100.0) as f64).round() / 100.0,
-                    launch_date: self.start_date,
-                    discontinue_date: None,
-                    brand_popularity: brand.popularity,
-                    tier: brand.tier.clone(),
-                    pareto_weight: 0.0,
-                });
+                    products.push(Product {
+                        product_id,
+                        sku,
+                        brand: brand.name.clone(),
+                        category: category.to_string(),
+                        sub_category: sub_category.to_string(),
+                        size: "1 unit".to_string(),
+                        unit_of_measure: "each".to_string(),
+                        list_price,
+                        cost,
+                        launch_date: self.start_date - Duration::days(self.rng.gen_range(0..730)),
+                        discontinue_date: None,
+                        brand_popularity: brand.popularity,
+                        tier: brand.tier.clone(),
+                        pareto_weight: 1.0,
+                    });
 
-                product_id += 1;
-                // Use configured max_products from config.toml
-                if product_id > self.config.scale.max_products as u32 { break; }
+                    product_id += 1;
+
+                    // Stop if we've reached max products
+                    if product_id > self.config.scale.max_products as u32 {
+                        break;
+                    }
+                }
+
+                if product_id > self.config.scale.max_products as u32 {
+                    break;
+                }
             }
-            if product_id > self.config.scale.max_products as u32 { break; }
+
+            if product_id > self.config.scale.max_products as u32 {
+                break;
+            }
         }
 
         let num_products = products.len();
@@ -1323,20 +1458,52 @@ impl ShelfWiseDataGenerator {
                 _ => self.rng.gen_range(5.0..15.0),
             };
 
-            let service_cities = home_store.city.clone();
+            // Drivers can serve their home city plus nearby cities within their service radius
+            let mut service_cities_list = vec![home_store.city.clone()];
 
-            // Performance metrics
+            // Add nearby cities based on service radius
+            for other_store in &self.stores {
+                if other_store.store_id != home_store.store_id {
+                    // Calculate approximate distance (simplified lat/lon distance)
+                    let lat_diff = (home_store.latitude - other_store.latitude).abs();
+                    let lon_diff = (home_store.longitude - other_store.longitude).abs();
+                    let approx_distance = ((lat_diff * 69.0).powi(2) + (lon_diff * 54.6).powi(2)).sqrt();
+
+                    if approx_distance <= service_radius_miles && !service_cities_list.contains(&other_store.city) {
+                        service_cities_list.push(other_store.city.clone());
+                    }
+                }
+            }
+
+            let service_cities = service_cities_list.join(",");
+
+            // Performance metrics - use realistic distributions
             let is_available = self.rng.gen::<f64>() < 0.75;
-            let total_deliveries = if is_available {
-                self.rng.gen_range(50..2000)
-            } else {
-                self.rng.gen_range(10..100)
-            };
 
-            let avg_rating = self.rng.gen_range(4.0..5.0);
-            let on_time_delivery_pct = self.rng.gen_range(0.85..0.99);
-            let acceptance_rate = self.rng.gen_range(0.80..0.98);
-            let cancellation_rate = self.rng.gen_range(0.01..0.10);
+            // Total deliveries follows power law - few stars, many average
+            let delivery_log_normal = LogNormal::new(5.0, 1.2).unwrap();
+            let total_deliveries = if is_available {
+                (delivery_log_normal.sample(&mut self.rng) as f64).round() as u32
+            } else {
+                ((delivery_log_normal.sample(&mut self.rng) as f64) * 0.1).round() as u32
+            }.clamp(10, 5000);
+
+            // Rating uses Beta distribution - heavily skewed toward high ratings
+            // Beta(8, 2) gives mean ~0.8, heavily weighted toward 1.0
+            let rating_beta = Beta::new(8.0, 2.0).unwrap();
+            let avg_rating = ((rating_beta.sample(&mut self.rng) as f64) * 1.0 + 4.0).clamp(3.5, 5.0);
+
+            // On-time delivery also uses Beta - most drivers are good
+            let ontime_beta = Beta::new(9.0, 2.0).unwrap();
+            let on_time_delivery_pct = ((ontime_beta.sample(&mut self.rng) as f64) * 0.25 + 0.75).clamp(0.70, 0.99);
+
+            // Acceptance rate - Beta distribution
+            let accept_beta = Beta::new(8.0, 2.0).unwrap();
+            let acceptance_rate = ((accept_beta.sample(&mut self.rng) as f64) * 0.30 + 0.70).clamp(0.65, 0.99);
+
+            // Cancellation rate - Beta with reverse skew (most have low cancellation)
+            let cancel_beta = Beta::new(2.0, 8.0).unwrap();
+            let cancellation_rate = ((cancel_beta.sample(&mut self.rng) as f64) * 0.15).clamp(0.01, 0.15);
 
             // Current location (near home store)
             let angle = self.rng.gen_range(0.0..std::f64::consts::TAU);
@@ -1713,8 +1880,31 @@ impl ShelfWiseDataGenerator {
         }
         let store = store.unwrap();
 
+        // Add temporal variation to driver availability
+        let day_of_week = date.weekday().num_days_from_monday();
+        let is_weekend = day_of_week >= 5;
+        let month = date.month();
+
+        // Seasonal availability patterns
+        let seasonal_availability_multiplier = match month {
+            11 | 12 => 1.3,  // Holiday season - more drivers active
+            6 | 7 | 8 => 1.1, // Summer - slightly more active
+            1 | 2 => 0.9,     // Winter slowdown
+            _ => 1.0,
+        };
+
+        // Weekend patterns - more drivers available
+        let weekend_multiplier = if is_weekend { 1.2 } else { 1.0 };
+
         let eligible_drivers: Vec<DeliveryDriver> = delivery_drivers.iter()
-            .filter(|d| d.is_available && d.service_cities.contains(&store.city))
+            .filter(|d| {
+                // Dynamic availability based on day/season
+                let base_availability = if d.is_available { 0.75 } else { 0.15 };
+                let adjusted_availability = base_availability * seasonal_availability_multiplier * weekend_multiplier;
+
+                // Driver must serve this city and be "available" for this specific day
+                d.service_cities.contains(&store.city) && rng.gen::<f64>() < adjusted_availability
+            })
             .cloned()
             .collect();
 
@@ -1728,18 +1918,60 @@ impl ShelfWiseDataGenerator {
         let order_time = NaiveDateTime::parse_from_str(timestamp, "%Y-%m-%d %H:%M:%S")
             .unwrap_or_else(|_| date.and_hms_opt(12, 0, 0).unwrap());
 
+        let hour = order_time.hour();
+
+        // Time-of-day affects acceptance and pickup times
+        let is_peak_hours = (11..=13).contains(&hour) || (17..=19).contains(&hour);
+        let is_late_night = hour >= 22 || hour <= 5;
+
         let assigned_at = order_time;
-        let accepted_at = Some(order_time + Duration::minutes(rng.gen_range(1..5) as i64));
-        let picked_up_at = Some(order_time + Duration::minutes(rng.gen_range(10..20) as i64));
+
+        // Acceptance time varies by time of day
+        let acceptance_delay = if is_peak_hours {
+            rng.gen_range(2..8)  // Busier during peak
+        } else if is_late_night {
+            rng.gen_range(5..15) // Slower at night
+        } else {
+            rng.gen_range(1..5)
+        };
+        let accepted_at = Some(order_time + Duration::minutes(acceptance_delay as i64));
+
+        // Pickup time also varies
+        let pickup_delay = if is_peak_hours {
+            rng.gen_range(15..30) // Store is busier
+        } else {
+            rng.gen_range(10..20)
+        };
+        let picked_up_at = Some(order_time + Duration::minutes(pickup_delay as i64));
 
         let distance_miles = rng.gen_range(1.0..12.0);
-        let estimated_duration_minutes = (distance_miles / 25.0 * 60.0) as u32 + rng.gen_range(5..15);
+
+        // Traffic patterns affect delivery time
+        let traffic_multiplier = if is_peak_hours {
+            rng.gen_range(1.3..1.6) // Rush hour traffic
+        } else if is_late_night {
+            rng.gen_range(0.8..0.9) // Light traffic
+        } else if is_weekend {
+            rng.gen_range(0.9..1.1) // Moderate weekend traffic
+        } else {
+            rng.gen_range(1.0..1.2) // Normal traffic
+        };
+
+        let base_duration = (distance_miles / 25.0 * 60.0) as u32;
+        let estimated_duration_minutes = (base_duration as f64 * traffic_multiplier) as u32 + rng.gen_range(5..15);
+
+        // Weather/seasonal delays
+        let seasonal_delay = match month {
+            12 | 1 | 2 => rng.gen_range(0..10), // Winter weather delays
+            _ => 0,
+        };
+
         let actual_duration_minutes = if rng.gen::<f64>() < 0.92 {
             // On time - within estimate
-            Some(estimated_duration_minutes + rng.gen_range(0..10))
+            Some(estimated_duration_minutes + rng.gen_range(0..10) + seasonal_delay)
         } else {
             // Late
-            Some(estimated_duration_minutes + rng.gen_range(10..30))
+            Some(estimated_duration_minutes + rng.gen_range(10..30) + seasonal_delay)
         };
 
         let delivered_at = picked_up_at.map(|p| p + Duration::minutes(actual_duration_minutes.unwrap_or(estimated_duration_minutes) as i64));
@@ -1769,10 +2001,28 @@ impl ShelfWiseDataGenerator {
             None
         };
 
-        // Calculate compensation
+        // Calculate compensation with temporal variation
         let driver_pay = driver.base_pay_per_delivery + (distance_miles * driver.mileage_rate);
-        let driver_tip = if assignment_status == "delivered" && rng.gen::<f64>() < 0.75 {
-            order_value * rng.gen_range(0.10..0.20)
+
+        // Tipping varies by time and season
+        let tip_likelihood = if is_weekend {
+            0.80 // Better tips on weekends
+        } else if month == 12 {
+            0.85 // Holiday generosity
+        } else if is_late_night {
+            0.70 // Fewer tips late night
+        } else {
+            0.75
+        };
+
+        let tip_percentage = if is_weekend || month == 12 {
+            rng.gen_range(0.12..0.22) // Higher tips
+        } else {
+            rng.gen_range(0.10..0.20)
+        };
+
+        let driver_tip = if assignment_status == "delivered" && rng.gen::<f64>() < tip_likelihood {
+            order_value * tip_percentage
         } else if assignment_status == "delivered" {
             order_value * rng.gen_range(0.0..0.10)
         } else {
@@ -1782,10 +2032,19 @@ impl ShelfWiseDataGenerator {
 
         // Customer rating (1-5 stars, mostly 4-5)
         let customer_rating = if assignment_status == "delivered" {
-            Some(if rng.gen::<f64>() < 0.85 {
-                rng.gen_range(4..=5)
+            // Customer ratings heavily skewed toward 5 stars
+            // 70% give 5 stars, 20% give 4 stars, 10% give 1-3 stars
+            let rating_rand = rng.gen::<f64>();
+            Some(if rating_rand < 0.70 {
+                5
+            } else if rating_rand < 0.90 {
+                4
+            } else if rating_rand < 0.95 {
+                3
+            } else if rating_rand < 0.98 {
+                2
             } else {
-                rng.gen_range(1..=3)
+                1
             })
         } else {
             None
@@ -1916,8 +2175,13 @@ impl ShelfWiseDataGenerator {
             continue_mode,
             self.config.performance.batch_size
         )?;
-        // Use &str in key to avoid cloning SKUs repeatedly
-        let mut inventory: HashMap<(u32, &str), u32> = HashMap::new();
+        // Track inventory with proper supply chain state
+        // (store_id, sku) -> (on_hand, on_order, pending_orders: Vec<(delivery_date, quantity)>)
+        let mut inventory: HashMap<(u32, &str), (u32, u32, Vec<(NaiveDate, u32)>)> = HashMap::new();
+
+        // Track demand history for calculating reorder points
+        // (store_id, sku) -> Vec<daily_demand> (last 30 days)
+        let mut demand_history: HashMap<(u32, &str), Vec<u32>> = HashMap::new();
         let mut shipment_id = 1;
         let mut waste_id = 1;
         let mut ticket_id = 1;
@@ -2042,63 +2306,157 @@ impl ShelfWiseDataGenerator {
                         let base_demand = demand_calc.calculate_demand(*date, store, product, &active_promos_owned, 85.0, &mut self.rng);
 
                         // Adjust demand by category mix and store performance
+                        // Store performance uses normal distribution within tiers
                         let performance_multiplier = match store_econ.store_performance_tier.as_str() {
-                            "high" => self.rng.gen_range(1.15..1.25),
-                            "low" => self.rng.gen_range(0.70..0.85),
-                            _ => self.rng.gen_range(0.95..1.05),
+                            "high" => {
+                                let normal = Normal::new(1.20, 0.03).unwrap();
+                                (normal.sample(&mut self.rng) as f64).clamp(1.12, 1.28)
+                            },
+                            "low" => {
+                                let normal = Normal::new(0.78, 0.04).unwrap();
+                                (normal.sample(&mut self.rng) as f64).clamp(0.68, 0.88)
+                            },
+                            _ => {
+                                let normal = Normal::new(1.00, 0.03).unwrap();
+                                (normal.sample(&mut self.rng) as f64).clamp(0.92, 1.08)
+                            },
                         };
 
                         let demand = (base_demand as f64 * category_mix_factor * performance_multiplier) as u32;
 
                         // Use &str to avoid cloning SKU
                         let inv_key = (store.store_id, product.sku.as_str());
+
+                        // Initialize inventory with realistic starting levels
                         if !inventory.contains_key(&inv_key) {
-                            let base = match store.store_type.as_str() {
-                                "online" => demand * 14,
-                                "big_box" => demand * 10,
-                                _ => demand * 7,
-                            };
-                            inventory.insert(inv_key, (base as f64 * self.rng.gen_range(0.8..1.2)) as u32);
+                            let suppliers = crate::reference_data::init_suppliers();
+                            let supplier_id = (product.product_id % 30) + 1;
+                            let supplier = suppliers.iter().find(|s| s.supplier_id == supplier_id).unwrap();
+
+                            let initial_stock = crate::inventory::calculate_initial_inventory(
+                                product,
+                                demand,
+                                supplier.lead_time_days,
+                                &mut self.rng
+                            );
+
+                            inventory.insert(inv_key, (initial_stock, 0, Vec::new()));
+                            demand_history.insert(inv_key, Vec::new());
                         }
 
-                        let mut on_hand = *inventory.get(&inv_key).unwrap();
+                        // Get current inventory state
+                        let (mut on_hand, mut on_order, mut pending_orders) = inventory.get(&inv_key).unwrap().clone();
 
-                        let delivery_chance = match store.store_type.as_str() {
-                            "online" => 0.6,
-                            "big_box" => 0.4,
-                            _ => 0.25,
-                        };
+                        // Update demand history (keep last 30 days)
+                        let history = demand_history.get_mut(&inv_key).unwrap();
+                        history.push(demand);
+                        if history.len() > 30 {
+                            history.remove(0);
+                        }
 
-                        if self.rng.gen::<f64>() < delivery_chance {
-                            let delivered = match store.store_type.as_str() {
-                                "online" => self.rng.gen_range(500..2000),
-                                "big_box" => self.rng.gen_range(200..800),
-                                _ => self.rng.gen_range(50..300),
+                        // Check for arriving shipments
+                        let mut arrived_today = 0;
+                        pending_orders.retain(|(delivery_date, quantity)| {
+                            if *delivery_date == *date {
+                                arrived_today += *quantity;
+                                false
+                            } else {
+                                true
+                            }
+                        });
+
+                        if arrived_today > 0 {
+                            on_hand += arrived_today;
+                            on_order = on_order.saturating_sub(arrived_today);
+
+                            // Record shipment
+                            let supplier_id = (product.product_id % 30) + 1;
+                            let suppliers = crate::reference_data::init_suppliers();
+                            let supplier = suppliers.iter()
+                                .find(|s| s.supplier_id == supplier_id)
+                                .unwrap();
+
+                            let lead_time_variance = self.rng.gen_range(-1..=2);
+                            let actual_lead_time = (supplier.lead_time_days as i64 + lead_time_variance).max(1);
+                            let shipment_date = *date - Duration::days(actual_lead_time);
+
+                            let on_time = self.rng.gen::<f64>() < supplier.reliability_score;
+                            let (delivery_date, shipment_status) = if on_time {
+                                (*date, "delivered".to_string())
+                            } else {
+                                let delay_days = self.rng.gen_range(1..=3);
+                                (*date + Duration::days(delay_days), "delayed".to_string())
                             };
-                            on_hand += delivered;
-                            inventory.insert(inv_key, on_hand);
 
-                            // Pre-format strings to avoid repeated allocations
-                            let supplier_name = format!("{} Supplier", product.brand);
+                            let damage_rate = 1.0 - (self.rng.gen_range(0.0..0.05));
+                            let quantity_received = (arrived_today as f64 * damage_rate).round() as u32;
                             let po_number = format!("PO-{:06}", shipment_id);
 
                             writers.write_shipment(&SupplierShipment {
                                 shipment_id,
-                                shipment_date: *date - Duration::days(self.rng.gen_range(1..3)),
-                                delivery_date: *date,
+                                shipment_date,
+                                delivery_date,
                                 store_id: store.store_id,
                                 sku: product.sku.clone(),
-                                quantity_shipped: delivered,
-                                quantity_received: delivered,
-                                supplier_name,
+                                quantity_shipped: arrived_today,
+                                quantity_received,
+                                supplier_name: supplier.supplier_name.clone(),
                                 po_number,
-                                shipment_status: "delivered".to_string(),
+                                shipment_status,
                             })?;
                             shipment_id += 1;
                         }
 
+                        // Calculate reorder point and check if we need to order
+                        let suppliers = crate::reference_data::init_suppliers();
+                        let supplier_id = (product.product_id % 30) + 1;
+                        let supplier = suppliers.iter().find(|s| s.supplier_id == supplier_id).unwrap();
+
+                        let reorder_point = crate::inventory::calculate_reorder_point(
+                            history,
+                            supplier.lead_time_days as f64,
+                            demand
+                        );
+
+                        // Apply seasonal buildup multiplier
+                        let seasonal_multiplier = crate::inventory::needs_seasonal_buildup(date, product);
+                        let adjusted_reorder_point = (reorder_point as f64 * seasonal_multiplier) as u32;
+
+                        // Check if we need to reorder (inventory position < reorder point)
+                        let inventory_position = on_hand + on_order;
+                        if inventory_position < adjusted_reorder_point && on_order == 0 {
+                            // Calculate order quantity
+                            let avg_daily_demand = if !history.is_empty() {
+                                history.iter().sum::<u32>() as f64 / history.len() as f64
+                            } else {
+                                demand as f64
+                            };
+
+                            let order_qty = crate::inventory::calculate_order_quantity(
+                                product,
+                                avg_daily_demand,
+                                &mut self.rng
+                            );
+
+                            // Apply seasonal multiplier to order quantity
+                            let final_order_qty = (order_qty as f64 * seasonal_multiplier) as u32;
+
+                            on_order += final_order_qty;
+
+                            // Calculate delivery date
+                            let lead_time_variance = self.rng.gen_range(-1..=2);
+                            let actual_lead_time = (supplier.lead_time_days as i64 + lead_time_variance).max(1);
+                            let delivery_date = *date + Duration::days(actual_lead_time);
+
+                            pending_orders.push((delivery_date, final_order_qty));
+                        }
+
+                        // Sell units (stockout if not enough inventory)
                         let units_sold = demand.min(on_hand);
-                        inventory.insert(inv_key, on_hand.saturating_sub(units_sold));
+                        on_hand = on_hand.saturating_sub(units_sold);
+
+                        // Update inventory state
+                        inventory.insert(inv_key, (on_hand, on_order, pending_orders));
 
                         // Apply store-specific pricing
                         let store_adjusted_price = product.list_price
@@ -2156,19 +2514,54 @@ impl ShelfWiseDataGenerator {
 
                         store_daily_revenue += revenue;
 
+                        // Get current inventory state for reporting
+                        let (current_on_hand, current_on_order, pending) = inventory.get(&inv_key).unwrap();
+
+                        // Calculate in_transit (orders not yet delivered)
+                        let in_transit: u32 = pending.iter()
+                            .filter(|(delivery_date, _)| delivery_date > date)
+                            .map(|(_, qty)| qty)
+                            .sum();
+
+                        // Calculate realistic safety stock
+                        let suppliers = crate::reference_data::init_suppliers();
+                        let supplier_id = (product.product_id % 30) + 1;
+                        let supplier = suppliers.iter().find(|s| s.supplier_id == supplier_id).unwrap();
+
+                        let reorder_point = crate::inventory::calculate_reorder_point(
+                            history,
+                            supplier.lead_time_days as f64,
+                            demand
+                        );
+
+                        // Safety stock is part of reorder point calculation
+                        let avg_demand = if !history.is_empty() {
+                            history.iter().sum::<u32>() as f64 / history.len() as f64
+                        } else {
+                            demand as f64
+                        };
+                        let safety_stock = reorder_point.saturating_sub((avg_demand * supplier.lead_time_days as f64) as u32);
+
+                        // Calculate in-stock hours (0 if stockout)
+                        let in_stock_hours = if *current_on_hand > 0 {
+                            if store.store_type == "online" { 24.0 } else { 12.0 }
+                        } else {
+                            0.0
+                        };
+
                         writers.write_inventory(&InventoryDaily {
                             date: *date,
                             store_id: store.store_id,
                             sku: product.sku.clone(),
-                            on_hand: *inventory.get(&inv_key).unwrap(),
-                            on_order: 0,
-                            in_transit: 0,
-                            safety_stock: demand * 3,
+                            on_hand: *current_on_hand,
+                            on_order: *current_on_order,
+                            in_transit,
+                            safety_stock,
                             last_scan_ts: NaiveDateTime::new(*date, chrono::NaiveTime::from_hms_opt(12, 0, 0).unwrap()),
-                            system_on_hand: *inventory.get(&inv_key).unwrap(),
-                            available_to_promise: on_hand,
+                            system_on_hand: *current_on_hand,
+                            available_to_promise: current_on_hand.saturating_sub(0), // Could reserve for online orders
                             open_hours: if store.store_type == "online" { 24 } else { 12 },
-                            in_stock_hours: 12.0,
+                            in_stock_hours,
                             dc_allocated_qty: 0,
                             quarantine_hold: 0,
                         })?;

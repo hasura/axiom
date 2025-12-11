@@ -5,6 +5,7 @@ mod holidays;
 mod demand;
 mod streaming;
 mod reference_data;
+mod inventory;
 
 use anyhow::Result;
 use clap::Parser;
