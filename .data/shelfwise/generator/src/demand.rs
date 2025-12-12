@@ -22,7 +22,7 @@ impl<'a> DemandCalculator<'a> {
         date: NaiveDate,
         store: &Store,
         product: &Product,
-        active_promos: &[Promotion],
+        active_promos: &[&Promotion],
         compliance_score: f64,
         rng: &mut R,
     ) -> u32 {

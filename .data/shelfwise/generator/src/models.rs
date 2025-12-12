@@ -162,6 +162,8 @@ pub struct ReturnDaily {
     pub units_returned: u32,
     pub reason_code: String,
     pub refund_value: f64,
+    pub transaction_id: u64,
+    pub line_number: u32,
 }
 
 
@@ -244,15 +246,17 @@ pub struct Transaction {
     pub actual_delivery_time: Option<NaiveDateTime>,
 }
 
-#[allow(dead_code)]
+// Transaction line items - detailed product-level transaction data
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct TransactionItem {
-    pub transaction_id: u32,
+pub struct TransactionLineItem {
+    pub transaction_id: u64,
+    pub line_number: u32,
     pub sku: String,
-    pub unit_price: f64,
-    pub promo_id: Option<u32>,
     pub quantity: u32,
+    pub unit_price: f64,
     pub line_total: f64,
+    pub promo_id: Option<u32>,
+    pub discount_amount: f64,
 }
 
 #[derive(Debug, Clone)]

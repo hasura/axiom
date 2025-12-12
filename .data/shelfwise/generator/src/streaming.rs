@@ -17,6 +17,7 @@ pub struct StreamingWriters {
     pub tickets: Writer<BufWriter<File>>,
     pub price_changes: Writer<BufWriter<File>>,
     pub transactions: Writer<BufWriter<File>>,
+    pub transaction_line_items: Writer<BufWriter<File>>,
 
     // Delivery writers
     pub delivery_assignments: Writer<BufWriter<File>>,
@@ -30,6 +31,7 @@ pub struct StreamingWriters {
     tickets_batch: Vec<Ticket>,
     price_changes_batch: Vec<PriceChange>,
     transactions_batch: Vec<Transaction>,
+    transaction_line_items_batch: Vec<TransactionLineItem>,
     delivery_assignments_batch: Vec<DeliveryAssignment>,
 
     batch_size: usize,
@@ -80,6 +82,10 @@ impl StreamingWriters {
             .has_headers(false)
             .buffer_capacity(512 * 1024)
             .from_writer(open_file(Path::new(output_dir).join("transactions.csv"))?);
+        let mut transaction_line_items = csv::WriterBuilder::new()
+            .has_headers(false)
+            .buffer_capacity(512 * 1024)
+            .from_writer(open_file(Path::new(output_dir).join("transaction_line_items.csv"))?);
 
         // Delivery writers
         let mut delivery_assignments = csv::WriterBuilder::new()
@@ -97,7 +103,8 @@ impl StreamingWriters {
                 "safety_stock", "last_scan_ts", "system_on_hand", "available_to_promise",
                 "open_hours", "in_stock_hours", "dc_allocated_qty", "quarantine_hold"])?;
 
-            returns.write_record(&["date", "store_id", "sku", "units_returned", "reason_code", "refund_value"])?;
+            returns.write_record(&["date", "store_id", "sku", "units_returned", "reason_code", "refund_value",
+                "transaction_id", "line_number"])?;
 
             shipments.write_record(&["shipment_id", "shipment_date", "delivery_date", "store_id", "sku",
                 "quantity_shipped", "quantity_received", "supplier_name", "po_number", "shipment_status"])?;
@@ -116,7 +123,9 @@ impl StreamingWriters {
                 "fulfillment_store_id", "delivery_address_id", "delivery_fee", "tip_amount",
                 "delivery_instructions", "requested_delivery_time", "actual_delivery_time"])?;
 
-            // Customer headers
+            transaction_line_items.write_record(&["transaction_id", "line_number", "sku", "quantity",
+                "unit_price", "line_total", "promo_id", "discount_amount"])?;
+
             // Delivery headers
             delivery_assignments.write_record(&["assignment_id", "transaction_id", "driver_id",
                 "assigned_at", "accepted_at", "picked_up_at", "delivered_at", "cancelled_at",
@@ -136,6 +145,7 @@ impl StreamingWriters {
             tickets,
             price_changes,
             transactions,
+            transaction_line_items,
             delivery_assignments,
             sales_batch: Vec::with_capacity(batch_size),
             inventory_batch: Vec::with_capacity(batch_size),
@@ -145,6 +155,7 @@ impl StreamingWriters {
             tickets_batch: Vec::with_capacity(batch_size),
             price_changes_batch: Vec::with_capacity(batch_size),
             transactions_batch: Vec::with_capacity(batch_size),
+            transaction_line_items_batch: Vec::with_capacity(batch_size),
             delivery_assignments_batch: Vec::with_capacity(batch_size),
             batch_size,
         })
@@ -214,6 +225,14 @@ impl StreamingWriters {
         Ok(())
     }
 
+    pub fn write_transaction_line_item(&mut self, record: &TransactionLineItem) -> Result<()> {
+        self.transaction_line_items_batch.push(record.clone());
+        if self.transaction_line_items_batch.len() >= self.batch_size {
+            self.flush_transaction_line_items_batch()?;
+        }
+        Ok(())
+    }
+
     pub fn write_delivery_assignment(&mut self, record: &DeliveryAssignment) -> Result<()> {
         self.delivery_assignments_batch.push(record.clone());
         if self.delivery_assignments_batch.len() >= self.batch_size {
@@ -278,6 +297,13 @@ impl StreamingWriters {
         Ok(())
     }
 
+    fn flush_transaction_line_items_batch(&mut self) -> Result<()> {
+        for record in self.transaction_line_items_batch.drain(..) {
+            self.transaction_line_items.serialize(&record)?;
+        }
+        Ok(())
+    }
+
     fn flush_delivery_assignments_batch(&mut self) -> Result<()> {
         for record in self.delivery_assignments_batch.drain(..) {
             self.delivery_assignments.serialize(&record)?;
@@ -295,6 +321,7 @@ impl StreamingWriters {
         self.flush_tickets_batch()?;
         self.flush_price_changes_batch()?;
         self.flush_transactions_batch()?;
+        self.flush_transaction_line_items_batch()?;
         self.flush_delivery_assignments_batch()?;
 
         // Then flush the writers
@@ -306,6 +333,7 @@ impl StreamingWriters {
         self.tickets.flush()?;
         self.price_changes.flush()?;
         self.transactions.flush()?;
+        self.transaction_line_items.flush()?;
         self.delivery_assignments.flush()?;
         Ok(())
     }
