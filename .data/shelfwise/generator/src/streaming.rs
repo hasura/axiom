@@ -22,6 +22,13 @@ pub struct StreamingWriters {
     // Delivery writers
     pub delivery_assignments: Writer<BufWriter<File>>,
 
+    // Customer writers (for incremental growth)
+    pub customers: Writer<BufWriter<File>>,
+    pub customer_addresses: Writer<BufWriter<File>>,
+
+    // Driver writers (for incremental hiring)
+    pub delivery_drivers: Writer<BufWriter<File>>,
+
     // Batch buffers for reduced write calls
     sales_batch: Vec<SalesDaily>,
     inventory_batch: Vec<InventoryDaily>,
@@ -33,6 +40,9 @@ pub struct StreamingWriters {
     transactions_batch: Vec<Transaction>,
     transaction_line_items_batch: Vec<TransactionLineItem>,
     delivery_assignments_batch: Vec<DeliveryAssignment>,
+    customers_batch: Vec<Customer>,
+    customer_addresses_batch: Vec<CustomerAddress>,
+    delivery_drivers_batch: Vec<DeliveryDriver>,
 
     batch_size: usize,
 }
@@ -43,7 +53,13 @@ impl StreamingWriters {
 
         let open_file = |path: std::path::PathBuf| -> Result<BufWriter<File>> {
             let file = if continue_mode {
-                std::fs::OpenOptions::new().append(true).open(path)?
+                // In continue mode, create the file if it doesn't exist, then append
+                // This allows continue-mode to work both when files exist (normal append)
+                // and when they don't (e.g., after nightly cleanup between dates)
+                std::fs::OpenOptions::new()
+                    .append(true)
+                    .create(true)
+                    .open(path)?
             } else {
                 File::create(path)?
             };
@@ -93,6 +109,22 @@ impl StreamingWriters {
             .buffer_capacity(256 * 1024)
             .from_writer(open_file(Path::new(output_dir).join("delivery_assignments.csv"))?);
 
+        // Customer writers (for incremental growth)
+        let mut customers = csv::WriterBuilder::new()
+            .has_headers(false)
+            .buffer_capacity(256 * 1024)
+            .from_writer(open_file(Path::new(output_dir).join("customers.csv"))?);
+        let mut customer_addresses = csv::WriterBuilder::new()
+            .has_headers(false)
+            .buffer_capacity(256 * 1024)
+            .from_writer(open_file(Path::new(output_dir).join("customer_addresses.csv"))?);
+
+        // Driver writers (for incremental hiring)
+        let mut delivery_drivers = csv::WriterBuilder::new()
+            .has_headers(false)
+            .buffer_capacity(256 * 1024)
+            .from_writer(open_file(Path::new(output_dir).join("delivery_drivers.csv"))?);
+
         if !continue_mode {
             sales.write_record(&["date", "store_id", "sku", "units_sold", "gross_revenue", "promo_id",
                 "regular_price", "net_price", "revenue", "supplier_rebate_amt", "spoilage_cost",
@@ -134,6 +166,26 @@ impl StreamingWriters {
                 "distance_miles", "estimated_duration_minutes", "actual_duration_minutes",
                 "driver_pay", "driver_tip", "driver_total_earnings", "customer_rating",
                 "driver_notes", "customer_feedback"])?;
+
+            // Customer headers
+            customers.write_record(&["customer_id", "email", "phone", "first_name", "last_name",
+                "age_bracket", "household_size", "income_bracket", "primary_store_id", "primary_city",
+                "home_latitude", "home_longitude", "loyalty_member", "loyalty_tier", "loyalty_join_date",
+                "loyalty_points", "preferred_shopping_time", "avg_basket_size", "price_sensitivity",
+                "customer_segment", "created_date", "last_purchase_date", "total_lifetime_value",
+                "total_visits", "has_online_account", "prefers_online"])?;
+
+            customer_addresses.write_record(&["address_id", "customer_id", "address_type", "is_default",
+                "street_address", "apartment_unit", "city", "state", "zip_code", "latitude", "longitude",
+                "delivery_instructions", "has_doorman", "requires_signature", "created_at"])?;
+
+            // Driver headers
+            delivery_drivers.write_record(&["driver_id", "first_name", "last_name", "phone", "email",
+                "driver_type", "employment_status", "primary_store_id", "service_radius_miles", "service_cities",
+                "vehicle_type", "vehicle_capacity_items", "has_insulated_bags", "total_deliveries", "avg_rating",
+                "on_time_delivery_pct", "acceptance_rate", "cancellation_rate", "is_available",
+                "current_latitude", "current_longitude", "last_location_update", "hire_date", "last_delivery_date",
+                "base_pay_per_delivery", "mileage_rate", "avg_tips_per_delivery"])?;
         }
 
         Ok(Self {
@@ -147,6 +199,9 @@ impl StreamingWriters {
             transactions,
             transaction_line_items,
             delivery_assignments,
+            customers,
+            customer_addresses,
+            delivery_drivers,
             sales_batch: Vec::with_capacity(batch_size),
             inventory_batch: Vec::with_capacity(batch_size),
             returns_batch: Vec::with_capacity(batch_size),
@@ -157,6 +212,9 @@ impl StreamingWriters {
             transactions_batch: Vec::with_capacity(batch_size),
             transaction_line_items_batch: Vec::with_capacity(batch_size),
             delivery_assignments_batch: Vec::with_capacity(batch_size),
+            customers_batch: Vec::with_capacity(batch_size),
+            customer_addresses_batch: Vec::with_capacity(batch_size),
+            delivery_drivers_batch: Vec::with_capacity(batch_size),
             batch_size,
         })
     }
@@ -241,6 +299,33 @@ impl StreamingWriters {
         Ok(())
     }
 
+    #[allow(dead_code)]
+    pub fn write_customer(&mut self, record: &Customer) -> Result<()> {
+        self.customers_batch.push(record.clone());
+        if self.customers_batch.len() >= self.batch_size {
+            self.flush_customers_batch()?;
+        }
+        Ok(())
+    }
+
+    #[allow(dead_code)]
+    pub fn write_customer_address(&mut self, record: &CustomerAddress) -> Result<()> {
+        self.customer_addresses_batch.push(record.clone());
+        if self.customer_addresses_batch.len() >= self.batch_size {
+            self.flush_customer_addresses_batch()?;
+        }
+        Ok(())
+    }
+
+    #[allow(dead_code)]
+    pub fn write_delivery_driver(&mut self, record: &DeliveryDriver) -> Result<()> {
+        self.delivery_drivers_batch.push(record.clone());
+        if self.delivery_drivers_batch.len() >= self.batch_size {
+            self.flush_delivery_drivers_batch()?;
+        }
+        Ok(())
+    }
+
     fn flush_sales_batch(&mut self) -> Result<()> {
         for record in self.sales_batch.drain(..) {
             self.sales.serialize(&record)?;
@@ -311,6 +396,27 @@ impl StreamingWriters {
         Ok(())
     }
 
+    fn flush_customers_batch(&mut self) -> Result<()> {
+        for record in self.customers_batch.drain(..) {
+            self.customers.serialize(&record)?;
+        }
+        Ok(())
+    }
+
+    fn flush_customer_addresses_batch(&mut self) -> Result<()> {
+        for record in self.customer_addresses_batch.drain(..) {
+            self.customer_addresses.serialize(&record)?;
+        }
+        Ok(())
+    }
+
+    fn flush_delivery_drivers_batch(&mut self) -> Result<()> {
+        for record in self.delivery_drivers_batch.drain(..) {
+            self.delivery_drivers.serialize(&record)?;
+        }
+        Ok(())
+    }
+
     pub fn flush_all(&mut self) -> Result<()> {
         // Flush all batches first
         self.flush_sales_batch()?;
@@ -323,6 +429,9 @@ impl StreamingWriters {
         self.flush_transactions_batch()?;
         self.flush_transaction_line_items_batch()?;
         self.flush_delivery_assignments_batch()?;
+        self.flush_customers_batch()?;
+        self.flush_customer_addresses_batch()?;
+        self.flush_delivery_drivers_batch()?;
 
         // Then flush the writers
         self.sales.flush()?;
@@ -335,6 +444,9 @@ impl StreamingWriters {
         self.transactions.flush()?;
         self.transaction_line_items.flush()?;
         self.delivery_assignments.flush()?;
+        self.customers.flush()?;
+        self.customer_addresses.flush()?;
+        self.delivery_drivers.flush()?;
         Ok(())
     }
 }

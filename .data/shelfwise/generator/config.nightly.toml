@@ -1,0 +1,31 @@
+# ShelfWise Nightly Data Generator Configuration
+# Dates are automatically updated by nightly-import.sh script
+
+[date_range]
+# These dates define the FULL historical range for customer/driver generation
+# start_date should match the original full load to ensure consistent created_date/hire_date distribution
+# end_date is updated by nightly-import.sh to the target date being generated
+start_date = "2019-02-01"  # Original full load start date (DO NOT CHANGE)
+end_date = "2025-12-15"    # Updated by nightly-import.sh for each run
+
+# Prevent generating future data
+cap_to_tomorrow = true
+
+[scale]
+# These values are automatically updated from the database before each run
+# DO NOT manually edit - they reflect the current database state
+max_products = 250  # Auto-updated from products table
+num_domestic_stores = 10  # Auto-updated from stores table (-1 for online store)
+num_international_stores = 0
+
+[customers]
+# Base customer count - automatically updated from database
+# The generator will add ~0.1% new customers per day organically
+num_customers = 6100  # Auto-updated from customers table
+# Daily growth rate (0.1% = 6-10 new customers per day)
+daily_growth_rate = 0.001
+
+[performance]
+# Optimized for single-day generation
+flush_interval_days = 1         # Flush to disk every day
+batch_size = 4000               # Batch size for write operations

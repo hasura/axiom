@@ -1,0 +1,66 @@
+---
+# Base server setup - runs on all hosts
+# Sets timezone, hostname, installs common packages, configures MOTD
+
+- name: Base server setup
+  hosts: hosts
+  become: true
+  vars:
+    snapd_state: absent
+
+  roles:
+    - bodsch.snapd
+
+  tasks:
+    - name: Set timezone to UTC
+      community.general.timezone:
+        name: UTC
+
+    - name: Set the hostname
+      ansible.builtin.hostname:
+        name: "{{ inventory_hostname }}-{{ region }}-axiom"
+
+    - name: Install required packages
+      ansible.builtin.apt:
+        name:
+          - git
+          - git-lfs
+          - jq
+          - postgresql-client
+          - rsync
+        state: present
+        update_cache: true
+
+    - name: Configure MOTD (disable noise, keep health checks)
+      ansible.builtin.shell: |
+        cd /etc/update-motd.d
+        # Disable noisy scripts (remove execute bit)
+        chmod -x 00-header 10-help-text 50-motd-news 50-landscape-sysinfo \
+                 80-esm 80-livepatch 88-esm 90-updates-available \
+                 92-unattended-upgrades 97-overlayroot 98-fsck-at-reboot 2>/dev/null || true
+        # Ensure health scripts are executable
+        chmod +x 91-release-upgrade 95-hwe-eol 98-reboot-required 2>/dev/null || true
+        # Remove Ubuntu Pro ads
+        rm -f 88-esm
+      args:
+        executable: /bin/bash
+      changed_when: false
+
+    - name: Remove landscape-common package
+      ansible.builtin.apt:
+        name: landscape-common
+        state: absent
+
+    - name: Create custom MOTD script
+      ansible.builtin.template:
+        src: motd.j2
+        dest: /etc/update-motd.d/01-custom
+        mode: '0755'
+
+    - name: Disable MOTD news
+      ansible.builtin.lineinfile:
+        path: /etc/default/motd-news
+        regexp: '^ENABLED='
+        line: 'ENABLED=0'
+        create: true
+        mode: '0644'

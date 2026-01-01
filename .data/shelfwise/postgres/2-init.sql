@@ -5,15 +5,19 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 -- ============================================================================
 -- PERFORMANCE SETTINGS FOR DATA LOADING
 -- ============================================================================
--- Disable autovacuum during bulk data load to improve performance
-ALTER SYSTEM SET autovacuum = off;
+-- Use session-level settings for parameters that support it
+-- Note: autovacuum cannot be disabled at session level, only server level
+-- For initial load, consider setting autovacuum=off in postgresql.conf
 
 -- Set synchronous_commit to off for faster writes during data load
 -- This trades durability for speed - acceptable during initial load
-ALTER SYSTEM SET synchronous_commit = off;
+SET synchronous_commit = off;
 
--- Reload configuration to apply settings
-SELECT pg_reload_conf();
+-- Increase maintenance_work_mem for faster index creation
+SET maintenance_work_mem = '1GB';
+
+-- Increase work_mem for better sort performance
+SET work_mem = '256MB';
 
 -- Drop tables in reverse dependency order
 DROP TABLE IF EXISTS delivery_assignments CASCADE;
@@ -658,16 +662,11 @@ CREATE INDEX idx_delivery_assignments_assigned_at ON delivery_assignments(assign
 CREATE INDEX idx_delivery_assignments_delivered_at ON delivery_assignments(delivered_at);
 
 -- ============================================================================
--- RE-ENABLE PERFORMANCE SETTINGS AFTER DATA LOAD
+-- FINALIZE DATA LOAD
 -- ============================================================================
--- Re-enable autovacuum after bulk data load is complete
-ALTER SYSTEM SET autovacuum = on;
-
--- Restore synchronous_commit to default (on) for normal operations
-ALTER SYSTEM SET synchronous_commit = on;
-
--- Reload configuration to apply settings
-SELECT pg_reload_conf();
+-- Session settings will automatically reset when connection closes
+-- No need to explicitly re-enable autovacuum or synchronous_commit
 
 -- Run ANALYZE to update statistics after bulk load
+-- This is critical for query performance
 ANALYZE;

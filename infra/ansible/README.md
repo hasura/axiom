@@ -7,11 +7,12 @@ This repository contains Ansible playbooks for deploying and managing Axiom demo
 The Ansible setup consists of several playbooks that handle different aspects of the deployment:
 
 - **master.yml**: The main entry point that orchestrates the entire deployment process
-- **defaults.yml**: Sets up basic host configuration (hostname, tools, custom MOTD)
+- **base.yml**: Base server setup (timezone, hostname, packages, MOTD)
 - **manage_ssh_keys.yml**: Manages SSH keys for authorized users
 - **configure_docker.yml**: Installs and configures Docker with logging limits
-- **ddn.yml**: Installs the Hasura DDN CLI
-- **axiom.yml**: Deploys the Axiom demo environment
+- **axiom.yml**: Syncs demo files and starts containers
+- **shelfwise.yml**: ShelfWise-specific setup (Rust toolchain, generator build)
+- **nginx.yml**: Nginx reverse proxy setup
 - **cron.yml**: Sets up cron jobs for maintenance tasks
 
 ## Prerequisites
@@ -26,9 +27,12 @@ brew install ansible
 # Install ansible-lint
 brew install ansible-lint
 
-# Install Ansible requirements
-ansible-galaxy collection install -r requirements.yml
-ansible-galaxy role install -r requirements.yml --roles-path ./roles
+# Install Mitogen for faster execution (from infra/ansible dir)
+git clone https://github.com/mitogen-hq/mitogen.git .ansible/mitogen
+
+# Install Ansible requirements (from infra/ansible dir)
+ansible-galaxy collection install -r requirements.yml -p .ansible/collections
+ansible-galaxy role install -r requirements.yml --roles-path .ansible/roles
 ```
 
 ## Configuration
@@ -117,9 +121,13 @@ ansible-lint
 
 ### master.yml
 The main entry point that imports all other playbooks in the correct order:
-- Applies host defaults
-- Manages SSH keys
-- Deploys Axiom with dependencies
+- Base server setup
+- SSH keys
+- Docker
+- Axiom demo deployment
+- ShelfWise (if applicable)
+- Nginx (if applicable)
+- Cron jobs
 
 ### axiom.yml
 The main deployment playbook that:

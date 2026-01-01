@@ -14,6 +14,8 @@ pub struct Config {
 pub struct DateRange {
     pub start_date: String,
     pub end_date: String,
+    #[serde(default)]
+    pub cap_to_tomorrow: bool,
 }
 
 #[derive(Debug, Deserialize, Clone)]
@@ -30,7 +32,6 @@ pub struct Customers {
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct Performance {
-    pub progress_interval_days: usize,
     pub flush_interval_days: usize,
     #[serde(default = "default_batch_size")]
     pub batch_size: usize,

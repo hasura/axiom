@@ -9,6 +9,7 @@ use rand::prelude::*;
 use rand_distr::{Distribution, Exp, LogNormal, Beta, Normal};
 use std::collections::HashMap;
 use std::path::Path;
+use indicatif::{ProgressBar, ProgressStyle};
 
 // ============================================================================
 // BEHAVIORAL CONSTANTS
@@ -95,7 +96,6 @@ pub struct ShelfWiseDataGenerator {
     rng: StdRng,
     config: Config,
     start_date: NaiveDate,
-    #[allow(dead_code)]
     end_date: NaiveDate,
     dates: Vec<NaiveDate>,
     products: Vec<Product>,
@@ -175,8 +175,18 @@ impl ShelfWiseDataGenerator {
         // Parse dates from config
         let start_date = NaiveDate::parse_from_str(&config.date_range.start_date, "%Y-%m-%d")
             .expect("Invalid start_date format in config.toml");
-        let end_date = NaiveDate::parse_from_str(&config.date_range.end_date, "%Y-%m-%d")
+        let mut end_date = NaiveDate::parse_from_str(&config.date_range.end_date, "%Y-%m-%d")
             .expect("Invalid end_date format in config.toml");
+
+        // Cap end_date to tomorrow if flag is set and end_date is in the future
+        if config.date_range.cap_to_tomorrow {
+            let today = chrono::Local::now().date_naive();
+            let tomorrow = today + Duration::days(1);
+            if end_date > tomorrow {
+                println!("⚠️  Capping end_date from {} to {} (tomorrow)", end_date, tomorrow);
+                end_date = tomorrow;
+            }
+        }
 
         let mut dates = Vec::new();
         let mut current = start_date;
@@ -213,6 +223,104 @@ impl ShelfWiseDataGenerator {
             delivery_drivers: Vec::new(),
             delivery_zones: Vec::new(),
         }
+    }
+
+    /// Load customers from CSV file
+    pub fn load_customers_from_csv(&mut self, path: &Path) -> Result<()> {
+        let mut rdr = csv::Reader::from_path(path)?;
+        let mut count = 0;
+        for result in rdr.deserialize() {
+            let customer: Customer = result?;
+            self.customers.push(customer);
+            count += 1;
+        }
+        println!("  ✓ Loaded {} customers from {}", count, path.display());
+        Ok(())
+    }
+
+    /// Load customer addresses from CSV file
+    pub fn load_customer_addresses_from_csv(&mut self, path: &Path) -> Result<()> {
+        let mut rdr = csv::Reader::from_path(path)?;
+        let mut count = 0;
+        for result in rdr.deserialize() {
+            let address: CustomerAddress = result?;
+            self.customer_addresses.push(address);
+            count += 1;
+        }
+        println!("  ✓ Loaded {} customer addresses from {}", count, path.display());
+        Ok(())
+    }
+
+    /// Load delivery drivers from CSV file
+    pub fn load_drivers_from_csv(&mut self, path: &Path) -> Result<()> {
+        let mut rdr = csv::Reader::from_path(path)?;
+        let mut count = 0;
+        for result in rdr.deserialize() {
+            let driver: DeliveryDriver = result?;
+            self.delivery_drivers.push(driver);
+            count += 1;
+        }
+        println!("  ✓ Loaded {} delivery drivers from {}", count, path.display());
+        Ok(())
+    }
+
+    /// Load all reference data from a directory (customers, addresses, drivers)
+    pub fn load_reference_from_dir(&mut self, dir: &str) -> Result<()> {
+        let dir_path = Path::new(dir);
+
+        println!("\n📂 Loading reference data from {}...", dir);
+
+        let customers_path = dir_path.join("customers.csv");
+        if customers_path.exists() {
+            self.load_customers_from_csv(&customers_path)?;
+            // Build customer behaviors from loaded customers
+            self.build_customer_behaviors_from_loaded();
+        } else {
+            println!("  ⚠️  customers.csv not found, will generate");
+        }
+
+        let addresses_path = dir_path.join("customer_addresses.csv");
+        if addresses_path.exists() {
+            self.load_customer_addresses_from_csv(&addresses_path)?;
+        } else {
+            println!("  ⚠️  customer_addresses.csv not found, will generate");
+        }
+
+        let drivers_path = dir_path.join("delivery_drivers.csv");
+        if drivers_path.exists() {
+            self.load_drivers_from_csv(&drivers_path)?;
+        } else {
+            println!("  ⚠️  delivery_drivers.csv not found, will generate");
+        }
+
+        Ok(())
+    }
+
+    /// Build customer behaviors from loaded customers
+    fn build_customer_behaviors_from_loaded(&mut self) {
+        for customer in &self.customers {
+            let segment = &customer.customer_segment;
+            let shopping_frequency_days = match segment.as_str() {
+                "frequent_shopper" => 3,
+                "weekly_shopper" => 7,
+                "bulk_buyer" => 14,
+                _ => 21,
+            };
+
+            let behavior = CustomerBehavior {
+                customer_id: customer.customer_id,
+                segment: segment.clone(),
+                shopping_frequency_days,
+                avg_basket_size: customer.avg_basket_size as u32,
+                brand_loyalty_score: 0.5,
+                price_sensitivity: if customer.price_sensitivity == "high" { 0.8 } else if customer.price_sensitivity == "low" { 0.3 } else { 0.5 },
+                preferred_categories: vec![],
+                preferred_brands: vec![],
+                last_visit_date: customer.last_purchase_date,
+            };
+            self.customer_behaviors.insert(customer.customer_id, behavior);
+        }
+        println!("  ✓ Built {} customer behaviors", self.customer_behaviors.len());
     }
 
     fn init_categories() -> HashMap<String, CategoryConfig> {
@@ -735,8 +843,18 @@ impl ShelfWiseDataGenerator {
     }
 
     pub fn generate_customers(&mut self) {
-        let num_customers = self.config.customers.num_customers;
-        println!("Generating {} customers...", num_customers);
+        let base_customers = self.config.customers.num_customers;
+
+        // Calculate organic growth: ~3-5% ANNUAL growth rate
+        let total_days = (self.end_date - self.start_date).num_days() as f64;
+        let years = total_days / 365.0;
+        let annual_growth_rate = 0.04; // 4% annual growth (moderate/healthy)
+        let total_growth = (base_customers as f64 * annual_growth_rate * years) as usize;
+
+        let num_customers = base_customers + total_growth;
+
+        println!("Generating {} customers ({} base + {} organic growth @ {:.1}% annual over {:.2} years)...",
+                 num_customers, base_customers, total_growth, annual_growth_rate * 100.0, years);
 
         let mut customers = Vec::new();
         let mut customer_behaviors = HashMap::new();
@@ -823,22 +941,14 @@ impl ShelfWiseDataGenerator {
             let email_domains = vec!["gmail.com", "yahoo.com", "outlook.com", "hotmail.com", "icloud.com", "aol.com"];
             let domain = email_domains.choose(&mut self.rng).unwrap();
 
-            // Ensure unique email by using customer_id
-            // Format: firstname.lastname.ID@domain or firstname.lastname@domain (for low IDs)
-            let email = if customer_id <= 100 {
-                // First 100 customers get clean emails (no numbers)
-                format!("{}.{}@{}",
-                    first_name.to_lowercase(),
-                    last_name.to_lowercase(),
-                    domain)
-            } else {
-                // Rest get customer_id appended to ensure uniqueness
-                format!("{}.{}.{}@{}",
-                    first_name.to_lowercase(),
-                    last_name.to_lowercase(),
-                    customer_id,
-                    domain)
-            };
+            // Ensure unique email by ALWAYS using customer_id
+            // Format: firstname.lastname.ID@domain
+            // This guarantees uniqueness even with duplicate names
+            let email = format!("{}.{}.{}@{}",
+                first_name.to_lowercase(),
+                last_name.to_lowercase(),
+                customer_id,
+                domain);
 
             // Realistic US phone numbers (not 555)
             let area_codes = vec![415, 510, 650, 408, 925, 707, 209, 559, 916, 530]; // CA area codes
@@ -877,6 +987,29 @@ impl ShelfWiseDataGenerator {
                 _ => "medium",
             };
 
+            // Determine created_date:
+            // - First base_customers: existing customers (created before start_date)
+            // - Remaining customers: spread across the date range for organic growth
+            let created_date = if customer_id <= base_customers as u64 {
+                // Existing customer: created 0-730 days before start_date
+                self.start_date - Duration::days(self.rng.gen_range(0..730))
+            } else {
+                // New customer: created during the date range
+                // Spread evenly with some randomness
+                let total_days = (self.end_date - self.start_date).num_days();
+                let customer_offset = customer_id - base_customers as u64;
+                let total_new = total_growth as u64;
+
+                // Calculate approximate day for this customer
+                let day_offset = (customer_offset * total_days as u64) / total_new;
+
+                // Add some randomness (±7 days) to avoid clustering
+                let random_offset = self.rng.gen_range(-7..=7);
+                let final_offset = (day_offset as i64 + random_offset).max(0).min(total_days);
+
+                self.start_date + Duration::days(final_offset)
+            };
+
             let customer = Customer {
                 customer_id,
                 email,
@@ -893,7 +1026,7 @@ impl ShelfWiseDataGenerator {
                 loyalty_member: is_loyalty_member,
                 loyalty_tier,
                 loyalty_join_date: if is_loyalty_member {
-                    Some(self.start_date + Duration::days(self.rng.gen_range(0..365)))
+                    Some(created_date + Duration::days(self.rng.gen_range(0..30)))
                 } else {
                     None
                 },
@@ -902,7 +1035,7 @@ impl ShelfWiseDataGenerator {
                 avg_basket_size,
                 price_sensitivity: price_sensitivity.to_string(),
                 customer_segment: segment.clone(),
-                created_date: self.start_date - Duration::days(self.rng.gen_range(0..730)),
+                created_date,
                 last_purchase_date: None,
                 total_lifetime_value: 0.0,
                 total_visits: 0,
@@ -1061,6 +1194,344 @@ impl ShelfWiseDataGenerator {
 
         self.customer_addresses = addresses;
         println!("  Generated {} customer addresses", self.customer_addresses.len());
+    }
+
+    /// Generate new customers for a specific date (used in nightly mode)
+    /// Returns the number of new customers created
+    pub fn generate_new_customers_for_date(&mut self, date: NaiveDate) -> usize {
+        // Calculate daily customer acquisition rate from 4% annual growth
+        let annual_growth_rate = 0.04;
+        let current_customer_count = self.customers.len() as f64;
+        let daily_rate = current_customer_count * annual_growth_rate / 365.0;
+
+        // Add some randomness: 0.5x to 1.5x the expected rate
+        let today_rate = daily_rate * self.rng.gen_range(0.5..1.5);
+        let num_new = today_rate.round() as usize;
+
+        if num_new == 0 {
+            return 0;
+        }
+
+        let next_customer_id = self.customers.iter().map(|c| c.customer_id).max().unwrap_or(0) + 1;
+
+        let first_names = vec!["James", "Mary", "John", "Patricia", "Robert", "Jennifer", "Michael", "Linda",
+            "William", "Barbara", "David", "Elizabeth", "Richard", "Susan", "Joseph", "Jessica"];
+        let last_names = vec!["Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis",
+            "Rodriguez", "Martinez", "Hernandez", "Lopez", "Gonzalez", "Wilson", "Anderson", "Thomas"];
+
+        let physical_stores: Vec<Store> = self.stores.iter()
+            .filter(|s| s.store_type != "online")
+            .cloned()
+            .collect();
+
+        for i in 0..num_new {
+            let customer_id = next_customer_id + i as u64;
+
+            // New customers skew slightly younger
+            let age_bracket = self.pick_weighted(&[
+                ("18-24", AGE_18_24 * 1.2),
+                ("25-34", AGE_25_34 * 1.2),
+                ("35-44", AGE_35_44),
+                ("45-54", AGE_45_54 * 0.9),
+                ("55-64", AGE_55_64 * 0.8),
+                ("65+", AGE_65_PLUS * 0.7),
+            ]);
+
+            let household_size = self.pick_weighted_u32(&[
+                (1, HOUSEHOLD_SIZE_1), (2, HOUSEHOLD_SIZE_2), (3, HOUSEHOLD_SIZE_3),
+                (4, HOUSEHOLD_SIZE_4), (5, HOUSEHOLD_SIZE_5_PLUS),
+            ]);
+
+            let income_bracket = self.pick_weighted(&[
+                ("low", INCOME_LOW), ("medium", INCOME_MEDIUM),
+                ("high", INCOME_HIGH), ("very_high", INCOME_VERY_HIGH),
+            ]);
+
+            let segment = self.pick_weighted(&[
+                ("frequent_shopper", SEGMENT_FREQUENT_SHOPPER),
+                ("weekly_shopper", SEGMENT_WEEKLY_SHOPPER),
+                ("bulk_buyer", SEGMENT_BULK_BUYER),
+                ("occasional", SEGMENT_OCCASIONAL),
+            ]);
+
+            let primary_store = physical_stores.choose(&mut self.rng).unwrap().clone();
+
+            // New customers: 35% join loyalty immediately
+            let is_loyalty_member = self.rng.gen::<f64>() < 0.35;
+            let loyalty_tier = if is_loyalty_member { Some("bronze".to_string()) } else { None };
+
+            let first_name = first_names.choose(&mut self.rng).unwrap().to_string();
+            let last_name = last_names.choose(&mut self.rng).unwrap().to_string();
+            let email_domains = vec!["gmail.com", "yahoo.com", "outlook.com", "icloud.com"];
+            let domain = email_domains.choose(&mut self.rng).unwrap();
+            let email = format!("{}.{}.{}@{}", first_name.to_lowercase(), last_name.to_lowercase(), customer_id, domain);
+
+            let area_codes = vec![415, 510, 650, 408, 925, 707];
+            let area_code = area_codes.choose(&mut self.rng).unwrap();
+            let phone = format!("{}-{:03}-{:04}", area_code, self.rng.gen_range(200..999), self.rng.gen_range(1000..9999));
+
+            let distance_miles = self.rng.gen_range(1.0..15.0);
+            let angle = self.rng.gen_range(0.0..std::f64::consts::TAU);
+            let lat_offset = (distance_miles / 69.0) * angle.cos();
+            let lon_offset = (distance_miles / 54.6) * angle.sin();
+
+            let preferred_shopping_time = self.pick_weighted(&[
+                ("morning", 0.25), ("afternoon", 0.30), ("evening", 0.35), ("weekend", 0.10),
+            ]);
+
+            let avg_basket_size = match segment.as_str() {
+                "frequent_shopper" => BASKET_FREQUENT_SHOPPER as f64,
+                "weekly_shopper" => BASKET_WEEKLY_SHOPPER as f64,
+                "bulk_buyer" => BASKET_BULK_BUYER as f64,
+                "occasional" => BASKET_OCCASIONAL as f64,
+                _ => 20.0,
+            };
+
+            let price_sensitivity = match income_bracket.as_str() {
+                "low" => "high", "medium" => "medium", _ => "low",
+            };
+
+            // New customers have higher online preference
+            let has_online_account = self.rng.gen::<f64>() < 0.6;
+            let prefers_online = self.rng.gen::<f64>() < 0.25;
+
+            let customer = Customer {
+                customer_id,
+                email,
+                phone,
+                first_name: first_name.clone(),
+                last_name: last_name.clone(),
+                age_bracket,
+                household_size,
+                income_bracket: income_bracket.clone(),
+                primary_store_id: primary_store.store_id,
+                primary_city: primary_store.city.clone(),
+                home_latitude: primary_store.latitude + lat_offset,
+                home_longitude: primary_store.longitude + lon_offset,
+                loyalty_member: is_loyalty_member,
+                loyalty_tier,
+                loyalty_join_date: if is_loyalty_member { Some(date) } else { None },
+                loyalty_points: 0,
+                preferred_shopping_time,
+                avg_basket_size,
+                price_sensitivity: price_sensitivity.to_string(),
+                customer_segment: segment.clone(),
+                created_date: date,
+                last_purchase_date: None,
+                total_lifetime_value: 0.0,
+                total_visits: 0,
+                has_online_account,
+                prefers_online,
+            };
+
+            // Create behavior profile
+            let shopping_frequency_days = match segment.as_str() {
+                "frequent_shopper" => FREQ_FREQUENT_SHOPPER,
+                "weekly_shopper" => FREQ_WEEKLY_SHOPPER,
+                "bulk_buyer" => FREQ_BULK_BUYER,
+                "occasional" => FREQ_OCCASIONAL,
+                _ => 7,
+            };
+
+            let brand_loyalty_score = match income_bracket.as_str() {
+                "low" | "medium" => BRAND_LOYALTY_VALUE,
+                "high" => BRAND_LOYALTY_MID,
+                _ => BRAND_LOYALTY_PREMIUM,
+            };
+
+            let all_categories = vec!["cereal", "dairy", "snacks", "beverages", "produce", "household"];
+            let num_categories = self.rng.gen_range(2..=4);
+            let preferred_categories: Vec<String> = all_categories
+                .choose_multiple(&mut self.rng, num_categories)
+                .map(|s| s.to_string())
+                .collect();
+
+            let num_brands = self.rng.gen_range(3..=6);
+            let preferred_brands: Vec<String> = self.brands
+                .choose_multiple(&mut self.rng, num_brands)
+                .map(|b| b.name.clone())
+                .collect();
+
+            let behavior = CustomerBehavior {
+                customer_id,
+                segment,
+                shopping_frequency_days,
+                avg_basket_size: avg_basket_size as u32,
+                brand_loyalty_score,
+                price_sensitivity: if price_sensitivity == "high" { 0.8 } else if price_sensitivity == "low" { 0.3 } else { 0.5 },
+                preferred_categories,
+                preferred_brands,
+                last_visit_date: None,
+            };
+
+            self.customers.push(customer);
+            self.customer_behaviors.insert(customer_id, behavior);
+
+            // Generate 1-2 addresses for new customer
+            let num_addresses = if self.rng.gen::<f64>() < 0.3 { 2 } else { 1 };
+            for addr_idx in 0..num_addresses {
+                let street_number = self.rng.gen_range(100..9999);
+                let street_names = vec!["Main St", "Oak Ave", "Maple Dr", "Pine Rd", "Cedar Ln"];
+                let street_name = street_names.choose(&mut self.rng).unwrap();
+                // Use current length + 1 to ensure unique IDs
+                let new_address_id = self.customer_addresses.len() as u64 + 1;
+
+                let address = CustomerAddress {
+                    address_id: new_address_id,
+                    customer_id,
+                    address_type: if addr_idx == 0 { "home".to_string() } else { "work".to_string() },
+                    is_default: addr_idx == 0,
+                    street_address: format!("{} {}", street_number, street_name),
+                    apartment_unit: if self.rng.gen::<f64>() < 0.3 { Some(format!("Apt {}", self.rng.gen_range(1..500))) } else { None },
+                    city: primary_store.city.clone(),
+                    state: "CA".to_string(),
+                    zip_code: format!("9{:04}", self.rng.gen_range(4000..4999)),
+                    latitude: primary_store.latitude + self.rng.gen_range(-0.1..0.1),
+                    longitude: primary_store.longitude + self.rng.gen_range(-0.1..0.1),
+                    delivery_instructions: None,
+                    has_doorman: false,
+                    requires_signature: self.rng.gen::<f64>() < 0.10,
+                    created_at: date.and_hms_opt(12, 0, 0).unwrap(),
+                    delivery_count: 0,
+                    last_used_at: None,
+                };
+                self.customer_addresses.push(address);
+            }
+        }
+
+        num_new
+    }
+
+    /// Generate new delivery drivers for a specific date (used in nightly mode)
+    /// Drivers are typically hired on Mondays with seasonal patterns
+    pub fn generate_new_drivers_for_date(&mut self, date: NaiveDate) -> usize {
+        let day_of_week = date.weekday().num_days_from_monday();
+        let month = date.month();
+
+        // Drivers typically hired on Mondays, occasionally Fridays
+        let day_multiplier = match day_of_week {
+            0 => 1.0,  // Monday
+            4 => 0.3,  // Friday
+            _ => 0.0,  // No hiring other days
+        };
+
+        if day_multiplier == 0.0 {
+            return 0;
+        }
+
+        // Seasonal hiring patterns
+        let seasonal_multiplier = match month {
+            11 | 12 => 2.0,  // Holiday rush
+            1 => 0.5,        // Post-holiday slowdown
+            6 | 7 | 8 => 1.3, // Summer busy season
+            _ => 1.0,
+        };
+
+        // Calculate daily hiring rate from 15% annual growth
+        let annual_growth_rate = 0.15;
+        let current_driver_count = self.delivery_drivers.len() as f64;
+        let base_daily_rate = current_driver_count * annual_growth_rate / 365.0;
+        let adjusted_rate = base_daily_rate * seasonal_multiplier * day_multiplier;
+
+        // Probabilistic hiring
+        let num_new = if self.rng.gen::<f64>() < adjusted_rate {
+            self.rng.gen_range(1..=2)
+        } else {
+            0
+        };
+
+        if num_new == 0 {
+            return 0;
+        }
+
+        let next_driver_id = self.delivery_drivers.iter().map(|d| d.driver_id).max().unwrap_or(0) + 1;
+
+        let first_names = vec!["Alex", "Jordan", "Taylor", "Morgan", "Casey", "Riley", "Avery", "Quinn"];
+        let last_names = vec!["Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis"];
+
+        let physical_stores: Vec<Store> = self.stores.iter()
+            .filter(|s| s.store_type != "online")
+            .cloned()
+            .collect();
+
+        for i in 0..num_new {
+            let driver_id = next_driver_id + i as u64;
+
+            // Holiday hires are more likely contractors
+            let driver_type = if month == 11 || month == 12 {
+                self.pick_weighted(&[("employee", 0.30), ("contractor", 0.50), ("third_party", 0.20)])
+            } else {
+                self.pick_weighted(&[
+                    ("employee", EMPLOYEE_DRIVER_PCT),
+                    ("contractor", CONTRACTOR_DRIVER_PCT),
+                    ("third_party", THIRD_PARTY_DRIVER_PCT),
+                ])
+            };
+
+            let home_store = physical_stores.choose(&mut self.rng).unwrap().clone();
+            let first_name = first_names.choose(&mut self.rng).unwrap().to_string();
+            let last_name = last_names.choose(&mut self.rng).unwrap().to_string();
+
+            let area_codes = vec![415, 510, 650, 408, 925, 707];
+            let area_code = area_codes.choose(&mut self.rng).unwrap();
+            let phone = format!("{}-{:03}-{:04}", area_code, self.rng.gen_range(200..999), self.rng.gen_range(1000..9999));
+            let email = format!("{}.{}.{}@driveshelfwise.com", first_name.to_lowercase(), last_name.to_lowercase(), driver_id);
+
+            let employment_status = if driver_type == "employee" { "full_time" } else { "part_time" };
+
+            let service_radius_miles = match home_store.store_type.as_str() {
+                "urban" => self.rng.gen_range(3.0..8.0),
+                "suburban" => self.rng.gen_range(8.0..15.0),
+                "big_box" => self.rng.gen_range(10.0..20.0),
+                _ => self.rng.gen_range(5.0..12.0),
+            };
+
+            let vehicle_type = self.pick_weighted(&[
+                ("sedan", 0.40), ("suv", 0.30), ("van", 0.20), ("truck", 0.10),
+            ]);
+
+            let vehicle_capacity_items = match vehicle_type.as_str() {
+                "sedan" => self.rng.gen_range(15..25),
+                "suv" => self.rng.gen_range(25..40),
+                "van" => self.rng.gen_range(40..60),
+                "truck" => self.rng.gen_range(50..80),
+                _ => 30,
+            };
+
+            let driver = DeliveryDriver {
+                driver_id,
+                first_name,
+                last_name,
+                phone,
+                email,
+                driver_type,
+                employment_status: employment_status.to_string(),
+                primary_store_id: home_store.store_id,
+                service_radius_miles: Self::round_rate(service_radius_miles),
+                service_cities: home_store.city.clone(),
+                vehicle_type,
+                vehicle_capacity_items,
+                has_insulated_bags: self.rng.gen::<f64>() < 0.85,
+                total_deliveries: 0,
+                avg_rating: 4.5,
+                on_time_delivery_pct: 0.95,
+                acceptance_rate: 0.90,
+                cancellation_rate: 0.05,
+                is_available: true,
+                current_latitude: home_store.latitude,
+                current_longitude: home_store.longitude,
+                last_location_update: date.and_hms_opt(8, 0, 0).unwrap(),
+                hire_date: date,
+                last_delivery_date: None,
+                base_pay_per_delivery: Self::round_currency(self.rng.gen_range(8.0..12.0)),
+                mileage_rate: Self::round_currency(self.rng.gen_range(0.50..0.75)),
+                avg_tips_per_delivery: Self::round_currency(self.rng.gen_range(3.0..6.0)),
+            };
+
+            self.delivery_drivers.push(driver);
+        }
+
+        num_new
     }
 
     // Helper method for weighted selection
@@ -1405,8 +1876,8 @@ impl ShelfWiseDataGenerator {
     }
 
     pub fn generate_delivery_drivers(&mut self) {
-        // Calculate total drivers needed based on store count
-        let num_drivers = self.stores.iter()
+        // Calculate base drivers needed based on store count
+        let base_drivers = self.stores.iter()
             .map(|s| match s.store_type.as_str() {
                 "urban" => DRIVERS_PER_STORE_URBAN,
                 "suburban" => DRIVERS_PER_STORE_SUBURBAN,
@@ -1417,7 +1888,17 @@ impl ShelfWiseDataGenerator {
             })
             .sum::<usize>();
 
-        println!("Generating {} delivery drivers...", num_drivers);
+        // Calculate seasonal hiring: drivers have higher turnover than customers
+        // Account for churn, seasonal peaks (Nov-Dec holiday rush, Jun-Aug summer)
+        let total_days = (self.end_date - self.start_date).num_days() as f64;
+        let years = total_days / 365.0;
+        let annual_growth_rate = 0.15; // 15% annual net hiring (accounts for turnover)
+        let total_growth = (base_drivers as f64 * annual_growth_rate * years) as usize;
+
+        let num_drivers = base_drivers + total_growth;
+
+        println!("Generating {} delivery drivers ({} base + {} net hiring @ {:.1}% annual over {:.2} years)...",
+                 num_drivers, base_drivers, total_growth, annual_growth_rate * 100.0, years);
 
         let mut drivers = Vec::new();
 
@@ -1470,8 +1951,28 @@ impl ShelfWiseDataGenerator {
                 _ => 40,
             };
 
-            // Hire date within last 1-3 years
-            let hire_date = self.start_date - Duration::days(self.rng.gen_range(30..1095));
+            // Determine hire_date:
+            // - First base_drivers: existing drivers (hired before start_date)
+            // - Remaining drivers: spread across the date range for seasonal hiring
+            let hire_date = if driver_id <= base_drivers as u64 {
+                // Existing driver: hired 30-1095 days before start_date
+                self.start_date - Duration::days(self.rng.gen_range(30..1095))
+            } else {
+                // New hire: hired during the date range
+                // Seasonal pattern: more hires in Nov-Dec and Jun-Aug
+                let total_days = (self.end_date - self.start_date).num_days();
+                let driver_offset = driver_id - base_drivers as u64;
+                let total_new = total_growth as u64;
+
+                // Calculate approximate day for this driver
+                let day_offset = (driver_offset * total_days as u64) / total_new;
+
+                // Add seasonal bias and randomness
+                let random_offset = self.rng.gen_range(-14..=14); // ±2 weeks
+                let final_offset = (day_offset as i64 + random_offset).max(0).min(total_days);
+
+                self.start_date + Duration::days(final_offset)
+            };
 
             // Employment status
             let employment_status = if driver_type == "employee" {
@@ -1770,7 +2271,15 @@ impl ShelfWiseDataGenerator {
         promo_products.sort_by(|a, b| b.pareto_weight.partial_cmp(&a.pareto_weight).unwrap());
 
         for (promo_id, product) in promo_products.iter().take(50).enumerate() {
-            let start_day = self.rng.gen_range(0..self.dates.len().saturating_sub(15));
+            // Handle case where dates range is too small (e.g., continue mode with single date)
+            // Ensure we have a valid range by using max(1, len - 15) for the upper bound
+            let max_start_day = self.dates.len().saturating_sub(15).max(1);
+            let start_day = if max_start_day > 0 {
+                self.rng.gen_range(0..max_start_day)
+            } else {
+                0
+            };
+
             promotions.push(Promotion {
                 promo_id: (promo_id + 1) as u32,
                 sku: product.sku.clone(),
@@ -2142,11 +2651,17 @@ impl ShelfWiseDataGenerator {
         Ok(())
     }
 
-    pub fn save_data(&mut self, output_dir: &str, continue_mode: bool) -> Result<()> {
+    pub fn save_data(&mut self, output_dir: &str, continue_mode: bool, reference_dir: Option<&str>) -> Result<()> {
         println!("============================================================");
         println!("ShelfWise Data Generator - Rust COMPLETE VERSION");
         println!("============================================================\n");
 
+        // Load reference data from directory if provided (for nightly imports)
+        if let Some(ref_dir) = reference_dir {
+            self.load_reference_from_dir(ref_dir)?;
+        }
+
+        // Generate any data that wasn't loaded
         if self.products.is_empty() { self.generate_products(); }
         if self.stores.is_empty() { self.generate_stores(); }
         if self.store_economics.is_empty() { self.generate_store_economics(); }
@@ -2158,6 +2673,49 @@ impl ShelfWiseDataGenerator {
         if self.ground_truth_events.is_empty() { self.generate_ground_truth_events(); }
         if self.promotions.is_empty() { self.generate_promotions(); }
         if self.assortment.is_empty() { self.generate_assortment(); }
+
+        // Always ensure output directory exists, even in continue mode
+        std::fs::create_dir_all(output_dir)?;
+
+        // In nightly/continue mode with reference data, generate new customers/drivers
+        // ONLY for dates after the max created_date/hire_date in reference data
+        if continue_mode && reference_dir.is_some() {
+            // Find the max created_date from loaded customers (the "end" of pre-generated data)
+            let max_customer_date = self.customers.iter()
+                .map(|c| c.created_date)
+                .max()
+                .unwrap_or(self.start_date);
+
+            let max_driver_date = self.delivery_drivers.iter()
+                .map(|d| d.hire_date)
+                .max()
+                .unwrap_or(self.start_date);
+
+            println!("\n📈 Checking organic growth for date range...");
+            println!("   Reference data covers customers through: {}", max_customer_date);
+            println!("   Reference data covers drivers through: {}", max_driver_date);
+
+            let mut total_new_customers = 0;
+            let mut total_new_drivers = 0;
+
+            for date in self.dates.clone() {
+                // Only generate new customers for dates AFTER the pre-generated data
+                if date > max_customer_date {
+                    total_new_customers += self.generate_new_customers_for_date(date);
+                }
+                // Only generate new drivers for dates AFTER the pre-generated data
+                if date > max_driver_date {
+                    total_new_drivers += self.generate_new_drivers_for_date(date);
+                }
+            }
+
+            if total_new_customers > 0 || total_new_drivers > 0 {
+                println!("  Created {} new customers (for dates after {})", total_new_customers, max_customer_date);
+                println!("  Hired {} new drivers (for dates after {})", total_new_drivers, max_driver_date);
+            } else {
+                println!("  No new customers/drivers needed (dates already covered by reference data)");
+            }
+        }
 
         if !continue_mode {
             println!("Saving reference data...");
@@ -2193,17 +2751,38 @@ impl ShelfWiseDataGenerator {
         for a in &self.assortment { wtr.serialize(a)?; }
         wtr.flush()?;
 
-        // Write customer data
+        // Write customer data - ONLY customers created before or on start_date
+        // (New customers created during the date range will be added by nightly imports)
         if !self.customers.is_empty() {
             let mut wtr = csv::Writer::from_path(Path::new(output_dir).join("customers.csv"))?;
-            for c in &self.customers { wtr.serialize(c)?; }
+            let existing_customers: Vec<&Customer> = self.customers.iter()
+                .filter(|c| c.created_date <= self.start_date)
+                .collect();
+
+            println!("  Writing {} existing customers (created <= {})",
+                     existing_customers.len(), self.start_date);
+            println!("  {} future customers will be added during nightly imports",
+                     self.customers.len() - existing_customers.len());
+
+            for c in existing_customers { wtr.serialize(c)?; }
             wtr.flush()?;
         }
 
-        // Write customer addresses
+        // Write customer addresses - ONLY for existing customers
         if !self.customer_addresses.is_empty() {
+            let existing_customer_ids: std::collections::HashSet<u64> = self.customers.iter()
+                .filter(|c| c.created_date <= self.start_date)
+                .map(|c| c.customer_id)
+                .collect();
+
             let mut wtr = csv::Writer::from_path(Path::new(output_dir).join("customer_addresses.csv"))?;
-            for a in &self.customer_addresses { wtr.serialize(a)?; }
+            let existing_addresses: Vec<&CustomerAddress> = self.customer_addresses.iter()
+                .filter(|a| existing_customer_ids.contains(&a.customer_id))
+                .collect();
+
+            println!("  Writing {} existing customer addresses", existing_addresses.len());
+
+            for a in existing_addresses { wtr.serialize(a)?; }
             wtr.flush()?;
         }
 
@@ -2214,10 +2793,20 @@ impl ShelfWiseDataGenerator {
             wtr.flush()?;
         }
 
-        // Write delivery drivers
+        // Write delivery drivers - ONLY drivers hired before or on start_date
+        // (New drivers hired during the date range will be added by nightly imports)
         if !self.delivery_drivers.is_empty() {
             let mut wtr = csv::Writer::from_path(Path::new(output_dir).join("delivery_drivers.csv"))?;
-            for d in &self.delivery_drivers { wtr.serialize(d)?; }
+            let existing_drivers: Vec<&DeliveryDriver> = self.delivery_drivers.iter()
+                .filter(|d| d.hire_date <= self.start_date)
+                .collect();
+
+            println!("  Writing {} existing drivers (hired <= {})",
+                     existing_drivers.len(), self.start_date);
+            println!("  {} future drivers will be added during nightly imports",
+                     self.delivery_drivers.len() - existing_drivers.len());
+
+            for d in existing_drivers { wtr.serialize(d)?; }
             wtr.flush()?;
         }
 
@@ -2313,17 +2902,24 @@ impl ShelfWiseDataGenerator {
         let normal_medium = Normal::new(1.00, 0.03).unwrap();
         let normal_low = Normal::new(0.78, 0.04).unwrap();
 
+        // Create progress bar
+        let pb = ProgressBar::new(total_days as u64);
+        pb.set_style(
+            ProgressStyle::default_bar()
+                .template("[{elapsed_precise}] {bar:40.cyan/blue} {pos}/{len} {msg}")
+                .unwrap()
+                .progress_chars("=>-")
+        );
+
         for (idx, date) in dates_clone.iter().enumerate() {
             let day_start = std::time::Instant::now();
 
-            // Use configured progress interval from config.toml
-            if idx % self.config.performance.progress_interval_days == 0 {
-                println!("  Day {}/{} ({:.1}%) - {}",
-                         idx + 1,
-                         total_days,
-                         (idx as f64 / total_days as f64) * 100.0,
-                         date);
-            }
+            // Update progress bar
+            pb.set_message(format!("{} ({:.1}%)",
+                date,
+                (idx as f64 / total_days as f64) * 100.0
+            ));
+            pb.set_position(idx as u64);
 
             // Flush periodically to prevent excessive memory usage
             let should_flush = (idx + 1) % self.config.performance.flush_interval_days == 0;
@@ -2422,6 +3018,38 @@ impl ShelfWiseDataGenerator {
                                 true
                             }
                         });
+
+                        // REALISTIC SHIPMENT GENERATION:
+                        // Even if no pending orders, simulate realistic delivery schedules
+                        // High-velocity products get regular deliveries (2-3x per week)
+                        // Low-velocity products get occasional deliveries
+                        let is_high_velocity = product.pareto_weight > 0.001; // Top ~20% of products
+                        let day_of_week = date.weekday().num_days_from_monday();
+
+                        // Delivery days: Monday, Wednesday, Friday are common delivery days
+                        let is_delivery_day = day_of_week == 0 || day_of_week == 2 || day_of_week == 4;
+
+                        // Generate realistic shipments even without pending orders
+                        if arrived_today == 0 && is_delivery_day {
+                            let shipment_probability = if is_high_velocity {
+                                0.15 // 15% chance for high-velocity items on delivery days
+                            } else {
+                                0.03 // 3% chance for low-velocity items
+                            };
+
+                            if self.rng.gen::<f64>() < shipment_probability {
+                                // Calculate realistic shipment quantity based on demand
+                                let avg_daily_demand = if !history.is_empty() {
+                                    history.iter().sum::<u32>() as f64 / history.len() as f64
+                                } else {
+                                    demand as f64
+                                };
+
+                                // Order enough for 3-7 days of demand
+                                let days_of_supply = self.rng.gen_range(3..=7);
+                                arrived_today = ((avg_daily_demand * days_of_supply as f64).ceil() as u32).max(1);
+                            }
+                        }
 
                         if arrived_today > 0 {
                             on_hand += arrived_today;
@@ -2626,24 +3254,72 @@ impl ShelfWiseDataGenerator {
                             waste_id += 1;
                         }
 
-                        if on_hand == 0 && demand > 0 && self.rng.gen::<f64>() < 0.1 {
-                            let created_at = format!("{} 10:00:00", date);
+                        // Generate various types of tickets (not just stockouts)
+                        // Realistic ticket generation: ~0.5% probability per product per day
+                        let ticket_prob = 0.005;
+
+                        if self.rng.gen::<f64>() < ticket_prob {
+                            let hour = self.rng.gen_range(8..18);
+                            let minute = self.rng.gen_range(0..60);
+                            let created_at = format!("{} {:02}:{:02}:00", date, hour, minute);
+
+                            // 70% of tickets get resolved same day
                             let resolved_at = if self.rng.gen::<f64>() < 0.7 {
-                                Some(format!("{} 14:00:00", date))
+                                let resolve_hour = hour + self.rng.gen_range(1..4);
+                                Some(format!("{} {:02}:{:02}:00", date, resolve_hour.min(20), self.rng.gen_range(0..60)))
                             } else {
                                 None
+                            };
+
+                            // Different ticket types with realistic probabilities
+                            let ticket_type_roll = self.rng.gen::<f64>();
+                            let (issue_type, description, root_cause) = if on_hand == 0 && demand > 0 {
+                                // Stockout (higher priority if actually out of stock)
+                                ("stockout".to_string(),
+                                 "Product out of stock".to_string(),
+                                 Some("supplier_delay".to_string()))
+                            } else if ticket_type_roll < 0.25 {
+                                // Quality issues (25%)
+                                ("quality_issue".to_string(),
+                                 "Customer reported damaged/expired product".to_string(),
+                                 Some("handling_damage".to_string()))
+                            } else if ticket_type_roll < 0.45 {
+                                // Pricing discrepancies (20%)
+                                ("pricing_error".to_string(),
+                                 "Price mismatch between shelf and register".to_string(),
+                                 Some("label_not_updated".to_string()))
+                            } else if ticket_type_roll < 0.60 {
+                                // Inventory discrepancies (15%)
+                                ("inventory_discrepancy".to_string(),
+                                 "Physical count doesn't match system".to_string(),
+                                 Some("shrinkage".to_string()))
+                            } else if ticket_type_roll < 0.75 {
+                                // Display/merchandising issues (15%)
+                                ("display_issue".to_string(),
+                                 "Product not on shelf despite inventory".to_string(),
+                                 Some("backroom_overflow".to_string()))
+                            } else if ticket_type_roll < 0.85 {
+                                // Customer complaints (10%)
+                                ("customer_complaint".to_string(),
+                                 "Customer service issue reported".to_string(),
+                                 Some("product_quality".to_string()))
+                            } else {
+                                // System/technical issues (15%)
+                                ("system_issue".to_string(),
+                                 "Barcode scan error or system glitch".to_string(),
+                                 Some("technical_error".to_string()))
                             };
 
                             writers.write_ticket(&Ticket {
                                 ticket_id,
                                 created_at,
-                                resolved_at,
+                                resolved_at: resolved_at.clone(),
                                 store_id: store.store_id,
                                 sku: product.sku.clone(),
-                                issue_type: "stockout".to_string(),
-                                description: "Out of stock".to_string(),
-                                root_cause: Some("supplier_delay".to_string()),
-                                resolved: true,
+                                issue_type,
+                                description,
+                                root_cause,
+                                resolved: resolved_at.is_some(),
                             })?;
                             ticket_id += 1;
                         }
@@ -2867,36 +3543,64 @@ impl ShelfWiseDataGenerator {
                         for item in &line_items_buffer {
                             writers.write_transaction_line_item(item)?;
                             all_line_items_for_store_day.push(item.clone());
+                        }
 
-                            // Generate returns for ~1% of line items
-                            if self.rng.gen::<f64>() < 0.01 {
-                                // Return happens 1-30 days after purchase
-                                let days_after = self.rng.gen_range(1..=30);
-                                let return_date = *date + chrono::Duration::days(days_after);
+                        // Generate returns for TODAY from historical purchases (1-30 days ago)
+                        // This ensures nightly runs always have some returns data
+                        // Realistic return rate: ~1-2% of transactions, weighted by recency
+                        let return_probability_base = 0.015; // 1.5% base return rate
 
-                                // Only create return if return date is within our date range
-                                if return_date <= *self.dates.last().unwrap() {
-                                    // Return partial or full quantity
-                                    let return_qty = if item.quantity > 1 && self.rng.gen::<f64>() < 0.3 {
-                                        self.rng.gen_range(1..item.quantity) // Partial return
-                                    } else {
-                                        item.quantity // Full return
-                                    };
+                        for days_ago in 1..=30 {
+                            let purchase_date = *date - chrono::Duration::days(days_ago);
 
-                                    let refund_value = Self::round_currency(return_qty as f64 * item.unit_price);
+                            // Only generate returns for purchases within our date range
+                            if purchase_date < *self.dates.first().unwrap() {
+                                continue;
+                            }
 
-                                    let reason = return_reasons.choose(&mut self.rng).unwrap().clone();
+                            // Return probability decreases with age (most returns happen 3-7 days after purchase)
+                            let recency_weight = if days_ago <= 3 {
+                                0.3 // 30% of returns happen in first 3 days
+                            } else if days_ago <= 7 {
+                                0.4 // 40% of returns happen days 4-7
+                            } else if days_ago <= 14 {
+                                0.2 // 20% of returns happen days 8-14
+                            } else {
+                                0.1 // 10% of returns happen days 15-30
+                            };
 
-                                    writers.write_return(&ReturnDaily {
-                                        date: return_date,
-                                        store_id,
-                                        sku: item.sku.clone(),
-                                        units_returned: return_qty,
-                                        reason_code: reason,
-                                        refund_value,
-                                        transaction_id: item.transaction_id,
-                                        line_number: item.line_number,
-                                    })?;
+                            let adjusted_return_prob = return_probability_base * recency_weight / 30.0;
+
+                            // Generate returns for a sample of line items from that day
+                            if self.rng.gen::<f64>() < adjusted_return_prob {
+                                // Simulate a return from a historical transaction
+                                // Use current transaction's line items as a template
+                                for item in &line_items_buffer {
+                                    if self.rng.gen::<f64>() < 0.05 { // 5% of items from selected transactions get returned
+                                        // Return partial or full quantity
+                                        let return_qty = if item.quantity > 1 && self.rng.gen::<f64>() < 0.3 {
+                                            self.rng.gen_range(1..item.quantity) // Partial return
+                                        } else {
+                                            item.quantity // Full return
+                                        };
+
+                                        let refund_value = Self::round_currency(return_qty as f64 * item.unit_price);
+                                        let reason = return_reasons.choose(&mut self.rng).unwrap().clone();
+
+                                        // Create a virtual transaction ID from the past
+                                        let virtual_txn_id = global_txn_id.saturating_sub((days_ago * 100) as u64);
+
+                                        writers.write_return(&ReturnDaily {
+                                            date: *date, // Return happens TODAY
+                                            store_id,
+                                            sku: item.sku.clone(),
+                                            units_returned: return_qty,
+                                            reason_code: reason,
+                                            refund_value,
+                                            transaction_id: virtual_txn_id,
+                                            line_number: item.line_number,
+                                        })?;
+                                    }
                                 }
                             }
                         }
@@ -3022,12 +3726,40 @@ impl ShelfWiseDataGenerator {
             // Print timing for first few days to diagnose slowness
             if idx < 5 {
                 let day_elapsed = day_start.elapsed();
-                println!("    Day {} completed in {:.2}s", idx + 1, day_elapsed.as_secs_f64());
+                pb.println(format!("    Day {} completed in {:.2}s", idx + 1, day_elapsed.as_secs_f64()));
             }
         }
 
+        // Finish progress bar
+        pb.finish_with_message("Complete!");
+
         // Final flush to ensure all data is written
         writers.flush_all()?;
+
+        // Write ALL customers and drivers to CSV (including future ones)
+        // This allows nightly imports to extract new customers/drivers by ID
+        println!("\nWriting complete customer and driver datasets for nightly extraction...");
+
+        if !self.customers.is_empty() {
+            let mut wtr = csv::Writer::from_path(Path::new(output_dir).join("customers.csv"))?;
+            for c in &self.customers { wtr.serialize(c)?; }
+            wtr.flush()?;
+            println!("  Wrote {} total customers", self.customers.len());
+        }
+
+        if !self.customer_addresses.is_empty() {
+            let mut wtr = csv::Writer::from_path(Path::new(output_dir).join("customer_addresses.csv"))?;
+            for a in &self.customer_addresses { wtr.serialize(a)?; }
+            wtr.flush()?;
+            println!("  Wrote {} total customer addresses", self.customer_addresses.len());
+        }
+
+        if !self.delivery_drivers.is_empty() {
+            let mut wtr = csv::Writer::from_path(Path::new(output_dir).join("delivery_drivers.csv"))?;
+            for d in &self.delivery_drivers { wtr.serialize(d)?; }
+            wtr.flush()?;
+            println!("  Wrote {} total delivery drivers", self.delivery_drivers.len());
+        }
 
         Ok(())
     }

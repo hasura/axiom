@@ -1,77 +1,93 @@
 ---
 # Axiom Demo Setup Playbook
 #
-# This playbook sets up the Axiom demo environment by:
-# 1. Installing prerequisites (DDN)
-# 2. Configuring Docker
-# 3. Setting up the demo files and starting containers
+# Syncs demo files and starts containers
 #
-# Smart Container Management:
+# Behavior:
 # - Starts containers if they're not already running
-# - Ignores containers if they're already running
-# - Option to force a complete reinstall
+# - Skips container restart if already running (use docker_reset to force)
+# - Auto-detects if full file sync is needed (first deploy)
 #
 # Variables:
-# - auto_start_demo: When true, automatically starts the demo containers if they're not already running
-# - force_clean: When true, forces a complete cleanup of all containers and volumes before starting
+# - docker_reset: Wipe containers/volumes and restart fresh (default: false)
+# - sync_mode: File transfer mode - 'auto', 'full', or 'incremental' (default: auto)
+#              'auto' = full sync if no files exist, otherwise incremental
+#              'full' = always include large CSV files
+#              'incremental' = exclude large CSV files
 #
 # Usage:
-# - Normal run: ansible-playbook -i inventory.yml playbooks/axiom.yml
-#   (Starts containers if not running, ignores if already running)
-# - Force clean: ansible-playbook -i inventory.yml playbooks/axiom.yml -e "force_clean=true"
-#   (Deletes everything and starts again)
+# - Normal run: ansible-playbook -i inventory.json playbooks/axiom.yml
+# - Reset Docker: ansible-playbook -i inventory.json playbooks/axiom.yml -e "docker_reset=true"
+# - Force full sync: ansible-playbook -i inventory.json playbooks/axiom.yml -e "sync_mode=full"
 
-- name: Configure Docker for Axiom
-  import_playbook: configure_docker.yml
-
-- name: Clone and configure Axiom repository
+- name: Deploy Axiom demo
   hosts: demo_servers
   become: true
   vars:
-    auto_start_demo: true   # set to true to start containers if not running
-    force_clean: false      # set to true to delete everything and start again
+    docker_reset: false      # Wipe containers/volumes and restart fresh
+    sync_mode: auto          # auto/full/incremental - controls large CSV file transfer
+    rsync_excludes:          # Common excludes for rsync
+      - "--exclude=.*"
+      - "--exclude=venv"
+      - "--exclude=.venv"
+      - "--exclude=__pycache__"
+      - "--exclude=*.pyc"
+      - "--exclude=target"
+      - "--exclude=node_modules"
   tasks:
-    - name: Ensure git is installed
-      ansible.builtin.apt:
-        name: git
-        state: present
+    - name: Check if destination directory has files (for auto sync detection)
+      ansible.builtin.find:
+        paths: "/home/ubuntu/axiom-data/{{ demo_profile }}"
+        file_type: file
+        recurse: true
+      register: dest_files
+      ignore_errors: true
 
-    - name: Ensure git-lfs is installed
-      ansible.builtin.apt:
-        name: git-lfs
-        state: present
+    - name: Determine sync mode
+      ansible.builtin.set_fact:
+        full_sync: >-
+          {{ (sync_mode == 'auto' and (dest_files.matched | default(0) == 0)) or (sync_mode == 'full') }}
 
-    - name: Ensure /home/ubuntu/axiom-data base directory exists
+    - name: Ensure axiom-data directories exist
       ansible.builtin.file:
-        path: /home/ubuntu/axiom-data
+        path: "{{ item }}"
         owner: ubuntu
         group: ubuntu
         mode: "0755"
         state: directory
+      loop:
+        - /home/ubuntu/axiom-data
+        - /home/ubuntu/axiom-data/{{ demo_profile }}
 
-    - name: Ensure /home/ubuntu/axiom-data/<profile> exists
-      ansible.builtin.file:
-        path: /home/ubuntu/axiom-data/{{ demo_profile }}
-        owner: ubuntu
-        group: ubuntu
-        mode: "0755"
-        state: directory
+    - name: Display sync mode
+      ansible.builtin.debug:
+        msg: >-
+          Sync: {{ 'FULL (includes CSV files)' if full_sync | bool else 'INCREMENTAL (excludes CSV files)' }}
+          (sync_mode={{ sync_mode }}, dest_files={{ dest_files.matched | default(0) }})
 
-    - name: Upload demo profile from .data directory
+    - name: Upload demo profile - FULL (includes large CSV files)
       ansible.posix.synchronize:
         src: "{{ playbook_dir }}/../../../.data/{{ demo_profile }}/"
         dest: "/home/ubuntu/axiom-data/{{ demo_profile }}/"
         recursive: true
         delete: true
-        checksum: true
-        rsync_opts:
-          - "--exclude=.*"
-          - "--exclude=venv"
-          - "--exclude=.venv"
-          - "--exclude=__pycache__"
-          - "--exclude=*.pyc"
+        delay_updates: false
+        rsync_opts: "{{ rsync_excludes + ['--compress', '--size-only', '--partial', '--inplace', '--timeout=7200'] }}"
       delegate_to: localhost
       become: false
+      when: full_sync | bool
+
+    - name: Upload demo profile - INCREMENTAL (excludes large CSV files)
+      ansible.posix.synchronize:
+        src: "{{ playbook_dir }}/../../../.data/{{ demo_profile }}/"
+        dest: "/home/ubuntu/axiom-data/{{ demo_profile }}/"
+        recursive: true
+        delete: false
+        delay_updates: false
+        rsync_opts: "{{ rsync_excludes + ['--exclude=*.csv', '--compress', '--inplace', '--timeout=300'] }}"
+      delegate_to: localhost
+      become: false
+      when: not (full_sync | bool)
 
     - name: Load environment variables from .env
       ansible.builtin.include_vars:
@@ -86,62 +102,32 @@
         group: ubuntu
         mode: "0600"
 
-    - name: Check if Docker is running
-      ansible.builtin.command: docker info
-      register: docker_info
-      changed_when: false
-      failed_when: false
-
-    - name: Set Docker running status
-      ansible.builtin.set_fact:
-        docker_running: "{{ docker_info.rc == 0 }}"
-
-    - name: Check if any compose services are running
-      ansible.builtin.shell: docker compose ps -q || echo ""
+    - name: Check if compose services are running
+      ansible.builtin.shell: |
+        set -o pipefail
+        docker compose ps --status running -q | head -1
       args:
         chdir: "/home/ubuntu/axiom-data/{{ demo_profile }}"
-      register: compose_services
+        executable: /bin/bash
+      register: compose_check
       changed_when: false
       failed_when: false
 
-    - name: Debug compose services output
-      ansible.builtin.debug:
-        msg: "Compose services output: '{{ compose_services.stdout | replace('\n', '\\n') }}' (length: {{ compose_services.stdout | length }})"
-
-    - name: Check for running containers in the demo project
-      ansible.builtin.shell: >
-        docker ps --filter "name=axiom" --format "{% raw %}{{.Names}}{% endraw %}" || echo ""
-      register: running_containers
-      changed_when: false
-      failed_when: false
-
-    - name: Debug running containers output
-      ansible.builtin.debug:
-        msg: "Running containers output: '{{ running_containers.stdout | replace('\n', '\\n') }}' (length: {{ running_containers.stdout | length }})"
-
-    - name: Set Docker status facts
+    - name: Set container status
       ansible.builtin.set_fact:
-        compose_services_running: "{{ compose_services.stdout | default('') | length > 0 }}"
-        containers_running: "{{ running_containers.stdout | default('') | length > 0 }}"
+        containers_running: "{{ compose_check.stdout | default('') | length > 0 }}"
 
-    - name: Display Docker status
-      ansible.builtin.debug:
-        msg: >-
-          Docker Status: Service running: {{ docker_running }},
-          Compose services running: {{ compose_services_running }},
-          Containers running: {{ containers_running }}
-
-    - name: Stop all Docker containers if force_clean is enabled
+    - name: Stop all Docker containers if docker_reset is enabled
       community.docker.docker_compose_v2:
         project_src: /home/ubuntu/axiom-data/{{ demo_profile }}
         files:
           - compose.yaml
         state: absent
         remove_volumes: true
-      when: force_clean | bool
-      tags: ['force_clean']
+      when: docker_reset | bool
+      tags: ['docker_reset']
 
-    - name: Turn on the demo (start if not running or after force_clean)
+    - name: Start containers (if not running or after docker_reset)
       community.docker.docker_compose_v2:
         project_src: /home/ubuntu/axiom-data/{{ demo_profile }}
         files:
@@ -151,41 +137,17 @@
         state: present
         remove_orphans: true
       when: >-
-        force_clean | bool or
-        (auto_start_demo | bool and not compose_services_running | bool)
+        docker_reset | bool or
+        not containers_running | bool
       tags: ['start']
       ignore_errors: >-
-        {{ not force_clean | bool }}
+        {{ not docker_reset | bool }}
       register: start_result
 
-    - name: Display message when containers are already running
+    - name: Display status
       ansible.builtin.debug:
         msg: >-
-          Docker containers for this demo are already running.
-          To force a complete reinstall, run with: -e "force_clean=true"
-      when: >-
-        containers_running | bool and
-        not force_clean | bool
-
-    - name: Display success message
-      ansible.builtin.debug:
-        msg: >-
-          Demo setup completed successfully!
-          {% if force_clean | bool %}All containers were stopped and restarted cleanly.
-          {% elif start_result is defined and start_result.changed %}New containers started.
-          {% else %}No changes to running containers.{% endif %}
-      when: >-
-        not (containers_running | bool and
-        not force_clean | bool)
-
-    - name: Get running containers
-      ansible.builtin.shell: >
-        docker ps --filter "name=axiom" --format "{% raw %}{{.Names}}{% endraw %}"
-      register: running_containers_list
-      changed_when: false
-      when: containers_running | bool or (start_result is defined and start_result.changed)
-
-    - name: Display running containers
-      ansible.builtin.debug:
-        msg: "Running container names: {{ running_containers_list.stdout | default('No containers running') | replace('\n', ', ') }}"
-      when: containers_running | bool or (start_result is defined and start_result.changed)
+          {% if docker_reset | bool %}Containers reset and restarted.
+          {% elif start_result is defined and start_result.changed %}Containers started.
+          {% elif containers_running | bool %}Containers already running (use docker_reset=true to force).
+          {% else %}Setup complete.{% endif %}

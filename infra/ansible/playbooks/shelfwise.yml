@@ -1,0 +1,49 @@
+---
+
+- name: Setup ShelfWise dependencies
+  hosts: shelfwise
+  become: true
+  tasks:
+    - name: Install build dependencies
+      ansible.builtin.apt:
+        name: build-essential
+        state: present
+        update_cache: true
+
+    - name: Check if Rust is installed
+      ansible.builtin.stat:
+        path: /home/ubuntu/.cargo/bin/cargo
+      register: cargo_exists
+      become: false
+
+    - name: Install Rust toolchain
+      ansible.builtin.shell: |
+        set -o pipefail
+        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+      args:
+        creates: /home/ubuntu/.cargo/bin/cargo
+        executable: /bin/bash
+      become: false
+      when: not cargo_exists.stat.exists
+
+    - name: Add cargo to PATH in .bashrc
+      ansible.builtin.lineinfile:
+        path: /home/ubuntu/.bashrc
+        line: 'export PATH="$HOME/.cargo/bin:$PATH"'
+        create: true
+        mode: '0644'
+      become: false
+      when: not cargo_exists.stat.exists
+
+    - name: Build ShelfWise generator
+      ansible.builtin.shell: |
+        set -o pipefail
+        source $HOME/.cargo/env
+        cd /home/ubuntu/axiom-data/shelfwise/generator
+        cargo build --release
+      args:
+        executable: /bin/bash
+        creates: /home/ubuntu/axiom-data/shelfwise/generator/target/release/shelfwise-generator
+      become: false
+      environment:
+        PATH: "/home/ubuntu/.cargo/bin:{{ ansible_env.PATH }}"

@@ -1,12 +1,18 @@
 ---
-- name: Apply Host Defaults
-  import_playbook: playbooks/defaults.yml
+- name: Base server setup
+  import_playbook: playbooks/base.yml
 
 - name: Manage SSH Keys
   import_playbook: playbooks/manage_ssh_keys.yml
 
-- name: Deploy Axiom with Dependencies
+- name: Configure Docker
+  import_playbook: playbooks/configure_docker.yml
+
+- name: Deploy Axiom
   import_playbook: playbooks/axiom.yml
+
+- name: Setup ShelfWise
+  import_playbook: playbooks/shelfwise.yml
 
 - name: Setup Nginx for configured servers
   import_playbook: playbooks/nginx.yml

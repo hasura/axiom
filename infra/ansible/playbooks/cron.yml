@@ -14,23 +14,15 @@
         state: directory
         recurse: true
 
-    - name: Deploy demo monitoring script
-      ansible.posix.synchronize:
+    - name: Deploy monitoring script
+      ansible.builtin.copy:
         src: "{{ playbook_dir }}/../../../scripts/connector-keepalive.sh"
         dest: "/home/ubuntu/axiom-scripts/connector-keepalive.sh"
-        recursive: true
-        delete: true
-        rsync_opts:
-          - "--exclude=.*"
-      delegate_to: localhost
-      become: false
+        owner: ubuntu
+        group: ubuntu
+        mode: "0755"
 
-    - name: Verify monitoring script exists
-      ansible.builtin.stat:
-        path: /home/ubuntu/axiom-scripts/connector-keepalive.sh
-      register: keepalive
-
-    - name: Configure health check cron job
+    - name: Configure health check cron job (runs every minute)
       ansible.builtin.cron:
         name: "Axiom connector-keepalive"
         job: >
@@ -38,11 +30,27 @@
           cron_url='{{ cron_url }}'
           SLACK_WEBHOOK='{{ slack_webhook }}'
           /home/ubuntu/axiom-scripts/connector-keepalive.sh 2>&1 | logger -t gql-check
-        day: "*"
-        hour: "*"
-        minute: "*"
-        month: "*"
-        weekday: "*"
-        state: "present"
         user: "ubuntu"
-      when: keepalive.stat.exists
+
+- name: ShelfWise Nightly Import Cron
+  tags:
+    - cron
+    - shelfwise
+  hosts: shelfwise-blue
+  become: true
+  tasks:
+    - name: Ensure logs directory exists
+      ansible.builtin.file:
+        path: /home/ubuntu/logs
+        owner: ubuntu
+        group: ubuntu
+        mode: "0755"
+        state: directory
+
+    - name: Configure ShelfWise nightly import cron job (6 AM UTC daily)
+      ansible.builtin.cron:
+        name: "ShelfWise nightly import"
+        job: "/home/ubuntu/axiom-data/shelfwise/scripts/nightly-import.sh >> /home/ubuntu/logs/cron.log 2>&1"
+        hour: "6"
+        minute: "0"
+        user: "ubuntu"
