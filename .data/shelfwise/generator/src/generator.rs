@@ -64,23 +64,6 @@ const LOYALTY_PENETRATION_2023: f64 = 0.36;
 const LOYALTY_PENETRATION_2024: f64 = 0.38;
 const LOYALTY_PENETRATION_2025: f64 = 0.38;
 
-// Customer behavior parameters (shopping frequency in days)
-const FREQ_FREQUENT_SHOPPER: u32 = 3;
-const FREQ_WEEKLY_SHOPPER: u32 = 7;
-const FREQ_BULK_BUYER: u32 = 21;
-const FREQ_OCCASIONAL: u32 = 30;
-
-// Average basket sizes by segment
-const BASKET_FREQUENT_SHOPPER: u32 = 12;
-const BASKET_WEEKLY_SHOPPER: u32 = 25;
-const BASKET_BULK_BUYER: u32 = 45;
-const BASKET_OCCASIONAL: u32 = 18;
-
-// Brand loyalty scores by income
-const BRAND_LOYALTY_PREMIUM: f64 = 0.75;
-const BRAND_LOYALTY_MID: f64 = 0.65;
-const BRAND_LOYALTY_VALUE: f64 = 0.50;
-
 // Delivery configuration
 const DRIVERS_PER_STORE_URBAN: usize = 6;
 const DRIVERS_PER_STORE_SUBURBAN: usize = 5;
@@ -91,6 +74,233 @@ const DRIVERS_FULFILLMENT_CENTER: usize = 50;
 const EMPLOYEE_DRIVER_PCT: f64 = 0.30;
 const CONTRACTOR_DRIVER_PCT: f64 = 0.60;
 const THIRD_PARTY_DRIVER_PCT: f64 = 0.10;
+
+// ============================================================================
+// NAME AND ADDRESS DATA
+// Comprehensive lists for realistic data generation
+// ============================================================================
+
+// First names - mix of traditional and modern, diverse backgrounds
+const FIRST_NAMES: &[&str] = &[
+    // Traditional American
+    "James", "Mary", "John", "Patricia", "Robert", "Jennifer", "Michael", "Linda",
+    "William", "Barbara", "David", "Elizabeth", "Richard", "Susan", "Joseph", "Jessica",
+    "Thomas", "Sarah", "Charles", "Karen", "Christopher", "Nancy", "Daniel", "Lisa",
+    "Matthew", "Betty", "Anthony", "Margaret", "Mark", "Sandra", "Adam", "Ashley",
+    "Steven", "Kimberly", "Paul", "Emily", "Andrew", "Donna", "Joshua", "Michelle",
+    "Kenneth", "Dorothy", "Kevin", "Carol", "Brian", "Amanda", "George", "Melissa",
+    "Timothy", "Deborah", "Ronald", "Stephanie", "Edward", "Rebecca", "Jason", "Sharon",
+    "Jeffrey", "Laura", "Ryan", "Cynthia", "Jacob", "Kathleen", "Gary", "Amy",
+    "Nicholas", "Angela", "Eric", "Shirley", "Jonathan", "Anna", "Stephen", "Brenda",
+    // Hispanic/Latino
+    "Carlos", "Maria", "Miguel", "Rosa", "Luis", "Carmen", "Jose", "Sofia",
+    "Juan", "Isabella", "Francisco", "Gabriela", "Antonio", "Valentina", "Alejandro", "Lucia",
+    "Diego", "Camila", "Rafael", "Mariana", "Fernando", "Elena", "Ricardo", "Paula",
+    "Javier", "Andrea", "Oscar", "Daniela", "Sergio", "Natalia", "Eduardo", "Victoria",
+    // Asian
+    "Wei", "Mei", "Chen", "Li", "Hiroshi", "Yuki", "Kenji", "Sakura",
+    "Raj", "Priya", "Amit", "Ananya", "Vikas", "Deepa", "Arjun", "Kavya",
+    "Jin", "Hana", "Min", "Soo", "Tae", "Ji", "Hyun", "Eun",
+    "Nguyen", "Linh", "Minh", "Tran", "Phong", "Mai", "Duc", "Thao",
+    // Modern/Unisex
+    "Alex", "Jordan", "Taylor", "Morgan", "Casey", "Riley", "Avery", "Quinn",
+    "Skylar", "Dakota", "Reese", "Peyton", "Cameron", "Sage", "River", "Phoenix",
+    "Blake", "Drew", "Finley", "Harper", "Hayden", "Logan", "Parker", "Spencer",
+    // Additional diverse names
+    "Omar", "Fatima", "Ahmed", "Aisha", "Malik", "Zara", "Darius", "Imani",
+    "Marcus", "Jasmine", "Isaiah", "Aaliyah", "Terrell", "Ebony", "DeShawn", "Keisha",
+    "Connor", "Molly", "Sean", "Bridget", "Patrick", "Siobhan", "Declan", "Fiona",
+    "Dmitri", "Natasha", "Ivan", "Olga", "Mikhail", "Anastasia", "Vladimir", "Yelena",
+];
+
+// Last names - diverse mix reflecting US demographics
+const LAST_NAMES: &[&str] = &[
+    // Common American
+    "Smith", "Johnson", "Williams", "Brown", "Jones", "Miller", "Davis", "Wilson",
+    "Moore", "Taylor", "Anderson", "Thomas", "Jackson", "White", "Harris", "Martin",
+    "Thompson", "Robinson", "Clark", "Lewis", "Lee", "Walker", "Hall", "Allen",
+    "Young", "King", "Wright", "Scott", "Green", "Baker", "Adams", "Nelson",
+    "Hill", "Campbell", "Mitchell", "Roberts", "Carter", "Phillips", "Evans", "Turner",
+    "Collins", "Edwards", "Stewart", "Morris", "Murphy", "Cook", "Rogers", "Morgan",
+    "Peterson", "Cooper", "Reed", "Bailey", "Bell", "Howard", "Ward", "Cox",
+    // Hispanic/Latino
+    "Garcia", "Rodriguez", "Martinez", "Hernandez", "Lopez", "Gonzalez", "Perez", "Sanchez",
+    "Ramirez", "Torres", "Flores", "Rivera", "Gomez", "Diaz", "Reyes", "Morales",
+    "Jimenez", "Ruiz", "Ortiz", "Gutierrez", "Chavez", "Mendoza", "Vasquez", "Castillo",
+    "Cruz", "Moreno", "Romero", "Herrera", "Medina", "Aguilar", "Vargas", "Fernandez",
+    // Asian
+    "Chen", "Wang", "Li", "Zhang", "Liu", "Yang", "Huang", "Wu",
+    "Kim", "Park", "Lee", "Choi", "Jung", "Kang", "Cho", "Yoon",
+    "Nguyen", "Tran", "Le", "Pham", "Hoang", "Vo", "Dang", "Bui",
+    "Patel", "Shah", "Kumar", "Singh", "Sharma", "Gupta", "Joshi", "Mehta",
+    "Tanaka", "Suzuki", "Yamamoto", "Watanabe", "Nakamura", "Sato", "Ito", "Kobayashi",
+    // European
+    "O'Brien", "O'Connor", "Murphy", "Kelly", "Sullivan", "Walsh", "Burke", "Ryan",
+    "Schmidt", "Schneider", "Fischer", "Weber", "Meyer", "Wagner", "Becker", "Hoffmann",
+    "Rossi", "Russo", "Ferrari", "Romano", "Colombo", "Ricci", "Marino", "Greco",
+    "Cohen", "Levy", "Friedman", "Goldstein", "Schwartz", "Weiss", "Shapiro", "Katz",
+    // African/African-American
+    "Washington", "Jefferson", "Franklin", "Lincoln", "Grant", "Freeman", "Brooks", "Price",
+    "Powell", "Russell", "Foster", "Butler", "Barnes", "Henderson", "Coleman", "Jenkins",
+];
+
+// Street names for address generation
+const STREET_NAMES: &[&str] = &[
+    "Main St", "Oak Ave", "Maple Dr", "Pine Rd", "Cedar Ln", "Elm St",
+    "Washington Blvd", "Park Ave", "Broadway", "Market St", "1st St", "2nd Ave",
+    "3rd St", "4th Ave", "5th St", "Church St", "High St", "Mill Rd",
+    "Lake Dr", "Forest Ave", "River Rd", "Spring St", "Valley View Dr", "Sunset Blvd",
+    "Highland Ave", "Meadow Ln", "Hillside Dr", "Chestnut St", "Walnut St", "Cherry Ln",
+    "Lincoln Ave", "Jefferson St", "Madison Ave", "Franklin Blvd", "Grant St", "Adams Rd",
+    "Central Ave", "Union St", "Liberty St", "Commerce Dr", "Industrial Blvd", "Tech Way",
+    "College Ave", "University Dr", "School St", "Academy Rd", "Campus Dr", "Stadium Way",
+];
+
+// Apartment/unit type prefixes
+const APARTMENT_TYPES: &[&str] = &["Apt", "Unit", "#", "Suite", "Flat", "Ste"];
+
+// Email domains
+const EMAIL_DOMAINS: &[&str] = &[
+    "gmail.com", "yahoo.com", "outlook.com", "hotmail.com", "icloud.com", "aol.com",
+    "protonmail.com", "mail.com", "zoho.com", "yandex.com", "gmx.com", "live.com",
+];
+
+// US area codes (California focus but includes others for realism)
+const AREA_CODES: &[u32] = &[
+    // California
+    415, 510, 650, 408, 925, 707, 209, 559, 916, 530, 831, 805, 818, 310, 213, 323,
+    // Other major US cities
+    212, 718, 646, // NYC
+    312, 773, // Chicago
+    713, 832, // Houston
+    602, 480, // Phoenix
+    215, 267, // Philadelphia
+    214, 972, // Dallas
+    404, 678, // Atlanta
+    305, 786, // Miami
+    206, 425, // Seattle
+    303, 720, // Denver
+];
+
+// City to zip code prefix mapping for realistic addresses
+// Format: (city_substring, zip_prefix, zip_range_start, zip_range_end)
+// Zip codes will be generated as prefix + random(range_start..range_end)
+const CITY_ZIP_CODES: &[(&str, &str, u32, u32)] = &[
+    // Bay Area - California
+    ("San Francisco", "941", 0, 99),
+    ("San Jose", "951", 0, 99),
+    ("Oakland", "946", 0, 99),
+    ("Berkeley", "947", 0, 99),
+    ("Palo Alto", "943", 0, 99),
+    ("Mountain View", "940", 40, 49),
+    ("Fremont", "945", 36, 39),
+    ("San Mateo", "944", 0, 99),
+    ("Redwood City", "940", 61, 65),
+    ("Sunnyvale", "940", 85, 89),
+    ("Santa Clara", "950", 50, 56),
+    ("Cupertino", "950", 14, 16),
+    ("Daly City", "940", 14, 17),
+    ("San Rafael", "949", 0, 15),
+    ("Walnut Creek", "945", 95, 98),
+    // Greater California
+    ("Sacramento", "958", 0, 99),
+    ("Los Angeles", "900", 0, 99),
+    ("San Diego", "921", 0, 99),
+    ("Fresno", "937", 0, 99),
+    ("Santa Rosa", "954", 0, 99),
+    ("Monterey", "939", 0, 99),
+    ("Santa Cruz", "950", 60, 67),
+    ("Napa", "945", 58, 59),
+    ("Stockton", "952", 0, 99),
+    ("Modesto", "953", 50, 59),
+    // Pacific Northwest
+    ("Seattle", "981", 0, 99),
+    ("Portland", "972", 0, 99),
+    ("Bellevue", "980", 0, 99),
+    ("Tacoma", "984", 0, 99),
+    ("Eugene", "974", 0, 99),
+    ("Spokane", "992", 0, 99),
+    ("Boise", "837", 0, 99),
+    // Southwest
+    ("Phoenix", "850", 0, 99),
+    ("Denver", "802", 0, 99),
+    ("Las Vegas", "891", 0, 99),
+    ("Tucson", "857", 0, 99),
+    ("Albuquerque", "871", 0, 99),
+    ("Salt Lake City", "841", 0, 99),
+    ("Colorado Springs", "809", 0, 99),
+    // Texas
+    ("Austin", "787", 0, 99),
+    ("Dallas", "752", 0, 99),
+    ("Houston", "770", 0, 99),
+    // East Coast
+    ("New York", "100", 0, 99),
+    ("Boston", "021", 0, 99),
+    ("Chicago", "606", 0, 99),
+    ("Miami", "331", 0, 99),
+    ("Atlanta", "303", 0, 99),
+    ("Philadelphia", "191", 0, 99),
+    ("Washington", "200", 0, 99),
+    // International (use local formats)
+    ("Toronto", "M5", 0, 0),      // Canadian postal codes handled specially
+    ("Vancouver", "V6", 0, 0),
+    ("London", "SW", 0, 0),       // UK postal codes handled specially
+    ("Manchester", "M1", 0, 0),
+];
+
+/// Extract state/province/country code from city string (e.g., "San Francisco, CA" -> "CA")
+fn get_state_from_city(city: &str) -> String {
+    // City format is typically "City Name, ST" or "City Name, ST (description)"
+    if let Some(comma_pos) = city.find(',') {
+        let after_comma = city[comma_pos + 1..].trim();
+        // Take the first word/code after the comma
+        let state = after_comma.split_whitespace().next().unwrap_or("CA");
+        // Handle special cases for international
+        if city.contains("Toronto") || city.contains("Vancouver") {
+            return "ON".to_string(); // Ontario / BC simplified
+        }
+        if city.contains("London") || city.contains("Manchester") {
+            return "UK".to_string();
+        }
+        return state.to_string();
+    }
+    "CA".to_string() // Default
+}
+
+/// Get a realistic zip code for a city
+fn get_zip_for_city(city: &str, rng: &mut impl Rng) -> String {
+    // Find matching city
+    for (city_match, prefix, range_start, range_end) in CITY_ZIP_CODES {
+        if city.contains(city_match) {
+            // Handle international postal codes
+            if *city_match == "Toronto" || *city_match == "Vancouver" {
+                // Canadian postal code format: A1A 1A1
+                let letters = ['A', 'B', 'C', 'E', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'R', 'S', 'T', 'V', 'W', 'X', 'Y'];
+                return format!("{}{}{} {}{}{}",
+                    prefix,
+                    letters[rng.gen_range(0..letters.len())],
+                    rng.gen_range(0..10),
+                    rng.gen_range(0..10),
+                    letters[rng.gen_range(0..letters.len())],
+                    rng.gen_range(0..10));
+            }
+            if *city_match == "London" || *city_match == "Manchester" {
+                // UK postal code format: XX## #XX
+                return format!("{}{} {}{}{}",
+                    prefix,
+                    rng.gen_range(1..20),
+                    rng.gen_range(1..10),
+                    ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'R', 'S', 'T', 'W', 'X', 'Y'][rng.gen_range(0..20)],
+                    ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'R', 'S', 'T', 'W', 'X', 'Y'][rng.gen_range(0..20)]);
+            }
+            // US zip code
+            let suffix = rng.gen_range(*range_start..=*range_end);
+            return format!("{}{:02}", prefix, suffix);
+        }
+    }
+    // Fallback: California zip code
+    format!("9{:04}", rng.gen_range(4000..4999))
+}
 
 pub struct ShelfWiseDataGenerator {
     rng: StdRng,
@@ -113,7 +323,6 @@ pub struct ShelfWiseDataGenerator {
     // Customer data
     customers: Vec<Customer>,
     customer_addresses: Vec<CustomerAddress>,
-    customer_behaviors: HashMap<u64, CustomerBehavior>,
 
     // Delivery data
     delivery_drivers: Vec<DeliveryDriver>,
@@ -219,7 +428,6 @@ impl ShelfWiseDataGenerator {
             suppliers,
             customers: Vec::new(),
             customer_addresses: Vec::new(),
-            customer_behaviors: HashMap::new(),
             delivery_drivers: Vec::new(),
             delivery_zones: Vec::new(),
         }
@@ -264,17 +472,57 @@ impl ShelfWiseDataGenerator {
         Ok(())
     }
 
-    /// Load all reference data from a directory (customers, addresses, drivers)
+    /// Load products from CSV file
+    pub fn load_products_from_csv(&mut self, path: &Path) -> Result<()> {
+        let mut rdr = csv::Reader::from_path(path)?;
+        let mut count = 0;
+        for result in rdr.deserialize() {
+            let product: Product = result?;
+            self.products.push(product);
+            count += 1;
+        }
+        println!("  ✓ Loaded {} products from {}", count, path.display());
+        Ok(())
+    }
+
+    /// Load stores from CSV file
+    pub fn load_stores_from_csv(&mut self, path: &Path) -> Result<()> {
+        let mut rdr = csv::Reader::from_path(path)?;
+        let mut count = 0;
+        for result in rdr.deserialize() {
+            let store: Store = result?;
+            self.stores.push(store);
+            count += 1;
+        }
+        println!("  ✓ Loaded {} stores from {}", count, path.display());
+        Ok(())
+    }
+
+    /// Load all reference data from a directory (products, stores, customers, addresses, drivers)
     pub fn load_reference_from_dir(&mut self, dir: &str) -> Result<()> {
         let dir_path = Path::new(dir);
 
         println!("\n📂 Loading reference data from {}...", dir);
 
+        // Load products first (needed for transactions)
+        let products_path = dir_path.join("products.csv");
+        if products_path.exists() {
+            self.load_products_from_csv(&products_path)?;
+        } else {
+            println!("  ⚠️  products.csv not found, will generate");
+        }
+
+        // Load stores (needed for transactions)
+        let stores_path = dir_path.join("stores.csv");
+        if stores_path.exists() {
+            self.load_stores_from_csv(&stores_path)?;
+        } else {
+            println!("  ⚠️  stores.csv not found, will generate");
+        }
+
         let customers_path = dir_path.join("customers.csv");
         if customers_path.exists() {
             self.load_customers_from_csv(&customers_path)?;
-            // Build customer behaviors from loaded customers
-            self.build_customer_behaviors_from_loaded();
         } else {
             println!("  ⚠️  customers.csv not found, will generate");
         }
@@ -296,45 +544,11 @@ impl ShelfWiseDataGenerator {
         Ok(())
     }
 
-    /// Build customer behaviors from loaded customers
-    fn build_customer_behaviors_from_loaded(&mut self) {
-        for customer in &self.customers {
-            let segment = &customer.customer_segment;
-            let shopping_frequency_days = match segment.as_str() {
-                "frequent_shopper" => 3,
-                "weekly_shopper" => 7,
-                "bulk_buyer" => 14,
-                _ => 21,
-            };
-
-            let behavior = CustomerBehavior {
-                customer_id: customer.customer_id,
-                segment: segment.clone(),
-                shopping_frequency_days,
-                avg_basket_size: customer.avg_basket_size as u32,
-                brand_loyalty_score: 0.5,
-                price_sensitivity: if customer.price_sensitivity == "high" { 0.8 } else if customer.price_sensitivity == "low" { 0.3 } else { 0.5 },
-                preferred_categories: vec![],
-                preferred_brands: vec![],
-                last_visit_date: customer.last_purchase_date,
-            };
-            self.customer_behaviors.insert(customer.customer_id, behavior);
-        }
-        println!("  ✓ Built {} customer behaviors", self.customer_behaviors.len());
-    }
-
     fn init_categories() -> HashMap<String, CategoryConfig> {
         let mut categories = HashMap::new();
 
         // Load from reference data and add generation-specific parameters
         for cat in crate::reference_data::init_categories() {
-            let seasonality = match cat.category_name.as_str() {
-                "snacks" | "meat" | "candy" => "event_driven",
-                "beverages" => "summer",
-                "frozen" | "canned" => "winter",
-                _ => "steady",
-            };
-
             let dow_effect = match cat.category_name.as_str() {
                 "meat" => 0.18,
                 "snacks" => 0.15,
@@ -354,7 +568,6 @@ impl ShelfWiseDataGenerator {
                 cat.category_name.clone(),
                 CategoryConfig {
                     elasticity: cat.elasticity,
-                    seasonality: seasonality.to_string(),
                     dow_effect,
                 }
             );
@@ -521,7 +734,8 @@ impl ShelfWiseDataGenerator {
                 // More realistic grocery pricing: $0.99 to $25 range
                 // Most items $2-8, some premium items up to $25
                 let log_normal = LogNormal::new(1.2, 0.7).unwrap();
-                let base_price = (log_normal.sample(&mut self.rng) as f64).clamp(0.99, 18.0);
+                let base_price: f64 = log_normal.sample(&mut self.rng);
+                let base_price = base_price.clamp(0.99, 18.0);
 
                 let raw_price = match brand.tier.as_str() {
                     "premium" => (base_price * 1.4).min(25.0),  // Premium capped at $25
@@ -798,7 +1012,7 @@ impl ShelfWiseDataGenerator {
         // International expansion - Testing Canadian and UK markets
         // Strategic international expansion during data range (2020-2024)
         // Shows measured, deliberate international growth
-        let international_stores = vec![
+        let international_stores = [
             ("Vancouver, BC", 49.2827, -123.1207, "urban", 365),      // Q1 2020 - Natural expansion from Seattle
             ("Vancouver, BC", 49.2827, -123.1207, "suburban", 730),   // Q1 2021 - Second Vancouver location
             ("Toronto, ON", 43.6532, -79.3832, "urban", 1095),        // Q1 2022 - Major Canadian market entry
@@ -842,87 +1056,74 @@ impl ShelfWiseDataGenerator {
         self.stores = stores;
     }
 
-    pub fn generate_customers(&mut self) {
-        let base_customers = self.config.customers.num_customers;
+    /// Create a single customer with their behavior profile.
+    /// This is the shared implementation used by both initial and nightly generation.
+    ///
+    /// Parameters:
+    /// - `customer_id`: Unique customer ID
+    /// - `signup_date`: The date this customer signed up (used for year-based rates)
+    /// - `is_founding`: If true, created_date will be None (founding customers predate tracking)
+    /// - `physical_stores`: List of physical stores to assign customers to
+    fn create_single_customer(
+        &mut self,
+        customer_id: u64,
+        signup_date: NaiveDate,
+        is_founding: bool,
+        physical_stores: &[Store],
+    ) -> Customer {
+        // Demographics - same distribution for all customers
+        let age_bracket = self.pick_weighted(&[
+            ("18-24", AGE_18_24),
+            ("25-34", AGE_25_34),
+            ("35-44", AGE_35_44),
+            ("45-54", AGE_45_54),
+            ("55-64", AGE_55_64),
+            ("65+", AGE_65_PLUS),
+        ]);
 
-        // Calculate organic growth: ~3-5% ANNUAL growth rate
-        let total_days = (self.end_date - self.start_date).num_days() as f64;
-        let years = total_days / 365.0;
-        let annual_growth_rate = 0.04; // 4% annual growth (moderate/healthy)
-        let total_growth = (base_customers as f64 * annual_growth_rate * years) as usize;
+        let household_size = self.pick_weighted_u32(&[
+            (1, HOUSEHOLD_SIZE_1),
+            (2, HOUSEHOLD_SIZE_2),
+            (3, HOUSEHOLD_SIZE_3),
+            (4, HOUSEHOLD_SIZE_4),
+            (5, HOUSEHOLD_SIZE_5_PLUS),
+        ]);
 
-        let num_customers = base_customers + total_growth;
+        let income_bracket = self.pick_weighted(&[
+            ("low", INCOME_LOW),
+            ("medium", INCOME_MEDIUM),
+            ("high", INCOME_HIGH),
+            ("very_high", INCOME_VERY_HIGH),
+        ]);
 
-        println!("Generating {} customers ({} base + {} organic growth @ {:.1}% annual over {:.2} years)...",
-                 num_customers, base_customers, total_growth, annual_growth_rate * 100.0, years);
+        let segment = self.pick_weighted(&[
+            ("frequent_shopper", SEGMENT_FREQUENT_SHOPPER),
+            ("weekly_shopper", SEGMENT_WEEKLY_SHOPPER),
+            ("bulk_buyer", SEGMENT_BULK_BUYER),
+            ("occasional", SEGMENT_OCCASIONAL),
+        ]);
 
-        let mut customers = Vec::new();
-        let mut customer_behaviors = HashMap::new();
+        // Assign to primary store
+        let primary_store = physical_stores.choose(&mut self.rng).unwrap().clone();
 
-        // Simple name lists for generation
-        let first_names = vec!["James", "Mary", "John", "Patricia", "Robert", "Jennifer", "Michael", "Linda",
-            "William", "Barbara", "David", "Elizabeth", "Richard", "Susan", "Joseph", "Jessica", "Thomas", "Sarah",
-            "Charles", "Karen", "Christopher", "Nancy", "Daniel", "Lisa", "Matthew", "Betty", "Anthony", "Margaret"];
-        let last_names = vec!["Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis",
-            "Rodriguez", "Martinez", "Hernandez", "Lopez", "Gonzalez", "Wilson", "Anderson", "Thomas", "Taylor",
-            "Moore", "Jackson", "Martin", "Lee", "Thompson", "White", "Harris", "Sanchez", "Clark", "Lewis"];
+        // Loyalty membership based on year of signup
+        let loyalty_penetration = match signup_date.year() {
+            2019 => LOYALTY_PENETRATION_2019,
+            2020 => LOYALTY_PENETRATION_2020,
+            2021 => LOYALTY_PENETRATION_2021,
+            2022 => LOYALTY_PENETRATION_2022,
+            2023 => LOYALTY_PENETRATION_2023,
+            2024 => LOYALTY_PENETRATION_2024,
+            y if y < 2019 => LOYALTY_PENETRATION_2019 * 0.8, // Earlier years had lower adoption
+            _ => LOYALTY_PENETRATION_2025,
+        };
 
-        for customer_id in 1..=num_customers as u64 {
-            // Pick demographics using weighted distribution
-            let age_bracket = self.pick_weighted(&[
-                ("18-24", AGE_18_24),
-                ("25-34", AGE_25_34),
-                ("35-44", AGE_35_44),
-                ("45-54", AGE_45_54),
-                ("55-64", AGE_55_64),
-                ("65+", AGE_65_PLUS),
-            ]);
+        let is_loyalty_member = self.rng.gen::<f64>() < loyalty_penetration;
 
-            let household_size = self.pick_weighted_u32(&[
-                (1, HOUSEHOLD_SIZE_1),
-                (2, HOUSEHOLD_SIZE_2),
-                (3, HOUSEHOLD_SIZE_3),
-                (4, HOUSEHOLD_SIZE_4),
-                (5, HOUSEHOLD_SIZE_5_PLUS),
-            ]);
-
-            let income_bracket = self.pick_weighted(&[
-                ("low", INCOME_LOW),
-                ("medium", INCOME_MEDIUM),
-                ("high", INCOME_HIGH),
-                ("very_high", INCOME_VERY_HIGH),
-            ]);
-
-            // Pick customer segment
-            let segment = self.pick_weighted(&[
-                ("frequent_shopper", SEGMENT_FREQUENT_SHOPPER),
-                ("weekly_shopper", SEGMENT_WEEKLY_SHOPPER),
-                ("bulk_buyer", SEGMENT_BULK_BUYER),
-                ("occasional", SEGMENT_OCCASIONAL),
-            ]);
-
-            // Assign to primary store (only physical stores, not online/fulfillment center)
-            let physical_stores: Vec<Store> = self.stores.iter()
-                .filter(|s| s.store_type != "online")
-                .cloned()
-                .collect();
-            let primary_store = physical_stores.choose(&mut self.rng).unwrap().clone();
-
-            // Determine loyalty membership
-            let year = self.start_date.year();
-            let loyalty_penetration = match year {
-                2019 => LOYALTY_PENETRATION_2019,
-                2020 => LOYALTY_PENETRATION_2020,
-                2021 => LOYALTY_PENETRATION_2021,
-                2022 => LOYALTY_PENETRATION_2022,
-                2023 => LOYALTY_PENETRATION_2023,
-                2024 => LOYALTY_PENETRATION_2024,
-                _ => LOYALTY_PENETRATION_2025,
-            };
-
-            let is_loyalty_member = self.rng.gen::<f64>() < loyalty_penetration;
-
-            let loyalty_tier = if is_loyalty_member {
+        // Loyalty tier: new customers start as bronze, founding customers have earned tiers
+        let loyalty_tier = if is_loyalty_member {
+            if is_founding {
+                // Founding customers have had time to earn higher tiers
                 Some(self.pick_weighted(&[
                     ("bronze", LOYALTY_TIER_BRONZE),
                     ("silver", LOYALTY_TIER_SILVER),
@@ -930,174 +1131,361 @@ impl ShelfWiseDataGenerator {
                     ("platinum", LOYALTY_TIER_PLATINUM),
                 ]))
             } else {
-                None
-            };
+                // New customers always start at bronze
+                Some("bronze".to_string())
+            }
+        } else {
+            None
+        };
 
-            // Generate realistic contact info
-            let first_name = first_names.choose(&mut self.rng).unwrap().to_string();
-            let last_name = last_names.choose(&mut self.rng).unwrap().to_string();
+        // Contact info using centralized constants
+        let first_name = FIRST_NAMES.choose(&mut self.rng).unwrap().to_string();
+        let last_name = LAST_NAMES.choose(&mut self.rng).unwrap().to_string();
+        let domain = EMAIL_DOMAINS.choose(&mut self.rng).unwrap();
+        let email = format!(
+            "{}.{}.{}@{}",
+            first_name.to_lowercase(),
+            last_name.to_lowercase(),
+            customer_id,
+            domain
+        );
 
-            // Realistic email domains
-            let email_domains = vec!["gmail.com", "yahoo.com", "outlook.com", "hotmail.com", "icloud.com", "aol.com"];
-            let domain = email_domains.choose(&mut self.rng).unwrap();
+        let area_code = AREA_CODES.choose(&mut self.rng).unwrap();
+        let phone = format!(
+            "{}-{:03}-{:04}",
+            area_code,
+            self.rng.gen_range(200..999),
+            self.rng.gen_range(1000..9999)
+        );
 
-            // Ensure unique email by ALWAYS using customer_id
-            // Format: firstname.lastname.ID@domain
-            // This guarantees uniqueness even with duplicate names
-            let email = format!("{}.{}.{}@{}",
-                first_name.to_lowercase(),
-                last_name.to_lowercase(),
-                customer_id,
-                domain);
+        // Location near primary store (within 1-15 miles)
+        let distance_miles = self.rng.gen_range(1.0..15.0);
+        let angle = self.rng.gen_range(0.0..std::f64::consts::TAU);
+        let lat_offset = (distance_miles / 69.0) * angle.cos();
+        let lon_offset = (distance_miles / 54.6) * angle.sin();
 
-            // Realistic US phone numbers (not 555)
-            let area_codes = vec![415, 510, 650, 408, 925, 707, 209, 559, 916, 530]; // CA area codes
-            let area_code = area_codes.choose(&mut self.rng).unwrap();
-            let phone = format!("{}-{:03}-{:04}",
-                area_code,
-                self.rng.gen_range(200..999),
-                self.rng.gen_range(1000..9999));
+        // Shopping preferences
+        let preferred_shopping_time = self.pick_weighted(&[
+            ("morning", 0.25),
+            ("afternoon", 0.30),
+            ("evening", 0.35),
+            ("weekend", 0.10),
+        ]);
 
-            // Set location near primary store (within 5-15 miles)
-            let distance_miles = self.rng.gen_range(1.0..15.0);
-            let angle = self.rng.gen_range(0.0..std::f64::consts::TAU);
-            let lat_offset = (distance_miles / 69.0) * angle.cos();
-            let lon_offset = (distance_miles / 54.6) * angle.sin();
+        let price_sensitivity = match income_bracket.as_str() {
+            "low" => "high",
+            "medium" => "medium",
+            "high" | "very_high" => "low",
+            _ => "medium",
+        };
 
-            // Determine shopping preferences
-            let preferred_shopping_time = self.pick_weighted(&[
-                ("morning", 0.25),
-                ("afternoon", 0.30),
-                ("evening", 0.35),
-                ("weekend", 0.10),
-            ]);
+        // Created date
+        let created_date = if is_founding { None } else { Some(signup_date) };
 
-            let avg_basket_size = match segment.as_str() {
-                "frequent_shopper" => BASKET_FREQUENT_SHOPPER as f64,
-                "weekly_shopper" => BASKET_WEEKLY_SHOPPER as f64,
-                "bulk_buyer" => BASKET_BULK_BUYER as f64,
-                "occasional" => BASKET_OCCASIONAL as f64,
-                _ => 20.0,
-            };
+        // Loyalty join date - NULL for founding customers (we don't know when they joined)
+        let loyalty_join_date = if is_loyalty_member {
+            match created_date {
+                Some(d) => Some(d + Duration::days(self.rng.gen_range(0..30))),
+                None => None,  // Founding customers: unknown join date
+            }
+        } else {
+            None
+        };
 
-            let price_sensitivity = match income_bracket.as_str() {
-                "low" => "high",
-                "medium" => "medium",
-                "high" | "very_high" => "low",
-                _ => "medium",
-            };
+        // Online behavior rates based on signup year
+        let signup_year = signup_date.year();
+        let online_account_rate = self.get_online_account_rate_for_year(signup_year);
+        let online_preference_rate = self.get_online_preference_rate_for_year(signup_year);
 
-            // Determine created_date:
-            // - First base_customers: existing customers (created before start_date)
-            // - Remaining customers: spread across the date range for organic growth
-            let created_date = if customer_id <= base_customers as u64 {
-                // Existing customer: created 0-730 days before start_date
-                self.start_date - Duration::days(self.rng.gen_range(0..730))
+        Customer {
+            customer_id,
+            email,
+            phone,
+            first_name,
+            last_name,
+            age_bracket,
+            household_size,
+            income_bracket: income_bracket.clone(),
+            primary_store_id: primary_store.store_id,
+            primary_city: primary_store.city.clone(),
+            home_latitude: primary_store.latitude + lat_offset,
+            home_longitude: primary_store.longitude + lon_offset,
+            loyalty_member: is_loyalty_member,
+            loyalty_tier,
+            loyalty_join_date,
+            preferred_shopping_time,
+            price_sensitivity: price_sensitivity.to_string(),
+            customer_segment: segment.clone(),
+            created_date,
+            has_online_account: self.rng.gen::<f64>() < online_account_rate,
+            prefers_online: self.rng.gen::<f64>() < online_preference_rate,
+        }
+    }
+
+    pub fn generate_customers(&mut self) {
+        let base_customers = self.config.customers.num_customers;
+
+        // Calculate organic growth: ~3-5% ANNUAL growth rate (varying per year)
+        // Uses the same rate table as nightly mode for consistency
+        let total_days = (self.end_date - self.start_date).num_days();
+        let years = total_days as f64 / 365.0;
+
+        // Calculate growth year-by-year using the deterministic rate table
+        let mut total_growth = 0.0;
+        let mut current_base = base_customers as f64;
+        let mut current_date = self.start_date;
+        let mut year_rates: Vec<(i32, f64)> = Vec::new();
+
+        while current_date <= self.end_date {
+            let year = current_date.year();
+            let annual_rate = self.get_annual_growth_rate_for_year(year);
+
+            // Calculate end of this year chunk (end of calendar year or end_date, whichever is first)
+            let year_end = NaiveDate::from_ymd_opt(year, 12, 31).unwrap();
+            let chunk_end = if year_end < self.end_date { year_end } else { self.end_date };
+
+            let days_in_chunk = (chunk_end - current_date).num_days() + 1;
+            let year_fraction = days_in_chunk as f64 / 365.0;
+
+            // Growth for this chunk (compounding)
+            let chunk_growth = current_base * annual_rate * year_fraction;
+            total_growth += chunk_growth;
+            current_base += chunk_growth;
+
+            year_rates.push((year, annual_rate));
+            current_date = chunk_end + Duration::days(1);
+        }
+
+        let total_growth = total_growth as usize;
+        let avg_rate = year_rates.iter().map(|(_, r)| r).sum::<f64>() / year_rates.len() as f64;
+
+        let num_customers = base_customers + total_growth;
+
+        // === FOUNDING CUSTOMERS vs ORGANIC GROWTH ===
+        // Base customers are "founding" customers - they existed before we started tracking.
+        // They get NULL created_date (we don't know when they joined).
+        // Only organic growth customers (added during simulation) get actual signup dates.
+        // This avoids unrealistic signup spikes and matches the nightly script's variable rate.
+
+        println!("Generating {} customers ({} founding + {} organic growth @ 3-5% annual over {:.2} years)...",
+                 num_customers, base_customers, total_growth, years);
+        println!("  Year-by-year rates: {:?}", year_rates.iter().map(|(y, r)| format!("{}: {:.1}%", y, r * 100.0)).collect::<Vec<_>>());
+        println!("  Average rate: {:.2}%", avg_rate * 100.0);
+        println!("  Founding customers: NULL created_date (pre-existing)");
+        println!("  Organic growth: spread from {} to {} (~{:.0}/month)",
+                 self.start_date, self.end_date, total_growth as f64 / (years * 12.0));
+
+        // Build weighted date distribution for organic growth customers
+        // Each day gets a weight based on day-of-week, seasonal, and holiday factors
+        let total_sim_days = (self.end_date - self.start_date).num_days() as usize;
+        let mut date_weights: Vec<(NaiveDate, f64)> = Vec::with_capacity(total_sim_days + 1);
+        let mut total_weight = 0.0;
+
+        for day_offset in 0..=total_sim_days {
+            let date = self.start_date + Duration::days(day_offset as i64);
+            let weight = self.get_signup_weight(date);
+            total_weight += weight;
+            date_weights.push((date, weight));
+        }
+
+        // Build cumulative distribution for sampling organic growth signup dates
+        let mut cumulative_weights: Vec<f64> = Vec::with_capacity(date_weights.len());
+        let mut cumsum = 0.0;
+        for (_, weight) in &date_weights {
+            cumsum += weight / total_weight;
+            cumulative_weights.push(cumsum);
+        }
+
+        // Pre-compute physical stores list (excludes online/fulfillment center)
+        let physical_stores: Vec<Store> = self.stores.iter()
+            .filter(|s| s.store_type != "online")
+            .cloned()
+            .collect();
+
+        let mut customers = Vec::new();
+
+        // Add hardcoded VIP customers FIRST (they get IDs 1, 2, 3, ...)
+        let num_vip = self.add_hardcoded_customers(&mut customers);
+        println!("  Added {} VIP customers (IDs 1-{})", num_vip, num_vip);
+
+        // Regular customers start after VIP customers
+        let first_regular_id = num_vip as u64 + 1;
+        for customer_id in first_regular_id..=(num_customers as u64 + num_vip as u64) {
+            // Determine if this is a founding customer or organic growth
+            let is_founding = customer_id <= base_customers as u64;
+
+            // Determine signup date:
+            // - Founding customers: use start_date for rate calculations (they predate tracking)
+            // - Organic growth: sample from weighted date distribution
+            let signup_date = if is_founding {
+                // Use a date before start for founding customers (for rate calculations)
+                self.start_date - Duration::days(365)
             } else {
-                // New customer: created during the date range
-                // Spread evenly with some randomness
-                let total_days = (self.end_date - self.start_date).num_days();
-                let customer_offset = customer_id - base_customers as u64;
-                let total_new = total_growth as u64;
-
-                // Calculate approximate day for this customer
-                let day_offset = (customer_offset * total_days as u64) / total_new;
-
-                // Add some randomness (±7 days) to avoid clustering
-                let random_offset = self.rng.gen_range(-7..=7);
-                let final_offset = (day_offset as i64 + random_offset).max(0).min(total_days);
-
-                self.start_date + Duration::days(final_offset)
+                // Sample from weighted distribution
+                let r = self.rng.gen::<f64>();
+                let idx = cumulative_weights.iter()
+                    .position(|&cw| r <= cw)
+                    .unwrap_or(cumulative_weights.len() - 1);
+                date_weights[idx].0
             };
 
-            let customer = Customer {
+            // Use shared customer creation function
+            let customer = self.create_single_customer(
                 customer_id,
-                email,
-                phone,
-                first_name,
-                last_name,
-                age_bracket,
-                household_size,
-                income_bracket: income_bracket.clone(),
-                primary_store_id: primary_store.store_id,
-                primary_city: primary_store.city.clone(),
-                home_latitude: primary_store.latitude + lat_offset,
-                home_longitude: primary_store.longitude + lon_offset,
-                loyalty_member: is_loyalty_member,
-                loyalty_tier,
-                loyalty_join_date: if is_loyalty_member {
-                    Some(created_date + Duration::days(self.rng.gen_range(0..30)))
-                } else {
-                    None
-                },
-                loyalty_points: 0,
-                preferred_shopping_time,
-                avg_basket_size,
-                price_sensitivity: price_sensitivity.to_string(),
-                customer_segment: segment.clone(),
-                created_date,
-                last_purchase_date: None,
-                total_lifetime_value: 0.0,
-                total_visits: 0,
-                has_online_account: self.rng.gen::<f64>() < 0.4,
-                prefers_online: self.rng.gen::<f64>() < 0.15,
-            };
-
-            // Create behavior profile
-            let shopping_frequency_days = match segment.as_str() {
-                "frequent_shopper" => FREQ_FREQUENT_SHOPPER,
-                "weekly_shopper" => FREQ_WEEKLY_SHOPPER,
-                "bulk_buyer" => FREQ_BULK_BUYER,
-                "occasional" => FREQ_OCCASIONAL,
-                _ => 7,
-            };
-
-            let brand_loyalty_score = match income_bracket.as_str() {
-                "low" | "medium" => BRAND_LOYALTY_VALUE,
-                "high" => BRAND_LOYALTY_MID,
-                "very_high" => BRAND_LOYALTY_PREMIUM,
-                _ => 0.65,
-            };
-
-            // Pick 2-4 preferred categories
-            let all_categories = vec!["cereal", "dairy", "snacks", "beverages", "produce",
-                "household", "frozen", "bakery", "meat", "canned", "personal_care", "candy"];
-            let num_preferred = self.rng.gen_range(2..=4);
-            let preferred_categories: Vec<String> = all_categories
-                .choose_multiple(&mut self.rng, num_preferred)
-                .map(|s| s.to_string())
-                .collect();
-
-            // Pick 3-6 preferred brands
-            let num_preferred_brands = self.rng.gen_range(3..=6);
-            let preferred_brands: Vec<String> = self.brands
-                .choose_multiple(&mut self.rng, num_preferred_brands)
-                .map(|b| b.name.clone())
-                .collect();
-
-            let behavior = CustomerBehavior {
-                customer_id,
-                segment: segment.clone(),
-                shopping_frequency_days,
-                avg_basket_size: avg_basket_size as u32,
-                brand_loyalty_score,
-                price_sensitivity: if price_sensitivity == "high" { 0.8 } else if price_sensitivity == "low" { 0.3 } else { 0.5 },
-                preferred_categories,
-                preferred_brands,
-                last_visit_date: None,
-            };
+                signup_date,
+                is_founding,
+                &physical_stores,
+            );
 
             customers.push(customer);
-            customer_behaviors.insert(customer_id, behavior);
         }
 
         self.customers = customers;
-        self.customer_behaviors = customer_behaviors;
 
         println!("  Generated {} customers", self.customers.len());
 
         // Generate customer addresses (1-2 per customer)
         self.generate_customer_addresses();
+    }
+
+    /// Add hardcoded VIP customers (called at the START of customer generation)
+    /// Returns the number of VIP customers added (so regular customers start at ID num_vip + 1)
+    fn add_hardcoded_customers(
+        &self,
+        customers: &mut Vec<Customer>,
+    ) -> usize {
+        // Find San Francisco store, or fall back to first Bay Area store
+        let sf_store = self.stores.iter()
+            .find(|s| s.city.contains("San Francisco"))
+            .or_else(|| self.stores.iter().find(|s| s.city.contains("Berkeley")))
+            .or_else(|| self.stores.iter().find(|s| s.city.contains("Oakland")))
+            .unwrap_or(&self.stores[0]);
+
+        let adam = Customer {
+            customer_id: 1,
+            email: "adam@promptql.io".to_string(),
+            phone: "628-588-1234".to_string(),
+            first_name: "Adam".to_string(),
+            last_name: "Malone".to_string(),
+            age_bracket: "35-44".to_string(),
+            household_size: 1,
+            income_bracket: "high".to_string(),
+            primary_store_id: sf_store.store_id,
+            primary_city: "San Francisco, CA".to_string(),
+            home_latitude: 37.785834,
+            home_longitude: -122.396736,
+            loyalty_member: true,
+            loyalty_tier: Some("platinum".to_string()),
+            loyalty_join_date: Some(self.start_date),
+            preferred_shopping_time: "morning".to_string(),
+            price_sensitivity: "low".to_string(),
+            customer_segment: "frequent_shopper".to_string(),
+            created_date: Some(self.start_date),
+            has_online_account: true,
+            prefers_online: true,
+        };
+
+        customers.push(adam);
+
+        1 // Return count of VIP customers
+    }
+
+    /// Generate 1-2 addresses for a single customer.
+    /// This is the shared implementation used by both initial and nightly generation.
+    fn generate_addresses_for_customer(&mut self, customer: &Customer, signup_date: NaiveDate) {
+        // VIP customer #1 (Adam) gets a hardcoded address
+        if customer.customer_id == 1 {
+            let address_id = self.customer_addresses.len() as u64 + 1;
+            let address = CustomerAddress {
+                address_id,
+                customer_id: 1,
+                address_type: "work".to_string(),
+                is_default: true,
+                street_address: "576 Folsom St".to_string(),
+                apartment_unit: None,
+                city: "San Francisco".to_string(),
+                state: "CA".to_string(),
+                zip_code: "94105".to_string(),
+                latitude: 37.785834,
+                longitude: -122.396736,
+                delivery_instructions: Some("PromptQL HQ - ring buzzer".to_string()),
+                has_doorman: true,
+                requires_signature: false,
+                created_at: signup_date.and_hms_opt(10, 0, 0).unwrap(),
+            };
+            self.customer_addresses.push(address);
+            return;
+        }
+
+        // Each customer gets 1-2 addresses (70% have 1, 30% have 2)
+        let num_addresses = if self.rng.gen::<f64>() < 0.70 { 1 } else { 2 };
+
+        for addr_num in 0..num_addresses {
+            let address_type = if addr_num == 0 { "home" } else { "work" };
+            let is_default = addr_num == 0;
+
+            // Generate address near customer's home location (within 2 miles)
+            let distance = self.rng.gen_range(0.0..2.0);
+            let angle = self.rng.gen_range(0.0..std::f64::consts::TAU);
+            let latitude = customer.home_latitude + (distance / 69.0) * angle.cos();
+            let longitude = customer.home_longitude + (distance / 54.6) * angle.sin();
+
+            // Generate street address using centralized constants
+            let street_num = self.rng.gen_range(100..9999);
+            let street_name = STREET_NAMES.choose(&mut self.rng).unwrap();
+            let street_address = format!("{} {}", street_num, street_name);
+
+            // 40% have apartment/unit numbers
+            let apartment_unit = if self.rng.gen::<f64>() < 0.40 {
+                let apt_type = APARTMENT_TYPES.choose(&mut self.rng).unwrap();
+                let apt_num = self.rng.gen_range(1..500);
+                Some(format!("{} {}", apt_type, apt_num))
+            } else {
+                None
+            };
+
+            // Zip code based on customer's city
+            let zip_code = get_zip_for_city(&customer.primary_city, &mut self.rng);
+
+            // Delivery instructions for some addresses
+            let delivery_instructions = if self.rng.gen::<f64>() < 0.30 {
+                Some(self.pick_weighted(&[
+                    ("Leave at door", 0.40),
+                    ("Ring doorbell", 0.25),
+                    ("Call on arrival", 0.20),
+                    ("Leave with concierge", 0.15),
+                ]))
+            } else {
+                None
+            };
+
+            // Urban addresses more likely to have doorman
+            let has_doorman = customer.primary_city.contains("New York") && self.rng.gen::<f64>() < 0.25;
+
+            // High-value items or apartments might require signature
+            let requires_signature = self.rng.gen::<f64>() < 0.15;
+
+            let address_id = self.customer_addresses.len() as u64 + 1;
+            let address = CustomerAddress {
+                address_id,
+                customer_id: customer.customer_id,
+                address_type: address_type.to_string(),
+                is_default,
+                street_address,
+                apartment_unit,
+                city: customer.primary_city.clone(),
+                state: get_state_from_city(&customer.primary_city),
+                zip_code,
+                latitude,
+                longitude,
+                delivery_instructions,
+                has_doorman,
+                requires_signature,
+                created_at: signup_date.and_hms_opt(12, 0, 0).unwrap(),
+            };
+
+            self.customer_addresses.push(address);
+        }
     }
 
     pub fn generate_customer_addresses(&mut self) {
@@ -1108,303 +1496,82 @@ impl ShelfWiseDataGenerator {
 
         println!("Generating customer addresses...");
 
-        let mut addresses = Vec::new();
-        let mut address_id = 1u64;
-
-        let street_names = vec!["Main St", "Oak Ave", "Maple Dr", "Pine Rd", "Cedar Ln", "Elm St",
-            "Washington Blvd", "Park Ave", "Broadway", "Market St", "1st St", "2nd Ave"];
-        let apartment_types = vec!["Apt", "Unit", "Suite", "#"];
-
         let customers_clone = self.customers.clone();
         for customer in &customers_clone {
-            // Each customer gets 1-2 addresses (70% have 1, 30% have 2)
-            let num_addresses = if self.rng.gen::<f64>() < 0.70 { 1 } else { 2 };
+            // Use the customer's signup date, or a date before start_date for founding customers
+            let signup_date = customer.created_date
+                .unwrap_or(self.start_date - Duration::days(self.rng.gen_range(30..365)));
 
-            for addr_num in 0..num_addresses {
-                let address_type = if addr_num == 0 { "home" } else { "work" };
-                let is_default = addr_num == 0;
-
-                // Generate address near customer's home location
-                let distance = self.rng.gen_range(0.0..2.0); // Within 2 miles
-                let angle = self.rng.gen_range(0.0..std::f64::consts::TAU);
-                let latitude = customer.home_latitude + (distance / 69.0) * angle.cos();
-                let longitude = customer.home_longitude + (distance / 54.6) * angle.sin();
-
-                // Generate street address
-                let street_num = self.rng.gen_range(100..9999);
-                let street_name = street_names.choose(&mut self.rng).unwrap();
-                let street_address = format!("{} {}", street_num, street_name);
-
-                // 40% have apartment/unit numbers
-                let apartment_unit = if self.rng.gen::<f64>() < 0.40 {
-                    let apt_type = apartment_types.choose(&mut self.rng).unwrap();
-                    let apt_num = self.rng.gen_range(1..500);
-                    Some(format!("{} {}", apt_type, apt_num))
-                } else {
-                    None
-                };
-
-                // Zip code based on city (simplified)
-                let zip_code = format!("{:05}", self.rng.gen_range(10000..99999));
-
-                // Delivery instructions for some addresses
-                let delivery_instructions = if self.rng.gen::<f64>() < 0.30 {
-                    Some(self.pick_weighted(&[
-                        ("Leave at door", 0.40),
-                        ("Ring doorbell", 0.25),
-                        ("Call on arrival", 0.20),
-                        ("Leave with concierge", 0.15),
-                    ]))
-                } else {
-                    None
-                };
-
-                // Urban addresses more likely to have doorman
-                let has_doorman = customer.primary_city.contains("New York") && self.rng.gen::<f64>() < 0.25;
-
-                // High-value items or apartments might require signature
-                let requires_signature = self.rng.gen::<f64>() < 0.15;
-
-                let created_at = customer.created_date.and_hms_opt(12, 0, 0).unwrap();
-
-                let address = CustomerAddress {
-                    address_id,
-                    customer_id: customer.customer_id,
-                    address_type: address_type.to_string(),
-                    is_default,
-                    street_address,
-                    apartment_unit,
-                    city: customer.primary_city.clone(),
-                    state: "CA".to_string(), // Simplified - could map cities to states
-                    zip_code,
-                    latitude,
-                    longitude,
-                    delivery_instructions,
-                    has_doorman,
-                    requires_signature,
-                    created_at,
-                    last_used_at: None,
-                    delivery_count: 0,
-                };
-
-                addresses.push(address);
-                address_id += 1;
-            }
+            self.generate_addresses_for_customer(customer, signup_date);
         }
 
-        self.customer_addresses = addresses;
         println!("  Generated {} customer addresses", self.customer_addresses.len());
     }
 
-    /// Generate new customers for a specific date (used in nightly mode)
-    /// Returns the number of new customers created
-    pub fn generate_new_customers_for_date(&mut self, date: NaiveDate) -> usize {
-        // Calculate daily customer acquisition rate from 4% annual growth
-        let annual_growth_rate = 0.04;
-        let current_customer_count = self.customers.len() as f64;
-        let daily_rate = current_customer_count * annual_growth_rate / 365.0;
+    /// Check if date is in lead-up to a major holiday (returns multiplier)
+    fn get_holiday_signup_boost(&self, date: NaiveDate) -> f64 {
+        let year = date.year() as u32;
 
-        // Add some randomness: 0.5x to 1.5x the expected rate
-        let today_rate = daily_rate * self.rng.gen_range(0.5..1.5);
-        let num_new = today_rate.round() as usize;
+        // Check US holidays (primary market)
+        if let Some(year_holidays) = self.holidays.get("us").and_then(|h| h.get(&year)) {
+            // Major shopping holidays with lead-up signup boosts
+            let boost_holidays = [
+                ("Black Friday", 7, 2.0),      // 7 days before, 2x boost
+                ("Thanksgiving", 14, 1.5),     // 14 days before, 1.5x boost
+                ("Christmas", 21, 1.4),        // 3 weeks before, 1.4x boost
+                ("Super Bowl Sunday", 7, 1.3), // Week before Super Bowl
+                ("Easter", 7, 1.2),            // Week before Easter
+                ("Memorial Day", 5, 1.2),      // 5 days before
+                ("Independence Day", 5, 1.2),  // 5 days before July 4th
+                ("Labor Day", 5, 1.2),         // 5 days before
+            ];
 
-        if num_new == 0 {
-            return 0;
-        }
-
-        let next_customer_id = self.customers.iter().map(|c| c.customer_id).max().unwrap_or(0) + 1;
-
-        let first_names = vec!["James", "Mary", "John", "Patricia", "Robert", "Jennifer", "Michael", "Linda",
-            "William", "Barbara", "David", "Elizabeth", "Richard", "Susan", "Joseph", "Jessica"];
-        let last_names = vec!["Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis",
-            "Rodriguez", "Martinez", "Hernandez", "Lopez", "Gonzalez", "Wilson", "Anderson", "Thomas"];
-
-        let physical_stores: Vec<Store> = self.stores.iter()
-            .filter(|s| s.store_type != "online")
-            .cloned()
-            .collect();
-
-        for i in 0..num_new {
-            let customer_id = next_customer_id + i as u64;
-
-            // New customers skew slightly younger
-            let age_bracket = self.pick_weighted(&[
-                ("18-24", AGE_18_24 * 1.2),
-                ("25-34", AGE_25_34 * 1.2),
-                ("35-44", AGE_35_44),
-                ("45-54", AGE_45_54 * 0.9),
-                ("55-64", AGE_55_64 * 0.8),
-                ("65+", AGE_65_PLUS * 0.7),
-            ]);
-
-            let household_size = self.pick_weighted_u32(&[
-                (1, HOUSEHOLD_SIZE_1), (2, HOUSEHOLD_SIZE_2), (3, HOUSEHOLD_SIZE_3),
-                (4, HOUSEHOLD_SIZE_4), (5, HOUSEHOLD_SIZE_5_PLUS),
-            ]);
-
-            let income_bracket = self.pick_weighted(&[
-                ("low", INCOME_LOW), ("medium", INCOME_MEDIUM),
-                ("high", INCOME_HIGH), ("very_high", INCOME_VERY_HIGH),
-            ]);
-
-            let segment = self.pick_weighted(&[
-                ("frequent_shopper", SEGMENT_FREQUENT_SHOPPER),
-                ("weekly_shopper", SEGMENT_WEEKLY_SHOPPER),
-                ("bulk_buyer", SEGMENT_BULK_BUYER),
-                ("occasional", SEGMENT_OCCASIONAL),
-            ]);
-
-            let primary_store = physical_stores.choose(&mut self.rng).unwrap().clone();
-
-            // New customers: 35% join loyalty immediately
-            let is_loyalty_member = self.rng.gen::<f64>() < 0.35;
-            let loyalty_tier = if is_loyalty_member { Some("bronze".to_string()) } else { None };
-
-            let first_name = first_names.choose(&mut self.rng).unwrap().to_string();
-            let last_name = last_names.choose(&mut self.rng).unwrap().to_string();
-            let email_domains = vec!["gmail.com", "yahoo.com", "outlook.com", "icloud.com"];
-            let domain = email_domains.choose(&mut self.rng).unwrap();
-            let email = format!("{}.{}.{}@{}", first_name.to_lowercase(), last_name.to_lowercase(), customer_id, domain);
-
-            let area_codes = vec![415, 510, 650, 408, 925, 707];
-            let area_code = area_codes.choose(&mut self.rng).unwrap();
-            let phone = format!("{}-{:03}-{:04}", area_code, self.rng.gen_range(200..999), self.rng.gen_range(1000..9999));
-
-            let distance_miles = self.rng.gen_range(1.0..15.0);
-            let angle = self.rng.gen_range(0.0..std::f64::consts::TAU);
-            let lat_offset = (distance_miles / 69.0) * angle.cos();
-            let lon_offset = (distance_miles / 54.6) * angle.sin();
-
-            let preferred_shopping_time = self.pick_weighted(&[
-                ("morning", 0.25), ("afternoon", 0.30), ("evening", 0.35), ("weekend", 0.10),
-            ]);
-
-            let avg_basket_size = match segment.as_str() {
-                "frequent_shopper" => BASKET_FREQUENT_SHOPPER as f64,
-                "weekly_shopper" => BASKET_WEEKLY_SHOPPER as f64,
-                "bulk_buyer" => BASKET_BULK_BUYER as f64,
-                "occasional" => BASKET_OCCASIONAL as f64,
-                _ => 20.0,
-            };
-
-            let price_sensitivity = match income_bracket.as_str() {
-                "low" => "high", "medium" => "medium", _ => "low",
-            };
-
-            // New customers have higher online preference
-            let has_online_account = self.rng.gen::<f64>() < 0.6;
-            let prefers_online = self.rng.gen::<f64>() < 0.25;
-
-            let customer = Customer {
-                customer_id,
-                email,
-                phone,
-                first_name: first_name.clone(),
-                last_name: last_name.clone(),
-                age_bracket,
-                household_size,
-                income_bracket: income_bracket.clone(),
-                primary_store_id: primary_store.store_id,
-                primary_city: primary_store.city.clone(),
-                home_latitude: primary_store.latitude + lat_offset,
-                home_longitude: primary_store.longitude + lon_offset,
-                loyalty_member: is_loyalty_member,
-                loyalty_tier,
-                loyalty_join_date: if is_loyalty_member { Some(date) } else { None },
-                loyalty_points: 0,
-                preferred_shopping_time,
-                avg_basket_size,
-                price_sensitivity: price_sensitivity.to_string(),
-                customer_segment: segment.clone(),
-                created_date: date,
-                last_purchase_date: None,
-                total_lifetime_value: 0.0,
-                total_visits: 0,
-                has_online_account,
-                prefers_online,
-            };
-
-            // Create behavior profile
-            let shopping_frequency_days = match segment.as_str() {
-                "frequent_shopper" => FREQ_FREQUENT_SHOPPER,
-                "weekly_shopper" => FREQ_WEEKLY_SHOPPER,
-                "bulk_buyer" => FREQ_BULK_BUYER,
-                "occasional" => FREQ_OCCASIONAL,
-                _ => 7,
-            };
-
-            let brand_loyalty_score = match income_bracket.as_str() {
-                "low" | "medium" => BRAND_LOYALTY_VALUE,
-                "high" => BRAND_LOYALTY_MID,
-                _ => BRAND_LOYALTY_PREMIUM,
-            };
-
-            let all_categories = vec!["cereal", "dairy", "snacks", "beverages", "produce", "household"];
-            let num_categories = self.rng.gen_range(2..=4);
-            let preferred_categories: Vec<String> = all_categories
-                .choose_multiple(&mut self.rng, num_categories)
-                .map(|s| s.to_string())
-                .collect();
-
-            let num_brands = self.rng.gen_range(3..=6);
-            let preferred_brands: Vec<String> = self.brands
-                .choose_multiple(&mut self.rng, num_brands)
-                .map(|b| b.name.clone())
-                .collect();
-
-            let behavior = CustomerBehavior {
-                customer_id,
-                segment,
-                shopping_frequency_days,
-                avg_basket_size: avg_basket_size as u32,
-                brand_loyalty_score,
-                price_sensitivity: if price_sensitivity == "high" { 0.8 } else if price_sensitivity == "low" { 0.3 } else { 0.5 },
-                preferred_categories,
-                preferred_brands,
-                last_visit_date: None,
-            };
-
-            self.customers.push(customer);
-            self.customer_behaviors.insert(customer_id, behavior);
-
-            // Generate 1-2 addresses for new customer
-            let num_addresses = if self.rng.gen::<f64>() < 0.3 { 2 } else { 1 };
-            for addr_idx in 0..num_addresses {
-                let street_number = self.rng.gen_range(100..9999);
-                let street_names = vec!["Main St", "Oak Ave", "Maple Dr", "Pine Rd", "Cedar Ln"];
-                let street_name = street_names.choose(&mut self.rng).unwrap();
-                // Use current length + 1 to ensure unique IDs
-                let new_address_id = self.customer_addresses.len() as u64 + 1;
-
-                let address = CustomerAddress {
-                    address_id: new_address_id,
-                    customer_id,
-                    address_type: if addr_idx == 0 { "home".to_string() } else { "work".to_string() },
-                    is_default: addr_idx == 0,
-                    street_address: format!("{} {}", street_number, street_name),
-                    apartment_unit: if self.rng.gen::<f64>() < 0.3 { Some(format!("Apt {}", self.rng.gen_range(1..500))) } else { None },
-                    city: primary_store.city.clone(),
-                    state: "CA".to_string(),
-                    zip_code: format!("9{:04}", self.rng.gen_range(4000..4999)),
-                    latitude: primary_store.latitude + self.rng.gen_range(-0.1..0.1),
-                    longitude: primary_store.longitude + self.rng.gen_range(-0.1..0.1),
-                    delivery_instructions: None,
-                    has_doorman: false,
-                    requires_signature: self.rng.gen::<f64>() < 0.10,
-                    created_at: date.and_hms_opt(12, 0, 0).unwrap(),
-                    delivery_count: 0,
-                    last_used_at: None,
-                };
-                self.customer_addresses.push(address);
+            for (holiday_name, lead_days, boost) in boost_holidays {
+                if let Some(&holiday_date) = year_holidays.get(holiday_name) {
+                    let days_until = (holiday_date - date).num_days();
+                    if days_until > 0 && days_until <= lead_days as i64 {
+                        // Boost increases as we get closer to the holiday
+                        let proximity_factor = 1.0 - (days_until as f64 / (lead_days as f64 + 1.0));
+                        return 1.0 + (boost - 1.0) * proximity_factor;
+                    }
+                }
             }
         }
-
-        num_new
+        1.0 // No holiday boost
     }
 
-    /// Generate new delivery drivers for a specific date (used in nightly mode)
-    /// Drivers are typically hired on Mondays with seasonal patterns
-    pub fn generate_new_drivers_for_date(&mut self, date: NaiveDate) -> usize {
+    /// Calculate the signup weight for a given date (used by both main and nightly generators)
+    /// Returns a multiplier based on day-of-week, seasonal, and holiday factors
+    fn get_signup_weight(&self, date: NaiveDate) -> f64 {
+        // Day-of-week patterns: more signups on weekends
+        let day_of_week = date.weekday().num_days_from_monday();
+        let dow_multiplier = match day_of_week {
+            5 | 6 => 1.25,  // Saturday/Sunday: 25% more signups
+            4 => 1.1,       // Friday: slight boost
+            0 => 0.9,       // Monday: slight dip
+            _ => 1.0,
+        };
+
+        // Seasonal patterns: New Year resolutions, holiday shopping, summer lull
+        let month = date.month();
+        let seasonal_multiplier = match month {
+            1 => 1.3,       // January: New Year resolutions
+            11 => 1.15,     // November: pre-holiday
+            12 => 1.2,      // December: holiday shopping
+            7 | 8 => 0.85,  // Summer: slight slowdown
+            _ => 1.0,
+        };
+
+        // Holiday lead-up boost
+        let holiday_multiplier = self.get_holiday_signup_boost(date);
+
+        dow_multiplier * seasonal_multiplier * holiday_multiplier
+    }
+
+    /// Calculate the driver hire weight for a given date (used by both main and nightly generators)
+    /// Returns a multiplier based on day-of-week and seasonal factors
+    /// Drivers are typically hired on Mondays, with seasonal patterns for holiday/summer rush
+    fn get_driver_hire_weight(&self, date: NaiveDate) -> f64 {
         let day_of_week = date.weekday().num_days_from_monday();
         let month = date.month();
 
@@ -1416,22 +1583,392 @@ impl ShelfWiseDataGenerator {
         };
 
         if day_multiplier == 0.0 {
-            return 0;
+            return 0.0;
         }
 
         // Seasonal hiring patterns
         let seasonal_multiplier = match month {
             11 | 12 => 2.0,  // Holiday rush
             1 => 0.5,        // Post-holiday slowdown
-            6 | 7 | 8 => 1.3, // Summer busy season
+            6..=8 => 1.3, // Summer busy season
             _ => 1.0,
         };
 
-        // Calculate daily hiring rate from 15% annual growth
-        let annual_growth_rate = 0.15;
+        day_multiplier * seasonal_multiplier
+    }
+
+    /// Get the annual growth rate for a given year (deterministic, 3-5% range)
+    /// Pre-computed rates for 2000-2030 ensure consistency between batch and nightly modes
+    ///
+    /// Year rates (for reference):
+    /// Customer growth rates by year (3-5% range)
+    /// 2015: 3.7%, 2016: 4.3%, 2017: 3.5%
+    /// 2018: 4.8%, 2019: 3.2%, 2020: 3.9%, 2021: 4.5%, 2022: 3.6%, 2023: 4.1%
+    /// 2024: 3.8%, 2025: 4.4%, 2026: 3.3%, 2027: 4.7%, 2028: 3.5%, 2029: 4.0%, 2030: 3.9%
+    fn get_annual_growth_rate_for_year(&self, year: i32) -> f64 {
+        match year {
+            2015 => 0.037,
+            2016 => 0.043,
+            2017 => 0.035,
+            2018 => 0.048,
+            2019 => 0.032,
+            2020 => 0.039,
+            2021 => 0.045,
+            2022 => 0.036,
+            2023 => 0.041,
+            2024 => 0.038,
+            2025 => 0.044,
+            2026 => 0.033,
+            2027 => 0.047,
+            2028 => 0.035,
+            2029 => 0.040,
+            2030 => 0.039,
+            // Fallback for years outside the table: use 4% average
+            _ => 0.040,
+        }
+    }
+
+    /// Online adoption acceleration rate by year
+    /// Reflects the shift toward ecommerce/delivery over time
+    /// 2015-2018: Early adoption phase (~3-4%)
+    /// 2019: Pre-pandemic growth (~5%)
+    /// 2020-2021: Pandemic surge (~8%)
+    /// 2022-2023: Normalization (~4%)
+    /// 2024+: Mature but still growing (~3%)
+    fn get_online_acceleration_rate_for_year(&self, year: i32) -> f64 {
+        match year {
+            2015 => 0.030,
+            2016 => 0.035,
+            2017 => 0.038,
+            2018 => 0.042,
+            2019 => 0.050,
+            2020 => 0.080,
+            2021 => 0.080,
+            2022 => 0.045,
+            2023 => 0.040,
+            2024 => 0.035,
+            2025 => 0.032,
+            2026 => 0.030,
+            2027 => 0.028,
+            2028 => 0.027,
+            2029 => 0.025,
+            2030 => 0.025,
+            // Fallback: mature market rate
+            _ => 0.030,
+        }
+    }
+
+    /// Driver growth rate = customer growth + online adoption acceleration
+    /// This ties driver demand to actual business drivers
+    fn get_driver_growth_rate_for_year(&self, year: i32) -> f64 {
+        self.get_annual_growth_rate_for_year(year) + self.get_online_acceleration_rate_for_year(year)
+    }
+
+    /// Online preference rate by year - what % of customers prefer online shopping
+    /// Based on US grocery ecommerce penetration trends
+    /// Pre-2019: Early adopters only (~10-12%)
+    /// 2020-2021: Pandemic surge (~20-25%)
+    /// 2022+: Stabilized at higher baseline (~18-22%)
+    fn get_online_preference_rate_for_year(&self, year: i32) -> f64 {
+        match year {
+            2015 => 0.08,
+            2016 => 0.09,
+            2017 => 0.10,
+            2018 => 0.11,
+            2019 => 0.13,
+            2020 => 0.22,  // Pandemic surge
+            2021 => 0.25,  // Peak pandemic behavior
+            2022 => 0.20,  // Some reversion
+            2023 => 0.19,
+            2024 => 0.20,
+            2025 => 0.21,
+            2026 => 0.22,  // Steady state
+            2027 => 0.24,  // Quick commerce boom
+            2028 => 0.23,  // Pullback as delivery fees rise
+            2029 => 0.25,  // Recovery with improved unit economics
+            2030 => 0.27,  // Autonomous delivery pilots expand
+            // Fallback: early adoption rate
+            _ => 0.10,
+        }
+    }
+
+    /// Online account creation rate by year - what % of customers create online accounts
+    /// Higher than online preference since many create accounts but still shop in-store
+    /// Tracks general ecommerce account creation trends
+    fn get_online_account_rate_for_year(&self, year: i32) -> f64 {
+        match year {
+            2015 => 0.25,
+            2016 => 0.28,
+            2017 => 0.32,
+            2018 => 0.35,
+            2019 => 0.40,
+            2020 => 0.65,  // Pandemic forced many to create accounts
+            2021 => 0.70,  // Peak pandemic behavior
+            2022 => 0.60,  // New signups revert somewhat
+            2023 => 0.58,
+            2024 => 0.60,
+            2025 => 0.62,
+            2026 => 0.64,
+            2027 => 0.66,
+            2028 => 0.68,
+            2029 => 0.70,
+            2030 => 0.72,
+            // Fallback
+            _ => 0.35,
+        }
+    }
+
+    /// Annual grocery inflation rate by year
+    /// Based on US Bureau of Labor Statistics CPI-Food data
+    /// Note: Grocery inflation often differs from headline CPI
+    fn get_inflation_rate_for_year(&self, year: i32) -> f64 {
+        match year {
+            2015 => 0.012,  // 1.2% - low inflation era
+            2016 => 0.002,  // 0.2% - deflationary pressure
+            2017 => 0.009,  // 0.9%
+            2018 => 0.014,  // 1.4%
+            2019 => 0.018,  // 1.8%
+            2020 => 0.035,  // 3.5% - supply chain disruption
+            2021 => 0.039,  // 3.9% - inflation starting
+            2022 => 0.099,  // 9.9% - peak food inflation
+            2023 => 0.051,  // 5.1% - moderating
+            2024 => 0.024,  // 2.4% - normalizing
+            2025 => 0.022,  // 2.2% - projected
+            2026 => 0.021,  // 2.1% - slightly above Fed 2.0% target
+            2027 => 0.028,  // 2.8% - supply chain disruption event
+            2028 => 0.034,  // 3.4% - elevated food costs linger
+            2029 => 0.025,  // 2.5% - moderating
+            2030 => 0.019,  // 1.9% - back to normal
+            // Fallback: historical average
+            _ => 0.025,
+        }
+    }
+
+    /// Generate new customers for a specific date (used in nightly mode)
+    /// Returns the number of new customers created
+    pub fn generate_new_customers_for_date(&mut self, date: NaiveDate) -> usize {
+        // Calculate daily customer acquisition rate from 3-5% annual growth
+        // Use config.customers.num_customers (the founding customer count from config.toml)
+        // NOT self.customers.len() which grows over time and would compound the growth rate
+        //
+        // The annual rate is deterministic per calendar year (derived from year as seed)
+        // This ensures consistency: all days in 2024 use the same base rate
+        let annual_growth_rate = self.get_annual_growth_rate_for_year(date.year());
+        let base_customers = self.config.customers.num_customers as f64;
+        let daily_rate = base_customers * annual_growth_rate / 365.0;
+
+        // Apply day-of-week, seasonal, and holiday multipliers (same as initial generator)
+        let weight = self.get_signup_weight(date);
+
+        // Combine with base randomness (0.7x to 1.3x)
+        let today_rate = daily_rate * weight * self.rng.gen_range(0.7..1.3);
+        let num_new = today_rate.round() as usize;
+
+        if num_new == 0 {
+            return 0;
+        }
+
+        let next_customer_id = self.customers.iter().map(|c| c.customer_id).max().unwrap_or(0) + 1;
+
+        let physical_stores: Vec<Store> = self.stores.iter()
+            .filter(|s| s.store_type != "online")
+            .cloned()
+            .collect();
+
+        for i in 0..num_new {
+            let customer_id = next_customer_id + i as u64;
+
+            // Use shared customer creation function (is_founding=false for nightly customers)
+            let customer = self.create_single_customer(
+                customer_id,
+                date,
+                false, // Not a founding customer
+                &physical_stores,
+            );
+
+            self.customers.push(customer.clone());
+
+            // Generate addresses for new customer using shared function
+            self.generate_addresses_for_customer(&customer, date);
+        }
+
+        num_new
+    }
+
+    /// Create a single driver with consistent logic for both initial and nightly generation.
+    /// `is_founding` controls whether the driver has historical metrics or starts fresh.
+    fn create_single_driver(&mut self, driver_id: u64, hire_date: NaiveDate, is_founding: bool) -> DeliveryDriver {
+        let hire_month = hire_date.month();
+
+        // Holiday hires (Nov/Dec) are more likely contractors
+        let driver_type = if hire_month == 11 || hire_month == 12 {
+            self.pick_weighted(&[("employee", 0.30), ("contractor", 0.50), ("third_party", 0.20)])
+        } else {
+            self.pick_weighted(&[
+                ("employee", EMPLOYEE_DRIVER_PCT),
+                ("contractor", CONTRACTOR_DRIVER_PCT),
+                ("third_party", THIRD_PARTY_DRIVER_PCT),
+            ])
+        };
+
+        // Assign to a random physical store as home base
+        let home_store = self.stores.iter()
+            .filter(|s| s.store_type != "online")
+            .choose(&mut self.rng)
+            .unwrap()
+            .clone();
+
+        // Generate driver details using centralized constants
+        let first_name = FIRST_NAMES.choose(&mut self.rng).unwrap().to_string();
+        let last_name = LAST_NAMES.choose(&mut self.rng).unwrap().to_string();
+
+        // Realistic US phone numbers
+        let area_code = AREA_CODES.choose(&mut self.rng).unwrap();
+        let phone = format!("{}-{:03}-{:04}",
+            area_code,
+            self.rng.gen_range(200..999),
+            self.rng.gen_range(1000..9999));
+
+        // Vehicle type distribution
+        let vehicle_type = self.pick_weighted(&[
+            ("car", 0.60),
+            ("suv", 0.25),
+            ("van", 0.10),
+            ("bike", 0.05),
+        ]);
+
+        // Vehicle capacity based on type
+        let vehicle_capacity_items = match vehicle_type.as_str() {
+            "van" => self.rng.gen_range(80..120),
+            "suv" => self.rng.gen_range(50..80),
+            "car" => self.rng.gen_range(30..50),
+            "bike" => self.rng.gen_range(10..20),
+            _ => 40,
+        };
+
+        // Employment status
+        let employment_status = if driver_type == "employee" {
+            "full_time"
+        } else if driver_type == "contractor" {
+            "part_time"
+        } else {
+            "gig"
+        };
+
+        // Service radius based on driver type
+        let service_radius_miles = match driver_type.as_str() {
+            "employee" => self.rng.gen_range(15.0..25.0),
+            "contractor" => self.rng.gen_range(10.0..20.0),
+            _ => self.rng.gen_range(5.0..15.0),
+        };
+
+        // Calculate service cities from nearby stores
+        let mut service_cities_list = vec![home_store.city.clone()];
+        for other_store in &self.stores {
+            if other_store.store_id != home_store.store_id {
+                let lat_diff = (home_store.latitude - other_store.latitude).abs();
+                let lon_diff = (home_store.longitude - other_store.longitude).abs();
+                let approx_distance = ((lat_diff * 69.0).powi(2) + (lon_diff * 54.6).powi(2)).sqrt();
+                if approx_distance <= service_radius_miles && !service_cities_list.contains(&other_store.city) {
+                    service_cities_list.push(other_store.city.clone());
+                }
+            }
+        }
+        let service_cities = service_cities_list.join(",");
+
+        // Email generation by driver type
+        let email = match driver_type.as_str() {
+            "employee" => {
+                format!("{}.{}@shelfwise.com", first_name.to_lowercase(), last_name.to_lowercase())
+            },
+            "third_party" => {
+                let platforms = ["doordash.com", "uber.com", "instacart.com", "postmates.com"];
+                let platform = platforms.choose(&mut self.rng).unwrap();
+                format!("{}.{}@{}", first_name.to_lowercase(), last_name.to_lowercase(), platform)
+            },
+            _ => {
+                let domain = EMAIL_DOMAINS.choose(&mut self.rng).unwrap();
+                if self.rng.gen::<f64>() < 0.4 {
+                    format!("{}.{}{}@{}", first_name.to_lowercase(), last_name.to_lowercase(), self.rng.gen_range(1..99), domain)
+                } else {
+                    format!("{}.{}@{}", first_name.to_lowercase(), last_name.to_lowercase(), domain)
+                }
+            },
+        };
+
+        // Compensation
+        let base_pay_per_delivery = Self::round_currency(match driver_type.as_str() {
+            "employee" => self.rng.gen_range(8.0..12.0),
+            "contractor" => self.rng.gen_range(6.0..10.0),
+            _ => self.rng.gen_range(4.0..8.0),
+        });
+        let mileage_rate = 0.625; // IRS standard mileage rate
+
+        // Acceptance rate is a driver trait (willingness to take orders)
+        let accept_beta = Beta::new(8.0, 2.0).unwrap();
+        let accept_sample: f64 = accept_beta.sample(&mut self.rng);
+        let acceptance_rate = Self::round_rate((accept_sample * 0.30 + 0.70).clamp(0.65, 0.99));
+
+        // Availability depends on founding status
+        let is_available = if is_founding {
+            self.rng.gen::<f64>() < 0.75
+        } else {
+            true // New drivers start available
+        };
+
+        // Current location (near home store for founding, at store for new)
+        let (current_latitude, current_longitude, last_location_update) = if is_founding {
+            let angle = self.rng.gen_range(0.0..std::f64::consts::TAU);
+            let distance = self.rng.gen_range(0.0..5.0);
+            (
+                home_store.latitude + (distance / 69.0) * angle.cos(),
+                home_store.longitude + (distance / 54.6) * angle.sin(),
+                self.start_date.and_hms_opt(12, 0, 0).unwrap()
+            )
+        } else {
+            (home_store.latitude, home_store.longitude, hire_date.and_hms_opt(8, 0, 0).unwrap())
+        };
+
+        DeliveryDriver {
+            driver_id,
+            first_name,
+            last_name,
+            phone,
+            email,
+            driver_type,
+            employment_status: employment_status.to_string(),
+            primary_store_id: home_store.store_id,
+            service_radius_miles: Self::round_rate(service_radius_miles),
+            service_cities,
+            vehicle_type,
+            vehicle_capacity_items,
+            has_insulated_bags: self.rng.gen::<f64>() < 0.85,
+            acceptance_rate,
+            is_available,
+            current_latitude,
+            current_longitude,
+            last_location_update,
+            hire_date,
+            base_pay_per_delivery,
+            mileage_rate,
+        }
+    }
+
+    /// Generate new delivery drivers for a specific date (used in nightly mode)
+    /// Drivers are typically hired on Mondays with seasonal patterns
+    pub fn generate_new_drivers_for_date(&mut self, date: NaiveDate) -> usize {
+        // Apply day-of-week and seasonal multipliers
+        let weight = self.get_driver_hire_weight(date);
+
+        if weight == 0.0 {
+            return 0;
+        }
+
+        // Calculate daily hiring rate from driver growth (customer growth + online acceleration)
+        let annual_growth_rate = self.get_driver_growth_rate_for_year(date.year());
         let current_driver_count = self.delivery_drivers.len() as f64;
         let base_daily_rate = current_driver_count * annual_growth_rate / 365.0;
-        let adjusted_rate = base_daily_rate * seasonal_multiplier * day_multiplier;
+        let adjusted_rate = base_daily_rate * weight;
 
         // Probabilistic hiring
         let num_new = if self.rng.gen::<f64>() < adjusted_rate {
@@ -1446,88 +1983,9 @@ impl ShelfWiseDataGenerator {
 
         let next_driver_id = self.delivery_drivers.iter().map(|d| d.driver_id).max().unwrap_or(0) + 1;
 
-        let first_names = vec!["Alex", "Jordan", "Taylor", "Morgan", "Casey", "Riley", "Avery", "Quinn"];
-        let last_names = vec!["Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis"];
-
-        let physical_stores: Vec<Store> = self.stores.iter()
-            .filter(|s| s.store_type != "online")
-            .cloned()
-            .collect();
-
         for i in 0..num_new {
             let driver_id = next_driver_id + i as u64;
-
-            // Holiday hires are more likely contractors
-            let driver_type = if month == 11 || month == 12 {
-                self.pick_weighted(&[("employee", 0.30), ("contractor", 0.50), ("third_party", 0.20)])
-            } else {
-                self.pick_weighted(&[
-                    ("employee", EMPLOYEE_DRIVER_PCT),
-                    ("contractor", CONTRACTOR_DRIVER_PCT),
-                    ("third_party", THIRD_PARTY_DRIVER_PCT),
-                ])
-            };
-
-            let home_store = physical_stores.choose(&mut self.rng).unwrap().clone();
-            let first_name = first_names.choose(&mut self.rng).unwrap().to_string();
-            let last_name = last_names.choose(&mut self.rng).unwrap().to_string();
-
-            let area_codes = vec![415, 510, 650, 408, 925, 707];
-            let area_code = area_codes.choose(&mut self.rng).unwrap();
-            let phone = format!("{}-{:03}-{:04}", area_code, self.rng.gen_range(200..999), self.rng.gen_range(1000..9999));
-            let email = format!("{}.{}.{}@driveshelfwise.com", first_name.to_lowercase(), last_name.to_lowercase(), driver_id);
-
-            let employment_status = if driver_type == "employee" { "full_time" } else { "part_time" };
-
-            let service_radius_miles = match home_store.store_type.as_str() {
-                "urban" => self.rng.gen_range(3.0..8.0),
-                "suburban" => self.rng.gen_range(8.0..15.0),
-                "big_box" => self.rng.gen_range(10.0..20.0),
-                _ => self.rng.gen_range(5.0..12.0),
-            };
-
-            let vehicle_type = self.pick_weighted(&[
-                ("sedan", 0.40), ("suv", 0.30), ("van", 0.20), ("truck", 0.10),
-            ]);
-
-            let vehicle_capacity_items = match vehicle_type.as_str() {
-                "sedan" => self.rng.gen_range(15..25),
-                "suv" => self.rng.gen_range(25..40),
-                "van" => self.rng.gen_range(40..60),
-                "truck" => self.rng.gen_range(50..80),
-                _ => 30,
-            };
-
-            let driver = DeliveryDriver {
-                driver_id,
-                first_name,
-                last_name,
-                phone,
-                email,
-                driver_type,
-                employment_status: employment_status.to_string(),
-                primary_store_id: home_store.store_id,
-                service_radius_miles: Self::round_rate(service_radius_miles),
-                service_cities: home_store.city.clone(),
-                vehicle_type,
-                vehicle_capacity_items,
-                has_insulated_bags: self.rng.gen::<f64>() < 0.85,
-                total_deliveries: 0,
-                avg_rating: 4.5,
-                on_time_delivery_pct: 0.95,
-                acceptance_rate: 0.90,
-                cancellation_rate: 0.05,
-                is_available: true,
-                current_latitude: home_store.latitude,
-                current_longitude: home_store.longitude,
-                last_location_update: date.and_hms_opt(8, 0, 0).unwrap(),
-                hire_date: date,
-                last_delivery_date: None,
-                base_pay_per_delivery: Self::round_currency(self.rng.gen_range(8.0..12.0)),
-                mileage_rate: Self::round_currency(self.rng.gen_range(0.50..0.75)),
-                avg_tips_per_delivery: Self::round_currency(self.rng.gen_range(3.0..6.0)),
-            };
-
+            let driver = self.create_single_driver(driver_id, date, false); // false = new hire, not founding
             self.delivery_drivers.push(driver);
         }
 
@@ -1591,60 +2049,6 @@ impl ShelfWiseDataGenerator {
         performance_assignments.shuffle(&mut self.rng);
 
         for (idx, store) in self.stores.iter().enumerate() {
-            // Regional labor cost index
-            let labor_cost_index = if store.city.contains("San Francisco") || store.city.contains("San Jose") ||
-                                      store.city.contains("Oakland") || store.city.contains("Palo Alto") ||
-                                      store.city.contains("Mountain View") || store.city.contains("Berkeley") {
-                self.rng.gen_range(1.30..1.40)  // Bay Area highest
-            } else if store.city.contains("New York") || store.city.contains("Boston") {
-                self.rng.gen_range(1.25..1.35)  // NYC/Boston
-            } else if store.city.contains("Seattle") || store.city.contains("Portland") {
-                self.rng.gen_range(1.15..1.25)  // Pacific NW
-            } else if store.city.contains("Los Angeles") || store.city.contains("San Diego") {
-                self.rng.gen_range(1.10..1.20)  // Southern CA
-            } else if store.city.contains("London") {
-                self.rng.gen_range(1.20..1.30)  // UK
-            } else if store.city.contains("Toronto") || store.city.contains("Vancouver") {
-                self.rng.gen_range(1.05..1.15)  // Canada
-            } else if store.city.contains("Denver") || store.city.contains("Phoenix") || store.city.contains("Las Vegas") {
-                self.rng.gen_range(1.00..1.10)  // Southwest
-            } else if store.city.contains("Chicago") {
-                self.rng.gen_range(1.10..1.20)  // Chicago
-            } else {
-                self.rng.gen_range(0.90..1.05)  // Other/lower cost areas
-            };
-
-            // Rent cost index by store type and location
-            let base_rent_multiplier = match store.store_type.as_str() {
-                "urban" => 1.30,
-                "suburban" => 1.00,
-                "convenience" => 1.10,
-                "big_box" => 0.85,
-                "online" => 0.70,
-                _ => 1.00,
-            };
-
-            let location_rent_multiplier = if store.city.contains("San Francisco") || store.city.contains("New York") {
-                1.15
-            } else if store.city.contains("Los Angeles") || store.city.contains("Seattle") || store.city.contains("Boston") {
-                1.10
-            } else if store.city.contains("London") {
-                1.12
-            } else {
-                1.00
-            };
-
-            let rent_cost_index = base_rent_multiplier * location_rent_multiplier * self.rng.gen_range(0.95..1.05);
-
-            // Utility cost index (climate-based)
-            let utility_cost_index = match store.climate_zone.as_str() {
-                "hot" => self.rng.gen_range(1.10..1.20),      // High AC costs
-                "cold" => self.rng.gen_range(1.05..1.15),     // High heating costs
-                "temperate" => self.rng.gen_range(0.90..1.00), // Moderate
-                "controlled" => self.rng.gen_range(1.15..1.25), // Fulfillment center (24/7 climate control)
-                _ => 1.00,
-            };
-
             // Store maturity factor
             let years_open = (self.start_date - store.opened_date).num_days() as f64 / 365.0;
             let maturity_factor = if years_open < 0.0 {
@@ -1681,15 +2085,6 @@ impl ShelfWiseDataGenerator {
             };
             let shrinkage_rate = base_shrinkage * self.rng.gen_range(0.90..1.10);
 
-            // Labor efficiency
-            let labor_efficiency = if years_open < 0.0 {
-                self.rng.gen_range(0.90..0.95)  // New stores less efficient
-            } else if years_open > 5.0 {
-                self.rng.gen_range(1.05..1.10)  // Mature stores more efficient
-            } else {
-                self.rng.gen_range(0.98..1.02)  // Average
-            };
-
             // Competitive intensity (based on store density in city)
             let store_count_in_city = *city_store_counts.get(&store.city).unwrap_or(&1);
             let competitive_intensity = if store_count_in_city > 5 {
@@ -1722,14 +2117,6 @@ impl ShelfWiseDataGenerator {
 
             // Performance tier
             let store_performance_tier = performance_assignments[idx].clone();
-
-            // Market share estimate
-            let market_share_estimate = match store_performance_tier.as_str() {
-                "high" => self.rng.gen_range(0.18..0.25),
-                "medium" => self.rng.gen_range(0.10..0.18),
-                "low" => self.rng.gen_range(0.05..0.10),
-                _ => 0.12,
-            };
 
             // Category mix factors by store type
             let mut category_mix_factors = HashMap::new();
@@ -1776,17 +2163,12 @@ impl ShelfWiseDataGenerator {
             }
 
             store_economics.insert(store.store_id, StoreEconomics {
-                labor_cost_index,
-                rent_cost_index,
-                utility_cost_index,
                 maturity_factor,
                 shrinkage_rate,
-                labor_efficiency,
                 competitive_intensity,
                 price_premium_index,
                 volume_discount_tier,
                 store_performance_tier,
-                market_share_estimate,
                 category_mix_factors,
             });
         }
@@ -1888,245 +2270,88 @@ impl ShelfWiseDataGenerator {
             })
             .sum::<usize>();
 
-        // Calculate seasonal hiring: drivers have higher turnover than customers
-        // Account for churn, seasonal peaks (Nov-Dec holiday rush, Jun-Aug summer)
-        let total_days = (self.end_date - self.start_date).num_days() as f64;
-        let years = total_days / 365.0;
-        let annual_growth_rate = 0.15; // 15% annual net hiring (accounts for turnover)
-        let total_growth = (base_drivers as f64 * annual_growth_rate * years) as usize;
+        // Calculate driver growth year-by-year using customer growth + online acceleration
+        // This ties driver demand to actual business drivers
+        let total_days = (self.end_date - self.start_date).num_days();
+        let years = total_days as f64 / 365.0;
+
+        let mut total_growth = 0.0;
+        let mut current_base = base_drivers as f64;
+        let mut current_date = self.start_date;
+        let mut year_rates: Vec<(i32, f64)> = Vec::new();
+
+        while current_date <= self.end_date {
+            let year = current_date.year();
+            let annual_rate = self.get_driver_growth_rate_for_year(year);
+
+            // Calculate end of this year chunk
+            let year_end = NaiveDate::from_ymd_opt(year, 12, 31).unwrap();
+            let chunk_end = if year_end < self.end_date { year_end } else { self.end_date };
+
+            let days_in_chunk = (chunk_end - current_date).num_days() + 1;
+            let year_fraction = days_in_chunk as f64 / 365.0;
+
+            // Growth for this chunk (compounding)
+            let chunk_growth = current_base * annual_rate * year_fraction;
+            total_growth += chunk_growth;
+            current_base += chunk_growth;
+
+            year_rates.push((year, annual_rate));
+            current_date = chunk_end + Duration::days(1);
+        }
+
+        let total_growth = total_growth as usize;
+        let avg_rate = year_rates.iter().map(|(_, r)| r).sum::<f64>() / year_rates.len() as f64;
 
         let num_drivers = base_drivers + total_growth;
 
-        println!("Generating {} delivery drivers ({} base + {} net hiring @ {:.1}% annual over {:.2} years)...",
-                 num_drivers, base_drivers, total_growth, annual_growth_rate * 100.0, years);
+        println!("Generating {} delivery drivers ({} base + {} net hiring over {:.2} years)...",
+                 num_drivers, base_drivers, total_growth, years);
+        println!("  Year-by-year rates (customer + online): {:?}",
+                 year_rates.iter().map(|(y, r)| format!("{}: {:.1}%", y, r * 100.0)).collect::<Vec<_>>());
+        println!("  Average rate: {:.2}%", avg_rate * 100.0);
+
+        // Build weighted date distribution for driver hiring (Mondays/Fridays with seasonal patterns)
+        let total_sim_days = (self.end_date - self.start_date).num_days() as usize;
+        let mut hire_date_weights: Vec<(NaiveDate, f64)> = Vec::new();
+        let mut total_hire_weight = 0.0;
+
+        for day_offset in 0..=total_sim_days {
+            let date = self.start_date + Duration::days(day_offset as i64);
+            let weight = self.get_driver_hire_weight(date);
+            if weight > 0.0 {
+                total_hire_weight += weight;
+                hire_date_weights.push((date, weight));
+            }
+        }
+
+        // Build cumulative distribution for sampling
+        let mut hire_cumulative_weights: Vec<f64> = Vec::with_capacity(hire_date_weights.len());
+        let mut cumsum = 0.0;
+        for (_, weight) in &hire_date_weights {
+            cumsum += weight / total_hire_weight;
+            hire_cumulative_weights.push(cumsum);
+        }
 
         let mut drivers = Vec::new();
 
-        let first_names = vec!["Alex", "Jordan", "Taylor", "Morgan", "Casey", "Riley", "Avery", "Quinn",
-            "Skylar", "Dakota", "Reese", "Peyton", "Cameron", "Sage", "River", "Phoenix"];
-        let last_names = vec!["Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis",
-            "Martinez", "Lopez", "Wilson", "Anderson", "Thomas", "Taylor", "Moore", "Jackson"];
-
         for driver_id in 1..=num_drivers as u64 {
-            // Assign driver type based on config percentages
-            let driver_type = self.pick_weighted(&[
-                ("employee", EMPLOYEE_DRIVER_PCT),
-                ("contractor", CONTRACTOR_DRIVER_PCT),
-                ("third_party", THIRD_PARTY_DRIVER_PCT),
-            ]);
-
-            // Assign to a random physical store as home base
-            let home_store = self.stores.iter()
-                .filter(|s| s.store_type != "online")
-                .choose(&mut self.rng)
-                .unwrap()
-                .clone();
-
-            // Generate driver details
-            let first_name = first_names.choose(&mut self.rng).unwrap().to_string();
-            let last_name = last_names.choose(&mut self.rng).unwrap().to_string();
-
-            // Realistic US phone numbers (not 555)
-            let area_codes = vec![415, 510, 650, 408, 925, 707, 209, 559, 916, 530]; // CA area codes
-            let area_code = area_codes.choose(&mut self.rng).unwrap();
-            let phone = format!("{}-{:03}-{:04}",
-                area_code,
-                self.rng.gen_range(200..999),
-                self.rng.gen_range(1000..9999));
-
-            // Vehicle type distribution
-            let vehicle_type = self.pick_weighted(&[
-                ("car", 0.60),
-                ("suv", 0.25),
-                ("van", 0.10),
-                ("bike", 0.05),
-            ]);
-
-            // Vehicle capacity based on type
-            let vehicle_capacity_items = match vehicle_type.as_str() {
-                "van" => self.rng.gen_range(80..120),
-                "suv" => self.rng.gen_range(50..80),
-                "car" => self.rng.gen_range(30..50),
-                "bike" => self.rng.gen_range(10..20),
-                _ => 40,
-            };
-
-            // Determine hire_date:
-            // - First base_drivers: existing drivers (hired before start_date)
-            // - Remaining drivers: spread across the date range for seasonal hiring
-            let hire_date = if driver_id <= base_drivers as u64 {
+            // Determine hire_date first:
+            // - First base_drivers: existing drivers (hired before start_date) - founding drivers
+            // - Remaining drivers: sampled from weighted distribution (Mondays/Fridays, seasonal)
+            let (hire_date, is_founding) = if driver_id <= base_drivers as u64 {
                 // Existing driver: hired 30-1095 days before start_date
-                self.start_date - Duration::days(self.rng.gen_range(30..1095))
+                (self.start_date - Duration::days(self.rng.gen_range(30..1095)), true)
             } else {
-                // New hire: hired during the date range
-                // Seasonal pattern: more hires in Nov-Dec and Jun-Aug
-                let total_days = (self.end_date - self.start_date).num_days();
-                let driver_offset = driver_id - base_drivers as u64;
-                let total_new = total_growth as u64;
-
-                // Calculate approximate day for this driver
-                let day_offset = (driver_offset * total_days as u64) / total_new;
-
-                // Add seasonal bias and randomness
-                let random_offset = self.rng.gen_range(-14..=14); // ±2 weeks
-                let final_offset = (day_offset as i64 + random_offset).max(0).min(total_days);
-
-                self.start_date + Duration::days(final_offset)
+                // New hire: sample from weighted distribution
+                let r = self.rng.gen::<f64>();
+                let idx = hire_cumulative_weights.iter()
+                    .position(|&cw| r <= cw)
+                    .unwrap_or(hire_cumulative_weights.len() - 1);
+                (hire_date_weights[idx].0, true) // Still founding (has historical metrics)
             };
 
-            // Employment status
-            let employment_status = if driver_type == "employee" {
-                "full_time"
-            } else if driver_type == "contractor" {
-                "part_time"
-            } else {
-                "gig"
-            };
-
-            // Service area
-            let service_radius_miles = match driver_type.as_str() {
-                "employee" => self.rng.gen_range(15.0..25.0),
-                "contractor" => self.rng.gen_range(10.0..20.0),
-                _ => self.rng.gen_range(5.0..15.0),
-            };
-
-            // Drivers can serve their home city plus nearby cities within their service radius
-            let mut service_cities_list = vec![home_store.city.clone()];
-
-            // Add nearby cities based on service radius
-            for other_store in &self.stores {
-                if other_store.store_id != home_store.store_id {
-                    // Calculate approximate distance (simplified lat/lon distance)
-                    let lat_diff = (home_store.latitude - other_store.latitude).abs();
-                    let lon_diff = (home_store.longitude - other_store.longitude).abs();
-                    let approx_distance = ((lat_diff * 69.0).powi(2) + (lon_diff * 54.6).powi(2)).sqrt();
-
-                    if approx_distance <= service_radius_miles && !service_cities_list.contains(&other_store.city) {
-                        service_cities_list.push(other_store.city.clone());
-                    }
-                }
-            }
-
-            let service_cities = service_cities_list.join(",");
-
-            // Performance metrics - use realistic distributions
-            let is_available = self.rng.gen::<f64>() < 0.75;
-
-            // Total deliveries follows power law - few stars, many average
-            let delivery_log_normal = LogNormal::new(5.0, 1.2).unwrap();
-            let total_deliveries = if is_available {
-                (delivery_log_normal.sample(&mut self.rng) as f64).round() as u32
-            } else {
-                ((delivery_log_normal.sample(&mut self.rng) as f64) * 0.1).round() as u32
-            }.clamp(10, 5000);
-
-            // Rating uses Beta distribution - heavily skewed toward high ratings
-            // Beta(8, 2) gives mean ~0.8, heavily weighted toward 1.0
-            let rating_beta = Beta::new(8.0, 2.0).unwrap();
-            let avg_rating = Self::round_rate(((rating_beta.sample(&mut self.rng) as f64) * 1.0 + 4.0).clamp(3.5, 5.0));
-
-            // On-time delivery also uses Beta - most drivers are good
-            let ontime_beta = Beta::new(9.0, 2.0).unwrap();
-            let on_time_delivery_pct = Self::round_rate(((ontime_beta.sample(&mut self.rng) as f64) * 0.25 + 0.75).clamp(0.70, 0.99));
-
-            // Acceptance rate - Beta distribution
-            let accept_beta = Beta::new(8.0, 2.0).unwrap();
-            let acceptance_rate = Self::round_rate(((accept_beta.sample(&mut self.rng) as f64) * 0.30 + 0.70).clamp(0.65, 0.99));
-
-            // Cancellation rate - Beta with reverse skew (most have low cancellation)
-            let cancel_beta = Beta::new(2.0, 8.0).unwrap();
-            let cancellation_rate = Self::round_rate(((cancel_beta.sample(&mut self.rng) as f64) * 0.15).clamp(0.01, 0.15));
-
-            // Current location (near home store)
-            let angle = self.rng.gen_range(0.0..std::f64::consts::TAU);
-            let distance = self.rng.gen_range(0.0..5.0);
-            let current_latitude = home_store.latitude + (distance / 69.0) * angle.cos();
-            let current_longitude = home_store.longitude + (distance / 54.6) * angle.sin();
-            let last_location_update = self.start_date.and_hms_opt(12, 0, 0).unwrap();
-
-            // Last delivery date
-            let last_delivery_date = if total_deliveries > 0 {
-                Some(self.start_date - Duration::days(self.rng.gen_range(0..30)))
-            } else {
-                None
-            };
-
-            // Compensation
-            let base_pay_per_delivery = Self::round_currency(match driver_type.as_str() {
-                "employee" => self.rng.gen_range(8.0..12.0),
-                "contractor" => self.rng.gen_range(6.0..10.0),
-                _ => self.rng.gen_range(4.0..8.0),
-            });
-
-            let mileage_rate = 0.625; // IRS standard mileage rate (already clean)
-            let avg_tips_per_delivery = Self::round_currency(self.rng.gen_range(3.0..8.0));
-
-            // Generate email based on driver type
-            let email = match driver_type.as_str() {
-                "employee" => {
-                    // Employees get company email
-                    format!("{}.{}@shelfwise.com",
-                        first_name.to_lowercase(),
-                        last_name.to_lowercase())
-                },
-                "third_party" => {
-                    // Third party drivers get gig platform emails
-                    let platforms = vec!["doordash.com", "uber.com", "instacart.com", "postmates.com"];
-                    let platform = platforms.choose(&mut self.rng).unwrap();
-                    format!("{}.{}@{}",
-                        first_name.to_lowercase(),
-                        last_name.to_lowercase(),
-                        platform)
-                },
-                _ => {
-                    // Contractors use personal email
-                    let email_domains = vec!["gmail.com", "yahoo.com", "outlook.com", "hotmail.com", "icloud.com"];
-                    let domain = email_domains.choose(&mut self.rng).unwrap();
-                    if self.rng.gen::<f64>() < 0.4 {
-                        format!("{}.{}{}@{}",
-                            first_name.to_lowercase(),
-                            last_name.to_lowercase(),
-                            self.rng.gen_range(1..99),
-                            domain)
-                    } else {
-                        format!("{}.{}@{}",
-                            first_name.to_lowercase(),
-                            last_name.to_lowercase(),
-                            domain)
-                    }
-                }
-            };
-
-            let driver = DeliveryDriver {
-                driver_id,
-                first_name,
-                last_name,
-                phone,
-                email,
-                driver_type,
-                employment_status: employment_status.to_string(),
-                primary_store_id: home_store.store_id,
-                service_radius_miles,
-                service_cities,
-                vehicle_type,
-                vehicle_capacity_items,
-                has_insulated_bags: self.rng.gen::<f64>() < 0.85,
-                total_deliveries,
-                avg_rating,
-                on_time_delivery_pct,
-                acceptance_rate,
-                cancellation_rate,
-                is_available,
-                current_latitude,
-                current_longitude,
-                last_location_update,
-                hire_date,
-                last_delivery_date,
-                base_pay_per_delivery,
-                mileage_rate,
-                avg_tips_per_delivery,
-            };
-
+            let driver = self.create_single_driver(driver_id, hire_date, is_founding);
             drivers.push(driver);
         }
 
@@ -2377,9 +2602,8 @@ impl ShelfWiseDataGenerator {
 
         // Use pre-built indexes for fast lookup
         let eligible_customers: Vec<&Customer> = store_to_customers
-            .get(&store.store_id)
-            .map(|customers| customers.clone())
-            .or_else(|| city_to_customers.get(store.city.as_str()).map(|customers| customers.clone()))
+            .get(&store.store_id).cloned()
+            .or_else(|| city_to_customers.get(store.city.as_str()).cloned())
             .unwrap_or_default();
 
         if eligible_customers.is_empty() {
@@ -2452,7 +2676,7 @@ impl ShelfWiseDataGenerator {
         // Seasonal availability patterns
         let seasonal_availability_multiplier = match month {
             11 | 12 => 1.3,  // Holiday season - more drivers active
-            6 | 7 | 8 => 1.1, // Summer - slightly more active
+            6..=8 => 1.1, // Summer - slightly more active
             1 | 2 => 0.9,     // Winter slowdown
             _ => 1.0,
         };
@@ -2681,8 +2905,9 @@ impl ShelfWiseDataGenerator {
         // ONLY for dates after the max created_date/hire_date in reference data
         if continue_mode && reference_dir.is_some() {
             // Find the max created_date from loaded customers (the "end" of pre-generated data)
+            // Note: founding customers have None, so we filter those out
             let max_customer_date = self.customers.iter()
-                .map(|c| c.created_date)
+                .filter_map(|c| c.created_date)
                 .max()
                 .unwrap_or(self.start_date);
 
@@ -2751,15 +2976,15 @@ impl ShelfWiseDataGenerator {
         for a in &self.assortment { wtr.serialize(a)?; }
         wtr.flush()?;
 
-        // Write customer data - ONLY customers created before or on start_date
+        // Write customer data - founding customers (NULL date) + customers created before or on start_date
         // (New customers created during the date range will be added by nightly imports)
         if !self.customers.is_empty() {
             let mut wtr = csv::Writer::from_path(Path::new(output_dir).join("customers.csv"))?;
             let existing_customers: Vec<&Customer> = self.customers.iter()
-                .filter(|c| c.created_date <= self.start_date)
+                .filter(|c| c.created_date.is_none_or(|d| d <= self.start_date))
                 .collect();
 
-            println!("  Writing {} existing customers (created <= {})",
+            println!("  Writing {} existing customers (founding or created <= {})",
                      existing_customers.len(), self.start_date);
             println!("  {} future customers will be added during nightly imports",
                      self.customers.len() - existing_customers.len());
@@ -2771,7 +2996,7 @@ impl ShelfWiseDataGenerator {
         // Write customer addresses - ONLY for existing customers
         if !self.customer_addresses.is_empty() {
             let existing_customer_ids: std::collections::HashSet<u64> = self.customers.iter()
-                .filter(|c| c.created_date <= self.start_date)
+                .filter(|c| c.created_date.is_none_or(|d| d <= self.start_date))
                 .map(|c| c.customer_id)
                 .collect();
 
@@ -2857,7 +3082,7 @@ impl ShelfWiseDataGenerator {
         // Index: store_id -> Vec<Assortment>
         let mut store_assortment: HashMap<u32, Vec<&Assortment>> = HashMap::new();
         for assort in &self.assortment {
-            store_assortment.entry(assort.store_id).or_insert_with(Vec::new).push(assort);
+            store_assortment.entry(assort.store_id).or_default().push(assort);
         }
 
         // Index: sku -> Product (avoid linear search)
@@ -2869,19 +3094,19 @@ impl ShelfWiseDataGenerator {
         // Index: sku -> Vec<&Promotion> (avoid filtering all promotions every time)
         let mut sku_to_promotions: HashMap<&str, Vec<&Promotion>> = HashMap::new();
         for promo in &self.promotions {
-            sku_to_promotions.entry(promo.sku.as_str()).or_insert_with(Vec::new).push(promo);
+            sku_to_promotions.entry(promo.sku.as_str()).or_default().push(promo);
         }
 
         // Index: store_id -> Vec<&Customer> (for faster customer linking)
         let mut store_to_customers: HashMap<u32, Vec<&Customer>> = HashMap::new();
         for customer in &self.customers {
-            store_to_customers.entry(customer.primary_store_id).or_insert_with(Vec::new).push(customer);
+            store_to_customers.entry(customer.primary_store_id).or_default().push(customer);
         }
 
         // Index: city -> Vec<&Customer> (fallback for customer linking)
         let mut city_to_customers: HashMap<&str, Vec<&Customer>> = HashMap::new();
         for customer in &self.customers {
-            city_to_customers.entry(customer.primary_city.as_str()).or_insert_with(Vec::new).push(customer);
+            city_to_customers.entry(customer.primary_city.as_str()).or_default().push(customer);
         }
 
         println!("  Indexes built. Starting generation...");
@@ -2955,7 +3180,7 @@ impl ShelfWiseDataGenerator {
                                     .filter(|p| p.start_date <= *date && p.end_date >= *date)
                                     .copied()
                                     .collect())
-                                .unwrap_or_else(Vec::new);
+                                .unwrap_or_default();
 
                         // Apply category mix factor to demand
                         let category_mix_factor = store_econ.category_mix_factors
@@ -2968,10 +3193,15 @@ impl ShelfWiseDataGenerator {
 
                         // Adjust demand by category mix and store performance
                         // Store performance uses normal distribution within tiers (pre-created distributions)
+                        let performance_multiplier: f64 = match store_econ.store_performance_tier.as_str() {
+                            "high" => normal_high.sample(&mut self.rng),
+                            "low" => normal_low.sample(&mut self.rng),
+                            _ => normal_medium.sample(&mut self.rng),
+                        };
                         let performance_multiplier = match store_econ.store_performance_tier.as_str() {
-                            "high" => (normal_high.sample(&mut self.rng) as f64).clamp(1.12, 1.28),
-                            "low" => (normal_low.sample(&mut self.rng) as f64).clamp(0.68, 0.88),
-                            _ => (normal_medium.sample(&mut self.rng) as f64).clamp(0.92, 1.08),
+                            "high" => performance_multiplier.clamp(1.12, 1.28),
+                            "low" => performance_multiplier.clamp(0.68, 0.88),
+                            _ => performance_multiplier.clamp(0.92, 1.08),
                         };
 
                         let demand = (base_demand as f64 * category_mix_factor * performance_multiplier) as u32;
@@ -2980,7 +3210,7 @@ impl ShelfWiseDataGenerator {
                         let inv_key = (store.store_id, product.sku.as_str());
 
                         // Initialize inventory with realistic starting levels
-                        if !inventory.contains_key(&inv_key) {
+                        if let std::collections::hash_map::Entry::Vacant(e) = inventory.entry(inv_key) {
                             let supplier_id = (product.product_id % 30) + 1;
                             let supplier = self.suppliers.iter().find(|s| s.supplier_id == supplier_id).unwrap();
 
@@ -2991,7 +3221,7 @@ impl ShelfWiseDataGenerator {
                                 &mut self.rng
                             );
 
-                            inventory.insert(inv_key, (initial_stock, 0, Vec::new()));
+                            e.insert((initial_stock, 0, Vec::new()));
                             demand_history.insert(inv_key, Vec::new());
                         }
 
@@ -3030,12 +3260,19 @@ impl ShelfWiseDataGenerator {
                         let is_delivery_day = day_of_week == 0 || day_of_week == 2 || day_of_week == 4;
 
                         // Generate realistic shipments even without pending orders
+                        // Shipment probability scales with demand - more demand = more frequent restocking
                         if arrived_today == 0 && is_delivery_day {
-                            let shipment_probability = if is_high_velocity {
+                            // Base probability by product velocity
+                            let base_shipment_probability = if is_high_velocity {
                                 0.15 // 15% chance for high-velocity items on delivery days
                             } else {
                                 0.03 // 3% chance for low-velocity items
                             };
+
+                            // Scale by demand relative to average (demand of ~3 is typical)
+                            // High demand days (holidays, events) trigger more frequent shipments
+                            let demand_multiplier = (demand as f64 / 3.0).clamp(0.5, 2.5);
+                            let shipment_probability = base_shipment_probability * demand_multiplier;
 
                             if self.rng.gen::<f64>() < shipment_probability {
                                 // Calculate realistic shipment quantity based on demand
@@ -3324,13 +3561,22 @@ impl ShelfWiseDataGenerator {
                             ticket_id += 1;
                         }
 
-                        if self.rng.gen::<f64>() < 0.002 {
+                        // Price changes tied to macroeconomic inflation
+                        // Higher inflation years see more frequent price increases
+                        let inflation_rate = self.get_inflation_rate_for_year(date.year());
+                        // Base probability scales with inflation (0.001 at 2% -> 0.005 at 10%)
+                        let price_change_prob = 0.0005 + (inflation_rate * 0.04);
+
+                        if self.rng.gen::<f64>() < price_change_prob {
+                            // Price increase magnitude tied to inflation
+                            // Some items increase more than inflation, some less
+                            let increase_multiplier = 1.0 + inflation_rate * self.rng.gen_range(0.5..1.5);
                             writers.write_price_change(&PriceChange {
                                 change_id,
                                 date: *date,
                                 store_id: store.store_id,
                                 sku: product.sku.clone(),
-                                new_regular_price: Self::round_currency(regular_price * 1.05),
+                                new_regular_price: Self::round_currency(regular_price * increase_multiplier),
                                 reason: "cost_increase".to_string(),
                             })?;
                             change_id += 1;
@@ -3483,7 +3729,7 @@ impl ShelfWiseDataGenerator {
 
                         // Delivery/pickup fields using pre-generated randoms and actual transaction total
                         let (delivery_fee, tip_amount, order_status, delivery_address_id, requested_time, actual_time) =
-                            if fulfillment_type.as_ref().map_or(false, |f| f == "delivery" || f == "pickup") {
+                            if fulfillment_type.as_ref().is_some_and(|f| f == "delivery" || f == "pickup") {
                                 let fee = Self::round_currency(if fulfillment_type.as_ref().unwrap() == "pickup" { 0.0 } else {
                                     match store.store_type.as_str() {
                                         "online" => 4.99 + rand_delivery_fee * 5.0,
@@ -3606,8 +3852,8 @@ impl ShelfWiseDataGenerator {
                         }
 
                         // Create delivery assignment if needed (now works because demand_calc is dropped)
-                        if transaction.fulfillment_type.as_ref().map_or(false, |f| f == "delivery" || f == "pickup") &&
-                           transaction.order_status.as_ref().map_or(false, |s| s == "delivered") {
+                        if transaction.fulfillment_type.as_ref().is_some_and(|f| f == "delivery" || f == "pickup") &&
+                           transaction.order_status.as_ref().is_some_and(|s| s == "delivered") {
                             let fulfillment_str = transaction.fulfillment_type.as_ref().unwrap().clone();
                             Self::create_delivery_assignment_static(
                                 &mut self.rng,
@@ -3665,7 +3911,7 @@ impl ShelfWiseDataGenerator {
 
                             // Get product for category check
                             let product = sku_to_product.get(sku.as_str());
-                            let is_perishable = product.map_or(false, |p| matches!(p.category.as_str(), "dairy" | "produce" | "meat"));
+                            let is_perishable = product.is_some_and(|p| matches!(p.category.as_str(), "dairy" | "produce" | "meat"));
 
                             writers.write_sales(&SalesDaily {
                                 date: *date,

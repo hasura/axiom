@@ -92,11 +92,18 @@ To limit execution to specific hosts, use the --limit option:
 ansible-playbook -i inventory.json master.yml --limit host1:host2:host3
 ```
 
-### Force Clean Installation
-To force a complete reinstallation (stop all containers, remove volumes, and start fresh):
+### Reset Docker Containers
+To wipe containers/volumes and restart fresh:
 
 ```bash
-ansible-playbook -i inventory.json master.yml -e "force_clean=true"
+ansible-playbook -i inventory.json master.yml -e "docker_reset=true"
+```
+
+### Force Full File Sync
+To force a full sync including large CSV files (normally auto-detected on first deploy):
+
+```bash
+ansible-playbook -i inventory.json master.yml -e "sync_mode=full"
 ```
 
 ### Run Specific Playbooks
@@ -131,12 +138,17 @@ The main entry point that imports all other playbooks in the correct order:
 
 ### axiom.yml
 The main deployment playbook that:
-- Installs prerequisites (DDN CLI)
-- Configures Docker
-- Clones and configures the Axiom repository
+- Syncs demo files to the server (with smart sync detection)
 - Sets up environment variables
 - Manages Docker containers for the demo
 - Provides smart container management (starts if not running, ignores if running)
+
+Variables:
+- `docker_reset`: Wipe containers/volumes and restart fresh (default: false)
+- `sync_mode`: File transfer mode - 'auto', 'full', or 'incremental' (default: auto)
+  - `auto` = full sync if no files exist, otherwise incremental
+  - `full` = always include large CSV files
+  - `incremental` = exclude large CSV files
 
 ### cron.yml
 Sets up cron jobs for maintenance tasks like connector keepalive.

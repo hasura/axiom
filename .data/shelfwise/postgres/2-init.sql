@@ -4,7 +4,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- ============================================================================
 -- PERFORMANCE SETTINGS FOR DATA LOADING
--- ============================================================================
+-- ==============================================uuid-ossp==============================
 -- Use session-level settings for parameters that support it
 -- Note: autovacuum cannot be disabled at session level, only server level
 -- For initial load, consider setting autovacuum=off in postgresql.conf
@@ -182,15 +182,10 @@ CREATE TABLE customers (
     loyalty_member BOOLEAN DEFAULT FALSE,
     loyalty_tier VARCHAR(20),
     loyalty_join_date DATE,
-    loyalty_points INTEGER DEFAULT 0,
     preferred_shopping_time VARCHAR(20),
-    avg_basket_size NUMERIC(5,2),
     price_sensitivity VARCHAR(20),
     customer_segment VARCHAR(30),
-    created_date DATE NOT NULL,
-    last_purchase_date DATE,
-    total_lifetime_value NUMERIC(10,2) DEFAULT 0,
-    total_visits INTEGER DEFAULT 0,
+    created_date DATE,  -- NULL for founding customers (pre-existing before tracking began)
     has_online_account BOOLEAN DEFAULT FALSE,
     prefers_online BOOLEAN DEFAULT FALSE
 );
@@ -210,9 +205,7 @@ CREATE TABLE customer_addresses (
     delivery_instructions VARCHAR(500),
     has_doorman BOOLEAN DEFAULT FALSE,
     requires_signature BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP,
-    last_used_at TIMESTAMP,
-    delivery_count INTEGER DEFAULT 0
+    created_at TIMESTAMP
 );
 
 -- ============================================================================
@@ -233,20 +226,14 @@ CREATE TABLE delivery_drivers (
     vehicle_type VARCHAR(30),
     vehicle_capacity_items SMALLINT,
     has_insulated_bags BOOLEAN,
-    total_deliveries INTEGER DEFAULT 0,
-    avg_rating NUMERIC(3,2),
-    on_time_delivery_pct NUMERIC(5,2),
     acceptance_rate NUMERIC(5,2),
-    cancellation_rate NUMERIC(5,2),
     is_available BOOLEAN DEFAULT TRUE,
     current_latitude NUMERIC(9, 6),
     current_longitude NUMERIC(10, 6),
     last_location_update TIMESTAMP,
     hire_date DATE,
-    last_delivery_date DATE,
     base_pay_per_delivery NUMERIC(6,2),
-    mileage_rate NUMERIC(4,2),
-    avg_tips_per_delivery NUMERIC(6,2)
+    mileage_rate NUMERIC(4,2)
 );
 
 CREATE TABLE delivery_zones (
@@ -650,7 +637,6 @@ CREATE INDEX idx_delivery_drivers_store ON delivery_drivers(primary_store_id);
 CREATE INDEX idx_delivery_drivers_type ON delivery_drivers(driver_type);
 CREATE INDEX idx_delivery_drivers_status ON delivery_drivers(employment_status);
 CREATE INDEX idx_delivery_drivers_available ON delivery_drivers(is_available, primary_store_id) WHERE is_available = TRUE;
-CREATE INDEX idx_delivery_drivers_rating ON delivery_drivers(avg_rating DESC);
 
 CREATE INDEX idx_delivery_zones_store ON delivery_zones(store_id);
 CREATE INDEX idx_delivery_zones_active ON delivery_zones(is_active, store_id) WHERE is_active = TRUE;

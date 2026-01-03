@@ -71,7 +71,7 @@ impl<'a> DemandCalculator<'a> {
         let category = &product.category;
 
         if category == "beverages" {
-            if (climate == "hot" || climate == "temperate") && (month >= 6 && month <= 8) {
+            if (climate == "hot" || climate == "temperate") && (6..=8).contains(&month) {
                 multiplier *= 1.4;
             } else if climate == "cold" && (month == 12 || month == 1 || month == 2) {
                 multiplier *= 0.8;

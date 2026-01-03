@@ -34,19 +34,9 @@ pub struct Store {
 
 #[derive(Debug, Clone)]
 pub struct StoreEconomics {
-    // Cost structure multipliers (for future operational cost modeling)
-    #[allow(dead_code)]
-    pub labor_cost_index: f64,        // 0.85-1.35 (midwest=0.85, SF/NYC=1.35)
-    #[allow(dead_code)]
-    pub rent_cost_index: f64,          // 0.80-1.50 (rural=0.80, urban=1.50)
-    #[allow(dead_code)]
-    pub utility_cost_index: f64,       // 0.90-1.20 (climate-based)
-
     // Operational efficiency
     pub maturity_factor: f64,          // 0.92-1.15 (new=1.15 costs, mature=0.92)
     pub shrinkage_rate: f64,           // 0.01-0.04 (varies by type/location)
-    #[allow(dead_code)]
-    pub labor_efficiency: f64,         // 0.90-1.10 (affects operating costs)
 
     // Market dynamics
     pub competitive_intensity: f64,    // 0.90-1.10 (affects pricing power)
@@ -55,8 +45,6 @@ pub struct StoreEconomics {
 
     // Performance
     pub store_performance_tier: String, // "high", "medium", "low"
-    #[allow(dead_code)]
-    pub market_share_estimate: f64,     // 0.05-0.25 (affects volume)
 
     // Category mix adjustments
     pub category_mix_factors: std::collections::HashMap<String, f64>,
@@ -216,7 +204,6 @@ pub struct PriceChange {
     pub reason: String,
 }
 
-#[allow(dead_code)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Transaction {
     pub transaction_id: u64,
@@ -269,8 +256,6 @@ pub struct BrandInfo {
 #[derive(Debug, Clone)]
 pub struct CategoryConfig {
     pub elasticity: f64,
-    #[allow(dead_code)]
-    pub seasonality: String,
     pub dow_effect: f64,
 }
 
@@ -388,21 +373,16 @@ pub struct Customer {
     pub loyalty_member: bool,
     pub loyalty_tier: Option<String>,
     pub loyalty_join_date: Option<NaiveDate>,
-    pub loyalty_points: u32,
 
     // Shopping preferences
     pub preferred_shopping_time: String,
-    pub avg_basket_size: f64,
     pub price_sensitivity: String,
 
     // Behavioral segments
     pub customer_segment: String,
 
     // Metadata
-    pub created_date: NaiveDate,
-    pub last_purchase_date: Option<NaiveDate>,
-    pub total_lifetime_value: f64,
-    pub total_visits: u32,
+    pub created_date: Option<NaiveDate>,
 
     // Online behavior
     pub has_online_account: bool,
@@ -426,8 +406,6 @@ pub struct CustomerAddress {
     pub has_doorman: bool,
     pub requires_signature: bool,
     pub created_at: NaiveDateTime,
-    pub last_used_at: Option<NaiveDateTime>,
-    pub delivery_count: u32,
 }
 
 // ============================================================================
@@ -456,12 +434,8 @@ pub struct DeliveryDriver {
     pub vehicle_capacity_items: u32,
     pub has_insulated_bags: bool,
 
-    // Performance metrics
-    pub total_deliveries: u32,
-    pub avg_rating: f64,
-    pub on_time_delivery_pct: f64,
+    // Performance metrics (traits, not calculated)
     pub acceptance_rate: f64,
-    pub cancellation_rate: f64,
 
     // Availability
     pub is_available: bool,
@@ -471,12 +445,10 @@ pub struct DeliveryDriver {
 
     // Dates
     pub hire_date: NaiveDate,
-    pub last_delivery_date: Option<NaiveDate>,
 
     // Compensation
     pub base_pay_per_delivery: f64,
     pub mileage_rate: f64,
-    pub avg_tips_per_delivery: f64,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -546,20 +518,4 @@ pub struct DeliveryZone {
     pub peak_hours: String, // Comma-separated
 }
 
-// ============================================================================
-// INTERNAL HELPER STRUCTURES (not serialized to CSV)
-// ============================================================================
 
-#[derive(Debug, Clone)]
-#[allow(dead_code)]
-pub struct CustomerBehavior {
-    pub customer_id: u64,
-    pub segment: String,
-    pub shopping_frequency_days: u32,
-    pub avg_basket_size: u32,
-    pub brand_loyalty_score: f64,
-    pub price_sensitivity: f64,
-    pub preferred_categories: Vec<String>,
-    pub preferred_brands: Vec<String>,
-    pub last_visit_date: Option<NaiveDate>,
-}

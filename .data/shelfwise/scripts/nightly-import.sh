@@ -31,6 +31,8 @@ REFERENCE_DIR="$SHELFWISE_HOME/postgres/reference"
 OUTPUT_DIR="$SHELFWISE_HOME/postgres/nightly"
 LOG_DIR="${LOG_DIR:-$SHELFWISE_HOME/logs}"
 LOG_FILE="${LOG_FILE:-$LOG_DIR/nightly-import.log}"
+# Generator config - MUST match the config used for initial data load
+GENERATOR_CONFIG="${GENERATOR_CONFIG:-$GENERATOR_DIR/config.toml}"
 
 mkdir -p "$LOG_DIR" "$REFERENCE_DIR" "$OUTPUT_DIR"
 
@@ -83,12 +85,32 @@ fi
 # ============================================================================
 
 SPECIFIC_DATE=""
-if [[ "${1:-}" == "--date" ]] && [[ -n "${2:-}" ]]; then
-    SPECIFIC_DATE="$2"
-elif [[ "${1:-}" == "--help" ]] || [[ "${1:-}" == "-h" ]]; then
-    echo "Usage: $0 [--date YYYY-MM-DD]"
-    echo "Without arguments: auto-detect and fill missing dates"
-    exit 0
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --date)
+            SPECIFIC_DATE="$2"
+            shift 2
+            ;;
+        --config)
+            GENERATOR_CONFIG="$2"
+            shift 2
+            ;;
+        --help|-h)
+            echo "Usage: $0 [--date YYYY-MM-DD] [--config /path/to/config.toml]"
+            echo "  --date    Specific date to generate (default: auto-detect gaps)"
+            echo "  --config  Generator config file (default: generator/config.toml)"
+            exit 0
+            ;;
+        *)
+            echo "Unknown option: $1"
+            exit 1
+            ;;
+    esac
+done
+
+# Make config path absolute if relative
+if [[ ! "$GENERATOR_CONFIG" = /* ]]; then
+    GENERATOR_CONFIG="$(pwd)/$GENERATOR_CONFIG"
 fi
 
 # ============================================================================
@@ -144,6 +166,10 @@ for TARGET_DATE in "${DATES_TO_GENERATE[@]}"; do
     rm -rf "$REFERENCE_DIR"/* 2>/dev/null || true
     mkdir -p "$REFERENCE_DIR"
 
+    # Export products and stores (static reference data - ensures generator uses same SKUs/store_ids)
+    psql -q -c "\COPY products TO '$REFERENCE_DIR/products.csv' WITH CSV HEADER"
+    psql -q -c "\COPY stores TO '$REFERENCE_DIR/stores.csv' WITH CSV HEADER"
+
     # Export with boolean conversion (PostgreSQL outputs t/f, Rust expects true/false)
     psql -q -c "\COPY (SELECT customer_id, email, phone, first_name, last_name, age_bracket, household_size, income_bracket, primary_store_id, primary_city, home_latitude, home_longitude, CASE WHEN loyalty_member THEN 'true' ELSE 'false' END as loyalty_member, loyalty_tier, loyalty_join_date, loyalty_points, preferred_shopping_time, avg_basket_size, price_sensitivity, customer_segment, created_date, last_purchase_date, total_lifetime_value, total_visits, CASE WHEN has_online_account THEN 'true' ELSE 'false' END as has_online_account, CASE WHEN prefers_online THEN 'true' ELSE 'false' END as prefers_online FROM customers) TO '$REFERENCE_DIR/customers.csv' WITH CSV HEADER"
     psql -q -c "\COPY (SELECT address_id, customer_id, address_type, CASE WHEN is_default THEN 'true' ELSE 'false' END as is_default, street_address, apartment_unit, city, state, zip_code, latitude, longitude, delivery_instructions, CASE WHEN has_doorman THEN 'true' ELSE 'false' END as has_doorman, CASE WHEN requires_signature THEN 'true' ELSE 'false' END as requires_signature, REPLACE(created_at::text, ' ', 'T') as created_at, REPLACE(last_used_at::text, ' ', 'T') as last_used_at, delivery_count FROM customer_addresses) TO '$REFERENCE_DIR/customer_addresses.csv' WITH CSV HEADER"
@@ -156,17 +182,22 @@ for TARGET_DATE in "${DATES_TO_GENERATE[@]}"; do
     # Run generator with --reference-dir (loads existing customers/drivers)
     cd "$GENERATOR_DIR"
 
+    GEN_LOG="$LOG_DIR/generator-$TARGET_DATE.log"
     if ! cargo run --release -- \
+        --config "$GENERATOR_CONFIG" \
         --reference-dir "$REFERENCE_DIR" \
         --start-date "$TARGET_DATE" \
         --end-date "$TARGET_DATE" \
         --output "$OUTPUT_DIR" \
-        --continue >/dev/null 2>&1; then
+        --continue > "$GEN_LOG" 2>&1; then
 
+        log "Generator failed. See $GEN_LOG for details:"
+        tail -20 "$GEN_LOG" | tee -a "$LOG_FILE"
         error_exit "Generator failed for $TARGET_DATE"
     fi
 
     cd "$SHELFWISE_HOME"
+    log "  Generator complete, offsetting IDs..."
 
     # Offset IDs to avoid conflicts with existing data
 
@@ -177,6 +208,8 @@ for TARGET_DATE in "${DATES_TO_GENERATE[@]}"; do
     MAX_SHIPMENT_ID=$(psql -t -c "SELECT COALESCE(MAX(shipment_id), 0) FROM supplier_shipments;" 2>/dev/null | xargs)
     MAX_CHANGE_ID=$(psql -t -c "SELECT COALESCE(MAX(change_id), 0) FROM price_changes;" 2>/dev/null | xargs)
     MAX_ASSIGN_ID=$(psql -t -c "SELECT COALESCE(MAX(assignment_id), 0) FROM delivery_assignments;" 2>/dev/null | xargs)
+
+    log "  Max IDs: txn=$MAX_TXN_ID waste=$MAX_WASTE_ID ticket=$MAX_TICKET_ID"
 
     # Use a single Python script to offset all files (handles quoted commas correctly)
     # NOTE: Generator outputs CSVs WITH headers, but we use column indices as backup
@@ -253,8 +286,11 @@ offset_csv_by_index(os.path.join(output_dir, 'price_changes.csv'), [0], [max_cha
 offset_csv_by_index(os.path.join(output_dir, 'delivery_assignments.csv'), [0, 1], [max_assign, max_txn])
 PYEOF
 
-    # Extract NEW customers/drivers (IDs greater than max in database)
+    log "  ID offsets applied, extracting new customers/drivers/addresses..."
+
+    # Extract NEW customers/drivers/addresses (IDs greater than max in database)
     NEW_CUST=0
+    NEW_ADDRS=0
     NEW_DRIVERS=0
 
     if [ -f "$OUTPUT_DIR/customers.csv" ]; then
@@ -263,6 +299,17 @@ PYEOF
         head -1 "$OUTPUT_DIR/customers.csv" > "$OUTPUT_DIR/customers_import.csv"
         awk -F',' -v max="$MAX_CUST_ID" 'NR>1 && $1 > max' "$OUTPUT_DIR/customers.csv" >> "$OUTPUT_DIR/customers_import.csv"
         NEW_CUST=$(tail -n +2 "$OUTPUT_DIR/customers_import.csv" 2>/dev/null | wc -l | xargs)
+        log "    Found $NEW_CUST new customers (max ID was $MAX_CUST_ID)"
+    fi
+
+    # Extract NEW customer_addresses (transactions reference delivery_address_id)
+    if [ -f "$OUTPUT_DIR/customer_addresses.csv" ]; then
+        MAX_ADDR_ID=$(psql -t -c "SELECT COALESCE(MAX(address_id), 0) FROM customer_addresses;" 2>/dev/null | xargs)
+        MAX_ADDR_ID=${MAX_ADDR_ID:-0}
+        head -1 "$OUTPUT_DIR/customer_addresses.csv" > "$OUTPUT_DIR/addresses_import.csv"
+        awk -F',' -v max="$MAX_ADDR_ID" 'NR>1 && $1 > max' "$OUTPUT_DIR/customer_addresses.csv" >> "$OUTPUT_DIR/addresses_import.csv"
+        NEW_ADDRS=$(tail -n +2 "$OUTPUT_DIR/addresses_import.csv" 2>/dev/null | wc -l | xargs)
+        log "    Found $NEW_ADDRS new addresses (max ID was $MAX_ADDR_ID)"
     fi
 
     if [ -f "$OUTPUT_DIR/delivery_drivers.csv" ]; then
@@ -272,17 +319,34 @@ PYEOF
         head -1 "$OUTPUT_DIR/delivery_drivers.csv" > "$OUTPUT_DIR/drivers_import.csv"
         awk -F',' -v max="$MAX_DRIVER_ID" 'NR>1 && $1 > max' "$OUTPUT_DIR/delivery_drivers.csv" >> "$OUTPUT_DIR/drivers_import.csv"
         NEW_DRIVERS=$(tail -n +2 "$OUTPUT_DIR/drivers_import.csv" 2>/dev/null | wc -l | xargs)
+        log "    Found $NEW_DRIVERS new drivers (max ID was $MAX_DRIVER_ID)"
     fi
 
     # Import to database
+    log "  Importing to database..."
+
     # Import new customers FIRST (transactions reference them)
     if [ -f "$OUTPUT_DIR/customers_import.csv" ] && [ $(wc -l < "$OUTPUT_DIR/customers_import.csv") -gt 1 ]; then
-        psql -q -c "\COPY customers FROM '$OUTPUT_DIR/customers_import.csv' WITH CSV HEADER" 2>/dev/null
+        log "    Importing customers..."
+        if ! psql -q -c "\COPY customers FROM '$OUTPUT_DIR/customers_import.csv' WITH CSV HEADER" 2>&1; then
+            log "    WARNING: Customer import failed"
+        fi
+    fi
+
+    # Import new addresses AFTER customers but BEFORE transactions (transactions reference delivery_address_id)
+    if [ -f "$OUTPUT_DIR/addresses_import.csv" ] && [ $(wc -l < "$OUTPUT_DIR/addresses_import.csv") -gt 1 ]; then
+        log "    Importing addresses..."
+        if ! psql -q -c "\COPY customer_addresses FROM '$OUTPUT_DIR/addresses_import.csv' WITH CSV HEADER" 2>&1; then
+            log "    WARNING: Address import failed"
+        fi
     fi
 
     # Import new drivers BEFORE delivery_assignments
     if [ -f "$OUTPUT_DIR/drivers_import.csv" ] && [ $(wc -l < "$OUTPUT_DIR/drivers_import.csv") -gt 1 ]; then
-        psql -q -c "\COPY delivery_drivers FROM '$OUTPUT_DIR/drivers_import.csv' WITH CSV HEADER" 2>/dev/null
+        log "    Importing drivers..."
+        if ! psql -q -c "\COPY delivery_drivers FROM '$OUTPUT_DIR/drivers_import.csv' WITH CSV HEADER" 2>&1; then
+            log "    WARNING: Driver import failed"
+        fi
     fi
 
     # Import daily data (after customers/drivers are in place)
@@ -294,15 +358,19 @@ PYEOF
         if [ -f "$csv_file" ] && [ $(wc -l < "$csv_file") -gt 0 ]; then
             first_field=$(head -1 "$csv_file" | cut -d',' -f1)
             if [[ "$first_field" =~ ^[0-9]+$ ]]; then
-                psql -q -c "\COPY $table FROM '$csv_file' WITH CSV" 2>/dev/null
+                if ! psql -q -c "\COPY $table FROM '$csv_file' WITH CSV" 2>&1; then
+                    log "    WARNING: Failed to import $table"
+                fi
             else
-                psql -q -c "\COPY $table FROM '$csv_file' WITH CSV HEADER" 2>/dev/null
+                if ! psql -q -c "\COPY $table FROM '$csv_file' WITH CSV HEADER" 2>&1; then
+                    log "    WARNING: Failed to import $table (with header)"
+                fi
             fi
             TABLES_IMPORTED=$((TABLES_IMPORTED + 1))
         fi
     done
 
-    log "  ✓ $TARGET_DATE: ${TABLES_IMPORTED} tables, ${NEW_CUST} new customers, ${NEW_DRIVERS} new drivers"
+    log "  ✓ $TARGET_DATE: ${TABLES_IMPORTED} tables, ${NEW_CUST} new customers, ${NEW_ADDRS} new addresses, ${NEW_DRIVERS} new drivers"
 done
 
 # ============================================================================

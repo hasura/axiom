@@ -126,40 +126,40 @@ impl StreamingWriters {
             .from_writer(open_file(Path::new(output_dir).join("delivery_drivers.csv"))?);
 
         if !continue_mode {
-            sales.write_record(&["date", "store_id", "sku", "units_sold", "gross_revenue", "promo_id",
+            sales.write_record(["date", "store_id", "sku", "units_sold", "gross_revenue", "promo_id",
                 "regular_price", "net_price", "revenue", "supplier_rebate_amt", "spoilage_cost",
                 "promo_funding_received", "gross_margin_pct", "discount_pct", "cogs_c", "cogs_s",
                 "sales_date", "posting_date"])?;
 
-            inventory.write_record(&["date", "store_id", "sku", "on_hand", "on_order", "in_transit",
+            inventory.write_record(["date", "store_id", "sku", "on_hand", "on_order", "in_transit",
                 "safety_stock", "last_scan_ts", "system_on_hand", "available_to_promise",
                 "open_hours", "in_stock_hours", "dc_allocated_qty", "quarantine_hold"])?;
 
-            returns.write_record(&["date", "store_id", "sku", "units_returned", "reason_code", "refund_value",
+            returns.write_record(["date", "store_id", "sku", "units_returned", "reason_code", "refund_value",
                 "transaction_id", "line_number"])?;
 
-            shipments.write_record(&["shipment_id", "shipment_date", "delivery_date", "store_id", "sku",
+            shipments.write_record(["shipment_id", "shipment_date", "delivery_date", "store_id", "sku",
                 "quantity_shipped", "quantity_received", "supplier_name", "po_number", "shipment_status"])?;
 
-            waste.write_record(&["waste_id", "date", "store_id", "sku", "quantity_wasted",
+            waste.write_record(["waste_id", "date", "store_id", "sku", "quantity_wasted",
                 "waste_reason", "waste_value", "recorded_by"])?;
 
-            tickets.write_record(&["ticket_id", "created_at", "resolved_at", "store_id", "sku",
+            tickets.write_record(["ticket_id", "created_at", "resolved_at", "store_id", "sku",
                 "issue_type", "description", "root_cause", "resolved"])?;
 
-            price_changes.write_record(&["change_id", "date", "store_id", "sku", "new_regular_price", "reason"])?;
+            price_changes.write_record(["change_id", "date", "store_id", "sku", "new_regular_price", "reason"])?;
 
-            transactions.write_record(&["transaction_id", "date", "store_id", "timestamp", "total_items",
+            transactions.write_record(["transaction_id", "date", "store_id", "timestamp", "total_items",
                 "payment_method", "customer_type", "total_amount", "customer_id", "is_loyalty_transaction",
                 "loyalty_points_earned", "loyalty_points_redeemed", "fulfillment_type", "order_status",
                 "fulfillment_store_id", "delivery_address_id", "delivery_fee", "tip_amount",
                 "delivery_instructions", "requested_delivery_time", "actual_delivery_time"])?;
 
-            transaction_line_items.write_record(&["transaction_id", "line_number", "sku", "quantity",
+            transaction_line_items.write_record(["transaction_id", "line_number", "sku", "quantity",
                 "unit_price", "line_total", "promo_id", "discount_amount"])?;
 
             // Delivery headers
-            delivery_assignments.write_record(&["assignment_id", "transaction_id", "driver_id",
+            delivery_assignments.write_record(["assignment_id", "transaction_id", "driver_id",
                 "assigned_at", "accepted_at", "picked_up_at", "delivered_at", "cancelled_at",
                 "assignment_status", "cancellation_reason", "pickup_store_id", "estimated_pickup_time",
                 "actual_pickup_time", "estimated_delivery_time", "actual_delivery_time",
@@ -168,19 +168,18 @@ impl StreamingWriters {
                 "driver_notes", "customer_feedback"])?;
 
             // Customer headers
-            customers.write_record(&["customer_id", "email", "phone", "first_name", "last_name",
+            customers.write_record(["customer_id", "email", "phone", "first_name", "last_name",
                 "age_bracket", "household_size", "income_bracket", "primary_store_id", "primary_city",
                 "home_latitude", "home_longitude", "loyalty_member", "loyalty_tier", "loyalty_join_date",
                 "loyalty_points", "preferred_shopping_time", "avg_basket_size", "price_sensitivity",
-                "customer_segment", "created_date", "last_purchase_date", "total_lifetime_value",
-                "total_visits", "has_online_account", "prefers_online"])?;
+                "customer_segment", "created_date", "has_online_account", "prefers_online"])?;
 
-            customer_addresses.write_record(&["address_id", "customer_id", "address_type", "is_default",
+            customer_addresses.write_record(["address_id", "customer_id", "address_type", "is_default",
                 "street_address", "apartment_unit", "city", "state", "zip_code", "latitude", "longitude",
                 "delivery_instructions", "has_doorman", "requires_signature", "created_at"])?;
 
             // Driver headers
-            delivery_drivers.write_record(&["driver_id", "first_name", "last_name", "phone", "email",
+            delivery_drivers.write_record(["driver_id", "first_name", "last_name", "phone", "email",
                 "driver_type", "employment_status", "primary_store_id", "service_radius_miles", "service_cities",
                 "vehicle_type", "vehicle_capacity_items", "has_insulated_bags", "total_deliveries", "avg_rating",
                 "on_time_delivery_pct", "acceptance_rate", "cancellation_rate", "is_available",
