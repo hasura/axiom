@@ -371,7 +371,6 @@ pub struct Customer {
 
     // Loyalty program
     pub loyalty_member: bool,
-    pub loyalty_tier: Option<String>,
     pub loyalty_join_date: Option<NaiveDate>,
 
     // Shopping preferences

@@ -170,8 +170,8 @@ impl StreamingWriters {
             // Customer headers
             customers.write_record(["customer_id", "email", "phone", "first_name", "last_name",
                 "age_bracket", "household_size", "income_bracket", "primary_store_id", "primary_city",
-                "home_latitude", "home_longitude", "loyalty_member", "loyalty_tier", "loyalty_join_date",
-                "loyalty_points", "preferred_shopping_time", "avg_basket_size", "price_sensitivity",
+                "home_latitude", "home_longitude", "loyalty_member", "loyalty_join_date",
+                "preferred_shopping_time", "price_sensitivity",
                 "customer_segment", "created_date", "has_online_account", "prefers_online"])?;
 
             customer_addresses.write_record(["address_id", "customer_id", "address_type", "is_default",
@@ -181,10 +181,9 @@ impl StreamingWriters {
             // Driver headers
             delivery_drivers.write_record(["driver_id", "first_name", "last_name", "phone", "email",
                 "driver_type", "employment_status", "primary_store_id", "service_radius_miles", "service_cities",
-                "vehicle_type", "vehicle_capacity_items", "has_insulated_bags", "total_deliveries", "avg_rating",
-                "on_time_delivery_pct", "acceptance_rate", "cancellation_rate", "is_available",
-                "current_latitude", "current_longitude", "last_location_update", "hire_date", "last_delivery_date",
-                "base_pay_per_delivery", "mileage_rate", "avg_tips_per_delivery"])?;
+                "vehicle_type", "vehicle_capacity_items", "has_insulated_bags", "acceptance_rate", "is_available",
+                "current_latitude", "current_longitude", "last_location_update", "hire_date",
+                "base_pay_per_delivery", "mileage_rate"])?;
         }
 
         Ok(Self {

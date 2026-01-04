@@ -19,6 +19,9 @@ SET maintenance_work_mem = '1GB';
 -- Increase work_mem for better sort performance
 SET work_mem = '256MB';
 
+-- Drop materialized views first
+DROP MATERIALIZED VIEW IF EXISTS customer_loyalty_summary CASCADE;
+
 -- Drop tables in reverse dependency order
 DROP TABLE IF EXISTS delivery_assignments CASCADE;
 DROP TABLE IF EXISTS transaction_line_items CASCADE;
@@ -180,7 +183,6 @@ CREATE TABLE customers (
     home_latitude NUMERIC(9, 6),
     home_longitude NUMERIC(10, 6),
     loyalty_member BOOLEAN DEFAULT FALSE,
-    loyalty_tier VARCHAR(20),
     loyalty_join_date DATE,
     preferred_shopping_time VARCHAR(20),
     price_sensitivity VARCHAR(20),
@@ -613,7 +615,6 @@ CREATE INDEX idx_customers_email ON customers(email);
 CREATE INDEX idx_customers_primary_store ON customers(primary_store_id);
 CREATE INDEX idx_customers_segment ON customers(customer_segment);
 CREATE INDEX idx_customers_loyalty_member ON customers(loyalty_member);
-CREATE INDEX idx_customers_loyalty_tier ON customers(loyalty_tier);
 CREATE INDEX idx_customers_created_date ON customers(created_date);
 CREATE INDEX idx_customers_city ON customers(primary_city);
 
@@ -646,6 +647,98 @@ CREATE INDEX idx_delivery_assignments_driver ON delivery_assignments(driver_id);
 CREATE INDEX idx_delivery_assignments_status ON delivery_assignments(assignment_status);
 CREATE INDEX idx_delivery_assignments_assigned_at ON delivery_assignments(assigned_at);
 CREATE INDEX idx_delivery_assignments_delivered_at ON delivery_assignments(delivered_at);
+
+-- ============================================================================
+-- MATERIALIZED VIEWS
+-- ============================================================================
+
+-- Customer loyalty summary with calculated tiers based on last 12 months spending
+-- Tier thresholds (annual spend):
+--   Platinum: $5,000+  (top ~5% of active customers)
+--   Gold:     $2,000+  (top ~20% of active customers)
+--   Silver:   $750+    (top ~50% of active customers)
+--   Bronze:   $1+      (any purchase in last 12 months)
+--   Inactive: $0       (no purchases in last 12 months)
+
+CREATE MATERIALIZED VIEW customer_loyalty_summary AS
+WITH last_12_months AS (
+    SELECT
+        customer_id,
+        COUNT(DISTINCT transaction_id) as transactions_12m,
+        COALESCE(SUM(total_amount), 0) as spend_12m,
+        MIN(date) as first_purchase_12m,
+        MAX(date) as last_purchase_12m
+    FROM transactions
+    WHERE date >= (SELECT MAX(date) - INTERVAL '12 months' FROM transactions)
+      AND customer_id IS NOT NULL
+    GROUP BY customer_id
+),
+lifetime AS (
+    SELECT
+        customer_id,
+        COUNT(DISTINCT transaction_id) as lifetime_transactions,
+        COALESCE(SUM(total_amount), 0) as lifetime_value,
+        MIN(date) as first_purchase_date,
+        MAX(date) as last_purchase_date,
+        COUNT(DISTINCT date) as shopping_days
+    FROM transactions
+    WHERE customer_id IS NOT NULL
+    GROUP BY customer_id
+)
+SELECT
+    c.customer_id,
+    c.first_name,
+    c.last_name,
+    c.email,
+    c.loyalty_member,
+    c.loyalty_join_date,
+    c.customer_segment,
+    c.primary_store_id,
+    c.created_date,
+
+    -- Last 12 months metrics
+    COALESCE(l12.transactions_12m, 0) as transactions_12m,
+    COALESCE(l12.spend_12m, 0)::NUMERIC(12,2) as spend_12m,
+    l12.first_purchase_12m,
+    l12.last_purchase_12m,
+
+    -- Lifetime metrics
+    COALESCE(lt.lifetime_transactions, 0) as lifetime_transactions,
+    COALESCE(lt.lifetime_value, 0)::NUMERIC(12,2) as lifetime_value,
+    CASE WHEN lt.lifetime_transactions > 0
+         THEN (lt.lifetime_value / lt.lifetime_transactions)::NUMERIC(10,2)
+         ELSE 0
+    END as avg_basket_size,
+    lt.first_purchase_date,
+    lt.last_purchase_date,
+    COALESCE(lt.shopping_days, 0) as shopping_days,
+
+    -- Calculated tier based on last 12 months spend
+    CASE
+        WHEN COALESCE(l12.spend_12m, 0) >= 5000 THEN 'platinum'
+        WHEN COALESCE(l12.spend_12m, 0) >= 2000 THEN 'gold'
+        WHEN COALESCE(l12.spend_12m, 0) >= 750 THEN 'silver'
+        WHEN COALESCE(l12.spend_12m, 0) > 0 THEN 'bronze'
+        ELSE 'inactive'
+    END as calculated_tier,
+
+    -- Days since last purchase
+    CASE WHEN lt.last_purchase_date IS NOT NULL
+         THEN (SELECT MAX(date) FROM transactions) - lt.last_purchase_date
+         ELSE NULL
+    END as days_since_last_purchase
+
+FROM customers c
+LEFT JOIN last_12_months l12 ON c.customer_id = l12.customer_id
+LEFT JOIN lifetime lt ON c.customer_id = lt.customer_id;
+
+-- Unique index for CONCURRENTLY refresh
+CREATE UNIQUE INDEX idx_customer_loyalty_summary_pk ON customer_loyalty_summary(customer_id);
+
+-- Additional indexes for common queries
+CREATE INDEX idx_customer_loyalty_summary_tier ON customer_loyalty_summary(calculated_tier);
+CREATE INDEX idx_customer_loyalty_summary_spend ON customer_loyalty_summary(spend_12m DESC);
+CREATE INDEX idx_customer_loyalty_summary_lifetime ON customer_loyalty_summary(lifetime_value DESC);
 
 -- ============================================================================
 -- FINALIZE DATA LOAD

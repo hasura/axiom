@@ -48,11 +48,7 @@ const SEGMENT_WEEKLY_SHOPPER: f64 = 0.40;
 const SEGMENT_BULK_BUYER: f64 = 0.15;
 const SEGMENT_OCCASIONAL: f64 = 0.25;
 
-// Loyalty tier distribution
-const LOYALTY_TIER_BRONZE: f64 = 0.50;
-const LOYALTY_TIER_SILVER: f64 = 0.30;
-const LOYALTY_TIER_GOLD: f64 = 0.15;
-const LOYALTY_TIER_PLATINUM: f64 = 0.05;
+
 
 // Transaction tracking rates by store type
 // Loyalty program penetration over time
@@ -1120,24 +1116,6 @@ impl ShelfWiseDataGenerator {
 
         let is_loyalty_member = self.rng.gen::<f64>() < loyalty_penetration;
 
-        // Loyalty tier: new customers start as bronze, founding customers have earned tiers
-        let loyalty_tier = if is_loyalty_member {
-            if is_founding {
-                // Founding customers have had time to earn higher tiers
-                Some(self.pick_weighted(&[
-                    ("bronze", LOYALTY_TIER_BRONZE),
-                    ("silver", LOYALTY_TIER_SILVER),
-                    ("gold", LOYALTY_TIER_GOLD),
-                    ("platinum", LOYALTY_TIER_PLATINUM),
-                ]))
-            } else {
-                // New customers always start at bronze
-                Some("bronze".to_string())
-            }
-        } else {
-            None
-        };
-
         // Contact info using centralized constants
         let first_name = FIRST_NAMES.choose(&mut self.rng).unwrap().to_string();
         let last_name = LAST_NAMES.choose(&mut self.rng).unwrap().to_string();
@@ -1211,7 +1189,6 @@ impl ShelfWiseDataGenerator {
             home_latitude: primary_store.latitude + lat_offset,
             home_longitude: primary_store.longitude + lon_offset,
             loyalty_member: is_loyalty_member,
-            loyalty_tier,
             loyalty_join_date,
             preferred_shopping_time,
             price_sensitivity: price_sensitivity.to_string(),
@@ -1375,7 +1352,6 @@ impl ShelfWiseDataGenerator {
             home_latitude: 37.785834,
             home_longitude: -122.396736,
             loyalty_member: true,
-            loyalty_tier: Some("platinum".to_string()),
             loyalty_join_date: Some(self.start_date),
             preferred_shopping_time: "morning".to_string(),
             price_sensitivity: "low".to_string(),
