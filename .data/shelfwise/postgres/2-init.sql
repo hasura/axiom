@@ -654,11 +654,11 @@ CREATE INDEX idx_delivery_assignments_delivered_at ON delivery_assignments(deliv
 
 -- Customer loyalty summary with calculated tiers based on last 12 months spending
 -- Tier thresholds (annual spend):
---   Platinum: $5,000+  (top ~5% of active customers)
---   Gold:     $2,000+  (top ~20% of active customers)
---   Silver:   $750+    (top ~50% of active customers)
---   Bronze:   $1+      (any purchase in last 12 months)
---   Inactive: $0       (no purchases in last 12 months)
+--   Platinum: $1,500+
+--   Gold:     $750+
+--   Silver:   $300+
+--   Bronze:   $1+
+--   Inactive: $0
 
 CREATE MATERIALIZED VIEW customer_loyalty_summary AS
 WITH last_12_months AS (
@@ -715,9 +715,9 @@ SELECT
 
     -- Calculated tier based on last 12 months spend
     CASE
-        WHEN COALESCE(l12.spend_12m, 0) >= 5000 THEN 'platinum'
-        WHEN COALESCE(l12.spend_12m, 0) >= 2000 THEN 'gold'
-        WHEN COALESCE(l12.spend_12m, 0) >= 750 THEN 'silver'
+        WHEN COALESCE(l12.spend_12m, 0) >= 1500 THEN 'platinum'
+        WHEN COALESCE(l12.spend_12m, 0) >= 750 THEN 'gold'
+        WHEN COALESCE(l12.spend_12m, 0) >= 300 THEN 'silver'
         WHEN COALESCE(l12.spend_12m, 0) > 0 THEN 'bronze'
         ELSE 'inactive'
     END as calculated_tier,
