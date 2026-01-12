@@ -17,6 +17,144 @@ pub struct DemandCalculator<'a> {
 }
 
 impl<'a> DemandCalculator<'a> {
+    /// Calculate realistic transaction volume multiplier based on day-of-week, holidays, and seasonality
+    /// This affects how many customers visit the store on a given day
+    pub fn calculate_transaction_volume_multiplier(
+        &self,
+        date: NaiveDate,
+        store: &Store,
+    ) -> f64 {
+        let mut multiplier: f64 = 1.0;
+
+        // Day of week effect - biggest driver of daily variation
+        let dow = date.weekday().num_days_from_monday();
+
+        if store.store_type == "online" {
+            // Online stores: weekdays busier (people shopping at work)
+            // Monday-Thursday peak, Friday-Sunday slower
+            match dow {
+                0 => multiplier *= 1.15,  // Monday - strong start
+                1 => multiplier *= 1.20,  // Tuesday - peak
+                2 => multiplier *= 1.18,  // Wednesday - peak
+                3 => multiplier *= 1.12,  // Thursday - good
+                4 => multiplier *= 0.95,  // Friday - winding down
+                5 => multiplier *= 0.85,  // Saturday - weekend
+                6 => multiplier *= 0.80,  // Sunday - lowest
+                _ => {}
+            }
+        } else {
+            // Physical stores: weekends much busier
+            // Saturday is peak, Sunday strong, weekdays lighter
+            match dow {
+                0 => multiplier *= 0.75,  // Monday - slowest weekday
+                1 => multiplier *= 0.85,  // Tuesday
+                2 => multiplier *= 0.90,  // Wednesday
+                3 => multiplier *= 0.95,  // Thursday
+                4 => multiplier *= 1.05,  // Friday - picking up
+                5 => multiplier *= 1.45,  // Saturday - PEAK
+                6 => multiplier *= 1.25,  // Sunday - strong
+                _ => {}
+            }
+
+            // Store type modifiers
+            match store.store_type.as_str() {
+                "convenience" => {
+                    // Convenience stores more consistent, less weekend spike
+                    if dow >= 5 {
+                        multiplier = (multiplier - 1.0) * 0.5 + 1.0; // Dampen weekend effect
+                    }
+                }
+                "urban" => {
+                    // Urban stores: weekday lunch rush, less weekend spike
+                    if dow < 5 {
+                        multiplier *= 1.10; // Weekday boost
+                    } else {
+                        multiplier = (multiplier - 1.0) * 0.7 + 1.0; // Smaller weekend spike
+                    }
+                }
+                _ => {}
+            }
+        }
+
+        // Holiday effects - major traffic drivers
+        if let Some(cal) = self.calendar.get(&date) {
+            let event = if store.region == "international" {
+                if store.city.contains("ON") || store.city.contains("BC") ||
+                   store.city.contains("QC") || store.city.contains("Toronto") ||
+                   store.city.contains("Vancouver") || store.city.contains("Montreal") {
+                    cal.event_name_canada.as_ref()
+                } else if store.city.contains("UK") || store.city.contains("London") {
+                    cal.event_name_uk.as_ref()
+                } else {
+                    None
+                }
+            } else {
+                cal.event_name_us.as_ref()
+            };
+
+            if let Some(event_name) = event {
+                match event_name.as_str() {
+                    // Major shopping holidays
+                    "Black Friday" => multiplier *= 2.8,
+                    "Cyber Monday" => {
+                        if store.store_type == "online" {
+                            multiplier *= 3.5;
+                        } else {
+                            multiplier *= 0.7; // Physical stores quieter
+                        }
+                    }
+                    "Christmas Eve" => multiplier *= 2.2,
+                    "Christmas Week" => multiplier *= 1.6,
+                    "Thanksgiving Week" => multiplier *= 1.8,
+                    "Day Before Thanksgiving" => multiplier *= 2.5,
+
+                    // Other holidays
+                    "Super Bowl Sunday" => multiplier *= 1.4,
+                    "Halloween" => multiplier *= 1.3,
+                    "Easter" => multiplier *= 1.2,
+                    "Independence Day" => multiplier *= 1.3,
+                    "Memorial Day" => multiplier *= 1.2,
+                    "Labor Day" => multiplier *= 1.2,
+
+                    // Canadian holidays
+                    "Boxing Day" => multiplier *= 2.0,
+                    "Canada Day" => multiplier *= 1.3,
+                    "Victoria Day" => multiplier *= 1.2,
+
+                    // UK holidays
+                    "Summer Bank Holiday" => multiplier *= 1.2,
+                    "Spring Bank Holiday" => multiplier *= 1.2,
+
+                    // Days when stores are closed or very quiet
+                    "Christmas Day" => multiplier *= 0.1,
+                    "New Year's Day" => multiplier *= 0.3,
+
+                    _ => {}
+                }
+            }
+        }
+
+        // Seasonal patterns - monthly variation
+        let month = date.month();
+        match month {
+            1 => multiplier *= 0.85,  // January - post-holiday slump
+            2 => multiplier *= 0.90,  // February - still slow
+            3 => multiplier *= 1.00,  // March - normal
+            4 => multiplier *= 1.05,  // April - spring pickup
+            5 => multiplier *= 1.10,  // May - strong
+            6 => multiplier *= 1.05,  // June - summer starts
+            7 => multiplier *= 1.00,  // July - vacation season
+            8 => multiplier *= 1.05,  // August - back to school prep
+            9 => multiplier *= 1.10,  // September - back to school
+            10 => multiplier *= 1.15, // October - Halloween
+            11 => multiplier *= 1.25, // November - Thanksgiving + Black Friday
+            12 => multiplier *= 1.30, // December - Christmas shopping
+            _ => {}
+        }
+
+        multiplier.max(0.1) // Never go below 10% of base traffic
+    }
+
     pub fn calculate_demand<R: Rng>(
         &self,
         date: NaiveDate,

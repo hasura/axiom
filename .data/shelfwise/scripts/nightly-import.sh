@@ -31,8 +31,8 @@ REFERENCE_DIR="$SHELFWISE_HOME/postgres/reference"
 OUTPUT_DIR="$SHELFWISE_HOME/postgres/nightly"
 LOG_DIR="${LOG_DIR:-$SHELFWISE_HOME/logs}"
 LOG_FILE="${LOG_FILE:-$LOG_DIR/nightly-import.log}"
-# Generator config - MUST match the config used for initial data load
-GENERATOR_CONFIG="${GENERATOR_CONFIG:-$GENERATOR_DIR/config.toml}"
+# Generator config - Use nightly config which will be updated with DB counts
+GENERATOR_CONFIG="${GENERATOR_CONFIG:-$GENERATOR_DIR/config.nightly.toml}"
 
 mkdir -p "$LOG_DIR" "$REFERENCE_DIR" "$OUTPUT_DIR"
 
@@ -79,6 +79,22 @@ fi
 if [ ! -f "$GENERATOR_DIR/Cargo.toml" ]; then
     error_exit "Generator not found: $GENERATOR_DIR"
 fi
+
+# Ensure cargo is available (may not be in PATH for cron jobs)
+if ! command -v cargo &> /dev/null; then
+    # Try common Rust installation paths
+    if [ -f "$HOME/.cargo/env" ]; then
+        source "$HOME/.cargo/env"
+    elif [ -d "$HOME/.cargo/bin" ]; then
+        export PATH="$HOME/.cargo/bin:$PATH"
+    fi
+
+    # Check again after sourcing
+    if ! command -v cargo &> /dev/null; then
+        error_exit "cargo not found. Install Rust: https://rustup.rs"
+    fi
+fi
+log "Using cargo: $(which cargo)"
 
 # ============================================================================
 # PARSE COMMAND LINE ARGUMENTS
@@ -169,6 +185,27 @@ for TARGET_DATE in "${DATES_TO_GENERATE[@]}"; do
     # Export products and stores (static reference data - ensures generator uses same SKUs/store_ids)
     psql -q -c "\COPY products TO '$REFERENCE_DIR/products.csv' WITH CSV HEADER"
     psql -q -c "\COPY stores TO '$REFERENCE_DIR/stores.csv' WITH CSV HEADER"
+
+    # Update config.nightly.toml with actual database counts
+    # This ensures the generator uses the correct scale for transaction generation
+    ACTUAL_PRODUCT_COUNT=$(psql -t -c "SELECT COUNT(*) FROM products;" 2>/dev/null | xargs)
+    ACTUAL_STORE_COUNT=$(psql -t -c "SELECT COUNT(*) FROM stores WHERE store_type != 'online';" 2>/dev/null | xargs)
+    ACTUAL_CUSTOMER_COUNT=$(psql -t -c "SELECT COUNT(*) FROM customers;" 2>/dev/null | xargs)
+
+    log "  Updating config with DB counts: products=$ACTUAL_PRODUCT_COUNT, stores=$ACTUAL_STORE_COUNT, customers=$ACTUAL_CUSTOMER_COUNT"
+
+    # Update the config file in-place (macOS and Linux compatible)
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        # macOS requires empty string after -i
+        sed -i '' "s/^max_products = .*/max_products = $ACTUAL_PRODUCT_COUNT/" "$GENERATOR_CONFIG"
+        sed -i '' "s/^num_domestic_stores = .*/num_domestic_stores = $ACTUAL_STORE_COUNT/" "$GENERATOR_CONFIG"
+        sed -i '' "s/^num_customers = .*/num_customers = $ACTUAL_CUSTOMER_COUNT/" "$GENERATOR_CONFIG"
+    else
+        # Linux
+        sed -i "s/^max_products = .*/max_products = $ACTUAL_PRODUCT_COUNT/" "$GENERATOR_CONFIG"
+        sed -i "s/^num_domestic_stores = .*/num_domestic_stores = $ACTUAL_STORE_COUNT/" "$GENERATOR_CONFIG"
+        sed -i "s/^num_customers = .*/num_customers = $ACTUAL_CUSTOMER_COUNT/" "$GENERATOR_CONFIG"
+    fi
 
     # Export with boolean conversion (PostgreSQL outputs t/f, Rust expects true/false)
     psql -q -c "\COPY (SELECT customer_id, email, phone, first_name, last_name, age_bracket, household_size, income_bracket, primary_store_id, primary_city, home_latitude, home_longitude, CASE WHEN loyalty_member THEN 'true' ELSE 'false' END as loyalty_member, loyalty_join_date, preferred_shopping_time, price_sensitivity, customer_segment, created_date, CASE WHEN has_online_account THEN 'true' ELSE 'false' END as has_online_account, CASE WHEN prefers_online THEN 'true' ELSE 'false' END as prefers_online FROM customers) TO '$REFERENCE_DIR/customers.csv' WITH CSV HEADER"

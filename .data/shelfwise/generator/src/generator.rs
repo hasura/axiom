@@ -3569,7 +3569,7 @@ impl ShelfWiseDataGenerator {
                 let mut all_line_items_for_store_day: Vec<TransactionLineItem> = Vec::new();
 
                 // ALWAYS generate transactions based on store type, even if inventory is low
-                // Realistic transaction counts based on store type
+                // Realistic transaction counts based on store type (base ranges)
                 let (_avg_basket_size, base_txns_min, base_txns_max) = match store.store_type.as_str() {
                     "online" => (20, 950, 1050),        // Larger baskets
                     "big_box" => (15, 750, 850),        // Stock-up trips
@@ -3579,8 +3579,15 @@ impl ShelfWiseDataGenerator {
                     _ => (10, 475, 525),
                 };
 
-                // Generate target number of transactions regardless of inventory
-                let num_transactions = self.rng.gen_range(base_txns_min..=base_txns_max);
+                // Calculate realistic transaction volume based on day-of-week, holidays, seasonality
+                let volume_multiplier = demand_calc.calculate_transaction_volume_multiplier(*date, store);
+
+                // Apply multiplier to base transaction range
+                let adjusted_min = (base_txns_min as f64 * volume_multiplier) as u32;
+                let adjusted_max = (base_txns_max as f64 * volume_multiplier) as u32;
+
+                // Generate target number of transactions with realistic daily variation
+                let num_transactions = self.rng.gen_range(adjusted_min..=adjusted_max.max(adjusted_min + 1));
 
                 if !available_products.is_empty() {
                     // We have inventory - generate full transactions
