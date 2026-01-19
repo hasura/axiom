@@ -9,22 +9,22 @@
 start_date = "2019-02-01"  # Original full load start date (DO NOT CHANGE)
 end_date = "2025-12-15"    # Placeholder - overridden by CLI args
 
-# Prevent generating future data
-cap_to_tomorrow = true
+# Allow generating future data (dates are controlled by CLI args in nightly mode)
+cap_to_tomorrow = false
 
 [scale]
 # ⚠️ CRITICAL: These values are AUTO-UPDATED from the database before each nightly run
 # The nightly-import.sh script queries the database and updates these values via sed
 # This ensures transaction generation matches the actual number of stores in the system
 # DO NOT manually edit - they reflect the current database state
-max_products = 250  # Auto-updated from: SELECT COUNT(*) FROM products
-num_domestic_stores = 10  # Auto-updated from: SELECT COUNT(*) FROM stores WHERE store_type != 'online'
+max_products = 250
+num_domestic_stores = 11
 num_international_stores = 0  # Not currently used in nightly mode
 
 [customers]
 # Base customer count - automatically updated from database before each run
 # The generator will add ~0.1% new customers per day organically
-num_customers = 6100  # Auto-updated from: SELECT COUNT(*) FROM customers
+num_customers = 6212
 # Daily growth rate (0.1% = 6-10 new customers per day for a 6100 customer base)
 daily_growth_rate = 0.001
 

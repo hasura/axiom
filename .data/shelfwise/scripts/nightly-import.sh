@@ -186,6 +186,26 @@ for TARGET_DATE in "${DATES_TO_GENERATE[@]}"; do
     psql -q -c "\COPY products TO '$REFERENCE_DIR/products.csv' WITH CSV HEADER"
     psql -q -c "\COPY stores TO '$REFERENCE_DIR/stores.csv' WITH CSV HEADER"
 
+    # Export inventory state from the last date (critical for realistic nightly generation)
+    # This ensures each day continues from the previous day's inventory levels
+    LAST_DATE=$(psql -t -c "SELECT MAX(date) FROM inventory_daily;" 2>/dev/null | xargs)
+    if [ -n "$LAST_DATE" ]; then
+        log "  Exporting inventory state from $LAST_DATE..."
+        # Export to /tmp inside container, then copy out (volume is read-only)
+        # Format timestamp as ISO 8601 (YYYY-MM-DDTHH:MM:SS) for Rust chrono compatibility
+        docker compose exec -T postgres psql -U postgres -d shelfwise -c "\COPY (SELECT date, store_id, sku, on_hand, on_order, in_transit, safety_stock, TO_CHAR(last_scan_ts, 'YYYY-MM-DD\"T\"HH24:MI:SS') as last_scan_ts, system_on_hand, available_to_promise, open_hours, in_stock_hours, dc_allocated_qty, quarantine_hold FROM inventory_daily WHERE date = '$LAST_DATE') TO '/tmp/inventory_daily.csv' WITH (FORMAT CSV, HEADER true)" > /dev/null
+        docker compose cp postgres:/tmp/inventory_daily.csv "$REFERENCE_DIR/inventory_daily.csv"
+    else
+        log "  ⚠️  No inventory data found, will start with fresh inventory"
+    fi
+
+    # Export pending supplier shipments (for rebuilding pending_orders in inventory)
+    # Export all shipments with delivery_date > LAST_DATE (including those marked 'delivered')
+    # The generator will filter these based on delivery_date >= current_date
+    log "  Exporting pending supplier shipments..."
+    docker compose exec -T postgres psql -U postgres -d shelfwise -c "\COPY (SELECT shipment_id, shipment_date, delivery_date, store_id, sku, quantity_shipped, quantity_received, supplier_name, po_number, shipment_status FROM supplier_shipments WHERE delivery_date > '$LAST_DATE') TO '/tmp/supplier_shipments.csv' WITH (FORMAT CSV, HEADER true)" > /dev/null
+    docker compose cp postgres:/tmp/supplier_shipments.csv "$REFERENCE_DIR/supplier_shipments.csv"
+
     # Update config.nightly.toml with actual database counts
     # This ensures the generator uses the correct scale for transaction generation
     ACTUAL_PRODUCT_COUNT=$(psql -t -c "SELECT COUNT(*) FROM products;" 2>/dev/null | xargs)

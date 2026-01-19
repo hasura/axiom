@@ -7,10 +7,10 @@ pub fn generate_all_holidays() -> HashMap<String, HashMap<u32, HashMap<String, N
     holidays.insert("canada".to_string(), HashMap::new());
     holidays.insert("uk".to_string(), HashMap::new());
 
-    for year in 2010..=2026 {
+    for year in 2010..=2035 {
         // US Holidays
         let mut us_holidays = HashMap::new();
-        us_holidays.insert("New Year".to_string(), NaiveDate::from_ymd_opt(year, 1, 1).unwrap());
+        us_holidays.insert("New Year's Day".to_string(), NaiveDate::from_ymd_opt(year, 1, 1).unwrap());
         us_holidays.insert("MLK Day".to_string(), get_nth_weekday(year, 1, Weekday::Mon, 3));
         us_holidays.insert("Super Bowl Sunday".to_string(), get_first_sunday_february(year));
         us_holidays.insert("Valentine's Day".to_string(), NaiveDate::from_ymd_opt(year, 2, 14).unwrap());
@@ -27,14 +27,14 @@ pub fn generate_all_holidays() -> HashMap<String, HashMap<u32, HashMap<String, N
         us_holidays.insert("Black Friday".to_string(), thanksgiving + Duration::days(1));
         us_holidays.insert("Cyber Monday".to_string(), thanksgiving + Duration::days(4));
         us_holidays.insert("Christmas Eve".to_string(), NaiveDate::from_ymd_opt(year, 12, 24).unwrap());
-        us_holidays.insert("Christmas".to_string(), NaiveDate::from_ymd_opt(year, 12, 25).unwrap());
+        us_holidays.insert("Christmas Day".to_string(), NaiveDate::from_ymd_opt(year, 12, 25).unwrap());
         us_holidays.insert("New Years Eve".to_string(), NaiveDate::from_ymd_opt(year, 12, 31).unwrap());
 
         holidays.get_mut("us").unwrap().insert(year as u32, us_holidays);
 
         // Canada Holidays
         let mut canada_holidays = HashMap::new();
-        canada_holidays.insert("New Year".to_string(), NaiveDate::from_ymd_opt(year, 1, 1).unwrap());
+        canada_holidays.insert("New Year's Day".to_string(), NaiveDate::from_ymd_opt(year, 1, 1).unwrap());
         if year >= 2013 {
             canada_holidays.insert("Family Day".to_string(), get_nth_weekday(year, 2, Weekday::Mon, 3));
         }
@@ -48,7 +48,7 @@ pub fn generate_all_holidays() -> HashMap<String, HashMap<u32, HashMap<String, N
         canada_holidays.insert("Thanksgiving".to_string(), get_nth_weekday(year, 10, Weekday::Mon, 2));
         canada_holidays.insert("Remembrance Day".to_string(), NaiveDate::from_ymd_opt(year, 11, 11).unwrap());
         canada_holidays.insert("Christmas Eve".to_string(), NaiveDate::from_ymd_opt(year, 12, 24).unwrap());
-        canada_holidays.insert("Christmas".to_string(), NaiveDate::from_ymd_opt(year, 12, 25).unwrap());
+        canada_holidays.insert("Christmas Day".to_string(), NaiveDate::from_ymd_opt(year, 12, 25).unwrap());
         canada_holidays.insert("Boxing Day".to_string(), NaiveDate::from_ymd_opt(year, 12, 26).unwrap());
         canada_holidays.insert("New Years Eve".to_string(), NaiveDate::from_ymd_opt(year, 12, 31).unwrap());
 
@@ -56,7 +56,7 @@ pub fn generate_all_holidays() -> HashMap<String, HashMap<u32, HashMap<String, N
 
         // UK Holidays
         let mut uk_holidays = HashMap::new();
-        uk_holidays.insert("New Year".to_string(), NaiveDate::from_ymd_opt(year, 1, 1).unwrap());
+        uk_holidays.insert("New Year's Day".to_string(), NaiveDate::from_ymd_opt(year, 1, 1).unwrap());
         if NaiveDate::from_ymd_opt(year, 1, 1).unwrap().weekday() == Weekday::Sun {
             uk_holidays.insert("New Year Holiday".to_string(), NaiveDate::from_ymd_opt(year, 1, 2).unwrap());
         }
@@ -66,7 +66,7 @@ pub fn generate_all_holidays() -> HashMap<String, HashMap<u32, HashMap<String, N
         uk_holidays.insert("Spring Bank Holiday".to_string(), get_last_monday_may(year));
         uk_holidays.insert("Summer Bank Holiday".to_string(), get_last_monday_august(year));
         uk_holidays.insert("Christmas Eve".to_string(), NaiveDate::from_ymd_opt(year, 12, 24).unwrap());
-        uk_holidays.insert("Christmas".to_string(), NaiveDate::from_ymd_opt(year, 12, 25).unwrap());
+        uk_holidays.insert("Christmas Day".to_string(), NaiveDate::from_ymd_opt(year, 12, 25).unwrap());
         uk_holidays.insert("Boxing Day".to_string(), NaiveDate::from_ymd_opt(year, 12, 26).unwrap());
         uk_holidays.insert("New Years Eve".to_string(), NaiveDate::from_ymd_opt(year, 12, 31).unwrap());
 

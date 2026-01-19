@@ -273,16 +273,16 @@ impl StreamingWriters {
         Ok(())
     }
 
-    pub fn write_transaction(&mut self, record: &Transaction) -> Result<()> {
-        self.transactions_batch.push(record.clone());
+    pub fn write_transaction(&mut self, record: Transaction) -> Result<()> {
+        self.transactions_batch.push(record);
         if self.transactions_batch.len() >= self.batch_size {
             self.flush_transactions_batch()?;
         }
         Ok(())
     }
 
-    pub fn write_transaction_line_item(&mut self, record: &TransactionLineItem) -> Result<()> {
-        self.transaction_line_items_batch.push(record.clone());
+    pub fn write_transaction_line_item(&mut self, record: TransactionLineItem) -> Result<()> {
+        self.transaction_line_items_batch.push(record);
         if self.transaction_line_items_batch.len() >= self.batch_size {
             self.flush_transaction_line_items_batch()?;
         }
