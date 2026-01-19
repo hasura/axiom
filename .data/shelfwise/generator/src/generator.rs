@@ -9,8 +9,10 @@ use rand::prelude::*;
 use rand::rngs::SmallRng;
 use rand::SeedableRng;
 use rand_distr::{Distribution, Exp, LogNormal, Beta, Normal};
+use rayon::prelude::*;
 use std::collections::HashMap;
 use std::path::Path;
+use std::sync::atomic::{AtomicU32, AtomicU64, Ordering};
 use indicatif::{ProgressBar, ProgressStyle};
 
 // ============================================================================
@@ -2883,9 +2885,9 @@ impl ShelfWiseDataGenerator {
         }
     }
 
-    fn create_delivery_assignment_static<R: Rng>(
+    /// Create a delivery assignment and return it instead of writing directly (for parallel processing)
+    fn create_delivery_assignment_for_result<R: Rng>(
         rng: &mut R,
-        writers: &mut StreamingWriters,
         transaction_id: u64,
         store_id: u32,
         _fulfillment_type: &str,
@@ -2895,77 +2897,61 @@ impl ShelfWiseDataGenerator {
         order_value: f64,
         delivery_drivers: &[DeliveryDriver],
         stores: &[Store],
-    ) -> Result<()> {
+    ) -> Option<DeliveryAssignment> {
         if delivery_drivers.is_empty() {
-            return Ok(());
+            return None;
         }
 
-        // Find active drivers for this store's city
-        let store = stores.iter().find(|s| s.store_id == store_id);
-        if store.is_none() {
-            return Ok(());
-        }
-        let store = store.unwrap();
+        let store = stores.iter().find(|s| s.store_id == store_id)?;
 
-        // Add temporal variation to driver availability
         let day_of_week = date.weekday().num_days_from_monday();
         let is_weekend = day_of_week >= 5;
         let month = date.month();
 
-        // Seasonal availability patterns
         let seasonal_availability_multiplier = match month {
-            11 | 12 => 1.3,  // Holiday season - more drivers active
-            6..=8 => 1.1, // Summer - slightly more active
-            1 | 2 => 0.9,     // Winter slowdown
+            11 | 12 => 1.3,
+            6..=8 => 1.1,
+            1 | 2 => 0.9,
             _ => 1.0,
         };
 
-        // Weekend patterns - more drivers available
         let weekend_multiplier = if is_weekend { 1.2 } else { 1.0 };
 
         let eligible_drivers: Vec<DeliveryDriver> = delivery_drivers.iter()
             .filter(|d| {
-                // Dynamic availability based on day/season
                 let base_availability = if d.is_available { 0.75 } else { 0.15 };
                 let adjusted_availability = base_availability * seasonal_availability_multiplier * weekend_multiplier;
-
-                // Driver must serve this city and be "available" for this specific day
                 d.service_cities.contains(&store.city) && rng.gen::<f64>() < adjusted_availability
             })
             .cloned()
             .collect();
 
         if eligible_drivers.is_empty() {
-            return Ok(());
+            return None;
         }
 
         let driver = eligible_drivers.choose(rng).unwrap().clone();
 
-        // Parse timestamp to calculate pickup/delivery times
         let order_time = NaiveDateTime::parse_from_str(timestamp, "%Y-%m-%d %H:%M:%S")
             .unwrap_or_else(|_| date.and_hms_opt(12, 0, 0).unwrap());
 
         let hour = order_time.hour();
-
-        // Time-of-day affects acceptance and pickup times
         let is_peak_hours = (11..=13).contains(&hour) || (17..=19).contains(&hour);
         let is_late_night = hour >= 22 || hour <= 5;
 
         let assigned_at = order_time;
 
-        // Acceptance time varies by time of day
         let acceptance_delay = if is_peak_hours {
-            rng.gen_range(2..8)  // Busier during peak
+            rng.gen_range(2..8)
         } else if is_late_night {
-            rng.gen_range(5..15) // Slower at night
+            rng.gen_range(5..15)
         } else {
             rng.gen_range(1..5)
         };
         let accepted_at = Some(order_time + Duration::minutes(acceptance_delay as i64));
 
-        // Pickup time also varies
         let pickup_delay = if is_peak_hours {
-            rng.gen_range(15..30) // Store is busier
+            rng.gen_range(15..30)
         } else {
             rng.gen_range(10..20)
         };
@@ -2973,31 +2959,27 @@ impl ShelfWiseDataGenerator {
 
         let distance_miles = Self::round_rate(rng.gen_range(1.0..12.0));
 
-        // Traffic patterns affect delivery time
         let traffic_multiplier = if is_peak_hours {
-            rng.gen_range(1.3..1.6) // Rush hour traffic
+            rng.gen_range(1.3..1.6)
         } else if is_late_night {
-            rng.gen_range(0.8..0.9) // Light traffic
+            rng.gen_range(0.8..0.9)
         } else if is_weekend {
-            rng.gen_range(0.9..1.1) // Moderate weekend traffic
+            rng.gen_range(0.9..1.1)
         } else {
-            rng.gen_range(1.0..1.2) // Normal traffic
+            rng.gen_range(1.0..1.2)
         };
 
         let base_duration = (distance_miles / 25.0 * 60.0) as u32;
         let estimated_duration_minutes = (base_duration as f64 * traffic_multiplier) as u32 + rng.gen_range(5..15);
 
-        // Weather/seasonal delays
         let seasonal_delay = match month {
-            12 | 1 | 2 => rng.gen_range(0..10), // Winter weather delays
+            12 | 1 | 2 => rng.gen_range(0..10),
             _ => 0,
         };
 
         let actual_duration_minutes = if rng.gen::<f64>() < 0.92 {
-            // On time - within estimate
             Some(estimated_duration_minutes + rng.gen_range(0..10) + seasonal_delay)
         } else {
-            // Late
             Some(estimated_duration_minutes + rng.gen_range(10..30) + seasonal_delay)
         };
 
@@ -3028,22 +3010,20 @@ impl ShelfWiseDataGenerator {
             None
         };
 
-        // Calculate compensation with temporal variation
         let driver_pay = Self::round_currency(driver.base_pay_per_delivery + (distance_miles * driver.mileage_rate));
 
-        // Tipping varies by time and season
         let tip_likelihood = if is_weekend {
-            0.80 // Better tips on weekends
+            0.80
         } else if month == 12 {
-            0.85 // Holiday generosity
+            0.85
         } else if is_late_night {
-            0.70 // Fewer tips late night
+            0.70
         } else {
             0.75
         };
 
         let tip_percentage = if is_weekend || month == 12 {
-            rng.gen_range(0.12..0.22) // Higher tips
+            rng.gen_range(0.12..0.22)
         } else {
             rng.gen_range(0.10..0.20)
         };
@@ -3057,10 +3037,7 @@ impl ShelfWiseDataGenerator {
         });
         let driver_total_earnings = Self::round_currency(driver_pay + driver_tip);
 
-        // Customer rating (1-5 stars, mostly 4-5)
         let customer_rating = if assignment_status == "delivered" {
-            // Customer ratings heavily skewed toward 5 stars
-            // 70% give 5 stars, 20% give 4 stars, 10% give 1-3 stars
             let rating_rand = rng.gen::<f64>();
             Some(if rating_rand < 0.70 {
                 5
@@ -3082,7 +3059,7 @@ impl ShelfWiseDataGenerator {
         let estimated_delivery_time = estimated_pickup_time + Duration::minutes(estimated_duration_minutes as i64);
         let actual_delivery_time = delivered_at;
 
-        let assignment = DeliveryAssignment {
+        Some(DeliveryAssignment {
             assignment_id: transaction_id,
             transaction_id,
             driver_id: driver.driver_id,
@@ -3107,11 +3084,7 @@ impl ShelfWiseDataGenerator {
             customer_rating,
             driver_notes: None,
             customer_feedback: None,
-        };
-
-        writers.write_delivery_assignment(&assignment)?;
-
-        Ok(())
+        })
     }
 
     pub fn save_data(&mut self, output_dir: &str, continue_mode: bool, reference_dir: Option<&str>) -> Result<()> {
@@ -3324,7 +3297,8 @@ impl ShelfWiseDataGenerator {
         // In continue mode, read max IDs from existing CSVs to avoid duplicates
         // u32 IDs: shipment, waste, ticket, change
         // u64 IDs: transaction (can be very large)
-        let (mut shipment_id, mut waste_id, mut ticket_id, mut change_id) = if continue_mode {
+        // Using atomics for thread-safe parallel processing
+        let (shipment_id_init, waste_id_init, ticket_id_init, change_id_init) = if continue_mode {
             let max_shipment = Self::get_max_id_u32_from_csv(&format!("{}/supplier_shipments.csv", output_dir), 0);
             let max_waste = Self::get_max_id_u32_from_csv(&format!("{}/waste_spoilage.csv", output_dir), 0);
             let max_ticket = Self::get_max_id_u32_from_csv(&format!("{}/tickets.csv", output_dir), 0);
@@ -3333,14 +3307,20 @@ impl ShelfWiseDataGenerator {
         } else {
             (1u32, 1u32, 1u32, 1u32)
         };
-        let mut global_txn_id: u64 = if continue_mode {
+        let shipment_id = AtomicU32::new(shipment_id_init);
+        let waste_id = AtomicU32::new(waste_id_init);
+        let ticket_id = AtomicU32::new(ticket_id_init);
+        let change_id = AtomicU32::new(change_id_init);
+
+        let global_txn_id_init: u64 = if continue_mode {
             let max_txn = Self::get_max_id_u64_from_csv(&format!("{}/transactions.csv", output_dir), 0);
             println!("  📊 Continue mode: max IDs - txn:{}, shipment:{}, waste:{}, ticket:{}, change:{}",
-                     max_txn, shipment_id - 1, waste_id - 1, ticket_id - 1, change_id - 1);
+                     max_txn, shipment_id_init - 1, waste_id_init - 1, ticket_id_init - 1, change_id_init - 1);
             max_txn + 1
         } else {
             1
         };
+        let global_txn_id = AtomicU64::new(global_txn_id_init);
 
         let total_days = self.dates.len();
         println!("  Generating data for {} days ({} to {})",
@@ -3440,30 +3420,55 @@ impl ShelfWiseDataGenerator {
             // Flush periodically to prevent excessive memory usage
             let should_flush = (idx + 1) % self.config.performance.flush_interval_days == 0;
 
-            let mut inventory_time = std::time::Duration::ZERO;
+            let inventory_time = std::time::Duration::ZERO;
             let _transaction_time = std::time::Duration::ZERO;
             let _aggregation_time = std::time::Duration::ZERO;
 
-            // Track inventory metadata for end-of-day inventory writing
-            // (store_id, sku) -> (safety_stock, in_transit)
-            let mut inventory_metadata: HashMap<(u32, String), (u32, u32)> = HashMap::new();
+            // Filter stores that have opened by this date (avoids `continue` in closure)
+            let active_stores: Vec<&Store> = stores_clone.iter()
+                .filter(|s| *date >= s.opened_date)
+                .collect();
 
-            // Track actual daily sales to update demand_history at end of day
-            // This ensures reorder quantities are based on ACTUAL consumption, not estimates
-            // (store_id, sku) -> units_sold
-            let mut actual_daily_sales: HashMap<(u32, String), u32> = HashMap::new();
-
-            // Track expected demand per product to use as floor when out of stock
-            // This prevents a death spiral where stockout -> 0 sales -> lower replenishment
-            // (store_id, sku) -> demand_estimate
-            let mut expected_demand: HashMap<(u32, String), u32> = HashMap::new();
-
-            for store in &stores_clone {
-                let store_start = std::time::Instant::now();
-                // Skip stores that haven't opened yet
-                if *date < store.opened_date {
-                    continue;
+            // Pre-partition inventory by store for parallel access without locks
+            // Each store gets its own copy of its inventory entries
+            let store_inventories: HashMap<u32, HashMap<String, (u32, u32, Vec<(chrono::NaiveDate, u32)>)>> = {
+                let mut by_store: HashMap<u32, HashMap<String, (u32, u32, Vec<(chrono::NaiveDate, u32)>)>> = HashMap::new();
+                for ((store_id, sku), value) in &inventory {
+                    by_store.entry(*store_id)
+                        .or_default()
+                        .insert(sku.clone(), value.clone());
                 }
+                by_store
+            };
+
+            // Pre-partition demand_history by store for parallel access
+            let store_demand_histories: HashMap<u32, HashMap<String, Vec<u32>>> = {
+                let mut by_store: HashMap<u32, HashMap<String, Vec<u32>>> = HashMap::new();
+                for ((store_id, sku), value) in &demand_history {
+                    by_store.entry(*store_id)
+                        .or_default()
+                        .insert(sku.clone(), value.clone());
+                }
+                by_store
+            };
+
+            // Process stores in parallel - each returns a StoreDayResult with all generated data
+            // This eliminates lock contention by collecting results and writing after parallel section
+            let store_results: Vec<Result<StoreDayResult>> = active_stores.par_iter().map(|store| -> Result<StoreDayResult> {
+                let mut result = StoreDayResult::default();
+
+                // Get this store's inventory as a local mutable copy
+                let mut store_inv: HashMap<String, (u32, u32, Vec<(chrono::NaiveDate, u32)>)> =
+                    store_inventories.get(&store.store_id).cloned().unwrap_or_default();
+
+                // Get this store's demand history as a local mutable copy
+                let mut store_demand_hist: HashMap<String, Vec<u32>> =
+                    store_demand_histories.get(&store.store_id).cloned().unwrap_or_default();
+
+                // Create per-store RNG seeded deterministically from store_id and date
+                let seed = (store.store_id as u64) ^ (date.num_days_from_ce() as u64);
+                let mut rng = rand::rngs::StdRng::seed_from_u64(seed);
+                let store_start = std::time::Instant::now();
 
                 // Get store economics
                 let store_econ = self.store_economics.get(&store.store_id).unwrap();
@@ -3500,14 +3505,14 @@ impl ShelfWiseDataGenerator {
                             .unwrap_or(1.0);
 
                         // Pass promotion references - no cloning!
-                        let base_demand = demand_calc.calculate_demand(*date, store, product, &active_promos, 85.0, &mut self.rng);
+                        let base_demand = demand_calc.calculate_demand(*date, store, product, &active_promos, 85.0, &mut rng);
 
                         // Adjust demand by category mix and store performance
                         // Store performance uses normal distribution within tiers (pre-created distributions)
                         let performance_multiplier: f64 = match store_econ.store_performance_tier.as_str() {
-                            "high" => normal_high.sample(&mut self.rng),
-                            "low" => normal_low.sample(&mut self.rng),
-                            _ => normal_medium.sample(&mut self.rng),
+                            "high" => normal_high.sample(&mut rng),
+                            "low" => normal_low.sample(&mut rng),
+                            _ => normal_medium.sample(&mut rng),
                         };
                         let performance_multiplier = match store_econ.store_performance_tier.as_str() {
                             "high" => performance_multiplier.clamp(1.12, 1.28),
@@ -3517,11 +3522,12 @@ impl ShelfWiseDataGenerator {
 
                         let demand = (base_demand as f64 * category_mix_factor * performance_multiplier) as u32;
 
-                        // Use owned String for inventory key (needed for loading from CSV)
+                        // Use just the SKU for local store inventory key
+                        let sku_key = product.sku.clone();
                         let inv_key = (store.store_id, product.sku.clone());
 
                         // Initialize inventory with realistic starting levels
-                        if let std::collections::hash_map::Entry::Vacant(e) = inventory.entry(inv_key.clone()) {
+                        if !store_inv.contains_key(&sku_key) {
                             let supplier_id = (product.product_id % 30) + 1;
                             let supplier = self.suppliers.iter().find(|s| s.supplier_id == supplier_id).unwrap();
 
@@ -3529,26 +3535,25 @@ impl ShelfWiseDataGenerator {
                                 product,
                                 demand,
                                 supplier.lead_time_days,
-                                &mut self.rng
+                                &mut rng
                             );
 
-                            e.insert((initial_stock, 0, Vec::new()));
-                            demand_history.insert(inv_key.clone(), Vec::new());
+                            store_inv.insert(sku_key.clone(), (initial_stock, 0, Vec::new()));
+                            store_demand_hist.insert(sku_key.clone(), Vec::new());
                         }
 
-                        // Get current inventory state (avoid cloning pending_orders Vec)
-                        let (on_hand, on_order, pending_orders) = inventory.get(&inv_key).unwrap();
-                        let mut on_hand = *on_hand;
-                        let mut on_order = *on_order;
-                        let mut pending_orders = pending_orders.clone();
+                        // Get current inventory state from local store copy
+                        let (mut on_hand, mut on_order, mut pending_orders) =
+                            store_inv.get(&sku_key).cloned().unwrap_or((0, 0, Vec::new()));
 
-                        // Get demand history for reorder calculations
-                        // NOTE: We update demand_history at end-of-day with ACTUAL sales (not estimates)
-                        // to ensure popular products get larger replenishment orders
-                        let history = demand_history.entry(inv_key.clone()).or_insert_with(Vec::new);
+                        // Get demand history from local store copy
+                        let history: Vec<u32> = store_demand_hist
+                            .get(&sku_key)
+                            .cloned()
+                            .unwrap_or_default();
 
                         // Track expected demand as floor for when product is out of stock
-                        expected_demand.insert(inv_key.clone(), demand);
+                        result.expected_demand.push((inv_key.clone(), demand));
 
                         // Check for arriving shipments from pending orders
                         let mut arrived_from_pending = 0;
@@ -3565,8 +3570,8 @@ impl ShelfWiseDataGenerator {
                         if arrived_from_pending > 0 {
                             on_hand += arrived_from_pending;
                             on_order = on_order.saturating_sub(arrived_from_pending);
-                            // Update inventory HashMap with new on_hand/on_order after delivery
-                            inventory.insert(inv_key.clone(), (on_hand, on_order, pending_orders.clone()));
+                            // Update local store inventory
+                            store_inv.insert(sku_key.clone(), (on_hand, on_order, pending_orders.clone()));
                         }
 
                         // REALISTIC SHIPMENT GENERATION:
@@ -3595,7 +3600,7 @@ impl ShelfWiseDataGenerator {
                             let demand_multiplier = (demand as f64 / 3.0).clamp(0.5, 2.5);
                             let shipment_probability = base_shipment_probability * demand_multiplier;
 
-                            if self.rng.gen::<f64>() < shipment_probability {
+                            if rng.gen::<f64>() < shipment_probability {
                                 // Calculate realistic shipment quantity based on demand
                                 let avg_daily_demand = if !history.is_empty() {
                                     history.iter().sum::<u32>() as f64 / history.len() as f64
@@ -3604,7 +3609,7 @@ impl ShelfWiseDataGenerator {
                                 };
 
                                 // Order enough for 3-7 days of demand
-                                let days_of_supply = self.rng.gen_range(3..=7);
+                                let days_of_supply = rng.gen_range(3..=7);
                                 new_shipment_qty = ((avg_daily_demand * days_of_supply as f64).ceil() as u32).max(1);
                             }
                         }
@@ -3617,21 +3622,22 @@ impl ShelfWiseDataGenerator {
                                 .find(|s| s.supplier_id == supplier_id)
                                 .unwrap();
 
-                            let lead_time_variance = self.rng.gen_range(-1..=2);
+                            let lead_time_variance = rng.gen_range(-1..=2);
                             let actual_lead_time = (supplier.lead_time_days as i64 + lead_time_variance).max(1);
                             let shipment_date = *date - Duration::days(actual_lead_time);
 
-                            let on_time = self.rng.gen::<f64>() < supplier.reliability_score;
+                            let on_time = rng.gen::<f64>() < supplier.reliability_score;
                             let (delivery_date, shipment_status) = if on_time {
                                 (*date, "delivered".to_string())
                             } else {
-                                let delay_days = self.rng.gen_range(1..=3);
+                                let delay_days = rng.gen_range(1..=3);
                                 (*date + Duration::days(delay_days), "delayed".to_string())
                             };
 
-                            let damage_rate = 1.0 - (self.rng.gen_range(0.0..0.05));
+                            let damage_rate = 1.0 - (rng.gen_range(0.0..0.05));
                             let quantity_received = (new_shipment_qty as f64 * damage_rate).round() as u32;
-                            let po_number = format!("PO-{:06}", shipment_id);
+                            let current_shipment_id = shipment_id.fetch_add(1, Ordering::Relaxed);
+                            let po_number = format!("PO-{:06}", current_shipment_id);
 
                             // Only update inventory if delivery is TODAY (not delayed to future)
                             if delivery_date == *date {
@@ -3643,11 +3649,11 @@ impl ShelfWiseDataGenerator {
                                 on_order += quantity_received;
                             }
 
-                            // Update inventory HashMap with new on_hand/on_order after delivery
-                            inventory.insert(inv_key.clone(), (on_hand, on_order, pending_orders.clone()));
+                            // Update local store inventory
+                            store_inv.insert(sku_key.clone(), (on_hand, on_order, pending_orders.clone()));
 
-                            writers.write_shipment(&SupplierShipment {
-                                shipment_id,
+                            result.shipments.push(SupplierShipment {
+                                shipment_id: current_shipment_id,
                                 shipment_date,
                                 delivery_date,
                                 store_id: store.store_id,
@@ -3657,8 +3663,7 @@ impl ShelfWiseDataGenerator {
                                 supplier_name: supplier.supplier_name.clone(),
                                 po_number,
                                 shipment_status,
-                            })?;
-                            shipment_id += 1;
+                            });
                         }
 
                         // Calculate reorder point and check if we need to order
@@ -3666,7 +3671,7 @@ impl ShelfWiseDataGenerator {
                         let supplier = self.suppliers.iter().find(|s| s.supplier_id == supplier_id).unwrap();
 
                         let reorder_point = crate::inventory::calculate_reorder_point(
-                            history,
+                            &history,
                             supplier.lead_time_days as f64,
                             demand
                         );
@@ -3688,7 +3693,7 @@ impl ShelfWiseDataGenerator {
                             let order_qty = crate::inventory::calculate_order_quantity(
                                 product,
                                 avg_daily_demand,
-                                &mut self.rng
+                                &mut rng
                             );
 
                             // Apply seasonal multiplier to order quantity
@@ -3697,29 +3702,30 @@ impl ShelfWiseDataGenerator {
                             on_order += final_order_qty;
 
                             // Calculate delivery date
-                            let lead_time_variance = self.rng.gen_range(-1..=2);
+                            let lead_time_variance = rng.gen_range(-1..=2);
                             let actual_lead_time = (supplier.lead_time_days as i64 + lead_time_variance).max(1);
                             let delivery_date = *date + Duration::days(actual_lead_time);
 
                             pending_orders.push((delivery_date, final_order_qty));
 
                             // Create shipment record immediately so it can be rebuilt on next run
+                            let current_shipment_id = shipment_id.fetch_add(1, Ordering::Relaxed);
                             let shipment_date = *date;
-                            let damage_rate = 1.0 - (self.rng.gen_range(0.0..0.05));
+                            let damage_rate = 1.0 - (rng.gen_range(0.0..0.05));
                             let quantity_received = (final_order_qty as f64 * damage_rate).round() as u32;
-                            let po_number = format!("PO-{:06}", shipment_id);
+                            let po_number = format!("PO-{:06}", current_shipment_id);
 
                             // Determine shipment status based on whether delivery is on-time
-                            let on_time = self.rng.gen::<f64>() < supplier.reliability_score;
+                            let on_time = rng.gen::<f64>() < supplier.reliability_score;
                             let (actual_delivery_date, shipment_status) = if on_time {
                                 (delivery_date, "in_transit".to_string())
                             } else {
-                                let delay_days = self.rng.gen_range(1..=3);
+                                let delay_days = rng.gen_range(1..=3);
                                 (delivery_date + Duration::days(delay_days), "delayed".to_string())
                             };
 
-                            writers.write_shipment(&SupplierShipment {
-                                shipment_id,
+                            result.shipments.push(SupplierShipment {
+                                shipment_id: current_shipment_id,
                                 shipment_date,
                                 delivery_date: actual_delivery_date,
                                 store_id: store.store_id,
@@ -3729,15 +3735,14 @@ impl ShelfWiseDataGenerator {
                                 supplier_name: supplier.supplier_name.clone(),
                                 po_number,
                                 shipment_status,
-                            })?;
-                            shipment_id += 1;
+                            });
 
                             // Update pending_orders with actual delivery date and quantity_received
                             pending_orders.pop(); // Remove the one we just added
                             pending_orders.push((actual_delivery_date, quantity_received));
 
-                            // Save updated inventory state with new order
-                            inventory.insert(inv_key.clone(), (on_hand, on_order, pending_orders.clone()));
+                            // Save updated local store inventory state with new order
+                            store_inv.insert(sku_key.clone(), (on_hand, on_order, pending_orders.clone()));
                         }
 
                         // Available quantity is the actual inventory on hand
@@ -3789,8 +3794,8 @@ impl ShelfWiseDataGenerator {
                             ));
                         }
 
-                        // Get current inventory state for reporting
-                        let (_current_on_hand, _current_on_order, pending) = inventory.get(&inv_key).unwrap();
+                        // Get current inventory state for reporting from local store copy
+                        let (_, _, pending) = store_inv.get(&sku_key).cloned().unwrap_or((0, 0, Vec::new()));
 
                         // Calculate in_transit (orders not yet delivered)
                         let in_transit: u32 = pending.iter()
@@ -3803,7 +3808,7 @@ impl ShelfWiseDataGenerator {
                         let supplier = self.suppliers.iter().find(|s| s.supplier_id == supplier_id).unwrap();
 
                         let reorder_point = crate::inventory::calculate_reorder_point(
-                            history,
+                            &history,
                             supplier.lead_time_days as f64,
                             demand
                         );
@@ -3816,8 +3821,8 @@ impl ShelfWiseDataGenerator {
                         };
                         let safety_stock = reorder_point.saturating_sub((avg_demand * supplier.lead_time_days as f64) as u32);
 
-                        // Store metadata for end-of-day inventory writing
-                        inventory_metadata.insert(inv_key.clone(), (safety_stock, in_transit));
+                        // Store metadata for end-of-day inventory writing in result
+                        result.inventory_metadata.push((inv_key.clone(), (safety_stock, in_transit)));
 
                         // NOTE: Inventory writing moved to end of day loop (after sales deductions)
                         // to ensure inventory_daily reflects END-OF-DAY inventory, not beginning
@@ -3825,41 +3830,41 @@ impl ShelfWiseDataGenerator {
                         // Returns are now generated separately from actual transaction line items
                         // This happens after all transactions are written, so we can pick from real line items
 
-                        if matches!(product.category.as_str(), "dairy" | "produce" | "meat") && self.rng.gen::<f64>() < 0.02 {
-                            let recorded_by = format!("emp_{}", self.rng.gen_range(100..999));
+                        if matches!(product.category.as_str(), "dairy" | "produce" | "meat") && rng.gen::<f64>() < 0.02 {
+                            let current_waste_id = waste_id.fetch_add(1, Ordering::Relaxed);
+                            let recorded_by = format!("emp_{}", rng.gen_range(100..999));
 
-                            writers.write_waste(&WasteSpoilage {
-                                waste_id,
+                            result.waste.push(WasteSpoilage {
+                                waste_id: current_waste_id,
                                 date: *date,
                                 store_id: store.store_id,
                                 sku: product.sku.clone(),
-                                quantity_wasted: self.rng.gen_range(1..5),
-                                waste_reason: perishable_waste_reasons.choose(&mut self.rng).unwrap().clone(),
+                                quantity_wasted: rng.gen_range(1..5),
+                                waste_reason: perishable_waste_reasons.choose(&mut rng).unwrap().clone(),
                                 waste_value: Self::round_cost(product.cost),
                                 recorded_by,
-                            })?;
-                            waste_id += 1;
+                            });
                         }
 
                         // Generate various types of tickets (not just stockouts)
                         // Realistic ticket generation: ~0.5% probability per product per day
                         let ticket_prob = 0.005;
 
-                        if self.rng.gen::<f64>() < ticket_prob {
-                            let hour = self.rng.gen_range(8..18);
-                            let minute = self.rng.gen_range(0..60);
+                        if rng.gen::<f64>() < ticket_prob {
+                            let hour = rng.gen_range(8..18);
+                            let minute = rng.gen_range(0..60);
                             let created_at = format!("{} {:02}:{:02}:00", date, hour, minute);
 
                             // 70% of tickets get resolved same day
-                            let resolved_at = if self.rng.gen::<f64>() < 0.7 {
-                                let resolve_hour = hour + self.rng.gen_range(1..4);
-                                Some(format!("{} {:02}:{:02}:00", date, resolve_hour.min(20), self.rng.gen_range(0..60)))
+                            let resolved_at = if rng.gen::<f64>() < 0.7 {
+                                let resolve_hour = hour + rng.gen_range(1..4);
+                                Some(format!("{} {:02}:{:02}:00", date, resolve_hour.min(20), rng.gen_range(0..60)))
                             } else {
                                 None
                             };
 
                             // Different ticket types with realistic probabilities
-                            let ticket_type_roll = self.rng.gen::<f64>();
+                            let ticket_type_roll = rng.gen::<f64>();
                             let (issue_type, description, root_cause) = if on_hand == 0 && demand > 0 {
                                 // Stockout (higher priority if actually out of stock)
                                 ("stockout".to_string(),
@@ -3897,8 +3902,9 @@ impl ShelfWiseDataGenerator {
                                  Some("technical_error".to_string()))
                             };
 
-                            writers.write_ticket(&Ticket {
-                                ticket_id,
+                            let current_ticket_id = ticket_id.fetch_add(1, Ordering::Relaxed);
+                            result.tickets.push(Ticket {
+                                ticket_id: current_ticket_id,
                                 created_at,
                                 resolved_at: resolved_at.clone(),
                                 store_id: store.store_id,
@@ -3907,8 +3913,7 @@ impl ShelfWiseDataGenerator {
                                 description,
                                 root_cause,
                                 resolved: resolved_at.is_some(),
-                            })?;
-                            ticket_id += 1;
+                            });
                         }
 
                         // Price changes tied to macroeconomic inflation
@@ -3917,25 +3922,26 @@ impl ShelfWiseDataGenerator {
                         // Base probability scales with inflation (0.001 at 2% -> 0.005 at 10%)
                         let price_change_prob = 0.0005 + (inflation_rate * 0.04);
 
-                        if self.rng.gen::<f64>() < price_change_prob {
+                        if rng.gen::<f64>() < price_change_prob {
                             // Price increase magnitude tied to inflation
                             // Some items increase more than inflation, some less
-                            let increase_multiplier = 1.0 + inflation_rate * self.rng.gen_range(0.5..1.5);
-                            writers.write_price_change(&PriceChange {
-                                change_id,
+                            let current_change_id = change_id.fetch_add(1, Ordering::Relaxed);
+                            let increase_multiplier = 1.0 + inflation_rate * rng.gen_range(0.5..1.5);
+                            result.price_changes.push(PriceChange {
+                                change_id: current_change_id,
                                 date: *date,
                                 store_id: store.store_id,
                                 sku: product.sku.clone(),
                                 new_regular_price: Self::round_currency(regular_price * increase_multiplier),
                                 reason: "cost_increase".to_string(),
-                            })?;
-                            change_id += 1;
+                            });
                         }
                     }
                 } // end if let Some(store_assortments)
                 } // end for assort
 
-                inventory_time += store_start.elapsed();
+                // Timing disabled for parallel processing (would need atomics)
+                let _ = store_start.elapsed();
                 let _txn_start = std::time::Instant::now();
 
                 // NEW APPROACH: Generate transactions FIRST from available products
@@ -3957,11 +3963,11 @@ impl ShelfWiseDataGenerator {
                         let online_variance = online_base / 10;
                         (20, online_base - online_variance, online_base + online_variance)
                     },
-                    "big_box" => (15, 2200, 2400),      // High volume warehouse ~16K/week
-                    "suburban" => (10, 2000, 2200),     // Core weekly shopping ~14K/week
-                    "urban" => (5, 1800, 2000),         // Higher frequency ~13K/week
-                    "convenience" => (3, 1000, 1200),   // Smaller format ~7.5K/week
-                    _ => (10, 1900, 2100),              // Default ~14K/week
+                    "big_box" => (15, 1800, 2000),      // High volume warehouse ~13K/week
+                    "suburban" => (10, 1600, 1800),     // Core weekly shopping ~12K/week
+                    "urban" => (5, 1400, 1600),         // Higher frequency ~10K/week
+                    "convenience" => (3, 800, 1000),    // Smaller format ~6K/week
+                    _ => (10, 1500, 1700),              // Default ~11K/week
                 };
 
                 // Apply year-over-year business growth to base transaction counts
@@ -3983,7 +3989,7 @@ impl ShelfWiseDataGenerator {
                 let adjusted_max = (grown_txns_max as f64 * volume_multiplier) as u32;
 
                 // Generate target number of transactions with realistic daily variation
-                let num_transactions = self.rng.gen_range(adjusted_min..=adjusted_max.max(adjusted_min + 1));
+                let num_transactions = rng.gen_range(adjusted_min..=adjusted_max.max(adjusted_min + 1));
 
                 if !available_products.is_empty() {
                     // We have inventory - generate full transactions
@@ -3991,16 +3997,16 @@ impl ShelfWiseDataGenerator {
                     // Pre-generate transaction data to avoid borrow conflicts
                     let mut transaction_data = Vec::new();
                     for _ in 0..num_transactions {
-                        let hour = self.rng.gen_range(8..22);
-                        let minute = self.rng.gen_range(0..60);
-                        let rand_customer = self.rng.gen::<f64>();
-                        let rand_fulfillment = self.rng.gen::<f64>();
-                        let rand_delivery_fee = self.rng.gen_range(0.0..1.0);
-                        let rand_tip = self.rng.gen::<f64>();
-                        let rand_tip_amount = self.rng.gen_range(0.0..1.0);
-                        let rand_status = self.rng.gen::<f64>();
-                        let rand_time_offset1 = self.rng.gen_range(30..90);
-                        let rand_time_offset2 = self.rng.gen_range(35..95);
+                        let hour = rng.gen_range(8..22);
+                        let minute = rng.gen_range(0..60);
+                        let rand_customer = rng.gen::<f64>();
+                        let rand_fulfillment = rng.gen::<f64>();
+                        let rand_delivery_fee = rng.gen_range(0.0..1.0);
+                        let rand_tip = rng.gen::<f64>();
+                        let rand_tip_amount = rng.gen_range(0.0..1.0);
+                        let rand_status = rng.gen::<f64>();
+                        let rand_time_offset1 = rng.gen_range(30..90);
+                        let rand_time_offset2 = rng.gen_range(35..95);
 
                         transaction_data.push((
                             hour,
@@ -4019,6 +4025,9 @@ impl ShelfWiseDataGenerator {
                     // Now generate transactions using pre-generated random values
                     for (hour, minute, _rand_customer, rand_fulfillment,
                          rand_delivery_fee, rand_tip, rand_tip_amount, rand_status, _time_off1, _time_off2) in transaction_data {
+                        // Get transaction ID atomically at start of each transaction
+                        let current_txn_id = global_txn_id.fetch_add(1, Ordering::Relaxed);
+
                         // Use pre-formatted date_str instead of calling format! each time
                         let timestamp = format!("{} {:02}:{:02}:00", date_str, hour, minute);
 
@@ -4028,7 +4037,7 @@ impl ShelfWiseDataGenerator {
 
                         // Determine customer linkage using indexed lookup
                         let (customer_id, is_loyalty_transaction, loyalty_points_earned, loyalty_points_redeemed) =
-                            Self::maybe_link_customer_static(&mut self.rng, store, store_type, &store_to_customers, &city_to_customers, &self.customers);
+                            Self::maybe_link_customer_static(&mut rng, store, store_type, &store_to_customers, &city_to_customers, &self.customers);
 
                         // Determine fulfillment type using pre-generated random
                         // Use static string slices to avoid repeated allocations
@@ -4049,41 +4058,52 @@ impl ShelfWiseDataGenerator {
                             // Industry-aligned basket size distribution (2025/26 benchmarks)
                             // Target ABV: $45-65, Target items: 8-12, Price/item: $4.50-6.50
                             // Distribution: 35% quick trips, 50% regular shopping, 15% stock-up
-                            // Saturday baskets are ~20% larger (handled via weekend_multiplier)
+                            // Weekend baskets are larger (Saturday +25%, Sunday +18%)
                             let dow = date.weekday().num_days_from_monday();
                             let is_saturday = dow == 5;
-                            let weekend_basket_boost = if is_saturday { 1.20 } else if dow == 6 { 1.10 } else { 1.0 };
+                            let weekend_basket_boost = if is_saturday { 1.25 } else if dow == 6 { 1.18 } else { 1.0 };
 
-                            let basket_category: f64 = self.rng.gen();
+                            // Delivery orders have larger baskets (customers stock up when ordering delivery)
+                            // Target: delivery basket 1.3-1.5x in-store basket
+                            let delivery_basket_boost = match fulfillment_type {
+                                Some("delivery") => 1.40,  // Delivery orders are ~40% larger
+                                Some("pickup") => 1.20,    // Pickup orders are ~20% larger
+                                _ => 1.0,
+                            };
+
+                            let basket_category: f64 = rng.gen();
                             let base_items = if basket_category < 0.35 {
                                 // 35%: Quick trips - forgot something, lunch run (2-5 items)
                                 match store.store_type.as_str() {
-                                    "convenience" => self.rng.gen_range(2..=4),   // Small-format grocery
-                                    "urban" => self.rng.gen_range(2..=4),         // City grocery
-                                    _ => self.rng.gen_range(2..=5),               // Standard grocery
+                                    "convenience" => rng.gen_range(2..=4),   // Small-format grocery
+                                    "urban" => rng.gen_range(2..=4),         // City grocery
+                                    _ => rng.gen_range(2..=5),               // Standard grocery
                                 }
                             } else if basket_category < 0.85 {
                                 // 50%: Regular shopping trips - weekly grocery run (6-12 items)
                                 match store.store_type.as_str() {
-                                    "convenience" => self.rng.gen_range(4..=8),   // Small-format grocery
-                                    "urban" => self.rng.gen_range(5..=10),        // City grocery
-                                    "online" => self.rng.gen_range(10..=18),      // Online ~1.5x in-store
-                                    "big_box" => self.rng.gen_range(10..=16),     // Warehouse grocery
-                                    _ => self.rng.gen_range(6..=12),              // Standard grocery
+                                    "convenience" => rng.gen_range(4..=8),   // Small-format grocery
+                                    "urban" => rng.gen_range(5..=10),        // City grocery
+                                    "online" => rng.gen_range(10..=18),      // Online ~1.5x in-store
+                                    "big_box" => rng.gen_range(10..=16),     // Warehouse grocery
+                                    _ => rng.gen_range(6..=12),              // Standard grocery
                                 }
                             } else {
                                 // 15%: Stock-up trips - big weekly/monthly shop (14-24 items)
                                 match store.store_type.as_str() {
-                                    "online" => self.rng.gen_range(18..=32),      // Online stock-up ~1.5x
-                                    "big_box" => self.rng.gen_range(16..=28),     // Warehouse stock-up
-                                    "suburban" => self.rng.gen_range(14..=24),    // Suburban stock-up
-                                    "urban" => self.rng.gen_range(12..=20),       // City stock-up
-                                    "convenience" => self.rng.gen_range(8..=14),  // Small-format max
-                                    _ => self.rng.gen_range(14..=24),
+                                    "online" => rng.gen_range(18..=32),      // Online stock-up ~1.5x
+                                    "big_box" => rng.gen_range(16..=28),     // Warehouse stock-up
+                                    "suburban" => rng.gen_range(14..=24),    // Suburban stock-up
+                                    "urban" => rng.gen_range(12..=20),       // City stock-up
+                                    "convenience" => rng.gen_range(8..=14),  // Small-format max
+                                    _ => rng.gen_range(14..=24),
                                 }
                             };
-                            // Apply weekend boost (Saturdays +20%, Sundays +10%)
-                            let num_items = ((base_items as f64 * weekend_basket_boost) as u32).max(1);
+                            // Apply weekend boost and delivery boost
+                            // Weekend: Saturday +25%, Sunday +18%
+                            // Delivery: +40%, Pickup: +20%
+                            let combined_boost = weekend_basket_boost * delivery_basket_boost;
+                            let num_items = ((base_items as f64 * combined_boost) as u32).max(1);
                             let num_items = num_items.min(available_products.len() as u32);
 
                             // Use weighted selection based on demand (popular products more likely)
@@ -4105,7 +4125,7 @@ impl ShelfWiseDataGenerator {
                                 }
 
                                 // Weighted random selection
-                                let mut target = self.rng.gen::<f64>() * total_weight;
+                                let mut target = rng.gen::<f64>() * total_weight;
                                 for (i, weight) in weights.iter().enumerate() {
                                     target -= weight;
                                     if target <= 0.0 {
@@ -4130,7 +4150,7 @@ impl ShelfWiseDataGenerator {
 
                                 // Random quantity between 1-2, constrained by remaining availability
                                 // Most grocery items purchased as singles (70% qty=1, 30% qty=2)
-                                let base_qty = if self.rng.gen::<f64>() < 0.70 { 1 } else { 2 };
+                                let base_qty = if rng.gen::<f64>() < 0.70 { 1 } else { 2 };
                                 let quantity = base_qty.min(remaining_available);
 
                                 // Track consumption using product_idx (no string cloning!)
@@ -4141,7 +4161,7 @@ impl ShelfWiseDataGenerator {
                                 let rounded_discount = Self::round_currency(discount_per_unit * quantity as f64);
 
                                 line_items_buffer.push(TransactionLineItem {
-                                    transaction_id: global_txn_id,
+                                    transaction_id: current_txn_id,
                                     line_number: (line_number + 1) as u32,
                                     sku: sku.clone(),  // Only clone once for the actual line item
                                     quantity,
@@ -4190,8 +4210,8 @@ impl ShelfWiseDataGenerator {
                                 let order_time = NaiveDateTime::parse_from_str(&timestamp, "%Y-%m-%d %H:%M:%S")
                                     .unwrap_or_else(|_| date.and_hms_opt(12, 0, 0).unwrap());
 
-                                let req_time = Some(order_time + Duration::minutes(self.rng.gen_range(30..90) as i64));
-                                let act_time = Some(order_time + Duration::minutes(self.rng.gen_range(35..95) as i64));
+                                let req_time = Some(order_time + Duration::minutes(rng.gen_range(30..90) as i64));
+                                let act_time = Some(order_time + Duration::minutes(rng.gen_range(35..95) as i64));
 
                                 (fee, tip, status, customer_id, req_time, act_time)
                             } else {
@@ -4201,12 +4221,12 @@ impl ShelfWiseDataGenerator {
                         // Now create transaction with ACTUAL total from line items
                         // Convert &'static str to String only when creating the struct
                         let transaction = Transaction {
-                            transaction_id: global_txn_id,
+                            transaction_id: current_txn_id,
                             date: *date,
                             store_id: store.store_id,
                             timestamp,  // Don't clone, we're done with it
                             total_items: actual_total_items,
-                            payment_method: payment_methods.choose(&mut self.rng).unwrap().clone(),
+                            payment_method: payment_methods.choose(&mut rng).unwrap().clone(),
                             customer_type: "regular".to_string(),
                             total_amount: actual_total_amount,
                             customer_id,
@@ -4226,12 +4246,12 @@ impl ShelfWiseDataGenerator {
 
                         // Save timestamp before moving transaction (needed for delivery assignment)
                         let txn_timestamp = transaction.timestamp.clone();
-                        writers.write_transaction(transaction)?;
+                        result.transactions.push(transaction);
 
-                        // Write line items and collect for aggregation
+                        // Collect line items for aggregation and result
                         for item in line_items_buffer.drain(..) {
                             all_line_items_for_store_day.push(item.clone());
-                            writers.write_transaction_line_item(item)?;
+                            result.transaction_line_items.push(item);
                         }
 
                         // OPTIMIZED: Generate returns probabilistically without looping 30 times per transaction
@@ -4243,33 +4263,33 @@ impl ShelfWiseDataGenerator {
                         // Only process items from this transaction (last actual_total_items items added)
                         let txn_start_idx = all_line_items_for_store_day.len().saturating_sub(actual_total_items as usize);
                         for item in &all_line_items_for_store_day[txn_start_idx..] {
-                            if self.rng.gen::<f64>() < return_prob_per_item {
+                            if rng.gen::<f64>() < return_prob_per_item {
                                 // Pick a random days_ago weighted by recency
-                                let recency_roll: f64 = self.rng.gen();
+                                let recency_roll: f64 = rng.gen();
                                 let days_ago: i64 = if recency_roll < 0.3 {
-                                    self.rng.gen_range(1..=3)   // 30% in first 3 days
+                                    rng.gen_range(1..=3)   // 30% in first 3 days
                                 } else if recency_roll < 0.7 {
-                                    self.rng.gen_range(4..=7)   // 40% in days 4-7
+                                    rng.gen_range(4..=7)   // 40% in days 4-7
                                 } else if recency_roll < 0.9 {
-                                    self.rng.gen_range(8..=14)  // 20% in days 8-14
+                                    rng.gen_range(8..=14)  // 20% in days 8-14
                                 } else {
-                                    self.rng.gen_range(15..=30) // 10% in days 15-30
+                                    rng.gen_range(15..=30) // 10% in days 15-30
                                 };
 
                                 // Only generate if purchase date is within range
                                 let purchase_date = *date - chrono::Duration::days(days_ago);
                                 if purchase_date >= *self.dates.first().unwrap() {
-                                    let return_qty = if item.quantity > 1 && self.rng.gen::<f64>() < 0.3 {
-                                        self.rng.gen_range(1..item.quantity)
+                                    let return_qty = if item.quantity > 1 && rng.gen::<f64>() < 0.3 {
+                                        rng.gen_range(1..item.quantity)
                                     } else {
                                         item.quantity
                                     };
 
                                     let refund_value = Self::round_currency(return_qty as f64 * item.unit_price);
-                                    let reason = return_reasons.choose(&mut self.rng).unwrap().clone();
-                                    let virtual_txn_id = global_txn_id.saturating_sub((days_ago * 100) as u64);
+                                    let reason = return_reasons.choose(&mut rng).unwrap().clone();
+                                    let virtual_txn_id = current_txn_id.saturating_sub((days_ago * 100) as u64);
 
-                                    writers.write_return(&ReturnDaily {
+                                    result.returns.push(ReturnDaily {
                                         date: *date,
                                         store_id,
                                         sku: item.sku.clone(),
@@ -4278,7 +4298,7 @@ impl ShelfWiseDataGenerator {
                                         refund_value,
                                         transaction_id: virtual_txn_id,
                                         line_number: item.line_number,
-                                    })?;
+                                    });
                                 }
                             }
                         }
@@ -4288,10 +4308,9 @@ impl ShelfWiseDataGenerator {
                         if is_delivery_or_pickup && order_status.is_some_and(|s| s == "delivered") {
                             // Use the static str we already have instead of cloning from transaction
                             let fulfillment_str = fulfillment_type.unwrap();
-                            Self::create_delivery_assignment_static(
-                                &mut self.rng,
-                                &mut writers,
-                                global_txn_id,
+                            if let Some(assignment) = Self::create_delivery_assignment_for_result(
+                                &mut rng,
+                                current_txn_id,
                                 store_id,
                                 fulfillment_str,
                                 date,
@@ -4300,10 +4319,10 @@ impl ShelfWiseDataGenerator {
                                 actual_total_amount,
                                 &self.delivery_drivers,
                                 &self.stores,
-                            )?;
+                            ) {
+                                result.delivery_assignments.push(assignment);
+                            }
                         }
-
-                        global_txn_id += 1;
                     }
 
                     // AGGREGATE TRANSACTIONS TO SALES_DAILY
@@ -4346,7 +4365,7 @@ impl ShelfWiseDataGenerator {
                             let product = sku_to_product.get(sku.as_str());
                             let is_perishable = product.is_some_and(|p| matches!(p.category.as_str(), "dairy" | "produce" | "meat"));
 
-                            writers.write_sales(&SalesDaily {
+                            result.sales.push(SalesDaily {
                                 date: *date,
                                 store_id: store.store_id,
                                 sku: sku.clone(),
@@ -4356,14 +4375,13 @@ impl ShelfWiseDataGenerator {
                                 regular_price: Self::round_currency(*reg_price),
                                 net_price: Self::round_currency(*net_pr),
                                 revenue: Self::round_currency(revenue),
-                                supplier_rebate_amt: Self::round_currency(if self.rng.gen::<f64>() < 0.3 { revenue * 0.02 } else { 0.0 }),
+                                supplier_rebate_amt: Self::round_currency(if rng.gen::<f64>() < 0.3 { revenue * 0.02 } else { 0.0 }),
                                 spoilage_cost: Self::round_currency(if is_perishable {
-                                    cogs_c * self.rng.gen_range(0.005..0.015)
+                                    cogs_c * rng.gen_range(0.005..0.015)
                                 } else {
                                     shrinkage_cost
                                 }),
                                 promo_funding_received: Self::round_currency(if promo.is_some() {
-                                    // Estimate promo funding based on discount
                                     revenue * 0.05
                                 } else {
                                     0.0
@@ -4378,37 +4396,86 @@ impl ShelfWiseDataGenerator {
                                 cogs_s: Self::round_currency(cogs_s),
                                 sales_date: *date,
                                 posting_date: *date + Duration::days(7),
-                            })?;
+                            });
 
-                            // NOW update inventory based on actual sales from transactions
-                            // Need to find the inventory entry - iterate to find matching SKU
-                            let mut inv_entries_to_update = Vec::new();
-                            for (key, value) in inventory.iter() {
-                                if key.0 == store.store_id && key.1 == sku.as_str() {
-                                    inv_entries_to_update.push((key.clone(), value.clone()));
-                                }
-                            }
-                            for (key, (mut on_hand, on_order, pending)) in inv_entries_to_update {
-                                on_hand = on_hand.saturating_sub(units_sold);
-                                inventory.insert(key, (on_hand, on_order, pending));
+                            // Update local store inventory based on actual sales
+                            if let Some((on_hand, _on_order, _pending)) = store_inv.get_mut(&sku) {
+                                *on_hand = on_hand.saturating_sub(units_sold);
                             }
 
                             // Track actual sales for demand_history update
-                            *actual_daily_sales.entry((store.store_id, sku.clone())).or_insert(0) += units_sold;
+                            result.actual_daily_sales.push(((store.store_id, sku.clone()), units_sold));
                         }
                     }
+                }
+
+                // Return the updated store inventory as part of the result
+                // Convert local store_inv to inventory_updates format
+                for (sku, (on_hand, on_order, pending)) in store_inv {
+                    result.inventory_updates.push(((store.store_id, sku), (on_hand, on_order, pending)));
+                }
+
+                Ok(result)
+            }).collect();  // End of par_iter().map().collect()
+
+            // Process all store results - write data and merge inventory updates
+            let mut actual_daily_sales_map: HashMap<(u32, String), u32> = HashMap::new();
+            let mut expected_demand_map: HashMap<(u32, String), u32> = HashMap::new();
+            let mut inventory_metadata_map: HashMap<(u32, String), (u32, u32)> = HashMap::new();
+
+            for result in store_results {
+                let result = result?;
+
+                // Write all transactions (takes ownership)
+                for txn in result.transactions {
+                    writers.write_transaction(txn)?;
+                }
+
+                // Write all line items (takes ownership)
+                for item in result.transaction_line_items {
+                    writers.write_transaction_line_item(item)?;
+                }
+
+                // Write all returns
+                for ret in &result.returns {
+                    writers.write_return(ret)?;
+                }
+
+                // Write all delivery assignments
+                for assignment in &result.delivery_assignments {
+                    writers.write_delivery_assignment(assignment)?;
+                }
+
+                // Write all sales
+                for sale in &result.sales {
+                    writers.write_sales(sale)?;
+                }
+
+                // Merge inventory updates back into main inventory
+                for ((store_id, sku), (on_hand, on_order, pending)) in result.inventory_updates {
+                    inventory.insert((store_id, sku), (on_hand, on_order, pending));
+                }
+
+                // Collect actual daily sales
+                for ((store_id, sku), units) in result.actual_daily_sales {
+                    *actual_daily_sales_map.entry((store_id, sku)).or_insert(0) += units;
+                }
+
+                // Collect expected demand
+                for ((store_id, sku), demand) in result.expected_demand {
+                    expected_demand_map.insert((store_id, sku), demand);
+                }
+
+                // Collect inventory metadata
+                for ((store_id, sku), (safety_stock, in_transit)) in result.inventory_metadata {
+                    inventory_metadata_map.insert((store_id, sku), (safety_stock, in_transit));
                 }
             }
 
             // Update demand_history with MAX(actual_sales, expected_demand)
-            // This ensures:
-            // 1. Popular products get replenished based on actual consumption
-            // 2. Out-of-stock products don't fall into a death spiral (0 sales -> low reorder)
             for key in demand_history.keys().cloned().collect::<Vec<_>>() {
-                let actual = actual_daily_sales.get(&key).copied().unwrap_or(0);
-                let expected = expected_demand.get(&key).copied().unwrap_or(0);
-                // Use the higher of actual sales or expected demand
-                // This prevents stockouts from reducing future replenishment
+                let actual = actual_daily_sales_map.get(&key).copied().unwrap_or(0);
+                let expected = expected_demand_map.get(&key).copied().unwrap_or(0);
                 let value = actual.max(expected);
 
                 if let Some(history) = demand_history.get_mut(&key) {
@@ -4420,22 +4487,17 @@ impl ShelfWiseDataGenerator {
             }
 
             // Write inventory_daily records at END of day (after all sales deductions)
-            // This ensures inventory reflects end-of-day state, not beginning
             for ((store_id, sku), (on_hand, on_order, pending_orders)) in &inventory {
-                // Only write if there's activity (SPARSE mode)
                 if *on_hand > 0 || *on_order > 0 {
-                    // Calculate in_transit from pending_orders
                     let in_transit: u32 = pending_orders.iter()
                         .filter(|(delivery_date, _)| *delivery_date > *date)
                         .map(|(_, qty)| qty)
                         .sum();
 
-                    // Get metadata (safety_stock, in_transit) if available
-                    let (safety_stock, _) = inventory_metadata.get(&(*store_id, sku.clone()))
+                    let (safety_stock, _) = inventory_metadata_map.get(&(*store_id, sku.clone()))
                         .copied()
                         .unwrap_or((0, 0));
 
-                    // Get store type for open_hours calculation
                     let store_type = stores_clone.iter()
                         .find(|s| s.store_id == *store_id)
                         .map(|s| s.store_type.as_str())

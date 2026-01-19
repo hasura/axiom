@@ -517,4 +517,30 @@ pub struct DeliveryZone {
     pub peak_hours: String, // Comma-separated
 }
 
+/// Holds all outputs from processing one store for one day.
+/// Used for parallel processing - each store produces a StoreDayResult,
+/// which is then merged and written sequentially.
+#[derive(Default)]
+pub struct StoreDayResult {
+    pub sales: Vec<SalesDaily>,
+    pub returns: Vec<ReturnDaily>,
+    pub shipments: Vec<SupplierShipment>,
+    pub waste: Vec<WasteSpoilage>,
+    pub tickets: Vec<Ticket>,
+    pub price_changes: Vec<PriceChange>,
+    pub transactions: Vec<Transaction>,
+    pub transaction_line_items: Vec<TransactionLineItem>,
+    pub delivery_assignments: Vec<DeliveryAssignment>,
 
+    // Inventory updates: (store_id, sku) -> (on_hand, on_order, pending_orders)
+    pub inventory_updates: Vec<((u32, String), (u32, u32, Vec<(chrono::NaiveDate, u32)>))>,
+
+    // Inventory metadata: (store_id, sku) -> (safety_stock, in_transit)
+    pub inventory_metadata: Vec<((u32, String), (u32, u32))>,
+
+    // Actual daily sales: (store_id, sku) -> units_sold
+    pub actual_daily_sales: Vec<((u32, String), u32)>,
+
+    // Expected demand: (store_id, sku) -> demand_estimate
+    pub expected_demand: Vec<((u32, String), u32)>,
+}

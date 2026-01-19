@@ -557,96 +557,109 @@ ALTER TABLE delivery_assignments ADD CONSTRAINT fk_assignments_pickup_store
 -- INDEXES
 -- ============================================================================
 
-CREATE INDEX idx_sales_date ON sales_daily(date);
-CREATE INDEX idx_sales_store ON sales_daily(store_id);
-CREATE INDEX idx_sales_sku ON sales_daily(sku);
-CREATE INDEX idx_sales_promo ON sales_daily(promo_id);
-CREATE INDEX idx_inventory_date ON inventory_daily(date);
-CREATE INDEX idx_inventory_store ON inventory_daily(store_id);
-CREATE INDEX idx_inventory_sku ON inventory_daily(sku);
-CREATE INDEX idx_promotions_sku ON promotions(sku);
-CREATE INDEX idx_promotions_dates ON promotions(start_date, end_date);
-CREATE INDEX idx_tickets_store ON tickets(store_id);
-CREATE INDEX idx_tickets_created ON tickets(created_at);
-CREATE INDEX idx_price_changes_date ON price_changes(effective_date);
-
-CREATE INDEX idx_sales_date_store_sku ON sales_daily(date, store_id, sku);
-CREATE INDEX idx_inventory_date_store_sku ON inventory_daily(date, store_id, sku);
-
-CREATE INDEX idx_returns_date ON returns_daily(date);
-CREATE INDEX idx_returns_store ON returns_daily(store_id);
-CREATE INDEX idx_returns_sku ON returns_daily(sku);
-CREATE INDEX idx_returns_reason ON returns_daily(reason_code);
-
-CREATE INDEX idx_waste_date ON waste_spoilage(date);
-CREATE INDEX idx_waste_store ON waste_spoilage(store_id);
-CREATE INDEX idx_waste_sku ON waste_spoilage(sku);
-CREATE INDEX idx_waste_reason ON waste_spoilage(waste_reason);
-
-CREATE INDEX idx_shipments_delivery_date ON supplier_shipments(delivery_date);
-CREATE INDEX idx_shipments_store ON supplier_shipments(store_id);
-CREATE INDEX idx_shipments_sku ON supplier_shipments(sku);
-CREATE INDEX idx_shipments_status ON supplier_shipments(shipment_status);
-
-CREATE INDEX idx_price_changes_sku ON price_changes(sku);
-
-CREATE INDEX idx_tickets_resolved ON tickets(resolved);
-CREATE INDEX idx_tickets_issue_type ON tickets(issue_type);
-
-CREATE INDEX idx_assortment_store ON assortment(store_id);
-CREATE INDEX idx_assortment_sku ON assortment(sku);
-CREATE INDEX idx_assortment_dates ON assortment(active_from, active_to);
-
-CREATE INDEX idx_products_category ON products(category);
+-- Products
 CREATE INDEX idx_products_brand ON products(brand);
+CREATE INDEX idx_products_category ON products(category);
 
+-- Stores
 CREATE INDEX idx_stores_region ON stores(region);
 CREATE INDEX idx_stores_type ON stores(store_type);
 
+-- Customers
+CREATE INDEX idx_customers_city ON customers(primary_city);
+CREATE INDEX idx_customers_created_date ON customers(created_date);
+CREATE INDEX idx_customers_email ON customers(email);
+CREATE INDEX idx_customers_loyalty_member ON customers(loyalty_member);
+CREATE INDEX idx_customers_primary_store ON customers(primary_store_id);
+CREATE INDEX idx_customers_segment ON customers(customer_segment);
+
+-- Customer Addresses
+CREATE INDEX idx_customer_addresses_city ON customer_addresses(city);
+CREATE INDEX idx_customer_addresses_customer ON customer_addresses(customer_id);
+CREATE INDEX idx_customer_addresses_default ON customer_addresses(customer_id, is_default) WHERE is_default = TRUE;
+
+-- Delivery Drivers
+CREATE INDEX idx_delivery_drivers_available ON delivery_drivers(is_available, primary_store_id) WHERE is_available = TRUE;
+CREATE INDEX idx_delivery_drivers_status ON delivery_drivers(employment_status);
+CREATE INDEX idx_delivery_drivers_store ON delivery_drivers(primary_store_id);
+CREATE INDEX idx_delivery_drivers_type ON delivery_drivers(driver_type);
+
+-- Delivery Zones
+CREATE INDEX idx_delivery_zones_active ON delivery_zones(is_active, store_id) WHERE is_active = TRUE;
+CREATE INDEX idx_delivery_zones_store ON delivery_zones(store_id);
+
+-- Promotions
+CREATE INDEX idx_promotions_active ON promotions(sku, start_date, end_date) WHERE ad_feature = TRUE;
+CREATE INDEX idx_promotions_dates ON promotions(start_date, end_date);
+CREATE INDEX idx_promotions_sku ON promotions(sku);
+
+-- Assortment
+CREATE INDEX idx_assortment_dates ON assortment(active_from, active_to);
+CREATE INDEX idx_assortment_sku ON assortment(sku);
+CREATE INDEX idx_assortment_store ON assortment(store_id);
+
+-- Inventory Daily
+CREATE INDEX idx_inventory_date ON inventory_daily(date);
+CREATE INDEX idx_inventory_date_store_sku ON inventory_daily(date, store_id, sku);
+CREATE INDEX idx_inventory_sku ON inventory_daily(sku);
+CREATE INDEX idx_inventory_store ON inventory_daily(store_id);
+
+-- Sales Daily
+CREATE INDEX idx_sales_date ON sales_daily(date);
+CREATE INDEX idx_sales_date_store_sku ON sales_daily(date, store_id, sku);
+CREATE INDEX idx_sales_promo ON sales_daily(promo_id);
+CREATE INDEX idx_sales_sku ON sales_daily(sku);
+CREATE INDEX idx_sales_store ON sales_daily(store_id);
+
+-- Returns Daily
+CREATE INDEX idx_returns_date ON returns_daily(date);
+CREATE INDEX idx_returns_reason ON returns_daily(reason_code);
+CREATE INDEX idx_returns_sku ON returns_daily(sku);
+CREATE INDEX idx_returns_store ON returns_daily(store_id);
+
+-- Tickets
+CREATE INDEX idx_tickets_created ON tickets(created_at);
+CREATE INDEX idx_tickets_issue_type ON tickets(issue_type);
+CREATE INDEX idx_tickets_resolved ON tickets(resolved);
+CREATE INDEX idx_tickets_store ON tickets(store_id);
 CREATE INDEX idx_tickets_unresolved ON tickets(store_id, created_at) WHERE resolved = FALSE;
+
+-- Supplier Shipments
+CREATE INDEX idx_shipments_delivery_date ON supplier_shipments(delivery_date);
+CREATE INDEX idx_shipments_sku ON supplier_shipments(sku);
+CREATE INDEX idx_shipments_status ON supplier_shipments(shipment_status);
+CREATE INDEX idx_shipments_store ON supplier_shipments(store_id);
+
+-- Price Changes
+CREATE INDEX idx_price_changes_date ON price_changes(effective_date);
+CREATE INDEX idx_price_changes_sku ON price_changes(sku);
+
+-- Waste/Spoilage
+CREATE INDEX idx_waste_date ON waste_spoilage(date);
+CREATE INDEX idx_waste_reason ON waste_spoilage(waste_reason);
+CREATE INDEX idx_waste_sku ON waste_spoilage(sku);
+CREATE INDEX idx_waste_store ON waste_spoilage(store_id);
+
+-- Transactions
+CREATE INDEX idx_transactions_customer ON transactions(customer_id);
 CREATE INDEX idx_transactions_date ON transactions(date);
+CREATE INDEX idx_transactions_fulfillment_type ON transactions(fulfillment_type);
+CREATE INDEX idx_transactions_loyalty ON transactions(customer_id, is_loyalty_transaction) WHERE is_loyalty_transaction = TRUE;
+CREATE INDEX idx_transactions_order_status ON transactions(order_status);
 CREATE INDEX idx_transactions_store ON transactions(store_id);
 CREATE INDEX idx_transactions_timestamp ON transactions(timestamp);
 
-CREATE INDEX idx_promotions_active ON promotions(sku, start_date, end_date) WHERE ad_feature = TRUE;
-
--- Customer indexes
-CREATE INDEX idx_customers_email ON customers(email);
-CREATE INDEX idx_customers_primary_store ON customers(primary_store_id);
-CREATE INDEX idx_customers_segment ON customers(customer_segment);
-CREATE INDEX idx_customers_loyalty_member ON customers(loyalty_member);
-CREATE INDEX idx_customers_created_date ON customers(created_date);
-CREATE INDEX idx_customers_city ON customers(primary_city);
-
-CREATE INDEX idx_customer_addresses_customer ON customer_addresses(customer_id);
-CREATE INDEX idx_customer_addresses_default ON customer_addresses(customer_id, is_default) WHERE is_default = TRUE;
-CREATE INDEX idx_customer_addresses_city ON customer_addresses(city);
-
--- Transaction customer indexes
-CREATE INDEX idx_transactions_customer ON transactions(customer_id);
-CREATE INDEX idx_transactions_loyalty ON transactions(customer_id, is_loyalty_transaction) WHERE is_loyalty_transaction = TRUE;
-CREATE INDEX idx_transactions_fulfillment_type ON transactions(fulfillment_type);
-CREATE INDEX idx_transactions_order_status ON transactions(order_status);
-
--- Transaction line items indexes
-CREATE INDEX idx_transaction_line_items_transaction ON transaction_line_items(transaction_id);
-CREATE INDEX idx_transaction_line_items_sku ON transaction_line_items(sku);
+-- Transaction Line Items
 CREATE INDEX idx_transaction_line_items_promo ON transaction_line_items(promo_id) WHERE promo_id IS NOT NULL;
+CREATE INDEX idx_transaction_line_items_sku ON transaction_line_items(sku);
+CREATE INDEX idx_transaction_line_items_transaction ON transaction_line_items(transaction_id);
 
--- Delivery indexes
-CREATE INDEX idx_delivery_drivers_store ON delivery_drivers(primary_store_id);
-CREATE INDEX idx_delivery_drivers_type ON delivery_drivers(driver_type);
-CREATE INDEX idx_delivery_drivers_status ON delivery_drivers(employment_status);
-CREATE INDEX idx_delivery_drivers_available ON delivery_drivers(is_available, primary_store_id) WHERE is_available = TRUE;
-
-CREATE INDEX idx_delivery_zones_store ON delivery_zones(store_id);
-CREATE INDEX idx_delivery_zones_active ON delivery_zones(is_active, store_id) WHERE is_active = TRUE;
-
-CREATE INDEX idx_delivery_assignments_transaction ON delivery_assignments(transaction_id);
-CREATE INDEX idx_delivery_assignments_driver ON delivery_assignments(driver_id);
-CREATE INDEX idx_delivery_assignments_status ON delivery_assignments(assignment_status);
+-- Delivery Assignments
 CREATE INDEX idx_delivery_assignments_assigned_at ON delivery_assignments(assigned_at);
 CREATE INDEX idx_delivery_assignments_delivered_at ON delivery_assignments(delivered_at);
+CREATE INDEX idx_delivery_assignments_driver ON delivery_assignments(driver_id);
+CREATE INDEX idx_delivery_assignments_status ON delivery_assignments(assignment_status);
+CREATE INDEX idx_delivery_assignments_transaction ON delivery_assignments(transaction_id);
 
 -- ============================================================================
 -- MATERIALIZED VIEWS
@@ -713,8 +726,9 @@ SELECT
     lt.last_purchase_date,
     COALESCE(lt.shopping_days, 0) as shopping_days,
 
-    -- Calculated tier based on last 12 months spend
+    -- Calculated tier based on last 12 months spend (only for loyalty members)
     CASE
+        WHEN NOT c.loyalty_member THEN 'non-member'
         WHEN COALESCE(l12.spend_12m, 0) >= 1500 THEN 'platinum'
         WHEN COALESCE(l12.spend_12m, 0) >= 750 THEN 'gold'
         WHEN COALESCE(l12.spend_12m, 0) >= 300 THEN 'silver'

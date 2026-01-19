@@ -241,6 +241,7 @@ impl StreamingWriters {
         Ok(())
     }
 
+    #[allow(dead_code)]
     pub fn write_shipment(&mut self, record: &SupplierShipment) -> Result<()> {
         self.shipments_batch.push(record.clone());
         if self.shipments_batch.len() >= self.batch_size {
@@ -249,6 +250,7 @@ impl StreamingWriters {
         Ok(())
     }
 
+    #[allow(dead_code)]
     pub fn write_waste(&mut self, record: &WasteSpoilage) -> Result<()> {
         self.waste_batch.push(record.clone());
         if self.waste_batch.len() >= self.batch_size {
@@ -257,6 +259,7 @@ impl StreamingWriters {
         Ok(())
     }
 
+    #[allow(dead_code)]
     pub fn write_ticket(&mut self, record: &Ticket) -> Result<()> {
         self.tickets_batch.push(record.clone());
         if self.tickets_batch.len() >= self.batch_size {
@@ -265,6 +268,7 @@ impl StreamingWriters {
         Ok(())
     }
 
+    #[allow(dead_code)]
     pub fn write_price_change(&mut self, record: &PriceChange) -> Result<()> {
         self.price_changes_batch.push(record.clone());
         if self.price_changes_batch.len() >= self.batch_size {
@@ -445,6 +449,107 @@ impl StreamingWriters {
         self.customers.flush()?;
         self.customer_addresses.flush()?;
         self.delivery_drivers.flush()?;
+        Ok(())
+    }
+
+    // Batch extend methods for parallel processing results
+    // These are available for future use when switching to fully parallel batch processing
+    #[allow(dead_code)]
+    pub fn extend_sales(&mut self, records: Vec<SalesDaily>) -> Result<()> {
+        for record in records {
+            self.sales_batch.push(record);
+            if self.sales_batch.len() >= self.batch_size {
+                self.flush_sales_batch()?;
+            }
+        }
+        Ok(())
+    }
+
+    #[allow(dead_code)]
+    pub fn extend_returns(&mut self, records: Vec<ReturnDaily>) -> Result<()> {
+        for record in records {
+            self.returns_batch.push(record);
+            if self.returns_batch.len() >= self.batch_size {
+                self.flush_returns_batch()?;
+            }
+        }
+        Ok(())
+    }
+
+    #[allow(dead_code)]
+    pub fn extend_shipments(&mut self, records: Vec<SupplierShipment>) -> Result<()> {
+        for record in records {
+            self.shipments_batch.push(record);
+            if self.shipments_batch.len() >= self.batch_size {
+                self.flush_shipments_batch()?;
+            }
+        }
+        Ok(())
+    }
+
+    #[allow(dead_code)]
+    pub fn extend_waste(&mut self, records: Vec<WasteSpoilage>) -> Result<()> {
+        for record in records {
+            self.waste_batch.push(record);
+            if self.waste_batch.len() >= self.batch_size {
+                self.flush_waste_batch()?;
+            }
+        }
+        Ok(())
+    }
+
+    #[allow(dead_code)]
+    pub fn extend_tickets(&mut self, records: Vec<Ticket>) -> Result<()> {
+        for record in records {
+            self.tickets_batch.push(record);
+            if self.tickets_batch.len() >= self.batch_size {
+                self.flush_tickets_batch()?;
+            }
+        }
+        Ok(())
+    }
+
+    #[allow(dead_code)]
+    pub fn extend_price_changes(&mut self, records: Vec<PriceChange>) -> Result<()> {
+        for record in records {
+            self.price_changes_batch.push(record);
+            if self.price_changes_batch.len() >= self.batch_size {
+                self.flush_price_changes_batch()?;
+            }
+        }
+        Ok(())
+    }
+
+    #[allow(dead_code)]
+    pub fn extend_transactions(&mut self, records: Vec<Transaction>) -> Result<()> {
+        for record in records {
+            self.transactions_batch.push(record);
+            if self.transactions_batch.len() >= self.batch_size {
+                self.flush_transactions_batch()?;
+            }
+        }
+        Ok(())
+    }
+
+    #[allow(dead_code)]
+    pub fn extend_transaction_line_items(&mut self, records: Vec<TransactionLineItem>) -> Result<()> {
+        for record in records {
+            self.transaction_line_items_batch.push(record);
+            if self.transaction_line_items_batch.len() >= self.batch_size {
+                self.flush_transaction_line_items_batch()?;
+            }
+        }
+        Ok(())
+    }
+
+    #[allow(dead_code)]
+    pub fn extend_delivery_assignments(&mut self, records: Vec<DeliveryAssignment>) -> Result<()> {
+        for record in records {
+            self.delivery_assignments_batch.push(record);
+            if self.delivery_assignments_batch.len() >= self.batch_size {
+                self.flush_delivery_assignments_batch()?;
+            }
+        }
         Ok(())
     }
 }
