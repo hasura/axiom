@@ -2187,6 +2187,13 @@ impl ShelfWiseDataGenerator {
         options.last().unwrap().0
     }
 
+    /// Generate store-level economic parameters that affect pricing, costs, and demand.
+    ///
+    /// This function was refactored to use **store-id-seeded RNG** instead of `self.rng`.
+    ///
+    /// Each store now gets its own RNG seeded with `store_id * 31337` (prime multiplier).
+    /// This ensures **the same store always gets identical economics values** whether
+    /// running in batch mode or nightly mode, without needing to persist/load store_economics.
     pub fn generate_store_economics(&mut self) {
         let mut store_economics = HashMap::new();
 
@@ -2196,22 +2203,27 @@ impl ShelfWiseDataGenerator {
             *city_store_counts.entry(store.city.clone()).or_insert(0) += 1;
         }
 
-        // Assign performance tiers (20% high, 60% medium, 20% low)
-        let num_stores = self.stores.len();
-        let mut performance_assignments: Vec<String> = Vec::new();
-        for i in 0..num_stores {
-            let tier = if i < num_stores / 5 {
-                "high"
-            } else if i < (num_stores * 4) / 5 {
-                "medium"
-            } else {
-                "low"
-            };
-            performance_assignments.push(tier.to_string());
-        }
-        performance_assignments.shuffle(&mut self.rng);
+        // Assign performance tiers deterministically based on store_id
+        // This ensures consistent tier assignments between batch and nightly modes
+        // (20% high, 60% medium, 20% low based on store_id hash)
 
-        for (idx, store) in self.stores.iter().enumerate() {
+        for store in self.stores.iter() {
+            // DETERMINISTIC FIX: Each store gets its own RNG seeded by store_id
+            // This ensures identical economics values in batch vs nightly mode
+            let store_seed = store.store_id as u64 * 31337;
+            let mut store_rng = rand::rngs::StdRng::seed_from_u64(store_seed);
+
+            // Deterministic performance tier based on store_id hash
+            // Use a simple modulo on store_id to assign tiers (20% high, 60% medium, 20% low)
+            let tier_hash = (store.store_id * 7919) % 100; // Prime multiplier for better distribution
+            let store_performance_tier = if tier_hash < 20 {
+                "high".to_string()
+            } else if tier_hash >= 80 {
+                "low".to_string()
+            } else {
+                "medium".to_string()
+            };
+
             // Store maturity factor
             let years_open = (self.start_date - store.opened_date).num_days() as f64 / 365.0;
             let maturity_factor = if years_open < 0.0 {
@@ -2246,40 +2258,37 @@ impl ShelfWiseDataGenerator {
                 "online" => 0.012,     // Lowest, controlled environment
                 _ => 0.020,
             };
-            let shrinkage_rate = base_shrinkage * self.rng.gen_range(0.90..1.10);
+            let shrinkage_rate = base_shrinkage * store_rng.gen_range(0.90..1.10);
 
             // Competitive intensity (based on store density in city)
             let store_count_in_city = *city_store_counts.get(&store.city).unwrap_or(&1);
             let competitive_intensity = if store_count_in_city > 5 {
-                self.rng.gen_range(1.08..1.12)  // High competition
+                store_rng.gen_range(1.08..1.12)  // High competition
             } else if store_count_in_city > 2 {
-                self.rng.gen_range(1.02..1.06)  // Moderate competition
+                store_rng.gen_range(1.02..1.06)  // Moderate competition
             } else {
-                self.rng.gen_range(0.95..1.00)  // Low competition (market leader)
+                store_rng.gen_range(0.95..1.00)  // Low competition (market leader)
             };
 
             // Price premium index
             let price_premium_index = match store.store_type.as_str() {
-                "convenience" => self.rng.gen_range(1.08..1.15),  // Convenience premium
-                "urban" => self.rng.gen_range(1.03..1.10),        // Urban premium
-                "online" => self.rng.gen_range(0.97..1.02),       // Competitive online
-                "big_box" => self.rng.gen_range(0.95..0.98),      // Discount positioning
-                "suburban" => self.rng.gen_range(0.98..1.03),     // Neutral
+                "convenience" => store_rng.gen_range(1.08..1.15),  // Convenience premium
+                "urban" => store_rng.gen_range(1.03..1.10),        // Urban premium
+                "online" => store_rng.gen_range(0.97..1.02),       // Competitive online
+                "big_box" => store_rng.gen_range(0.95..0.98),      // Discount positioning
+                "suburban" => store_rng.gen_range(0.98..1.03),     // Neutral
                 _ => 1.00,
             };
 
             // Volume discount tier (better COGS for high-volume stores)
             let volume_discount_tier = match store.store_type.as_str() {
-                "online" => self.rng.gen_range(0.92..0.94),    // Best terms
-                "big_box" => self.rng.gen_range(0.94..0.96),   // Very good terms
-                "suburban" => self.rng.gen_range(0.97..0.99),  // Good terms
-                "urban" => self.rng.gen_range(0.99..1.01),     // Standard terms
-                "convenience" => self.rng.gen_range(1.01..1.03), // Worst terms (low volume)
+                "online" => store_rng.gen_range(0.92..0.94),    // Best terms
+                "big_box" => store_rng.gen_range(0.94..0.96),   // Very good terms
+                "suburban" => store_rng.gen_range(0.97..0.99),  // Good terms
+                "urban" => store_rng.gen_range(0.99..1.01),     // Standard terms
+                "convenience" => store_rng.gen_range(1.01..1.03), // Worst terms (low volume)
                 _ => 1.00,
             };
-
-            // Performance tier
-            let store_performance_tier = performance_assignments[idx].clone();
 
             // Category mix factors by store type
             let mut category_mix_factors = HashMap::new();
@@ -3205,64 +3214,17 @@ impl ShelfWiseDataGenerator {
         for a in &self.assortment { wtr.serialize(a)?; }
         wtr.flush()?;
 
-        // Write customer data - founding customers (NULL date) + customers created before or on start_date
-        // (New customers created during the date range will be added by nightly imports)
-        if !self.customers.is_empty() {
-            let mut wtr = csv::Writer::from_path(Path::new(output_dir).join("customers.csv"))?;
-            let existing_customers: Vec<&Customer> = self.customers.iter()
-                .filter(|c| c.created_date.is_none_or(|d| d <= self.start_date))
-                .collect();
-
-            println!("  Writing {} existing customers (founding or created <= {})",
-                     existing_customers.len(), self.start_date);
-            println!("  {} future customers will be added during nightly imports",
-                     self.customers.len() - existing_customers.len());
-
-            for c in existing_customers { wtr.serialize(c)?; }
-            wtr.flush()?;
-        }
-
-        // Write customer addresses - ONLY for existing customers
-        if !self.customer_addresses.is_empty() {
-            let existing_customer_ids: std::collections::HashSet<u64> = self.customers.iter()
-                .filter(|c| c.created_date.is_none_or(|d| d <= self.start_date))
-                .map(|c| c.customer_id)
-                .collect();
-
-            let mut wtr = csv::Writer::from_path(Path::new(output_dir).join("customer_addresses.csv"))?;
-            let existing_addresses: Vec<&CustomerAddress> = self.customer_addresses.iter()
-                .filter(|a| existing_customer_ids.contains(&a.customer_id))
-                .collect();
-
-            println!("  Writing {} existing customer addresses", existing_addresses.len());
-
-            for a in existing_addresses { wtr.serialize(a)?; }
-            wtr.flush()?;
-        }
-
-        // Write delivery zones
+        // Write delivery zones (static reference data)
         if !self.delivery_zones.is_empty() {
             let mut wtr = csv::Writer::from_path(Path::new(output_dir).join("delivery_zones.csv"))?;
             for z in &self.delivery_zones { wtr.serialize(z)?; }
             wtr.flush()?;
         }
 
-        // Write delivery drivers - ONLY drivers hired before or on start_date
-        // (New drivers hired during the date range will be added by nightly imports)
-        if !self.delivery_drivers.is_empty() {
-            let mut wtr = csv::Writer::from_path(Path::new(output_dir).join("delivery_drivers.csv"))?;
-            let existing_drivers: Vec<&DeliveryDriver> = self.delivery_drivers.iter()
-                .filter(|d| d.hire_date <= self.start_date)
-                .collect();
-
-            println!("  Writing {} existing drivers (hired <= {})",
-                     existing_drivers.len(), self.start_date);
-            println!("  {} future drivers will be added during nightly imports",
-                     self.delivery_drivers.len() - existing_drivers.len());
-
-            for d in existing_drivers { wtr.serialize(d)?; }
-            wtr.flush()?;
-        }
+        // NOTE: customers, customer_addresses, and delivery_drivers are written at the END
+        // of generate_daily_data() to avoid truncation bugs. They are held in memory
+        // (self.customers, self.customer_addresses, self.delivery_drivers) and written atomically.
+        println!("  Customers, addresses, and drivers will be written at end of daily generation");
 
         Ok(())
     }
@@ -3375,6 +3337,12 @@ impl ShelfWiseDataGenerator {
         let mut city_to_customers: HashMap<&str, Vec<&Customer>> = HashMap::new();
         for customer in &self.customers {
             city_to_customers.entry(customer.primary_city.as_str()).or_default().push(customer);
+        }
+
+        // Index: customer_id -> Vec<address_id> (for delivery address selection)
+        let mut customer_to_addresses: HashMap<u64, Vec<u64>> = HashMap::new();
+        for addr in &self.customer_addresses {
+            customer_to_addresses.entry(addr.customer_id).or_default().push(addr.address_id);
         }
 
         println!("  Indexes built. Starting generation...");
@@ -3681,23 +3649,32 @@ impl ShelfWiseDataGenerator {
                         let adjusted_reorder_point = (reorder_point as f64 * seasonal_multiplier) as u32;
 
                         // Check if we need to reorder (inventory position < reorder point)
+                        // FIXED: Removed `&& on_order == 0` which prevented reordering when ANY order was pending
+                        // New logic: Allow reordering when inventory position is below reorder point
+                        // This ensures we don't under-order and deplete inventory over time
                         let inventory_position = on_hand + on_order;
-                        if inventory_position < adjusted_reorder_point && on_order == 0 {
-                            // Calculate order quantity
+                        if inventory_position < adjusted_reorder_point {
+                            // Calculate order quantity based on demand history
                             let avg_daily_demand = if !history.is_empty() {
                                 history.iter().sum::<u32>() as f64 / history.len() as f64
                             } else {
                                 demand as f64
                             };
 
-                            let order_qty = crate::inventory::calculate_order_quantity(
+                            let base_order_qty = crate::inventory::calculate_order_quantity(
                                 product,
                                 avg_daily_demand,
                                 &mut rng
                             );
 
                             // Apply seasonal multiplier to order quantity
-                            let final_order_qty = (order_qty as f64 * seasonal_multiplier) as u32;
+                            let seasonal_order_qty = (base_order_qty as f64 * seasonal_multiplier) as u32;
+
+                            // Ensure order at least covers the deficit to reorder point
+                            // This prevents the gradual inventory depletion seen over 6-year batch runs
+                            // Target: bring inventory_position up to reorder point (not higher to avoid bloat)
+                            let deficit = adjusted_reorder_point.saturating_sub(inventory_position);
+                            let final_order_qty = seasonal_order_qty.max(deficit);
 
                             on_order += final_order_qty;
 
@@ -4213,7 +4190,13 @@ impl ShelfWiseDataGenerator {
                                 let req_time = Some(order_time + Duration::minutes(rng.gen_range(30..90) as i64));
                                 let act_time = Some(order_time + Duration::minutes(rng.gen_range(35..95) as i64));
 
-                                (fee, tip, status, customer_id, req_time, act_time)
+                                // Look up actual address for this customer (pick randomly if multiple)
+                                let addr_id = customer_id.and_then(|cid| {
+                                    customer_to_addresses.get(&cid)
+                                        .and_then(|addrs| addrs.choose(&mut rng).copied())
+                                });
+
+                                (fee, tip, status, addr_id, req_time, act_time)
                             } else {
                                 (0.0, 0.0, None, None, None, None)
                             };
@@ -4287,8 +4270,9 @@ impl ShelfWiseDataGenerator {
 
                                     let refund_value = Self::round_currency(return_qty as f64 * item.unit_price);
                                     let reason = return_reasons.choose(&mut rng).unwrap().clone();
-                                    let virtual_txn_id = current_txn_id.saturating_sub((days_ago * 100) as u64);
 
+                                    // Use actual transaction_id from the line item (not a computed virtual ID)
+                                    // This ensures uniqueness since PK is (date, store_id, sku, transaction_id, line_number)
                                     result.returns.push(ReturnDaily {
                                         date: *date,
                                         store_id,
@@ -4296,7 +4280,7 @@ impl ShelfWiseDataGenerator {
                                         units_returned: return_qty,
                                         reason_code: reason,
                                         refund_value,
-                                        transaction_id: virtual_txn_id,
+                                        transaction_id: item.transaction_id,
                                         line_number: item.line_number,
                                     });
                                 }
@@ -4449,6 +4433,26 @@ impl ShelfWiseDataGenerator {
                 // Write all sales
                 for sale in &result.sales {
                     writers.write_sales(sale)?;
+                }
+
+                // Write all shipments
+                for shipment in &result.shipments {
+                    writers.shipments.serialize(shipment)?;
+                }
+
+                // Write all waste
+                for waste in &result.waste {
+                    writers.waste.serialize(waste)?;
+                }
+
+                // Write all tickets
+                for ticket in &result.tickets {
+                    writers.tickets.serialize(ticket)?;
+                }
+
+                // Write all price changes
+                for pc in &result.price_changes {
+                    writers.price_changes.serialize(pc)?;
                 }
 
                 // Merge inventory updates back into main inventory
