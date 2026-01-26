@@ -1,0 +1,92 @@
+# ShelfWise - Steady State Configuration
+# Optimized for r6.large (2 vCPU, 16 GB RAM)
+# Use this for normal operation after data is loaded
+#
+# Usage: docker compose up -d
+#
+# For initial data load, use: docker compose -f compose.load.yaml up -d
+
+services:
+  postgres:
+    image: postgres
+    container_name: shelfwise-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: shelfwise
+      READONLY_PASSWORD: ${READONLY_PASSWORD}
+      PGDATA: /var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres:/docker-entrypoint-initdb.d:ro
+      - postgres-data:/var/lib/postgresql/data
+    deploy:
+      resources:
+        limits:
+          memory: 15G
+    command:
+      - "postgres"
+      # === MEMORY (16GB total) ===
+      - "-c"
+      - "shared_buffers=4GB"
+      - "-c"
+      - "effective_cache_size=11GB"
+      - "-c"
+      - "maintenance_work_mem=1GB"
+      - "-c"
+      - "work_mem=256MB"
+      # === WAL / CHECKPOINTS ===
+      - "-c"
+      - "wal_buffers=64MB"
+      - "-c"
+      - "max_wal_size=4GB"
+      - "-c"
+      - "min_wal_size=1GB"
+      - "-c"
+      - "checkpoint_completion_target=0.9"
+      - "-c"
+      - "checkpoint_timeout=15min"
+      # === PARALLELISM (2 vCPUs) ===
+      - "-c"
+      - "max_parallel_workers=2"
+      - "-c"
+      - "max_parallel_workers_per_gather=1"
+      - "-c"
+      - "max_parallel_maintenance_workers=1"
+      - "-c"
+      - "max_worker_processes=4"
+      # === I/O (SSD optimized) ===
+      - "-c"
+      - "effective_io_concurrency=200"
+      - "-c"
+      - "random_page_cost=1.1"
+      # === CONNECTIONS ===
+      - "-c"
+      - "max_connections=20"
+      # === AUTOVACUUM ===
+      - "-c"
+      - "autovacuum_max_workers=2"
+      - "-c"
+      - "autovacuum_naptime=30s"
+      - "-c"
+      - "autovacuum_vacuum_scale_factor=0.2"
+      - "-c"
+      - "autovacuum_analyze_scale_factor=0.1"
+      # === LOGGING ===
+      - "-c"
+      - "log_min_duration_statement=2000"
+      - "-c"
+      - "log_lock_waits=on"
+      - "-c"
+      - "default_statistics_target=100"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres-data:
+    driver: local

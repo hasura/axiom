@@ -7,11 +7,12 @@ This repository contains Ansible playbooks for deploying and managing Axiom demo
 The Ansible setup consists of several playbooks that handle different aspects of the deployment:
 
 - **master.yml**: The main entry point that orchestrates the entire deployment process
-- **defaults.yml**: Sets up basic host configuration (hostname, tools, custom MOTD)
+- **base.yml**: Base server setup (timezone, hostname, packages, MOTD)
 - **manage_ssh_keys.yml**: Manages SSH keys for authorized users
 - **configure_docker.yml**: Installs and configures Docker with logging limits
-- **ddn.yml**: Installs the Hasura DDN CLI
-- **axiom.yml**: Deploys the Axiom demo environment
+- **axiom.yml**: Syncs demo files and starts containers
+- **shelfwise.yml**: ShelfWise-specific setup (Rust toolchain, generator build)
+- **nginx.yml**: Nginx reverse proxy setup
 - **cron.yml**: Sets up cron jobs for maintenance tasks
 
 ## Prerequisites
@@ -26,9 +27,12 @@ brew install ansible
 # Install ansible-lint
 brew install ansible-lint
 
-# Install Ansible requirements
-ansible-galaxy collection install -r requirements.yml
-ansible-galaxy role install -r requirements.yml --roles-path ./roles
+# Install Mitogen for faster execution (from infra/ansible dir)
+git clone https://github.com/mitogen-hq/mitogen.git .ansible/mitogen
+
+# Install Ansible requirements (from infra/ansible dir)
+ansible-galaxy collection install -r requirements.yml -p .ansible/collections
+ansible-galaxy role install -r requirements.yml --roles-path .ansible/roles
 ```
 
 ## Configuration
@@ -88,11 +92,18 @@ To limit execution to specific hosts, use the --limit option:
 ansible-playbook -i inventory.json master.yml --limit host1:host2:host3
 ```
 
-### Force Clean Installation
-To force a complete reinstallation (stop all containers, remove volumes, and start fresh):
+### Reset Docker Containers
+To wipe containers/volumes and restart fresh:
 
 ```bash
-ansible-playbook -i inventory.json master.yml -e "force_clean=true"
+ansible-playbook -i inventory.json master.yml -e "docker_reset=true"
+```
+
+### Force Full File Sync
+To force a full sync including large CSV files (normally auto-detected on first deploy):
+
+```bash
+ansible-playbook -i inventory.json master.yml -e "sync_mode=full"
 ```
 
 ### Run Specific Playbooks
@@ -117,18 +128,27 @@ ansible-lint
 
 ### master.yml
 The main entry point that imports all other playbooks in the correct order:
-- Applies host defaults
-- Manages SSH keys
-- Deploys Axiom with dependencies
+- Base server setup
+- SSH keys
+- Docker
+- Axiom demo deployment
+- ShelfWise (if applicable)
+- Nginx (if applicable)
+- Cron jobs
 
 ### axiom.yml
 The main deployment playbook that:
-- Installs prerequisites (DDN CLI)
-- Configures Docker
-- Clones and configures the Axiom repository
+- Syncs demo files to the server (with smart sync detection)
 - Sets up environment variables
 - Manages Docker containers for the demo
 - Provides smart container management (starts if not running, ignores if running)
+
+Variables:
+- `docker_reset`: Wipe containers/volumes and restart fresh (default: false)
+- `sync_mode`: File transfer mode - 'auto', 'full', or 'incremental' (default: auto)
+  - `auto` = full sync if no files exist, otherwise incremental
+  - `full` = always include large CSV files
+  - `incremental` = exclude large CSV files
 
 ### cron.yml
 Sets up cron jobs for maintenance tasks like connector keepalive.

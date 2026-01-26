@@ -1,0 +1,392 @@
+name: Shelfwise Generator & Nightly Import Test
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - '.data/shelfwise/**'
+      - '.github/workflows/shelfwise-test.yml'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - '.data/shelfwise/**'
+      - '.github/workflows/shelfwise-test.yml'
+  workflow_dispatch:
+
+jobs:
+  test-generator-and-nightly:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: stable
+          cache: true
+          cache-workspaces: .data/shelfwise/generator
+
+      - name: Build Rust generator
+        working-directory: .data/shelfwise/generator
+        run: cargo build --release
+
+      # ============================================
+      # PHASE 1: Initial Data Generation
+      # ============================================
+      - name: Run generator with test config
+        working-directory: .data/shelfwise/generator
+        run: |
+          echo "=== Phase 1: Initial Data Generation ==="
+          cargo run --release -- --config config.test.toml
+          echo "✓ Generator completed"
+
+      - name: Verify CSV files were generated
+        working-directory: .data/shelfwise/postgres
+        run: |
+          echo "Checking for generated CSV files..."
+          for file in products.csv stores.csv customers.csv transactions.csv transaction_line_items.csv sales_daily.csv inventory_daily.csv delivery_drivers.csv; do
+            if [ ! -f "$file" ]; then
+              echo "✗ FAILED: $file not found"
+              exit 1
+            fi
+            count=$(wc -l < "$file")
+            echo "✓ $file: $count lines"
+          done
+
+      # ============================================
+      # PHASE 2: Database Loading & Validation
+      # ============================================
+      - name: Set up environment
+        run: |
+          cp .data/.env.template .data/shelfwise/.env
+
+      - name: Start PostgreSQL
+        run: |
+          cd .data/shelfwise
+          docker compose up -d postgres
+
+      - name: Wait for database initialization
+        run: |
+          cd .data/shelfwise
+          echo "=== Phase 2: Database Loading ==="
+          echo "Waiting for database to initialize..."
+          for i in {1..180}; do
+            TRANSACTION_COUNT=$(docker compose exec -T postgres psql -U postgres -d shelfwise -t -c "SELECT COUNT(*) FROM transactions;" 2>/dev/null | tr -d ' ')
+            READONLY_USER=$(docker compose exec -T postgres psql -U postgres -d shelfwise -t -c "SELECT 1 FROM pg_roles WHERE rolname='shelfwise_readonly';" 2>/dev/null | tr -d ' ')
+
+            if [ "$TRANSACTION_COUNT" -gt 0 ] 2>/dev/null && [ "$READONLY_USER" = "1" ]; then
+              echo "✓ Database fully initialized with $TRANSACTION_COUNT transactions"
+              break
+            fi
+            if [ $i -eq 180 ]; then
+              echo "✗ Database initialization timed out after 360 seconds"
+              exit 1
+            fi
+            echo "Waiting... ($i/180) [transactions: ${TRANSACTION_COUNT:-0}]"
+            sleep 2
+          done
+
+      - name: Validate database matches CSVs
+        run: |
+          cd .data/shelfwise
+          echo "=== Validating database matches CSV files ==="
+          
+          # Compare row counts
+          validate_table() {
+            local table=$1
+            local csv_file=$2
+
+            # Get CSV count (minus header)
+            csv_count=$(($(wc -l < "postgres/$csv_file") - 1))
+
+            # Get DB count
+            db_count=$(docker compose exec -T postgres psql -U postgres -d shelfwise -t -c "SELECT COUNT(*) FROM $table;" | tr -d ' ')
+
+            echo "$table: CSV=$csv_count, DB=$db_count"
+
+            if [ "$db_count" -ne "$csv_count" ]; then
+              echo "  ✗ FAILED: Count mismatch"
+              exit 1
+            fi
+            echo "  ✓ Counts match"
+          }
+          
+          validate_table "products" "products.csv"
+          validate_table "stores" "stores.csv"
+          validate_table "customers" "customers.csv"
+          validate_table "transactions" "transactions.csv"
+          validate_table "sales_daily" "sales_daily.csv"
+          
+          # Verify we have meaningful data
+          echo ""
+          echo "=== Verify core data integrity ==="
+          docker compose exec -T postgres psql -U postgres -d shelfwise -c "
+            SELECT 
+              (SELECT COUNT(*) FROM products) as products,
+              (SELECT COUNT(*) FROM stores) as stores,
+              (SELECT COUNT(*) FROM customers) as customers,
+              (SELECT COUNT(*) FROM transactions) as transactions,
+              (SELECT MIN(date) FROM sales_daily) as first_date,
+              (SELECT MAX(date) FROM sales_daily) as last_date;
+          "
+
+      - name: Record pre-nightly state
+        id: pre_nightly
+        run: |
+          cd .data/shelfwise
+          LAST_DATE=$(docker compose exec -T postgres psql -U postgres -d shelfwise -t -c "SELECT MAX(date) FROM sales_daily;" | tr -d ' ')
+          TXN_COUNT=$(docker compose exec -T postgres psql -U postgres -d shelfwise -t -c "SELECT COUNT(*) FROM transactions;" | tr -d ' ')
+          LINE_ITEMS=$(docker compose exec -T postgres psql -U postgres -d shelfwise -t -c "SELECT COUNT(*) FROM transaction_line_items;" | tr -d ' ')
+          CUST_COUNT=$(docker compose exec -T postgres psql -U postgres -d shelfwise -t -c "SELECT COUNT(*) FROM customers;" | tr -d ' ')
+          ADDR_COUNT=$(docker compose exec -T postgres psql -U postgres -d shelfwise -t -c "SELECT COUNT(*) FROM customer_addresses;" | tr -d ' ')
+          DRIVER_COUNT=$(docker compose exec -T postgres psql -U postgres -d shelfwise -t -c "SELECT COUNT(*) FROM delivery_drivers;" | tr -d ' ')
+          DELIVERY_COUNT=$(docker compose exec -T postgres psql -U postgres -d shelfwise -t -c "SELECT COUNT(*) FROM delivery_assignments;" | tr -d ' ')
+          SALES_COUNT=$(docker compose exec -T postgres psql -U postgres -d shelfwise -t -c "SELECT COUNT(*) FROM sales_daily;" | tr -d ' ')
+          INV_COUNT=$(docker compose exec -T postgres psql -U postgres -d shelfwise -t -c "SELECT COUNT(*) FROM inventory_daily;" | tr -d ' ')
+
+          echo "last_date=$LAST_DATE" >> $GITHUB_OUTPUT
+          echo "txn_count=$TXN_COUNT" >> $GITHUB_OUTPUT
+          echo "line_items=$LINE_ITEMS" >> $GITHUB_OUTPUT
+          echo "cust_count=$CUST_COUNT" >> $GITHUB_OUTPUT
+          echo "addr_count=$ADDR_COUNT" >> $GITHUB_OUTPUT
+          echo "driver_count=$DRIVER_COUNT" >> $GITHUB_OUTPUT
+          echo "delivery_count=$DELIVERY_COUNT" >> $GITHUB_OUTPUT
+          echo "sales_count=$SALES_COUNT" >> $GITHUB_OUTPUT
+          echo "inv_count=$INV_COUNT" >> $GITHUB_OUTPUT
+
+          echo "Pre-nightly state:"
+          echo "  Last date: $LAST_DATE"
+          echo "  Customers: $CUST_COUNT"
+          echo "  Addresses: $ADDR_COUNT"
+          echo "  Drivers: $DRIVER_COUNT"
+          echo "  Transactions: $TXN_COUNT"
+          echo "  Line items: $LINE_ITEMS"
+          echo "  Deliveries: $DELIVERY_COUNT"
+          echo "  Sales daily rows: $SALES_COUNT"
+          echo "  Inventory daily rows: $INV_COUNT"
+
+      # ============================================
+      # PHASE 3: Nightly Import Testing (2 days)
+      # ============================================
+      - name: Install PostgreSQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+
+      - name: Calculate nightly dates
+        id: nightly_dates
+        run: |
+          cd .data/shelfwise
+          LAST_DATE=$(docker compose exec -T postgres psql -U postgres -d shelfwise -t -c "SELECT MAX(date) FROM sales_daily;" | tr -d ' ')
+
+          # Calculate next 2 dates using date arithmetic
+          DAY1=$(date -d "$LAST_DATE + 1 day" +%Y-%m-%d)
+          DAY2=$(date -d "$LAST_DATE + 2 days" +%Y-%m-%d)
+
+          echo "day1=$DAY1" >> $GITHUB_OUTPUT
+          echo "day2=$DAY2" >> $GITHUB_OUTPUT
+
+          echo "=== Phase 3: Nightly Import Testing ==="
+          echo "Will generate data for:"
+          echo "  Day 1: $DAY1"
+          echo "  Day 2: $DAY2"
+
+      - name: Run nightly import - Day 1
+        run: |
+          cd .data/shelfwise
+          echo "=== Nightly Import: Day 1 (${{ steps.nightly_dates.outputs.day1 }}) ==="
+
+          # Run the nightly import script
+          chmod +x scripts/nightly-import.sh
+          GENERATOR_CONFIG="generator/config.test.toml" ./scripts/nightly-import.sh --date "${{ steps.nightly_dates.outputs.day1 }}"
+
+          echo "✓ Day 1 nightly import completed"
+
+      - name: Verify Day 1 import
+        run: |
+          cd .data/shelfwise
+          DAY1="${{ steps.nightly_dates.outputs.day1 }}"
+
+          echo "Verifying data for $DAY1..."
+
+          # Check sales_daily has data for day 1
+          SALES_COUNT=$(docker compose exec -T postgres psql -U postgres -d shelfwise -t -c "SELECT COUNT(*) FROM sales_daily WHERE date = '$DAY1';" | tr -d ' ')
+          if [ "$SALES_COUNT" -lt 1 ]; then
+            echo "✗ FAILED: No sales data for $DAY1"
+            exit 1
+          fi
+          echo "✓ sales_daily: $SALES_COUNT rows for $DAY1"
+
+          # Check transactions
+          TXN_COUNT=$(docker compose exec -T postgres psql -U postgres -d shelfwise -t -c "SELECT COUNT(*) FROM transactions WHERE date = '$DAY1';" | tr -d ' ')
+          if [ "$TXN_COUNT" -lt 1 ]; then
+            echo "✗ FAILED: No transactions for $DAY1"
+            exit 1
+          fi
+          echo "✓ transactions: $TXN_COUNT rows for $DAY1"
+
+          # Check inventory_daily
+          INV_COUNT=$(docker compose exec -T postgres psql -U postgres -d shelfwise -t -c "SELECT COUNT(*) FROM inventory_daily WHERE date = '$DAY1';" | tr -d ' ')
+          echo "✓ inventory_daily: $INV_COUNT rows for $DAY1"
+
+      - name: Run nightly import - Day 2
+        run: |
+          cd .data/shelfwise
+          echo "=== Nightly Import: Day 2 (${{ steps.nightly_dates.outputs.day2 }}) ==="
+
+          GENERATOR_CONFIG="generator/config.test.toml" ./scripts/nightly-import.sh --date "${{ steps.nightly_dates.outputs.day2 }}"
+
+          echo "✓ Day 2 nightly import completed"
+
+      - name: Verify Day 2 import
+        run: |
+          cd .data/shelfwise
+          DAY2="${{ steps.nightly_dates.outputs.day2 }}"
+
+          echo "Verifying data for $DAY2..."
+
+          SALES_COUNT=$(docker compose exec -T postgres psql -U postgres -d shelfwise -t -c "SELECT COUNT(*) FROM sales_daily WHERE date = '$DAY2';" | tr -d ' ')
+          if [ "$SALES_COUNT" -lt 1 ]; then
+            echo "✗ FAILED: No sales data for $DAY2"
+            exit 1
+          fi
+          echo "✓ sales_daily: $SALES_COUNT rows for $DAY2"
+
+          TXN_COUNT=$(docker compose exec -T postgres psql -U postgres -d shelfwise -t -c "SELECT COUNT(*) FROM transactions WHERE date = '$DAY2';" | tr -d ' ')
+          if [ "$TXN_COUNT" -lt 1 ]; then
+            echo "✗ FAILED: No transactions for $DAY2"
+            exit 1
+          fi
+          echo "✓ transactions: $TXN_COUNT rows for $DAY2"
+
+      # ============================================
+      # PHASE 4: Final Validation
+      # ============================================
+      - name: Final validation summary
+        run: |
+          cd .data/shelfwise
+          echo "=== Phase 4: Final Validation Summary ==="
+
+          # Pre-nightly values
+          PRE_DATE="${{ steps.pre_nightly.outputs.last_date }}"
+          PRE_CUST=${{ steps.pre_nightly.outputs.cust_count }}
+          PRE_ADDR=${{ steps.pre_nightly.outputs.addr_count }}
+          PRE_DRIVER=${{ steps.pre_nightly.outputs.driver_count }}
+          PRE_TXN=${{ steps.pre_nightly.outputs.txn_count }}
+          PRE_ITEMS=${{ steps.pre_nightly.outputs.line_items }}
+          PRE_DELIV=${{ steps.pre_nightly.outputs.delivery_count }}
+          PRE_SALES=${{ steps.pre_nightly.outputs.sales_count }}
+          PRE_INV=${{ steps.pre_nightly.outputs.inv_count }}
+
+          # Post-nightly values
+          POST_DATE=$(docker compose exec -T postgres psql -U postgres -d shelfwise -t -c "SELECT MAX(date) FROM sales_daily;" | tr -d ' ')
+          POST_CUST=$(docker compose exec -T postgres psql -U postgres -d shelfwise -t -c "SELECT COUNT(*) FROM customers;" | tr -d ' ')
+          POST_ADDR=$(docker compose exec -T postgres psql -U postgres -d shelfwise -t -c "SELECT COUNT(*) FROM customer_addresses;" | tr -d ' ')
+          POST_DRIVER=$(docker compose exec -T postgres psql -U postgres -d shelfwise -t -c "SELECT COUNT(*) FROM delivery_drivers;" | tr -d ' ')
+          POST_TXN=$(docker compose exec -T postgres psql -U postgres -d shelfwise -t -c "SELECT COUNT(*) FROM transactions;" | tr -d ' ')
+          POST_ITEMS=$(docker compose exec -T postgres psql -U postgres -d shelfwise -t -c "SELECT COUNT(*) FROM transaction_line_items;" | tr -d ' ')
+          POST_DELIV=$(docker compose exec -T postgres psql -U postgres -d shelfwise -t -c "SELECT COUNT(*) FROM delivery_assignments;" | tr -d ' ')
+          POST_SALES=$(docker compose exec -T postgres psql -U postgres -d shelfwise -t -c "SELECT COUNT(*) FROM sales_daily;" | tr -d ' ')
+          POST_INV=$(docker compose exec -T postgres psql -U postgres -d shelfwise -t -c "SELECT COUNT(*) FROM inventory_daily;" | tr -d ' ')
+
+          # Calculate growth
+          CUST_ADDED=$((POST_CUST - PRE_CUST))
+          ADDR_ADDED=$((POST_ADDR - PRE_ADDR))
+          DRIVER_ADDED=$((POST_DRIVER - PRE_DRIVER))
+          TXN_ADDED=$((POST_TXN - PRE_TXN))
+          ITEMS_ADDED=$((POST_ITEMS - PRE_ITEMS))
+          DELIV_ADDED=$((POST_DELIV - PRE_DELIV))
+          SALES_ADDED=$((POST_SALES - PRE_SALES))
+          INV_ADDED=$((POST_INV - PRE_INV))
+
+          echo ""
+          echo "┌─────────────────────────────────────────────────────────────┐"
+          echo "│              Nightly Import Growth Summary                  │"
+          echo "├─────────────────────┬───────────┬───────────┬───────────────┤"
+          echo "│ Table               │ Before    │ After     │ Added         │"
+          echo "├─────────────────────┼───────────┼───────────┼───────────────┤"
+          printf "│ %-19s │ %9s │ %9s │ %+13s │\n" "customers" "$PRE_CUST" "$POST_CUST" "$CUST_ADDED"
+          printf "│ %-19s │ %9s │ %9s │ %+13s │\n" "customer_addresses" "$PRE_ADDR" "$POST_ADDR" "$ADDR_ADDED"
+          printf "│ %-19s │ %9s │ %9s │ %+13s │\n" "delivery_drivers" "$PRE_DRIVER" "$POST_DRIVER" "$DRIVER_ADDED"
+          printf "│ %-19s │ %9s │ %9s │ %+13s │\n" "transactions" "$PRE_TXN" "$POST_TXN" "$TXN_ADDED"
+          printf "│ %-19s │ %9s │ %9s │ %+13s │\n" "transaction_line_items" "$PRE_ITEMS" "$POST_ITEMS" "$ITEMS_ADDED"
+          printf "│ %-19s │ %9s │ %9s │ %+13s │\n" "delivery_assignments" "$PRE_DELIV" "$POST_DELIV" "$DELIV_ADDED"
+          printf "│ %-19s │ %9s │ %9s │ %+13s │\n" "sales_daily" "$PRE_SALES" "$POST_SALES" "$SALES_ADDED"
+          printf "│ %-19s │ %9s │ %9s │ %+13s │\n" "inventory_daily" "$PRE_INV" "$POST_INV" "$INV_ADDED"
+          echo "└─────────────────────┴───────────┴───────────┴───────────────┘"
+          echo ""
+          echo "Date range: $PRE_DATE → $POST_DATE"
+          echo ""
+
+          # Validate growth happened
+          if [ "$TXN_ADDED" -lt 100 ]; then
+            echo "✗ FAILED: Expected significant transaction growth, got only $TXN_ADDED"
+            exit 1
+          fi
+          echo "✓ Transaction growth verified ($TXN_ADDED new transactions)"
+
+          if [ "$SALES_ADDED" -lt 1 ]; then
+            echo "✗ FAILED: Expected sales_daily growth"
+            exit 1
+          fi
+          echo "✓ Sales daily growth verified ($SALES_ADDED new rows)"
+
+          # Verify no gaps in data
+          GAPS=$(docker compose exec -T postgres psql -U postgres -d shelfwise -t -c "
+            WITH date_series AS (
+              SELECT generate_series(
+                (SELECT MIN(date) FROM sales_daily),
+                (SELECT MAX(date) FROM sales_daily),
+                '1 day'::interval
+              )::date AS expected_date
+            ),
+            actual_dates AS (
+              SELECT DISTINCT date FROM sales_daily
+            )
+            SELECT COUNT(*)
+            FROM date_series
+            LEFT JOIN actual_dates ON date_series.expected_date = actual_dates.date
+            WHERE actual_dates.date IS NULL;
+          " | tr -d ' ')
+
+          if [ "$GAPS" -ne 0 ]; then
+            echo "✗ FAILED: Found $GAPS date gaps in sales_daily"
+            exit 1
+          fi
+          echo "✓ No date gaps - continuous coverage verified"
+
+          # Final data summary
+          echo ""
+          echo "=== Final Data Summary ==="
+          docker compose exec -T postgres psql -U postgres -d shelfwise -c "
+            SELECT
+              (SELECT COUNT(*) FROM products) as products,
+              (SELECT COUNT(*) FROM stores) as stores,
+              (SELECT COUNT(*) FROM customers) as customers,
+              (SELECT COUNT(*) FROM transactions) as transactions,
+              (SELECT COUNT(*) FROM transaction_line_items) as line_items,
+              (SELECT MIN(date) FROM sales_daily) as first_date,
+              (SELECT MAX(date) FROM sales_daily) as last_date,
+              (SELECT COUNT(DISTINCT date) FROM sales_daily) as days_of_data;
+          "
+
+          echo ""
+          echo "=== All Tests Passed ==="
+
+      - name: Show logs on failure
+        if: failure()
+        run: |
+          cd .data/shelfwise
+          echo "=== PostgreSQL logs ==="
+          docker compose logs postgres | tail -100
+          echo ""
+          echo "=== Nightly import logs ==="
+          cat logs/*.log 2>/dev/null || echo "No log files found"
+
+      - name: Cleanup
+        if: always()
+        run: |
+          cd .data/shelfwise
+          docker compose down -v
