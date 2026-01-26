@@ -1,26 +1,29 @@
 -- ShelfWise Retail Analytics Database
+--
+-- Loading Strategy:
+-- 1. LARGE TABLES (>1GB): Create → Load → PK → Indexes (by size, largest first)
+-- 2. SMALL TABLES (<1GB): Create all → Load all → All PKs → All Indexes (alphabetical)
+-- 3. FOREIGN KEYS: Added last with NOT VALID (instantaneous)
 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- ============================================================================
 -- PERFORMANCE SETTINGS FOR DATA LOADING
--- ==============================================uuid-ossp==============================
--- Use session-level settings for parameters that support it
--- Note: autovacuum cannot be disabled at session level, only server level
--- For initial load, consider setting autovacuum=off in postgresql.conf
+-- ============================================================================
+-- Aligned with compose.load.yaml (c6g.4xlarge: 16 vCPU, 32 GB RAM)
+-- Note: Some parameters are set at server level in compose.load.yaml
+-- These session-level settings complement the server configuration
 
--- Set synchronous_commit to off for faster writes during data load
+-- Disable synchronous commit for faster writes during data load
 -- This trades durability for speed - acceptable during initial load
 SET synchronous_commit = off;
 
--- Increase maintenance_work_mem for faster index creation
-SET maintenance_work_mem = '1GB';
-
--- Increase work_mem for better sort performance
+-- Memory settings for faster index creation and sort operations
+SET maintenance_work_mem = '2GB';
 SET work_mem = '256MB';
 
 -- Enable parallel index creation (uses multiple cores for large indexes)
-SET max_parallel_maintenance_workers = 2;
+SET max_parallel_maintenance_workers = 8;
 
 -- Drop materialized views first
 DROP MATERIALIZED VIEW IF EXISTS customer_loyalty_summary CASCADE;
@@ -55,80 +58,133 @@ DROP TABLE IF EXISTS waste_reasons CASCADE;
 DROP TABLE IF EXISTS waste_spoilage CASCADE;
 
 -- ============================================================================
--- ALL TABLES (alphabetical)
+-- LARGE TABLES (>1GB) - Create → Load → PK → Indexes (by size descending)
+-- Tables: transaction_line_items (578GB), transactions (106GB), sales_daily (97GB),
+--         inventory_daily (85GB), delivery_assignments (12GB), supplier_shipments (5.4GB)
 -- ============================================================================
 
-CREATE TABLE assortment (
+-- ----------------------------------------------------------------------------
+-- transaction_line_items (578 GB) - Largest table, load first
+-- ----------------------------------------------------------------------------
+CREATE TABLE transaction_line_items (
+    transaction_id INTEGER NOT NULL,
+    line_number SMALLINT NOT NULL,
+    sku VARCHAR(25) NOT NULL,
+    quantity SMALLINT NOT NULL,
+    unit_price NUMERIC(7,2) NOT NULL,
+    line_total NUMERIC(8,2) NOT NULL,
+    promo_id INTEGER,
+    discount_amount NUMERIC(7,2) DEFAULT 0
+);
+
+BEGIN; TRUNCATE transaction_line_items; COPY transaction_line_items FROM '/docker-entrypoint-initdb.d/transaction_line_items.csv' WITH (FORMAT csv, HEADER true, FREEZE); COMMIT;
+
+ALTER TABLE transaction_line_items ADD PRIMARY KEY (transaction_id, line_number);
+
+CREATE INDEX idx_transaction_line_items_sku ON transaction_line_items(sku);
+
+-- ----------------------------------------------------------------------------
+-- transactions (106 GB)
+-- ----------------------------------------------------------------------------
+CREATE TABLE transactions (
+    transaction_id INTEGER NOT NULL,
+    date DATE NOT NULL,
+    store_id INTEGER NOT NULL,
+    timestamp TIMESTAMP NOT NULL,
+    total_items SMALLINT NOT NULL,
+    payment_method VARCHAR(20) NOT NULL,
+    customer_type VARCHAR(20) NOT NULL,
+    total_amount NUMERIC(8,2) NOT NULL,
+    customer_id INTEGER,
+    is_loyalty_transaction BOOLEAN DEFAULT FALSE,
+    loyalty_points_earned INTEGER DEFAULT 0,
+    loyalty_points_redeemed INTEGER DEFAULT 0,
+    fulfillment_type VARCHAR(30),
+    order_status VARCHAR(30),
+    fulfillment_store_id INTEGER,
+    delivery_address_id INTEGER,
+    delivery_fee NUMERIC(5,2) DEFAULT 0,
+    tip_amount NUMERIC(5,2) DEFAULT 0,
+    delivery_instructions VARCHAR(500),
+    requested_delivery_time TIMESTAMP,
+    actual_delivery_time TIMESTAMP
+);
+
+BEGIN; TRUNCATE transactions; COPY transactions FROM '/docker-entrypoint-initdb.d/transactions.csv' WITH (FORMAT csv, HEADER true, FREEZE); COMMIT;
+
+ALTER TABLE transactions ADD PRIMARY KEY (transaction_id);
+
+CREATE INDEX idx_transactions_customer ON transactions(customer_id);
+CREATE INDEX idx_transactions_date ON transactions(date);
+CREATE INDEX idx_transactions_loyalty ON transactions(customer_id, is_loyalty_transaction) WHERE is_loyalty_transaction = TRUE;
+CREATE INDEX idx_transactions_store ON transactions(store_id);
+CREATE INDEX idx_transactions_timestamp ON transactions(timestamp);
+
+-- ----------------------------------------------------------------------------
+-- sales_daily (97 GB)
+-- ----------------------------------------------------------------------------
+CREATE TABLE sales_daily (
+    date DATE NOT NULL,
     store_id INTEGER NOT NULL,
     sku VARCHAR(25) NOT NULL,
-    active_from DATE NOT NULL,
-    active_to DATE,
-    planogram_facings SMALLINT NOT NULL,
-    shelf_height_cm NUMERIC(5,2),
-    PRIMARY KEY (store_id, sku, active_from)
+    units_sold INTEGER NOT NULL DEFAULT 0,
+    gross_revenue NUMERIC(10,2) NOT NULL DEFAULT 0,
+    promo_id INTEGER,
+    regular_price NUMERIC(7,2) NOT NULL,
+    net_price NUMERIC(7,2) NOT NULL,
+    revenue NUMERIC(10,2) NOT NULL DEFAULT 0,
+    supplier_rebate_amt NUMERIC(7,2) DEFAULT 0,
+    spoilage_cost NUMERIC(7,2) DEFAULT 0,
+    promo_funding_received NUMERIC(7,2) DEFAULT 0,
+    gross_margin_pct NUMERIC(5,2),
+    discount_pct NUMERIC(5,2) DEFAULT 0,
+    cogs_c NUMERIC(10,2) DEFAULT 0,
+    cogs_s NUMERIC(10,2) DEFAULT 0,
+    sales_date DATE NOT NULL,
+    posting_date DATE NOT NULL
 );
 
-CREATE TABLE brands (
-    brand_id SERIAL PRIMARY KEY,
-    brand_name VARCHAR(100) UNIQUE NOT NULL,
-    brand_tier VARCHAR(20) NOT NULL,
-    manufacturer VARCHAR(100),
-    is_private_label BOOLEAN,
-    brand_popularity NUMERIC(3,2)
+BEGIN; TRUNCATE sales_daily; COPY sales_daily FROM '/docker-entrypoint-initdb.d/sales_daily.csv' WITH (FORMAT csv, HEADER true, FREEZE); COMMIT;
+
+ALTER TABLE sales_daily ADD PRIMARY KEY (date, store_id, sku);
+
+CREATE INDEX idx_sales_promo ON sales_daily(promo_id);
+CREATE INDEX idx_sales_sku ON sales_daily(sku);
+CREATE INDEX idx_sales_sku_date ON sales_daily (sku, date);
+CREATE INDEX idx_sales_store ON sales_daily(store_id);
+
+-- ----------------------------------------------------------------------------
+-- inventory_daily (85 GB)
+-- ----------------------------------------------------------------------------
+CREATE TABLE inventory_daily (
+    date DATE NOT NULL,
+    store_id INTEGER NOT NULL,
+    sku VARCHAR(25) NOT NULL,
+    on_hand INTEGER NOT NULL DEFAULT 0,
+    on_order INTEGER NOT NULL DEFAULT 0,
+    in_transit INTEGER NOT NULL DEFAULT 0,
+    safety_stock INTEGER NOT NULL DEFAULT 0,
+    last_scan_ts TIMESTAMP,
+    system_on_hand INTEGER NOT NULL DEFAULT 0,
+    available_to_promise INTEGER NOT NULL DEFAULT 0,
+    open_hours SMALLINT DEFAULT 12,
+    in_stock_hours REAL DEFAULT 0,
+    dc_allocated_qty INTEGER DEFAULT 0,
+    quarantine_hold INTEGER DEFAULT 0
 );
 
-CREATE TABLE categories (
-    category_id SERIAL PRIMARY KEY,
-    category_name VARCHAR(50) UNIQUE NOT NULL,
-    category_group VARCHAR(50),
-    margin_target_pct NUMERIC(4,2),
-    is_perishable BOOLEAN,
-    elasticity NUMERIC(3,2)
-);
+BEGIN; TRUNCATE inventory_daily; COPY inventory_daily FROM '/docker-entrypoint-initdb.d/inventory_daily.csv' WITH (FORMAT csv, HEADER true, FREEZE); COMMIT;
 
-CREATE TABLE customer_addresses (
-    address_id INTEGER PRIMARY KEY,
-    customer_id INTEGER,
-    address_type VARCHAR(20),
-    is_default BOOLEAN DEFAULT FALSE,
-    street_address VARCHAR(255),
-    apartment_unit VARCHAR(50),
-    city VARCHAR(100),
-    state VARCHAR(2),
-    zip_code VARCHAR(10),
-    latitude NUMERIC(9, 6),
-    longitude NUMERIC(10, 6),
-    delivery_instructions VARCHAR(500),
-    has_doorman BOOLEAN DEFAULT FALSE,
-    requires_signature BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP
-);
+ALTER TABLE inventory_daily ADD PRIMARY KEY (date, store_id, sku);
 
-CREATE TABLE customers (
-    customer_id INTEGER PRIMARY KEY,
-    email VARCHAR(255) UNIQUE,
-    phone VARCHAR(20),
-    first_name VARCHAR(100),
-    last_name VARCHAR(100),
-    age_bracket VARCHAR(20),
-    household_size SMALLINT,
-    income_bracket VARCHAR(20),
-    primary_store_id INTEGER,
-    primary_city VARCHAR(100),
-    home_latitude NUMERIC(9, 6),
-    home_longitude NUMERIC(10, 6),
-    loyalty_member BOOLEAN DEFAULT FALSE,
-    loyalty_join_date DATE,
-    preferred_shopping_time VARCHAR(20),
-    price_sensitivity VARCHAR(20),
-    customer_segment VARCHAR(30),
-    created_date DATE,
-    has_online_account BOOLEAN DEFAULT FALSE,
-    prefers_online BOOLEAN DEFAULT FALSE
-);
+CREATE INDEX idx_inventory_sku_date ON inventory_daily (sku, date);
+CREATE INDEX idx_inventory_store ON inventory_daily(store_id);
 
+-- ----------------------------------------------------------------------------
+-- delivery_assignments (12 GB)
+-- ----------------------------------------------------------------------------
 CREATE TABLE delivery_assignments (
-    assignment_id INTEGER PRIMARY KEY,
+    assignment_id INTEGER NOT NULL,
     transaction_id INTEGER,
     driver_id INTEGER,
     assigned_at TIMESTAMP NOT NULL,
@@ -154,8 +210,111 @@ CREATE TABLE delivery_assignments (
     customer_feedback VARCHAR(2000)
 );
 
+BEGIN; TRUNCATE delivery_assignments; COPY delivery_assignments FROM '/docker-entrypoint-initdb.d/delivery_assignments.csv' WITH (FORMAT csv, HEADER true, FREEZE); COMMIT;
+
+ALTER TABLE delivery_assignments ADD PRIMARY KEY (assignment_id);
+
+CREATE INDEX idx_delivery_assignments_driver ON delivery_assignments(driver_id);
+CREATE INDEX idx_delivery_assignments_transaction ON delivery_assignments(transaction_id);
+
+-- ----------------------------------------------------------------------------
+-- supplier_shipments (5.4 GB)
+-- ----------------------------------------------------------------------------
+CREATE TABLE supplier_shipments (
+    shipment_id INTEGER NOT NULL,
+    shipment_date DATE NOT NULL,
+    delivery_date DATE NOT NULL,
+    store_id INTEGER NOT NULL,
+    sku VARCHAR(25) NOT NULL,
+    quantity_shipped INTEGER NOT NULL,
+    quantity_received INTEGER NOT NULL,
+    supplier_name VARCHAR(100),
+    po_number VARCHAR(50),
+    shipment_status VARCHAR(20)
+);
+
+BEGIN; TRUNCATE supplier_shipments; COPY supplier_shipments FROM '/docker-entrypoint-initdb.d/supplier_shipments.csv' WITH (FORMAT csv, HEADER true, FREEZE); COMMIT;
+
+ALTER TABLE supplier_shipments ADD PRIMARY KEY (shipment_id);
+
+CREATE INDEX idx_shipments_delivery_date ON supplier_shipments(delivery_date);
+CREATE INDEX idx_shipments_sku ON supplier_shipments(sku);
+CREATE INDEX idx_shipments_store ON supplier_shipments(store_id);
+
+-- ============================================================================
+-- SMALL TABLES (<1GB) - Create all tables first (alphabetical)
+-- ============================================================================
+
+CREATE TABLE assortment (
+    store_id INTEGER NOT NULL,
+    sku VARCHAR(25) NOT NULL,
+    active_from DATE NOT NULL,
+    active_to DATE,
+    planogram_facings SMALLINT NOT NULL,
+    shelf_height_cm NUMERIC(5,2)
+);
+
+CREATE TABLE brands (
+    brand_id SERIAL,
+    brand_name VARCHAR(100) UNIQUE NOT NULL,
+    brand_tier VARCHAR(20) NOT NULL,
+    manufacturer VARCHAR(100),
+    is_private_label BOOLEAN,
+    brand_popularity NUMERIC(3,2)
+);
+
+CREATE TABLE categories (
+    category_id SERIAL,
+    category_name VARCHAR(50) UNIQUE NOT NULL,
+    category_group VARCHAR(50),
+    margin_target_pct NUMERIC(4,2),
+    is_perishable BOOLEAN,
+    elasticity NUMERIC(3,2)
+);
+
+CREATE TABLE customer_addresses (
+    address_id INTEGER NOT NULL,
+    customer_id INTEGER,
+    address_type VARCHAR(20),
+    is_default BOOLEAN DEFAULT FALSE,
+    street_address VARCHAR(255),
+    apartment_unit VARCHAR(50),
+    city VARCHAR(100),
+    state VARCHAR(2),
+    zip_code VARCHAR(10),
+    latitude NUMERIC(9, 6),
+    longitude NUMERIC(10, 6),
+    delivery_instructions VARCHAR(500),
+    has_doorman BOOLEAN DEFAULT FALSE,
+    requires_signature BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP
+);
+
+CREATE TABLE customers (
+    customer_id INTEGER NOT NULL,
+    email VARCHAR(255) UNIQUE,
+    phone VARCHAR(20),
+    first_name VARCHAR(100),
+    last_name VARCHAR(100),
+    age_bracket VARCHAR(20),
+    household_size SMALLINT,
+    income_bracket VARCHAR(20),
+    primary_store_id INTEGER,
+    primary_city VARCHAR(100),
+    home_latitude NUMERIC(9, 6),
+    home_longitude NUMERIC(10, 6),
+    loyalty_member BOOLEAN DEFAULT FALSE,
+    loyalty_join_date DATE,
+    preferred_shopping_time VARCHAR(20),
+    price_sensitivity VARCHAR(20),
+    customer_segment VARCHAR(30),
+    created_date DATE,
+    has_online_account BOOLEAN DEFAULT FALSE,
+    prefers_online BOOLEAN DEFAULT FALSE
+);
+
 CREATE TABLE delivery_drivers (
-    driver_id INTEGER PRIMARY KEY,
+    driver_id INTEGER NOT NULL,
     first_name VARCHAR(100),
     last_name VARCHAR(100),
     phone VARCHAR(20),
@@ -179,7 +338,7 @@ CREATE TABLE delivery_drivers (
 );
 
 CREATE TABLE delivery_zones (
-    zone_id SERIAL PRIMARY KEY,
+    zone_id SERIAL,
     zone_name VARCHAR(100),
     store_id INTEGER,
     center_latitude NUMERIC(9, 6),
@@ -196,26 +355,8 @@ CREATE TABLE delivery_zones (
     peak_hours VARCHAR(200)
 );
 
-CREATE TABLE inventory_daily (
-    date DATE NOT NULL,
-    store_id INTEGER NOT NULL,
-    sku VARCHAR(25) NOT NULL,
-    on_hand INTEGER NOT NULL DEFAULT 0,
-    on_order INTEGER NOT NULL DEFAULT 0,
-    in_transit INTEGER NOT NULL DEFAULT 0,
-    safety_stock INTEGER NOT NULL DEFAULT 0,
-    last_scan_ts TIMESTAMP,
-    system_on_hand INTEGER NOT NULL DEFAULT 0,
-    available_to_promise INTEGER NOT NULL DEFAULT 0,
-    open_hours SMALLINT DEFAULT 12,
-    in_stock_hours REAL DEFAULT 0,
-    dc_allocated_qty INTEGER DEFAULT 0,
-    quarantine_hold INTEGER DEFAULT 0,
-    PRIMARY KEY (date, store_id, sku)
-);
-
 CREATE TABLE payment_methods (
-    payment_method_id SERIAL PRIMARY KEY,
+    payment_method_id SERIAL,
     payment_method_code VARCHAR(20) UNIQUE NOT NULL,
     payment_method_name VARCHAR(50) NOT NULL,
     processing_fee_pct NUMERIC(4,3),
@@ -223,7 +364,7 @@ CREATE TABLE payment_methods (
 );
 
 CREATE TABLE price_changes (
-    change_id INTEGER PRIMARY KEY,
+    change_id INTEGER NOT NULL,
     effective_date DATE NOT NULL,
     store_id INTEGER,
     sku VARCHAR(25) NOT NULL,
@@ -232,7 +373,7 @@ CREATE TABLE price_changes (
 );
 
 CREATE TABLE products (
-    product_id INTEGER PRIMARY KEY,
+    product_id INTEGER NOT NULL,
     sku VARCHAR(25) UNIQUE NOT NULL,
     brand VARCHAR(100) NOT NULL,
     category VARCHAR(50) NOT NULL,
@@ -249,7 +390,7 @@ CREATE TABLE products (
 );
 
 CREATE TABLE promotions (
-    promo_id INTEGER PRIMARY KEY,
+    promo_id INTEGER NOT NULL,
     sku VARCHAR(25) NOT NULL,
     start_date DATE NOT NULL,
     end_date DATE NOT NULL,
@@ -262,7 +403,7 @@ CREATE TABLE promotions (
 );
 
 CREATE TABLE promotion_types (
-    promo_type_id SERIAL PRIMARY KEY,
+    promo_type_id SERIAL,
     promo_type_code VARCHAR(50) UNIQUE NOT NULL,
     promo_type_name VARCHAR(100) NOT NULL,
     typical_discount_pct SMALLINT,
@@ -270,7 +411,7 @@ CREATE TABLE promotion_types (
 );
 
 CREATE TABLE regions (
-    region_id SERIAL PRIMARY KEY,
+    region_id SERIAL,
     region_code VARCHAR(20) UNIQUE NOT NULL,
     region_name VARCHAR(100) NOT NULL,
     country VARCHAR(50) NOT NULL,
@@ -286,42 +427,19 @@ CREATE TABLE returns_daily (
     reason_code VARCHAR(20),
     refund_value NUMERIC(8,2) NOT NULL DEFAULT 0,
     transaction_id INTEGER NOT NULL,
-    line_number INTEGER NOT NULL,
-    PRIMARY KEY (date, store_id, sku, transaction_id, line_number)
+    line_number INTEGER NOT NULL
 );
 
 CREATE TABLE return_reasons (
-    return_reason_id SERIAL PRIMARY KEY,
+    return_reason_id SERIAL,
     return_reason_code VARCHAR(50) UNIQUE NOT NULL,
     return_reason_name VARCHAR(100) NOT NULL,
     is_quality_issue BOOLEAN,
     is_preventable BOOLEAN
 );
 
-CREATE TABLE sales_daily (
-    date DATE NOT NULL,
-    store_id INTEGER NOT NULL,
-    sku VARCHAR(25) NOT NULL,
-    units_sold INTEGER NOT NULL DEFAULT 0,
-    gross_revenue NUMERIC(10,2) NOT NULL DEFAULT 0,
-    promo_id INTEGER,
-    regular_price NUMERIC(7,2) NOT NULL,
-    net_price NUMERIC(7,2) NOT NULL,
-    revenue NUMERIC(10,2) NOT NULL DEFAULT 0,
-    supplier_rebate_amt NUMERIC(7,2) DEFAULT 0,
-    spoilage_cost NUMERIC(7,2) DEFAULT 0,
-    promo_funding_received NUMERIC(7,2) DEFAULT 0,
-    gross_margin_pct NUMERIC(5,2),
-    discount_pct NUMERIC(5,2) DEFAULT 0,
-    cogs_c NUMERIC(10,2) DEFAULT 0,
-    cogs_s NUMERIC(10,2) DEFAULT 0,
-    sales_date DATE NOT NULL,
-    posting_date DATE NOT NULL,
-    PRIMARY KEY (date, store_id, sku)
-);
-
 CREATE TABLE stores (
-    store_id INTEGER PRIMARY KEY,
+    store_id INTEGER NOT NULL,
     region VARCHAR(20) NOT NULL,
     store_type VARCHAR(20) NOT NULL,
     sq_ft INTEGER NOT NULL,
@@ -333,7 +451,7 @@ CREATE TABLE stores (
 );
 
 CREATE TABLE store_types (
-    store_type_id SERIAL PRIMARY KEY,
+    store_type_id SERIAL,
     store_type_code VARCHAR(20) UNIQUE NOT NULL,
     store_type_name VARCHAR(50) NOT NULL,
     typical_sq_ft_min INTEGER,
@@ -343,7 +461,7 @@ CREATE TABLE store_types (
 );
 
 CREATE TABLE suppliers (
-    supplier_id SERIAL PRIMARY KEY,
+    supplier_id SERIAL,
     supplier_name VARCHAR(100) UNIQUE NOT NULL,
     supplier_type VARCHAR(50),
     lead_time_days SMALLINT,
@@ -351,21 +469,8 @@ CREATE TABLE suppliers (
     payment_terms VARCHAR(50)
 );
 
-CREATE TABLE supplier_shipments (
-    shipment_id INTEGER PRIMARY KEY,
-    shipment_date DATE NOT NULL,
-    delivery_date DATE NOT NULL,
-    store_id INTEGER NOT NULL,
-    sku VARCHAR(25) NOT NULL,
-    quantity_shipped INTEGER NOT NULL,
-    quantity_received INTEGER NOT NULL,
-    supplier_name VARCHAR(100),
-    po_number VARCHAR(50),
-    shipment_status VARCHAR(20)
-);
-
 CREATE TABLE tickets (
-    ticket_id INTEGER PRIMARY KEY,
+    ticket_id INTEGER NOT NULL,
     created_at TIMESTAMP NOT NULL,
     resolved_at TIMESTAMP,
     store_id INTEGER NOT NULL,
@@ -376,51 +481,15 @@ CREATE TABLE tickets (
     resolved BOOLEAN NOT NULL DEFAULT FALSE
 );
 
-CREATE TABLE transaction_line_items (
-    transaction_id INTEGER NOT NULL,
-    line_number SMALLINT NOT NULL,
-    sku VARCHAR(25) NOT NULL,
-    quantity SMALLINT NOT NULL,
-    unit_price NUMERIC(7,2) NOT NULL,
-    line_total NUMERIC(8,2) NOT NULL,
-    promo_id INTEGER,
-    discount_amount NUMERIC(7,2) DEFAULT 0,
-    PRIMARY KEY (transaction_id, line_number)
-);
-
-CREATE TABLE transactions (
-    transaction_id INTEGER PRIMARY KEY,
-    date DATE NOT NULL,
-    store_id INTEGER NOT NULL,
-    timestamp TIMESTAMP NOT NULL,
-    total_items SMALLINT NOT NULL,
-    payment_method VARCHAR(20) NOT NULL,
-    customer_type VARCHAR(20) NOT NULL,
-    total_amount NUMERIC(8,2) NOT NULL,
-    customer_id INTEGER,
-    is_loyalty_transaction BOOLEAN DEFAULT FALSE,
-    loyalty_points_earned INTEGER DEFAULT 0,
-    loyalty_points_redeemed INTEGER DEFAULT 0,
-    fulfillment_type VARCHAR(30),
-    order_status VARCHAR(30),
-    fulfillment_store_id INTEGER,
-    delivery_address_id INTEGER,
-    delivery_fee NUMERIC(5,2) DEFAULT 0,
-    tip_amount NUMERIC(5,2) DEFAULT 0,
-    delivery_instructions VARCHAR(500),
-    requested_delivery_time TIMESTAMP,
-    actual_delivery_time TIMESTAMP
-);
-
 CREATE TABLE waste_reasons (
-    waste_reason_id SERIAL PRIMARY KEY,
+    waste_reason_id SERIAL,
     waste_reason_code VARCHAR(50) UNIQUE NOT NULL,
     waste_reason_name VARCHAR(100) NOT NULL,
     is_preventable BOOLEAN
 );
 
 CREATE TABLE waste_spoilage (
-    waste_id INTEGER PRIMARY KEY,
+    waste_id INTEGER NOT NULL,
     date DATE NOT NULL,
     store_id INTEGER NOT NULL,
     sku VARCHAR(25) NOT NULL,
@@ -431,7 +500,7 @@ CREATE TABLE waste_spoilage (
 );
 
 -- ============================================================================
--- LOAD DATA FROM CSV FILES (alphabetical, each in own transaction for FREEZE)
+-- SMALL TABLES - Load all data (alphabetical)
 -- ============================================================================
 
 BEGIN; TRUNCATE assortment; COPY assortment FROM '/docker-entrypoint-initdb.d/assortment.csv' WITH (FORMAT csv, HEADER true, FREEZE); COMMIT;
@@ -439,10 +508,8 @@ BEGIN; TRUNCATE brands; COPY brands FROM '/docker-entrypoint-initdb.d/brands.csv
 BEGIN; TRUNCATE categories; COPY categories FROM '/docker-entrypoint-initdb.d/categories.csv' WITH (FORMAT csv, HEADER true, FREEZE); COMMIT;
 BEGIN; TRUNCATE customer_addresses; COPY customer_addresses FROM '/docker-entrypoint-initdb.d/customer_addresses.csv' WITH (FORMAT csv, HEADER true, FREEZE); COMMIT;
 BEGIN; TRUNCATE customers; COPY customers FROM '/docker-entrypoint-initdb.d/customers.csv' WITH (FORMAT csv, HEADER true, FREEZE); COMMIT;
-BEGIN; TRUNCATE delivery_assignments; COPY delivery_assignments FROM '/docker-entrypoint-initdb.d/delivery_assignments.csv' WITH (FORMAT csv, HEADER true, FREEZE); COMMIT;
 BEGIN; TRUNCATE delivery_drivers; COPY delivery_drivers FROM '/docker-entrypoint-initdb.d/delivery_drivers.csv' WITH (FORMAT csv, HEADER true, FREEZE); COMMIT;
 BEGIN; TRUNCATE delivery_zones; COPY delivery_zones FROM '/docker-entrypoint-initdb.d/delivery_zones.csv' WITH (FORMAT csv, HEADER true, FREEZE); COMMIT;
-BEGIN; TRUNCATE inventory_daily; COPY inventory_daily FROM '/docker-entrypoint-initdb.d/inventory_daily.csv' WITH (FORMAT csv, HEADER true, FREEZE); COMMIT;
 BEGIN; TRUNCATE payment_methods; COPY payment_methods FROM '/docker-entrypoint-initdb.d/payment_methods.csv' WITH (FORMAT csv, HEADER true, FREEZE); COMMIT;
 BEGIN; TRUNCATE price_changes; COPY price_changes FROM '/docker-entrypoint-initdb.d/price_changes.csv' WITH (FORMAT csv, HEADER true, FREEZE); COMMIT;
 BEGIN; TRUNCATE products; COPY products FROM '/docker-entrypoint-initdb.d/products.csv' WITH (FORMAT csv, HEADER true, FREEZE); COMMIT;
@@ -451,16 +518,38 @@ BEGIN; TRUNCATE promotion_types; COPY promotion_types FROM '/docker-entrypoint-i
 BEGIN; TRUNCATE regions; COPY regions FROM '/docker-entrypoint-initdb.d/regions.csv' WITH (FORMAT csv, HEADER true, FREEZE); COMMIT;
 BEGIN; TRUNCATE returns_daily; COPY returns_daily FROM '/docker-entrypoint-initdb.d/returns_daily.csv' WITH (FORMAT csv, HEADER true, FREEZE); COMMIT;
 BEGIN; TRUNCATE return_reasons; COPY return_reasons FROM '/docker-entrypoint-initdb.d/return_reasons.csv' WITH (FORMAT csv, HEADER true, FREEZE); COMMIT;
-BEGIN; TRUNCATE sales_daily; COPY sales_daily FROM '/docker-entrypoint-initdb.d/sales_daily.csv' WITH (FORMAT csv, HEADER true, FREEZE); COMMIT;
 BEGIN; TRUNCATE stores; COPY stores FROM '/docker-entrypoint-initdb.d/stores.csv' WITH (FORMAT csv, HEADER true, FREEZE); COMMIT;
 BEGIN; TRUNCATE store_types; COPY store_types FROM '/docker-entrypoint-initdb.d/store_types.csv' WITH (FORMAT csv, HEADER true, FREEZE); COMMIT;
 BEGIN; TRUNCATE suppliers; COPY suppliers FROM '/docker-entrypoint-initdb.d/suppliers.csv' WITH (FORMAT csv, HEADER true, FREEZE); COMMIT;
-BEGIN; TRUNCATE supplier_shipments; COPY supplier_shipments FROM '/docker-entrypoint-initdb.d/supplier_shipments.csv' WITH (FORMAT csv, HEADER true, FREEZE); COMMIT;
 BEGIN; TRUNCATE tickets; COPY tickets FROM '/docker-entrypoint-initdb.d/tickets.csv' WITH (FORMAT csv, HEADER true, FREEZE); COMMIT;
-BEGIN; TRUNCATE transaction_line_items; COPY transaction_line_items FROM '/docker-entrypoint-initdb.d/transaction_line_items.csv' WITH (FORMAT csv, HEADER true, FREEZE); COMMIT;
-BEGIN; TRUNCATE transactions; COPY transactions FROM '/docker-entrypoint-initdb.d/transactions.csv' WITH (FORMAT csv, HEADER true, FREEZE); COMMIT;
 BEGIN; TRUNCATE waste_reasons; COPY waste_reasons FROM '/docker-entrypoint-initdb.d/waste_reasons.csv' WITH (FORMAT csv, HEADER true, FREEZE); COMMIT;
 BEGIN; TRUNCATE waste_spoilage; COPY waste_spoilage FROM '/docker-entrypoint-initdb.d/waste_spoilage.csv' WITH (FORMAT csv, HEADER true, FREEZE); COMMIT;
+
+-- ============================================================================
+-- SMALL TABLES - Add all primary keys (alphabetical)
+-- ============================================================================
+
+ALTER TABLE assortment ADD PRIMARY KEY (store_id, sku, active_from);
+ALTER TABLE brands ADD PRIMARY KEY (brand_id);
+ALTER TABLE categories ADD PRIMARY KEY (category_id);
+ALTER TABLE customer_addresses ADD PRIMARY KEY (address_id);
+ALTER TABLE customers ADD PRIMARY KEY (customer_id);
+ALTER TABLE delivery_drivers ADD PRIMARY KEY (driver_id);
+ALTER TABLE delivery_zones ADD PRIMARY KEY (zone_id);
+ALTER TABLE payment_methods ADD PRIMARY KEY (payment_method_id);
+ALTER TABLE price_changes ADD PRIMARY KEY (change_id);
+ALTER TABLE products ADD PRIMARY KEY (product_id);
+ALTER TABLE promotions ADD PRIMARY KEY (promo_id);
+ALTER TABLE promotion_types ADD PRIMARY KEY (promo_type_id);
+ALTER TABLE regions ADD PRIMARY KEY (region_id);
+ALTER TABLE returns_daily ADD PRIMARY KEY (date, store_id, sku, transaction_id, line_number);
+ALTER TABLE return_reasons ADD PRIMARY KEY (return_reason_id);
+ALTER TABLE stores ADD PRIMARY KEY (store_id);
+ALTER TABLE store_types ADD PRIMARY KEY (store_type_id);
+ALTER TABLE suppliers ADD PRIMARY KEY (supplier_id);
+ALTER TABLE tickets ADD PRIMARY KEY (ticket_id);
+ALTER TABLE waste_reasons ADD PRIMARY KEY (waste_reason_id);
+ALTER TABLE waste_spoilage ADD PRIMARY KEY (waste_id);
 
 -- ============================================================================
 -- FOREIGN KEY CONSTRAINTS (alphabetical by table, NOT VALID for fast load)
@@ -469,13 +558,13 @@ BEGIN; TRUNCATE waste_spoilage; COPY waste_spoilage FROM '/docker-entrypoint-ini
 ALTER TABLE assortment ADD CONSTRAINT fk_assortment_sku
     FOREIGN KEY (sku) REFERENCES products(sku) NOT VALID;
 ALTER TABLE assortment ADD CONSTRAINT fk_assortment_store
-    FOREIGN KEY (store_id) REFERENCES stores(store_id) NOT VALID;
+   FOREIGN KEY (store_id) REFERENCES stores(store_id) NOT VALID;
 
 ALTER TABLE customer_addresses ADD CONSTRAINT fk_addresses_customer
-    FOREIGN KEY (customer_id) REFERENCES customers(customer_id) NOT VALID;
+   FOREIGN KEY (customer_id) REFERENCES customers(customer_id) NOT VALID;
 
 ALTER TABLE customers ADD CONSTRAINT fk_customers_store
-    FOREIGN KEY (primary_store_id) REFERENCES stores(store_id) NOT VALID;
+   FOREIGN KEY (primary_store_id) REFERENCES stores(store_id) NOT VALID;
 
 ALTER TABLE delivery_assignments ADD CONSTRAINT fk_assignments_driver
     FOREIGN KEY (driver_id) REFERENCES delivery_drivers(driver_id) NOT VALID;
@@ -485,10 +574,10 @@ ALTER TABLE delivery_assignments ADD CONSTRAINT fk_assignments_transaction
     FOREIGN KEY (transaction_id) REFERENCES transactions(transaction_id) NOT VALID;
 
 ALTER TABLE delivery_drivers ADD CONSTRAINT fk_drivers_store
-    FOREIGN KEY (primary_store_id) REFERENCES stores(store_id) NOT VALID;
+   FOREIGN KEY (primary_store_id) REFERENCES stores(store_id) NOT VALID;
 
 ALTER TABLE delivery_zones ADD CONSTRAINT fk_zones_store
-    FOREIGN KEY (store_id) REFERENCES stores(store_id) NOT VALID;
+   FOREIGN KEY (store_id) REFERENCES stores(store_id) NOT VALID;
 
 ALTER TABLE inventory_daily ADD CONSTRAINT fk_inventory_sku
     FOREIGN KEY (sku) REFERENCES products(sku) NOT VALID;
@@ -496,17 +585,17 @@ ALTER TABLE inventory_daily ADD CONSTRAINT fk_inventory_store
     FOREIGN KEY (store_id) REFERENCES stores(store_id) NOT VALID;
 
 ALTER TABLE price_changes ADD CONSTRAINT fk_price_sku
-    FOREIGN KEY (sku) REFERENCES products(sku) NOT VALID;
+   FOREIGN KEY (sku) REFERENCES products(sku) NOT VALID;
 ALTER TABLE price_changes ADD CONSTRAINT fk_price_store
-    FOREIGN KEY (store_id) REFERENCES stores(store_id) NOT VALID;
+   FOREIGN KEY (store_id) REFERENCES stores(store_id) NOT VALID;
 
 ALTER TABLE promotions ADD CONSTRAINT fk_promotions_sku
-    FOREIGN KEY (sku) REFERENCES products(sku) NOT VALID;
+   FOREIGN KEY (sku) REFERENCES products(sku) NOT VALID;
 
 ALTER TABLE returns_daily ADD CONSTRAINT fk_returns_sku
-    FOREIGN KEY (sku) REFERENCES products(sku) NOT VALID;
+   FOREIGN KEY (sku) REFERENCES products(sku) NOT VALID;
 ALTER TABLE returns_daily ADD CONSTRAINT fk_returns_store
-    FOREIGN KEY (store_id) REFERENCES stores(store_id) NOT VALID;
+   FOREIGN KEY (store_id) REFERENCES stores(store_id) NOT VALID;
 ALTER TABLE returns_daily ADD CONSTRAINT fk_returns_transaction
     FOREIGN KEY (transaction_id) REFERENCES transactions(transaction_id) NOT VALID;
 
@@ -516,36 +605,36 @@ ALTER TABLE sales_daily ADD CONSTRAINT fk_sales_store
     FOREIGN KEY (store_id) REFERENCES stores(store_id) NOT VALID;
 
 ALTER TABLE supplier_shipments ADD CONSTRAINT fk_shipments_sku
-    FOREIGN KEY (sku) REFERENCES products(sku) NOT VALID;
+   FOREIGN KEY (sku) REFERENCES products(sku) NOT VALID;
 ALTER TABLE supplier_shipments ADD CONSTRAINT fk_shipments_store
-    FOREIGN KEY (store_id) REFERENCES stores(store_id) NOT VALID;
+   FOREIGN KEY (store_id) REFERENCES stores(store_id) NOT VALID;
 
 ALTER TABLE tickets ADD CONSTRAINT fk_tickets_sku
-    FOREIGN KEY (sku) REFERENCES products(sku) NOT VALID;
+   FOREIGN KEY (sku) REFERENCES products(sku) NOT VALID;
 ALTER TABLE tickets ADD CONSTRAINT fk_tickets_store
-    FOREIGN KEY (store_id) REFERENCES stores(store_id) NOT VALID;
+   FOREIGN KEY (store_id) REFERENCES stores(store_id) NOT VALID;
 
 ALTER TABLE transaction_line_items ADD CONSTRAINT fk_line_items_sku
-    FOREIGN KEY (sku) REFERENCES products(sku) NOT VALID;
+   FOREIGN KEY (sku) REFERENCES products(sku) NOT VALID;
 ALTER TABLE transaction_line_items ADD CONSTRAINT fk_line_items_transaction
-    FOREIGN KEY (transaction_id) REFERENCES transactions(transaction_id) NOT VALID;
+   FOREIGN KEY (transaction_id) REFERENCES transactions(transaction_id) NOT VALID;
 
 ALTER TABLE transactions ADD CONSTRAINT fk_transactions_customer
-    FOREIGN KEY (customer_id) REFERENCES customers(customer_id) NOT VALID;
+   FOREIGN KEY (customer_id) REFERENCES customers(customer_id) NOT VALID;
 ALTER TABLE transactions ADD CONSTRAINT fk_transactions_delivery_address
-    FOREIGN KEY (delivery_address_id) REFERENCES customer_addresses(address_id) NOT VALID;
+   FOREIGN KEY (delivery_address_id) REFERENCES customer_addresses(address_id) NOT VALID;
 ALTER TABLE transactions ADD CONSTRAINT fk_transactions_fulfillment_store
-    FOREIGN KEY (fulfillment_store_id) REFERENCES stores(store_id) NOT VALID;
+   FOREIGN KEY (fulfillment_store_id) REFERENCES stores(store_id) NOT VALID;
 ALTER TABLE transactions ADD CONSTRAINT fk_transactions_store
-    FOREIGN KEY (store_id) REFERENCES stores(store_id) NOT VALID;
+   FOREIGN KEY (store_id) REFERENCES stores(store_id) NOT VALID;
 
 ALTER TABLE waste_spoilage ADD CONSTRAINT fk_waste_sku
-    FOREIGN KEY (sku) REFERENCES products(sku) NOT VALID;
+   FOREIGN KEY (sku) REFERENCES products(sku) NOT VALID;
 ALTER TABLE waste_spoilage ADD CONSTRAINT fk_waste_store
-    FOREIGN KEY (store_id) REFERENCES stores(store_id) NOT VALID;
+   FOREIGN KEY (store_id) REFERENCES stores(store_id) NOT VALID;
 
 -- ============================================================================
--- INDEXES (alphabetical by table)
+-- SMALL TABLES - Add all indexes (alphabetical)
 -- ============================================================================
 
 -- assortment
@@ -564,10 +653,6 @@ CREATE INDEX idx_customers_created_date ON customers(created_date);
 CREATE INDEX idx_customers_primary_store ON customers(primary_store_id);
 CREATE INDEX idx_customers_segment ON customers(customer_segment);
 
--- delivery_assignments
-CREATE INDEX idx_delivery_assignments_driver ON delivery_assignments(driver_id);
-CREATE INDEX idx_delivery_assignments_transaction ON delivery_assignments(transaction_id);
-
 -- delivery_drivers
 CREATE INDEX idx_delivery_drivers_available ON delivery_drivers(is_available, primary_store_id) WHERE is_available = TRUE;
 CREATE INDEX idx_delivery_drivers_store ON delivery_drivers(primary_store_id);
@@ -575,9 +660,6 @@ CREATE INDEX idx_delivery_drivers_store ON delivery_drivers(primary_store_id);
 -- delivery_zones
 CREATE INDEX idx_delivery_zones_active ON delivery_zones(is_active, store_id) WHERE is_active = TRUE;
 CREATE INDEX idx_delivery_zones_store ON delivery_zones(store_id);
-
--- inventory_daily
-CREATE INDEX idx_inventory_store ON inventory_daily(store_id);
 
 -- price_changes
 CREATE INDEX idx_price_changes_date ON price_changes(effective_date);
@@ -598,19 +680,9 @@ CREATE INDEX idx_returns_reason ON returns_daily(reason_code);
 CREATE INDEX idx_returns_sku ON returns_daily(sku);
 CREATE INDEX idx_returns_store ON returns_daily(store_id);
 
--- sales_daily
-CREATE INDEX idx_sales_promo ON sales_daily(promo_id);
-CREATE INDEX idx_sales_sku ON sales_daily(sku);
-CREATE INDEX idx_sales_store ON sales_daily(store_id);
-
 -- stores
 CREATE INDEX idx_stores_region ON stores(region);
 CREATE INDEX idx_stores_type ON stores(store_type);
-
--- supplier_shipments
-CREATE INDEX idx_shipments_delivery_date ON supplier_shipments(delivery_date);
-CREATE INDEX idx_shipments_sku ON supplier_shipments(sku);
-CREATE INDEX idx_shipments_store ON supplier_shipments(store_id);
 
 -- tickets
 CREATE INDEX idx_tickets_created ON tickets(created_at);
@@ -618,21 +690,12 @@ CREATE INDEX idx_tickets_issue_type ON tickets(issue_type);
 CREATE INDEX idx_tickets_store ON tickets(store_id);
 CREATE INDEX idx_tickets_unresolved ON tickets(store_id, created_at) WHERE resolved = FALSE;
 
--- transaction_line_items
-CREATE INDEX idx_transaction_line_items_sku ON transaction_line_items(sku);
-
--- transactions
-CREATE INDEX idx_transactions_customer ON transactions(customer_id);
-CREATE INDEX idx_transactions_date ON transactions(date);
-CREATE INDEX idx_transactions_loyalty ON transactions(customer_id, is_loyalty_transaction) WHERE is_loyalty_transaction = TRUE;
-CREATE INDEX idx_transactions_store ON transactions(store_id);
-CREATE INDEX idx_transactions_timestamp ON transactions(timestamp);
-
 -- waste_spoilage
 CREATE INDEX idx_waste_date ON waste_spoilage(date);
 CREATE INDEX idx_waste_reason ON waste_spoilage(waste_reason);
 CREATE INDEX idx_waste_sku ON waste_spoilage(sku);
 CREATE INDEX idx_waste_store ON waste_spoilage(store_id);
+CREATE INDEX idx_waste_store_date ON waste_spoilage (store_id, date);
 
 -- ============================================================================
 -- MATERIALIZED VIEWS
@@ -640,36 +703,35 @@ CREATE INDEX idx_waste_store ON waste_spoilage(store_id);
 
 -- Customer loyalty summary with calculated tiers based on last 12 months spending
 -- Tier thresholds (annual spend):
---   Platinum: $1,500+
---   Gold:     $750+
---   Silver:   $300+
---   Bronze:   $1+
---   Inactive: $0
+--   Platinum:   $12,000+ (~$230/week - top 5% of shoppers)
+--   Gold:       $9,000+  (~$175/week - frequent shoppers)
+--   Silver:     $5,000+  (~$100/week - regular shoppers)
+--   Bronze:     $2,500+  (~$50/week - occasional shoppers)
+--   Occasional: >$0      (any purchase in 12 months)
+--   Inactive:   $0       (no purchases in 12 months)
 
 CREATE MATERIALIZED VIEW customer_loyalty_summary AS
-WITH last_12_months AS (
-    SELECT
-        customer_id,
-        COUNT(DISTINCT transaction_id) as transactions_12m,
-        COALESCE(SUM(total_amount), 0) as spend_12m,
-        MIN(date) as first_purchase_12m,
-        MAX(date) as last_purchase_12m
+WITH constants AS (
+    SELECT MAX(date) as max_d, 
+           (MAX(date) - INTERVAL '12 months') as threshold_d 
     FROM transactions
-    WHERE date >= (SELECT MAX(date) - INTERVAL '12 months' FROM transactions)
-      AND customer_id IS NOT NULL
-    GROUP BY customer_id
 ),
-lifetime AS (
+aggregated_stats AS (
     SELECT
-        customer_id,
-        COUNT(DISTINCT transaction_id) as lifetime_transactions,
-        COALESCE(SUM(total_amount), 0) as lifetime_value,
-        MIN(date) as first_purchase_date,
-        MAX(date) as last_purchase_date,
-        COUNT(DISTINCT date) as shopping_days
-    FROM transactions
-    WHERE customer_id IS NOT NULL
-    GROUP BY customer_id
+        t.customer_id,
+        COUNT(*) as lifetime_transactions,
+        COALESCE(SUM(t.total_amount), 0) as lifetime_value,
+        MIN(t.date) as first_purchase_date,
+        MAX(t.date) as last_purchase_date,
+        COUNT(DISTINCT t.date) as shopping_days,
+        COUNT(*) FILTER (WHERE t.date >= c.threshold_d) as transactions_12m,
+        COALESCE(SUM(t.total_amount) FILTER (WHERE t.date >= c.threshold_d), 0) as spend_12m,
+        MIN(t.date) FILTER (WHERE t.date >= c.threshold_d) as first_purchase_12m,
+        MAX(t.date) FILTER (WHERE t.date >= c.threshold_d) as last_purchase_12m
+    FROM transactions t
+    CROSS JOIN constants c
+    WHERE t.customer_id IS NOT NULL
+    GROUP BY t.customer_id
 )
 SELECT
     c.customer_id,
@@ -681,50 +743,38 @@ SELECT
     c.customer_segment,
     c.primary_store_id,
     c.created_date,
-
-    -- Last 12 months metrics
-    COALESCE(l12.transactions_12m, 0) as transactions_12m,
-    COALESCE(l12.spend_12m, 0)::NUMERIC(12,2) as spend_12m,
-    l12.first_purchase_12m,
-    l12.last_purchase_12m,
-
-    -- Lifetime metrics
-    COALESCE(lt.lifetime_transactions, 0) as lifetime_transactions,
-    COALESCE(lt.lifetime_value, 0)::NUMERIC(12,2) as lifetime_value,
-    CASE WHEN lt.lifetime_transactions > 0
-         THEN (lt.lifetime_value / lt.lifetime_transactions)::NUMERIC(10,2)
+    COALESCE(s.transactions_12m, 0) as transactions_12m,
+    COALESCE(s.spend_12m, 0)::NUMERIC(12,2) as spend_12m,
+    s.first_purchase_12m,
+    s.last_purchase_12m,
+    COALESCE(s.lifetime_transactions, 0) as lifetime_transactions,
+    COALESCE(s.lifetime_value, 0)::NUMERIC(12,2) as lifetime_value,
+    CASE WHEN s.lifetime_transactions > 0
+         THEN (s.lifetime_value / s.lifetime_transactions)::NUMERIC(10,2)
          ELSE 0
     END as avg_basket_size,
-    lt.first_purchase_date,
-    lt.last_purchase_date,
-    COALESCE(lt.shopping_days, 0) as shopping_days,
-
-    -- Calculated tier based on last 12 months spend (only for loyalty members)
+    s.first_purchase_date,
+    s.last_purchase_date,
+    COALESCE(s.shopping_days, 0) as shopping_days,
     CASE
         WHEN NOT c.loyalty_member THEN 'non-member'
-        WHEN COALESCE(l12.spend_12m, 0) >= 1500 THEN 'platinum'
-        WHEN COALESCE(l12.spend_12m, 0) >= 750 THEN 'gold'
-        WHEN COALESCE(l12.spend_12m, 0) >= 300 THEN 'silver'
-        WHEN COALESCE(l12.spend_12m, 0) > 0 THEN 'bronze'
+        WHEN COALESCE(s.spend_12m, 0) >= 12000 THEN 'platinum'
+        WHEN COALESCE(s.spend_12m, 0) >= 9000  THEN 'gold'
+        WHEN COALESCE(s.spend_12m, 0) >= 5000  THEN 'silver'
+        WHEN COALESCE(s.spend_12m, 0) >= 2500  THEN 'bronze'
+        WHEN COALESCE(s.spend_12m, 0) > 0     THEN 'occasional'
         ELSE 'inactive'
     END as calculated_tier,
-
-    -- Days since last purchase
-    CASE WHEN lt.last_purchase_date IS NOT NULL
-         THEN (SELECT MAX(date) FROM transactions) - lt.last_purchase_date
-         ELSE NULL
-    END as days_since_last_purchase
-
+    (SELECT max_d FROM constants) - s.last_purchase_date as days_since_last_purchase
 FROM customers c
-LEFT JOIN last_12_months l12 ON c.customer_id = l12.customer_id
-LEFT JOIN lifetime lt ON c.customer_id = lt.customer_id;
+LEFT JOIN aggregated_stats s ON c.customer_id = s.customer_id;
 
--- Unique index for CONCURRENTLY refresh
 CREATE UNIQUE INDEX idx_customer_loyalty_summary_pk ON customer_loyalty_summary(customer_id);
 
 -- Additional indexes for common queries
 CREATE INDEX idx_customer_loyalty_summary_tier ON customer_loyalty_summary(calculated_tier);
 CREATE INDEX idx_customer_loyalty_summary_spend ON customer_loyalty_summary(spend_12m DESC);
+CREATE INDEX idx_customer_loyalty_summary_store ON customer_loyalty_summary(primary_store_id);
 CREATE INDEX idx_customer_loyalty_summary_lifetime ON customer_loyalty_summary(lifetime_value DESC);
 
 -- ============================================================================

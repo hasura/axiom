@@ -3638,10 +3638,12 @@ impl ShelfWiseDataGenerator {
                         let supplier_id = (product.product_id % 30) + 1;
                         let supplier = self.suppliers.iter().find(|s| s.supplier_id == supplier_id).unwrap();
 
+                        let popularity_factor = product.pareto_weight * product.brand_popularity;
                         let reorder_point = crate::inventory::calculate_reorder_point(
                             &history,
                             supplier.lead_time_days as f64,
-                            demand
+                            demand,
+                            popularity_factor
                         );
 
                         // Apply seasonal buildup multiplier
@@ -3654,16 +3656,39 @@ impl ShelfWiseDataGenerator {
                         // This ensures we don't under-order and deplete inventory over time
                         let inventory_position = on_hand + on_order;
                         if inventory_position < adjusted_reorder_point {
-                            // Calculate order quantity based on demand history
-                            let avg_daily_demand = if !history.is_empty() {
-                                history.iter().sum::<u32>() as f64 / history.len() as f64
+                            // Calculate order quantity based on actual sales history
+                            // Use the MAXIMUM of:
+                            // 1. Actual sales average from history (if available)
+                            // 2. Bootstrap estimate (demand × multiplier based on product popularity)
+                            // This prevents under-ordering when history is polluted with
+                            // constrained sales (low sales due to low inventory)
+                            //
+                            // Popular products (high pareto_weight, brand_popularity) have higher
+                            // actual-to-demand ratios due to weighted basket selection
+                            let popularity_factor = product.pareto_weight * product.brand_popularity;
+                            let bootstrap_multiplier = if popularity_factor > 1.5 {
+                                5.0  // Very popular products
+                            } else if popularity_factor > 1.0 {
+                                4.5  // Popular products
+                            } else if popularity_factor > 0.5 {
+                                4.0  // Average products
                             } else {
-                                demand as f64
+                                3.5  // Low popularity
+                            };
+                            let bootstrap_estimate = demand as f64 * bootstrap_multiplier;
+                            let avg_daily_sales = if !history.is_empty() {
+                                let history_avg = history.iter().sum::<u32>() as f64 / history.len() as f64;
+                                // Use the higher of history average or bootstrap estimate
+                                // This ensures we don't under-order due to polluted history
+                                history_avg.max(bootstrap_estimate)
+                            } else {
+                                // No history: use bootstrap estimate
+                                bootstrap_estimate
                             };
 
                             let base_order_qty = crate::inventory::calculate_order_quantity(
                                 product,
-                                avg_daily_demand,
+                                avg_daily_sales,
                                 &mut rng
                             );
 
@@ -3783,11 +3808,13 @@ impl ShelfWiseDataGenerator {
                         // Calculate realistic safety stock
                         let supplier_id = (product.product_id % 30) + 1;
                         let supplier = self.suppliers.iter().find(|s| s.supplier_id == supplier_id).unwrap();
+                        let popularity_factor = product.pareto_weight * product.brand_popularity;
 
                         let reorder_point = crate::inventory::calculate_reorder_point(
                             &history,
                             supplier.lead_time_days as f64,
-                            demand
+                            demand,
+                            popularity_factor
                         );
 
                         // Safety stock is part of reorder point calculation
@@ -4476,14 +4503,23 @@ impl ShelfWiseDataGenerator {
                 }
             }
 
-            // Update demand_history with MAX(actual_sales, expected_demand)
-            for key in demand_history.keys().cloned().collect::<Vec<_>>() {
-                let actual = actual_daily_sales_map.get(&key).copied().unwrap_or(0);
-                let expected = expected_demand_map.get(&key).copied().unwrap_or(0);
-                let value = actual.max(expected);
+            // Update demand_history with actual sales
+            // Iterate over actual_daily_sales_map to include NEW SKUs (not just existing keys!)
+            // CRITICAL: Only update history when sales were NOT constrained by inventory
+            // Sales are considered constrained if:
+            // 1. Ending inventory is 0 (stockout occurred)
+            // 2. Actual sales is 0 (complete stockout from start of day)
+            for (key, actual) in &actual_daily_sales_map {
+                // Check if this SKU ended the day with positive inventory
+                // If inventory is 0, sales were likely constrained
+                let ending_inventory = inventory.get(key).map(|(oh, _, _)| *oh).unwrap_or(0);
 
-                if let Some(history) = demand_history.get_mut(&key) {
-                    history.push(value);
+                // Only update history when:
+                // 1. We had actual sales (not a complete stockout)
+                // 2. We ended the day with inventory (sales weren't constrained)
+                if *actual > 0 && ending_inventory > 0 {
+                    let history = demand_history.entry(key.clone()).or_insert_with(Vec::new);
+                    history.push(*actual);
                     if history.len() > 30 {
                         history.drain(0..history.len()-30);
                     }

@@ -26,6 +26,11 @@ services:
           memory: 28G
     command:
       - "postgres"
+      # === DURABILITY (disabled for speed - data can be regenerated) ===
+      - "-c"
+      - "fsync=off"
+      - "-c"
+      - "full_page_writes=off"
       # === MEMORY (32GB total, ~24GB for PG) ===
       - "-c"
       - "shared_buffers=8GB"

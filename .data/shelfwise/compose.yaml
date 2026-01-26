@@ -1,5 +1,5 @@
 # ShelfWise - Steady State Configuration
-# Optimized for t4g.large (2 vCPU, 8 GB RAM)
+# Optimized for r6.large (2 vCPU, 16 GB RAM)
 # Use this for normal operation after data is loaded
 #
 # Usage: docker compose up -d
@@ -25,18 +25,18 @@ services:
     deploy:
       resources:
         limits:
-          memory: 7G
+          memory: 15G
     command:
       - "postgres"
-      # === MEMORY (8GB total) ===
+      # === MEMORY (16GB total) ===
       - "-c"
-      - "shared_buffers=2GB"
+      - "shared_buffers=4GB"
       - "-c"
-      - "effective_cache_size=6GB"
+      - "effective_cache_size=11GB"
       - "-c"
-      - "maintenance_work_mem=512MB"
+      - "maintenance_work_mem=1GB"
       - "-c"
-      - "work_mem=64MB"
+      - "work_mem=256MB"
       # === WAL / CHECKPOINTS ===
       - "-c"
       - "wal_buffers=64MB"

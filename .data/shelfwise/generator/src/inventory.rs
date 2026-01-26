@@ -3,84 +3,96 @@ use chrono::{NaiveDate, Datelike};
 use rand::Rng;
 
 /// Calculate reorder point based on demand history and lead time
-/// Scaled for realistic grocery basket sizes
+/// Uses actual sales data when available, but never below bootstrap estimate
+/// popularity_factor = product.pareto_weight * product.brand_popularity
 pub fn calculate_reorder_point(
     demand_history: &[u32],
     lead_time_days: f64,
     current_demand: u32,
+    popularity_factor: f64,
 ) -> u32 {
-    // Basket size multiplier: actual sales are ~4.5x demand-based estimates with weighted selection
-    // Tuned from 4.0 (caused depletion) to 4.5 (balanced)
-    let basket_multiplier = 4.5;
-
-    let avg_daily_demand = if !demand_history.is_empty() {
-        demand_history.iter().sum::<u32>() as f64 / demand_history.len() as f64
+    // Bootstrap multiplier based on product popularity
+    // Tuned to achieve stable 2-3% stockout rate (industry standard for grocery)
+    // Lower multipliers allow natural stockout rate to emerge
+    let bootstrap_multiplier = if popularity_factor > 1.5 {
+        5.0  // Very popular products
+    } else if popularity_factor > 1.0 {
+        4.5  // Popular products
+    } else if popularity_factor > 0.5 {
+        4.0  // Average products
     } else {
-        current_demand as f64
+        3.5  // Low popularity
     };
+    let bootstrap_avg = current_demand as f64 * bootstrap_multiplier;
 
-    // Scale demand for basket size effect
-    let adjusted_demand = avg_daily_demand * basket_multiplier;
-
-    // Calculate demand variability (standard deviation)
-    let demand_std_dev = if demand_history.len() > 1 {
-        let mean = avg_daily_demand;
-        let variance = demand_history.iter()
-            .map(|&d| {
-                let diff = d as f64 - mean;
-                diff * diff
-            })
-            .sum::<f64>() / (demand_history.len() - 1) as f64;
-        variance.sqrt() * basket_multiplier
+    // When we have history, use the MAXIMUM of:
+    // 1. Actual sales average from history
+    // 2. Bootstrap estimate
+    // This prevents under-ordering when history is polluted with constrained sales
+    let (avg_daily_sales, demand_std_dev) = if !demand_history.is_empty() {
+        let history_avg = demand_history.iter().sum::<u32>() as f64 / demand_history.len() as f64;
+        // Use the higher of history average or bootstrap estimate
+        let avg = history_avg.max(bootstrap_avg);
+        let std_dev = if demand_history.len() > 1 {
+            let variance = demand_history.iter()
+                .map(|&d| {
+                    let diff = d as f64 - avg;
+                    diff * diff
+                })
+                .sum::<f64>() / (demand_history.len() - 1) as f64;
+            variance.sqrt()
+        } else {
+            avg * 0.30 // Assume 30% variability initially
+        };
+        (avg, std_dev)
     } else {
-        adjusted_demand * 0.30 // Assume 30% variability initially
+        // No history: use bootstrap estimate
+        (bootstrap_avg, bootstrap_avg * 0.30)
     };
 
     // Calculate safety stock (Z-score * std_dev * sqrt(lead_time))
-    // Using Z=2.05 for 98% service level (standard for grocery)
-    let safety_stock = (2.05 * demand_std_dev * lead_time_days.sqrt()).ceil() as u32;
+    // Using Z=1.65 for 95% service level (targets ~2-5% stockout rate)
+    let safety_stock = (1.65 * demand_std_dev * lead_time_days.sqrt()).ceil() as u32;
 
-    // Reorder point = (avg demand * lead time) + safety stock
-    // Add buffer (1.5x) to trigger reorders with lead time cushion
-    (((adjusted_demand * lead_time_days).ceil() as u32) + safety_stock) * 3 / 2
+    // Reorder point = (avg daily sales * lead time) + safety stock
+    // Buffer of 1.5x provides cushion to cap stockouts around 5%
+    (((avg_daily_sales * lead_time_days).ceil() as u32) + safety_stock) * 3 / 2
 }
 
-/// Calculate order quantity based on product category and demand
-/// Scaled for realistic grocery basket sizes and replenishment cycles
+/// Calculate order quantity based on product category and actual sales
+/// avg_daily_sales should be from demand_history (actual sales), not demand estimates
 pub fn calculate_order_quantity<R: Rng>(
     product: &Product,
-    avg_daily_demand: f64,
+    avg_daily_sales: f64,
     rng: &mut R,
 ) -> u32 {
-    // Scale demand estimate by basket multiplier
-    // With weighted selection, popular products appear in ~4.5x more baskets than demand suggests
-    // Tuned from 4.0 (caused depletion) to 4.5 (balanced)
-    let adjusted_demand = avg_daily_demand * 4.5;
-
+    // avg_daily_sales is actual sales from history - use directly, no multiplier needed
+    // Order enough to cover the replenishment cycle plus safety buffer
     let base_quantity = match product.category.as_str() {
-        // Perishables: order frequently, smaller quantities (5-8 days worth)
+        // Perishables: order frequently, 7-10 days worth (accounts for lead time + buffer)
         "dairy" | "produce" | "meat" | "bakery" => {
-            (adjusted_demand * rng.gen_range(5.0..8.0)).ceil() as u32
+            (avg_daily_sales * rng.gen_range(7.0..10.0)).ceil() as u32
         },
-        // Fast movers: order 10-16 days worth
+        // Fast movers: order 14-21 days worth
         "beverages" | "snacks" | "candy" => {
-            (adjusted_demand * rng.gen_range(10.0..16.0)).ceil() as u32
+            (avg_daily_sales * rng.gen_range(14.0..21.0)).ceil() as u32
         },
-        // Medium movers: order 14-25 days worth
+        // Medium movers: order 21-28 days worth
         "cereal" | "canned" | "frozen" => {
-            (adjusted_demand * rng.gen_range(14.0..25.0)).ceil() as u32
+            (avg_daily_sales * rng.gen_range(21.0..28.0)).ceil() as u32
         },
-        // Slow movers: order 21-35 days worth
+        // Slow movers: order 28-42 days worth
         _ => {
-            (adjusted_demand * rng.gen_range(21.0..35.0)).ceil() as u32
+            (avg_daily_sales * rng.gen_range(28.0..42.0)).ceil() as u32
         }
     };
 
-    base_quantity.max(24) // Minimum order of 24 units (one case)
+    // Minimum order of one case - allows natural stockout dynamics
+    base_quantity.max(24)
 }
 
 /// Calculate initial inventory based on lead time and expected demand
-/// Scaled for realistic grocery basket sizes (12-18 items avg)
+/// Tuned to achieve 2-3% stockout rate from the start (industry standard)
 pub fn calculate_initial_inventory<R: Rng>(
     product: &Product,
     demand: u32,
@@ -89,41 +101,34 @@ pub fn calculate_initial_inventory<R: Rng>(
 ) -> u32 {
     // Review period (how often we check inventory)
     let review_period = match product.category.as_str() {
-        "dairy" | "produce" | "meat" | "bakery" => 1, // Daily review
-        "beverages" | "snacks" => 2, // Every 2 days
-        _ => 3, // Every 3 days
+        "dairy" | "produce" | "meat" | "bakery" => 1,
+        "beverages" | "snacks" => 2,
+        _ => 3,
     };
 
-    // Safety stock days - scaled up for weighted selection where popular products
-    // get selected disproportionately often. Need larger buffer to handle demand spikes.
-    // Real grocery stores carry 2-4 weeks of inventory for most items
+    // Safety stock days - reduced to allow natural 2-3% stockout rate
     let safety_stock_days = match product.category.as_str() {
-        "dairy" | "produce" | "meat" | "bakery" => 10,  // 10 days for perishables
-        "beverages" | "snacks" => 18, // 18 days for fast movers
-        _ => 21, // 21 days for shelf-stable
+        "dairy" | "produce" | "meat" | "bakery" => 3,  // Perishables
+        "beverages" | "snacks" => 5,  // Fast movers
+        _ => 7,  // Shelf-stable
     };
 
-    // Basket size multiplier: with weighted selection, popular products appear
-    // in ~4-5x more baskets than demand estimate suggests
-    // Target: 5-10% stockout rate (realistic for well-managed grocery)
-    let basket_multiplier = 5.0;
+    // Basket multiplier - matches reorder logic (3.5-5x range)
+    let basket_multiplier = 4.0;
 
-    // Initial stock = (lead time + review period + safety stock) * expected demand * basket factor
-    // Use at least 1 unit of demand to avoid zero initialization
+    // Initial stock = (lead time + review period + safety stock) * demand * basket factor
     let effective_demand = demand.max(1);
     let base_stock = effective_demand * (lead_time_days + review_period + safety_stock_days);
     let initial_stock = (base_stock as f64 * basket_multiplier) as u32;
 
-    // Add some randomness (90-110%) and ensure minimum stock
-    let final_stock = (initial_stock as f64 * rng.gen_range(0.9..1.1)) as u32;
+    // Add randomness (85-115%) - wider range creates natural variance in stockout timing
+    let final_stock = (initial_stock as f64 * rng.gen_range(0.85..1.15)) as u32;
 
-    // Minimum stock ensures all products start with some inventory
-    // With weighted selection, popular products have higher demand-based initial stock
-    // so minimum mainly affects low-demand "long tail" products
+    // Lower minimums to allow stockouts on slow movers
     let min_stock = match product.category.as_str() {
-        "dairy" | "produce" | "meat" | "bakery" => 30,  // Perishables - lower min
-        "beverages" | "snacks" => 50, // Fast movers
-        _ => 40, // Shelf-stable
+        "dairy" | "produce" | "meat" | "bakery" => 15,
+        "beverages" | "snacks" => 20,
+        _ => 18,
     };
 
     final_stock.max(min_stock)
